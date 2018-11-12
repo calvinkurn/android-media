@@ -14,6 +14,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 import javax.inject.Inject;
 
@@ -27,12 +28,14 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     private static final String EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA";
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
+    private static final String EXTRA_PRICE = "EXTRA_PRICE";
 
     private FlightBookingFragment flightBookingFragment;
 
     @Inject
     FlightPassengerDeleteAllListUseCase flightPassengerDeleteAllListUseCase;
 
+    @Deprecated
     public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId) {
         Intent intent = new Intent(activity, FlightBookingActivity.class);
         intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
@@ -40,11 +43,29 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
         return intent;
     }
 
+    public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId, FlightPriceViewModel priceViewModel) {
+        Intent intent = new Intent(activity, FlightBookingActivity.class);
+        intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
+        intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel);
+        intent.putExtra(EXTRA_PRICE, priceViewModel);
+        return intent;
+    }
+
+    @Deprecated
     public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId, String returnId) {
         Intent intent = new Intent(activity, FlightBookingActivity.class);
         intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
         intent.putExtra(EXTRA_FLIGHT_ARRIVAL_ID, returnId);
         intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel);
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Activity activity, FlightSearchPassDataViewModel passDataViewModel, String departureId, String returnId, FlightPriceViewModel priceViewModel) {
+        Intent intent = new Intent(activity, FlightBookingActivity.class);
+        intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
+        intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel);
+        intent.putExtra(EXTRA_FLIGHT_ARRIVAL_ID, returnId);
+        intent.putExtra(EXTRA_PRICE, priceViewModel);
         return intent;
     }
 
@@ -58,7 +79,8 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
         String departureId = getIntent().getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID);
         String arrivalId = getIntent().getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID);
         FlightSearchPassDataViewModel searchPassDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_SEARCH_DATA);
-        flightBookingFragment = FlightBookingFragment.newInstance(searchPassDataViewModel, departureId, arrivalId);
+        FlightPriceViewModel priceViewModel = getIntent().getParcelableExtra(EXTRA_PRICE);
+        flightBookingFragment = FlightBookingFragment.newInstance(searchPassDataViewModel, departureId, arrivalId, priceViewModel);
         return flightBookingFragment;
     }
 

@@ -8,16 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +28,12 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
         .ViewHolder> {
 
     private final FeedPlus.View.Kol kolViewListener;
+    private final FeedAnalytics analytics;
     private KolRecommendationViewModel data;
 
-    public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener) {
+    public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener, FeedAnalytics analytics) {
         this.kolViewListener = kolViewListener;
+        this.analytics = analytics;
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
         this.data = new KolRecommendationViewModel("", "", "", list);
     }
@@ -79,7 +79,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                 public void onClick(View v) {
                     KolRecommendItemViewModel kolItem = data.getListRecommend().get(getAdapterPosition());
                     if (kolItem.isFollowed()) {
-                        UnifyTracking.eventKolRecommendationUnfollowClick(kolItem.getLabel(), kolItem.getName());
+                        analytics.eventKolRecommendationUnfollowClick(kolItem.getLabel(), kolItem.getName());
                         kolViewListener.onUnfollowKolFromRecommendationClicked(data.getPage(),
                                 data.getRowNumber(),
                                 kolItem.getId(),
@@ -89,7 +89,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                     } else {
                         String userId = kolViewListener.getUserSession().getUserId();
 
-                        UnifyTracking.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
+                        analytics.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
 
                         List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                         KolRecommendItemViewModel recItem = data.getListRecommend().get(getAdapterPosition());
@@ -101,7 +101,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                 recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
                                 recItem.getId(),
                                 recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
-                        TrackingUtils.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
+                        analytics.eventTrackingEnhancedEcommerce(FeedEnhancedTracking
                                 .getClickTracking(list,
                                         Integer.parseInt(userId)
                                 ));
@@ -121,7 +121,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
     private void navigateToProfilePage(int adapterPosition) {
         KolRecommendItemViewModel kolItem = data.getListRecommend().get(adapterPosition);
-        UnifyTracking.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
+        analytics.eventKolRecommendationGoToProfileClick(kolItem.getLabel(), kolItem.getName());
         kolViewListener.onGoToKolProfileFromRecommendation(data.getRowNumber(),
                 adapterPosition,
                 String.valueOf(kolItem.getId()));

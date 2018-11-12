@@ -20,6 +20,14 @@ buildscript {
     }
 }
 
+android {
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
+    }
+}
 
 project.ext {
     artifactId = 'tkpdpdp'
@@ -35,13 +43,20 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
@@ -78,6 +93,12 @@ dependencies {
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
+    }
+
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
     }
 }
 

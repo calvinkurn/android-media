@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -13,13 +16,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
@@ -36,6 +43,8 @@ import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
+import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
+import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -54,7 +63,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private ViewPager mPagerSortType;
     private TabLayout mTabSortType;
     private RecyclerView mRecyclerViewChips;
-    private TextView mTextPoints;
+    private TextView mTextPoints, mTextMembershipValueBottom, mTextPointsBottom;
+    private ImageView mImgEggBottom;
     private CatalogChipAdapter mChipAdapter;
     private CatalogSortTypePagerAdapter mViewPagerAdapter;
     private int mSelectedCategory = CommonConstant.DEFAULT_CATEGORY_TYPE;
@@ -63,6 +73,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Inject
     public CatalogListingPresenter mPresenter;
+    private LinearLayout bottomViewMembership;
+    private ConstraintLayout containerPointDetail;
+    private LinearLayout containerEgg;
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CatalogListingFragment();
@@ -164,8 +177,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     @Override
-    public void onSuccessPoints(String point) {
-        mTextPoints.setText(point);
+    public void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl) {
+        mTextPoints.setText(rewardStr);
+        mTextMembershipValueBottom.setText(membership);
+        mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(rewardValue, false));
+        ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
     }
 
     @Override
@@ -260,9 +276,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_see_membership_status) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
-        } else if (source.getId() == R.id.text_my_coupon) {
+        if (source.getId() == R.id.text_my_coupon) {
             gotoMyCoupons();
         } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getHomePageData();
@@ -289,6 +303,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                         AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
                         "");
             }
+        } else if (source.getId() == R.id.text_membership_label
+                || source.getId() == R.id.text_membership_value_bottom) {
+            openWebView(CommonConstant.WebLink.MEMBERSHIP);
+        } else if (source.getId() == R.id.view_point_saya
+                || source.getId() == R.id.text_my_points_value_bottom) {
+            openWebView(CommonConstant.WebLink.HISTORY);
         }
 
     }
@@ -299,9 +319,50 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type);
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
+        bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
+        containerPointDetail = view.findViewById(R.id.container_point_detail);
+        containerEgg = view.findViewById(R.id.container_fab_egg_token);
+        mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
+        mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
+        mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
+        AppBarLayout appBarHeader = view.findViewById(R.id.app_bar_header);
+        appBarHeader.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                verticalOffset = Math.abs(verticalOffset);
+                if (verticalOffset >= containerPointDetail.getHeight()) {
+                    slideUp();
+                } else {
+                    slideDown();
+                }
+            }
+        });
 
         if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);
+        }
+    }
+
+    private void slideUp() {
+        if (bottomViewMembership.getVisibility() != View.VISIBLE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
+            Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
+                    R.animator.tp_bottom_up);
+            bottomViewMembership.startAnimation(bottomUp);
+            bottomViewMembership.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void slideDown() {
+        if (bottomViewMembership.getVisibility() != View.GONE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
+            layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_large));
+            Animation slideDown = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
+                    R.animator.tp_bottom_down);
+            bottomViewMembership.startAnimation(slideDown);
+            bottomViewMembership.setVisibility(View.GONE);
         }
     }
 
@@ -314,6 +375,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
         getView().findViewById(R.id.text_token_title).setOnClickListener(this);
         getView().findViewById(R.id.img_token).setOnClickListener(this);
+        mTextMembershipValueBottom.setOnClickListener(this);
+        mTextPointsBottom.setOnClickListener(this);
 
         mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -363,22 +426,24 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails) {
         if (tokenDetail != null) {
             try {
-                getView().findViewById(R.id.container_fab_egg_token).setVisibility(View.VISIBLE);
+                containerEgg.setVisibility(View.VISIBLE);
                 TextView textCount = getView().findViewById(R.id.text_token_count);
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
                 ImageView imgToken = getView().findViewById(R.id.img_token);
-                textCount.setText(String.valueOf(tokenDetail.getSumToken()));
+                textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
                 this.mLobDetails = lobDetails;
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
                 ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
-                if (tokenDetail.getSumToken() == 0) {
-                    getView().findViewById(R.id.text_token_count).setVisibility(View.GONE);
-                    getView().findViewById(R.id.text_token_title).setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_xlarge),
-                            getResources().getDimensionPixelSize(R.dimen.dp_10),
-                            getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
-                            getResources().getDimensionPixelSize(R.dimen.dp_10));
+                if (mSumToken == 0) {
+                    textCount.setVisibility(View.GONE);
+                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
+                            0,
+                            0,
+                            0);
+                } else {
+                    textCount.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

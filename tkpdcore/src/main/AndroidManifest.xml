@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="replace" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -164,20 +164,12 @@
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".manage.people.bank.activity.ManagePeopleBankActivity"
-            android:label="@string/title_activity_manage_people_bank"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".peoplefave.activity.PeopleFavoritedShop"
             android:label="@string/title_activity_people_favorited_shop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".deposit.activity.DepositActivity"
             android:label="@string/title_activity_people_deposit"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".deposit.activity.WithdrawActivity"
-            android:label="@string/title_activity_people_withdraw_balance"
             android:screenOrientation="portrait" />
         <activity
             android:name=".com.tokopedia.seller.OrderHistoryView"
@@ -188,10 +180,6 @@
             android:label="@string/title_activity_preview_product_image"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
-        <activity
-            android:name=".talk.talkproduct.activity.TalkAddNew"
-            android:label="@string/title_activity_talk_add_new"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".SettingsNotification"
             android:label="@string/title_activity_settings_notification"
@@ -288,14 +276,6 @@
             android:label="Informasi Toko"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".talk.talkproduct.activity.TalkProductActivity"
-            android:label="@string/title_talk"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".talkview.activity.TalkViewActivity"
-            android:label="@string/title_talk"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".share.ShareActivity"
             android:label="@string/title_activity_share"
             android:screenOrientation="portrait" />
@@ -343,11 +323,6 @@
             android:label="@string/title_activity_manage_people_address"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".manage.people.password.activity.ManagePasswordActivity"
-            android:label="@string/title_activity_manage_people_password"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
             android:name=".manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -358,11 +333,6 @@
             android:name=".gallery.GalleryActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".shopinfo.activity.ShopDiscussionActivity"
-            android:label="@string/title_talk_only"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
@@ -413,25 +383,10 @@
             android:name=".service.DownloadService"
             android:exported="false" />
         <service
-            android:name=".talkview.intentservice.TalkViewIntentService"
-            android:exported="false" />
-        <service
             android:name=".manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
         <service
             android:name=".product.intentservice.ProductInfoIntentService"
-            android:exported="false" />
-        <service
-            android:name=".talkview.intentservice.TalkDetailIntentService"
-            android:exported="false" />
-        <service
-            android:name=".talk.talkproduct.intentservice.TalkAddNewIntentService"
-            android:exported="false" />
-        <service
-            android:name=".manage.people.bank.intentservice.ManagePeopleBankIntentService"
-            android:exported="false" />
-        <service
-            android:name=".manage.people.password.intentservice.ManagePasswordIntentService"
             android:exported="false" />
 
         <!-- ======================================================= -->

@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author anggaprasetiyo on 04/12/17.
  */
 
-public class TokoPointDrawerData implements Parcelable{
+public class TokoPointDrawerData implements Parcelable {
 
     private int offFlag;
     private int hasNotif;
@@ -15,12 +15,16 @@ public class TokoPointDrawerData implements Parcelable{
     private PopUpNotif popUpNotif;
     private String mainPageUrl;
     private String mainPageTitle;
+    private int sumCoupon;
+    private String sumCouponStr;
 
     protected TokoPointDrawerData(Parcel in) {
         offFlag = in.readInt();
         hasNotif = in.readInt();
         userTier = in.readParcelable(UserTier.class.getClassLoader());
         popUpNotif = in.readParcelable(PopUpNotif.class.getClassLoader());
+        sumCoupon = in.readInt();
+        sumCouponStr = in.readString();
         mainPageUrl = in.readString();
         mainPageTitle = in.readString();
     }
@@ -86,6 +90,22 @@ public class TokoPointDrawerData implements Parcelable{
         this.mainPageUrl = mainPageUrl;
     }
 
+    public int getSumCoupon() {
+        return sumCoupon;
+    }
+
+    public void setSumCoupon(int sumCoupon) {
+        this.sumCoupon = sumCoupon;
+    }
+
+    public String getSumCouponStr() {
+        return sumCouponStr;
+    }
+
+    public void setSumCouponStr(String sumCouponStr) {
+        this.sumCouponStr = sumCouponStr;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,12 +116,14 @@ public class TokoPointDrawerData implements Parcelable{
         parcel.writeInt(offFlag);
         parcel.writeInt(hasNotif);
         parcel.writeParcelable(userTier, i);
+        parcel.writeInt(sumCoupon);
+        parcel.writeString(sumCouponStr);
         parcel.writeParcelable(popUpNotif, i);
         parcel.writeString(mainPageUrl);
         parcel.writeString(mainPageTitle);
     }
 
-    public static class UserTier implements Parcelable{
+    public static class UserTier implements Parcelable {
 
         private String tierNameDesc;
         private String tierImageUrl;
@@ -167,6 +189,4 @@ public class TokoPointDrawerData implements Parcelable{
 
     public TokoPointDrawerData() {
     }
-
-
 }

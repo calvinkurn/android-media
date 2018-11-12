@@ -32,6 +32,7 @@ public class TkpdBaseURL {
     public static String INBOX_DOMAIN = "https://inbox.tokopedia.com";
     public static String CHAT_DOMAIN = "https://chat.tokopedia.com";
     public static String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
+    public static String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat.tokopedia.com";
     public static String JS_DOMAIN = "https://js.tokopedia.com/";
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
@@ -58,7 +59,6 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
-    public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
@@ -75,6 +75,7 @@ public class TkpdBaseURL {
         public static final String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
 
         public static final String PATH_GET_DETAIL_PRODUCT = "get_detail.pl";
+        public static final String PATH_GET_DETAIL_PRODUCT_REVAMP = "v4/product/get_detail.pl";
         public static final String PATH_GET_OTHER_PRODUCT = "get_other_product.pl";
         public static final String PATH_GET_ADD_PRODUCT_FORM = "get_add_product_form.pl";
         public static final String PATH_GET_EDIT_PRODUCT_FORM = "get_edit_product_form.pl";

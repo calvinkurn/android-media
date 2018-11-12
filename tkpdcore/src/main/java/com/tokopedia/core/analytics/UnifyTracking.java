@@ -285,8 +285,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.ORDER_DETAIL
         ).getEvent());
-
-        sendMoEngageClickedNewOrder();
     }
 
     public static void eventTrackOrder() {
@@ -1337,18 +1335,6 @@ public class UnifyTracking extends TrackingUtils {
                 .eventAddtoCart(gtmCart)
                 .sendScreen(AppScreen.SCREEN_CART_PAGE_REMOVE)
                 .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
-    }
-
-    public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrInt(
-                AppEventTracking.MOENGAGE.QUALITY_SCORE,
-                quality
-        );
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.SUBMIT_ULASAN_REVIEW
-        );
     }
 
     public static void sendAFCompleteRegistrationEvent(int userId,String methodName) {
@@ -2782,34 +2768,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.TOKOPOINTS_POP_UP,
                 AppEventTracking.Action.TOKOPOINTS_POP_UP_CLICK,
                 AppEventTracking.EventLabel.TOKOPOINTS_POP_UP_BUTTON
-        ).getEvent());
-    }
-
-
-    public static void eventAppRatingImpression(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.IMPRESSION_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.IMPRESSION,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAppRating(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventCancelAppRating(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CANCEL_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.CLICK,
-                label
         ).getEvent());
     }
 

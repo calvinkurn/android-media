@@ -15,7 +15,6 @@ public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
 
     private final OmsRepositoryData omsRepository;
 
-    @Inject
     public PostVerifyCartUseCase(OmsRepositoryData omsRepository) {
         this.omsRepository = omsRepository;
     }

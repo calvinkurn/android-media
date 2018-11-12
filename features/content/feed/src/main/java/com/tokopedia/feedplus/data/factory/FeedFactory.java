@@ -2,8 +2,7 @@ package com.tokopedia.feedplus.data.factory;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
@@ -19,19 +18,17 @@ public class FeedFactory {
 
     private final Context context;
     private final FeedApi feedApi;
-    private final ApolloClient apolloClient;
     private final FeedListMapper feedListMapper;
     private final FeedResultMapper feedResultMapperLocal;
     private final FeedResultMapper feedResultMapperCloud;
-    private final GlobalCacheManager globalCacheManager;
+    private final CacheManager globalCacheManager;
 
-    public FeedFactory(Context context, FeedApi feedApi, ApolloClient apolloClient,
+    public FeedFactory(Context context, FeedApi feedApi,
                        FeedListMapper feedListMapper, FeedResultMapper feedResultMapperLocal,
                        FeedResultMapper feedResultMapperCloud,
-                       GlobalCacheManager globalCacheManager) {
+                       CacheManager globalCacheManager) {
         this.context = context;
         this.feedApi = feedApi;
-        this.apolloClient = apolloClient;
         this.feedListMapper = feedListMapper;
         this.feedResultMapperLocal = feedResultMapperLocal;
         this.feedResultMapperCloud = feedResultMapperCloud;

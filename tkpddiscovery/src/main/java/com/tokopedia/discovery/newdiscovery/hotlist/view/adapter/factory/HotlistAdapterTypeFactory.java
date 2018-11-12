@@ -2,11 +2,10 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.BigGridProductViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.GridProductViewHolder;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.HotlistHeaderViewHolder;
@@ -24,11 +23,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Em
 
 public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl implements HotlistTypeFactory {
 
-    private final ItemClickListener mItemClickListener;
+    private final HotlistListener mHotlistListener;
     private final String searchQuery;
 
-    public HotlistAdapterTypeFactory(ItemClickListener mItemClickListener, String searchQuery) {
-        this.mItemClickListener = mItemClickListener;
+    public HotlistAdapterTypeFactory(HotlistListener mHotlistListener, String searchQuery) {
+        this.mHotlistListener = mHotlistListener;
         this.searchQuery = searchQuery;
     }
 
@@ -64,15 +63,15 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if (type == HotlistHeaderViewHolder.LAYOUT) {
-            viewHolder = new HotlistHeaderViewHolder(parent, mItemClickListener, searchQuery);
+            viewHolder = new HotlistHeaderViewHolder(parent, mHotlistListener, searchQuery);
         } else if (type == BigGridProductViewHolder.LAYOUT) {
-            viewHolder = new BigGridProductViewHolder(parent, mItemClickListener);
+            viewHolder = new BigGridProductViewHolder(parent, mHotlistListener);
         } else if (type == GridProductViewHolder.LAYOUT) {
-            viewHolder = new GridProductViewHolder(parent, mItemClickListener);
+            viewHolder = new GridProductViewHolder(parent, mHotlistListener);
         } else if (type == ListProductViewHolder.LAYOUT) {
-            viewHolder = new ListProductViewHolder(parent, mItemClickListener);
+            viewHolder = new ListProductViewHolder(parent, mHotlistListener);
         } else if (type == SearchEmptyViewHolder.LAYOUT) {
-            viewHolder  = new SearchEmptyViewHolder(parent, mItemClickListener);
+            viewHolder  = new SearchEmptyViewHolder(parent, mHotlistListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

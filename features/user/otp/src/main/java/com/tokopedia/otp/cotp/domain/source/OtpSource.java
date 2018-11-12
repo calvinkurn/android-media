@@ -8,7 +8,7 @@ import com.tokopedia.otp.cotp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.cotp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.RequestOtpViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class OtpSource {
     private final RequestOtpMapper requestOTPMapper;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     public OtpSource(@CotpScope CotpApi otpApi,

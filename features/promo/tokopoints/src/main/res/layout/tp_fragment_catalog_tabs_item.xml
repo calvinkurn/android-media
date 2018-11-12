@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/tp_margin_xsmall"
-        android:layout_marginBottom="@dimen/tp_margin_xsmall"
+        android:layout_marginBottom="@dimen/tp_height_bottom_membership_view"
         android:layout_marginEnd="@dimen/tp_margin_xsmall"
         android:layout_marginRight="@dimen/tp_margin_xsmall"
         android:layout_marginStart="@dimen/tp_margin_xsmall"

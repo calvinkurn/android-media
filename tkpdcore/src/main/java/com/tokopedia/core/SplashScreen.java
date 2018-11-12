@@ -21,8 +21,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -46,7 +46,6 @@ import io.branch.referral.BranchError;
  * fetch some data from server in order to worked around.
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
-
 
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
