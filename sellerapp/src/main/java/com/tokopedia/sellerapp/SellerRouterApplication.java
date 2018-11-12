@@ -1350,8 +1350,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId);
+    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
+        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
     }
 
     @Override
