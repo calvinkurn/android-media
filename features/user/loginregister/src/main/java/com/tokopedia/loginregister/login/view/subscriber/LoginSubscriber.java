@@ -39,13 +39,18 @@ public class LoginSubscriber extends LoginCommonSubscriber<LoginEmailDomain> {
     public void onNext(LoginEmailDomain loginEmailDomain) {
         super.onNext(loginEmailDomain);
 
-        if (loginEmailDomain.getLoginResult() != null
-                && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
-            view.setSmartLock();
-            view.onSuccessLoginEmail();
-        } else {
-            view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode
-                    .UNSUPPORTED_FLOW, context));
+        if (!isGoToSecurityQuestion(loginEmailDomain.getLoginResult())
+                && !isGoToCreatePassword(loginEmailDomain)
+                && !isGoToPhoneVerification(loginEmailDomain)) {
+
+            if (loginEmailDomain.getLoginResult() != null) {
+                view.setSmartLock();
+                view.onSuccessLoginEmail();
+            } else {
+                view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode
+                        .UNSUPPORTED_FLOW, context));
+            }
+
         }
     }
 

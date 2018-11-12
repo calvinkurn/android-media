@@ -30,15 +30,21 @@ public class RegisterThirdPartySubscriber extends LoginCommonSubscriber<LoginEma
     public void onNext(LoginEmailDomain loginEmailDomain) {
         super.onNext(loginEmailDomain);
 
-        if (loginEmailDomain.getInfo().getName().contains(CHARACTER_NOT_ALLOWED)) {
-            view.onGoToAddName();
-        } else if (loginEmailDomain.getLoginResult() != null
-                && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
-            view.onSuccessRegisterSosmed(methodName);
-        } else {
-            view.onErrorRegisterSosmed(methodName, ErrorHandlerSession.getDefaultErrorCodeMessage
-                    (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
+        if (!isGoToSecurityQuestion(loginEmailDomain.getLoginResult())
+                && !isGoToCreatePassword(loginEmailDomain)
+                && !isGoToPhoneVerification(loginEmailDomain)) {
+
+            if (loginEmailDomain.getInfo().getName().contains(CHARACTER_NOT_ALLOWED)) {
+                view.onGoToAddName();
+            } else if (loginEmailDomain.getLoginResult() != null
+                    && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
+                view.onSuccessRegisterSosmed(methodName);
+            } else {
+                view.onErrorRegisterSosmed(methodName, ErrorHandlerSession.getDefaultErrorCodeMessage
+                        (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
+            }
         }
+
     }
 
 
@@ -46,5 +52,4 @@ public class RegisterThirdPartySubscriber extends LoginCommonSubscriber<LoginEma
     protected void onErrorLogin(String errorMessage) {
         view.onErrorRegisterSosmed(methodName, errorMessage);
     }
-
 }
