@@ -8,8 +8,9 @@ import rx.Subscriber
 /**
  * @author by milhamj on 10/15/18.
  */
-class DeletePostSubscriber(val view: ProfileContract.View, val id: Int, val rowNumber: Int)
-    : Subscriber<Boolean>() {
+class DeletePostSubscriber(private val view: ProfileContract.View,
+                           private val id: Int,
+                           private val rowNumber: Int) : Subscriber<Boolean>() {
     override fun onNext(isSuccess: Boolean?) {
         if (isSuccess == null || isSuccess.not()) {
             onError(RuntimeException())

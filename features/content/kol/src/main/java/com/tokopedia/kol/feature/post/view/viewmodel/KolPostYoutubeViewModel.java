@@ -23,9 +23,9 @@ public class KolPostYoutubeViewModel extends BaseKolViewModel implements Visitab
                                    int kolId, String time, boolean isShowComment, boolean isShowLike,
                                    String youtubeLink, int tagsId, String contentName, String tagsType,
                                    String tagsCaption, String tagsLink) {
-        super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
+        super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
                 liked, totalLike, totalComment, page, kolId, time, isShowComment, isShowLike,
-                false, false);
+                false, false, false);
         this.youtubeLink = youtubeLink;
         this.tagsId = tagsId;
         this.contentName = contentName;

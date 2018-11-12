@@ -14,6 +14,11 @@ class ProfileEmptyPresenter @Inject constructor(
         private val getProfileHeaderUseCase: GetProfileHeaderUseCase)
     : BaseDaggerPresenter<ProfileEmptyContract.View>(), ProfileEmptyContract.Presenter {
 
+    override fun detachView() {
+        super.detachView()
+        getProfileHeaderUseCase.unsubscribe()
+    }
+
     override fun getProfileHeader(userId: Int) {
         getProfileHeaderUseCase.execute(
                 GetProfileHeaderUseCase.createRequestParams(userId),
