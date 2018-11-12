@@ -125,10 +125,15 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         webView.settings.userAgentString = userAgent
 
         val fcmToken = Preference.getFcmToken(this)
-        CookieManager.getInstance().setCookie(
-            KelontongBaseUrl.COOKIE_URL,
-                "$GCM_ID=$fcmToken; grosir=true; $AF_ID=${AppsFlyerLib.getInstance().getAppsFlyerUID(this)}"
-        )
+        val cookieGcmId = "$GCM_ID=$fcmToken"
+        val cookieGrosir = "grosir=true"
+        val cookieAfId = "$AF_ID=${AppsFlyerLib.getInstance().getAppsFlyerUID(this)}"
+
+        val cookieManager: CookieManager = CookieManager.getInstance()
+        cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieGcmId)
+        cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieGrosir)
+        cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieAfId)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
         } else {
