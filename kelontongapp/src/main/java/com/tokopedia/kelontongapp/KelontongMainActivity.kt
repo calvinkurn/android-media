@@ -18,6 +18,7 @@ import android.webkit.WebView
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.appsflyer.AppsFlyerLib
 import com.tokopedia.kelontongapp.firebase.Preference
 import com.tokopedia.kelontongapp.helper.ConnectionManager
 import com.tokopedia.kelontongapp.webview.FilePickerInterface
@@ -124,11 +125,14 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         webView.settings.userAgentString = userAgent
 
         val fcmToken = Preference.getFcmToken(this)
-        CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s, grosir=true", GCM_ID, fcmToken))
+        CookieManager.getInstance().setCookie(
+            KelontongBaseUrl.COOKIE_URL,
+                "$GCM_ID=$fcmToken; grosir=true; $AF_ID=${AppsFlyerLib.getInstance().getAppsFlyerUID(this)}"
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
         } else {
-            CookieManager.getInstance().setAcceptCookie(true);
+            CookieManager.getInstance().setAcceptCookie(true)
         }
         loadHome()
     }
