@@ -2,9 +2,11 @@ package com.tokopedia.affiliate.feature.explore.view.listener;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
@@ -18,6 +20,8 @@ public interface ExploreContract {
     interface View extends CustomerView {
 
         Context getContext();
+
+        AffiliateAnalytics getAffiliateAnalytics();
 
         void showLoading();
 

@@ -977,7 +977,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                     }
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                     mActionListener.onNeedUpdateRequestData();
-                    saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
+                    if (saveStateDebounceListener != null) {
+                        saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
+                    }
                 }
             });
 

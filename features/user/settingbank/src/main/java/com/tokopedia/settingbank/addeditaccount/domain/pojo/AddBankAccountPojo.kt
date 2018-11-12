@@ -7,5 +7,10 @@ import com.google.gson.annotations.SerializedName
 data class AddBankAccountPojo(
         @Expose
         @SerializedName("is_success")
-        val is_success: Boolean? = false
+        val is_success: Boolean = false,
+
+        @Expose
+        @SerializedName("acc_id")
+        val acc_id: String = ""
+
 )
