@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -113,6 +114,9 @@ import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.referral.ReferralActivity;
+import com.tokopedia.nps.NpsRouter;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -494,7 +498,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         UnifiedOrderListRouter,
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
-        LoginPhoneNumberRouter {
+        LoginPhoneNumberRouter,
+        NpsRouter {
 
     private static final String EXTRA = "extra";
 
@@ -3232,5 +3237,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendBranchRegisterEvent(String email, String phone) {
         BranchSdkUtils.sendRegisterEvent(email, phone);
+    }
+
+    /**
+     * App Rating - Nps
+     */
+    @Override
+    public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
+        AdvancedAppRatingDialog.show(activity, dismissListener);
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+        SimpleAppRatingDialog.show(activity);
     }
 }
