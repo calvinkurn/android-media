@@ -27,5 +27,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.cameraView)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 

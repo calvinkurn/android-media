@@ -62,6 +62,7 @@ include "features:user:otp"
 include "features:user:logout"
 include "features:user:attachproduct"
 include "features:user:updateinactivephone"
+include "features:user:user_identification"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'

@@ -2,10 +2,13 @@ package com.tokopedia.useridentification.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFragment;
 
 /**
@@ -14,7 +17,18 @@ import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFrag
 
 public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
-    public static Intent getIntent(Context context){
+    @DeepLink(ApplinkConst.KYC)
+    public static Intent getDeeplinkIntent(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
+
+        Intent intent = new Intent(context, UserIdentificationInfoActivity.class);
+        intent.setData(uri);
+        intent.putExtras(extras);
+
+        return intent;
+    }
+
+    public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, UserIdentificationInfoActivity.class);
         Bundle bundle = new Bundle();
         intent.putExtras(bundle);

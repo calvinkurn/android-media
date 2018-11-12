@@ -1,3 +1,4 @@
+include ':user_identification_common'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

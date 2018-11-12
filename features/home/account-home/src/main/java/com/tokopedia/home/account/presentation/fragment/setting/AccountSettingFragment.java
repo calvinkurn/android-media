@@ -21,6 +21,7 @@ import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.KYC;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
 
@@ -58,6 +59,8 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_ADDRESS_ID));
         view.findViewById(R.id.label_view_password).setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
+        view.findViewById(R.id.label_view_kyc).setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
     }
 
     @Override
@@ -88,6 +91,11 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
                     startActivity(router.getManageAddressIntent(getActivity()));
                     break;
+                case SettingConstant.SETTING_ACCOUNT_KYC_ID:
+                    accountAnalytics.eventClickAccountSetting(KYC);
+                    intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
+                    getActivity().startActivity(intent);
+                    break;
                 default:
                     break;
             }
@@ -97,7 +105,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     private void intentToAddPassword() {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             startActivityForResult(
-                    ((AccountHomeRouter)getActivity().getApplicationContext())
+                    ((AccountHomeRouter) getActivity().getApplicationContext())
                             .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
 
         }

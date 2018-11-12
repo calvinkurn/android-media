@@ -43,6 +43,7 @@ public class AccountConstants {
         public static final String USER_DATA = "user_data";
         public static final String PERSONAL_DATA = "personal data";
         public static final String ADDRESS_LIST = "address list";
+        public static final String KYC = "kyc";
         public static final String PASSWORD = "password";
         public static final String INFORMATION = "information";
         public static final String ETALASE = "etalase";
