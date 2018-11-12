@@ -15,12 +15,13 @@ import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidateBankViewModel
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidationForm
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
 /**
  * @author by nisie on 6/22/18.
  */
-class AddEditBankPresenter(private val userSession: UserSession,
+class AddEditBankPresenter(private val userSession: UserSessionInterface,
                            private val addBankUseCase: AddBankUseCase,
                            private val editBankUseCase: EditBankUseCase,
                            private val validateBankUseCase: ValidateBankUseCase) :

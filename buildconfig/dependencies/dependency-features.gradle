@@ -45,6 +45,9 @@ ext {
     tkpdSessionVersion = '2.22'
     tkpdShopVersion = '2.22'
     tkpdTalkVersion = '2.22'
+    tkpdLoginPhoneVersion = '2.22'
+    tkpdLoginRegisterVersion = '2.22'
+    tkpdSessionCommonVersion = '2.22'
     tkpdTokocashVersion = '2.22'
     tkpdTokopointVersion = '2.22'
     tkpdTopAdsSDKVersion = '2.22'
@@ -55,7 +58,6 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     transactionCheckoutVersion = '2.22'
-
 
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
@@ -82,6 +84,9 @@ ext {
             inbox                       : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                         : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon                   : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
+            loginphone                  : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
+            loginregister               : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
+            sessioncommon               : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
             loyalty                     : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             mitraToppers                : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             payment                     : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
@@ -115,7 +120,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
-            nps                         : ":features:common:nps",
+            nps                    : ":features:common:nps",
 
             feed                        : ":features:content:feed",
             explore                     : ":features:content:explore",
@@ -127,74 +132,74 @@ ext {
             affiliateCommon             : ":features:content:affiliate_common",
             profile                     : ":features:content:profile",
 
-            browse                      : ":features:digital:digital_browse",
-            digitalDeals                : ":features:digital:digital_deals",
-            digitalproduct              : ":features:digital:digitalproduct",
-            event                       : ":features:digital:event",
-            flight                      : ":features:digital:flight",
-            flightDbFlow                : ":features:digital:flight_dbflow",
+            browse                 : ":features:digital:digital_browse",
+            digitalDeals           : ":features:digital:digital_deals",
+            digitalproduct         : ":features:digital:digitalproduct",
+            event                  : ":features:digital:event",
+            flight                 : ":features:digital:flight",
+            flightDbFlow           : ":features:digital:flight_dbflow",
 //            flight_no_op                : ":features:digital:flight_no_op",
-            train                       : ":features:digital:train",
+            train                  : ":features:digital:train",
 
-            home                        : ":features:discovery:home",
-            recentview                  : ":features:discovery:recentview",
-            topAdsSdk                   : ":features:discovery:topadssdk",
-            wishlistCommon              : ":features:discovery:wishlist_common",
+            home                   : ":features:discovery:home",
+            recentview             : ":features:discovery:recentview",
+            topAdsSdk              : ":features:discovery:topadssdk",
+            wishlistCommon         : ":features:discovery:wishlist_common",
 
-            instantLoan                 : ":features:fintech:instant_loan",
-            mitraToppers                : ":features:fintech:mitra_toppers",
-            saldodetails                : ":features:fintech:saldo_details",
-            tokoCash                    : ":features:fintech:tokocash",
+            instantLoan            : ":features:fintech:instant_loan",
+            mitraToppers           : ":features:fintech:mitra_toppers",
+            saldodetails           : ":features:fintech:saldo_details",
+            tokoCash               : ":features:fintech:tokocash",
 
-            accountHome                 : ":features:home:account-home",
-            navigation                  : ":features:home:navigation",
-            navigationCommon            : ":features:home:navigation-common",
-            searchbar                   : ":features:home:searchbar",
+            accountHome            : ":features:home:account-home",
+            navigation             : ":features:home:navigation",
+            navigationCommon       : ":features:home:navigation-common",
+            searchbar              : ":features:home:searchbar",
 
-            challenges                  : ":features:im:challenges",
+            challenges             : ":features:im:challenges",
 
-            districtRecommendation      : ":features:logistic:district_recommendation",
-            logisticaddaddress          : ":features:logistic:logisticaddaddress",
-            logisticanalytics           : ":features:logistic:logisticanalytics",
-            logisticdata                : ":features:logistic:logisticdata",
-            logisticuploadawb           : ":features:logistic:logisticuploadawb",
-            tracking                    : ":features:logistic:tracking",
+            districtRecommendation : ":features:logistic:district_recommendation",
+            logisticaddaddress     : ":features:logistic:logisticaddaddress",
+            logisticanalytics      : ":features:logistic:logisticanalytics",
+            logisticdata           : ":features:logistic:logisticdata",
+            logisticuploadawb      : ":features:logistic:logisticuploadawb",
+            tracking               : ":features:logistic:tracking",
 
-            goldMerchant                : ":features:merchant:gold_merchant",
-            goldMerchantCommon          : ":features:merchant:gold_merchant_common",
-            goldMerchantSubscribe       : ":features:merchant:gold_merchant_subscribe",
-            productDraftDatabase        : ":features:merchant:product_draft_database",
-            productManageItem           : ":features:merchant:product_manage_item",
-            productManageList           : ":features:merchant:product_manage_list",
-            reputation                  : ":features:merchant:reputation",
-            reputationCommon            : ":features:merchant:reputation_common",
-            shopCommon                  : ":features:merchant:shop_common",
-            shopOpen                    : ":features:merchant:shop_open",
+            goldMerchant           : ":features:merchant:gold_merchant",
+            goldMerchantCommon     : ":features:merchant:gold_merchant_common",
+            goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe",
+            productDraftDatabase   : ":features:merchant:product_draft_database",
+            productManageItem      : ":features:merchant:product_manage_item",
+            productManageList      : ":features:merchant:product_manage_list",
+            reputation             : ":features:merchant:reputation",
+            reputationCommon       : ":features:merchant:reputation_common",
+            shopCommon             : ":features:merchant:shop_common",
+            shopOpen               : ":features:merchant:shop_open",
 //            shopOpen                    : ":features:merchant:shop_open_no_op",
-            shopPage                    : ":features:merchant:shop_page",
+            shopPage               : ":features:merchant:shop_page",
 //            shopPage                    : ":features:merchant:shop_page_no_op",
-            shopSettings                : ":features:merchant:shop_settings",
+            shopSettings           : ":features:merchant:shop_settings",
 //            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
 
-            contactUs                   : ":features:operational:contact_us",
+            contactUs              : ":features:operational:contact_us",
 
-            payment                     : ":features:payment:payment",
-            paymentSetting              : ":features:payment:payment_setting",
-            paymentManagementSystem     : ":features:payment:pms",
-            withdraw                    : ":features:payment:withdraw",
+            payment                : ":features:payment:payment",
+            paymentSetting         : ":features:payment:payment_setting",
+            paymentManagementSystem: ":features:payment:pms",
+            withdraw               : ":features:payment:withdraw",
 
-            gamification                : ":features:promo:gamification",
-            merchantVoucher             : ":features:promo:merchant_voucher",
-            tokopoints                  : ":features:promo:tokopoints",
+            gamification           : ":features:promo:gamification",
+            merchantVoucher        : ":features:promo:merchant_voucher",
+            tokopoints             : ":features:promo:tokopoints",
 
-            topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",
-            topAdsManagement            : ":features:top_ads:top_ads_management",
-            topAdsManagementCommon      : ":features:top_ads:top_ads_management_common",
-            topAdsSourceTagging         : ":features:top_ads:top_ads_management_sourcetagging",
+            topAdsFreeClaim        : ":features:top_ads:top_ads_free_claim",
+            topAdsManagement       : ":features:top_ads:top_ads_management",
+            topAdsManagementCommon : ":features:top_ads:top_ads_management_common",
+            topAdsSourceTagging    : ":features:top_ads:top_ads_management_sourcetagging",
 
-            checkout                    : ":features:transaction:checkout",
-            transactiondata             : ":features:transaction:transactiondata",
-            transactionanalytics        : ":features:transaction:transactionanalytics",
+            checkout               : ":features:transaction:checkout",
+            transactiondata        : ":features:transaction:transactiondata",
+            transactionanalytics   : ":features:transaction:transactionanalytics",
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
@@ -202,6 +207,9 @@ ext {
             changePhoneNumber           : ":features:user:changephonenumber",
             groupchat                   : ":features:user:groupchat",
             logout                      : ":features:user:logout",
+            loginphone                  : ":features:user:loginphone",
+            loginregister               : ":features:user:loginregister",
+            sessioncommon               : ":features:user:sessioncommon",
             notifCenter                 : ":features:user:notifcenter",
             otp                         : ":features:user:otp",
             phoneVerification           : ":features:user:phoneverification",
@@ -211,15 +219,15 @@ ext {
             updateinactivephone         : ":features:user:updateinactivephone",
             vote                        : ":features:user:vote",
 
-            content                     : ":tkpdcontent",
-            core                        : ":tkpdcore",
-            discovery                   : ":tkpddiscovery",
-            inbox                       : ":tkpdinbox",
-            loyalty                     : ":tkpdloyalty",
-            productDetail               : ":tkpdpdp",
-            seller                      : ":tkpdseller",
-            session                     : ":tkpdsession",
-            transaction                 : ":tkpdtransaction",
-            transactioncommon           : ":tkpdtransaction-common",
+            content                : ":tkpdcontent",
+            core                   : ":tkpdcore",
+            discovery              : ":tkpddiscovery",
+            inbox                  : ":tkpdinbox",
+            loyalty                : ":tkpdloyalty",
+            productDetail          : ":tkpdpdp",
+            seller                 : ":tkpdseller",
+            session                : ":tkpdsession",
+            transaction            : ":tkpdtransaction",
+            transactioncommon      : ":tkpdtransaction-common",
     ]
 }
