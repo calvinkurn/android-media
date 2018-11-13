@@ -448,7 +448,7 @@ public class MainParentActivity extends BaseActivity implements
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
         if (notification.getHaveNewFeed()) {
-            bottomNavigation.setNotification(0, FEED_MENU);
+            bottomNavigation.setNotification(-1, FEED_MENU);
             Intent intent = new Intent(BROADCAST_FEED);
             intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
