@@ -6,20 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.design.component.EditTextCompat
 import com.tokopedia.kol.R
+import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
 
 /**
  * @author by milhamj on 12/11/18.
  */
-class ReportReasonAdapter : RecyclerView.Adapter<ReportReasonAdapter.ViewHolder>() {
+class ReportReasonAdapter(val view: ContentReportContract.View)
+    : RecyclerView.Adapter<ReportReasonAdapter.ViewHolder>() {
 
-    val list: MutableList<ReportReasonViewModel> = ArrayList()
+    private val list: MutableList<ReportReasonViewModel> = ArrayList()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
         val model = list[position]
+
+        if (model.isSelected) {
+            view.enableSendBtn()
+        }
 
         holder.radio.setImageResource(
                 if (model.isSelected) R.drawable.ic_radiobutton_selected
@@ -27,9 +31,16 @@ class ReportReasonAdapter : RecyclerView.Adapter<ReportReasonAdapter.ViewHolder>
         )
         holder.reason.text = model.description
 
-        if (model.type == context.getString(R.string.kol_reason_type_others)) {
-            holder.reasonInput.visibility = View.VISIBLE
+        val itemClicked = { itemPosition: Int ->
+            list.forEachIndexed { index, item ->
+                item.isSelected = index == itemPosition
+                if (item.isSelected && item.type != getCustomTypeString()) {
+                    view.hideKeyboard()
+                }
+            }
+            notifyDataSetChanged()
         }
+        holder.itemView.setOnClickListener { itemClicked(holder.adapterPosition) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -46,9 +57,21 @@ class ReportReasonAdapter : RecyclerView.Adapter<ReportReasonAdapter.ViewHolder>
         notifyDataSetChanged()
     }
 
+    fun setCustomTypeSelected() {
+        list.forEach {
+            it.isSelected = it.type == getCustomTypeString()
+        }
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedItem(): ReportReasonViewModel = list.first { it.isSelected }
+
+    private fun getCustomTypeString(): String {
+        return view.getContext()?.getString(R.string.kol_reason_type_others) ?: ""
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val radio: ImageView = itemView.findViewById(R.id.radio)
         val reason: TextView = itemView.findViewById(R.id.reason)
-        val reasonInput: EditTextCompat = itemView.findViewById(R.id.reasonInput)
     }
 }

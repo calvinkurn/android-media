@@ -6,6 +6,5 @@ package com.tokopedia.kol.feature.report.view.model
 data class ReportReasonViewModel(
         val type: String = "",
         val description: String = "",
-        val content: String = "",
-        val isSelected: Boolean = false
+        var isSelected: Boolean = false
 )
