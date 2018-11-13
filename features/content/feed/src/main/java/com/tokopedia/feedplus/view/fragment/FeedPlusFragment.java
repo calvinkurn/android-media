@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
@@ -78,6 +79,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED;
+import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
@@ -351,6 +354,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void setFirstCursor(String firstCursor) {
         this.firstCursor = firstCursor;
+    }
+
+    @Override
+    public void setLastCursorOnFirstPage(String lastCursor) {
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity(), KEY_FEED);
+        cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
+        cache.applyEditor();
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,

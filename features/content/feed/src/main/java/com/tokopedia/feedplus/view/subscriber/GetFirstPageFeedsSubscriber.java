@@ -140,6 +140,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (hasFeed(feedDomain)) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
             viewListener.setFirstCursor(feedDomain.getListFeed().get(0).getCursor());
+            viewListener.setLastCursorOnFirstPage(getLastProductCursor(feedDomain.getListFeed()));
         }
 
         if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
@@ -149,6 +150,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (feedDomain.getInterestWhitelist()) {
             viewListener.showInterestPick();
         }
+    }
+
+    private String getLastProductCursor(List<DataFeedDomain> productList) {
+        return productList.get(productList.size()-1).getCursor();
     }
 
     private void addMainData(ArrayList<Visitable> listFeedView,

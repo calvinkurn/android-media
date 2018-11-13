@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.presenter;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
@@ -13,6 +14,9 @@ import com.tokopedia.usecase.RequestParams;
  * Created by meta on 25/07/18.
  */
 public class MainParentPresenter {
+    public static final String KEY_FEED = "KEY_FEED";
+    public static final String KEY_FEED_FIRSTPAGE_LAST_CURSOR = "KEY_FEED_FIRSTPAGE_LAST_CURSOR";
+    public static final String PARAM_FEED_LAST_CURSOR = "cursor";
 
     private MainParentView mainParentView;
 
@@ -33,10 +37,12 @@ public class MainParentPresenter {
     public void getNotificationData() {
         if(userSession.isLoggedIn()) {
             this.mainParentView.onStartLoading();
-
+            LocalCacheHandler cache = new LocalCacheHandler(mainParentView.getContext(), KEY_FEED);
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(GlobalNavConstant.QUERY,
                     GraphqlHelper.loadRawString(this.mainParentView.getContext().getResources(), R.raw.query_notification));
+            requestParams.putString(PARAM_FEED_LAST_CURSOR,
+                    cache.getString(KEY_FEED_FIRSTPAGE_LAST_CURSOR , ""));
             getNotificationUseCase.execute(requestParams, new NotificationSubscriber(this.mainParentView));
         }
     }

@@ -41,7 +41,7 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
                 .flatMap((Func1<Boolean, Observable<GraphqlResponse>>) aBoolean -> {
                     GraphqlRequest graphqlRequest = new GraphqlRequest(
                             requestParams.getString(GlobalNavConstant.QUERY, ""),
-                            NotificationEntity.class);
+                            NotificationEntity.class, requestParams.getParameters());
                     graphqlUseCase.clearRequest();
                     graphqlUseCase.addRequest(graphqlRequest);
                     return graphqlUseCase.createObservable(null);

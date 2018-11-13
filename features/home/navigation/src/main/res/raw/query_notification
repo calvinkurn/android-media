@@ -1,4 +1,4 @@
-query {
+query Notification($cursor: String) {
   status
   userShopInfo {
     info {
@@ -42,7 +42,7 @@ query {
     notif_unread
   }
 
-  feed_last_feeds{
+  feed_last_feeds(cursor:$cursor){
       error
       content
       newFeeds
