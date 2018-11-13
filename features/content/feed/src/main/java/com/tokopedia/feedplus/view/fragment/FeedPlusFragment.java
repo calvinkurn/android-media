@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -941,7 +942,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
-
+        Toast.makeText(getContext(), "Menu clicked", Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -56,7 +56,7 @@ dependencies {
     }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.debugToolsDependencies.stetho
 }
