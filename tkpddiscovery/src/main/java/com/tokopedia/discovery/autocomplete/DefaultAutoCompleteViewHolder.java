@@ -44,7 +44,6 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
     public void bind(DefaultAutoCompleteViewModel element) {
         adapter.clearData();
         for (SearchData searchData : element.getList()) {
-            List<Visitable> list;
             switch (searchData.getId()) {
                 case SearchData.AUTOCOMPLETE_RECENT_SEARCH:
                     adapter.addAll(
