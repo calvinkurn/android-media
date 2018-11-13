@@ -40,36 +40,40 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
 
     @Override
     public void bind(ProductDynamicChannelViewModel element) {
-        imageView.setImage(element.getProductImage());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            productTxt.setText(Html.fromHtml(element.getProductName(),
-                    Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            productTxt.setText(Html.fromHtml(element.getProductName()));
-        }
-        priceTxt.setText(element.getProductPrice());
-        if(!element.getProductCashback().isEmpty()){
-            cashbackTxt.setText(element.getProductCashback());
-            cashbackTxt.setVisibility(View.VISIBLE);
-        } else {
-            cashbackTxt.setVisibility(View.GONE);
-        }
-        container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(itemClickListener!=null){
-                    Data data = new Data();
-                    data.setProductClickUrl(element.getProductClickUrl());
-                    Product product = new Product();
-                    product.setId(element.getProductId());
-                    product.setName(element.getProductName());
-                    product.setPriceFormat(element.getProductPrice());
-                    product.setProductCashbackRate(element.getProductCashback());
-                    product.setImage(element.getProductImage());
-                    data.setProduct(product);
-                    itemClickListener.onProductItemClicked(getAdapterPosition(), data);
-                }
+        try {
+            imageView.setImage(element.getProductImage());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                productTxt.setText(Html.fromHtml(element.getProductName(),
+                        Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                productTxt.setText(Html.fromHtml(element.getProductName()));
             }
-        });
+            priceTxt.setText(element.getProductPrice());
+            if (!element.getProductCashback().isEmpty()) {
+                cashbackTxt.setText(element.getProductCashback());
+                cashbackTxt.setVisibility(View.VISIBLE);
+            } else {
+                cashbackTxt.setVisibility(View.GONE);
+            }
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (itemClickListener != null) {
+                        Data data = new Data();
+                        data.setProductClickUrl(element.getProductClickUrl());
+                        Product product = new Product();
+                        product.setId(element.getProductId());
+                        product.setName(element.getProductName());
+                        product.setPriceFormat(element.getProductPrice());
+                        product.setProductCashbackRate(element.getProductCashback());
+                        product.setImage(element.getProductImage());
+                        data.setProduct(product);
+                        itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
