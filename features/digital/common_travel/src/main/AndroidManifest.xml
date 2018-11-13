@@ -8,14 +8,14 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".presentation.TravelPassengerBookingActivity"
+            android:name=".presentation.activity.TravelPassengerUpdateActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".presentation.TravelPassengerBookingListActivity"
+            android:name=".presentation.activity.TravelPassengerListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

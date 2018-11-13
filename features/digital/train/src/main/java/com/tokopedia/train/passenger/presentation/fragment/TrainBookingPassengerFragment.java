@@ -19,8 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.common.travel.presentation.TravelPassengerBookingActivity;
-import com.tokopedia.common.travel.presentation.TravelPassengerBookingListActivity;
+import com.tokopedia.common.travel.presentation.activity.TravelPassengerListActivity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle;
 import com.tokopedia.design.component.CardWithAction;
@@ -233,7 +232,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 travelPassenger.setIdPassenger(trainPassengerViewModel.getIdPassenger());
                 travelPassenger.setPaxType(trainPassengerViewModel.getPaxType());
                 travelPassenger.setIdLocal(trainPassengerViewModel.getIdLocal());
-                startActivityForResult(TravelPassengerBookingListActivity.callingIntent(getActivity(), travelPassenger, resetPassengerListSelected), PASSENGER_LIST_REQUEST_CODE);
+                startActivityForResult(TravelPassengerListActivity.callingIntent(getActivity(), travelPassenger, resetPassengerListSelected), PASSENGER_LIST_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -433,7 +432,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             case PASSENGER_LIST_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     resetPassengerListSelected = false;
-                    TravelPassenger travelPassenger = data.getParcelableExtra(TravelPassengerBookingListActivity.PASSENGER_DATA);
+                    TravelPassenger travelPassenger = data.getParcelableExtra(TravelPassengerListActivity.PASSENGER_DATA);
                     //TODO clean this code
                     TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
                     trainPassengerViewModel.setIdLocal(travelPassenger.getIdLocal());

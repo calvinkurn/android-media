@@ -1,8 +1,8 @@
 package com.tokopedia.common.travel.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.common.travel.presentation.TravelPassengerBookingFragment;
-import com.tokopedia.common.travel.presentation.TravelPassengerBookingListFragment;
+import com.tokopedia.common.travel.presentation.fragment.TravelPassengerUpdateFragment;
+import com.tokopedia.common.travel.presentation.fragment.TravelPassengerListFragment;
 
 import dagger.Component;
 
@@ -13,7 +13,7 @@ import dagger.Component;
 @Component(modules = CommonTravelModule.class, dependencies = BaseAppComponent.class)
 public interface CommonTravelComponent {
 
-    void inject(TravelPassengerBookingFragment travelPassengerBookingFragment);
+    void inject(TravelPassengerUpdateFragment travelPassengerUpdateFragment);
 
-    void inject(TravelPassengerBookingListFragment travelPassengerBookingListFragment);
+    void inject(TravelPassengerListFragment travelPassengerListFragment);
 }
