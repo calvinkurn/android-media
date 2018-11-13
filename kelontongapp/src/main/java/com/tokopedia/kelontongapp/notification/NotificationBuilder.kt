@@ -3,7 +3,6 @@ package com.tokopedia.kelontongapp.notification
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
@@ -11,11 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
-
-import com.tokopedia.kelontongapp.KelontongConstant
-import com.tokopedia.kelontongapp.KelontongMainActivity
-import com.tokopedia.kelontongapp.KelontongMainApplication
-import com.tokopedia.kelontongapp.R
+import com.tokopedia.kelontongapp.*
 
 /**
  * Created by meta on 19/10/18.
@@ -32,14 +27,14 @@ class NotificationBuilder(context: Context, notificationModel: NotificationModel
     }
 
     private fun createNotification(context: Context, notificationModel: NotificationModel, notificationId: Int): NotificationCompat.Builder {
-        val builder = NotificationCompat.Builder(context, KelontongConstant.NotificationConstant.CHANNEL_GENERAL)
+        val builder = NotificationCompat.Builder(context, CHANNEL_GENERAL)
         builder.setContentTitle(if (TextUtils.isEmpty(notificationModel.title)) context.resources.getString(R.string.title_general_push_notification) else notificationModel.title)
         builder.setContentText(notificationModel.desc)
         builder.setSmallIcon(setIcon()!!)
-        builder.setChannelId(KelontongMainApplication.NOTIFICATION_CHANNEL_ID)
+        builder.setChannelId(NOTIFICATION_CHANNEL_ID)
         builder.setLargeIcon(BitmapFactory.decodeResource(context.resources, setBigIcon()!!))
         if (allowGroup())
-            builder.setGroup(KelontongConstant.NotificationConstant.GROUP_GENERAL)
+            builder.setGroup(GROUP_GENERAL)
         builder.setContentIntent(createPendingIntent(context, notificationId))
         builder.setAutoCancel(true)
 

@@ -3,30 +3,23 @@ package com.tokopedia.kelontongapp
 /**
  * Created by meta on 19/10/18.
  */
-object KelontongConstant {
+const val VERIFIKASI = "verifikasi"
 
-    val VERIFIKASI = "verifikasi"
+const val CHANNEL_GENERAL = "ANDROID_KELONTONG_GENERAL_CHANNEL_v" + BuildConfig.VERSION_NAME
+const val GROUP_GENERAL = "com.tokopedia.kelontong.GENERAL"
 
-    object NotificationConstant {
+const val NOTIFICATION_CHANNEL_ID = "mitra_tkpd_notification_channel_id"
 
-        val CHANNEL_GENERAL = "ANDROID_KELONTONG_GENERAL_CHANNEL_v" + BuildConfig.VERSION_NAME
-        val GROUP_GENERAL = "com.tokopedia.kelontong.GENERAL"
+const val LOWER_CODE = 1600
+const val UPPER_CODE = 1700
 
-        val LOWER_CODE = 1600
-        val UPPER_CODE = 1700
+const val TARGET_APP = "mitraapp"
 
-        val TARGET_APP = "mitraapp"
+const val NOTIFICATION_ID_GENERAL = 1600
 
-        val NOTIFICATION_ID_GENERAL = 1600
-    }
-
-    object PreferenceConstant {
-
-        val PREFERENCES_MITRA_APPLICATION = "mitra_application";
-        val PREFERENCES_FIREBASE_TOKEN = "mitra_firebase_token";
-        val PREFERENCES_FIRST_TIME = "mitra_first_time";
-    }
-}
+const val PREFERENCES_MITRA_APPLICATION = "mitra_application";
+const val PREFERENCES_FIREBASE_TOKEN = "mitra_firebase_token";
+const val PREFERENCES_FIRST_TIME = "mitra_first_time";
 
 const val EVENT_NAME = "eventName"
 const val EVENT_VALUE = "eventValue"

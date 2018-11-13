@@ -80,8 +80,4 @@ class KelontongMainApplication : Application() {
     private fun getInstallSource(): String? {
         return packageManager.getInstallerPackageName(packageName)
     }
-
-    companion object {
-        val NOTIFICATION_CHANNEL_ID = "mitra_tkpd_notification_channel_id"
-    }
 }
