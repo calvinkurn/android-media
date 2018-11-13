@@ -78,10 +78,13 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void onDestroyView() {
-        if (setMerchantSaldoStatusUseCase != null) {
+        try {
             setMerchantSaldoStatusUseCase.unsubscribe();
-        }
+            getDepositSummaryUseCase.unsubscribe();
+            getSaldoBalanceUseCase.unsubscribe();
+        } catch (NullPointerException e) {
 
+        }
     }
 
     @Override
