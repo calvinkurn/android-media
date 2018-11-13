@@ -1,49 +1,95 @@
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipe_refresh_layout"
+    android:id="@+id/main_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="visible"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/parent_scroll_view"
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:overScrollMode="never"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/deposit_header_layout"
+            layout="@layout/saldo_deposit_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            app:layout_scrollFlags="scroll|enterAlways"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/deposit_header"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:id="@+id/main_view"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/balance_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical">
+            android:divider="@android:color/transparent"
+            android:dividerHeight="@dimen/margin_vs"
+            android:longClickable="false"
+            android:scrollbars="vertical"
+            android:padding="@dimen/padding_small"
+            />
 
-            <include
-                android:id="@+id/deposit_header_layout"
-                layout="@layout/saldo_deposit_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
 
+    <!--<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/parent_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                android:scrollbars="vertical"
-                android:visibility="visible"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:background="@color/white"
+                android:orientation="vertical">
 
-            <!--android:padding="@dimen/padding_small"-->
-            <!--android:dividerHeight="@dimen/margin_vs"-->
+                &lt;!&ndash;<include
+                    android:id="@+id/deposit_header_layout"
+                    layout="@layout/saldo_deposit_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />&ndash;&gt;
 
 
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:scrollbars="vertical"
+                    android:visibility="visible"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+                &lt;!&ndash;android:padding="@dimen/padding_small"&ndash;&gt;
+                &lt;!&ndash;android:dividerHeight="@dimen/margin_vs"&ndash;&gt;
 
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+-->
+
+</android.support.design.widget.CoordinatorLayout>
 
 
 
