@@ -19,6 +19,8 @@
 #   public *;
 #}
 
+-dontwarn com.google.firebase.FirebaseApp
+
 -keep public class com.google.firebase.iid.FirebaseInstanceId {
     public *;
 }
