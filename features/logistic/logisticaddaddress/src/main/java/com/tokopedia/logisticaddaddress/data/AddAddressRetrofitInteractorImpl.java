@@ -40,13 +40,11 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
 
     private final CompositeSubscription compositeSubscription;
     private final PeopleActApi peopleActService;
-    private final AddressApi addressService;
 
     @Inject
-    public AddAddressRetrofitInteractorImpl(PeopleActApi peopleActApi, AddressApi addressApi) {
+    public AddAddressRetrofitInteractorImpl(PeopleActApi peopleActApi) {
         this.compositeSubscription = new CompositeSubscription();
         this.peopleActService = peopleActApi;
-        this.addressService = addressApi;
     }
 
     @Override
