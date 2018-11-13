@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -222,6 +223,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
             }
         };
+        registerNewFeedReceiver();
     }
 
     public boolean isMainViewVisible() {
@@ -762,12 +764,30 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
+        registerNewFeedReceiver();
         if (firstCursor == null)
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unRegisterNewFeedReceiver();
+    }
+
+    private void registerNewFeedReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BROADCAST_FEED);
+        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).registerReceiver(newFeedReceiver, intentFilter);
+    }
+
+    private void unRegisterNewFeedReceiver() {
+        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
+    }
+
 
     private boolean isLoadedOnce = false;
 
@@ -1245,7 +1265,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onStop() {
         super.onStop();
         if (getActivity().isFinishing()) {
-            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
+            unRegisterNewFeedReceiver();
         }
     }
 
