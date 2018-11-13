@@ -18,7 +18,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.navigation.presentation.presenter.MainParentPresenter.PARAM_QUERY;
+import static com.tokopedia.navigation.presentation.presenter.MainParentPresenter.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 
 /**
  * Created by meta on 25/07/18.
@@ -44,7 +44,7 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
                 .just(true)
                 .flatMap((Func1<Boolean, Observable<GraphqlResponse>>) aBoolean -> {
                     GraphqlRequest graphqlRequest;
-                    if (requestParams.getObject(PARAM_QUERY) != null) {
+                    if (requestParams.getObject(KEY_FEED_FIRSTPAGE_LAST_CURSOR) != null) {
                         RequestParams queryParams = requestParams;
                         queryParams.clearValue(GlobalNavConstant.QUERY);
                         graphqlRequest = new GraphqlRequest(

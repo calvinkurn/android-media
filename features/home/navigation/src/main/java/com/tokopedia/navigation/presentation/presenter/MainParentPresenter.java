@@ -16,7 +16,6 @@ import com.tokopedia.usecase.RequestParams;
 public class MainParentPresenter {
     public static final String KEY_FEED = "KEY_FEED";
     public static final String KEY_FEED_FIRSTPAGE_LAST_CURSOR = "KEY_FEED_FIRSTPAGE_LAST_CURSOR";
-    public static final String PARAM_QUERY = "query";
     public static final String PARAM_FEED_LAST_CURSOR = "cursor";
 
     private MainParentView mainParentView;
