@@ -46,7 +46,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
 
     @Override
     public void onDestroy() {
-        getSubmissionChallengesUseCase.unsubscribe();
+        detachView();
     }
 
 
@@ -82,6 +82,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 isLoading = false;
                 getView().hideProgressBar();
                 e.printStackTrace();
@@ -97,9 +98,8 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                if (getView() == null) {
-                    return;
-                }
+                if(!isViewAttached()) return;
+
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResponse.class);
                 SubmissionResponse submissionResponse = res1.getData();
                 if (submissionResponse != null) {

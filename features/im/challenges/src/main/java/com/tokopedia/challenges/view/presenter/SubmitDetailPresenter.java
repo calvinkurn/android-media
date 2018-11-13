@@ -160,7 +160,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-
+                if(!isViewAttached()) return;
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
                 if (submissionResult != null) {
@@ -194,6 +194,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 getView().hidProgressBar();
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
                 RestResponse res2 = restResponse.get(Result.class);
@@ -226,6 +227,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if(!isViewAttached()) return;
                 getView().hidProgressBar();
                 Toast.makeText(getView().getActivity(), R.string.ch_post_deleted_msg, Toast.LENGTH_SHORT).show();
                 ChallengesCacheHandler.addManipulatedMap(submissionId, ChallengesCacheHandler.Manupulated.DELETE.ordinal());
@@ -255,10 +257,6 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     @Override
     public void onDestroy() {
-        postSubmissionLikeUseCase.unsubscribe();
-        postBuzzPointEventUseCase.unsubscribe();
-        getDetailsSubmissionsUseCase.unsubscribe();
-        getChallengeDetailsAndSttingsUseCase.unsubscribe();
-        postDeleteSubmissionUseCase.unsubscribe();
+        detachView();
     }
 }

@@ -70,12 +70,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
     @Override
     public void onDestroy() {
-        getSubmissionChallengesUseCase.unsubscribe();
-        getTermsNConditionUseCase.unsubscribe();
-        getChallengeDetailsUseCase.unsubscribe();
-        getChallengeSettingUseCase.unsubscribe();
-        getWinnersUseCase.unsubscribe();
-        getSubmissionInChallengeUseCase.unsubscribe();
+        detachView();
     }
 
     @Override
@@ -92,6 +87,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
                 @Override
                 public void onError(Throwable e) {
+                    if(!isViewAttached()) return;
                     e.printStackTrace();
                     getView().hideProgressBar();
                     getView().hideCollapsingHeader();
@@ -105,6 +101,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    if(!isViewAttached()) return;
                     RestResponse res1 = typeRestResponseMap.get(Result.class);
                     Result challengeResult = res1.getData();
                     boolean isPastChallenge = checkIsPastChallenge(challengeResult);
@@ -162,6 +159,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if(!isViewAttached()) return;
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResponse.class);
                 SubmissionResponse submissionResponse = res1.getData();
                 getView().renderWinnerItems(submissionResponse);
@@ -185,6 +183,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if(!isViewAttached()) return;
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResponse.class);
                 SubmissionResponse submissionResponse = res1.getData();
                 getView().renderSubmissionItems(submissionResponse);
@@ -207,6 +206,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if(!isViewAttached()) return;
                 RestResponse res1 = typeRestResponseMap.get(TermsNCondition.class);
                 TermsNCondition termsNCondition = res1.getData();
                 getView().renderTnC(termsNCondition);
@@ -227,6 +227,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 getView().hideProgressBar();
                 getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_network_error_msg));
 
@@ -234,6 +235,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 getView().hideProgressBar();
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
                 ChallengeSettings settings = res1.getData();
@@ -261,12 +263,14 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 getView().hideProgressBar();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 getView().hideProgressBar();
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 SubmissionResponse mainDataObject = res1.getData();

@@ -54,6 +54,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 isLoading = false;
                 getView().removeProgressBarView();
                 e.printStackTrace();
@@ -61,6 +62,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 SubmissionResponse mainDataObject = res1.getData();
@@ -131,7 +133,6 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
 
     @Override
     public void onDestroy() {
-        getMySubmissionsListUseCase.unsubscribe();
-        postSubmissionLikeUseCase.unsubscribe();
+        detachView();
     }
 }
