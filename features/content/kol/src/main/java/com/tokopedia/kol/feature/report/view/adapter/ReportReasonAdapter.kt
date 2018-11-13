@@ -4,9 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.RadioButton
 import android.widget.TextView
 import com.tokopedia.design.component.EditTextCompat
 import com.tokopedia.kol.R
@@ -24,8 +22,8 @@ class ReportReasonAdapter : RecyclerView.Adapter<ReportReasonAdapter.ViewHolder>
         val model = list[position]
 
         holder.radio.setImageResource(
-                if (model.isSelected) R.drawable.ic_radiobutton_normal
-                else R.drawable.ic_radiobutton_selected
+                if (model.isSelected) R.drawable.ic_radiobutton_selected
+                else R.drawable.ic_radiobutton_normal
         )
         holder.reason.text = model.description
 

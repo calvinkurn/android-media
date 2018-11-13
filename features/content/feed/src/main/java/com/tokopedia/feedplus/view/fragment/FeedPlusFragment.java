@@ -100,7 +100,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
-    private static final int OPEN_CONTENT_REPORT = 1310
+    private static final int OPEN_CONTENT_REPORT = 1310;
     private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
     public static final int REQUEST_LOGIN = 345;
