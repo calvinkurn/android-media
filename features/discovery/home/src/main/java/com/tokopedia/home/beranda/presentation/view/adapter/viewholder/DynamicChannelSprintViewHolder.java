@@ -69,7 +69,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.page_margin), true));
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8), true));
     }
 
     @Override

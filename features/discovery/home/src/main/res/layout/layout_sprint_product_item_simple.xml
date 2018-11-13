@@ -4,8 +4,8 @@
     android:id="@+id/channel_item_container_1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:layout_weight="1">
+    android:layout_weight="1"
+    android:gravity="center_horizontal">
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/channel_image_1"
@@ -17,24 +17,26 @@
         android:id="@+id/channel_price_1"
         style="@style/TextView.Small.Orange"
         android:layout_below="@id/channel_before_disc_price_1"
+        android:lineSpacingExtra="@dimen/sp_6"
         tools:text="Rp 1.399.500" />
 
     <TextView
         android:id="@+id/channel_before_disc_price_1"
         style="@style/TextView.Micro.BlackDisabled"
         android:layout_below="@id/product_name"
+        android:lineSpacingExtra="@dimen/sp_6"
         tools:text="Rp 2.799.000" />
 
     <TextView
         android:id="@+id/product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/channel_image_1"
+        android:layout_marginTop="@dimen/dp_5"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_4"
         android:lines="2"
         android:maxLines="2"
-        android:layout_below="@id/channel_image_1"
-        android:layout_marginTop="@dimen/dp_5"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_12"
         tools:text="Headset Gaming Power Bass" />
@@ -42,15 +44,15 @@
     <TextView
         android:id="@+id/channel_discount_1"
         style="@style/TextView.Nano.Red.Bold"
-        android:layout_alignRight="@id/channel_image_1"
         android:layout_alignTop="@id/channel_image_1"
-        android:layout_marginRight="@dimen/dp_5"
+        android:layout_alignRight="@id/channel_image_1"
         android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
         android:background="@drawable/home_channel_discount_text_background_enable"
-        android:paddingBottom="@dimen/label_padding_top_bottom"
         android:paddingLeft="@dimen/label_padding_left_right"
-        android:paddingRight="@dimen/label_padding_left_right"
         android:paddingTop="@dimen/label_padding_top_bottom"
+        android:paddingRight="@dimen/label_padding_left_right"
+        android:paddingBottom="@dimen/label_padding_top_bottom"
         tools:text="50% OFF" />
 
 </RelativeLayout>

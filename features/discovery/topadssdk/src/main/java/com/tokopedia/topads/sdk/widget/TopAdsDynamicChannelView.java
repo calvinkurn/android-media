@@ -59,7 +59,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         recyclerView.setAdapter(itemAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, SPAN_COUNT));
         recyclerView.addItemDecoration(new GridSpaceItemDecoration(SPAN_COUNT,
-                getResources().getDimensionPixelSize(R.dimen.dp_12), true));
+                getResources().getDimensionPixelSize(R.dimen.dp_8), true));
         infoCta.setOnClickListener(this);
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
     }
