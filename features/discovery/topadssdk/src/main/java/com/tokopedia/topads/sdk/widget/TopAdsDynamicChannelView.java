@@ -32,6 +32,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
     private TopAdsItemClickListener adsItemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
+    private LinearLayout channelTitleContainer;
 
     public TopAdsDynamicChannelView(Context context) {
         super(context);
@@ -53,6 +54,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         recyclerView = findViewById(R.id.list);
         infoCta = findViewById(R.id.info_cta);
         titleTxt = findViewById(R.id.channel_title);
+        channelTitleContainer = findViewById(R.id.channel_title_container);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         itemAdapter = new AdsItemAdapter(getContext());
         itemAdapter.setItemClickListener(this);
@@ -73,8 +75,13 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     }
 
     public void setData(String title, List<Item> data) {
-        titleTxt.setText(title);
-        itemAdapter.setList(data);
+        if(!data.isEmpty()){
+            titleTxt.setText(title);
+            itemAdapter.setList(data);
+            setVisibility(VISIBLE);
+        } else {
+            setVisibility(GONE);
+        }
     }
 
     public void setAdsItemClickListener(TopAdsItemClickListener adsItemClickListener) {
