@@ -47,7 +47,7 @@ public class MainParentPresenter {
 
     public RequestParams buildQueryParam() {
         RequestParams requestParams = RequestParams.create();
-        LocalCacheHandler cache = new LocalCacheHandler(mainParentView.getContext(), KEY_FEED);
+        LocalCacheHandler cache = new LocalCacheHandler(mainParentView.getContext().getApplicationContext(), KEY_FEED);
         requestParams.putString(PARAM_FEED_LAST_CURSOR,
                 cache.getString(KEY_FEED_FIRSTPAGE_LAST_CURSOR , ""));
         return requestParams;

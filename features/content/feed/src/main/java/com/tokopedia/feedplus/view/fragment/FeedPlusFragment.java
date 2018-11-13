@@ -358,7 +358,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void setLastCursorOnFirstPage(String lastCursor) {
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity(), KEY_FEED);
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_FEED);
         cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
         cache.applyEditor();
     }
