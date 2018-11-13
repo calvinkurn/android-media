@@ -56,6 +56,7 @@ class KelontongMainApplication : Application() {
         val addData = HashMap<String, Any?>()
         addData[KEY_INSTALL_SOURCE] = getInstallSource()
         AppsFlyerLib.getInstance().setAdditionalData(addData)
+        AppsFlyerLib.getInstance().setDebugLog(true);
         AppsFlyerLib.getInstance().startTracking(this)
     }
 

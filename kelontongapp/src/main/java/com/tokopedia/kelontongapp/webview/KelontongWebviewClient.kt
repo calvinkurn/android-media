@@ -20,9 +20,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.appsflyer.AppsFlyerLib
 import com.tokopedia.kelontongapp.*
-import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONArray
+import java.lang.Exception
 
 /**
  * Created by meta on 12/10/18.
@@ -125,36 +125,22 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
                 AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter(ID))
             }
         } else {
-            val urlParts = uri.toString().split("\\?")
-            if (urlParts.size > 1) {
-                val query = urlParts[1]
-                var eventName: String? = null
-                val eventValue: MutableMap<String, Any> = HashMap()
+            var eventName: String? = uri.getQueryParameter(EVENT_NAME)
+            val eventValue: MutableMap<String, Any> = HashMap()
 
-                for (param in query.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                    val pair = param.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    val key = pair[0]
-                    if (pair.size > 1) {
-                        if (EVENT_NAME == key) {
-                            eventName = pair[1]
-                        } else if (EVENT_VALUE == key) {
-                            val event: JSONObject
-                            val keys: JSONArray
-                            try {
-                                event = JSONObject(pair[1])
-                                keys = event.names()
-                                for (i in 0 until keys.length()) {
-                                    eventValue[keys.getString(i)] = event.getString(keys.getString(i))
-                                }
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
-                            }
-
-                        }
-                    }
+            val event: JSONObject
+            val keys: JSONArray
+            try {
+                event = JSONObject(uri.getQueryParameter(EVENT_VALUE))
+                keys = event.names()
+                for (i in 0 until keys.length()) {
+                    eventValue[keys.getString(i)] = event.getString(keys.getString(i))
                 }
-                AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+
+            AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
         }
     }
 }
