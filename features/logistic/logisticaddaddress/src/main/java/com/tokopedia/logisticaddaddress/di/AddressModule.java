@@ -105,10 +105,8 @@ public class AddressModule {
     Retrofit providePeopleActRetrofit(TkpdOkHttpBuilder tkpdOkHttpBuilder,
                                       TkpdAuthInterceptor tkpdAuthInterceptor,
                                       FingerprintInterceptor fingerprintInterceptor,
-                                      StringResponseConverter stringResponseConverter,
-                                      GsonBuilder gsonBuilder
+                                      StringResponseConverter stringResponseConverter
     ) {
-
         tkpdOkHttpBuilder.addInterceptor(tkpdAuthInterceptor);
         tkpdOkHttpBuilder.addInterceptor(fingerprintInterceptor);
         return new Retrofit.Builder()
