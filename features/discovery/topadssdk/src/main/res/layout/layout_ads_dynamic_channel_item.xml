@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/ic_toa"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:fontFamily="sans-serif-medium"
         android:textColor="@color/deep_orange_500"
         android:textSize="@dimen/sp_12"
         tools:text="Rp. 1000.000" />

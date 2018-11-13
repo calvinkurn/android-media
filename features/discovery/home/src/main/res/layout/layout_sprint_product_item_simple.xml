@@ -18,6 +18,7 @@
         style="@style/TextView.Small.Orange"
         android:layout_below="@id/channel_before_disc_price_1"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:fontFamily="sans-serif-medium"
         tools:text="Rp 1.399.500" />
 
     <TextView
