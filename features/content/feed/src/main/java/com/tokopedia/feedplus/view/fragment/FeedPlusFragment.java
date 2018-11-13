@@ -1245,7 +1245,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onStop() {
         super.onStop();
         if (getActivity().isFinishing()) {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(newFeedReceiver);
+            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
         }
     }
 

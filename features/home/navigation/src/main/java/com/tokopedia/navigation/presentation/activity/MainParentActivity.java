@@ -451,7 +451,7 @@ public class MainParentActivity extends BaseActivity implements
             bottomNavigation.setNotification(0, FEED_MENU);
             Intent intent = new Intent(BROADCAST_FEED);
             intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
