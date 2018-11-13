@@ -1,5 +1,7 @@
 package com.tokopedia.tkpdpdp;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -16,6 +18,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.tkpdpdp.customview.bottomsheetreview.BottomSheetReviewImageSlider;
 import com.tokopedia.tkpdpdp.decoration.GalleryItemDecoration;
 import com.tokopedia.tkpdpdp.responsemodel.ResponseModel;
@@ -44,6 +47,13 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
     private SwipeRefreshLayout refreshLayout;
     private boolean isLoadingFromNetwork = false;
     private View backButton;
+
+    public static void moveTo(Activity activity) {
+        if (activity != null) {
+            Intent intent = new Intent(activity, ReviewGalleryActivity.class);
+            activity.startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
