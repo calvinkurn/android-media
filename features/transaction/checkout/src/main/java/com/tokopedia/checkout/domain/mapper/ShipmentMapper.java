@@ -2,6 +2,8 @@ package com.tokopedia.checkout.domain.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
@@ -50,6 +52,28 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
+
+        if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
+            CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
+            cartPromoSuggestion.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
+            cartPromoSuggestion.setCtaColor(shipmentAddressFormDataResponse.getPromoSuggestion().getCtaColor());
+            cartPromoSuggestion.setPromoCode(shipmentAddressFormDataResponse.getPromoSuggestion().getPromoCode());
+            cartPromoSuggestion.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
+            cartPromoSuggestion.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
+            dataResult.setCartPromoSuggestion(cartPromoSuggestion);
+        }
+
+        if (shipmentAddressFormDataResponse.getAutoApply() != null) {
+            AutoApplyData autoApplyData = new AutoApplyData();
+            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoApply().getCode());
+            autoApplyData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoApply().getDiscountAmount());
+            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoApply().getIsCoupon());
+            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoApply().getMessageSuccess());
+            autoApplyData.setPromoId(shipmentAddressFormDataResponse.getAutoApply().getPromoId());
+            autoApplyData.setSuccess(shipmentAddressFormDataResponse.getAutoApply().isSuccess());
+            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoApply().getTitleDescription());
+            dataResult.setAutoApplyData(autoApplyData);
+        }
 
         if (shipmentAddressFormDataResponse.getDonation() != null) {
             Donation donation = new Donation();

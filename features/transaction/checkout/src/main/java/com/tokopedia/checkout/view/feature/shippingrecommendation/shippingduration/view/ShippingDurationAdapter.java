@@ -17,6 +17,8 @@ public class ShippingDurationAdapter extends RecyclerView.Adapter<RecyclerView.V
     private List<ShippingDurationViewModel> shippingDurationViewModels;
     private ShippingDurationAdapterListener shippingDurationAdapterListener;
     private int cartPosition;
+    // set true if has courier promo, whether own courier or other duration's courier
+    private boolean hasCourierPromo;
 
     public void setShippingDurationViewModels(List<ShippingDurationViewModel> shippingDurationViewModels) {
         this.shippingDurationViewModels = shippingDurationViewModels;
@@ -30,6 +32,10 @@ public class ShippingDurationAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.cartPosition = cartPosition;
     }
 
+    public void setHasCourierPromo(boolean hasCourierPromo) {
+        this.hasCourierPromo = hasCourierPromo;
+    }
+
     @Override
     public int getItemViewType(int position) {
         return ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION;
@@ -39,7 +45,7 @@ public class ShippingDurationAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        return new ShippingDurationViewHolder(view, this, cartPosition);
+        return new ShippingDurationViewHolder(view, this, cartPosition, hasCourierPromo);
     }
 
     @Override

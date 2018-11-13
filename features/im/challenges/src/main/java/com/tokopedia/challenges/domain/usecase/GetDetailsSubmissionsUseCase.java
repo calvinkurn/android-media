@@ -9,6 +9,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class GetDetailsSubmissionsUseCase extends RestRequestSupportInterceptorU
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         HashMap headers = new HashMap();
         if (ChallengesCacheHandler.SUBMISSTION_DETAILS_CACHE) {

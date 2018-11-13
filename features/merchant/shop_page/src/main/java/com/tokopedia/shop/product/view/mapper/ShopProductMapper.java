@@ -27,7 +27,6 @@ public class ShopProductMapper {
         for (int i = 0; i < shopProductList.size(); i++) {
             ShopProduct shopProduct = shopProductList.get(i);
             ShopProductViewModel shopProductViewModel = new ShopProductViewModel(shopProduct);
-            shopProductViewModel.setPositionTracking(getCurrentPageView(page, i + 1, defaultPerPage));
             shopProductViewModelList.add(shopProductViewModel);
         }
         return shopProductViewModelList;

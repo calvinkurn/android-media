@@ -26,6 +26,7 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
     public static final String PARAM_VALUE_NOT_SUGGESTED = "0";
     public static final String PARAM_VALUE_LANG_ID = "id";
     public static final String PARAM_CARTS = "carts";
+    public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
 
     private final ICartRepository cartRepository;
     private final IVoucherCouponMapper voucherCouponMapper;

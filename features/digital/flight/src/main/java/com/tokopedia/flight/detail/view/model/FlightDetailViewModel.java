@@ -3,7 +3,7 @@ package com.tokopedia.flight.detail.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;

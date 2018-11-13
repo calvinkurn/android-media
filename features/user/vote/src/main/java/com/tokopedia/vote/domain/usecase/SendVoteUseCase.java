@@ -19,6 +19,7 @@ public class SendVoteUseCase extends UseCase<VoteStatisticDomainModel> {
 
     private static final String PARAM_OPTION_ID = "option_id";
     private static final String PARAM_POLL_ID = "poll_id";
+    private static final String PARAM_GC_TOKEN = "gc_token";
     private VotingSource votingSource;
 
     @Inject
@@ -37,10 +38,11 @@ public class SendVoteUseCase extends UseCase<VoteStatisticDomainModel> {
         return requestParams.getParameters();
     }
 
-    public static RequestParams createParams(String pollId, String optionId) {
+    public static RequestParams createParams(String pollId, String optionId, String gcToken) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_OPTION_ID, optionId);
         requestParams.putString(PARAM_POLL_ID, pollId);
+        requestParams.putString(PARAM_GC_TOKEN, gcToken);
         return requestParams;
     }
 }

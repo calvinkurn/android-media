@@ -22,13 +22,13 @@ public class ShareData implements Parcelable {
     public static final String RIDE_TYPE = "Ride";
     public static final String PROMO_TYPE = "Promo";
 
-    private static final String ARG_UTM_MEDIUM = "Share";
+    public static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
     public static final String APP_SHARE_TYPE = "App";
     public static final String REFERRAL_TYPE = "Referral";
-    private static final String ARG_UTM_SOURCE = "Android";
+    public static final String ARG_UTM_SOURCE = "Android";
     public static final String FEED_TYPE = "feed";
-    public static final String GROUPCHAT_TYPE = "group_chat";
+    public static final String GROUPCHAT_TYPE = "tokopedia_play";
     public static final String INDI_CHALLENGE_TYPE = "tokopedia_challenge";
 
     private String type = "";
@@ -199,19 +199,17 @@ public class ShareData implements Parcelable {
         if (getUri() == null) {
             return "";
         }
-        String campaign = "Product%20Share";
-        if (getType() != null)
-            campaign = getType() + "%20Share";
+        String campaign = getCampaignName();
 
         String renderedUrl;
         if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
             if (getUri().contains("?")) {
-                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
+                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
                 renderedUrl = uri.toString();
             } else {
-                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
+                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
                 renderedUrl = uri.toString();
             }
         } else {
@@ -220,29 +218,11 @@ public class ShareData implements Parcelable {
         return renderedUrl;
     }
 
-    public String renderBranchShareUri(String url) {
-        if (url == null) {
-            return "";
-        }
-        String campaign = "Product%20Share";
+    public String getCampaignName() {
+        String campaign = "Product Share";
         if (getType() != null)
             campaign = getType() + "%20Share";
-
-        String renderedUrl;
-        if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
-            if (url.contains("?")) {
-                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
-                renderedUrl = uri.toString();
-            } else {
-                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
-                renderedUrl = uri.toString();
-            }
-        } else {
-            renderedUrl = url;
-        }
-        return   renderedUrl;
+        return campaign;
     }
 
     public String getTextContentForBranch(String shortUrl) {

@@ -58,6 +58,7 @@ public class HeaderHomeView extends BaseCustomView {
     private LinearLayout tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
     private WalletAnalytics walletAnalytics;
+    private TextView mTextCouponCount;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
         super(context);
@@ -122,6 +123,7 @@ public class HeaderHomeView extends BaseCustomView {
             ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
             tokopointProgressBarLayout = view.findViewById(R.id.progress_bar_tokopoint_layout);
             tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
+            mTextCouponCount = view.findViewById(R.id.text_coupon_count);
         }
         renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
@@ -154,6 +156,12 @@ public class HeaderHomeView extends BaseCustomView {
             //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
             tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
             tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+
+            if (headerViewModel.getTokoPointDrawerData().getSumCoupon() > 0) {
+                mTextCouponCount.setVisibility(VISIBLE);
+                mTextCouponCount.setText(headerViewModel.getTokoPointDrawerData().getSumCouponStr());
+            }
+
             tokoPointHolder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {

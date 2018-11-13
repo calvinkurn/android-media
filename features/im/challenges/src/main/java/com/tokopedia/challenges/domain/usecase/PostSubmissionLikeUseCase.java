@@ -38,7 +38,7 @@ public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseC
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         ChallengesCacheHandler.resetCache(); // it can be called from different -2 screens
         List<RestRequest> tempRequest = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.emptycart.subscriber;
 
 import com.tokopedia.checkout.domain.datamodel.recentview.GqlRecentViewResponse;
+import com.tokopedia.checkout.view.feature.emptycart.EmptyCartApi;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
@@ -28,15 +29,19 @@ public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
+        presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
         e.printStackTrace();
         if (view != null) {
+            view.stopTrace();
             view.renderHasNoRecentView();
         }
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
+        presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
         if (view != null) {
+            view.stopTrace();
             if (graphqlResponse != null && graphqlResponse.getData(GqlRecentViewResponse.class) != null) {
                 GqlRecentViewResponse gqlRecentViewResponse = graphqlResponse.getData(GqlRecentViewResponse.class);
                 if (gqlRecentViewResponse != null && gqlRecentViewResponse.getGqlRecentView() != null &&

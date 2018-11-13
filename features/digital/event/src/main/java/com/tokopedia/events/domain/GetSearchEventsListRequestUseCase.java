@@ -1,10 +1,12 @@
 package com.tokopedia.events.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -19,8 +21,8 @@ public class GetSearchEventsListRequestUseCase extends UseCase<SearchDomainModel
     public final String CATEGORY_ID = "child_category_ids";
     public final String START_DATE = "start_date";
 
-    public GetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetSearchEventsListRequestUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 

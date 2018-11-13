@@ -80,7 +80,6 @@
                 android:background="@drawable/bg_rounded_chat_input_talk"
                 android:hint="@string/hint_send_discussion"
                 android:inputType="textMultiLine"
-                android:maxLines="5"
                 android:paddingBottom="@dimen/dp_10"
                 android:paddingLeft="@dimen/dp_12"
                 android:paddingRight="@dimen/dp_12"

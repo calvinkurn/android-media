@@ -17,7 +17,6 @@ import android.view.animation.AnimationUtils;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
@@ -25,6 +24,8 @@ import com.tokopedia.discovery.similarsearch.di.SimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.di.DaggerSimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
 import com.tokopedia.discovery.similarsearch.view.presenter.SimilarSearchPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
     static final String PRODUCT_ID = "product_id";
     @Inject
     SimilarSearchPresenter mPresenter;
+    private UserSessionInterface userSession;
     private SimilarSearchdAdapter mAdapter;
     private RecyclerView mSimilarItemList;
     private View mContentLayout;
@@ -54,6 +56,12 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
         SimilarSearchFragment fragment = new SimilarSearchFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userSession = new UserSession(getContext());
     }
 
     @Override
@@ -163,7 +171,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
 
     @Override
     public boolean isUserHasLogin() {
-        return SessionHandler.isV4Login(getContext());
+        return userSession.isLoggedIn();
     }
 
 
@@ -180,7 +188,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+        return userSession.getUserId();
     }
 
     @Override
