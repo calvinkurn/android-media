@@ -248,19 +248,4 @@ public interface BrowseApi {
     Observable<Response<GuidedSearchResponse>> getGuidedSearch(
             @Query(Q) String query
     );
-
-    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH)
-    Observable<Response<String>> getUniverseAutoComplete(
-            @QueryMap TKPDMapParam<String, Object> param
-    );
-
-    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH_V8)
-    Observable<Response<String>> getUniverseAutoCompleteV8(
-            @QueryMap TKPDMapParam<String, Object> param
-    );
-
-    @DELETE(TkpdBaseURL.Ace.PATH_DELETE_SEARCH)
-    Observable<Response<Void>> deleteRecentSearch(
-            @QueryMap TKPDMapParam<String, Object> parameters
-    );
 }
