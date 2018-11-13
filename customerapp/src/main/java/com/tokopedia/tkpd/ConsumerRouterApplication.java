@@ -503,7 +503,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoginRegisterRouter,
         LoginPhoneNumberRouter,
         NpsRouter,
-        MerchantVoucherModuleRouter,
         SaldoDetailsRouter {
 
 
