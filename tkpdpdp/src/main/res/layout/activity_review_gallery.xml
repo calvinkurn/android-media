@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReviewGalleryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/gallery_top_bar_layout"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.example.henrypriyono.tesgallery.SwipeToRefresh
+                android:id="@+id/swipe_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/galleryRecyclerView"
+                    android:paddingLeft="@dimen/review_gallery_default_padding"
+                    android:paddingRight="@dimen/review_gallery_default_padding"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"/>
+
+            </com.example.henrypriyono.tesgallery.SwipeToRefresh>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/review_gallery_top_bar_shadow" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <com.example.henrypriyono.tesgallery.BottomSheetReviewImageSlider
+        android:id="@+id/bottomSheetImageSlider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.example.henrypriyono.tesgallery.UserLockBottomSheetBehavior"/>
+
+</android.support.design.widget.CoordinatorLayout>
