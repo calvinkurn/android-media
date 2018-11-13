@@ -32,3 +32,4 @@
 -keepclassmembers class * {
     @com.google.android.gms.** *;
 }
+-dontwarn com.android.installreferrer
