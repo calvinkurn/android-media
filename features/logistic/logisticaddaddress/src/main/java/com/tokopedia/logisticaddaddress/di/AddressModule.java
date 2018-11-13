@@ -76,32 +76,6 @@ public class AddressModule {
 
     @Provides
     @AddressScope
-    GsonBuilder provideGsonBuilder() {
-        return new GsonBuilder();
-    }
-
-    @Provides
-    @AddressScope
-    @AddressRetrofit
-    Retrofit provideAddressRetrofit(TkpdOkHttpBuilder tkpdOkHttpBuilder,
-                                    TkpdAuthInterceptor tkpdAuthInterceptor,
-                                    FingerprintInterceptor fingerprintInterceptor,
-                                    StringResponseConverter stringResponseConverter,
-                                    GsonBuilder gsonBuilder
-    ) {
-        return CommonNetwork.createRetrofit(
-                TkpdBaseURL.Etc.URL_ADDRESS,
-                tkpdOkHttpBuilder,
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
-                stringResponseConverter,
-                gsonBuilder
-        );
-    }
-
-    @Provides
-    @AddressScope
-    @PeopleActRetrofit
     Retrofit providePeopleActRetrofit(TkpdOkHttpBuilder tkpdOkHttpBuilder,
                                       TkpdAuthInterceptor tkpdAuthInterceptor,
                                       FingerprintInterceptor fingerprintInterceptor,
@@ -120,13 +94,7 @@ public class AddressModule {
 
     @Provides
     @AddressScope
-    AddressApi provideAddressApi(@AddressRetrofit Retrofit retrofit) {
-        return retrofit.create(AddressApi.class);
-    }
-
-    @Provides
-    @AddressScope
-    PeopleActApi providePeopleActApi(@PeopleActRetrofit Retrofit retrofit) {
+    PeopleActApi providePeopleActApi(Retrofit retrofit) {
         return retrofit.create(PeopleActApi.class);
     }
 
