@@ -36,6 +36,7 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
     private static final int LOGIN_REQUEST_CODE = 1005;
+    private final Context appContext;
 
     private Context context;
     private ProgressDialog progressDialog;
@@ -43,6 +44,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
+        this.appContext = reactContext.getApplicationContext();
     }
 
     @Override
@@ -173,7 +175,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
-        TrackingUtils.eventTrackingEnhancedEcommerce(context, maps);
+        TrackingUtils.eventTrackingEnhancedEcommerce(appContext, maps);
     }
 
     @ReactMethod
