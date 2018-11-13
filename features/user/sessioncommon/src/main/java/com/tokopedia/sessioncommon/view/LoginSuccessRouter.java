@@ -17,5 +17,5 @@ public interface LoginSuccessRouter {
 
     void onGoToSecurityQuestion(SecurityPojo securityPojo, String fullName, String email, String phone);
 
-    void logUnknownError(String message);
+    void logUnknownError(Throwable message);
 }
