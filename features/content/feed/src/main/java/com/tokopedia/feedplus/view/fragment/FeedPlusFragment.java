@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -54,6 +55,7 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewMode
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.kol.common.util.PostMenuUtil;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
@@ -62,6 +64,7 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -97,6 +100,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
+    private static final int OPEN_CONTENT_REPORT = 1310
     private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
     public static final int REQUEST_LOGIN = 345;
@@ -942,7 +946,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
-        Toast.makeText(getContext(), "Menu clicked", Toast.LENGTH_LONG).show();
+        if (getContext() != null) {
+            Menus menus = PostMenuUtil.INSTANCE.createBottomMenu(getContext(), element,
+                    new PostMenuUtil.PostMenuListener() {
+                        @Override
+                        public void onDeleteClicked() {
+
+                        }
+
+                        @Override
+                        public void onReportClick() {
+                            Intent intent = ContentReportActivity.Companion.createIntent(
+                                    getContext(),
+                                    element.getContentId()
+                            );
+                            startActivityForResult(intent, OPEN_CONTENT_REPORT);
+                        }
+                    }
+            );
+            menus.show();
+        }
     }
 
     @Override
