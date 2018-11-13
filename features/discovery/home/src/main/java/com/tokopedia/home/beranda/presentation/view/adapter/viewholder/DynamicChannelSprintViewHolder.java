@@ -151,6 +151,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                     TextViewHelper.displayText(holder.channelPrice1, grid.getPrice());
                     TextViewHelper.displayText(holder.channelDiscount1, grid.getDiscount());
                     TextViewHelper.displayText(holder.channelBeforeDiscPrice1, grid.getSlashedPrice());
+                    TextViewHelper.displayText(holder.channelCashback, grid.getCashback());
 
                     holder.itemContainer1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -184,6 +185,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         private TextView channelName;
         private TextView channelPrice1;
         private TextView channelDiscount1;
+        private TextView channelCashback;
         private TextView channelBeforeDiscPrice1;
         private RelativeLayout itemContainer1;
         private View view;
@@ -193,6 +195,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             this.view = itemView;
             channelImage1 = (ImageView) itemView.findViewById(R.id.channel_image_1);
             channelPrice1 = (TextView) itemView.findViewById(R.id.channel_price_1);
+            channelCashback = (TextView) itemView.findViewById(R.id.channel_cashback);
             channelName = (TextView) itemView.findViewById(R.id.product_name);
             channelDiscount1 = (TextView) itemView.findViewById(R.id.channel_discount_1);
             channelBeforeDiscPrice1 = (TextView) itemView.findViewById(R.id.channel_before_disc_price_1);

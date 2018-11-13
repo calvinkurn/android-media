@@ -10,8 +10,8 @@
         android:id="@+id/channel_title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@color/white"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
@@ -21,6 +21,8 @@
             style="@style/TextView.Title.Bold"
             android:layout_centerVertical="true"
             android:maxEms="12"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_8"
             tools:text="Produk Pilihan" />
 
         <ImageView
@@ -28,8 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/channel_title"
-            android:paddingTop="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_8"
             android:src="@drawable/ic_toa_new" />
