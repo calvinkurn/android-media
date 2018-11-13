@@ -10,11 +10,15 @@ import com.tokopedia.navigation.listener.CartListener;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+
+import static com.tokopedia.navigation.presentation.presenter.MainParentPresenter.PARAM_PARAMS;
 
 /**
  * Created by meta on 25/07/18.
@@ -41,7 +45,7 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
                 .flatMap((Func1<Boolean, Observable<GraphqlResponse>>) aBoolean -> {
                     GraphqlRequest graphqlRequest = new GraphqlRequest(
                             requestParams.getString(GlobalNavConstant.QUERY, ""),
-                            NotificationEntity.class, requestParams.getParameters());
+                            NotificationEntity.class, (HashMap<String, Object>) requestParams.getObject(PARAM_PARAMS));
                     graphqlUseCase.clearRequest();
                     graphqlUseCase.addRequest(graphqlRequest);
                     return graphqlUseCase.createObservable(null);
