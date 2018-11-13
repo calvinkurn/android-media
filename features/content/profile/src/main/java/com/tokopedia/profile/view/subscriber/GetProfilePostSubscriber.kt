@@ -1,0 +1,30 @@
+package com.tokopedia.profile.view.subscriber
+
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
+import com.tokopedia.profile.view.listener.ProfileContract
+import rx.Subscriber
+
+/**
+ * @author by milhamj on 10/15/18.
+ */
+class GetProfilePostSubscriber(private val view: ProfileContract.View)
+    : Subscriber<ContentListDomain>() {
+    override fun onNext(t: ContentListDomain?) {
+        if (t == null) {
+            view.showGetListError(RuntimeException())
+            return
+        }
+        view.onSuccessGetProfilePost(t.visitableList, t.lastCursor)
+    }
+
+    override fun onCompleted() {
+    }
+
+    override fun onError(e: Throwable?) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e?.printStackTrace()
+        }
+        view.showGetListError(e)
+    }
+}

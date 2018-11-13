@@ -54,6 +54,8 @@ query CatalogCouponListing($categoryID: Int, $pointRange: Int, $sortID: Int, $pa
         imageV2UrlMobile
         thumbnailV2Url
         thumbnailV2UrlMobile
+        minimum_usage
+        minimum_usage_label
         cta
         ctaDesktop
         slug

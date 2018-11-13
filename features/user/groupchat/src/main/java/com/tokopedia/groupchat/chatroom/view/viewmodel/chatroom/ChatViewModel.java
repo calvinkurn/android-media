@@ -10,6 +10,8 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
 public class ChatViewModel extends BaseChatViewModel implements Visitable<GroupChatTypeFactory> {
 
     public static final String ADMIN_MESSAGE = "chat";
+    public static final String USER_MESSAGE = "mesg";
+    public static final String ADMM = "admm";
 
     public ChatViewModel(String message, long createdAt, long updatedAt,
                          String messageId, String senderId, String senderName,

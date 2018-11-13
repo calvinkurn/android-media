@@ -48,17 +48,14 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public TextView productPrice;
     public TextView shopLocation;
     public ImpressedImageView productImage;
-    private ImageLoader imageLoader;
     private int clickPosition;
 
 
-    public ProductCarouselListViewHolder(View itemView, ImageLoader imageLoader,
-                                         LocalAdsClickListener itemClickListener, int clickPosition,
+    public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener, int clickPosition,
                                          TopAdsItemImpressionListener impressionListener) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
-        this.imageLoader = imageLoader;
         this.clickPosition = clickPosition;
         this.impressionListener = impressionListener;
         context = itemView.getContext();
@@ -78,6 +75,12 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
 
     private void bindProduct(final Product product) {
         productImage.setImage(product.getImage());
+        productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));

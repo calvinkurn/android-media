@@ -24,7 +24,7 @@ public interface MyCouponListingContract {
 
         void openWebView(String url);
 
-        void populateCoupons(List<CouponValueEntity> coupons);
+        void populateCoupons(int categoryId);
 
         void emptyCoupons(Map<String, String> errors);
 
@@ -42,6 +42,6 @@ public interface MyCouponListingContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getCoupons();
+        void getCoupons(int categoryId);
     }
 }

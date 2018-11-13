@@ -7,6 +7,5 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
-
-    implementation project(rootProject.ext.features.core) // for UnifyTracking, TkpdCache, etd
+    implementation project(rootProject.ext.libraries.remoteConfig)
 }

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -16,6 +17,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +47,8 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -56,7 +58,6 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.digital.common.constant.DigitalEventTracking;
@@ -85,6 +86,7 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -190,8 +192,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
-        mShowTokopointNative = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
+        showRecomendation = firebaseRemoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
+        mShowTokopointNative = firebaseRemoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
     @Override
@@ -881,10 +883,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
-        if (isVisible()) {
+        if (getUserVisibleHint()) {
             presenter.hitBannerImpression(bannerSlidesModel);
         }
     }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -920,6 +923,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public boolean isMainViewVisible() {
         return getUserVisibleHint();
+    }
+
+    @Override
+    public boolean isHomeFragment() {
+        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
+        return (fragment instanceof HomeFragment);
     }
 
     @Override
@@ -1030,4 +1039,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getString(R.string.sc_wishlist_desc)));
         return list;
     }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        setUserVisibleHint(!hidden);
+    }
+
 }

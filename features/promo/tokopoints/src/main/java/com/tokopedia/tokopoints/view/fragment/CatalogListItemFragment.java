@@ -386,7 +386,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                 CatalogsValueEntity item = mAdapter.getItems().get(i);
                 if (each.getCatalogID() == item.getId()) {
                     item.setDisabled(each.isDisabled());
-                    item.setDisabledButton(each.isDisabled());
+                    item.setDisabledButton(each.isDisabledButton());
                     item.setUpperTextDesc(each.getUpperTextDesc());
                     item.setQuota(each.getQuota());
                 }

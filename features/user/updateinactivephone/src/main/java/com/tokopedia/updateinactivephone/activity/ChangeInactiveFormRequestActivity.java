@@ -32,6 +32,9 @@ import javax.inject.Inject;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IS_DUPLICATE_REQUEST;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_EMAIL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.USER_PHONE;
+
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
+        .QUERY_CONSTANTS.OLD_PHONE;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
 
 public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implements
@@ -53,6 +56,13 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
         Intent intent = new Intent(context, ChangeInactiveFormRequestActivity.class);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    public static Intent createIntentWithUserId(Context context, String userId, String oldPhoneNumber) {
+        Bundle bundle = new Bundle();
+        bundle.putString(USER_ID, userId);
+        bundle.putString(OLD_PHONE, oldPhoneNumber);
+        return createIntent(context, bundle);
     }
 
     @Override

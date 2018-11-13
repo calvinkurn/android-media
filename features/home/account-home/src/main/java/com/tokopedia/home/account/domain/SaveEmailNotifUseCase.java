@@ -12,6 +12,7 @@ import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.SettingEditResponse;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class SaveEmailNotifUseCase extends RestRequestSupportInterceptorUseCase{
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         String url = SettingConstant.PeopleUrl.BASE_URL+SettingConstant.PeopleUrl.PATH_EDIT_NOTIF_SETTING;
 

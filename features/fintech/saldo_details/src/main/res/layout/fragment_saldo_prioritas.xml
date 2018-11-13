@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/sp_description"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_15"
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_9"
                 android:visibility="visible">
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/sp_kyc_status"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_10"
                 android:clipToPadding="false"
                 android:divider="@android:color/transparent"
                 android:longClickable="false"

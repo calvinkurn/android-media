@@ -7,8 +7,9 @@ import android.text.style.ClickableSpan;
  */
 
 public class BaseKolViewModel {
-    private final int userId;
-    private final String cardType;
+    private int userId;
+    private String activityType;
+    private String cardType;
     private String title;
     private String name;
     private String avatar;
@@ -22,18 +23,25 @@ public class BaseKolViewModel {
     private int totalComment;
     private int page;
     private boolean temporarilyFollowed;
-    private int kolId;
-    private boolean reviewExpanded;
+    private int contentId;
     private String time;
+    private boolean reviewExpanded;
     private boolean isShowComment;
     private boolean isShowLike;
+    private boolean editable;
+    private boolean deletable;
+    private boolean multipleContent;
+    private boolean isKol = true;
 
-    public BaseKolViewModel(int userId, String cardType, String title, String name, String avatar,
-                            String label, String kolProfileUrl, boolean followed, String review,
-                            boolean liked, int totalLike, int totalComment, int page, int kolId,
-                            String time, boolean isShowComment, boolean isShowLike) {
+    public BaseKolViewModel(int userId, String activityType, String cardType, String title,
+                            String name, String avatar, String label, String kolProfileUrl,
+                            boolean followed, String review, boolean liked, int totalLike,
+                            int totalComment, int page, int contentId, String time,
+                            boolean isShowComment, boolean isShowLike, boolean editable,
+                            boolean deletable, boolean multipleContent) {
         this.userId = userId;
         this.cardType = cardType;
+        this.activityType = activityType;
         this.title = title;
         this.name = name;
         this.avatar = avatar;
@@ -45,18 +53,37 @@ public class BaseKolViewModel {
         this.totalLike = totalLike;
         this.totalComment = totalComment;
         this.page = page;
-        this.kolId = kolId;
+        this.contentId = contentId;
         this.time = time;
         this.isShowComment = isShowComment;
         this.isShowLike = isShowLike;
+        this.editable = editable;
+        this.deletable = deletable;
+        this.multipleContent = multipleContent;
     }
 
     public int getUserId() {
         return userId;
     }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
+
     public String getCardType() {
         return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
     public String getTitle() {
@@ -163,12 +190,12 @@ public class BaseKolViewModel {
         this.temporarilyFollowed = temporarilyFollowed;
     }
 
-    public int getKolId() {
-        return kolId;
+    public int getContentId() {
+        return contentId;
     }
 
-    public void setKolId(int kolId) {
-        this.kolId = kolId;
+    public void setContentId(int contentId) {
+        this.contentId = contentId;
     }
 
     public boolean isReviewExpanded() {
@@ -201,5 +228,37 @@ public class BaseKolViewModel {
 
     public void setShowLike(boolean showLike) {
         isShowLike = showLike;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
+    public boolean isKol() {
+        return isKol;
+    }
+
+    public void setKol(boolean kol) {
+        isKol = kol;
+    }
+
+    public boolean isMultipleContent() {
+        return multipleContent;
+    }
+
+    public void setMultipleContent(boolean multipleContent) {
+        this.multipleContent = multipleContent;
     }
 }
