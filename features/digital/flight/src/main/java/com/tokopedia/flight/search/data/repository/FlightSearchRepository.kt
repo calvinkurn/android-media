@@ -134,14 +134,20 @@ open class FlightSearchRepository @Inject constructor(
                                         val returnJourney = combos[1]
                                         FlightComboTable(
                                                 onwardJourney.id,
-                                                returnJourney.id,
-                                                id,
                                                 onwardJourney.adultPrice,
                                                 onwardJourney.childPrice,
                                                 onwardJourney.infantPrice,
                                                 onwardJourney.adultPriceNumeric,
                                                 onwardJourney.childPriceNumeric,
                                                 onwardJourney.infantPriceNumeric,
+                                                returnJourney.id,
+                                                returnJourney.adultPrice,
+                                                returnJourney.childPrice,
+                                                returnJourney.infantPrice,
+                                                returnJourney.adultPriceNumeric,
+                                                returnJourney.childPriceNumeric,
+                                                returnJourney.infantPriceNumeric,
+                                                id,
                                                 isBestPairing
                                         )
                                     }

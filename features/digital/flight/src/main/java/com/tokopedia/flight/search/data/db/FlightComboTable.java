@@ -13,29 +13,44 @@ public class FlightComboTable {
     @NonNull
     private int id;
     private String onwardJourneyId;
+    private String onwardAdultPrice;
+    private String onwardChildPrice;
+    private String onwardInfantPrice;
+    private int onwardAdultPriceNumeric;
+    private int onwardChildPriceNumeric;
+    private int onwardInfantPriceNumeric;
     private String returnJourneyId;
+    private String returnAdultPrice;
+    private String returnChildPrice;
+    private String returnInfantPrice;
+    private int returnAdultPriceNumeric;
+    private int returnChildPriceNumeric;
+    private int returnInfantPriceNumeric;
     private String comboId;
-    private String adultPrice;
-    private String childPrice;
-    private String infantPrice;
-    private int adultPriceNumeric;
-    private int childPriceNumeric;
-    private int infantPriceNumeric;
     private boolean isBestPairing;
 
-    public FlightComboTable(String onwardJourneyId, String returnJourneyId, String comboId,
-                            String adultPrice, String childPrice, String infantPrice,
-                            int adultPriceNumeric, int childPriceNumeric, int infantPriceNumeric,
-                            boolean isBestPairing) {
+    public FlightComboTable(String onwardJourneyId, String onwardAdultPrice, String onwardChildPrice,
+                            String onwardInfantPrice, int onwardAdultPriceNumeric,
+                            int onwardChildPriceNumeric, int onwardInfantPriceNumeric,
+                            String returnJourneyId, String returnAdultPrice, String returnChildPrice,
+                            String returnInfantPrice, int returnAdultPriceNumeric,
+                            int returnChildPriceNumeric, int returnInfantPriceNumeric,
+                            String comboId, boolean isBestPairing) {
         this.onwardJourneyId = onwardJourneyId;
+        this.onwardAdultPrice = onwardAdultPrice;
+        this.onwardChildPrice = onwardChildPrice;
+        this.onwardInfantPrice = onwardInfantPrice;
+        this.onwardAdultPriceNumeric = onwardAdultPriceNumeric;
+        this.onwardChildPriceNumeric = onwardChildPriceNumeric;
+        this.onwardInfantPriceNumeric = onwardInfantPriceNumeric;
         this.returnJourneyId = returnJourneyId;
+        this.returnAdultPrice = returnAdultPrice;
+        this.returnChildPrice = returnChildPrice;
+        this.returnInfantPrice = returnInfantPrice;
+        this.returnAdultPriceNumeric = returnAdultPriceNumeric;
+        this.returnChildPriceNumeric = returnChildPriceNumeric;
+        this.returnInfantPriceNumeric = returnInfantPriceNumeric;
         this.comboId = comboId;
-        this.adultPrice = adultPrice;
-        this.childPrice = childPrice;
-        this.infantPrice = infantPrice;
-        this.adultPriceNumeric = adultPriceNumeric;
-        this.childPriceNumeric = childPriceNumeric;
-        this.infantPriceNumeric = infantPriceNumeric;
         this.isBestPairing = isBestPairing;
     }
 
@@ -52,36 +67,60 @@ public class FlightComboTable {
         return onwardJourneyId;
     }
 
+    public String getOnwardAdultPrice() {
+        return onwardAdultPrice;
+    }
+
+    public String getOnwardChildPrice() {
+        return onwardChildPrice;
+    }
+
+    public String getOnwardInfantPrice() {
+        return onwardInfantPrice;
+    }
+
+    public int getOnwardAdultPriceNumeric() {
+        return onwardAdultPriceNumeric;
+    }
+
+    public int getOnwardChildPriceNumeric() {
+        return onwardChildPriceNumeric;
+    }
+
+    public int getOnwardInfantPriceNumeric() {
+        return onwardInfantPriceNumeric;
+    }
+
     public String getReturnJourneyId() {
         return returnJourneyId;
     }
 
+    public String getReturnAdultPrice() {
+        return returnAdultPrice;
+    }
+
+    public String getReturnChildPrice() {
+        return returnChildPrice;
+    }
+
+    public String getReturnInfantPrice() {
+        return returnInfantPrice;
+    }
+
+    public int getReturnAdultPriceNumeric() {
+        return returnAdultPriceNumeric;
+    }
+
+    public int getReturnChildPriceNumeric() {
+        return returnChildPriceNumeric;
+    }
+
+    public int getReturnInfantPriceNumeric() {
+        return returnInfantPriceNumeric;
+    }
+
     public String getComboId() {
         return comboId;
-    }
-
-    public String getAdultPrice() {
-        return adultPrice;
-    }
-
-    public String getChildPrice() {
-        return childPrice;
-    }
-
-    public String getInfantPrice() {
-        return infantPrice;
-    }
-
-    public int getAdultPriceNumeric() {
-        return adultPriceNumeric;
-    }
-
-    public int getChildPriceNumeric() {
-        return childPriceNumeric;
-    }
-
-    public int getInfantPriceNumeric() {
-        return infantPriceNumeric;
     }
 
     public boolean isBestPairing() {
