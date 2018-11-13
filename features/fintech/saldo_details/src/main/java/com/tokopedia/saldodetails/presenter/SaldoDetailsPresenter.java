@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -11,22 +13,26 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
 import com.tokopedia.saldodetails.interactor.DepositCacheInteractor;
 import com.tokopedia.saldodetails.interactor.DepositCacheInteractorImpl;
-import com.tokopedia.saldodetails.interactor.DepositRetrofitInteractor;
-import com.tokopedia.saldodetails.interactor.DepositRetrofitInteractorImpl;
+import com.tokopedia.saldodetails.response.model.GqlDepositSummaryResponse;
+import com.tokopedia.saldodetails.response.model.GqlHoldSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
-import com.tokopedia.saldodetails.response.model.SummaryWithdraw;
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
+import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
 import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
-import com.tokopedia.saldodetails.usecase.GetSaldoSummaryUseCase;
+import com.tokopedia.saldodetails.usecase.GetSaldoBalanceUseCase;
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +42,10 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
+
+import static android.content.ContentValues.TAG;
 
 public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContract.View>
         implements SaldoDetailContract.Presenter, MerchantSaldoDetailsActionListener {
@@ -49,19 +59,20 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
     private static final java.lang.String DATE_FORMAT_WS = "yyyy/MM/dd";
 
-    DepositRetrofitInteractor networkInteractor;
     PagingHandler paging;
     DepositCacheInteractor depositCacheInteractor;
 
+    @Inject
+    GetDepositSummaryUseCase getDepositSummaryUseCase;
+    @Inject
+    GetSaldoBalanceUseCase getSaldoBalanceUseCase;
 
     @Inject
     public SaldoDetailsPresenter(@ApplicationContext Context context,
-                                 @NonNull SetMerchantSaldoStatus setMerchantSaldoStatus,
-                                 GetSaldoSummaryUseCase getSaldoSummaryUseCase) {
+                                 @NonNull SetMerchantSaldoStatus setMerchantSaldoStatus) {
         this.setMerchantSaldoStatusUseCase = setMerchantSaldoStatus;
         depositCacheInteractor = new DepositCacheInteractorImpl(context);
         this.paging = new PagingHandler();
-        networkInteractor = new DepositRetrofitInteractorImpl(context, getSaldoSummaryUseCase);
     }
 
 
@@ -93,7 +104,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void setCache() {
         depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
             @Override
-            public void onSuccess(SummaryWithdraw cache) {
+            public void onSuccess(GqlDepositSummaryResponse cache) {
                 setData(cache);
                 getSummaryDeposit();
 
@@ -136,7 +147,12 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             @Override
             public void onDateSelected(int year, int month, int day) {
                 getView().setEndDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
-
+                new android.os.Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSearchClicked();
+                    }
+                }, 500);
             }
         });
 
@@ -151,6 +167,12 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             @Override
             public void onDateSelected(int year, int month, int day) {
                 getView().setStartDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
+                new android.os.Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSearchClicked();
+                    }
+                }, 500);
 
             }
         });
@@ -163,9 +185,74 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 && canLoadMore()) {
             paging.nextPage();
             getSummaryDeposit();
-
         }
     }
+
+
+    @Override
+    public void getSaldoBalance() {
+
+        getSaldoBalanceUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof UnknownHostException) {
+                    getView().finishLoading();
+                    if (getView().getAdapter().getItemCount() == 0) {
+                        getView().showEmptyState();
+                    } else {
+                        getView().setRetry();
+                    }
+
+                } else if (e instanceof SocketTimeoutException) {
+                    getView().finishLoading();
+                    getView().hideRefreshing();
+                    if (getView().getAdapter().getItemCount() == 0) {
+                        getView().showEmptyState();
+                    } else {
+                        getView().setRetry();
+                    }
+                } else {
+
+                    getView().finishLoading();
+                    getView().setActionsEnabled(true);
+                    getView().hideRefreshing();
+                    if (getView().getAdapter().getItemCount() == 0) {
+                        getView().showEmptyState("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                    } else {
+                        getView().setRetry("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                    }
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                GqlSaldoBalanceResponse usableSaldoBalanceResponse;
+                GqlHoldSaldoBalanceResponse holdSaldoBalanceResponse;
+
+                usableSaldoBalanceResponse = graphqlResponse.getData(GqlSaldoBalanceResponse.class);
+                holdSaldoBalanceResponse = graphqlResponse.getData(GqlHoldSaldoBalanceResponse.class);
+
+                depositCacheInteractor.setUsableSaldoBalanceCache(usableSaldoBalanceResponse);
+
+                getView().setBalance(usableSaldoBalanceResponse.getSaldo().getFormattedAmount());
+                if ((holdSaldoBalanceResponse.getSaldo().getDeposit() > 0)) {
+
+                    Toast.makeText(getView().getContext(), "Hold Warning", Toast.LENGTH_LONG).show();
+//                    getView().showHoldWarning(data.getWarningHoldDeposit());
+                } else {
+                    getView().hideWarning();
+                }
+            }
+        });
+
+    }
+
 
     @Override
     public void getSummaryDeposit() {
@@ -173,7 +260,103 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         if (isValid()) {
             showLoading();
             getView().setActionsEnabled(false);
-            networkInteractor.getSummaryDeposit(getView().getActivity(), getSummaryDepositParam(), new DepositRetrofitInteractor.DepositListener() {
+
+            getDepositSummaryUseCase.setRequesting(true);
+            getDepositSummaryUseCase.setRequestVariables(getSummaryDepositParam());
+
+            getDepositSummaryUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
+                    getDepositSummaryUseCase.setRequesting(false);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, e.toString());
+
+                    if (e instanceof UnknownHostException) {
+                        getView().finishLoading();
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState();
+                        } else {
+                            getView().setRetry();
+                        }
+
+                    } else if (e instanceof SocketTimeoutException) {
+                        /*onTimeout("Timeout connection," +
+                                " Mohon ulangi beberapa saat lagi");*/
+                        getView().finishLoading();
+                        getView().hideRefreshing();
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState();
+                        } else {
+                            getView().setRetry();
+                        }
+                    } else {
+
+                        getView().finishLoading();
+                        getView().setActionsEnabled(true);
+                        getView().hideRefreshing();
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                        } else {
+                            getView().setRetry("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                        }
+                    }
+                }
+
+                @Override
+                public void onNext(GraphqlResponse graphqlResponse) {
+
+                    if (graphqlResponse != null &&
+                            graphqlResponse.getData(GqlDepositSummaryResponse.class) != null) {
+
+                        GqlDepositSummaryResponse gqlDepositSummaryResponse =
+                                graphqlResponse.getData(GqlDepositSummaryResponse.class);
+
+                        if (gqlDepositSummaryResponse != null &&
+                                !gqlDepositSummaryResponse.getDepositActivityResponse().isHaveError()) {
+
+                            getView().finishLoading();
+                            getView().hideRefreshing();
+                            getView().setActionsEnabled(true);
+
+                            if (paging.getPage() == 1) {
+                                getView().getAdapter().clearAllElements();
+                                depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
+                            }
+                            paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse().isHaveNextPage());
+                            setData(gqlDepositSummaryResponse);
+                        } else {
+                            getView().finishLoading();
+                            getView().setActionsEnabled(true);
+                            getView().hideRefreshing();
+                            if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.getDepositActivityResponse() != null) {
+                                if (getView().getAdapter().getItemCount() == 0) {
+                                    getView().showEmptyState(gqlDepositSummaryResponse.getDepositActivityResponse().getMessage());
+                                } else {
+                                    getView().setRetry(gqlDepositSummaryResponse.getDepositActivityResponse().getMessage());
+                                }
+                            }
+                        }
+
+                    } else {
+                        getView().finishLoading();
+                        getView().setActionsEnabled(true);
+                        getView().hideRefreshing();
+                        if (getView().getAdapter().getItemCount() == 0) {
+                            getView().showEmptyState("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                        } else {
+                            getView().setRetry("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                        }
+
+                    }
+                    finishLoading();
+                }
+            });
+
+
+            /*networkInteractor.getSummaryDeposit(getView().getActivity(), getSummaryDepositParam(), new DepositRetrofitInteractor.DepositListener() {
                 @Override
                 public void onSuccess(@NonNull SummaryWithdraw data) {
                     getView().finishLoading();
@@ -228,14 +411,13 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 @Override
                 public void onNoNetworkConnection() {
                     getView().finishLoading();
-                    if (getView().getAdapter().getItemCount() == 0) {
                         getView().showEmptyState();
                     } else {
                         getView().setRetry();
                     }
                 }
 
-            });
+            });*/
         } else {
             getView().finishLoading();
         }
@@ -261,13 +443,13 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             getView().showErrorMessage(getView().getString(R.string.error_invalid_date));
         }
 
-        param.setPage(String.valueOf(paging.getPage()));
+        param.setPage(paging.getPage());
         return param.getParamSummaryDeposit();
 
     }
 
     private String getDateParam(String date) {
-        return date.replace("/", "");
+        return date.replace("/", "-");
     }
 
     private boolean isValid() {
@@ -295,19 +477,11 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
 
-    private void setData(SummaryWithdraw data) {
-        getView().setBalance(data.getSummary().getSummaryUseableDepositIdr());
-        if ((data.getSummary().getSummaryHoldDeposit()) > 0) {
-            getView().showHoldWarning(data.getWarningHoldDeposit());
-        } else {
-            getView().hideWarning();
-        }
-        getView().getAdapter().addElement(data.getList());
-
+    private void setData(GqlDepositSummaryResponse data) {
+        getView().getAdapter().addElement(data.getDepositActivityResponse().getDepositHistoryList());
         if (getView().getAdapter().getItemCount() == 0) {
             getView().getAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
-
         if (paging.CheckNextPage()) {
             getView().getAdapter().showLoading();
         } else {
@@ -321,13 +495,14 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         Context context = getView().getContext();
         UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
-            depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
+            depositCacheInteractor.getUsableSaldoBalanceCache(new DepositCacheInteractor.GetUsableSaldoBalanceCacheListener() {
                 @Override
-                public void onSuccess(SummaryWithdraw result) {
-                    if (result.getSummary().getSummaryUseableDeposit() > 0) {
+                public void onSuccess(GqlSaldoBalanceResponse result) {
+
+                    if (result.getSaldo().getDeposit() > 0) {
                         Bundle bundle = new Bundle();
-                        bundle.putString(BUNDLE_TOTAL_BALANCE, String.valueOf(result.getSummary().getSummaryUseableDepositIdr()));
-                        bundle.putString(BUNDLE_TOTAL_BALANCE_INT, String.valueOf(result.getSummary().getSummaryUseableDeposit()));
+                        bundle.putString(BUNDLE_TOTAL_BALANCE, String.valueOf(result.getSaldo().getFormattedAmount()));
+                        bundle.putString(BUNDLE_TOTAL_BALANCE_INT, String.valueOf(result.getSaldo().getDeposit()));
                         intent.putExtras(bundle);
                         getView().getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
                     } else {
@@ -359,7 +534,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
 
     private boolean canLoadMore() {
-        return !networkInteractor.isRequesting();
+        return !getDepositSummaryUseCase.isRequesting();
     }
 
     private boolean isOnLastPosition(int lastItemPosition, int visibleItem) {
@@ -391,7 +566,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details
+                                                   sellerDetails) {
         getView().showSaldoPrioritasFragment(sellerDetails);
     }
 
@@ -399,4 +575,5 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void finishLoading() {
         getView().finishLoading();
     }
+
 }

@@ -22,4 +22,8 @@
     <string name="error_deposit_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk melakukan penarikan dana.</string>
     <string name="sp_saldo_title">Saldo</string>
     <string name="sp_title_nominal">Nominal</string>
+    <string name="no_saldo_transactions">Belum Ada Transaksi</string>
+    <string name="sp_positive_saldo_balance" >+ Rp %s</string>
+    <string name="sp_negative_saldo_balance" >- Rp %s</string>
+    <string name="sp_date_time_view" >%s WIB</string>
 </resources>

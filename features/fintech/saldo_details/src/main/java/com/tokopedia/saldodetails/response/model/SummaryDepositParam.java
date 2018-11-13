@@ -5,14 +5,14 @@ import java.util.Map;
 
 public class SummaryDepositParam {
 
-    private static final String PARAM_START_DATE = "start_date";
-    private static final String PARAM_END_DATE = "end_date";
-    private static final String PARAM_PER_PAGE = "per_page";
+    private static final String PARAM_START_DATE = "dateFrom";
+    private static final String PARAM_END_DATE = "dateTo";
+    private static final String PARAM_PER_PAGE = "maxRows";
     private static final String PARAM_PAGE = "page";
 
     String endDate;
-    String page;
-    String perPage = "10";
+    int page;
+    int perPage = 10;
     String startDate;
 
     public String getEndDate() {
@@ -23,19 +23,19 @@ public class SummaryDepositParam {
         this.endDate = endDate;
     }
 
-    public String getPage() {
+    public int getPage() {
         return page;
     }
 
-    public void setPage(String page) {
+    public void setPage(int page) {
         this.page = page;
     }
 
-    public String getPerPage() {
+    public int getPerPage() {
         return perPage;
     }
 
-    public void setPerPage(String perPage) {
+    public void setPerPage(int perPage) {
         this.perPage = perPage;
     }
 

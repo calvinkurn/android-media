@@ -77,6 +77,8 @@ public interface SaldoDetailContract {
 
         void setCache();
 
+        void getSaldoBalance();
+
         void getMerchantSaldoDetails();
 
         void onSearchClicked();
