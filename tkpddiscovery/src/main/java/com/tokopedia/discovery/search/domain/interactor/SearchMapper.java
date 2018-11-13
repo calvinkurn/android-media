@@ -1,10 +1,5 @@
 package com.tokopedia.discovery.search.domain.interactor;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchResponse;
 
@@ -19,18 +14,8 @@ import rx.functions.Func1;
  */
 
 public class SearchMapper implements Func1<Response<SearchResponse>, List<SearchData>> {
-    private String mDefaultErrorMessage;
-    private Context context;
-    private Gson gson;
 
-    public SearchMapper(Context context, Gson gson) {
-        this.context = context;
-        this.gson = gson;
-        mDefaultErrorMessage = context.getString(R.string.msg_network_error);
-    }
-
-    public SearchMapper(Gson gson) {
-        this.gson = gson;
+    public SearchMapper() {
     }
 
     @Override

@@ -47,8 +47,8 @@ public class AutoCompleteModule {
     }
 
     @Provides
-    SearchMapper provideSearchMapper(Gson gson) {
-        return new SearchMapper(gson);
+    SearchMapper provideSearchMapper() {
+        return new SearchMapper();
     }
 
     @Provides
