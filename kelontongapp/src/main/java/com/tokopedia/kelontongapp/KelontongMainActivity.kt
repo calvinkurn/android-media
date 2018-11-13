@@ -131,9 +131,6 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
         val cookieManager: CookieManager = CookieManager.getInstance()
         cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieGcmId)
-        if (BuildConfig.DEBUG) {
-            cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieGrosir)
-        }
         cookieManager.setCookie(KelontongBaseUrl.COOKIE_URL, cookieAfId)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
