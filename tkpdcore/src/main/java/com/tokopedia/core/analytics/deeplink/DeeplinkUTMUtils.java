@@ -116,10 +116,7 @@ public class DeeplinkUTMUtils {
             if (uri.getScheme().equals("http") || uri.getScheme().equals("https")) {
                 // App was opened from a browser
                 String host = uri.getHost();
-                if (host.equals("www.google.com") ||
-                        host.equals("www.google.co.in") ||
-                        host.equals("www.google.co.id")) {
-
+                if (host.contains("www.google")) {
                     campaign.setUtmSource("google.com");
                     campaign.setUtmMedium("organic");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
@@ -151,7 +148,7 @@ public class DeeplinkUTMUtils {
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
                     campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
+                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
 
@@ -191,7 +188,7 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : "android-app");
 
                     campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
+                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
 
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
