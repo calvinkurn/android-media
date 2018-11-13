@@ -73,8 +73,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         setNextPageParams();
         if (showProgress)
             getView().showProgressBar();
-        getSubmissionChallengesUseCase.setRequestParams(searchParams);
-        getSubmissionChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        getSubmissionChallengesUseCase.execute(searchParams, new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
@@ -82,7 +81,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 isLoading = false;
                 getView().hideProgressBar();
                 e.printStackTrace();
@@ -98,7 +97,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
 
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResponse.class);
                 SubmissionResponse submissionResponse = res1.getData();

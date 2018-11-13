@@ -78,8 +78,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         if (loadFromApi) {
             getView().showProgressBar();
             getView().hideCollapsingHeader();
-            getChallengeDetailsUseCase.setRequestParams(getView().getChallengeDetailsParams());
-            getChallengeDetailsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            getChallengeDetailsUseCase.execute(getView().getChallengeDetailsParams(), new Subscriber<Map<Type, RestResponse>>() {
                 @Override
                 public void onCompleted() {
 
@@ -146,8 +145,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     private void getWinnerList() {
-        getWinnersUseCase.setRequestParams(getView().getSubmissionsParams());
-        getWinnersUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        getWinnersUseCase.execute(getView().getSubmissionsParams(), new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
             }
@@ -169,8 +167,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
 
     public void loadSubmissions() {
-        getSubmissionChallengesUseCase.setRequestParams(getView().getSubmissionsParams());
-        getSubmissionChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        getSubmissionChallengesUseCase.execute(getView().getSubmissionsParams(),new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");

@@ -96,8 +96,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
         if (!TextUtils.isEmpty(result.getId()))
             requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
-        postSubmissionLikeUseCase.setRequestParams(requestParams);
-        postSubmissionLikeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        postSubmissionLikeUseCase.execute(requestParams,new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
             }
@@ -121,8 +120,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     public void sendBuzzPointEvent(String submissionId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
-        postBuzzPointEventUseCase.setRequestParams(requestParams);
-        postBuzzPointEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        postBuzzPointEventUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
