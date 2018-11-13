@@ -38,7 +38,8 @@ class PromoCheckoutModule {
 
     @PromoCheckoutQualifier
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, @PromoCheckoutQualifier networkRouter: NetworkRouter, @PromoCheckoutQualifier userSession: UserSession) : ArrayList<Interceptor>{
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, @PromoCheckoutQualifier networkRouter: NetworkRouter,
+                                   @PromoCheckoutQualifier userSession: UserSession) : ArrayList<Interceptor>{
         val  listInterceptor =  ArrayList<Interceptor>()
         listInterceptor.add(TkpdAuthInterceptor(context, networkRouter, userSession))
         if(GlobalConfig.DEBUG){

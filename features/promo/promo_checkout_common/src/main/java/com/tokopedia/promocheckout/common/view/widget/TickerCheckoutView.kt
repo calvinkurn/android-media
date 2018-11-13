@@ -15,32 +15,35 @@ class TickerCheckoutView @JvmOverloads constructor(
         context: Context, val attrs: AttributeSet? = null, val defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
-    var state: State = State.INACTIVE
+    var state: State = State.EMPTY
         set(value) {
             initView()
+            field = value
         }
 
     var title: String = ""
         set(value) {
+            field = value
             initView()
         }
     var desc: String = ""
         set(value) {
+            field = value
             initView()
         }
     var actionListener : ActionListener? = null
 
     init {
+        inflate(context, getLayout(), this)
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TickerCheckoutView)
         try {
-            state = State.fromId(styledAttributes.getInteger(R.styleable.TickerCheckoutView_state, 1))
+            state = State.fromId(styledAttributes.getInteger(R.styleable.TickerCheckoutView_state, 4))
             title = styledAttributes.getString(R.styleable.TickerCheckoutView_title) ?: ""
             desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
 
         } finally {
             styledAttributes.recycle()
         }
-        inflate(context, getLayout(), this)
     }
 
     private fun initView() {
@@ -53,8 +56,8 @@ class TickerCheckoutView @JvmOverloads constructor(
         rootView.descCoupon.text = desc
         rootView.titleCoupon.text = title
         rootView.imageClose.setOnClickListener {
-            actionListener?.onDisablePromoDiscount()
             resetView()
+            actionListener?.onDisablePromoDiscount()
         }
         rootView.layoutUsePromo.setOnClickListener {
             actionListener?.onClickUsePromo()
@@ -82,21 +85,21 @@ class TickerCheckoutView @JvmOverloads constructor(
 
     private fun setViewFailed() {
         setViewCouponShow()
-        val drawableBackground = rootView.background.current.mutate() as GradientDrawable
+        val drawableBackground = rootView.layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.bright_red))
         rootView.imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_red)
     }
 
     private fun setViewActive() {
         setViewCouponShow()
-        val drawableBackground = rootView.background.current.mutate() as GradientDrawable
+        val drawableBackground = rootView.layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.green_200))
         rootView.imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_green)
     }
 
     private fun setViewInactive() {
         setViewCouponShow()
-        val drawableBackground = rootView.background.current.mutate() as GradientDrawable
+        val drawableBackground = rootView.layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.grey_300))
         rootView.imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_grey)
     }
@@ -112,10 +115,10 @@ class TickerCheckoutView @JvmOverloads constructor(
 
     enum class State(val id: Int) : Parcelable {
 
-        INACTIVE(1),
-        ACTIVE(2),
-        FAILED(3),
-        EMPTY(-1);
+        INACTIVE(0),
+        ACTIVE(1),
+        FAILED(2),
+        EMPTY(3);
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeInt(id)

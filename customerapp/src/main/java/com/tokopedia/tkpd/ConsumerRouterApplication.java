@@ -1984,6 +1984,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor() {
+        return getAppComponent().fingerprintInterceptor();
+    }
+
+    @Override
     public Converter.Factory loyaltyModuleRouterGetStringResponseConverter() {
         return new StringResponseConverter();
     }

@@ -9,7 +9,7 @@ import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
 interface PromoCheckoutDetailContract {
     interface View : CustomerView{
         fun onErroGetDetail(e: Throwable)
-        fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel?)
+        fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel)
         fun onSuccessValidatePromo(dataVoucher: DataVoucher)
         fun onErrorValidatePromo(e: Throwable)
         fun showLoading()
@@ -19,7 +19,7 @@ interface PromoCheckoutDetailContract {
     }
 
     interface Presenter : CustomerPresenter<View>{
-        fun getDetailPromo(codeCoupon: String, resources: Resources)
+        fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean)
         fun validatePromoUse(codeCoupon: String, oneClickShipment : Boolean, resources: Resources)
         fun cancelPromo()
     }

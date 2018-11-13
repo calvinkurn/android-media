@@ -24,7 +24,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon,resources)
+        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon,isOneClickShipment)
     }
 
     override fun onClickUse() {
@@ -33,15 +33,6 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     override fun onClickCancel() {
         promoCheckoutDetailPresenter.cancelPromo()
-    }
-
-    override fun onErrorCancelPromo(e: Throwable) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
-    }
-
-    override fun onSuccessCancelPromo() {
-        isUse = false
-        validateButton()
     }
 
     override fun initInjector() {

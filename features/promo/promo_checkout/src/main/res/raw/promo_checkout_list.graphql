@@ -1,5 +1,6 @@
-{
-getCouponList($input : CouponListRequest!){
+
+query tokopointsCouponList($input : CouponListRequest!){
+    status
     tokopointsCouponList(input: $input){
           tokopointsCouponData{
                   id
@@ -50,4 +51,3 @@ getCouponList($input : CouponListRequest!){
               }
           }
     }
-}

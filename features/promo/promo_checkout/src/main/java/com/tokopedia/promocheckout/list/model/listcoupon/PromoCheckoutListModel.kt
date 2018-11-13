@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.promocheckout.list.PromoCheckoutListAdapterFactory
+import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
 
 class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Parcelable {
     override fun type(typeFactory: PromoCheckoutListAdapterFactory?): Int {
@@ -78,6 +78,12 @@ class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Par
     @SerializedName("usage")
     @Expose
     var usage: Usage? = null
+    @SerializedName("minimum_usage")
+    @Expose
+    var minimumUsage: String? = null
+    @SerializedName("minimum_usage_label")
+    @Expose
+    var minimumUsageLabel: String? = null
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readInt()
@@ -101,6 +107,8 @@ class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Par
         cta = parcel.readString()
         ctaDesktop = parcel.readString()
         slug = parcel.readString()
+        minimumUsage = parcel.readString()
+        minimumUsageLabel = parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -125,6 +133,8 @@ class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Par
         parcel.writeString(cta)
         parcel.writeString(ctaDesktop)
         parcel.writeString(slug)
+        parcel.writeString(minimumUsage)
+        parcel.writeString(minimumUsageLabel)
     }
 
     override fun describeContents(): Int {
@@ -140,5 +150,6 @@ class PromoCheckoutListModel() : Visitable<PromoCheckoutListAdapterFactory>, Par
             return arrayOfNulls(size)
         }
     }
+
 
 }

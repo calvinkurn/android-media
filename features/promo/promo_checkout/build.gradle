@@ -5,6 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
+
 buildscript {
     repositories {
         mavenCentral()
@@ -14,7 +15,6 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-
 
 project.ext {
     artifactId = 'promo-checkout'
@@ -32,6 +32,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.miscDependencies.multiDex
 

@@ -13,6 +13,7 @@
         app:elevation="@dimen/dp_3">
 
         <LinearLayout
+            android:background="@color/white"
             android:id="@+id/header_product_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,7 +105,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dp_16"

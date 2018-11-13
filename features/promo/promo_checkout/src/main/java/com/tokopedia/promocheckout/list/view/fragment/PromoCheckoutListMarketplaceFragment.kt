@@ -6,11 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -63,11 +65,15 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun hideProgressLoading() {
-        progressDialog.show()
+        progressDialog.hide()
     }
 
     override fun onErrorCheckPromoCode(e: Throwable) {
-        textInputLayoutCoupon.error = ErrorHandler.getErrorMessage(activity, e)
+        if(e is CheckPromoCodeException || e is MessageErrorException){
+            textInputLayoutCoupon.error = e.message
+        }else{
+            NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
+        }
     }
 
     override fun onSuccessCheckPromoCode(dataVoucher: DataVoucher) {

@@ -20,25 +20,37 @@
             android:layout_marginRight="@dimen/dp_5"
             android:src="@drawable/ic_period_promo_green" />
 
-        <TextView
-            android:id="@+id/title_period"
-            style="@style/TextView.Micro10.BlackSecondary"
+        <com.tokopedia.promocheckout.widget.TimerCheckoutWidget
+            android:id="@+id/timerUsage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/imagePeriod"
-            android:text="@string/promo_title_period" />
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/textPeriod"
-            style="@style/TextView.Micro.Bold"
-            android:layout_below="@+id/title_period"
+        <LinearLayout
+            android:id="@+id/containerUsageDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/imagePeriod"
-            tools:text="16 Agu 2018" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_period"
+                style="@style/TextView.Micro10.BlackSecondary"
+                android:text="@string/promo_title_period" />
+
+            <TextView
+                android:id="@+id/textPeriod"
+                style="@style/TextView.Micro.Bold"
+                tools:text="16 Agu 2018" />
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
-        android:gravity="end"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="end"
         android:padding="@dimen/dp_16">
 
         <ImageView

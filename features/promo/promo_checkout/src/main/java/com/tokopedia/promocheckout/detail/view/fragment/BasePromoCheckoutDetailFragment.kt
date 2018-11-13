@@ -9,10 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -20,8 +22,10 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
+import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
 
 abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoCheckoutDetailContract.View {
 
@@ -74,24 +78,38 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel?) {
-        promoCheckoutDetailModel?.let {
+    override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel) {
+        promoCheckoutDetailModel.let {
             ImageHandler.LoadImage(imageBannerPromo, it.imageUrlMobile)
-            textPeriod.text = it.minimumUsage
             textMinTrans.text = it.minimumUsage
-            if (!TextUtils.isEmpty(it.usage?.text)) {
-                textCashbackPotention.visibility = View.VISIBLE
-                textCashbackPotention.text = it.usage?.text
-            } else {
-                textCashbackPotention.visibility = View.GONE
+            if ((it.usage?.activeCountDown ?: 0 > 0 &&
+                            it.usage?.activeCountDown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setTimerUsage(it.usage?.activeCountDown?.toLong() ?: 0)
+            } else if ((it.usage?.expiredCountDown ?: 0 > 0 &&
+                            it.usage?.expiredCountDown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setTimerUsage(it.usage?.expiredCountDown?.toLong() ?: 0)
+            }else{
+                textPeriod.text = it.usage?.usageStr
             }
             webviewTnc.settings.javaScriptEnabled = true
             webviewTnc.loadData(getFormattedHtml(it.description), "text/html", "UTF-8")
         }
     }
 
+    private fun setTimerUsage(countDown: Long) {
+        view?.timerUsage?.cancel()
+        view?.timerUsage?.visibility = View.VISIBLE
+        view?.containerUsageDate?.visibility = View.GONE
+        view?.timerUsage?.expiredTimer = countDown
+        view?.timerUsage?.start()
+    }
+
     override fun onErrorValidatePromo(e: Throwable) {
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(activity, e), { onClickUse() })
+        var message = ErrorHandler.getErrorMessage(activity, e)
+        if(e is CheckPromoCodeException){
+            message = e.message
+        }
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
     }
 
     override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
@@ -103,6 +121,15 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    override fun onErrorCancelPromo(e: Throwable) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
+    }
+
+    override fun onSuccessCancelPromo() {
+        isUse = false
+        validateButton()
     }
 
     override fun showLoading() {
@@ -119,7 +146,18 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     }
 
     override fun onErroGetDetail(e: Throwable) {
-        NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(activity, e), { loadData() })
+        var message : String = ErrorHandler.getErrorMessage(activity, e)
+        if(e is CheckPromoCodeException){
+            message = e.message?:ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+            setDisabledButtonUse()
+        }
+        NetworkErrorHelper.showEmptyState(activity, view, message, { loadData() })
+    }
+
+    private fun setDisabledButtonUse() {
+        validateButton()
+        buttonUse.isEnabled = false
+        buttonUse.text = getString(R.string.promo_label_coupon_not_eligible)
     }
 
     fun succesLoad() {

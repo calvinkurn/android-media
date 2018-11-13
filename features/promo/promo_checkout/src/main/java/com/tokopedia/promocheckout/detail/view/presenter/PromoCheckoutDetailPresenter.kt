@@ -12,10 +12,13 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
+import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.detail.domain.DetailCouponMarkeplaceModel
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import org.json.JSONException
@@ -24,7 +27,7 @@ import rx.Subscriber
 import java.lang.reflect.Type
 import java.util.*
 
-class PromoCheckoutDetailPresenter(val getDetailCouponUseCase: GraphqlUseCase,
+class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                    val checkPromoUseCase: CheckPromoCodeUseCase,
                                    val cancelPromoUseCase: CancelPromoUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
@@ -90,41 +93,35 @@ class PromoCheckoutDetailPresenter(val getDetailCouponUseCase: GraphqlUseCase,
         })
     }
 
-    override fun getDetailPromo(codeCoupon: String, resources : Resources) {
+    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean) {
         view.showLoading()
-        val variables = HashMap<String, Any>()
-        variables.put(INPUT_CODE, codeCoupon)
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_detail_marketplace), DataPromoCheckoutDetail::class.java, variables)
-        getDetailCouponUseCase.clearRequest()
-        getDetailCouponUseCase.addRequest(graphqlRequest)
-        getDetailCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {
+        getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment),
+                object : Subscriber<DetailCouponMarkeplaceModel>(){
 
-            }
+                    override fun onError(e: Throwable) {
+                        if (isViewAttached) {
+                            view.hideLoading()
+                            view.onErroGetDetail(e)
+                        }
+                    }
 
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.hideLoading()
-                    view.onErroGetDetail(e)
-                }
-            }
+                    override fun onCompleted() {
 
-            override fun onNext(objects: GraphqlResponse) {
-                view.hideLoading()
-                val dataDetailCheckoutPromo = objects.getData<DataPromoCheckoutDetail>(DataPromoCheckoutDetail::class.java)
-                view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel)
-            }
-        })
+                    }
+
+                    override fun onNext(t: DetailCouponMarkeplaceModel?) {
+                        view.hideLoading()
+                        view.onSuccessGetDetailPromo(t?.dataPromoCheckoutDetail?.promoCheckoutDetailModel?:throw RuntimeException())
+                        if(t.dataVoucher?.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED){
+                            view.onErroGetDetail(CheckPromoCodeException(t.dataVoucher?.message?.text?:""))
+                        }
+                    }
+                })
     }
 
     override fun detachView() {
-        getDetailCouponUseCase.unsubscribe()
+        getDetailCouponMarketplaceUseCase.unsubscribe()
         checkPromoUseCase.unsubscribe()
         super.detachView()
-    }
-
-    companion object {
-        private val INPUT_CODE = "code"
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.checkout.domain.usecase;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -37,7 +38,7 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
     @Inject
     public CheckPromoCodeCartListUseCase(ICartRepository cartRepository,
                                          IVoucherCouponMapper voucherCouponMapper,
-                                         CheckPromoCodeUseCase checkPromoCodeUseCase) {
+                                         @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase) {
         this.cartRepository = cartRepository;
         this.voucherCouponMapper = voucherCouponMapper;
         this.checkPromoCodeUseCase = checkPromoCodeUseCase;

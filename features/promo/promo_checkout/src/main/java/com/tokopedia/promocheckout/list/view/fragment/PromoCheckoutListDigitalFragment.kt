@@ -4,10 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.constant.IRouterConstant
-import com.tokopedia.promocheckout.detail.PromoCheckoutDetailActivity
+import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 
 class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment() {
+    override fun onPromoCodeUse(promoCode: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +23,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment() {
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        startActivityForResult(PromoCheckoutDetailActivity.createIntent(activity, promoCheckoutListModel?.code), REQUEST_CODE_DETAIL_PROMO)
+//        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(activity, promoCheckoutListModel?.code), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

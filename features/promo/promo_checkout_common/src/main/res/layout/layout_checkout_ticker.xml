@@ -1,41 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:orientation="vertical">
 
-    <FrameLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/layoutUsePromo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:visibility="gone"
-        android:padding="16dp">
+        android:layout_margin="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_4"
+        app:cardElevation="@dimen/dp_3"
+        android:visibility="gone">
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/textview_voucher"
-            android:drawablePadding="@dimen/dp_8"
-            app:drawableLeftCompat="@drawable/ic_kupon"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:drawableLeft="@drawable/ic_kupon"
-            android:drawableStart="@drawable/ic_kupon"
-            android:gravity="center"
-            android:text="@string/use_promo_code_or_coupon"
-            android:textColor="@color/tkpd_main_green"
-            tools:text="Gunakan Kode Promo atau Kupon"/>
+            android:background="@color/white"
+            android:padding="16dp">
 
-    </FrameLayout>
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/textview_voucher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:drawableLeft="@drawable/ic_kupon"
+                android:drawablePadding="@dimen/dp_8"
+                android:drawableStart="@drawable/ic_kupon"
+                android:gravity="center"
+                android:text="@string/use_promo_code_or_coupon"
+                android:textColor="@color/tkpd_main_green"
+                app:drawableLeftCompat="@drawable/ic_kupon"
+                tools:text="Gunakan Kode Promo atau Kupon" />
+
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
 
     <FrameLayout
         android:id="@+id/layoutTicker"
-        android:background="@drawable/background_checkout_ticker_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_checkout_ticker_view">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -66,12 +73,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_toEndOf="@+id/imageCheck"
                 android:layout_toLeftOf="@+id/imageClose"
                 android:layout_toRightOf="@+id/imageCheck"
-                android:orientation="vertical"
-                android:layout_marginStart="@dimen/dp_10"
                 android:layout_toStartOf="@+id/imageClose"
-                android:layout_toEndOf="@+id/imageCheck">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"

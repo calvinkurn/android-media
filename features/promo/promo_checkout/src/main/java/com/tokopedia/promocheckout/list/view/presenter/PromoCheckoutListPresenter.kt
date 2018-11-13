@@ -49,7 +49,7 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
         val input = JsonObject()
         input.addProperty(SERVICE_ID, serviceId)
         input.addProperty(CATEGORY_ID, categoryId)
-        input.addProperty(CATEGORY_ID_COUPON, "")
+        input.addProperty(CATEGORY_ID_COUPON, 0)
         input.addProperty(PAGE, page)
         input.addProperty(LIMIT, 10)
         input.addProperty(INCLUDE_EXTRA_INFO, 0)

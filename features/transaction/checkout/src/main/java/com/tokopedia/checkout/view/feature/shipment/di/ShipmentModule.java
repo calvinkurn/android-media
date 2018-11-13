@@ -1,5 +1,8 @@
 package com.tokopedia.checkout.view.feature.shipment.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.data.repository.AddressRepository;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
@@ -202,6 +205,13 @@ public class ShipmentModule {
     ShipmentAdapter provideShipmentAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter,
                                            RatesDataConverter ratesDataConverter) {
         return new ShipmentAdapter(shipmentAdapterActionListener, shipmentDataRequestConverter, ratesDataConverter);
+    }
+
+    @Provides
+    @ShipmentScope
+    @ApplicationContext
+    Context provideContextAbstraction(Context context){
+        return context;
     }
 
 }
