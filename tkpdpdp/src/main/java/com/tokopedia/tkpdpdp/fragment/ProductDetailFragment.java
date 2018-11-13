@@ -43,6 +43,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.tkpdpdp.ReviewGalleryActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -642,6 +643,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ReviewGalleryActivity.moveTo(getActivity());
+                /*
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
 
@@ -649,7 +652,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
                                 getUserId());
                     }
-                }
+                }*/
             }
         });
     }
