@@ -16,16 +16,28 @@
     <TextView
         android:id="@+id/channel_price_1"
         style="@style/TextView.Small.Orange"
-        android:layout_below="@id/channel_image_1"
-        android:layout_marginTop="@dimen/dp_15"
+        android:layout_below="@id/channel_before_disc_price_1"
         tools:text="Rp 1.399.500" />
 
     <TextView
         android:id="@+id/channel_before_disc_price_1"
         style="@style/TextView.Micro.BlackDisabled"
+        android:layout_below="@id/product_name"
+        tools:text="Rp 2.799.000" />
+
+    <TextView
+        android:id="@+id/product_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:lines="2"
+        android:maxLines="2"
         android:layout_below="@id/channel_image_1"
         android:layout_marginTop="@dimen/dp_5"
-        tools:text="Rp 2.799.000" />
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_12"
+        tools:text="Headset Gaming Power Bass" />
 
     <TextView
         android:id="@+id/channel_discount_1"

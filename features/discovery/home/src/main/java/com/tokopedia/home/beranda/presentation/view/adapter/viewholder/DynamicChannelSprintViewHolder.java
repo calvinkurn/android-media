@@ -147,6 +147,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 if (grid != null) {
                     ImageHandler.loadImageThumbs(holder.getContext(),
                             holder.channelImage1, grid.getImageUrl());
+                    TextViewHelper.displayText(holder.channelName, grid.getName());
                     TextViewHelper.displayText(holder.channelPrice1, grid.getPrice());
                     TextViewHelper.displayText(holder.channelDiscount1, grid.getDiscount());
                     TextViewHelper.displayText(holder.channelBeforeDiscPrice1, grid.getSlashedPrice());
@@ -180,6 +181,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView channelImage1;
+        private TextView channelName;
         private TextView channelPrice1;
         private TextView channelDiscount1;
         private TextView channelBeforeDiscPrice1;
@@ -191,6 +193,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             this.view = itemView;
             channelImage1 = (ImageView) itemView.findViewById(R.id.channel_image_1);
             channelPrice1 = (TextView) itemView.findViewById(R.id.channel_price_1);
+            channelName = (TextView) itemView.findViewById(R.id.product_name);
             channelDiscount1 = (TextView) itemView.findViewById(R.id.channel_discount_1);
             channelBeforeDiscPrice1 = (TextView) itemView.findViewById(R.id.channel_before_disc_price_1);
             itemContainer1 = itemView.findViewById(R.id.channel_item_container_1);
