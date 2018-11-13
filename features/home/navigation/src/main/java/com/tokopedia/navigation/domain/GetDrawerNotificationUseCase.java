@@ -18,7 +18,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.navigation.presentation.presenter.MainParentPresenter.PARAM_PARAMS;
+import static com.tokopedia.navigation.presentation.presenter.MainParentPresenter.PARAM_QUERY;
 
 /**
  * Created by meta on 25/07/18.
@@ -43,9 +43,18 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
         return Observable
                 .just(true)
                 .flatMap((Func1<Boolean, Observable<GraphqlResponse>>) aBoolean -> {
-                    GraphqlRequest graphqlRequest = new GraphqlRequest(
-                            requestParams.getString(GlobalNavConstant.QUERY, ""),
-                            NotificationEntity.class, (HashMap<String, Object>) requestParams.getObject(PARAM_PARAMS));
+                    GraphqlRequest graphqlRequest;
+                    if (requestParams.getObject(PARAM_QUERY) != null) {
+                        RequestParams queryParams = requestParams;
+                        queryParams.clearValue(GlobalNavConstant.QUERY);
+                        graphqlRequest = new GraphqlRequest(
+                                requestParams.getString(GlobalNavConstant.QUERY, ""),
+                                NotificationEntity.class, queryParams.getParameters());
+                    } else {
+                        graphqlRequest = new GraphqlRequest(
+                                requestParams.getString(GlobalNavConstant.QUERY, ""),
+                                NotificationEntity.class);
+                    }
                     graphqlUseCase.clearRequest();
                     graphqlUseCase.addRequest(graphqlRequest);
                     return graphqlUseCase.createObservable(null);

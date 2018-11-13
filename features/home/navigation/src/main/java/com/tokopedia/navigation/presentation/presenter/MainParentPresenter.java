@@ -16,7 +16,7 @@ import com.tokopedia.usecase.RequestParams;
 public class MainParentPresenter {
     public static final String KEY_FEED = "KEY_FEED";
     public static final String KEY_FEED_FIRSTPAGE_LAST_CURSOR = "KEY_FEED_FIRSTPAGE_LAST_CURSOR";
-    public static final String PARAM_PARAMS = "params";
+    public static final String PARAM_QUERY = "query";
     public static final String PARAM_FEED_LAST_CURSOR = "cursor";
 
     private MainParentView mainParentView;
@@ -41,7 +41,7 @@ public class MainParentPresenter {
             RequestParams requestParams = RequestParams.create();
             requestParams.putString(GlobalNavConstant.QUERY,
                     GraphqlHelper.loadRawString(this.mainParentView.getContext().getResources(), R.raw.query_notification));
-            requestParams.putObject(PARAM_PARAMS, buildQueryParam());
+            requestParams.putAll(buildQueryParam().getParameters());
             getNotificationUseCase.execute(requestParams, new NotificationSubscriber(this.mainParentView));
         }
     }
