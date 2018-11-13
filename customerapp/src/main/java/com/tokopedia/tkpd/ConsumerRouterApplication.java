@@ -1197,26 +1197,29 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity) {
-        Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL,
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
         return intent;
     }
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
-        Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL,
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
-        intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
+        extras.putString(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
         return intent;
     }
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
-        Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL,
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
         return intent;
     }
 
@@ -2075,7 +2078,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getContactUsIntent(Context context) {
-        return new Intent(context, ContactUsHomeActivity.class);
+        return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }
 
     @Override
@@ -2364,7 +2367,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendAnalyticsGroupChat(String url, String error) {
-        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+        if (remoteConfig.getBoolean("groupchat_analytics", false)) {
             AnalyticsLog.logGroupChatWebSocketError(url, error);
         }
     }
@@ -2602,17 +2605,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHelpUsIntent(Context context) {
-        return new Intent(context, ContactUsActivity.class);
+        return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }
 
 
     @Override
     public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
-        Intent intent = new Intent(context, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs(
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs(
                 TextUtils.isEmpty(url) ? TkpdBaseURL.BASE_CONTACT_US : url, context
         ));
-        intent.putExtra(ContactUsConstant.IS_CHAT_BOT, isFromChatBot);
+        extras.putBoolean(ContactUsConstant.IS_CHAT_BOT, isFromChatBot);
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(context, extras);
         return intent;
     }
 
@@ -3191,6 +3195,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getDefferedDeeplinkPathIfExists() {
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
+
     @Override
     public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
         TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);

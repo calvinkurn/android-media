@@ -28,5 +28,7 @@ public interface ContactUsModuleRouter {
 
     Intent getTopProfileIntent(Context context, String loginID);
 
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
     String ACTION_CLOSE_ACTIVITY = "action_close_activity";
 }

@@ -13,6 +13,7 @@ import java.util.List;
 
 public interface ContactUsHomeContract {
     String ContactUsName = "Contact_Us";
+    String CONTACT_US_WEB = "contact_us_web";
 
     interface View extends CustomerView {
         void addPopularArticle(ContactUsArticleResponse articleResponse);
