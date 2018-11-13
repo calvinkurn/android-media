@@ -5,6 +5,10 @@ import android.content.Context;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
 import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
+import com.tokopedia.logisticaddaddress.features.manage.DataSource;
+import com.tokopedia.logisticaddaddress.features.manage.ManageAddressContract;
+import com.tokopedia.logisticaddaddress.features.manage.ManageAddressPresenter;
+import com.tokopedia.logisticaddaddress.features.manage.ManageAddressRepository;
 import com.tokopedia.logisticaddaddress.features.manageaddress.MPAddressActivityListener;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenter;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenterImpl;
@@ -57,4 +61,16 @@ public class ManageAddressModule {
         return new ManageAddressAdapter(addressTypeFactory, new ArrayList<>());
     }
 
+
+    @Provides
+    @AddressScope
+    ManageAddressContract.Presenter providePresenter(ManageAddressPresenter presenter) {
+        return presenter;
+    }
+
+    @Provides
+    @AddressScope
+    DataSource provideRepository(ManageAddressRepository repository) {
+        return repository;
+    }
 }

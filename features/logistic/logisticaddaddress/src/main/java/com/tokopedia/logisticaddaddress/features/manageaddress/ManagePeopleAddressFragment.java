@@ -238,9 +238,9 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     @Override
     public void setNoResultView(boolean isAble) {
         if(isAble) this.adapter.showEmptyState();
-        else this.adapter.hideLoading();
+        else this.adapter.hideEmptyState();
         IS_EMPTY = isAble;
-        this.adapter.showEmptyState();
+//        this.adapter.showEmptyState();
     }
 
     @Override
@@ -302,9 +302,10 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         int positionStart = this.list.size();
         int itemCount = newData.size();
 
+        if(this.adapter.isLoading()) this.adapter.hideLoading();
         this.adapter.addElement(AddressViewModelMapper.convertToViewModel(newData));
         this.list.addAll(newData);
-        this.adapter.notifyItemRangeInserted(positionStart, itemCount);
+//        this.adapter.notifyItemRangeInserted(positionStart, itemCount);
     }
 
     @Override

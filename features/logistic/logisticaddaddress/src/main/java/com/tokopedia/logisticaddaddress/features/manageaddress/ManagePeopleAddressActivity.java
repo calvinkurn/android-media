@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.logisticaddaddress.features.manage.ManageAddressFragment;
 import com.tokopedia.logisticaddaddress.utils.BottomSheetFilterDialog;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;
@@ -41,7 +42,7 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ManagePeopleAddressFragment.newInstance();
+        return ManageAddressFragment.newInstance();
     }
 
     @Override
