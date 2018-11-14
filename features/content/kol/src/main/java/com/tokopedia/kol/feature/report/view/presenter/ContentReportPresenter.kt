@@ -8,5 +8,7 @@ import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
  */
 class ContentReportPresenter : BaseDaggerPresenter<ContentReportContract.View>(),
         ContentReportContract.Presenter {
+    override fun sendReport() {
 
+    }
 }

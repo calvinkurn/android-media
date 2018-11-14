@@ -17,6 +17,6 @@ interface ContentReportContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-
+        fun sendReport()
     }
 }

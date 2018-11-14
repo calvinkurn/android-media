@@ -66,7 +66,7 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
 
     fun getSelectedItem(): ReportReasonViewModel = list.first { it.isSelected }
 
-    private fun getCustomTypeString(): String {
+    fun getCustomTypeString(): String {
         return view.getContext()?.getString(R.string.kol_reason_type_others) ?: ""
     }
 

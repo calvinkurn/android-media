@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
@@ -38,6 +39,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     override fun getScreenName() = null
 
     override fun initInjector() {
+        GraphqlClient.init(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -87,6 +89,10 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         sendBtn.setOnClickListener {
             //TODO milhamj
             adapter.getSelectedItem()
+
+            if (adapter.getSelectedItem().type == adapter.getCustomTypeString()) {
+
+            }
         }
     }
 
