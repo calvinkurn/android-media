@@ -63,6 +63,10 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         } else {
             getView().setChallengeImage("", "");
         }
+
+        if (model.getMe() != null) {
+            getView().setLikes(model.getMe().isLiked());
+        }
         if (getParticipatedStatus(model)) {
             getView().isParticipated(true);
             getView().setLikesCountView(String.valueOf(model.getLikes()));
@@ -70,9 +74,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             getView().isParticipated(false);
             sendBuzzPointEvent(model.getId());
         }
-        if (model.getMe() != null) {
-            getView().setLikes(model.getMe().isLiked());
-        }
+
         getView().setApprovedView(model.getStatus(), model.getStatusMessage());
         getView().setPointsView(String.valueOf(model.getPoints()));
         getView().setDetailTitle(model.getTitle());
@@ -96,7 +98,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
         if (!TextUtils.isEmpty(result.getId()))
             requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
-        postSubmissionLikeUseCase.execute(requestParams,new Subscriber<Map<Type, RestResponse>>() {
+        postSubmissionLikeUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
             }
@@ -158,7 +160,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
                 if (submissionResult != null) {
@@ -192,7 +194,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().hidProgressBar();
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
                 RestResponse res2 = restResponse.get(Result.class);
@@ -225,7 +227,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().hidProgressBar();
                 Toast.makeText(getView().getActivity(), R.string.ch_post_deleted_msg, Toast.LENGTH_SHORT).show();
                 ChallengesCacheHandler.addManipulatedMap(submissionId, ChallengesCacheHandler.Manupulated.DELETE.ordinal());
@@ -247,7 +249,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     @Override
     public boolean checkIsPastChallenge(Collection collection) {
-        if(collection==null){
+        if (collection == null) {
             return false;
         }
         return Utils.checkIsPastChallenge(collection.getEndDate());
