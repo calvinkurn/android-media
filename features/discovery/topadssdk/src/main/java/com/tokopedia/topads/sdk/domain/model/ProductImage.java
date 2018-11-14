@@ -49,6 +49,8 @@ public class ProductImage implements Parcelable {
         }
         if(!object.isNull(KEY_M_ECS)){
             setM_ecs(object.getString(KEY_M_ECS));
+        } else {
+            setM_ecs(object.getString(KEY_S_ECS));
         }
         if(!object.isNull(KEY_S_ECS)){
             setS_ecs(object.getString(KEY_S_ECS));
