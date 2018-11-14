@@ -97,4 +97,8 @@ public class AccountConstants {
         String REJECTED = "rejected";
         String DEACTIVATED = "deactivated";
     }
+
+    public interface ErrorCodes{
+        String ERROR_CODE_NULL_MENU = "ACC001";
+    }
 }

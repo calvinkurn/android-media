@@ -9,29 +9,49 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.BuildConfig;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.data.model.AccountSettingConfig;
+import com.tokopedia.home.account.presentation.AccountSetting;
+import com.tokopedia.home.account.presentation.presenter.AccountSettingPresenter;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.KYC;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
 
-public class AccountSettingFragment extends TkpdBaseV4Fragment {
+public class AccountSettingFragment extends TkpdBaseV4Fragment implements AccountSetting.View {
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSession userSession;
     private AccountAnalytics accountAnalytics;
+
+    TextView personalDataMenu;
+    TextView addressMenu;
+    TextView passwordMenu;
+    TextView kycMenu;
+    View mainView;
+    ProgressBar progressBar;
+
+    @Inject
+    AccountSettingPresenter presenter;
 
     public static Fragment createInstance() {
         return new AccountSettingFragment();
@@ -47,19 +67,65 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_account_setting, container, false);
+        View view = inflater.inflate(R.layout.fragment_account_setting, container, false);
+        personalDataMenu = view.findViewById(R.id.label_view_identity);
+        addressMenu = view.findViewById(R.id.label_view_address);
+        passwordMenu = view.findViewById(R.id.label_view_password);
+        kycMenu = view.findViewById(R.id.label_view_kyc);
+        mainView = view.findViewById(R.id.main_view);
+        progressBar = view.findViewById(R.id.progress_bar);
+        return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.label_view_identity).setOnClickListener(view1 ->
+        setMenuClickListener(view);
+        getMenuToggle();
+    }
+
+    private void getMenuToggle() {
+        showLoading();
+        presenter.getMenuAccountSetting();
+    }
+
+    @Override
+    public void showLoading() {
+        mainView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        mainView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(String message) {
+        hideLoading();
+        if (getView() != null) {
+            ToasterError.make(getView(), message)
+                    .setAction(getString(R.string.title_try_again), view -> getMenuToggle())
+                    .show();
+        }
+    }
+
+    @Override
+    public void showErroNoConnection() {
+        hideLoading();
+        showError(getString(R.string.error_no_internet_connection));
+    }
+
+    private void setMenuClickListener(View view) {
+
+        personalDataMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID));
-        view.findViewById(R.id.label_view_address).setOnClickListener(view1 ->
+        addressMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_ADDRESS_ID));
-        view.findViewById(R.id.label_view_password).setOnClickListener(view1 ->
+        passwordMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
-        view.findViewById(R.id.label_view_kyc).setOnClickListener(view1 ->
+        kycMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
     }
 
@@ -92,13 +158,19 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
                     startActivity(router.getManageAddressIntent(getActivity()));
                     break;
                 case SettingConstant.SETTING_ACCOUNT_KYC_ID:
-                    accountAnalytics.eventClickAccountSetting(KYC);
-                    intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
-                    getActivity().startActivity(intent);
+                    goToKyc();
                     break;
                 default:
                     break;
             }
+        }
+    }
+
+    private void goToKyc() {
+        if (getActivity() != null) {
+            accountAnalytics.eventClickAccountSetting(KYC);
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
+            getActivity().startActivity(intent);
         }
     }
 
@@ -108,6 +180,29 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
                     ((AccountHomeRouter) getActivity().getApplicationContext())
                             .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
 
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    public void onSuccessGetConfig(AccountSettingConfig accountSettingConfig) {
+        personalDataMenu.setVisibility(accountSettingConfig.isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
+        addressMenu.setVisibility(accountSettingConfig.isAddressEnabled() ? View.VISIBLE : View.GONE);
+        passwordMenu.setVisibility(accountSettingConfig.isPasswordEnabled() ? View.VISIBLE : View.GONE);
+        kycMenu.setVisibility(accountSettingConfig.isIdentityEnabled() ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void logUnknownError(Throwable e) {
+        try {
+            if (!BuildConfig.DEBUG) Crashlytics.logException(e);
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
         }
     }
 }

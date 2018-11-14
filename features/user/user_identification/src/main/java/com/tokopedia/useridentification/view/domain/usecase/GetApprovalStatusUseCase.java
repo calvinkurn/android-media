@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view.domain;
+package com.tokopedia.useridentification.view.domain.usecase;
 
 import android.content.Context;
 

@@ -9,11 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.KYCConstant;
+import com.tokopedia.useridentification.view.di.DaggerUserIdentificationComponent;
+import com.tokopedia.useridentification.view.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
+
+import javax.inject.Inject;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -28,8 +33,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
     private View mainView;
     private TextView button;
 
-    //    @Inject
-    private UserIdentificationInfo.Presenter presenter;
+    @Inject
+    UserIdentificationInfo.Presenter presenter;
 
     public static UserIdentificationInfoFragment createInstance() {
         UserIdentificationInfoFragment fragment = new UserIdentificationInfoFragment();
@@ -58,7 +63,15 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
 
     @Override
     protected void initInjector() {
+        if (getActivity() != null) {
+            UserIdentificationComponent daggerUserIdentificationComponent =
+                    DaggerUserIdentificationComponent.builder()
+                            .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                            .build();
 
+            daggerUserIdentificationComponent.inject(this);
+            presenter.attachView(this);
+        }
     }
 
     private void initView(View parentView) {
@@ -71,7 +84,19 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getStatusInfo();
+    }
+
+    private void getStatusInfo() {
+        showLoading();
+        presenter.getStatus();
+    }
+
+    @Override
     public void onSuccessGetInfo(int status) {
+        hideLoading();
         switch (status) {
             case KYCConstant.STATUS_REJECTED:
                 showStatusRejected();
@@ -143,12 +168,4 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
         progressBar.setVisibility(View.GONE);
     }
 
-    private View.OnClickListener onClickNextButton() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        };
-    }
 }

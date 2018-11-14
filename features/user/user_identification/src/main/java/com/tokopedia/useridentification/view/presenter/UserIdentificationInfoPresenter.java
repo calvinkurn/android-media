@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.useridentification.view.domain.GetApprovalStatusUseCase;
+import com.tokopedia.useridentification.view.domain.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.useridentification.view.domain.pojo.GetApprovalStatusPojo;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
@@ -24,10 +24,10 @@ public class UserIdentificationInfoPresenter extends BaseDaggerPresenter<UserIde
     private final GetApprovalStatusUseCase getApprovalStatusUseCase;
     private final Context context;
 
-    //    @Inject
+    @Inject
     public UserIdentificationInfoPresenter(@ApplicationContext Context context,
                                            GetApprovalStatusUseCase getApprovalStatusUseCase
-                                           ) {
+    ) {
         this.getApprovalStatusUseCase = getApprovalStatusUseCase;
         this.context = context;
     }
@@ -39,27 +39,31 @@ public class UserIdentificationInfoPresenter extends BaseDaggerPresenter<UserIde
 
     @Override
     public void getStatus() {
-        getApprovalStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(""), new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+//        getApprovalStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(""), new Subscriber<GraphqlResponse>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                if (getView() != null) {
+//                    getView().onErrorGetInfo(ErrorHandler.getErrorMessage(context, e));
+//                }
+//            }
+//
+//            @Override
+//            public void onNext(GraphqlResponse graphqlResponse) {
+//                if (getView() != null
+//                        && graphqlResponse.getData(GetApprovalStatusPojo.class) != null) {
+//
+//                    GetApprovalStatusPojo pojo = graphqlResponse.getData(GetApprovalStatusPojo
+//                            .class);
+//                    getView().onSuccessGetInfo(0);
+//                }
+//            }
+//        });
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null){
-                    getView().onErrorGetInfo(ErrorHandler.getErrorMessage(context, e));
-                }
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                //TODO on Success
-                if(getView()!= null
-                        && graphqlResponse.getData(GetApprovalStatusPojo.class) != null){
-                    getView().onSuccessGetInfo(0);
-                }
-            }
-        });
+        getView().onSuccessGetInfo(0);
     }
 }
