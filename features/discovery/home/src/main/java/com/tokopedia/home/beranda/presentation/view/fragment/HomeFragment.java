@@ -562,7 +562,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         remoteConfigEnable = remoteConfig.getBoolean(
                 ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         );
-        if (remoteConfigEnable) {
+        if (getActivity() != null && remoteConfigEnable) {
             getActivity().startActivity(PromoListActivity.newInstance(
                     getActivity(),
                     PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
