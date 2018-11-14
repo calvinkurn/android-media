@@ -9,8 +9,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
  */
 
 public class UserIdentificationCameraActivity extends BaseSimpleActivity {
+
     @Override
     protected Fragment getNewFragment() {
         return null;
     }
+
 }

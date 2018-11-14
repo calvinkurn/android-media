@@ -45,6 +45,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends UserIdenti
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_identification_form, container, false);
         initView(view);
+        setContentView();
         return view;
     }
 
@@ -54,7 +55,6 @@ public abstract class BaseUserIdentificationStepperFragment<T extends UserIdenti
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         button = view.findViewById(R.id.button);
-        setContentView();
     }
 
     protected abstract void setContentView();
