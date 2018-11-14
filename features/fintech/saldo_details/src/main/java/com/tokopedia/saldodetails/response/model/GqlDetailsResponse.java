@@ -75,21 +75,21 @@ public class GqlDetailsResponse implements Parcelable {
 
 
     protected GqlDetailsResponse(Parcel in) {
-        this.isEligible = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.status = ((int) in.readValue((Integer.class.getClassLoader())));
-        this.isEnabled = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.showNewLogo = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.showToggle = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.boxType = ((String) in.readValue((String.class.getClassLoader())));
-        this.description = ((String) in.readValue((String.class.getClassLoader())));
-        this.showRightArrow = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.boxTitle = ((String) in.readValue((String.class.getClassLoader())));
-        this.boxDesc = ((String) in.readValue((String.class.getClassLoader())));
-        this.boxShowPopup = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.popupTitle = ((String) in.readValue((String.class.getClassLoader())));
-        this.popupDesc = ((String) in.readValue((String.class.getClassLoader())));
-        this.popupButtonText = ((String) in.readValue((String.class.getClassLoader())));
+        this.isEligible = in.readByte() != 0;
+        this.status = in.readInt();
+        this.isEnabled = in.readByte() != 0;
+        this.showNewLogo = in.readByte() != 0;
+        this.title = in.readString();
+        this.showToggle = in.readByte() != 0;
+        this.boxType = in.readString();
+        this.description = in.readString();
+        this.showRightArrow = in.readByte() != 0;
+        this.boxTitle = in.readString();
+        this.boxDesc = in.readString();
+        this.boxShowPopup = in.readByte() != 0;
+        this.popupTitle = in.readString();
+        this.popupDesc = in.readString();
+        this.popupButtonText = in.readString();
         in.readList(this.infoList, (GqlInfoListResponse.class.getClassLoader()));
         in.readList(this.anchorList, (GqlAnchorListResponse.class.getClassLoader()));
     }
@@ -102,21 +102,21 @@ public class GqlDetailsResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(isEligible);
-        dest.writeValue(status);
-        dest.writeValue(isEnabled);
-        dest.writeValue(showNewLogo);
-        dest.writeValue(title);
-        dest.writeValue(showToggle);
-        dest.writeValue(boxType);
-        dest.writeValue(description);
-        dest.writeValue(showRightArrow);
-        dest.writeValue(boxTitle);
-        dest.writeValue(boxDesc);
-        dest.writeValue(boxShowPopup);
-        dest.writeValue(popupTitle);
-        dest.writeValue(popupDesc);
-        dest.writeValue(popupButtonText);
+        dest.writeByte((byte) (isEligible ? 1 : 0));
+        dest.writeInt(status);
+        dest.writeByte((byte) (isEnabled ? 1 : 0));
+        dest.writeByte((byte) (showNewLogo ? 1 : 0));
+        dest.writeString(title);
+        dest.writeByte((byte) (showToggle ? 1 : 0));
+        dest.writeString(boxType);
+        dest.writeString(description);
+        dest.writeByte((byte) (showRightArrow ? 1 : 0));
+        dest.writeString(boxTitle);
+        dest.writeString(boxDesc);
+        dest.writeByte((byte) (boxShowPopup ? 1 : 0));
+        dest.writeString(popupTitle);
+        dest.writeString(popupDesc);
+        dest.writeString(popupButtonText);
         dest.writeList(infoList);
         dest.writeList(anchorList);
     }
