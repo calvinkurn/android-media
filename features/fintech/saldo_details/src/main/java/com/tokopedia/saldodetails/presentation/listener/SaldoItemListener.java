@@ -4,6 +4,4 @@ import android.view.View;
 
 public interface SaldoItemListener {
     void setTextColor(View view, int colorId);
-
-//    void onNotesClicked(String note);
 }

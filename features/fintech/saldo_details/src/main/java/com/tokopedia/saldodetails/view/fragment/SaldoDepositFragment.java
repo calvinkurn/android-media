@@ -31,7 +31,6 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
-import com.tokopedia.saldodetails.analytics.SaldoEventAnalytics;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
@@ -55,8 +54,6 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Inject
     UserSession userSession;
-    @Inject
-    SaldoEventAnalytics saldoEventAnalytics;
 
     TextView totalBalance;
     RelativeLayout startDateLayout;

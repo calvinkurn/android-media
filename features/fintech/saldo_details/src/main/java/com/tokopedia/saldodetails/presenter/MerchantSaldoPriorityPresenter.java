@@ -17,11 +17,6 @@ public class MerchantSaldoPriorityPresenter extends BaseDaggerPresenter<Merchant
         implements MerchantSaldoPriorityContract.Presenter {
 
     private SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
-    private static final java.lang.String DATE_FORMAT_VIEW = "dd/MM/yyyy";
-    public static final int REQUEST_WITHDRAW_CODE = 1;
-    private String paramStartDate;
-    private String paramEndDate;
-
 
     @Inject
     public MerchantSaldoPriorityPresenter(@NonNull SetMerchantSaldoStatus setMerchantSaldoStatus) {
@@ -34,7 +29,6 @@ public class MerchantSaldoPriorityPresenter extends BaseDaggerPresenter<Merchant
         if (setMerchantSaldoStatusUseCase != null) {
             setMerchantSaldoStatusUseCase.unsubscribe();
         }
-
     }
 
     @Override

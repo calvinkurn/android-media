@@ -18,12 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            app:layout_scrollFlags="scroll|enterAlways" />
 
     </android.support.design.widget.AppBarLayout>
 
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,13 +35,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@android:color/transparent"
-            android:dividerHeight="@dimen/margin_vs"
             android:longClickable="false"
-            android:scrollbars="vertical"
-            android:padding="@dimen/padding_small"
-            />
+            android:scrollbars="vertical" />
 
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <!--<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"

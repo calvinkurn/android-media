@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.viewholder;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,8 @@ import java.util.Date;
 
 public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistoryList> {
 
+    private static final String DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd hh:mm:ss";
+    private static final String DATE_PATTERN_FOR_UI = "dd MMM yyyy hh:mm";
     private TextView dateTV;
     private TextView note;
     private TextView nominal;
@@ -46,8 +49,8 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
 
         Date sourceDate;
         String strDate = "";
-        SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        SimpleDateFormat sdfView = new SimpleDateFormat("dd MMM yyyy hh:mm");
+        SimpleDateFormat sdfSource = new SimpleDateFormat(DATE_PATTERN_FROM_SERVER);
+        SimpleDateFormat sdfView = new SimpleDateFormat(DATE_PATTERN_FOR_UI);
         try {
             sourceDate = sdfSource.parse(element.getCreateTime());
             strDate = sdfView.format(sourceDate);
@@ -62,8 +65,6 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
             listener.setTextColor(nominal, R.color.tkpd_light_green);
             if (context != null) {
                 nominal.setTextColor(context.getResources().getColor(R.color.tkpd_light_green));
-            }
-            if (context != null) {
                 nominal.setText(String.format(
                         context.getResources().getString(R.string.sp_positive_saldo_balance),
                         String.valueOf(element.getAmount())));
@@ -75,9 +76,6 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
             listener.setTextColor(nominal, R.color.tkpd_prod_price);
             if (context != null) {
                 nominal.setTextColor(context.getResources().getColor(R.color.tkpd_prod_price));
-            }
-
-            if (context != null) {
                 nominal.setText(String.format(
                         context.getResources().getString(R.string.sp_negative_saldo_balance),
                         String.valueOf(element.getAmount()).replace("-", "")));
@@ -87,12 +85,4 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
         }
     }
 
-    /*private View.OnClickListener onNotesClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onNotesClicked(note.getText().toString());
-            }
-        };
-    }*/
 }
