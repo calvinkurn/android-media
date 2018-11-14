@@ -14,7 +14,6 @@ import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
-import com.tokopedia.core.analytics.container.PerfMonContainer;
 import com.tokopedia.core.app.TkpdCoreRouter;
 
 import java.util.Map;
