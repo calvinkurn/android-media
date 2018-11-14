@@ -33,5 +33,5 @@
     @com.google.android.gms.** *;
 }
 
--keep com.appsflyer.** { *; }
+-keep public class com.appsflyer.** { *; }
 -dontwarn com.android.installreferrer
