@@ -157,17 +157,17 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     @Override
     public void setActionDeleteButton(AddressViewModel viewModel) {
-        showDialogConfirmation("Apakah Anda yakin ingin menghapus alamat: " +
-                        "<b>" + viewModel.getAddressName() + "</b>?",
+        String message = String.format(
+                getString(R.string.delete_prompt_message), viewModel.getAddressName());
+        showDialogConfirmation(message,
                 (dialogInterface, i) -> mPresenter.deleteAddress(viewModel.getAddressId()));
     }
 
     @Override
     public void setActionDefaultButtonClicked(AddressViewModel viewModel) {
-        showDialogConfirmation("Apakah Anda yakin ingin menggunakan alamat:" +
-                        "<br/><br/><b>" + viewModel.getAddressName() + "</b><br/>" +
-                        "<br/>" + viewModel.getAddressFull() + "<br/>" +
-                        "<br/><br/> sebagai alamat utama Anda?",
+        String message = String.format(getString(R.string.prioritize_message_prompt),
+                viewModel.getAddressName(), viewModel.getAddressFull());
+        showDialogConfirmation(message,
                 (dialogInterface, i) -> mPresenter.prioritizeAddress(viewModel.getAddressId()));
     }
 
