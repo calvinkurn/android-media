@@ -253,6 +253,9 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         LayoutInflater layoutInflater = getLayoutInflater();
         spActionListLinearLayout.removeAllViews();
 
+        if (anchorList == null) {
+            return;
+        }
         int list_size = anchorList.size();
         for (int i = list_size - 1; i >= 0; i--) {
             View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
@@ -282,6 +285,10 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     private void populateInfolistData(List<GqlInfoListResponse> infoList) {
         LayoutInflater layoutInflater = getLayoutInflater();
         spDetailListLinearLayout.removeAllViews();
+
+        if (infoList == null) {
+            return;
+        }
         for (GqlInfoListResponse infoList1 : infoList) {
 
             View view = layoutInflater.inflate(R.layout.layout_info_list, null);
