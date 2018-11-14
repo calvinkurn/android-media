@@ -46,6 +46,6 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     }
 
     private boolean isNative() {
-        return ((ContactUsModuleRouter) getApplication()).getBooleanRemoteConfig(ContactUsHomeContract.CONTACT_US_WEB, true);
+        return ((ContactUsModuleRouter) getApplication()).getBooleanRemoteConfig(ContactUsHomeContract.CONTACT_US_WEB, false);
     }
 }
