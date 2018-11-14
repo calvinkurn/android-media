@@ -89,7 +89,7 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
 
     @Override
     public void setOnSubmitFilterDialog(int spinnerPosition, String query) {
-        ((ManagePeopleAddressView) getFragment()).setOnGetFilterActivated(spinnerPosition, query);
+        ((ManageAddressContract.View) getFragment()).filter(spinnerPosition, query);
     }
 
     @Override

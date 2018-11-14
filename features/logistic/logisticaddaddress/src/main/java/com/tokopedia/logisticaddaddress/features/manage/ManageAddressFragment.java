@@ -48,10 +48,12 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PAR
 public class ManageAddressFragment extends BaseListFragment<AddressViewModel, AddressTypeFactory>
         implements AddressViewHolder.ManageAddressListener, ManageAddressContract.View {
 
+    private static final int DEFAULT_PAGE_VALUE = 1;
+    private static final int DEFAULT_SORT_ID = 1;
+    private static final String DEFAULT_QUERY_VALUE = "";
+
     private boolean IS_EMPTY = false;
     private MPAddressActivityListener mActivityListener;
-    private int mSortId;
-    private String mQuery;
 
     @Inject
     ManageAddressContract.Presenter mPresenter;
@@ -65,7 +67,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     @Override
     public void loadData(int page) {
-        mPresenter.getAddress(page, 1, "");
+        mPresenter.getAddress(page, DEFAULT_SORT_ID, DEFAULT_QUERY_VALUE);
     }
 
     @Override
@@ -164,6 +166,13 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void refreshView() {
         loadInitialData();
+    }
+
+    @Override
+    public void filter(int sortId, String query) {
+        getAdapter().clearAllElements();
+        showLoading();
+        mPresenter.getAddress(DEFAULT_PAGE_VALUE, sortId, query);
     }
 
     @Override

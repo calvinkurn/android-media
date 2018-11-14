@@ -23,6 +23,8 @@ public interface ManageAddressContract {
 
         void refreshView();
 
+        void filter(int sortId, String query);
+
         void openFormAddressView(AddressModel data);
 
         void showData(List<AddressViewModel> data, boolean hasNext);
