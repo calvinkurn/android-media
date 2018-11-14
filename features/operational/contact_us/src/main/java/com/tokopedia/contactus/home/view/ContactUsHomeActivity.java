@@ -38,14 +38,14 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        if (isWebViewOnly()) {
+        if (!isNative()) {
             return ContactUsWebFragment.getWebViewFragment(getIntent().getStringExtra(ContactUsConstant.PARAM_URL));
         } else {
             return ContactUsHomeFragment.newInstance();
         }
     }
 
-    private boolean isWebViewOnly() {
-        return ((ContactUsModuleRouter) getApplication()).getBooleanRemoteConfig(ContactUsHomeContract.CONTACT_US_WEB, false);
+    private boolean isNative() {
+        return ((ContactUsModuleRouter) getApplication()).getBooleanRemoteConfig(ContactUsHomeContract.CONTACT_US_WEB, true);
     }
 }
