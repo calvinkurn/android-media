@@ -166,7 +166,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuList.setMenuDescription(context.getString(R.string.label_menu_waiting_for_payment));
         try {
             menuList.setCount(Integer.parseInt(accountModel.getNotifications().getBuyerOrder().getPaymentStatus()));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             menuList.setCount(0);
         }
         menuList.setApplink(ApplinkConst.PMS);
