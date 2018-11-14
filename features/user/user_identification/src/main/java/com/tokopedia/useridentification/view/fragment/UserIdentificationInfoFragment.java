@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
 /**
@@ -78,6 +79,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
                 button.setTextColor(getResources().getColor(R.color.white));
                 button.setBackgroundResource(R.drawable.green_button_rounded);
                 button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(onGoToFormActivityButton());
                 break;
             case 0: //Pending
                 title.setText(R.string.kyc_pending_title);
@@ -90,6 +92,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
                 button.setTextColor(getResources().getColor(R.color.black_38));
                 button.setBackgroundResource(R.drawable.white_button_rounded);
                 button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(onGoToTermsButton());
                 break;
             case 2: //Expired
                 break;
@@ -100,6 +103,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
                 button.setTextColor(getResources().getColor(R.color.white));
                 button.setBackgroundResource(R.drawable.green_button_rounded);
                 button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(onGoToFormActivityButton());
                 break;
             default:
                 onErrorGetInfo();
@@ -129,7 +133,16 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
         progressBar.setVisibility(View.GONE);
     }
 
-    private View.OnClickListener onIntroClickNextButton(){
+    private View.OnClickListener onGoToFormActivityButton(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserIdentificationFormActivity.getIntent(getContext());
+            }
+        };
+    }
+
+    private View.OnClickListener onGoToTermsButton(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

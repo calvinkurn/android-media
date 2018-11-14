@@ -1,10 +1,12 @@
 package com.tokopedia.useridentification.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 /**
@@ -33,7 +35,8 @@ public class UserIdentificationFormKtpFragment extends BaseUserIdentificationSte
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), 1);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA);
             }
         });
     }
