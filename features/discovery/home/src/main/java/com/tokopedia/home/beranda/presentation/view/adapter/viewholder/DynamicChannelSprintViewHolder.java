@@ -113,7 +113,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     }
 
     private static boolean isSprintSale(DynamicHomeChannel.Channels channel) {
-        return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
+        return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.equals(channel.getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(channel.getLayout());
     }
 
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
