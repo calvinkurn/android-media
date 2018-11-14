@@ -62,7 +62,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.navigationCommon)
-
+    
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
@@ -101,6 +101,8 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation project(rootProject.ext.libraries.analytics)
+
+    implementation project(rootProject.ext.libraries.userSession)
 
 }
 

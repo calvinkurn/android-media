@@ -72,6 +72,7 @@ import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
@@ -301,6 +302,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionCommonUrl.BASE_WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         LoginRegisterPhoneUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         CheckMsisdnUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
+
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
         TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
