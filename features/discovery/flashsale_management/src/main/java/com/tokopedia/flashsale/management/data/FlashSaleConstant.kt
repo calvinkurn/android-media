@@ -32,13 +32,20 @@ object FlashSaleConstant {
     const val NAMED_REQUEST_CAMPAIGN = "request_campaign"
     const val NAMED_REQUEST_SELLER_STATUS = "request_seller_status"
 
+    const val STATUS_SUBMISSION = "pendaftaran"
+    const val STATUS_CANCELLED = "dibatalkan"
+    const val STATUS_PRODUCT_SELECTION_START = "seleksi produk"
+    const val STATUS_PRODUCT_SELECTION_END = "seleksi selesai"
+    const val STATUS_ACTIVE = "aktif"
+    const val STATUS_END = "berakhir"
+
     val statusColorList = mapOf(
-            "pendaftaran" to Pair(R.color.status_red, R.color.red_50),
-            "dibatalkan" to Pair(R.color.status_red, R.color.red_50),
-            "seleksi produk" to Pair(R.color.status_blue, R.color.status_blue_bg),
-            "seleksi selesai" to Pair(R.color.bg_corner_yellow, R.color.status_yellow_bg),
-            "aktif" to Pair(R.color.tkpd_main_green, R.color.green_50),
-            "berakhir" to Pair(R.color.font_black_disabled_38, R.color.grey_300)
+            STATUS_SUBMISSION to Pair(R.color.status_red, R.color.red_50),
+            STATUS_CANCELLED to Pair(R.color.status_red, R.color.red_50),
+            STATUS_PRODUCT_SELECTION_START to Pair(R.color.status_blue, R.color.status_blue_bg),
+            STATUS_PRODUCT_SELECTION_END to Pair(R.color.bg_corner_yellow, R.color.status_yellow_bg),
+            STATUS_ACTIVE to Pair(R.color.tkpd_main_green, R.color.green_50),
+            STATUS_END to Pair(R.color.font_black_disabled_38, R.color.grey_300)
     )
 
     val defaultPairColor = R.color.font_black_disabled_38 to R.color.grey_300

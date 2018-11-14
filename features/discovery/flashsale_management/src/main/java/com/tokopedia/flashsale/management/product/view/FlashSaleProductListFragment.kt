@@ -28,12 +28,15 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleConstant.STATUS_SUBMISSION
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
+import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleSubmitLabelAdapter
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
+import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
@@ -55,12 +58,13 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
 
-    var hasVisibleOnce = false
     var needLoadData = true
 
     var submitStatus: Boolean = false
     var pendingCount: Int = 0
     var submittedCount: Int = 0
+
+    var statusLabel: String = ""
 
     var flashSaleSubmitLabelAdapter: FlashSaleSubmitLabelAdapter? = null
 
@@ -110,7 +114,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         searchInputView.setResetListener {
             onSearchSubmitted("")
         }
-        refreshUI()
+        if (userVisibleHint) {
+            refreshUI()
+        }
     }
 
     override fun loadInitialData() {
@@ -127,34 +133,41 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     fun loadBottomBar() {
         loadSellerStatus()
-        loadTnC()
+        loadCampaignInfoAndTnc()
     }
 
     private fun loadSellerStatus() {
         presenter.getSellerStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_get_seller_status),
                 campaignSlug,
                 onSuccess = {
-                    context?.run {
-                        submitStatus = it.submitStatus
-                        renderUILabel()
-                        if (submitStatus) {
-                            btnSubmit.text = getString(R.string.flash_sale_update_submission)
-                            btnSubmit.setOnClickListener {
-                                onClickToUpdateSubmission()
-                            }
-                        } else {
-                            btnSubmit.text = getString(R.string.flash_sale_list)
-                            btnSubmit.setOnClickListener {
-                                onClickFlashSaleList()
-                            }
-                        }
-                    }
-                    allowEditProducts = it.isEligible && it.isShopActive && !it.isGodSeller
-                    renderBottom()
+                    onSuccessLoadSellerStatus(it)
                 },
                 onError = {
                     vgBottom.visibility = View.GONE
+                    ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
+                            .setAction(R.string.retry_label) {
+                                loadBottomBar()
+                            }.show()
                 })
+    }
+
+    private fun onSuccessLoadSellerStatus(it: SellerStatus) {
+        context?.run {
+            submitStatus = it.submitStatus
+            if (submitStatus) {
+                btnSubmit.text = getString(R.string.flash_sale_update_submission)
+                btnSubmit.setOnClickListener {
+                    onClickToUpdateSubmission()
+                }
+            } else {
+                btnSubmit.text = getString(R.string.flash_sale_list)
+                btnSubmit.setOnClickListener {
+                    onClickFlashSaleList()
+                }
+            }
+        }
+        allowEditProducts = it.isEligible && it.isShopActive && !it.isGodSeller
+        renderBottom()
     }
 
     private fun showProgressDialog() {
@@ -181,7 +194,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 onSuccess = {
                     hideProgressDialog()
                     activity?.run {
-                        ToasterNormal.showClose(this, it)
+                        ToasterNormal.showClose(this, it.message)
                     }
                     loadInitialData()
                 },
@@ -198,38 +211,48 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         // TODO
     }
 
-    private fun loadTnC() {
-        presenter.getFlashSaleTnc(campaignSlug,
-                onSuccess = {
-                    context?.run {
-                        val tncLongString = getString(R.string.with_click_button_you_agree_with_tnc)
-                        val tncString = getString(R.string.flash_sale_term_and_condition)
-                        val spannable = SpannableString(tncLongString)
-                        val indexStart = tncLongString.indexOf(tncString)
-                        val indexEnd = indexStart + tncString.length
-
-                        val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
-                        spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        val clickableSpan = object : ClickableSpan() {
-                            override fun onClick(widget: View) {
-                                val intent = FlashSaleTncActivity.createIntent(context!!, it)
-                                startActivity(intent)
-                            }
-
-                            override fun updateDrawState(ds: TextPaint) {
-                                super.updateDrawState(ds)
-                                ds.isUnderlineText = false
-                                ds.color = color
-                            }
-                        }
-                        spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        tvTnc.movementMethod = LinkMovementMethod.getInstance()
-                        tvTnc.text = spannable
-                    }
-                },
+    private fun loadCampaignInfoAndTnc() {
+        presenter.getFlashSaleInfoAndTnc(campaignSlug,
+                onSuccess = { onSuccessLoadTnc(it) },
                 onError = {
                     tvTnc.text = getString(R.string.with_click_button_you_agree_with_tnc)
+                    ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
+                            .setAction(R.string.retry_label) {
+                                loadBottomBar()
+                            }.show()
                 })
+    }
+
+    private fun onSuccessLoadTnc(flashSaleTncContent: FlashSaleTncContent) {
+        context?.run {
+            val tncLabelLongString = getString(R.string.with_click_button_you_agree_with_tnc)
+            val tncLabelString = getString(R.string.flash_sale_term_and_condition)
+            val spannable = SpannableString(tncLabelLongString)
+            val indexStart = tncLabelLongString.indexOf(tncLabelString)
+            val indexEnd = indexStart + tncLabelString.length
+
+            val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
+            spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    val intent = FlashSaleTncActivity.createIntent(context!!, flashSaleTncContent.tnc)
+                    startActivity(intent)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = color
+                }
+            }
+            spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tvTnc.movementMethod = LinkMovementMethod.getInstance()
+            tvTnc.text = spannable
+
+            statusLabel = flashSaleTncContent.statusInfo.label
+
+            renderUILabel()
+        }
     }
 
     override fun loadData(page: Int) {
@@ -297,7 +320,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         }
     }
 
-    private fun needShowChip() = submitStatus && ((pendingCount + submittedCount) > 0)
+    private fun needShowChip() = STATUS_SUBMISSION.equals(statusLabel, false) && submittedCount > 0
     private fun needShowBottom() = submitStatus && pendingCount > 0
 
     private fun renderUILabel() {
@@ -331,7 +354,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun refreshUI() {
-        if (hasVisibleOnce && needLoadData) {
+        if (needLoadData) {
             loadInitialData()
             needLoadData = false
         }
@@ -348,7 +371,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     override fun onItemClicked(flashSaleProductItem: FlashSaleProductItem) {
         context?.let {
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
-                    flashSaleProductItem, allowEditProducts && flashSaleProductItem.campaign.isEligible)
+                    flashSaleProductItem, allowEditProducts && flashSaleProductItem.campaign.isEligible
+                    && statusLabel.equals(STATUS_SUBMISSION, false))
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }
@@ -405,11 +429,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun setUserVisibleHint(isFragmentVisible_: Boolean) {
-        super.setUserVisibleHint(true)
+        super.setUserVisibleHint(isFragmentVisible_)
         if (this.isVisible) {
             // we check that the fragment is becoming visible
-            if (isFragmentVisible_ && !hasVisibleOnce) {
-                hasVisibleOnce = true
+            if (isFragmentVisible_ && isResumed) {
                 refreshUI()
             }
         }

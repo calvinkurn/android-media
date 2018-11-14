@@ -5,9 +5,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlist.Criteria
 import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
-import com.tokopedia.flashsale.management.product.data.FlashSaleCategoryListGQL
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
+import com.tokopedia.flashsale.management.product.data.*
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleCategoryListUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleProductUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleTncUseCase
@@ -94,21 +92,21 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
         sellerStatusUseCase.execute({ onSuccess(it.getMojitoSellerStatus.sellerStatus) }, onError)
     }
 
-    fun submitSubmission(campaignId: Int, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    fun submitSubmission(campaignId: Int, onSuccess: (FlashSaleDataContainer) -> Unit, onError: (Throwable) -> Unit) {
         //TODO send the correct message
         submitProductUseCase.setParams(campaignId, userSession.shopId.toInt())
         submitProductUseCase.execute(
                 {
                     if ( it.flashSaleDataContainer.isSuccess()) {
-                        onSuccess(it.flashSaleDataContainer.message)
+                        onSuccess(it.flashSaleDataContainer)
                     } else {
                         onError(MessageErrorException(it.flashSaleDataContainer.message))
                     }
                 }, onError)
     }
 
-    fun getFlashSaleTnc(campaignSlug: String,
-                        onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+    fun getFlashSaleInfoAndTnc(campaignSlug: String,
+                               onSuccess: (FlashSaleTncContent) -> Unit, onError: (Throwable) -> Unit) {
         getFlashSaleTncUseCase.setParams(campaignSlug, userSession.shopId.toInt())
         getFlashSaleTncUseCase.execute(
                 {
@@ -116,13 +114,14 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
                     if (tnc.isEmpty()) {
                         onError(NullPointerException())
                     } else {
-                        onSuccess(it.flashSaleTncGQLData.flashSaleTncContent.tnc)
+                        onSuccess(it.flashSaleTncGQLData.flashSaleTncContent)
                     }
                 }, onError)
     }
 
     fun clearCache() {
         getFlashSaleCategoryListUseCase.clearCache()
+        getFlashSaleTncUseCase.clearCache()
     }
 
     fun detachView() {
