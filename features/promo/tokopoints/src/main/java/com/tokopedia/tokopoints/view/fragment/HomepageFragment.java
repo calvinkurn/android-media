@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.fragment;
 
+import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +35,7 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
+import com.tokopedia.tokopoints.view.adapter.DynamicLinkAdapter;
 import com.tokopedia.tokopoints.view.adapter.HomepagePagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
@@ -45,6 +49,7 @@ import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
+import com.tokopedia.tokopoints.view.model.TokopointsDynamicLinkEntity;
 import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -64,6 +69,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private ImageView mImgEgg;
     private TabLayout mTabLayoutPromo;
     private ViewPager mPagerPromos;
+    private RecyclerView mRvDynamicLinks;
     @Inject
     public HomepagePresenter mPresenter;
 
@@ -186,6 +192,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mImgEgg = view.findViewById(R.id.img_egg);
         mTabLayoutPromo = view.findViewById(R.id.tab_layout_promos);
         mPagerPromos = view.findViewById(R.id.view_pager_promos);
+        mRvDynamicLinks = view.findViewById(R.id.rv_dynamic_link);
+
     }
 
     private void initListener() {
@@ -299,6 +307,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onSuccessTicker(@NonNull List<TickerContainer> tickers) {
+        View containerTicker=getView().findViewById(R.id.cons_ticker_container);
         if (getView() != null && tickers.size() > 0) {
             ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
 
@@ -334,8 +343,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             } else {
                 pageIndicator.setVisibility(View.GONE);
             }
-
-            getView().findViewById(R.id.cons_ticker_container).setVisibility(View.VISIBLE);
+            containerTicker.setVisibility(View.VISIBLE);
+        }else{
+            containerTicker.setVisibility(View.GONE);
         }
     }
 
@@ -663,5 +673,31 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             TabUtil.removedPaddingAtLast(mTabLayoutPromo,
                     (int) getResources().getDimension(R.dimen.tp_margin_medium));
         }
+    }
+
+    @Override
+    public void onSuccessDynamicLink(TokopointsDynamicLinkEntity tokopointsDynamicLinkEntity) {
+        int length=tokopointsDynamicLinkEntity.getLinks().size();
+        final boolean isEven;
+        if(length%2==0){
+            isEven=true;
+        }else{
+            isEven=false;
+        }
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // 7 is the sum of items in one repeated section
+                if(isEven || position!=length-1){
+                    return 1;
+                }else{
+                    return 2;
+                }
+            }
+        });
+        mRvDynamicLinks.setLayoutManager(manager);
+        mRvDynamicLinks.setAdapter(new DynamicLinkAdapter(tokopointsDynamicLinkEntity.getLinks()));
+
     }
 }

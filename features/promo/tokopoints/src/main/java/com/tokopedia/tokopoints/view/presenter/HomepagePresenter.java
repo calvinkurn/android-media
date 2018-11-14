@@ -11,6 +11,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.DynamicLinkResponse;
 import com.tokopedia.tokopoints.view.model.PreValidateRedeemBase;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
@@ -36,6 +37,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
     private GraphqlUseCase mStartSendGift;
+    private GraphqlUseCase mDynamicLinksUseCase;
 
     @Inject
     public HomepagePresenter(GraphqlUseCase getTokoPointDetailUseCase,
@@ -52,6 +54,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         this.mValidateCouponUseCase = validateCouponUseCase;
         this.mRedeemCouponUseCase = redeemCouponUseCase;
         this.mStartSendGift = startSendGift;
+        this.mDynamicLinksUseCase = mDynamicLinksUseCase;
     }
 
 
@@ -86,9 +89,13 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                 TokoPointDetailEntity.class);
         mGetTokoPointDetailUseCase.addRequest(graphqlRequest);
 
-        GraphqlRequest graphqlRequestEgg = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
+        graphqlRequest= new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
                 TokenDetailOuter.class);
-        mGetTokoPointDetailUseCase.addRequest(graphqlRequestEgg);
+
+        mGetTokoPointDetailUseCase.addRequest(graphqlRequest);
+        graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_dynamic_link),
+                DynamicLinkResponse.class);
+        mGetTokoPointDetailUseCase.addRequest(graphqlRequest);
 
         mGetTokoPointDetailUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -113,6 +120,13 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                         && tokenDetail.getTokenDetail() != null
                         && tokenDetail.getTokenDetail().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
                     getView().onSuccessTokenDetail(tokenDetail.getTokenDetail());
+                }
+
+                //handling for dynamic links
+                DynamicLinkResponse dynamicLinkResponse = graphqlResponse.getData(DynamicLinkResponse.class);
+                if (dynamicLinkResponse != null
+                        && dynamicLinkResponse.getTokopointsDynamicLinkEntity() != null) {
+                    getView().onSuccessDynamicLink(dynamicLinkResponse.getTokopointsDynamicLinkEntity());
                 }
 
                 if (data.getTokoPoints() == null

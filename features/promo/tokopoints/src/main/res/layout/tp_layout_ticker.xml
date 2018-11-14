@@ -15,7 +15,7 @@
     android:visibility="visible"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/line_separator_points_horizontal">
+    app:layout_constraintTop_toBottomOf="@+id/rv_dynamic_link">
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager_ticker"
