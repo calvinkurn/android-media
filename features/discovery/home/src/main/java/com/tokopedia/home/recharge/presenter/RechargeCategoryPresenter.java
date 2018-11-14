@@ -6,7 +6,8 @@ package com.tokopedia.home.recharge.presenter;
  */
 public interface RechargeCategoryPresenter {
 
-    void fetchDataRechargeCategory();
+    void fetchRecommendationList(Integer deviceId);
 
     void onDestroy();
+
 }

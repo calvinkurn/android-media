@@ -90,8 +90,6 @@
         android:id="@+id/view_pager_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
-
-    </com.tokopedia.core.customView.WrapContentViewPager>
+        android:background="@color/white" />
 
 </LinearLayout>

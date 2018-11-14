@@ -1,0 +1,12 @@
+query {
+  rechargeFavoriteRecommendationList($device_id: Int) {
+    title
+    recommendations {
+      iconUrl
+      title
+      clientNumber
+      appLink
+      webLink
+    }
+  }
+}

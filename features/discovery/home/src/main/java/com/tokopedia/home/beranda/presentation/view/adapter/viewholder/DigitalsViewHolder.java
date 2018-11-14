@@ -1,5 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
-import android.app.Activity;
+
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customView.WrapContentViewPager;
@@ -21,7 +22,10 @@ import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.source.CategoryListDataSource;
 import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
+import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
+import com.tokopedia.digital.widget.view.model.Recommendation;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
@@ -83,15 +87,23 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
                 new GlobalCacheManager(),
                 new CategoryMapper());
 
+        RecommendationListDataSource recommendationListDataSource = new RecommendationListDataSource(
+                digitalGqlApiService
+        );
+
         DigitalWidgetRepository digitalWidgetRepository = new DigitalWidgetRepository(
-                statusDataSource, categoryListDataSource
+                statusDataSource, categoryListDataSource, recommendationListDataSource
         );
 
         DigitalWidgetUseCase digitalWidgetUseCase = new DigitalWidgetUseCase(context,
                 digitalWidgetRepository);
 
+        DigitalRecommendationUseCase digitalRecommendationUseCase = new DigitalRecommendationUseCase(
+                digitalWidgetRepository
+        );
+
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(context, this,
-                digitalWidgetUseCase);
+                digitalWidgetUseCase, digitalRecommendationUseCase);
     }
 
     @Override
@@ -218,10 +230,16 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     }
 
     @Override
+    public void renderRecommendationList(List<Recommendation> recommendations) {
+
+    }
+
+    @Override
     public void bind(DigitalsViewModel element) {
         titleTxt.setText(element.getTitle());
         if (mRechargeCategory.isEmpty()) {
-            rechargeCategoryPresenter.fetchDataRechargeCategory();
+            String deviceId = ((AbstractionRouter) context.getApplicationContext()).getSession().getDeviceId();
+            rechargeCategoryPresenter.fetchRecommendationList(Integer.valueOf(deviceId));
         }
     }
 

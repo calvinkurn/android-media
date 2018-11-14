@@ -1,5 +1,6 @@
 package com.tokopedia.home.recharge.view;
 
+import com.tokopedia.digital.widget.view.model.Recommendation;
 import com.tokopedia.digital.widget.view.model.category.Category;
 
 import java.util.List;
@@ -17,4 +18,7 @@ public interface RechargeCategoryView {
     void renderErrorNetwork();
 
     void renderErrorMessage();
+
+    void renderRecommendationList(List<Recommendation> recommendations);
+
 }

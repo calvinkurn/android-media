@@ -1,8 +1,10 @@
 package com.tokopedia.home.recharge.presenter;
 import android.content.Context;
 
+import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
+import com.tokopedia.digital.widget.view.model.Recommendation;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.home.recharge.view.RechargeCategoryView;
 import com.tokopedia.usecase.RequestParams;
@@ -23,18 +25,50 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private Context context;
     private RechargeCategoryView view;
     private DigitalWidgetUseCase digitalWidgetUseCase;
+    private DigitalRecommendationUseCase digitalRecommendationUseCase;
 
     private List<Category> categoryList;
 
     public RechargeCategoryPresenterImpl(Context context,
                                          RechargeCategoryView view,
-                                         DigitalWidgetUseCase digitalWidgetUseCase) {
+                                         DigitalWidgetUseCase digitalWidgetUseCase,
+                                         DigitalRecommendationUseCase digitalRecommendationUseCase) {
         this.context = context;
         this.view = view;
         this.digitalWidgetUseCase = digitalWidgetUseCase;
+        this.digitalRecommendationUseCase = digitalRecommendationUseCase;
     }
 
     @Override
+    public void fetchRecommendationList(Integer deviceId) {
+        RequestParams params = digitalRecommendationUseCase.createRequestParams(deviceId);
+
+        digitalRecommendationUseCase.execute(params, new Subscriber<List<Recommendation>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof WidgetRuntimeException) {
+                    view.renderErrorMessage();
+                } else {
+                    view.renderErrorNetwork();
+                }
+            }
+
+            @Override
+            public void onNext(List<Recommendation> recommendations) {
+                if (recommendations != null && !recommendations.isEmpty()) {
+                    view.renderRecommendationList(recommendations);
+                } else {
+                    fetchDataRechargeCategory();
+                }
+            }
+        });
+    }
+
     public void fetchDataRechargeCategory() {
         digitalWidgetUseCase.execute(RequestParams.EMPTY, new Subscriber<List<Category>>() {
             @Override
