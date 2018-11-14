@@ -30,4 +30,5 @@ public interface DigitalGqlApi {
     @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<Response<List<GraphqlResponse<RecommendationEntity>>>> getRecommendationList(@Body String requestBody);
+
 }
