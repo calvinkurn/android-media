@@ -101,8 +101,7 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
             ((ManageAddressContract.View) getFragment()).refreshView();
         } else {
             String errorMessage = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_NETWORK_ERROR_MESSAGE);
-            //todo : show the message
-            ((ManageAddressContract.View) getFragment()).showNetworkError();
+            ((ManageAddressContract.View) getFragment()).showErrorSnackbar(errorMessage);
         }
     }
 }
