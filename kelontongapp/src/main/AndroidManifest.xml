@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:debuggable="true"
+        tools:ignore="GoogleAppIndexingWarning,HardcodedDebugMode">
 
         <activity
             android:name=".KelontongMainActivity"
