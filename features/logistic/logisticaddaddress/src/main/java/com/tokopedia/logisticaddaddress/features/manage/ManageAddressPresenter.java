@@ -1,7 +1,15 @@
 package com.tokopedia.logisticaddaddress.features.manage;
 
+import android.util.Log;
+
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticaddaddress.di.AddressScope;
+import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
+import com.tokopedia.logisticdata.data.entity.address.Token;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,6 +22,7 @@ import rx.Subscriber;
 @AddressScope
 public class ManageAddressPresenter implements ManageAddressContract.Presenter {
 
+    private Token mToken;
     private ManageAddressContract.View mView;
     private GetAddressUseCase getAddressUseCase;
 
@@ -34,7 +43,39 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
     }
 
     @Override
-    public Observable<GetPeopleAddress> getAddress(int page, int sortId, String query) {
-        return getAddressUseCase.getExecuteObservable(getAddressUseCase.getAddressParam(page, sortId, query));
+    public void getAddress(int page, int sortId, String query) {
+        getAddressUseCase
+            .getExecuteObservable(getAddressUseCase.getAddressParam(page, sortId, query))
+            .subscribe(getPeopleAddressSubscriber());
+    }
+
+    @Override
+    public Token getToken() {
+        return mToken;
+    }
+
+    private Subscriber<GetPeopleAddress> getPeopleAddressSubscriber() {
+        return new Subscriber<GetPeopleAddress>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mView.showNetworkError();
+            }
+
+            @Override
+            public void onNext(GetPeopleAddress getPeopleAddress) {
+                mToken = getPeopleAddress.getToken();
+                List<AddressViewModel> addressViewModelList =
+                        AddressViewModelMapper.convertToViewModel(getPeopleAddress.getList());
+                boolean hasNext = false;
+                if (getPeopleAddress.getPaging() != null)
+                    hasNext = PagingHandler.CheckHasNext(getPeopleAddress.getPaging().getUriNext());
+                mView.showData(addressViewModelList, hasNext);
+            }
+        };
     }
 }

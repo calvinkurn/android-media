@@ -1,7 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.manage;
 
+import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.List;
 
@@ -16,7 +18,9 @@ public interface ManageAddressContract {
 
         void openFormAddressView(AddressModel data);
 
-        void showData(List<AddressModel> data, boolean hasNext);
+        void showData(List<AddressViewModel> data, boolean hasNext);
+
+        void showNetworkError();
 
     }
 
@@ -26,7 +30,9 @@ public interface ManageAddressContract {
 
         void detachView();
 
-        Observable<GetPeopleAddress> getAddress(int page, int sortId, String query);
+        void getAddress(int page, int sortId, String query);
+
+        Token getToken();
 
     }
 }

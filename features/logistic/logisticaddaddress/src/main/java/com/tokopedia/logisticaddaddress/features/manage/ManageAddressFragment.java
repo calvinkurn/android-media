@@ -44,7 +44,6 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     private boolean IS_EMPTY = false;
     private int mSortId;
     private String mQuery;
-    private Token mToken;
 
     @Inject
     ManageAddressContract.Presenter mPresenter;
@@ -58,7 +57,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     @Override
     public void loadData(int page) {
-        mPresenter.getAddress(page, 1, "").subscribe(getPeopleAddressSubscriber());
+        mPresenter.getAddress(page, 1, "");
     }
 
     @Override
@@ -136,42 +135,24 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     @Override
     public void openFormAddressView(AddressModel data) {
+        Token token = mPresenter.getToken();
         if (data == null) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.mToken, IS_EMPTY),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token, IS_EMPTY),
                     REQUEST_CODE_PARAM_CREATE);
         } else {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, this.mToken),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, token),
                     REQUEST_CODE_PARAM_EDIT);
         }
     }
 
     @Override
-    public void showData(List<AddressModel> data, boolean hasNext) {
-        renderList(AddressViewModelMapper.convertToViewModel(data), hasNext);
+    public void showData(List<AddressViewModel> data, boolean hasNext) {
+        renderList(data, hasNext);
     }
 
-    private Subscriber<GetPeopleAddress> getPeopleAddressSubscriber() {
-        return new Subscriber<GetPeopleAddress>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d(ManageAddressFragment.class.getSimpleName(), "onError: " + e.getMessage());
-            }
-
-            @Override
-            public void onNext(GetPeopleAddress getPeopleAddress) {
-                mToken = getPeopleAddress.getToken();
-                List<AddressViewModel> addressViewModelList =
-                        AddressViewModelMapper.convertToViewModel(getPeopleAddress.getList());
-                boolean hasNext = false;
-                if (getPeopleAddress.getPaging() != null)
-                    hasNext = PagingHandler.CheckHasNext(getPeopleAddress.getPaging().getUriNext());
-                renderList(addressViewModelList, hasNext);
-            }
-        };
+    @Override
+    public void showNetworkError() {
+        getAdapter().showErrorNetwork();
     }
+
 }
