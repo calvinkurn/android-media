@@ -26,7 +26,7 @@ public interface SelectVerification {
 
         Context getContext();
 
-        void logUnknownError(String message);
+        void logUnknownError(Throwable message);
     }
 
     interface Presenter extends CustomerPresenter<View> {
