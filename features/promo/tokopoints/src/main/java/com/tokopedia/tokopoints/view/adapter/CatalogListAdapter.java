@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -40,6 +41,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
                 labelPoint, textDiscount;
         ImageView imgBanner, imgTime, imgPoint;
         ImageButton btnSendGift;
+        ProgressBar pbQuota;
         boolean isVisited = false;
 
         public ViewHolder(View view) {
@@ -58,6 +60,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             labelPoint = view.findViewById(R.id.text_point_label);
             textDiscount = view.findViewById(R.id.text_point_discount);
             btnSendGift = view.findViewById(R.id.btn_send_gift);
+            pbQuota = view.findViewById(R.id.progress_timer_quota);
         }
     }
 
@@ -119,11 +122,25 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
                 if (i == 1) {
                     //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                    try {
+                        String percent = item.getUpperTextDesc().get(i).split("%")[0].trim();
+                        holder.pbQuota.setProgress(Integer.parseInt(percent));
+                    } catch (Exception e) {
+
+                    }
+
+                    upperText.append(item.getUpperTextDesc().get(i));
                 } else {
                     upperText.append(item.getUpperTextDesc().get(i)).append(" ");
                 }
             }
+
+            if (item.getUpperTextDesc().size() > 1) {
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.red_150));
+            } else {
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.black_38));
+            }
+
             holder.quota.setText(MethodChecker.fromHtml(upperText.toString()));
         }
 

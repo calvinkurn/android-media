@@ -86,9 +86,15 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     StartPurchaseBottomSheet mStartPurchaseBottomSheet;
     private View tickerContainer;
     private LinearLayout containerEgg;
+    private onAppBarCollapseListener appBarCollapseListener;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
+    }
+
+    public interface onAppBarCollapseListener{
+        void showToolbarElevation();
+        void hideToolbarElevation();
     }
 
     @Nullable
@@ -97,19 +103,34 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         initInjector();
         View view = inflater.inflate(R.layout.tp_fragment_homepage, container, false);
         initViews(view);
-        appBarHeader.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                verticalOffset = Math.abs(verticalOffset);
-                if (verticalOffset >= appBarLayout.getTotalScrollRange() - tickerContainer.getHeight()) {
-                    slideUp();
-                } else {
-                    slideDown();
-                }
-            }
-        });
+        appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
+        appBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         return view;
     }
+
+    AppBarLayout.OnOffsetChangedListener offsetChangedListenerBottomView =new AppBarLayout.OnOffsetChangedListener() {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            verticalOffset = Math.abs(verticalOffset);
+            if (verticalOffset >= appBarLayout.getTotalScrollRange() - tickerContainer.getHeight()) {
+                slideUp();
+            } else {
+                slideDown();
+            }
+        }
+    };
+
+    AppBarLayout.OnOffsetChangedListener offsetChangedListenerAppBarElevation =new AppBarLayout.OnOffsetChangedListener() {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            verticalOffset = Math.abs(verticalOffset);
+            if (verticalOffset >= appBarLayout.getTotalScrollRange()) {     //Appbar is hidden now
+                appBarCollapseListener.hideToolbarElevation();
+            } else {
+                appBarCollapseListener.showToolbarElevation();
+            }
+        }
+    };
 
     private void slideUp() {
         if (bottomViewMembership.getVisibility() != View.VISIBLE) {
@@ -183,6 +204,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        appBarCollapseListener= (onAppBarCollapseListener) context;
     }
 
     @Override
@@ -244,7 +266,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         tickerContainer = view.findViewById(R.id.cons_ticker_container);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
         mRvDynamicLinks = view.findViewById(R.id.rv_dynamic_link);
-
     }
 
     private void initListener() {
@@ -604,7 +625,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         HomepagePagerAdapter homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
         homepagePagerAdapter.setEmptyMessages(emptyMessages);
         mPagerPromos.setAdapter(homepagePagerAdapter);
-        mTabLayoutPromo.setupWithViewPager(mPagerPromos);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
         mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
 
@@ -617,9 +637,10 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             @Override
             public void onPageSelected(int position) {
                 if (position == 0) {
-                    bottomViewMembership.setVisibility(View.VISIBLE);
+                    appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
                 }else{
-                    bottomViewMembership.setVisibility(View.GONE);
+                    appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
+                    slideDown();
                 }
             }
 
