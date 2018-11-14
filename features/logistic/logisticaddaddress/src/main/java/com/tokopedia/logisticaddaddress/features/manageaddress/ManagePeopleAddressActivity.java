@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.logisticaddaddress.features.manage.ManageAddressContract;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressFragment;
 import com.tokopedia.logisticaddaddress.utils.BottomSheetFilterDialog;
 import com.tokopedia.logisticaddaddress.R;
@@ -35,6 +36,7 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(this::onFabClicked);
+        fab.hide();
 
         mReceiver = new ManagePeopleAddressReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -92,6 +94,15 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
 
     @Override
     public void setOnReceiveResult(int resultCode, Bundle resultData) {
-        ((ManagePeopleAddressView) getFragment()).setOnActionReceiveResult(resultCode, resultData);
+        final String action = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_ACTION_TYPE, "unknown_action");
+        final String addressID = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_ADDRESS_ID);
+
+        if (resultCode == ManagePeopleAddressService.STATUS_FINISHED) {
+            ((ManageAddressContract.View) getFragment()).refreshView();
+        } else {
+            String errorMessage = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_NETWORK_ERROR_MESSAGE);
+            //todo : show the message
+            ((ManageAddressContract.View) getFragment()).showNetworkError();
+        }
     }
 }

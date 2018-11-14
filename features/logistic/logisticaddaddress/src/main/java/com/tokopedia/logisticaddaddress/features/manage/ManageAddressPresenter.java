@@ -50,6 +50,20 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
     }
 
     @Override
+    public void deleteAddress(String id) {
+        mView.toggleFilterFab(false);
+        mView.showLoadingView();
+        mView.getActivityListener().startServiceDeleteAddress(id);
+    }
+
+    @Override
+    public void prioritizeAddress(String id) {
+        mView.toggleFilterFab(false);
+        mView.showLoadingView();
+        mView.getActivityListener().startServiceSetDefaultAddress(id);
+    }
+
+    @Override
     public Token getToken() {
         return mToken;
     }

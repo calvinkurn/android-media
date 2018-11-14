@@ -1,6 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.manage;
 
+import android.content.DialogInterface;
+
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.features.manageaddress.MPAddressActivityListener;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -16,9 +19,19 @@ public interface ManageAddressContract {
 
     interface View {
 
+        MPAddressActivityListener getActivityListener();
+
+        void refreshView();
+
         void openFormAddressView(AddressModel data);
 
         void showData(List<AddressViewModel> data, boolean hasNext);
+
+        void showLoadingView();
+
+        void showDialogConfirmation(String message, DialogInterface.OnClickListener onPositiveClickListener);
+
+        void toggleFilterFab(boolean isVisible);
 
         void showNetworkError();
 
@@ -31,6 +44,10 @@ public interface ManageAddressContract {
         void detachView();
 
         void getAddress(int page, int sortId, String query);
+
+        void deleteAddress(String id);
+
+        void prioritizeAddress(String id);
 
         Token getToken();
 
