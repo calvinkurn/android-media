@@ -129,7 +129,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
         progressBar.setVisibility(View.GONE);
     }
 
-    private View.OnClickListener onClickNextButton(){
+    private View.OnClickListener onIntroClickNextButton(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

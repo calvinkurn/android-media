@@ -2,11 +2,14 @@ package com.tokopedia.useridentification.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +51,24 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private View buttonLayout;
     private View reCaptureButton;
     private View nextButton;
+    private File imageFile;
 
     private int viewMode;
 
     private CameraListener cameraListener;
+    private OnCameraFragmentListener onCameraFragmentListener;
+
+    public interface OnCameraFragmentListener {
+        void onImageTaken(int viewMode, File imageFile);
+    }
+
+    public static Fragment createInstance(int viewMode){
+        UserIdentificationCameraFragment fragment = new UserIdentificationCameraFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_VIEW_MODE, viewMode);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected String getScreenName() {
@@ -59,10 +76,25 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        onCameraFragmentListener = (OnCameraFragmentListener) context;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachActivity(activity);
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            viewMode = getArguments().getInt(ARG_VIEW_MODE);
+            viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
     }
 
@@ -139,6 +171,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onClick(View v) {
                 //TODO add pass image to model
+
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
@@ -169,9 +202,9 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void onSuccessImageTakenFromCamera(File cameraResultFile) {
-        File file = new File(cameraResultFile.getAbsolutePath());
-        if (file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+        imageFile = new File(cameraResultFile.getAbsolutePath());
+        if (imageFile.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             imagePreview.setImageBitmap(bitmap);
         }
         showImagePreview();
