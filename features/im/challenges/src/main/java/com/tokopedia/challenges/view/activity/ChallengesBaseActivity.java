@@ -27,6 +27,9 @@ public abstract class ChallengesBaseActivity extends BaseSimpleActivity implemen
         if (!userSession.isLoggedIn()) {
             navigateToLoginPage();
         }
+        if (!checkFirebaseEnable()) {
+            finish();
+        }
     }
 
     private void navigateToLoginPage() {
@@ -37,8 +40,16 @@ public abstract class ChallengesBaseActivity extends BaseSimpleActivity implemen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (!checkFirebaseEnable()) {
+            finish();
+        }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode != RESULT_OK) {
             finish();
         }
+
+    }
+
+    private boolean checkFirebaseEnable() {
+        return (((ChallengesModuleRouter) getApplicationContext()).getBooleanRemoteConfig("app_enable_indi_challenges", true));
     }
 }
