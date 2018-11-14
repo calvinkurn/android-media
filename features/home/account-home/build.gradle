@@ -36,4 +36,8 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }

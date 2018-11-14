@@ -1,0 +1,8 @@
+query
+  getAccountSettingConfig(){
+  daftarAlamat
+  daftarDiri
+  dokumenDataDiri
+  tokopediaCorner
+  ubahKataSandi
+  }

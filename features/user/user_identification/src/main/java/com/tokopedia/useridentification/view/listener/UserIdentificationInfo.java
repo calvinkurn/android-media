@@ -9,18 +9,18 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 public interface UserIdentificationInfo {
 
-    interface View extends CustomerView{
+    interface View extends CustomerView {
 
         void onSuccessGetInfo(int status);
 
-        void onErrorGetInfo();
+        void onErrorGetInfo(String errorMessage);
 
         void showLoading();
 
         void hideLoading();
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
         void getStatus();
     }
 }
