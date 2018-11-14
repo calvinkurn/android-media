@@ -11,17 +11,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:padding="@dimen/dp_16">
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16">
 
         <android.support.v7.widget.CardView
             android:id="@+id/base_layout_image"
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_80"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             app:cardBackgroundColor="@color/cardview_light_background"
             app:cardCornerRadius="@dimen/dp_4"
             app:cardElevation="0dp"
             app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="true">
+            app:cardUseCompatPadding="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivImageCampaign"
@@ -42,6 +48,8 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintLeft_toRightOf="@+id/base_layout_image"
             app:layout_constraintStart_toEndOf="@+id/base_layout_image"
             app:layout_constraintRight_toRightOf="parent"
@@ -108,6 +116,8 @@
             android:id="@+id/iv_arrow_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             app:srcCompat="@drawable/ic_arrow_down_grey"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvStatus"
@@ -127,16 +137,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCampaignDate">
 
+            <ImageView android:id="@+id/image_step"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
+                android:layout_gravity="center_horizontal"
+                tools:src="@drawable/ic_fs_step_cancelled" />
+
             <TextView
                 android:id="@+id/title_process"
                 style="@style/TextView.Small.Bold"
-                android:text="@string/title_campaign_product_selection_end" />
+                android:text="@string/title_campaign_product_selection_end"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"/>
 
             <TextView
                 android:id="@+id/desc_process"
                 style="@style/TextView.Micro"
                 android:layout_marginTop="@dimen/dp_8"
-                android:text="@string/desc_campaign_product_selection_end" />
+                android:text="@string/desc_campaign_product_selection_end"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"/>
 
         </LinearLayout>
 
@@ -145,6 +173,10 @@
             android:layout_height="wrap_content"
             style="@style/Button.Submit.Green.Full"
             android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:text="@string/label_product_list"
             app:layout_goneMarginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@+id/base_expand_view"

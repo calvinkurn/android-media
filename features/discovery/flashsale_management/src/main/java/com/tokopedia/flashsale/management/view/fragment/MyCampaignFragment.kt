@@ -105,6 +105,12 @@ class MyCampaignFragment : BaseCampaignFragment(){
         chips.visible()
     }
 
+    override fun onRetryClicked() {
+        super.onRetryClicked()
+        presenter.getCampaignLabel(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_label),
+                this::onSuccessGetCampaignLabel,this::onErrorGetCampaignLabel)
+    }
+
     override fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
         showSearchInputView()
         campaignStatusListAdapter.replaceData(data.data)

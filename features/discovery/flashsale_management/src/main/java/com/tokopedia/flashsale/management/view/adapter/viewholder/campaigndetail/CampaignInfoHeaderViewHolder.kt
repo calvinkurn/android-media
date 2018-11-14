@@ -24,6 +24,13 @@ class CampaignInfoHeaderViewHolder(view: View): AbstractViewHolder<CampaignInfoH
         itemView.tvCampaignName.text = campaign.name
         itemView.tvCampaignDate.text = campaign.campaignPeriod
         itemView.tvCampaignType.text = campaign.campaignType
+        val imageStepRes = FlashSaleConstant.statusStepImages.get(campaign.statusInfo.label.toLowerCase())
+        if (imageStepRes == null){
+            itemView.image_step.gone()
+        } else {
+            itemView.image_step.visible()
+            itemView.image_step.setImageResource(imageStepRes)
+        }
         with(itemView.tvStatus){
             text = campaign.statusInfo.label
             val (textColor, bgColor) = FlashSaleConstant.statusColorList.get(campaign.statusInfo.label.toLowerCase()) ?:

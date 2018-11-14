@@ -41,5 +41,14 @@ object FlashSaleConstant {
             "berakhir" to Pair(R.color.font_black_disabled_38, R.color.grey_300)
     )
 
+    val statusStepImages = mapOf(
+            "pendaftaran" to R.drawable.ic_fs_step_registration,
+            "dibatalkan" to R.drawable.ic_fs_step_cancelled,
+            "seleksi produk" to R.drawable.ic_fs_step_product_selection,
+            "seleksi selesai" to R.drawable.ic_fs_step_selection_ended,
+            "aktif" to R.drawable.ic_fs_step_active,
+            "berakhir" to R.drawable.ic_fs_step_ended
+    )
+
     val defaultPairColor = R.color.font_black_disabled_38 to R.color.grey_300
 }

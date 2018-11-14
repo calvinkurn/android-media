@@ -47,6 +47,10 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
         tempTopPaddingRecycleView = recycler_view.paddingTop
         tempBottomPaddingRecycleView = recycler_view.paddingBottom
         scrollFlags = (searchInputView.layoutParams as AppBarLayout.LayoutParams).scrollFlags
+        searchInputView.setResetListener {
+            searchInputView.searchText = ""
+            loadInitialData()
+        }
     }
 
     override fun onItemClicked(t: CampaignViewModel) {
@@ -74,7 +78,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     }
 
     fun onErrorGetCampaignList(throwable: Throwable) {
-
+        showGetListError(throwable)
     }
 
     open fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {}

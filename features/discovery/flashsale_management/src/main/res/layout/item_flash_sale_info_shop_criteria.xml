@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/guideline"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.3"/>
+            app:layout_constraintGuide_percent="0.4"/>
 
         <TextView style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="0dp"
@@ -89,7 +89,8 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_16"
-            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             tools:ignore="contentDescription"
             app:layout_constraintLeft_toRightOf="@+id/label_shop_reputation_min"
             app:layout_constraintStart_toEndOf="@+id/label_shop_reputation_min"
