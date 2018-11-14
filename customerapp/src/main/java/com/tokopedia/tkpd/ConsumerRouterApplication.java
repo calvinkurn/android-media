@@ -23,7 +23,6 @@ import android.view.MotionEvent;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
-import com.google.firebase.perf.metrics.Trace;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -524,7 +523,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private CacheManager cacheManager;
     private UserSession userSession;
-    private Trace feedTrace;
 
     @Override
     public void onCreate() {
@@ -3145,20 +3143,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
         return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
-    }
-
-    @Override
-    public void startTrace(String traceName) {
-        if (traceName.equals("feed_trace")) {
-            this.feedTrace = TrackingUtils.startTrace(traceName);
-        }
-    }
-
-    @Override
-    public void stopTrace(String traceName) {
-        if (traceName.equals("feed_trace") && feedTrace != null) {
-            feedTrace.stop();
-        }
     }
 
     @Override
