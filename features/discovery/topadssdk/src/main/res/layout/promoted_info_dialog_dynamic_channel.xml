@@ -54,9 +54,9 @@
                 android:text="@string/topads_info_dynamic_channel" />
 
             <ImageView
+                android:id="@+id/promo_image"
                 android:layout_width="140dp"
-                android:layout_height="70dp"
-                android:src="@drawable/promo_image" />
+                android:layout_height="70dp" />
         </LinearLayout>
 
         <Space
