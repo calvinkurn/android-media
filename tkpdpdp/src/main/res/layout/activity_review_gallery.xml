@@ -18,7 +18,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <com.example.henrypriyono.tesgallery.SwipeToRefresh
+            <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
                 android:id="@+id/swipe_refresh_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -31,7 +31,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/white"/>
 
-            </com.example.henrypriyono.tesgallery.SwipeToRefresh>
+            </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
             <View
                 android:layout_width="match_parent"
@@ -42,11 +42,11 @@
 
     </LinearLayout>
 
-    <com.example.henrypriyono.tesgallery.BottomSheetReviewImageSlider
+    <com.tokopedia.tkpdpdp.customview.bottomsheetreview.BottomSheetReviewImageSlider
         android:id="@+id/bottomSheetImageSlider"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:behavior_hideable="true"
-        app:layout_behavior="com.example.henrypriyono.tesgallery.UserLockBottomSheetBehavior"/>
+        app:layout_behavior="com.tokopedia.tkpdpdp.customview.bottomsheetreview.UserLockBottomSheetBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
