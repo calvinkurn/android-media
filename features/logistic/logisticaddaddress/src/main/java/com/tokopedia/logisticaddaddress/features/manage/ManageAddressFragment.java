@@ -88,6 +88,12 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.detachView();
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
