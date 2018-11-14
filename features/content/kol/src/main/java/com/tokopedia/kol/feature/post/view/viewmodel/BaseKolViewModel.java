@@ -7,8 +7,9 @@ import android.text.style.ClickableSpan;
  */
 
 public class BaseKolViewModel {
-    private final int userId;
-    private final String cardType;
+    private int userId;
+    private String activityType;
+    private String cardType;
     private String title;
     private String name;
     private String avatar;
@@ -29,15 +30,18 @@ public class BaseKolViewModel {
     private boolean isShowLike;
     private boolean editable;
     private boolean deletable;
+    private boolean multipleContent;
     private boolean isKol = true;
 
-    public BaseKolViewModel(int userId, String cardType, String title, String name, String avatar,
-                            String label, String kolProfileUrl, boolean followed, String review,
-                            boolean liked, int totalLike, int totalComment, int page, int contentId,
-                            String time, boolean isShowComment, boolean isShowLike,
-                            boolean editable, boolean deletable) {
+    public BaseKolViewModel(int userId, String activityType, String cardType, String title,
+                            String name, String avatar, String label, String kolProfileUrl,
+                            boolean followed, String review, boolean liked, int totalLike,
+                            int totalComment, int page, int contentId, String time,
+                            boolean isShowComment, boolean isShowLike, boolean editable,
+                            boolean deletable, boolean multipleContent) {
         this.userId = userId;
         this.cardType = cardType;
+        this.activityType = activityType;
         this.title = title;
         this.name = name;
         this.avatar = avatar;
@@ -55,14 +59,31 @@ public class BaseKolViewModel {
         this.isShowLike = isShowLike;
         this.editable = editable;
         this.deletable = deletable;
+        this.multipleContent = multipleContent;
     }
 
     public int getUserId() {
         return userId;
     }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
+
     public String getCardType() {
         return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
     public String getTitle() {
@@ -231,5 +252,13 @@ public class BaseKolViewModel {
 
     public void setKol(boolean kol) {
         isKol = kol;
+    }
+
+    public boolean isMultipleContent() {
+        return multipleContent;
+    }
+
+    public void setMultipleContent(boolean multipleContent) {
+        this.multipleContent = multipleContent;
     }
 }

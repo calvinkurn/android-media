@@ -39,6 +39,8 @@ public interface DashboardContract {
         void onErrorCheckAffiliate(String error);
 
         void goToAffiliateExplore();
+
+        void goToDeposit();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -266,7 +266,7 @@ public class FeedPlusPresenter
     @Override
     public void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel) {
         sendVoteUseCase.execute(
-                SendVoteUseCase.createParams(pollId, optionViewModel.getOptionId()),
+                SendVoteUseCase.createParams(pollId, optionViewModel.getOptionId(),""),
                 new SendVoteSubscriber(rowNumber, optionViewModel, getView())
         );
     }
