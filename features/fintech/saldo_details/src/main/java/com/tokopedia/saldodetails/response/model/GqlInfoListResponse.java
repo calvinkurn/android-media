@@ -38,8 +38,8 @@ public class GqlInfoListResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(label);
-        dest.writeValue(value);
+        dest.writeString(label);
+        dest.writeString(value);
     }
 
     public String getLabel() {

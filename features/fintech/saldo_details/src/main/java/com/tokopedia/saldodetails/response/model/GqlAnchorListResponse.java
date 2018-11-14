@@ -42,9 +42,9 @@ public class GqlAnchorListResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(label);
-        dest.writeValue(url);
-        dest.writeValue(color);
+        dest.writeString(label);
+        dest.writeString(url);
+        dest.writeString(color);
     }
 
     public String getLabel() {
