@@ -35,6 +35,8 @@ public interface ManageAddressContract {
 
         void toggleFilterFab(boolean isVisible);
 
+        void showErrorSnackbar(String message);
+
         void showNetworkError();
 
     }

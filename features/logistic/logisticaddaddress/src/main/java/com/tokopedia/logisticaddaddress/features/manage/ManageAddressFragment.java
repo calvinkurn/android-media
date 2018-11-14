@@ -1,9 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.manage;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
@@ -136,6 +139,16 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK) {
+            loadInitialData();
+        } else {
+            showErrorSnackbar(null);
+        }
+    }
+
+    @Override
     public void setActionEditButton(AddressViewModel viewModel) {
         openFormAddressView(
                 AddressViewModelMapper.convertFromViewModel(viewModel)
@@ -171,6 +184,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void filter(int sortId, String query) {
         getAdapter().clearAllElements();
+        toggleFilterFab(false);
         showLoading();
         mPresenter.getAddress(DEFAULT_PAGE_VALUE, sortId, query);
     }
@@ -213,6 +227,12 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void toggleFilterFab(boolean isVisible) {
         mActivityListener.setFilterViewVisibility(isVisible);
+    }
+
+    @Override
+    public void showErrorSnackbar(String message) {
+        if (message != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        else NetworkErrorHelper.showSnackbar(getActivity());
     }
 
     @Override
