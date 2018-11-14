@@ -51,17 +51,12 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
     }
 
     private void initWebSocket(final Subscriber<? super WebSocketInfo> subscriber, String accessToken) {
-        if(webSocketMap.containsKey(url)) {
-            return;
-        }
         webSocket = client.newWebSocket(getRequest(url, accessToken), new WebSocketListener() {
             @Override
             public void onOpen(final WebSocket webSocket, Response response) {
                 if (showLog) {
                     Log.d(logTag, url + " --> onOpen");
                 }
-
-                webSocketMap.put(url, webSocket);
                 if (!subscriber.isUnsubscribed()) {
                     subscriber.onNext(new WebSocketInfo(webSocket, true));
                 }

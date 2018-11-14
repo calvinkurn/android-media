@@ -41,7 +41,6 @@ import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -286,9 +285,9 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     @Override
-    public void logUnknownError(String message) {
+    public void logUnknownError(Throwable message) {
         try {
-            Crashlytics.log(0, ChooseVerificationMethodFragment.class.getSimpleName(), message);
+            Crashlytics.logException(message);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }

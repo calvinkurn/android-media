@@ -106,6 +106,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 if (e instanceof UnknownHostException) {
                     getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_unknown_host_exp_error_msg));
                 } else {
@@ -118,10 +119,11 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
                 postId = fingerprints.getNewPostId();
-                IntentFilter intentFilter =new IntentFilter();
+                IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction(ACTION_UPLOAD_COMPLETE);
                 intentFilter.addAction(ACTION_UPLOAD_FAIL);
                 getView().getContext().registerReceiver(receiver, intentFilter);
@@ -229,13 +231,14 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
-
+                if(!isViewAttached()) return;
                 getView().hideProgress();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 getView().hideProgress();
                 RestResponse res1 = restResponse.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
@@ -263,5 +266,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.ch_submit_video));
             getView().setChooseImageText(getView().getActivity().getString(R.string.ch_choose_image_title_video));
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        detachView();
     }
 }
