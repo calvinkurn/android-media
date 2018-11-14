@@ -55,7 +55,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     private static final int DEFAULT_SORT_ID = 1;
     private static final String DEFAULT_QUERY_VALUE = "";
 
-    private boolean IS_EMPTY = false;
+    private boolean IS_EMPTY_ADDRESS = false;
     private MPAddressActivityListener mActivityListener;
 
     @Inject
@@ -193,7 +193,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token, IS_EMPTY),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), token, IS_EMPTY_ADDRESS),
                     REQUEST_CODE_PARAM_CREATE);
         } else {
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, token),
@@ -238,6 +238,11 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void showNetworkError() {
         getAdapter().showErrorNetwork();
+    }
+
+    @Override
+    public void setIsEmptyAddress(boolean isEmpty) {
+        IS_EMPTY_ADDRESS = isEmpty;
     }
 
 }

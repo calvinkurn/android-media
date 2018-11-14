@@ -206,12 +206,7 @@ public class ManagePeopleAddressPresenterImpl implements ManagePeopleAddressPres
                         "<br/><br/><b>" + data.getAddressName() + "</b><br/>" +
                         "<br/>" + data.getAddressFull() + "<br/>" +
                         "<br/><br/> sebagai alamat utama Anda?",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        setOnStartActionSetDefaultAddress(data.getAddressId());
-                    }
-                });
+                (dialogInterface, i) -> setOnStartActionSetDefaultAddress(data.getAddressId()));
     }
 
     @Override
@@ -227,12 +222,7 @@ public class ManagePeopleAddressPresenterImpl implements ManagePeopleAddressPres
         fragmentListener.showDialogConfirmation(
                 "Apakah Anda yakin ingin menghapus alamat: " +
                         "<b>" + data.getAddressName() + "</b>?",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        setOnStartActionDeleteAddress(data.getAddressId());
-                    }
-                });
+                (dialogInterface, i) -> setOnStartActionDeleteAddress(data.getAddressId()));
     }
 
     @Override

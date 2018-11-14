@@ -39,6 +39,8 @@ public interface ManageAddressContract {
 
         void showNetworkError();
 
+        void setIsEmptyAddress(boolean isEmpty);
+
     }
 
     interface Presenter {

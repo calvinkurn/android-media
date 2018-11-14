@@ -83,6 +83,7 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
             @Override
             public void onNext(GetPeopleAddress getPeopleAddress) {
                 mToken = getPeopleAddress.getToken();
+                mView.setIsEmptyAddress(getPeopleAddress.getList().size() == 0);
                 List<AddressViewModel> addressViewModelList =
                         AddressViewModelMapper.convertToViewModel(getPeopleAddress.getList());
                 boolean hasNext = false;
