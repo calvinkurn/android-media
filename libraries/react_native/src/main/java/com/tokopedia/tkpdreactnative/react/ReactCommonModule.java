@@ -9,6 +9,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -40,6 +41,18 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     public void getImageHost(Promise promise) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         promise.resolve(remoteConfig.getString(RemoteConfigKey.IMAGE_HOST, "http://ecs7.tokopedia.net"));
+    }
+
+    @ReactMethod
+    public void getAppVersionCode(Promise promise) {
+        int versionCode = GlobalConfig.VERSION_CODE;
+        promise.resolve(versionCode);
+    }
+
+    @ReactMethod
+    public void getAppVersionName(Promise promise) {
+        String versionName = GlobalConfig.VERSION_NAME;
+        promise.resolve(versionName);
     }
 
     @ReactMethod
