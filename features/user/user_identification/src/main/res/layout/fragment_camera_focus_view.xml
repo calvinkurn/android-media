@@ -63,6 +63,14 @@
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:text="Pastikan KTP berada dalam area kotak dan terbaca dengan jelas." />
 
+    <ImageView
+        android:id="@+id/image_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"/>
+
     <com.tokopedia.useridentification.view.customview.FocusedCameraKTPView
         android:id="@+id/focused_view_ktp"
         android:layout_width="match_parent"
@@ -105,6 +113,8 @@
         app:layout_constraintTop_toTopOf="@+id/image_button_shutter"
         app:srcCompat="@drawable/ic_flip_camera_icon" />
 
+
+
     <LinearLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
@@ -112,7 +122,7 @@
         android:layout_margin="@dimen/dp_16"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
