@@ -63,10 +63,10 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
         }
 
         public void bindData(LinksItemEntity linksItemEntity) {
-            if(getAdapterPosition()==getItemCount()-1){
+            if (getAdapterPosition() == getItemCount() - 1) {
                 ivNextArrow.setVisibility(View.GONE);
-                if(getItemCount()%2!=0){
-                    RelativeLayout.LayoutParams layoutParams= (RelativeLayout.LayoutParams) tvDynamicText.getLayoutParams();
+                if (getItemCount() % 2 != 0) {
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvDynamicText.getLayoutParams();
                     layoutParams.setMargins(0, 0, 0, 0);
                     tvDynamicText.setGravity(Gravity.CENTER);
                 }
@@ -89,7 +89,9 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
                 @Override
                 public void onClick(View view) {
 
-                    if(!TextUtils.isEmpty(linksItemEntity.getUrl())){
+                    if (!TextUtils.isEmpty(linksItemEntity.getAppLink())) {
+                        RouteManager.route(context, linksItemEntity.getAppLink());
+                    } else if (!TextUtils.isEmpty(linksItemEntity.getUrl())) {
                         RouteManager.route(context, String.format("%s?url=%s",
                                 ApplinkConst.WEBVIEW,
                                 linksItemEntity.getUrl()));

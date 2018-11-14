@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_44"
+    android:layout_height="@dimen/dp_48"
     android:layout_marginLeft="@dimen/dp_2"
     android:layout_marginRight="@dimen/dp_2"
     android:layout_marginBottom="@dimen/dp_4"
-    app:cardBackgroundColor="@color/medium_green"
+    app:cardCornerRadius="@dimen/dp_4"
     app:cardUseCompatPadding="true">
 
     <RelativeLayout

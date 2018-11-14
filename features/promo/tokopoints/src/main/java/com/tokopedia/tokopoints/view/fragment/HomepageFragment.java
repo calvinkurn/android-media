@@ -604,6 +604,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         HomepagePagerAdapter homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
         homepagePagerAdapter.setEmptyMessages(emptyMessages);
         mPagerPromos.setAdapter(homepagePagerAdapter);
+        mTabLayoutPromo.setupWithViewPager(mPagerPromos);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
         mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
 
@@ -615,8 +616,10 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 1) {
-                    slideDown();
+                if (position == 0) {
+                    bottomViewMembership.setVisibility(View.VISIBLE);
+                }else{
+                    bottomViewMembership.setVisibility(View.GONE);
                 }
             }
 
@@ -756,6 +759,10 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onSuccessDynamicLink(TokopointsDynamicLinkEntity tokopointsDynamicLinkEntity) {
         int length=tokopointsDynamicLinkEntity.getLinks().size();
+        if(getView()!=null){
+            getView().findViewById(R.id.line_separator_dynamic_link).setVisibility(View.VISIBLE);
+            mRvDynamicLinks.setVisibility(View.VISIBLE);
+        }
         final boolean isEven;
         if(length%2==0){
             isEven=true;

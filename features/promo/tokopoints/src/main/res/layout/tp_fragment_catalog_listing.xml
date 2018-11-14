@@ -97,7 +97,7 @@
             <LinearLayout
                 android:id="@+id/bottom_view_membership"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/tp_height_bottom_membership_view"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
                 android:orientation="vertical"
