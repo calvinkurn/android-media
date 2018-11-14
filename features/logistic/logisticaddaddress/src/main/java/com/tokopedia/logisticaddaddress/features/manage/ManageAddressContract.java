@@ -3,14 +3,10 @@ package com.tokopedia.logisticaddaddress.features.manage;
 import android.content.DialogInterface;
 
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
-import com.tokopedia.logisticaddaddress.features.manageaddress.MPAddressActivityListener;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
-import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.

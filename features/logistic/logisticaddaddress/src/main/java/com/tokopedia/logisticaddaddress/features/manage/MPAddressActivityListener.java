@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.manageaddress;
+package com.tokopedia.logisticaddaddress.features.manage;
 
 /**
  * Created on 5/18/16.

@@ -13,7 +13,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".features.manageaddress.ManagePeopleAddressActivity"
+            android:name=".features.manage.ManagePeopleAddressActivity"
             android:label="@string/title_activity_manage_people_address"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />

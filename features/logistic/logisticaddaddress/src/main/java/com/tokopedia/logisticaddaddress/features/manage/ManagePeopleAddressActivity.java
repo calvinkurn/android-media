@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.manageaddress;
+package com.tokopedia.logisticaddaddress.features.manage;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,8 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.logisticaddaddress.features.manage.ManageAddressContract;
-import com.tokopedia.logisticaddaddress.features.manage.ManageAddressFragment;
 import com.tokopedia.logisticaddaddress.utils.BottomSheetFilterDialog;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;

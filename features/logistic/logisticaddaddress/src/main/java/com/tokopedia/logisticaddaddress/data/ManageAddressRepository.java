@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.manage;
+package com.tokopedia.logisticaddaddress.data;
 
 import com.tokopedia.logisticaddaddress.di.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;

@@ -2,18 +2,10 @@ package com.tokopedia.logisticaddaddress.di;
 
 import android.content.Context;
 
-import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
-import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
-import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
-import com.tokopedia.logisticaddaddress.features.manage.DataSource;
+import com.tokopedia.logisticaddaddress.data.DataSource;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressContract;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressPresenter;
-import com.tokopedia.logisticaddaddress.features.manage.ManageAddressRepository;
-import com.tokopedia.logisticaddaddress.features.manageaddress.MPAddressActivityListener;
-import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenter;
-import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenterImpl;
-
-import java.util.ArrayList;
+import com.tokopedia.logisticaddaddress.data.ManageAddressRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,31 +28,6 @@ public class ManageAddressModule {
     Context provideContext() {
         return this.context;
     }
-
-    @Provides
-    @AddressScope
-    MPAddressActivityListener provideManageAddressListener(@ActivityContext Context context) {
-        return (MPAddressActivityListener) context;
-    }
-
-    @Provides
-    @AddressScope
-    ManagePeopleAddressPresenter provideManageAddressPresenter(ManagePeopleAddressPresenterImpl presenter) {
-        return presenter;
-    }
-
-    @Provides
-    @AddressScope
-    AddressViewHolder.ManageAddressListener provideAddressViewHolderListener(ManagePeopleAddressPresenterImpl presenter) {
-        return presenter;
-    }
-
-    @Provides
-    @AddressScope
-    ManageAddressAdapter provideAddressAdapter(AddressTypeFactory addressTypeFactory) {
-        return new ManageAddressAdapter(addressTypeFactory, new ArrayList<>());
-    }
-
 
     @Provides
     @AddressScope
