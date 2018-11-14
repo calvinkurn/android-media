@@ -129,6 +129,8 @@ class FlightSearchMapper @Inject constructor() {
 
     fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
         with(flightComboTable) {
+            journey.isBestPairing = isBestPairing
+            journey.comboId = comboId
             if (!journey.isReturn) {
                 journey.adultCombo = onwardAdultPrice
                 journey.childCombo = onwardChildPrice
@@ -138,8 +140,6 @@ class FlightSearchMapper @Inject constructor() {
                 journey.infantNumericCombo = onwardInfantPriceNumeric
                 journey.sortPrice = onwardAdultPrice
                 journey.sortPriceNumeric = onwardAdultPriceNumeric
-                journey.isBestPairing = isBestPairing
-                journey.comboId = comboId
             } else {
                 journey.adultCombo = returnAdultPrice
                 journey.childCombo = returnChildPrice
@@ -149,8 +149,6 @@ class FlightSearchMapper @Inject constructor() {
                 journey.infantNumericCombo = returnInfantPriceNumeric
                 journey.sortPrice = returnAdultPrice
                 journey.sortPriceNumeric = returnAdultPriceNumeric
-                journey.isBestPairing = isBestPairing
-                journey.comboId = comboId
             }
         }
         return journey
