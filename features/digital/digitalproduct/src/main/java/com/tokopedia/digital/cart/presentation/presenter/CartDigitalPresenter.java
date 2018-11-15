@@ -74,7 +74,8 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
     @Inject
     public CartDigitalPresenter(
-                UserSession userSession,
+            DigitalAnalytics digitalAnalytics,
+            UserSession userSession,
             ICartDigitalInteractor iCartDigitalInteractor,
             DigitalAddToCartUseCase digitalAddToCartUseCase,
             DigitalCheckoutUseCase digitalCheckoutUseCase,
@@ -85,6 +86,8 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
         this.digitalRouter = digitalRouter;
+        this.userSession = userSession;
+        this.digitalAnalytics = digitalAnalytics;
     }
 
     @Override
