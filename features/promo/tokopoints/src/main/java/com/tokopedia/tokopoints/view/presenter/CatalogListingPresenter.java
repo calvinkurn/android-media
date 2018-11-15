@@ -64,6 +64,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
             mGetHomePageData.addRequest(graphqlRequestBanners);
         }
 
+        GraphqlRequest graphqlRequestTokenDetail = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
+                TokoPointDetailEntity.class);
+        mGetHomePageData.addRequest(graphqlRequestTokenDetail);
+
         Map<String, Object> variableFilter = new HashMap<>();
         variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_CATEGORY, slugCategory);
         variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_SUB_CATEGORY, slugSubCategory);
