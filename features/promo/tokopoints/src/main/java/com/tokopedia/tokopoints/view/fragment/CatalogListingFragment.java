@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
@@ -68,14 +69,15 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private LobDetails mLobDetails;
     private TextView mTvFlashTimer, mTvFlashTimerLabel;
     private ProgressBar mProgressFlash;
-    private ConstraintLayout mContainerFlashTimer, mClPointDetail;
+    private ConstraintLayout mContainerFlashTimer;
     /*This section is exclusively for handling flash-sale timer*/
     public CountDownTimer mFlashTimer;
+    private AppBarLayout mAppBarHeader;
 
     @Inject
     public CatalogListingPresenter mPresenter;
     private LinearLayout bottomViewMembership;
-    private ConstraintLayout containerPointDetail;
+    private ConstraintLayout mContainerPointDetail;
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
 
@@ -107,17 +109,15 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
-        mClPointDetail = view.findViewById(R.id.container_point_detail_header);
         initListener();
 
-        if (getArguments() == null) {
+        if (isSeeAllPage()) {
             mPresenter.getHomePageData("", "", false);
         } else {
+            mPresenter.getPointData();
             mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
                     getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
         }
-
-        mPresenter.getPointData();
     }
 
     @Override
@@ -191,7 +191,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTextMembershipValueBottom.setText(membership);
         mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(rewardValue, false));
         ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
-        mClPointDetail.setVisibility(View.VISIBLE);
+        mContainerPointDetail.setVisibility(View.VISIBLE);
+        mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
+        mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
     }
 
     @Override
@@ -313,9 +315,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (source.getId() == R.id.text_my_coupon) {
             gotoMyCoupons();
         } else if (source.getId() == R.id.text_failed_action) {
-            if (getArguments() == null) {
+            if (isSeeAllPage()) {
                 mPresenter.getHomePageData("", "", false);
             } else {
+                mPresenter.getPointData();
                 mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
                         getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
             }
@@ -359,14 +362,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
-        containerPointDetail = view.findViewById(R.id.container_point_detail);
+        mContainerPointDetail = view.findViewById(R.id.container_point_detail);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
         mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
         mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
-        AppBarLayout appBarHeader = view.findViewById(R.id.app_bar_header);
-        appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
-        appBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
+        mAppBarHeader = view.findViewById(R.id.app_bar_header);
         if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);
         }
@@ -376,7 +377,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         @Override
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             verticalOffset = Math.abs(verticalOffset);
-            if (verticalOffset >= containerPointDetail.getHeight()) {
+            if (verticalOffset >= mContainerPointDetail.getHeight()) {
                 slideUp();
             } else {
                 slideDown();
@@ -503,14 +504,13 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
             @Override
             public void onFinish() {
-                if (getArguments() == null) {
+                if (isSeeAllPage()) {
                     mPresenter.getHomePageData("", "", false);
                 } else {
+                    mPresenter.getPointData();
                     mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
                             getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
                 }
-
-                mPresenter.getPointData();
             }
         }.start();
     }
@@ -519,5 +519,14 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (getActivity() != null && title != null) {
             ((BaseSimpleActivity) getActivity()).updateTitle(title);
         }
+    }
+
+    private boolean isSeeAllPage() {
+        if (getArguments() == null
+                || StringUtils.isBlank(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY))) {
+            return true;
+        }
+
+        return false;
     }
 }
