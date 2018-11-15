@@ -102,6 +102,9 @@ public class Product {
     @SerializedName("product_catalog_id")
     @Expose
     private int productCatalogId;
+    @SerializedName("purchase_protection_plan_data")
+    @Expose
+    private PurchaseProtectionPlanData purchaseProtectionPlanData;
     @SerializedName("free_returns")
     @Expose
     private FreeReturns freeReturns;
