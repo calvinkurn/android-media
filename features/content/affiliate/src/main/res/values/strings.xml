@@ -61,6 +61,7 @@
     <string name="title_af_image_picker">Gambar Produk</string>
     <string name="title_af_image_editor">Image Editor</string>
     <string name="title_af_create_post">Tambah Foto</string>
+    <string name="title_af_choose_photo">Pilih Foto</string>
     <string name="title_af_create_post_example">Contoh Foto</string>
     <string name="af_use_image_to_show">Gunakan foto yang menampilkan produk pilihanmu.</string>
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
