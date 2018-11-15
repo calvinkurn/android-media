@@ -48,8 +48,6 @@ public interface GlobalNavRouter {
 
     Intent instanceIntentDigitalCategoryList();
 
-    Intent getReferralIntent(Context context);
-
     Intent gotoWishlistPage(Context context);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);

@@ -717,6 +717,7 @@ public class MainParentActivity extends BaseActivity implements
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
+                            .setRank(0)
                             .build();
                     shortcutInfos.add(productShortcut);
 
@@ -730,6 +731,7 @@ public class MainParentActivity extends BaseActivity implements
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                 .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
                                 .setIntents(new Intent[]{intentHome, wishlistIntent})
+                                .setRank(1)
                                 .build();
                         shortcutInfos.add(wishlistShortcut);
                     }
@@ -743,6 +745,7 @@ public class MainParentActivity extends BaseActivity implements
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
+                            .setRank(2)
                             .build();
                     shortcutInfos.add(digitalShortcut);
 
@@ -764,6 +767,7 @@ public class MainParentActivity extends BaseActivity implements
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
+                                .setRank(3)
                                 .build();
                         shortcutInfos.add(shopShortcut);
                     }

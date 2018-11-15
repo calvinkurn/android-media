@@ -2,6 +2,7 @@ package com.tokopedia.shop.open.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -79,7 +80,7 @@ public class ShopOpenDomainModule {
     @Provides
     public ShopOpenTracking provideTrackingOpenShop(@ApplicationContext Context context){
         if(context instanceof SellerModuleRouter) {
-            return new ShopOpenTracking((SellerModuleRouter)context);
+            return new ShopOpenTracking((SellerModuleRouter)context, ((AbstractionRouter)context).getSession());
         }else{
             return null;
         }
