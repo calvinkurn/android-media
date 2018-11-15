@@ -17,6 +17,7 @@ public class TravelPassengerUpdateActivity extends BaseSimpleActivity implements
     public static final String PASSENGER_DATA = "passenger_data";
     public static final String TYPE_PASSENGER_PAGE = "type_passenger_page";
     public static final int ADD_PASSENGER_TYPE = 1;
+    public static final int EDIT_PASSENGER_TYPE = 2;
 
     public static Intent callingIntent(Context context, TravelPassenger trainPassengerViewModel, int typePage) {
         Intent intent = new Intent(context, TravelPassengerUpdateActivity.class);

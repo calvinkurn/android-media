@@ -13,15 +13,12 @@ import java.util.ArrayList;
 /**
  * Created by nabillasabbaha on 23/10/18.
  */
-public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
+public class TravelPassengerEditAdapter extends BaseTravelPassengerAdapter {
 
-    private TravelPassenger passengerSelected;
     private ActionListener listener;
-    private boolean showCheckbox;
 
-    public TravelPassengerListAdapter(TravelPassenger passengerSelected) {
+    public TravelPassengerEditAdapter() {
         this.travelPassengerList = new ArrayList<>();
-        this.passengerSelected = passengerSelected;
     }
 
     public void setListener(ActionListener listener) {
@@ -35,7 +32,7 @@ public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
 
     @Override
     protected int getLayoutAdapter() {
-        return R.layout.item_travel_passenger_list;
+        return R.layout.item_travel_passenger_edit;
     }
 
     @Override
@@ -43,55 +40,50 @@ public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
         super.onBindViewHolder(holder, position);
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         TravelPassenger travelPassenger = travelPassengerList.get(position);
-        showCheckbox = false;
-        if (travelPassenger.getIdPassenger().equals(passengerSelected.getIdPassenger())) {
-            showCheckbox = true;
-            itemViewHolder.passengerName.setTextColor(context.getResources().getColor(R.color.black));
-        }
 
-        itemViewHolder.passengerLayout.setOnClickListener(new View.OnClickListener() {
+        itemViewHolder.editImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!travelPassenger.isSelected()) {
-                    if (travelPassenger.getPaxType() == passengerSelected.getPaxType()) {
-                        showCheckbox = true;
-
-                        listener.onClickChoosePassenger(travelPassenger);
-                        listener.onUpdatePassenger(passengerSelected.getIdPassenger(), false);
-                        listener.onUpdatePassenger(travelPassenger.getIdPassenger(), true);
-                    } else {
-                        listener.onShowErrorCantPickPassenger();
-                    }
-                }
+                if (!travelPassenger.isSelected())
+                    listener.onEditPassenger(travelPassenger);
             }
         });
+
+        itemViewHolder.deleteImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!travelPassenger.isSelected())
+                    listener.onDeletePassenger(travelPassenger.getId(), travelPassenger.getTravelId());
+            }
+        });
+
+        itemViewHolder.deleteImg.setVisibility(travelPassenger.isBuyer() == 1 ? View.GONE : View.VISIBLE);
         itemViewHolder.passengerName.setTextColor(getColorPassenger(travelPassenger.isSelected()));
-        itemViewHolder.checkboxImg.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
     }
 
     @Override
     protected int getColorPassenger(boolean isSelected) {
-        return isSelected && !showCheckbox ?
+        return isSelected ?
                 context.getResources().getColor(R.color.black_24) :
                 context.getResources().getColor(R.color.font_black_primary_70);
     }
 
     class ItemViewHolder extends TravelItemViewHolder {
 
-        private AppCompatImageView checkboxImg;
+        private AppCompatImageView deleteImg;
+        private AppCompatImageView editImg;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
 
-            checkboxImg = itemView.findViewById(R.id.img_checked);
+            deleteImg = itemView.findViewById(R.id.img_delete);
+            editImg = itemView.findViewById(R.id.img_edit);
         }
     }
 
     public interface ActionListener {
-        void onClickChoosePassenger(TravelPassenger travelPassenger);
+        void onEditPassenger(TravelPassenger travelPassenger);
 
-        void onUpdatePassenger(String idPassenger, boolean isSelected);
-
-        void onShowErrorCantPickPassenger();
+        void onDeletePassenger(String id, int travelId);
     }
 }
