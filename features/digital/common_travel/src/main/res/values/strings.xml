@@ -41,4 +41,11 @@
     <string name="error_message_choose_passenger">Kategori umur penumpang tidak sesuai</string>
     <string name="add_passenger_title_page">Tambah Data Penumpang</string>
     <string name="edit_passenger_title_page">Edit Data Penumpang</string>
+    <string name="dialog_delete_passenger_title">Hapus Data Penumpang</string>
+    <string name="dialog_delete_passenger_question">Data penumpang akan dihapus dari daftar. Anda yakin?</string>
+    <string name="dialog_delete_passenger_btn_delete">Hapus</string>
+    <string name="dialog_delete_passenger_btn_cancel">Batal</string>
+    <string name="snackbar_message_success_delete">Data penumpang berhasil dihapus.</string>
+    <string name="title_list_passenger_page">Dafttar Penumpang</string>
+
 </resources>

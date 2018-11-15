@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -39,7 +41,7 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        updateTitle("Daftar Penumpang");
+        updateTitle(getString(R.string.title_list_passenger_page));
     }
 
     @Override
@@ -51,13 +53,25 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_passenger_list, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_menu_passenger_list_edit);
+        SpannableString s = new SpannableString(item.getTitle());
+        ForegroundColorSpan span = new ForegroundColorSpan(ContextCompat.getColor(getApplicationContext(),
+                R.color.tkpd_main_green));
+        s.setSpan(span, 0, s.length(), 0);
+        item.setTitle(s);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_passenger_list_edit) {
-            Toast.makeText(getApplicationContext(), "Edit", Toast.LENGTH_SHORT).show();
+            supportInvalidateOptionsMenu();
+            startActivity(TravelPassengerEditActivity.callingIntent(getApplicationContext()));
             return true;
         } else {
             return super.onOptionsItemSelected(item);
