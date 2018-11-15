@@ -11,9 +11,9 @@
 
     <LinearLayout
         android:id="@+id/container_category_label"
-        android:descendantFocusability="blocksDescendants"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56"
+        android:descendantFocusability="blocksDescendants"
         android:orientation="horizontal"
         android:padding="@dimen/dp_16">
 
@@ -89,7 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
                 android:visibility="gone">
 
                 <View
@@ -103,12 +104,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_16"
+                    android:paddingStart="@dimen/dp_16"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingEnd="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
                     android:text="@string/digital_cart_deal_selected_label" />
 
-                <android.support.v7.widget.RecyclerView
+                <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                     android:id="@+id/rv_selected_deals"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:has_divider_left_padding="true" />
             </LinearLayout>
 
         </LinearLayout>

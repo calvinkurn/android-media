@@ -152,4 +152,6 @@
     <string name="digital_cart_deal_selected_label">Deals Pilihan Saya</string>
     <string name="digital_deal_toolbar_title">Penawaran Spesial</string>
     <string name="digital_cart_checkout_skip_menu_label">Lewati</string>
+    <string name="digital_deal_promo_restriction_message">Promo hanya berlaku untuk <b>Tagihan dan Top Up</b></string>
+    <string name="digital_deal_promo_restriction_action_label">OK</string>
 </resources>

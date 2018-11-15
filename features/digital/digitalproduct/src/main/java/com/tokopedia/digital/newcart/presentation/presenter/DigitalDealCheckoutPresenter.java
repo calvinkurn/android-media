@@ -194,7 +194,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     @Override
     protected void renderCouponAndVoucher(VoucherDigital voucherDigital) {
         super.renderCouponAndVoucher(voucherDigital);
-
+        getView().showPromoOnlyForTopUpAndBillMessage();
     }
 
     @Override

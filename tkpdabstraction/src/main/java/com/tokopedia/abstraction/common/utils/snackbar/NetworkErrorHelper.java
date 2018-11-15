@@ -11,6 +11,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.text.SpannableString;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,6 +112,22 @@ public class NetworkErrorHelper {
                             }
                         }
                 ).show();
+    }
+
+    @SuppressWarnings("Range")
+    public static void showGreenCloseSnackbar(Activity activity , SpannableString message, String actionLabel) {
+        if (activity != null) {
+            SnackbarManager.makeGreen(SnackbarManager.getContentView(activity),
+                    message,
+                    Snackbar.LENGTH_LONG)
+                    .setAction(actionLabel, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    })
+                    .show();
+        }
     }
 
     @SuppressWarnings("Range")

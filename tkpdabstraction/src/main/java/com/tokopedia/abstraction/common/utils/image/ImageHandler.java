@@ -481,6 +481,19 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageRounded(Context context, final ImageView imageview, final String url, float radius) {
+        if (url != null && !url.isEmpty()) {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .centerCrop()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(getRoundedImageViewTarget(imageview, radius));
+        }
+    }
+
     public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
             Glide.with(fragment)

@@ -51,7 +51,7 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_total_payment"
-                style="@style/TextView.Title.OrangeRed.Bold"
+                style="@style/TextView.TitleMedium.OrangeRed.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Rp102.500" />
@@ -61,7 +61,7 @@
             android:id="@+id/btn_checkout"
             style="@style/Button.Submit.Orange"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_40"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/dp_0"
             android:layout_weight="1"

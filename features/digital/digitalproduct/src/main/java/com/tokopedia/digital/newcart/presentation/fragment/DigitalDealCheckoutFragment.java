@@ -11,6 +11,8 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +26,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
@@ -231,11 +235,10 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
                 int height = targetHeight;
                 if ((int) interpolatedTime != 1) {
-                    if (measureWithInterpolate > currentHeight) {
+                    if (measureWithInterpolate >= currentHeight) {
                         height = measureWithInterpolate;
                     }
                 }
-
                 containerLayout.getLayoutParams().height = height;
                 containerLayout.requestLayout();
             }
@@ -253,15 +256,16 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void collapseCheckoutView(final View containerLayout) {
         int currentHeight = containerLayout.getHeight();
         containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
-                checkoutHolderView.getCheckoutViewHeight() +
-                containerCategoryLabel.getMeasuredHeight() +
-                getResources().getDimensionPixelOffset(R.dimen.dp_2);
+        if (lastCollapseHeight == 0) {
+            lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
+                    checkoutHolderView.getCheckoutViewHeight() +
+                    containerCategoryLabel.getMeasuredHeight() +
+                    getResources().getDimensionPixelOffset(R.dimen.dp_2);
+        }
         checkoutHolderView.measure(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
                 containerLayout.getMeasuredHeight() : lastCollapseHeight;
         containerLayout.getLayoutParams().height = currentHeight;
-        containerLayout.setVisibility(View.VISIBLE);
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -274,11 +278,13 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                     containerLayout.getLayoutParams().height = height;
                     containerLayout.requestLayout();
                 } else {
-                    containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT)
-                    );
-                    containerScroll.setVisibility(View.GONE);
+                    if (containerScroll.getVisibility() != View.GONE) {
+                        containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT)
+                        );
+                        containerScroll.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -374,6 +380,15 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     @Override
     public boolean isAlreadyCollapsByUser() {
         return isAlreadyCollapsByUser;
+    }
+
+    @Override
+    public void showPromoOnlyForTopUpAndBillMessage() {
+        NetworkErrorHelper.showGreenCloseSnackbar(
+                getActivity(),
+                new SpannableString(MethodChecker.fromHtml(getString(R.string.digital_deal_promo_restriction_message))),
+                getString(R.string.digital_deal_promo_restriction_action_label)
+        );
     }
 
     public void updateSelectedDeal(DealProductViewModel viewModel) {

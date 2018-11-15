@@ -20,7 +20,7 @@ public class SnackbarManager {
 
     public static Snackbar make(
             View view,
-            String text,
+            CharSequence text,
             @Snackbar.Duration int duration,
             @ColorRes int textColorRes,
             @ColorRes int actionColorRes,
@@ -112,7 +112,7 @@ public class SnackbarManager {
 
     public static Snackbar makeGreen(
             View view,
-            String text,
+            CharSequence text,
             @Snackbar.Duration int duration) {
         return make(view,
                 text,

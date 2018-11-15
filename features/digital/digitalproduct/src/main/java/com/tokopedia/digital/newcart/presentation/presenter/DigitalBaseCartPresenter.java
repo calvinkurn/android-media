@@ -222,10 +222,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         );
 
         getView().renderCategory(cartDigitalInfoData.getAttributes().getCategoryName());
-        List<CartItemDigital> mainInfos = cartDigitalInfoData.getMainInfo();
-        CartItemDigital operatorItem = new CartItemDigital(getView().getString(R.string.digital_cart_type_service_label), cartDigitalInfoData.getAttributes().getOperatorName());
-        mainInfos.add(0, operatorItem);
-        getView().renderDetailMainInfo(mainInfos);
+        getView().renderDetailMainInfo(cartDigitalInfoData.getMainInfo());
         getView().renderAdditionalInfo(new ArrayList<>(cartDigitalInfoData.getAdditionalInfos()));
 
         renderDataInputPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),

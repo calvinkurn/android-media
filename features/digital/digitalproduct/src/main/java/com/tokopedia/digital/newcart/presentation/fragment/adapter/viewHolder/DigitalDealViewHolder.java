@@ -86,7 +86,7 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
     @Override
     public void bind(DealProductViewModel element) {
         this.element = element;
-        ImageHandler.loadImageRounded2(itemView.getContext(), dealImageView, element.getImageUrl());
+        ImageHandler.loadImageRounded(itemView.getContext(), dealImageView, element.getImageUrl(), 5.0f);
         brandTextView.setText(element.getBrandName());
         titleTextView.setText(element.getTitle());
         if (element.getSalesPriceNumeric() > 0) {

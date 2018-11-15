@@ -52,6 +52,8 @@ public interface DigitalDealCheckoutContract {
         void renderSkipToCheckoutMenu();
 
         boolean isAlreadyCollapsByUser();
+
+        void showPromoOnlyForTopUpAndBillMessage();
     }
 
     interface Presenter extends DigitalBaseContract.Presenter<View>{

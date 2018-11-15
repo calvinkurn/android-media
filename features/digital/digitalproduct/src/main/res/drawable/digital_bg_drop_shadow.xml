@@ -4,8 +4,8 @@
         <shape
             android:shape="rectangle">
             <gradient
-                android:startColor="#999999"
-                android:endColor="#e7e7e7"
+                android:startColor="@color/tkpd_dark_gray"
+                android:endColor="@color/tkpd_bg_color_grery"
                 android:type="linear"
                 android:angle="270">
             </gradient>
@@ -13,10 +13,10 @@
         </shape>
     </item>
 
-    <item android:bottom="1dp">
+    <item android:bottom="@dimen/dp_1">
         <shape>
-            <solid android:color="#FFFFFF" />
-            <corners android:radius="1dp" />
+            <solid android:color="@color/white" />
+            <corners android:radius="@dimen/dp_1" />
         </shape>
     </item>
 </layer-list>
