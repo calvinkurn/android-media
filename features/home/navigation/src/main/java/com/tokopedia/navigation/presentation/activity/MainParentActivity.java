@@ -253,6 +253,7 @@ public class MainParentActivity extends BaseActivity implements
                 case FEED_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
+                    bottomNavigation.removeNotification(FEED_MENU);
                     break;
                 case ACCOUNT_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
@@ -324,9 +325,6 @@ public class MainParentActivity extends BaseActivity implements
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
             if (!presenter.isUserLogin())
                 return false;
-        if (position == FEED_MENU) {
-            bottomNavigation.removeNotification(FEED_MENU);
-        }
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
