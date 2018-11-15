@@ -25,6 +25,7 @@ project.ext {
 
 dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.playServicesDependencies.maps
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.network)

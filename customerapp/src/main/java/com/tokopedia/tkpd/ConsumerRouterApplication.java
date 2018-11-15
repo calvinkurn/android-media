@@ -3025,8 +3025,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        actionNavigateByApplinksUrl(activity, applinks, bundle);
+    public void logisticUploadRouterActionNavigateByApplinksUrl(
+            Object activity, Object applinks, Object bundle
+    ) {
+        actionNavigateByApplinksUrl((Activity) activity,(String) applinks,(Bundle) bundle);
     }
 
     @Override
