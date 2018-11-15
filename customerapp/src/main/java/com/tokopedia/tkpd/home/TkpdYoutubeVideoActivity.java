@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -165,6 +167,24 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         if (bannerModeList != null && bannerModeList.size() > 0) {
             adapter = new SlidingImageBannerAdapter(TkpdYoutubeVideoActivity.this, bannerModeList);
             viewPager.setAdapter(adapter);
+            circlePageIndicator.setViewPager(viewPager);
+
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    //HomeGATracking.eventClickCTAButton();
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
         }
 
     }
