@@ -18,8 +18,6 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.navigation.presentation.presenter.MainParentPresenter.PARAM_FEED_LAST_CURSOR;
-
 /**
  * Created by meta on 25/07/18.
  */
@@ -47,11 +45,6 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
                             requestParams.getString(GlobalNavConstant.QUERY, ""),
                             NotificationEntity.class);
                     graphqlUseCase.clearRequest();
-                    if (requestParams.getObject(PARAM_FEED_LAST_CURSOR) != null) {
-                        HashMap<String, Object> queryParams = new HashMap<>();
-                        queryParams.put(PARAM_FEED_LAST_CURSOR, requestParams.getString(PARAM_FEED_LAST_CURSOR,""));
-                        graphqlRequest.setVariables(queryParams);
-                    }
                     graphqlUseCase.addRequest(graphqlRequest);
                     return graphqlUseCase.createObservable(null);
                 }).map(mapper).doOnNext(saveCartCount());
