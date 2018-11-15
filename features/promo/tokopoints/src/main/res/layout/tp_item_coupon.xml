@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="6dp"
+    app:cardCornerRadius="@dimen/dp_4"
     app:cardUseCompatPadding="true">
 
     <android.support.constraint.ConstraintLayout

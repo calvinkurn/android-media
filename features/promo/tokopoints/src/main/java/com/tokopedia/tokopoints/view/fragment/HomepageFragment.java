@@ -39,10 +39,12 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.tokopoints.view.adapter.DynamicLinkAdapter;
 import com.tokopedia.tokopoints.view.adapter.HomepagePagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
+import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.LobDetails;
@@ -92,11 +94,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         return new HomepageFragment();
     }
 
-    public interface onAppBarCollapseListener{
-        void showToolbarElevation();
-        void hideToolbarElevation();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -108,7 +105,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         return view;
     }
 
-    AppBarLayout.OnOffsetChangedListener offsetChangedListenerBottomView =new AppBarLayout.OnOffsetChangedListener() {
+    AppBarLayout.OnOffsetChangedListener offsetChangedListenerBottomView = new AppBarLayout.OnOffsetChangedListener() {
         @Override
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             verticalOffset = Math.abs(verticalOffset);
@@ -120,14 +117,16 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         }
     };
 
-    AppBarLayout.OnOffsetChangedListener offsetChangedListenerAppBarElevation =new AppBarLayout.OnOffsetChangedListener() {
+    AppBarLayout.OnOffsetChangedListener offsetChangedListenerAppBarElevation = new AppBarLayout.OnOffsetChangedListener() {
         @Override
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-            verticalOffset = Math.abs(verticalOffset);
-            if (verticalOffset >= appBarLayout.getTotalScrollRange()) {     //Appbar is hidden now
-                appBarCollapseListener.hideToolbarElevation();
-            } else {
-                appBarCollapseListener.showToolbarElevation();
+            if (appBarCollapseListener != null) {
+                verticalOffset = Math.abs(verticalOffset);
+                if (verticalOffset >= appBarLayout.getTotalScrollRange()) {     //Appbar is hidden now
+                    appBarCollapseListener.hideToolbarElevation();
+                } else {
+                    appBarCollapseListener.showToolbarElevation();
+                }
             }
         }
     };
@@ -204,7 +203,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        appBarCollapseListener= (onAppBarCollapseListener) context;
+        if (context instanceof TokoPointsHomeActivity)
+            appBarCollapseListener = (onAppBarCollapseListener) context;
     }
 
     @Override
@@ -423,7 +423,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             }
 
             tickerContainer.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             tickerContainer.setVisibility(View.GONE);
 
         }
@@ -638,7 +638,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             public void onPageSelected(int position) {
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
-                }else{
+                } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
                 }
@@ -779,27 +779,17 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onSuccessDynamicLink(TokopointsDynamicLinkEntity tokopointsDynamicLinkEntity) {
-        int length=tokopointsDynamicLinkEntity.getLinks().size();
-        if(getView()!=null){
+        int length = tokopointsDynamicLinkEntity.getLinks().size();
+        if (getView() != null) {
             getView().findViewById(R.id.line_separator_dynamic_link).setVisibility(View.VISIBLE);
             mRvDynamicLinks.setVisibility(View.VISIBLE);
         }
-        final boolean isEven;
-        if(length%2==0){
-            isEven=true;
-        }else{
-            isEven=false;
-        }
+        final boolean isEven = (length % 2 == 0);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                // 7 is the sum of items in one repeated section
-                if(isEven || position!=length-1){
-                    return 1;
-                }else{
-                    return 2;
-                }
+                return (isEven || position != length - 1) ? 1 : 2;
             }
         });
         mRvDynamicLinks.setLayoutManager(manager);

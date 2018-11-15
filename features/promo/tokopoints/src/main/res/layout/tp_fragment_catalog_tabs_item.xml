@@ -15,12 +15,7 @@
         android:id="@+id/list_catalog_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/tp_margin_xsmall"
-        android:layout_marginBottom="@dimen/tp_height_bottom_membership_view"
-        android:layout_marginEnd="@dimen/tp_margin_xsmall"
-        android:layout_marginRight="@dimen/tp_margin_xsmall"
-        android:layout_marginStart="@dimen/tp_margin_xsmall"
-        android:layout_marginLeft="@dimen/tp_margin_xsmall"
+        android:layout_marginBottom="@dimen/tp_margin_bottom_membership_and_egg"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
     <include layout="@layout/layout_tp_network_error" />

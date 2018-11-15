@@ -20,12 +20,13 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
+import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.user.session.UserSession;
 
 @DeepLink(ApplinkConst.TOKOPOINTS)
-public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, HomepageFragment.onAppBarCollapseListener {
+public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
     private UserSession mUserSession;

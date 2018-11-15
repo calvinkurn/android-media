@@ -33,10 +33,12 @@ import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.CatalogSortTypePagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
+import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory;
@@ -75,6 +77,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private LinearLayout bottomViewMembership;
     private ConstraintLayout containerPointDetail;
     private LinearLayout containerEgg;
+    private onAppBarCollapseListener appBarCollapseListener;
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CatalogListingFragment();
@@ -291,6 +294,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof CatalogListingActivity)
+            appBarCollapseListener = (onAppBarCollapseListener) context;
     }
 
     @Override
@@ -360,22 +365,38 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
         mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
         AppBarLayout appBarHeader = view.findViewById(R.id.app_bar_header);
-        appBarHeader.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                verticalOffset = Math.abs(verticalOffset);
-                if (verticalOffset >= containerPointDetail.getHeight()) {
-                    slideUp();
-                } else {
-                    slideDown();
-                }
-            }
-        });
-
+        appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
+        appBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);
         }
     }
+
+    AppBarLayout.OnOffsetChangedListener offsetChangedListenerBottomView = new AppBarLayout.OnOffsetChangedListener() {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            verticalOffset = Math.abs(verticalOffset);
+            if (verticalOffset >= containerPointDetail.getHeight()) {
+                slideUp();
+            } else {
+                slideDown();
+            }
+        }
+    };
+
+    AppBarLayout.OnOffsetChangedListener offsetChangedListenerAppBarElevation = new AppBarLayout.OnOffsetChangedListener() {
+        @Override
+        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+            if (appBarCollapseListener != null) {
+                verticalOffset = Math.abs(verticalOffset);
+                if (verticalOffset >= appBarLayout.getTotalScrollRange()) {     //Appbar is hidden now
+                    appBarCollapseListener.hideToolbarElevation();
+                } else {
+                    appBarCollapseListener.showToolbarElevation();
+                }
+            }
+        }
+    };
 
     private void slideUp() {
         if (bottomViewMembership.getVisibility() != View.VISIBLE) {

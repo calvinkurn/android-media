@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -16,9 +17,10 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
+import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.user.session.UserSession;
 
-public class CatalogListingActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
+public class CatalogListingActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
     private UserSession mUserSession;
@@ -74,4 +76,19 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
             finish();
         }
     }
+
+    @Override
+    public void showToolbarElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
+        }
+    }
+
+    @Override
+    public void hideToolbarElevation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
+        }
+    }
+
 }
