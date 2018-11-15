@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.sellerapp.dashboard.model.GetApprovalStatusPojo;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.sellerapp.R;
 
@@ -40,7 +41,7 @@ public class GetVerificationStatusUseCase {
                 .query_get_kyc_seller_dashboard_status);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                GetVerificationStatusPojo.class, requestParams);
+                GetApprovalStatusPojo.class, requestParams);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
