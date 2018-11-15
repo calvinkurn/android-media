@@ -43,7 +43,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -311,7 +311,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private FloatingActionButton fabWishlist;
     private LinearLayout rootView;
     private boolean isAppBarCollapsed = false;
-    private UserSession userSession;
     private TextView tvTickerGTM;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
@@ -348,6 +347,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
     private String lastStateOnClickBuyWhileRequestVariant;
     private RemoteConfig firebaseRemoteConfig;
+
+    @Inject
+    UserSession userSession;
 
     @Inject
     GetWishlistCountUseCase getWishlistCountUseCase;
@@ -642,6 +644,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             public void onClick(View view) {
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
+
+                    if(isFromExploreAffiliate()){
+                        ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
+                                getUserId());
+                    }
                 }
             }
         });
@@ -658,7 +665,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialVar() {
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
@@ -1036,6 +1042,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onByMeClicked(AffiliateInfoViewModel affiliate) {
         if (getActivity() != null) {
+            ProductPageTracking.eventClickAffiliate(
+                    getActivityContext(),
+                    getUserId()
+            );
             if (userSession.isLoggedIn()) {
                 RouteManager.route(
                         getActivity(),
@@ -1139,7 +1149,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
-        renderTopAds(15);
+        renderTopAds(5, successResult);
     }
 
     private float getUnformattedWeight(String productWeight) {
@@ -2491,8 +2501,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 productData.getInfo().getProductWeight(), productData.getInfo().getProductWeightUnit()));
     }
 
-    private void renderTopAds(int itemSize) {
-        if (!firebaseRemoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
+    private void renderTopAds(int itemSize, ProductDetailData productData) {
+        if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
             return;
         try {
             Xparams xparams = new Xparams();
@@ -2582,5 +2592,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             icon.mutate();
             icon.setDrawableByLayerId(R.id.ic_cart_count, badge);
         }
+    }
+
+    private String getUserId(){
+        return userSession.getUserId();
     }
 }

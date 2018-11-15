@@ -25,6 +25,8 @@ public interface SelectVerification {
         void onErrorGetList(String errorCodeMessage);
 
         Context getContext();
+
+        void logUnknownError(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

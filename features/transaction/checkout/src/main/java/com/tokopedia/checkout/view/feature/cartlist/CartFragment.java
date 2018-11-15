@@ -636,14 +636,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartDataEnableToCheckout() {
-        if (isAdded()) {
+        if (isAdded() && btnToShipment != null) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         }
     }
 
     @Override
     public void onCartDataDisableToCheckout(String message) {
-        if (isAdded()) {
+        if (isAdded() && btnToShipment != null) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
     }

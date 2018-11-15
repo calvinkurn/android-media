@@ -245,7 +245,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessVerifyPhoneNumber() {
-        userSession.setIsMsisdnVerified(true);
+        userSession.setIsMSISDNVerified(true);
         if (listener != null)
             listener.onSuccessVerification();
         else {
