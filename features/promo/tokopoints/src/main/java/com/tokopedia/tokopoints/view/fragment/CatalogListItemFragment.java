@@ -161,7 +161,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             mAdapter.notifyDataSetChanged();
         } else {
             mAdapter = new CatalogListAdapter(mPresenter, items);
-            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14)));
             mRecyclerViewCatalog.setAdapter(mAdapter);
         }
 
