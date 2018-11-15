@@ -546,7 +546,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void onDestroy() {
-        presenter.detachView();
+        presenter.onDestroyView();
         super.onDestroy();
     }
 }

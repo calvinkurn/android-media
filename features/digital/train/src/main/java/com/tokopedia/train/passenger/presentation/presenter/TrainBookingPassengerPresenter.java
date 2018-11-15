@@ -1,8 +1,5 @@
 package com.tokopedia.train.passenger.presentation.presenter;
 
-import android.text.TextUtils;
-import android.util.Patterns;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
@@ -13,7 +10,6 @@ import com.tokopedia.train.common.util.TrainNetworkErrorConstant;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
-import com.tokopedia.train.passenger.domain.requestmodel.TrainScheduleRequest;
 import com.tokopedia.train.passenger.presentation.contract.TrainBookingPassengerContract;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
@@ -155,39 +151,45 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         if (isAllDataValid()) {
             getView().hidePage();
             getView().showLoading();
-            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(
-                    getView().getTrainSoftBookingRequestParam()), new Subscriber<TrainSoftbook>() {
-                @Override
-                public void onCompleted() {
+            compositeSubscription.add(trainSoftBookingUseCase.createObservable(
+                    getView().getTrainSoftBookingRequestParam())
+                    .subscribeOn(trainProvider.computation())
+                    .unsubscribeOn(trainProvider.computation())
+                    .observeOn(trainProvider.uiScheduler())
+                    .subscribe(new Subscriber<TrainSoftbook>() {
+                                   @Override
+                                   public void onCompleted() {
 
-                }
+                                   }
 
-                @Override
-                public void onError(Throwable e) {
-                    if (isViewAttached()) {
-                        getView().showPage();
-                        getView().hideLoading();
-                        if (e instanceof TrainNetworkException) {
-                            List<TrainError> errors = ((TrainNetworkException) e).getErrorList();
-                            if (errors.contains(new TrainError(TrainNetworkErrorConstant.SOLD_OUT)) ||
-                                    errors.contains(new TrainError(TrainNetworkErrorConstant.RUTE_NOT_FOUND)) ||
-                                    errors.contains(new TrainError(TrainNetworkErrorConstant.TOO_MANY_SOFTBOOK)) ||
-                                    errors.contains(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURS))) {
-                                getView().showNavigateToSearchDialog(e.getMessage());
-                                return;
-                            }
-                        }
-                        getView().showErrorSoftBooking(e);
-                    }
-                }
+                                   @Override
+                                   public void onError(Throwable e) {
+                                       if (isViewAttached()) {
+                                           getView().showPage();
+                                           getView().hideLoading();
+                                           if (e instanceof TrainNetworkException) {
+                                               List<TrainError> errors = ((TrainNetworkException) e).getErrorList();
+                                               if (errors.contains(new TrainError(TrainNetworkErrorConstant.SOLD_OUT)) ||
+                                                       errors.contains(new TrainError(TrainNetworkErrorConstant.RUTE_NOT_FOUND)) ||
+                                                       errors.contains(new TrainError(TrainNetworkErrorConstant.TOO_MANY_SOFTBOOK)) ||
+                                                       errors.contains(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURS))) {
+                                                   getView().showNavigateToSearchDialog(e.getMessage());
+                                                   return;
+                                               }
+                                           }
+                                           getView().showErrorSoftBooking(e);
+                                       }
+                                   }
 
-                @Override
-                public void onNext(TrainSoftbook trainSoftbook) {
-                    getView().showPage();
-                    getView().hideLoading();
-                    getView().navigateToReview(trainSoftbook);
-                }
-            });
+                                   @Override
+                                   public void onNext(TrainSoftbook trainSoftbook) {
+                                       getView().showPage();
+                                       getView().hideLoading();
+                                       getView().navigateToReview(trainSoftbook);
+                                   }
+                               }
+                    )
+            );
         }
     }
 
@@ -196,29 +198,33 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         if (isAllDataValid()) {
             getView().hidePage();
             getView().showLoading();
-            trainSoftBookingUseCase.execute(trainSoftBookingUseCase.create(
-                    getView().getTrainSoftBookingRequestParam()), new Subscriber<TrainSoftbook>() {
-                @Override
-                public void onCompleted() {
+            compositeSubscription.add(trainSoftBookingUseCase.createObservable(getView().getTrainSoftBookingRequestParam())
+                    .subscribeOn(trainProvider.computation())
+                    .unsubscribeOn(trainProvider.computation())
+                    .observeOn(trainProvider.uiScheduler())
+                    .subscribe(new Subscriber<TrainSoftbook>() {
+                                   @Override
+                                   public void onCompleted() {
 
-                }
+                                   }
 
-                @Override
-                public void onError(Throwable e) {
-                    if (isViewAttached()) {
-                        getView().showPage();
-                        getView().hideLoading();
-                        getView().showErrorSoftBooking(e);
-                    }
-                }
+                                   @Override
+                                   public void onError(Throwable e) {
+                                       if (isViewAttached()) {
+                                           getView().showPage();
+                                           getView().hideLoading();
+                                           getView().showErrorSoftBooking(e);
+                                       }
+                                   }
 
-                @Override
-                public void onNext(TrainSoftbook trainSoftbook) {
-                    getView().showPage();
-                    getView().hideLoading();
-                    getView().navigateToChooseSeat(trainSoftbook);
-                }
-            });
+                                   @Override
+                                   public void onNext(TrainSoftbook trainSoftbook) {
+                                       getView().showPage();
+                                       getView().hideLoading();
+                                       getView().navigateToChooseSeat(trainSoftbook);
+                                   }
+                               }
+                    ));
         }
     }
 
@@ -233,7 +239,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
     private boolean isValidContactInfo() {
         boolean isValid = true;
-        if (TextUtils.isEmpty(getView().getContactNameEt())) {
+        if (getView().getContactNameEt() == null || getView().getContactNameEt().length() == 0) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_empty_error);
         } else if (!isAlphabetAndSpaceOnly(getView().getContactNameEt())) {
@@ -242,7 +248,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         } else if (getView().getContactNameEt().length() > MAX_CONTACT_NAME) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_max);
-        } else if (TextUtils.isEmpty(getView().getPhoneNumberEt())) {
+        } else if (getView().getPhoneNumberEt() == null || getView().getPhoneNumberEt().length() == 0) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_empty_error);
         } else if (!isNumericOnly(getView().getPhoneNumberEt())) {
@@ -257,24 +263,20 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         } else if (!isMaxPhoneNumberValid(getView().getPhoneNumberEt())) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_max_length_error);
-        } else if (TextUtils.isEmpty(getView().getEmailEt())) {
+        } else if (getView().getEmailEt() == null || getView().getEmailEt().length() == 0) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_email_empty_error);
-        } else if (!isEmailWithoutProhibitSymbol(getView().getEmailEt()) || !isValidEmail(getView().getEmailEt())) {
+        } else if (!isValidEmail(getView().getEmailEt())) {
             isValid = false;
             getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_email_invalid_error);
         }
         return isValid;
     }
 
-    private boolean isEmailWithoutProhibitSymbol(String contactEmail) {
-        return !contactEmail.contains("+");
-    }
-
     private boolean isAllPassengerFilled(List<TrainPassengerViewModel> trainPassengerViewModels) {
         boolean isvalid = true;
         for (TrainPassengerViewModel trainPassengerViewModel : trainPassengerViewModels) {
-            if (trainPassengerViewModel.getName() == null) {
+            if (trainPassengerViewModel.getName() == null || trainPassengerViewModel.getName().length() == 0) {
                 isvalid = false;
                 break;
             }
@@ -303,7 +305,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     }
 
     private boolean isValidEmail(String contactEmail) {
-        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.");
+        Pattern pattern = Pattern.compile("^[A-Za-z0-9_.-]+@(.+)$");
+        return pattern.matcher(contactEmail).matches();
     }
 
     protected List<TrainPassengerViewModel> initPassenger(int adultPassengers, int infantPassengers) {

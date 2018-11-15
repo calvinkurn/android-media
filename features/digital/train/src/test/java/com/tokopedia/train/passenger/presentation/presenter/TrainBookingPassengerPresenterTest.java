@@ -3,8 +3,11 @@ package com.tokopedia.train.passenger.presentation.presenter;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
+import com.tokopedia.train.common.data.interceptor.model.TrainError;
 import com.tokopedia.train.common.domain.TrainProvider;
 import com.tokopedia.train.common.domain.TrainTestScheduler;
+import com.tokopedia.train.common.util.TrainNetworkErrorConstant;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -57,12 +60,20 @@ public class TrainBookingPassengerPresenterTest {
     ProfileBuyerInfo profileBuyerInfoSpy;
 
     List<TrainPassengerViewModel> passengers;
+    TrainSoftbook trainSoftbook;
+    private String validName;
+    private String validEmail;
+    private String validPhoneNumber;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         presenter = new TestTrainBookingPassengerPresenter(getDetailScheduleUseCase, trainSoftBookingUseCase, new TrainTestScheduler());
         presenter.attachView(view);
+        trainSoftbook = new TrainSoftbook();
+        validName = "Cincin Seller";
+        validPhoneNumber = "081234567892";
+        validEmail = "tkpd.qc@gmail.com";
     }
 
     @Test
@@ -239,7 +250,7 @@ public class TrainBookingPassengerPresenterTest {
         passengers = new ArrayList<>();
         passengers.clear();
         TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
-        trainPassengerViewModel.setPassengerId(1);
+        trainPassengerViewModel.setIdLocal(1);
         trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
         trainPassengerViewModel.setHeaderTitle("Penumpang Dewasa");
         passengers.add(trainPassengerViewModel);
@@ -278,7 +289,7 @@ public class TrainBookingPassengerPresenterTest {
         setPassengers();
         Mockito.when(view.getCurrentPassengerList()).thenReturn(passengers);
         TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
-        trainPassengerViewModel.setPassengerId(1);
+        trainPassengerViewModel.setIdLocal(1);
         trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
         trainPassengerViewModel.setHeaderTitle("Penumpang Dewasa");
         trainPassengerViewModel.setName("Bon Cabe");
@@ -295,39 +306,53 @@ public class TrainBookingPassengerPresenterTest {
     private void setPassengers() {
         passengers = new ArrayList<>();
         TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
-        trainPassengerViewModel.setPassengerId(1);
+        trainPassengerViewModel.setIdLocal(1);
         trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
         trainPassengerViewModel.setHeaderTitle("Penumpang Dewasa");
         passengers.add(trainPassengerViewModel);
         TrainPassengerViewModel trainPassengerViewModelInfant = new TrainPassengerViewModel();
-        trainPassengerViewModelInfant.setPassengerId(2);
+        trainPassengerViewModelInfant.setIdLocal(2);
         trainPassengerViewModelInfant.setPaxType(TrainBookingPassenger.INFANT);
         trainPassengerViewModelInfant.setHeaderTitle("Penumpang Bayi");
         passengers.add(trainPassengerViewModelInfant);
     }
 
-    @Test
-    public void onClickChooseSeatButton_AllDataIsValid_SuccessNavigateToChooseSeatPage() {
-        //given
+    private void setDataForBookPassengerList() {
         setPassengers();
-        TrainSoftbook trainSoftbook = new TrainSoftbook();
         Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
                 .thenReturn(Observable.just(trainSoftbook));
-        //when
-        presenter.onChooseSeatButtonClicked();
-        //then
-        Mockito.verify(view).showPage();
-        Mockito.verify(view).hideLoading();
-        Mockito.verify(view).navigateToChooseSeat(trainSoftbook);
     }
 
     @Test
-    public void onClickChooseSeatButton_AllDataNotValid_ShowErrorMessage() {
+    public void onClickChooseSeatButton_BuyerNameEmptyNotValid_ShowErrorMessage() {
         //given
-        setPassengers();
-        TrainSoftbook trainSoftbook = new TrainSoftbook();
-        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
-                .thenReturn(Observable.just(trainSoftbook));
+        String notValidName = "";
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn(notValidName);
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Assert.assertEquals(notValidName.length(), 0);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_name_empty_error);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_BuyerNameReachLimitNotValid_ShowErrorMessage() {
+        //given
+        String notValidName = "sdajndsajkndjasndsjkadnskajdnkasjdnkasjndaksjndkasjndaksjdnaksjdn";
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn(notValidName);
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Assert.assertEquals(notValidName.length(), 65);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_name_max);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_BuyerNameAlphanumericNotValid_ShowErrorMessage() {
+        //given
+        setDataForBookPassengerList();
         Mockito.when(view.getContactNameEt()).thenReturn("Tkpd123");
         //when
         presenter.onChooseSeatButtonClicked();
@@ -336,21 +361,273 @@ public class TrainBookingPassengerPresenterTest {
     }
 
     @Test
-    public void onClickPaymentButton_AllDataIsValid_SuccessNavigateToChooseSeatPage() {
+    public void onClickChooseSeatButton_EmailEmptyNotValid_ShowErrorMessage() {
         //given
-
+        String notValidEmail = "";
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn("Cincin Seller");
+        Mockito.when(view.getPhoneNumberEt()).thenReturn("081234567892");
+        Mockito.when(view.getEmailEt()).thenReturn("");
         //when
-
+        presenter.onChooseSeatButtonClicked();
         //then
+        Assert.assertEquals(notValidEmail.length(), 0);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_email_empty_error);
+
     }
 
     @Test
-    public void onClickPaymentButton_AllDataNotValid_ShowErrorMessage() {
+    public void onClickChooseSeatButton_EmailWithSpecialCharNotValid_ShowErrorMessage() {
         //given
-
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn("Cincin Seller");
+        Mockito.when(view.getPhoneNumberEt()).thenReturn("081234567892");
+        Mockito.when(view.getEmailEt()).thenReturn("tkpd.qc+47@gmail.com");
         //when
-
+        presenter.onChooseSeatButtonClicked();
         //then
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_email_invalid_error);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_PhoneNumberAlphanumericNotValid_ShowErrorMessage() {
+        //given
+        String phoneNumber = "0821376h1iuh";
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn("Cincin Seller");
+        Mockito.when(view.getEmailEt()).thenReturn("tkpd.qc@gmail.com");
+        Mockito.when(view.getPhoneNumberEt()).thenReturn(phoneNumber);
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_invalid_error);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_PhoneNumberReachMaxNotValid_ShowErrorMessage() {
+        //given
+        String phoneNumber = "0812345678910123";
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn("Cincin Seller");
+        Mockito.when(view.getEmailEt()).thenReturn("tkpd.qc@gmail.com");
+        Mockito.when(view.getPhoneNumberEt()).thenReturn(phoneNumber);
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Assert.assertEquals(phoneNumber.length(), 16);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_max_length_error);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_PhoneNumberReachMinNotValid_ShowErrorMessage() {
+        //given
+        String phoneNumber = "081234";
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn("Cincin Seller");
+        Mockito.when(view.getEmailEt()).thenReturn("tkpd.qc@gmail.com");
+        Mockito.when(view.getPhoneNumberEt()).thenReturn(phoneNumber);
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Assert.assertEquals(phoneNumber.length(), 6);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_min_length_error);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_PhoneNumberEmptyNotValid_ShowErrorMessage() {
+        //given
+        String phoneNumber = "";
+        setDataForBookPassengerList();
+        Mockito.when(view.getContactNameEt()).thenReturn("Cincin Seller");
+        Mockito.when(view.getPhoneNumberEt()).thenReturn(phoneNumber);
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Assert.assertEquals(phoneNumber.length(), 0);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_empty_error);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_PassengerListEmpty_ShowErrorMessage() {
+        //given
+        setDataForBookPassengerList();
+        passengers.get(0).setName(null);
+        passengers.get(1).setName(null);
+        Mockito.when(view.getContactNameEt()).thenReturn("Cincin Seller");
+        Mockito.when(view.getPhoneNumberEt()).thenReturn("081234567892");
+        Mockito.when(view.getEmailEt()).thenReturn("tkpd.qc@gmail.com");
+        Mockito.when(view.getCurrentPassengerList()).thenReturn(passengers);
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Assert.assertNotNull(view.getContactNameEt());
+        Assert.assertNotNull(view.getPhoneNumberEt());
+        Assert.assertNotNull(view.getEmailEt());
+        Assert.assertNull(passengers.get(0).getName());
+        Assert.assertNull(passengers.get(1).getName());
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.train_passenger_passenger_not_fullfilled_error);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_AllDataIsValid_SuccessNavigateToChooseSeatPage() {
+        //given
+        setValidDataForBookingPassenger();
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.just(trainSoftbook));
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Assert.assertNotNull(view.getContactNameEt());
+        Assert.assertNotNull(view.getPhoneNumberEt());
+        Assert.assertNotNull(view.getEmailEt());
+        Assert.assertNotNull(passengers);
+        Assert.assertEquals(validName.length(), 13);
+        Assert.assertEquals(validPhoneNumber.length(), 12);
+        Assert.assertEquals(passengers.size(), 2);
+        Assert.assertNotNull(passengers.get(0).getName());
+        Assert.assertNotNull(passengers.get(1).getName());
+
+        Mockito.verify(view).hidePage();
+        Mockito.verify(view).showLoading();
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).navigateToChooseSeat(trainSoftbook);
+    }
+
+    @Test
+    public void onClickChooseSeatButton_ErrorResponse_ShowErrorMessage() {
+        //given
+        String messageError = "Terjadi kesalahan pada server";
+        MessageErrorException messageErrorException = new MessageErrorException(messageError);
+        setValidDataForBookingPassenger();
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.error(messageErrorException));
+        //when
+        presenter.onChooseSeatButtonClicked();
+        //then
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).showErrorSoftBooking(messageErrorException);
+    }
+
+    private void setValidDataForBookingPassenger() {
+        setPassengers();
+        passengers.get(0).setName("Cincin Seller");
+        passengers.get(1).setName("Cincin Buyer");
+        Mockito.when(view.getContactNameEt()).thenReturn(validName);
+        Mockito.when(view.getPhoneNumberEt()).thenReturn(validPhoneNumber);
+        Mockito.when(view.getEmailEt()).thenReturn(validEmail);
+        Mockito.when(view.getCurrentPassengerList()).thenReturn(passengers);
+    }
+
+    @Test
+    public void onClickPaymentButton_AllDataIsValid_SuccessNavigateToChooseSeatPage() {
+        //given
+        setValidDataForBookingPassenger();
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.just(trainSoftbook));
+        //when
+        presenter.onSubmitButtonClicked();
+        //then
+        Assert.assertNotNull(view.getContactNameEt());
+        Assert.assertNotNull(view.getPhoneNumberEt());
+        Assert.assertNotNull(view.getEmailEt());
+        Assert.assertNotNull(passengers);
+        Assert.assertEquals(validName.length(), 13);
+        Assert.assertEquals(validPhoneNumber.length(), 12);
+        Assert.assertEquals(passengers.size(), 2);
+        Assert.assertNotNull(passengers.get(0).getName());
+        Assert.assertNotNull(passengers.get(1).getName());
+
+        Mockito.verify(view).hidePage();
+        Mockito.verify(view).showLoading();
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).navigateToReview(trainSoftbook);
+    }
+
+    @Test
+    public void onClickPaymentButton_ErrorResponse_ShowErrorMessage() {
+        //given
+        String messageError = "Terjadi kesalahan pada server";
+        MessageErrorException messageErrorException = new MessageErrorException(messageError);
+        setValidDataForBookingPassenger();
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.error(messageErrorException));
+        //when
+        presenter.onSubmitButtonClicked();
+        //then
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).showErrorSoftBooking(messageErrorException);
+    }
+
+    @Test
+    public void onClickPaymentButton_ErrorTrainSoldOutResponse_ShowErrorMessage() {
+        //given
+        setValidDataForBookingPassenger();
+        List<TrainError> trainErrors = new ArrayList<>();
+        trainErrors.add(new TrainError(TrainNetworkErrorConstant.SOLD_OUT));
+        TrainNetworkException trainNetworkException = new TrainNetworkException("Tiket telah habis terjual", trainErrors);
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.error(trainNetworkException));
+        //when
+        presenter.onSubmitButtonClicked();
+        //then
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).showNavigateToSearchDialog(trainNetworkException.getMessage());
+    }
+
+    @Test
+    public void onClickPaymentButton_ErrorRouteNotFoundResponse_ShowErrorMessage() {
+        //given
+        setValidDataForBookingPassenger();
+        List<TrainError> trainErrors = new ArrayList<>();
+        trainErrors.add(new TrainError(TrainNetworkErrorConstant.RUTE_NOT_FOUND));
+        TrainNetworkException trainNetworkException = new TrainNetworkException("Rute sudah tidak tersedia", trainErrors);
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.error(trainNetworkException));
+        //when
+        presenter.onSubmitButtonClicked();
+        //then
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).showNavigateToSearchDialog(trainNetworkException.getMessage());
+    }
+
+    @Test
+    public void onClickPaymentButton_ErrorTooManyBookingResponse_ShowErrorMessage() {
+        //given
+        setValidDataForBookingPassenger();
+        List<TrainError> trainErrors = new ArrayList<>();
+        trainErrors.add(new TrainError(TrainNetworkErrorConstant.TOO_MANY_SOFTBOOK));
+        TrainNetworkException trainNetworkException = new TrainNetworkException("Too many did soft book", trainErrors);
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.error(trainNetworkException));
+        //when
+        presenter.onSubmitButtonClicked();
+        //then
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).showNavigateToSearchDialog(trainNetworkException.getMessage());
+    }
+
+    @Test
+    public void onClickPaymentButton_ErrorLessThan3HoursResponse_ShowErrorMessage() {
+        //given
+        setValidDataForBookingPassenger();
+        List<TrainError> trainErrors = new ArrayList<>();
+        trainErrors.add(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURS));
+        TrainNetworkException trainNetworkException = new TrainNetworkException("Pemesanan Anda kurang dari 3 jam dari waktu keberangkatan", trainErrors);
+        Mockito.when(trainSoftBookingUseCase.createObservable(Mockito.anyObject()))
+                .thenReturn(Observable.error(trainNetworkException));
+        //when
+        presenter.onSubmitButtonClicked();
+        //then
+        Mockito.verify(view).showPage();
+        Mockito.verify(view).hideLoading();
+        Mockito.verify(view).showNavigateToSearchDialog(trainNetworkException.getMessage());
     }
 
     public class TestTrainBookingPassengerPresenter extends TrainBookingPassengerPresenter {
