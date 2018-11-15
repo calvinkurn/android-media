@@ -2259,7 +2259,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
-        if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
+        if (productData != null && getActivity() != null &&
+                getActivity().getApplicationContext() instanceof PdpRouter) {
             if (productData.isBigPromo()) {
                 Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                         .getCartIntent(getActivity());
