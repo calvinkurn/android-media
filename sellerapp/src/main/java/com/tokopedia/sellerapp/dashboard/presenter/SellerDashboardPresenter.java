@@ -124,7 +124,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     public void getVerificationStatus(){
 //        getVerificationStatusUseCase.execute(GetVerificationStatusUseCase.getRequestParam(""),
 //                getVerificationSubscriber());
-        getView().onSuccessGetVerificationStatus(pojo);
+        getView().onSuccessGetVerificationStatus(new GetApprovalStatusPojo());
 
     }
 
