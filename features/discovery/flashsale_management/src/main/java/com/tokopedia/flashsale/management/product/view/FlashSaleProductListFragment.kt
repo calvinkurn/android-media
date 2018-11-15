@@ -38,6 +38,7 @@ import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
 import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
+import com.tokopedia.flashsale.management.view.activity.CampaignActivity
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
 import javax.inject.Inject
@@ -123,17 +124,12 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         hideSearchInputView()
         recyclerViewLabel.visibility = View.GONE
         vgBottom.visibility = View.GONE
-        loadContent()
-        loadBottomBar()
+        loadSellerStatus()
+        loadCampaignInfoAndTnc()
     }
 
     fun loadContent() {
         super.loadInitialData()
-    }
-
-    fun loadBottomBar() {
-        loadSellerStatus()
-        loadCampaignInfoAndTnc()
     }
 
     private fun loadSellerStatus() {
@@ -146,7 +142,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                     vgBottom.visibility = View.GONE
                     ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
                             .setAction(R.string.retry_label) {
-                                loadBottomBar()
+                                loadSellerStatus()
                             }.show()
                 })
     }
@@ -208,7 +204,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun onClickFlashSaleList() {
-        // TODO
+        val campaignActivityIntent = Intent(context, CampaignActivity::class.java)
+        campaignActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        this.activity?.finish()
+        startActivity(campaignActivityIntent)
     }
 
     private fun loadCampaignInfoAndTnc() {
@@ -218,7 +217,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                     tvTnc.text = getString(R.string.with_click_button_you_agree_with_tnc)
                     ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
                             .setAction(R.string.retry_label) {
-                                loadBottomBar()
+                                loadCampaignInfoAndTnc()
                             }.show()
                 })
     }
@@ -250,12 +249,16 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             tvTnc.text = spannable
 
             statusLabel = flashSaleTncContent.statusInfo.label
-
+            loadContent()
             renderUILabel()
         }
     }
 
     override fun loadData(page: Int) {
+        //TODO load Data based on campaignStatus
+        // status = submission ==> getEligibleProductList
+        // status = other ==> getPost
+        // if status is Changed from submission to other, loadInitialData()
         presenter.getEligibleProductList(campaignId,
                 campaignSlug,
                 (page - 1) * PER_PAGE, PER_PAGE,
@@ -376,6 +379,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }
+
+    override fun isLoading() = adapter.isLoading
 
     override fun onStatusSelected(position: Int) {
         loadContent()

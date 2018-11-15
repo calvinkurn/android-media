@@ -15,6 +15,7 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
     interface OnSellerStatusListAdapterListener {
         fun onStatusSelected(position: Int)
         fun onStatusCleared()
+        fun isLoading(): Boolean
     }
 
     companion object {
@@ -70,7 +71,6 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
         notifyDataSetChanged()
     }
 
-
     inner class CampaignStatusViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         init {
@@ -80,6 +80,9 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
         override fun onClick(v: View) {
             val position = adapterPosition
             if (position < 0 || position >= itemCount) {
+                return
+            }
+            if (onSellerStatusListAdapterListener.isLoading()) {
                 return
             }
             if (selectedIndex > -1 && position == selectedIndex) {
