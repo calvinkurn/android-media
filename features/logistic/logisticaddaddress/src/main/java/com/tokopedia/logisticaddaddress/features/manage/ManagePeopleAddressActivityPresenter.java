@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.manageaddress;
+package com.tokopedia.logisticaddaddress.features.manage;
 
 import android.content.Context;
 import android.os.Bundle;

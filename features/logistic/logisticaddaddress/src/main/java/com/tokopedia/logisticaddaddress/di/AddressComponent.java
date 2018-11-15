@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
-import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragment;
+import com.tokopedia.logisticaddaddress.features.manage.ManageAddressFragment;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 
 import dagger.Component;

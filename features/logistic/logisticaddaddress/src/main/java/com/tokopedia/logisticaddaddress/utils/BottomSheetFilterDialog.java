@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressActivityPresenter;
+import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivityPresenter;
 
 /**
  * Created on 5/25/16.

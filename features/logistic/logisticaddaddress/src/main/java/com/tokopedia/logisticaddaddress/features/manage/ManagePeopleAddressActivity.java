@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.manageaddress;
+package com.tokopedia.logisticaddaddress.features.manage;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -34,6 +34,7 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(this::onFabClicked);
+        fab.hide();
 
         mReceiver = new ManagePeopleAddressReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -41,7 +42,7 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ManagePeopleAddressFragment.newInstance();
+        return ManageAddressFragment.newInstance();
     }
 
     @Override
@@ -86,11 +87,19 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
 
     @Override
     public void setOnSubmitFilterDialog(int spinnerPosition, String query) {
-        ((ManagePeopleAddressView) getFragment()).setOnGetFilterActivated(spinnerPosition, query);
+        ((ManageAddressContract.View) getFragment()).filter(spinnerPosition, query);
     }
 
     @Override
     public void setOnReceiveResult(int resultCode, Bundle resultData) {
-        ((ManagePeopleAddressView) getFragment()).setOnActionReceiveResult(resultCode, resultData);
+        final String action = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_ACTION_TYPE, "unknown_action");
+        final String addressID = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_ADDRESS_ID);
+
+        if (resultCode == ManagePeopleAddressService.STATUS_FINISHED) {
+            ((ManageAddressContract.View) getFragment()).refreshView();
+        } else {
+            String errorMessage = resultData.getString(ManagePeopleAddressService.EXTRA_PARAM_NETWORK_ERROR_MESSAGE);
+            ((ManageAddressContract.View) getFragment()).showErrorSnackbar(errorMessage);
+        }
     }
 }

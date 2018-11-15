@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragment;
+import com.tokopedia.logisticaddaddress.features.manage.ManageAddressFragment;
 
 import dagger.Component;
 
@@ -12,5 +12,6 @@ import dagger.Component;
 @Component(modules = {AddressModule.class, ManageAddressModule.class}, dependencies = BaseAppComponent.class)
 public interface ManageAddressComponent {
 
-    void inject(ManagePeopleAddressFragment managePeopleAddressFragment);
+    void inject(ManageAddressFragment manageAddressFragment);
+
 }
