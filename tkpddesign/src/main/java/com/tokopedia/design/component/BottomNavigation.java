@@ -891,6 +891,14 @@ public class BottomNavigation extends BottomNavigationView {
         badgeView.setBadgeNumber(badgeNumber);
     }
 
+    public void removeNotification(int positionItem) {
+        if (getBottomNavigationItemView(positionItem) == null) {
+            Log.e(this.getClass().getSimpleName(), "BottomNavigationItemView NULL");
+            return;
+        }
+        if (mBadgeViews.get(positionItem) != null)
+            mBadgeViews.remove(positionItem);
+    }
     /**
      * Handle back stack event
      */
