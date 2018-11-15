@@ -1,28 +1,30 @@
 package com.tokopedia.sellerapp.dashboard.view.widget;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.graphics.Typeface;
-import com.tokopedia.sellerapp.R;
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.sellerapp.R;
 
 /**
  * @author by nisie on 14/11/18.
  */
 public class VerificationWarningTickerView extends FrameLayout {
 
-    public interface LinkClickListener{
+    public interface LinkClickListener {
         void onClickLink();
     }
 
@@ -63,6 +65,7 @@ public class VerificationWarningTickerView extends FrameLayout {
                                        LinkClickListener listener) {
         if (!TextUtils.isEmpty(descriptionString) && !TextUtils.isEmpty(highlightText)) {
             tvDescription.setText(getSpannableText(descriptionString, highlightText, listener));
+            tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
             tvDescription.setVisibility(View.VISIBLE);
         } else {
             tvDescription.setVisibility(View.GONE);
@@ -70,8 +73,8 @@ public class VerificationWarningTickerView extends FrameLayout {
     }
 
     public SpannableString getSpannableText(String fullText, String highlightedText,
-                                          LinkClickListener
-            listener){
+                                            LinkClickListener
+                                                    listener) {
         final int color = getContext().getResources().getColor(R.color.green_500);
         int startIndex = fullText.indexOf(highlightedText);
         int stopIndex = fullText.length();
