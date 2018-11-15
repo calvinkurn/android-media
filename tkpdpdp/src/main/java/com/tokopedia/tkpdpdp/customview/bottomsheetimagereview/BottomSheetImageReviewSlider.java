@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdpdp.customview.bottomsheetreview;
+package com.tokopedia.tkpdpdp.customview.bottomsheetimagereview;
 
 import android.content.Context;
 import android.support.annotation.AttrRes;
@@ -19,10 +19,9 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpdpdp.GalleryView;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.ReviewGalleryActivity;
-import com.tokopedia.tkpdpdp.ReviewImageSliderView;
+import com.tokopedia.tkpdpdp.ImageReviewGalleryActivity;
 import com.tokopedia.tkpdpdp.customview.RatingView;
-import com.tokopedia.tkpdpdp.viewmodel.ProductItem;
+import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ import java.util.List;
  * Created by henrypriyono on 12/03/18.
  */
 
-public class BottomSheetReviewImageSlider extends FrameLayout implements ReviewImageSliderView {
+public class BottomSheetImageReviewSlider extends FrameLayout implements ImageReviewSliderView {
 
     private UserLockBottomSheetBehavior bottomSheetBehavior;
     private View rootView;
@@ -43,17 +42,17 @@ public class BottomSheetReviewImageSlider extends FrameLayout implements ReviewI
 
     private EndlessRecyclerViewScrollListener loadMoreTriggerListener;
 
-    public BottomSheetReviewImageSlider(@NonNull Context context) {
+    public BottomSheetImageReviewSlider(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public BottomSheetReviewImageSlider(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public BottomSheetImageReviewSlider(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public BottomSheetReviewImageSlider(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public BottomSheetImageReviewSlider(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
@@ -162,8 +161,8 @@ public class BottomSheetReviewImageSlider extends FrameLayout implements ReviewI
     }
 
     @Override
-    public void onLoadDataSuccess(List<ProductItem> productItems) {
-        adapter.appendItems(productItems);
+    public void onLoadDataSuccess(List<ImageReviewItem> imageReviewItems) {
+        adapter.appendItems(imageReviewItems);
         loadMoreTriggerListener.updateStateAfterGetData();
     }
 
@@ -179,7 +178,7 @@ public class BottomSheetReviewImageSlider extends FrameLayout implements ReviewI
         boolean isAllowLoadMore();
     }
 
-    private static class SliderAdapter extends ReviewGalleryActivity.GalleryAdapter {
+    private static class SliderAdapter extends ImageReviewGalleryActivity.GalleryAdapter {
 
         public SliderAdapter(GalleryView galleryView) {
             super(galleryView);
@@ -205,7 +204,7 @@ public class BottomSheetReviewImageSlider extends FrameLayout implements ReviewI
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof ImageSliderViewHolder) {
-                ((ImageSliderViewHolder) holder).bind(productItemList.get(position));
+                ((ImageSliderViewHolder) holder).bind(imageReviewItemList.get(position));
             }
         }
     }
@@ -228,10 +227,10 @@ public class BottomSheetReviewImageSlider extends FrameLayout implements ReviewI
             rating = itemView.findViewById(R.id.review_image_slider_rating);
         }
 
-        public void bind(ProductItem item) {
-            ImageHandler.LoadImage(imageView, item.getImageUrl());
-            name.setText(item.getShop().getName());
-            date.setText(item.getId());
+        public void bind(ImageReviewItem item) {
+            ImageHandler.LoadImage(imageView, item.getImageUrlLarge());
+            name.setText(item.getReviewerName());
+            date.setText(item.getFormattedDate());
             rating.setImageResource(RatingView.getRatingDrawable(item.getRating()));
         }
     }

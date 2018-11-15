@@ -69,7 +69,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name=".ReviewGalleryActivity"
+        <activity android:name=".ImageReviewGalleryActivity"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen"/>
 
     </application>

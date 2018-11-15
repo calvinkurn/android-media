@@ -43,7 +43,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.tkpdpdp.ReviewGalleryActivity;
+import com.tokopedia.tkpdpdp.ImageReviewGalleryActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -110,7 +110,6 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView;
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -643,7 +642,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ReviewGalleryActivity.moveTo(getActivity());
+                ImageReviewGalleryActivity.moveTo(getActivity());
                 /*
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);

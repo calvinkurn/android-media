@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReviewGalleryActivity">
+    tools:context=".ImageReviewGalleryActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,7 +42,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.tkpdpdp.customview.bottomsheetreview.BottomSheetReviewImageSlider
+    <com.tokopedia.tkpdpdp.customview.bottomsheetimagereview.BottomSheetImageReviewSlider
         android:id="@+id/bottomSheetImageSlider"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

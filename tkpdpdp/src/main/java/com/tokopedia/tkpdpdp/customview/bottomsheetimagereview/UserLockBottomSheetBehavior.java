@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdpdp.customview.bottomsheetreview;
+package com.tokopedia.tkpdpdp.customview.bottomsheetimagereview;
 
 import android.content.Context;
 import android.support.design.widget.BottomSheetBehavior;

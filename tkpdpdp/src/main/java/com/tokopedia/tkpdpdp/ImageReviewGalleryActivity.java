@@ -18,39 +18,33 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.tkpdpdp.customview.bottomsheetreview.BottomSheetReviewImageSlider;
+import com.tokopedia.tkpdpdp.customview.bottomsheetimagereview.BottomSheetImageReviewSlider;
 import com.tokopedia.tkpdpdp.decoration.GalleryItemDecoration;
-import com.tokopedia.tkpdpdp.responsemodel.ResponseModel;
-import com.tokopedia.tkpdpdp.service.ImageService;
-import com.tokopedia.tkpdpdp.viewmodel.ProductItem;
+import com.tokopedia.tkpdpdp.presenter.ReviewGalleryPresenter;
+import com.tokopedia.tkpdpdp.presenter.ReviewGalleryPresenterImpl;
+import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-
-public class ReviewGalleryActivity extends AppCompatActivity implements BottomSheetReviewImageSlider.Callback, GalleryView {
+public class ImageReviewGalleryActivity extends AppCompatActivity implements BottomSheetImageReviewSlider.Callback, GalleryView {
 
     private static final int SPAN_COUNT = 3;
 
     private RecyclerView recyclerView;
-    private BottomSheetReviewImageSlider bottomSheetReviewImageSlider;
+    private BottomSheetImageReviewSlider bottomSheetImageReviewSlider;
     private GalleryAdapter galleryAdapter;
     private SnackbarRetry snackbarRetry;
 
     private EndlessRecyclerViewScrollListener loadMoreTriggerListener;
-    private Subscription subscription;
     private SwipeRefreshLayout refreshLayout;
     private boolean isLoadingFromNetwork = false;
     private View backButton;
+    private ReviewGalleryPresenter presenter;
 
     public static void moveTo(Activity activity) {
         if (activity != null) {
-            Intent intent = new Intent(activity, ReviewGalleryActivity.class);
+            Intent intent = new Intent(activity, ImageReviewGalleryActivity.class);
             activity.startActivity(intent);
         }
     }
@@ -63,12 +57,13 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
         initListeners();
         setupRecyclerView();
         setupBottomSheet();
+        initPresenter();
         loadDataFromNetworkFirstPage();
     }
 
     private void bindView() {
         recyclerView = findViewById(R.id.galleryRecyclerView);
-        bottomSheetReviewImageSlider = findViewById(R.id.bottomSheetImageSlider);
+        bottomSheetImageReviewSlider = findViewById(R.id.bottomSheetImageSlider);
         backButton = findViewById(R.id.top_bar_close_button);
         refreshLayout = findViewById(R.id.swipe_refresh_layout);
     }
@@ -125,7 +120,11 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
     }
 
     private void setupBottomSheet() {
-        bottomSheetReviewImageSlider.setup(this);
+        bottomSheetImageReviewSlider.setup(this);
+    }
+
+    private void initPresenter() {
+        presenter = new ReviewGalleryPresenterImpl();
     }
 
     private void loadDataFromNetworkFirstPage() {
@@ -135,10 +134,10 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
 
     private void resetState() {
         dismissRetrySnackbar();
-        unsubscribeNetworkRequests();
+        presenter.cancelLoadDataRequest();
         galleryAdapter.resetState();
         loadMoreTriggerListener.resetState();
-        bottomSheetReviewImageSlider.resetState();
+        bottomSheetImageReviewSlider.resetState();
         isLoadingFromNetwork = false;
     }
 
@@ -148,64 +147,48 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
         }
     }
 
-    private void unsubscribeNetworkRequests() {
-        if (subscription != null) {
-            subscription.unsubscribe();
-            subscription = null;
-        }
-    }
-
     private void loadDataFromNetwork(final int startRow) {
         if (isLoadingFromNetwork) {
             return;
         }
         isLoadingFromNetwork = true;
-        ImageService imageService = RetrofitHelper.createRetrofit(this).create(ImageService.class);
-        subscription = imageService.loadData(startRow)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ResponseModel>() {
+        presenter.loadData(this, 266635420, startRow, new ReviewGalleryPresenter.LoadDataListener() {
+            @Override
+            public void onSuccess(List<ImageReviewItem> imageReviewItemList) {
+                if (!imageReviewItemList.isEmpty()) {
+                    galleryAdapter.appendItems(imageReviewItemList);
+                    bottomSheetImageReviewSlider.onLoadDataSuccess(imageReviewItemList);
+                    loadMoreTriggerListener.updateStateAfterGetData();
+                    loadMoreTriggerListener.setHasNextPage(true);
+                    hideRefreshLayout();
+                } else {
+                    bottomSheetImageReviewSlider.onLoadDataEmpty();
+                    loadMoreTriggerListener.updateStateAfterGetData();
+                    loadMoreTriggerListener.setHasNextPage(false);
+                    galleryAdapter.removeLoading();
+                }
+                isLoadingFromNetwork = false;
+            }
+
+            @Override
+            public void onFailed() {
+                bottomSheetImageReviewSlider.onLoadDataFailed();
+                loadMoreTriggerListener.updateStateAfterGetData();
+                hideRefreshLayout();
+                galleryAdapter.removeLoading();
+
+                snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(ImageReviewGalleryActivity.this, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        bottomSheetReviewImageSlider.onLoadDataFailed();
-                        loadMoreTriggerListener.updateStateAfterGetData();
-                        hideRefreshLayout();
-                        galleryAdapter.removeLoading();
-
-                        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(ReviewGalleryActivity.this, new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                loadDataFromNetwork(startRow);
-                                bottomSheetReviewImageSlider.onLoadDataRetry();
-                                galleryAdapter.addLoading();
-                            }
-                        });
-                        snackbarRetry.showRetrySnackbar();
-                        isLoadingFromNetwork = false;
-                    }
-
-                    @Override
-                    public void onNext(ResponseModel response) {
-                        if (!response.getData().getProductItems().isEmpty()) {
-                            galleryAdapter.appendItems(response.getData().getProductItems());
-                            bottomSheetReviewImageSlider.onLoadDataSuccess(response.getData().getProductItems());
-                            loadMoreTriggerListener.updateStateAfterGetData();
-                            loadMoreTriggerListener.setHasNextPage(true);
-                            hideRefreshLayout();
-                        } else {
-                            bottomSheetReviewImageSlider.onLoadDataEmpty();
-                            loadMoreTriggerListener.updateStateAfterGetData();
-                            loadMoreTriggerListener.setHasNextPage(false);
-                            galleryAdapter.removeLoading();
-                        }
-                        isLoadingFromNetwork = false;
+                    public void onRetryClicked() {
+                        loadDataFromNetwork(startRow);
+                        bottomSheetImageReviewSlider.onLoadDataRetry();
+                        galleryAdapter.addLoading();
                     }
                 });
+                snackbarRetry.showRetrySnackbar();
+                isLoadingFromNetwork = false;
+            }
+        });
     }
 
     private void hideRefreshLayout() {
@@ -214,7 +197,7 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
 
     @Override
     public void onBackPressed() {
-        if (!bottomSheetReviewImageSlider.onBackPressed()) {
+        if (!bottomSheetImageReviewSlider.onBackPressed()) {
             super.onBackPressed();
         }
     }
@@ -226,12 +209,12 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
 
     @Override
     public void onGalleryItemClicked(int position) {
-        bottomSheetReviewImageSlider.displayImage(position);
+        bottomSheetImageReviewSlider.displayImage(position);
     }
 
     public static class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        protected List<ProductItem> productItemList = new ArrayList<>();
+        protected List<ImageReviewItem> imageReviewItemList = new ArrayList<>();
         private GalleryView galleryView;
         private boolean loadingItemEnabled = true;
 
@@ -270,13 +253,13 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof GalleryItemViewHolder) {
-                ((GalleryItemViewHolder) holder).bind(productItemList.get(position));
+                ((GalleryItemViewHolder) holder).bind(imageReviewItemList.get(position));
             }
         }
 
         @Override
         public int getItemCount() {
-            return loadingItemEnabled ? productItemList.size() + 1 : productItemList.size();
+            return loadingItemEnabled ? imageReviewItemList.size() + 1 : imageReviewItemList.size();
         }
 
         @Override
@@ -288,19 +271,19 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
             }
         }
 
-        public void appendItems(List<ProductItem> productItems) {
-            productItemList.addAll(productItems);
+        public void appendItems(List<ImageReviewItem> imageReviewItems) {
+            imageReviewItemList.addAll(imageReviewItems);
             notifyDataSetChanged();
         }
 
         public void resetState() {
-            productItemList.clear();
+            imageReviewItemList.clear();
             loadingItemEnabled = true;
             notifyDataSetChanged();
         }
 
         public boolean isGalleryItem(int position) {
-            return position < productItemList.size();
+            return position < imageReviewItemList.size();
         }
 
         public void removeLoading() {
@@ -318,7 +301,7 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
         }
 
         public int getGalleryItemCount() {
-            return productItemList.size();
+            return imageReviewItemList.size();
         }
     }
 
@@ -336,8 +319,8 @@ public class ReviewGalleryActivity extends AppCompatActivity implements BottomSh
             this.galleryView = galleryView;
         }
 
-        public void bind(ProductItem productItem) {
-            ImageHandler.LoadImage(galleryImage, productItem.getImageUrl());
+        public void bind(ImageReviewItem imageReviewItem) {
+            ImageHandler.LoadImage(galleryImage, imageReviewItem.getImageUrlThumbnail());
             galleryImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
