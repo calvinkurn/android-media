@@ -391,9 +391,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void logError(String className, String message) {
+    public void logUnknownError(Throwable throwable) {
         try {
-            Crashlytics.log(0, className, message);
+            Crashlytics.logException(throwable);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
