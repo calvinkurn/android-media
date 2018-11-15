@@ -16,8 +16,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 
 /**
  * @author by yfsx on 19/09/18.
@@ -66,7 +64,7 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
 
     private void initViewListener(DashboardHeaderViewModel element) {
         layoutSaldo.setOnClickListener(view -> {
-            RouteManager.route(layoutSaldo.getContext(), ApplinkConst.DEPOSIT);
+            mainView.goToDeposit();
         });
     }
 

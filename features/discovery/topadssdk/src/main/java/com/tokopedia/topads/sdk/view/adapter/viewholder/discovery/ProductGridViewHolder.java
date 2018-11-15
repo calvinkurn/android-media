@@ -20,6 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     public TextView productName;
     public TextView productPrice;
     public TextView shopLocation;
-    public ImageView productImage;
+    public ImpressedImageView productImage;
     private ImageLoader imageLoader;
     private ImageView rating;
     private TextView newLabelTxt;
@@ -68,7 +69,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
         shopLocation = (TextView) itemView.findViewById(R.id.location);
@@ -109,7 +110,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     }
 
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product, productImage, (clickPosition < 0 ? getAdapterPosition() : clickPosition));
+        productImage.setImage(product.getImage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));

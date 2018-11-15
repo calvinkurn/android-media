@@ -7,14 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -25,7 +23,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
@@ -254,6 +251,18 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void trackContentClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
+
+    }
+
+    @Override
+    public void trackTooltipClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
+
+    }
+
+    @Override
     public void onFollowKolClicked(int rowNumber, int id) {
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.followKol(id, rowNumber);
@@ -272,7 +281,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKolClicked(int rowNumber, int id) {
+    public void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
@@ -281,7 +291,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUnlikeKolClicked(int adapterPosition, int id) {
+    public void onUnlikeKolClicked(int adapterPosition, int id, boolean hasMultipleContent,
+                                   String activityType) {
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unlikeKol(id, adapterPosition, this);
         } else {
@@ -290,13 +301,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int rowNumber, int id) {
+    public void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
         Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
     }
 
     @Override
-    public void onEditClicked(int id) {
+    public void onGoToKolComment(int rowNumber, int id) {
+        onGoToKolComment(rowNumber, id, false, "");
+    }
+
+    @Override
+    public void onEditClicked(boolean hasMultipleContent, String activityId,
+                              String activityType) {
 
     }
 

@@ -171,7 +171,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     private void intentToAddPassword() {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getChangePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+                    .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
         }
     }
 }

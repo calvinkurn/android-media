@@ -75,7 +75,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
     }
 
     private void checkSprintSaleActive(String sprintSaleType) {
-        switch (sprintSaleType) {
+        switch (sprintSaleType.toLowerCase()) {
             case SprintSaleViewModel.TYPE_ACTIVE:
                 setSprintSaleActive();
                 break;

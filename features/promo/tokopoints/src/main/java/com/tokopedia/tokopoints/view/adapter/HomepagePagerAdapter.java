@@ -65,15 +65,6 @@ public class HomepagePagerAdapter extends PagerAdapter {
                         AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
                         "");
             });
-            view.findViewById(R.id.text_link_second).setOnClickListener(v -> {
-                mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
-
-                AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_BANTUAN,
-                        "");
-            });
         } else {
             if (mCoupons == null || mCoupons.isEmpty()) {
                 containerInner.setDisplayedChild(1);
@@ -98,15 +89,6 @@ public class HomepagePagerAdapter extends PagerAdapter {
                         AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
-                        "");
-            });
-            view.findViewById(R.id.text_link_second).setOnClickListener(v -> {
-                mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
-
-                AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_BANTUAN,
                         "");
             });
         }
