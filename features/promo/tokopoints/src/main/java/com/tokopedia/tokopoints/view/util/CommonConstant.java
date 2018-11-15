@@ -77,8 +77,8 @@ public interface CommonConstant {
         String SUB_TITLE = "subTitle";
     }
 
-    class BaseUrl {
-        static String WEB_DOMAIN_MOBILE = "https://m.tokopedia.com/";
+    interface BaseUrl {
+        String WEB_DOMAIN_MOBILE = "https://m.tokopedia.com/";
     }
 
     interface WebLink {

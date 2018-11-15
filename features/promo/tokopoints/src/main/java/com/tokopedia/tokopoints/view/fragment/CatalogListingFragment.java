@@ -416,20 +416,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
     }
 
-    private int lookupForSelectedCategory(List<CatalogSubCategory> catalogCategories) {
-        for (CatalogSubCategory each : catalogCategories) {
-            if (each == null) {
-                continue;
-            }
-
-            if (each.isSelected()) {
-                return each.getId();
-            }
-        }
-
-        return CommonConstant.DEFAULT_CATEGORY_TYPE;
-    }
-
     @Override
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails) {
         if (tokenDetail != null) {

@@ -46,7 +46,13 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
         return tokoPointComponent;
     }
 
-    @DeepLink({ApplinkConstant.CATALOG_LISTING, ApplinkConstant.CATALOG_LISTING2, ApplinkConstant.CATALOG_LISTING3, ApplinkConstant.CATALOG_LISTING4})
+    @DeepLink({ApplinkConstant.CATALOG_LISTING,
+            ApplinkConstant.CATALOG_LISTING2,
+            ApplinkConstant.CATALOG_LISTING3,
+            ApplinkConstant.CATALOG_LISTING4,
+            ApplinkConstant.CATALOG_LISTING5,
+            ApplinkConstant.CATALOG_LISTING6,
+            ApplinkConstant.CATALOG_LISTING7})
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CatalogListingActivity.class);
         intent.putExtras(extras);

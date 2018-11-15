@@ -39,7 +39,6 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                                     GraphqlUseCase saveCouponUseCase,
                                     GraphqlUseCase validateCouponUseCase,
                                     GraphqlUseCase fetchCatalogStatusUseCase,
-                                    GraphqlUseCase startSendGift,
                                     GraphqlUseCase redeemCouponUseCase) {
         this.mGetHomePageData = getHomePageData;
         this.mSaveCouponUseCase = saveCouponUseCase;
