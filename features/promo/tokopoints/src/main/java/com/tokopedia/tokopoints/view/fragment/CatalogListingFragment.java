@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -219,7 +220,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
             mTabSortType.setVisibility(View.GONE);
-            updateToolbarTitle(filters.getCategories().get(0).getName());
+            if (TextUtils.isEmpty(filters.getCategories().get(0).getName())) {
+                updateToolbarTitle("Semua Kupon");
+            } else {
+                updateToolbarTitle(filters.getCategories().get(0).getName());
+            }
             mPagerSortType.postDelayed(() -> refreshTab(filters.getCategories().get(0).getId(), 0), CommonConstant.TAB_SETUP_DELAY_MS);
         } else if (filters.getCategories().get(0) != null
                 && filters.getCategories().get(0).getSubCategory() != null) {
