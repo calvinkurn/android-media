@@ -163,6 +163,7 @@ public interface ApplinkConst {
 
     String CHALLENGE = "tokopedia://challenges";
     String KYC = "tokopedia://kyc";
+    String KYC_SELLER_DASHBOARD = "tokopedia://kyc/?source=seller_dashboard";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.domain;
+package com.tokopedia.sellerapp.dashboard.usecase;
 
 import android.content.Context;
 
@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.home.account.data.model.AccountSettingConfig;
-import com.tokopedia.home.account.R;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.sellerapp.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,36 +16,40 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.internal.observers.AssertableSubscriberObservable;
 
 /**
- * @author by nisie on 13/11/18.
+ * @author by nisie on 15/11/18.
  */
-public class GetAccountSettingConfigUseCase  {
+public class GetVerificationStatusUseCase {
 
+    private static final String PROJECT_ID = "project_id";
     private final Context context;
     private final GraphqlUseCase graphqlUseCase;
 
     @Inject
-    public GetAccountSettingConfigUseCase(@ApplicationContext Context context,
+    public GetVerificationStatusUseCase(@ApplicationContext Context context,
                                     GraphqlUseCase graphqlUseCase) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
+
     }
 
     public void execute(Map<String, Object> requestParams, Subscriber<GraphqlResponse> subscriber){
         String query = GraphqlHelper.loadRawString(context.getResources(), R.raw
-                .query_account_setting_config);
+                .query_get_kyc_seller_dashboard_status);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                AccountSettingConfig.class, requestParams);
+                GetVerificationStatusPojo.class, requestParams);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
     }
 
-    public static Map<String,Object> getRequestParam(){
+    public static Map<String,Object> getRequestParam(String projectId){
         Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put(PROJECT_ID, projectId);
         return requestParams;
     }
 

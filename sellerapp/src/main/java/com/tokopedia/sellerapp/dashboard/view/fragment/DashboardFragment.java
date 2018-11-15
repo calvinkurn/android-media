@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -52,9 +54,11 @@ import com.tokopedia.seller.shopsettings.ManageShopActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
+import com.tokopedia.sellerapp.dashboard.model.GetApprovalStatusPojo;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
+import com.tokopedia.sellerapp.dashboard.view.widget.VerificationWarningTickerView;
 
 import java.util.ArrayList;
 
@@ -99,6 +103,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView reviewLabelView;
 
     private ShopWarningTickerView shopWarningTickerView;
+    private VerificationWarningTickerView verificationWarningTickerView;
+
     private ProgressDialog progressDialog;
 
     private SnackbarRetry snackBarRetry;
@@ -128,7 +134,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
         View ivSettingIcon = view.findViewById(R.id.iv_setting);
         shopWarningTickerView = (ShopWarningTickerView) view.findViewById(R.id.shop_warning_ticker_view);
-
+        verificationWarningTickerView = view.findViewById(R.id.verification_warning_ticker);
         reputationLabelLayout = view.findViewById(R.id.reputation_label_layout);
         reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
         shopReputationView = (ShopReputationView) view.findViewById(R.id.shop_reputation_view);
@@ -249,7 +255,19 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
+        verificationWarningTickerView.setDescriptionWithLink(
+                getString(R.string.verification_text),
+                getString(R.string.verification_highlight_text),
+                () -> {
+                    if(getActivity()!= null
+                            && getActivity().getApplicationContext() instanceof ApplinkRouter) {
+                        ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
+                        applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
+                    }
+                });
+
         sellerDashboardPresenter.getTicker();
+        sellerDashboardPresenter.getVerificationStatus();
     }
 
     void onRefresh() {
@@ -541,6 +559,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onErrorOpenShop() {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
+    }
+
+    @Override
+    public void onSuccessGetVerificationStatus(GetApprovalStatusPojo pojo) {
+        verificationWarningTickerView.setVisibility(View.VISIBLE);
     }
 
     private void setCounterIfNotEmpty(LabelView labelView, int counter) {
