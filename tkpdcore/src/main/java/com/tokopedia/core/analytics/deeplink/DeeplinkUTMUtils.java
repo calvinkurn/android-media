@@ -95,8 +95,7 @@ public class DeeplinkUTMUtils {
 
         Uri uri = getReferrer(activity);
 
-        if (uri == null) {
-
+        if (uri1 == null) {
             campaign.setUtmSource("direct");
             campaign.setUtmMedium("none");
             campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
@@ -117,8 +116,7 @@ public class DeeplinkUTMUtils {
                 // App was opened from a browser
                 String host = uri.getHost();
 
-                if(!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN)) ||
-                        !TextUtils.isEmpty(maps.get(AppEventTracking.GTM.UTM_GCLID))){
+                if(isValidCampaignUrl(uri1)){
 
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
@@ -203,7 +201,6 @@ public class DeeplinkUTMUtils {
 
                 } else if (!APP_CRAWLER.equals(referrerPackage)) {
                     // App was deep linked into from another app (excl. Google crawler)
-//
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : "android-app");
 
@@ -223,7 +220,6 @@ public class DeeplinkUTMUtils {
                 }
 
             } else if (isValidCampaignUrl(uri1)) {
-
                 campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                         maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
                 campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
