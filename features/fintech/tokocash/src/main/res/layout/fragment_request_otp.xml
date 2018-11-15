@@ -120,8 +120,7 @@
             android:maxLength="6"
             android:paddingBottom="@dimen/dp_10"
             android:textIsSelectable="false"
-            android:textSize="28sp"
-            app:pinLineColors="@drawable/pin_line_colors" />
+            android:textSize="28sp" />
 
     </LinearLayout>
 

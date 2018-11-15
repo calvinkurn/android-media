@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -55,7 +54,7 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewMode
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.common.util.PostMenuUtil;
+import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
@@ -79,6 +78,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
@@ -947,8 +947,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
         if (getContext() != null) {
-            Menus menus = PostMenuUtil.INSTANCE.createBottomMenu(getContext(), element,
-                    new PostMenuUtil.PostMenuListener() {
+            Menus menus = createBottomMenu(getContext(), element,
+                    new PostMenuListener() {
                         @Override
                         public void onDeleteClicked() {
 

@@ -14,9 +14,13 @@ interface ContentReportContract {
         fun hideKeyboard()
 
         fun enableSendBtn()
+
+        fun showLoading()
+
+        fun hideLoading()
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun sendReport()
+        fun sendReport(contentId: Int, reasonType: String, reasonMessage: String)
     }
 }

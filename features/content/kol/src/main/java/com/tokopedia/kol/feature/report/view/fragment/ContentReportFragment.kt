@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
+import com.tokopedia.kol.common.util.hideLoading
+import com.tokopedia.kol.common.util.showLoading
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
@@ -54,6 +56,10 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         initView()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun hideKeyboard() {
         reasonInput.isCursorVisible = false
         KeyboardHandler.DropKeyboard(activity, view)
@@ -61,6 +67,14 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     override fun enableSendBtn() {
         sendBtn.isEnabled = true
+    }
+
+    override fun showLoading() {
+        mainView.showLoading()
+    }
+
+    override fun hideLoading() {
+        mainView.hideLoading()
     }
 
     private fun initVar() {
