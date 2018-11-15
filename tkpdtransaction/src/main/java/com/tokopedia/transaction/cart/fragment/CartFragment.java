@@ -97,7 +97,6 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
-import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.router.ICartCheckoutModuleRouter;
@@ -288,7 +287,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         tosAgreementText.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                getActivity().startActivity(new Intent(getActivity(), InsuranceTnCActivity.class));
+             //   getActivity().startActivity(new Intent(getActivity(), InsuranceTnCActivity.class));
             }
         }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());

@@ -45,6 +45,8 @@ include "features:logistic:logisticanalytics"
 include "features:logistic:logisticuploadawb"
 include "features:logistic:tracking"
 include "features:logistic:logisticaddaddress"
+include "features:logistic:logisticinsurance"
+include "features:logistic:logisticinsurance_no_op"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_subscribe"

@@ -81,10 +81,6 @@
         <activity
             android:name=".bcaoneklik.activity.CreditCardDetailActivity"
             android:label="@string/label_detail_credit_card" />
-
-        <activity
-            android:name=".insurance.view.InsuranceTnCActivity"
-            android:label="@string/title_term_and_condition" />
         <activity
             android:name=".purchase.detail.activity.OrderDetailActivity"
             android:label="@string/title_activity_people_tx_details"

@@ -22,9 +22,9 @@
             android:layout_marginStart="@dimen/tp_margin_small"
             android:layout_marginLeft="@dimen/tp_margin_small"
             android:contentDescription="@string/tp_label_see_loyalty"
-            app:layout_constraintBottom_toBottomOf="@id/text_membership_value_bottom"
+            app:layout_constraintBottom_toBottomOf="@+id/text_membership_value_bottom"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_membership_label_bottom" />
+            app:layout_constraintTop_toTopOf="@+id/text_membership_label_bottom" />
 
         <TextView
             android:id="@+id/text_membership_label_bottom"
@@ -60,7 +60,7 @@
             android:layout_marginTop="@dimen/dp_6"
             android:layout_marginEnd="@dimen/tp_margin_regular"
             android:layout_marginRight="@dimen/tp_margin_regular"
-            app:layout_constraintBottom_toBottomOf="@id/ll_my_points_bottom"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_my_points_bottom"
             app:layout_constraintRight_toLeftOf="@+id/ll_my_points_bottom"
             app:layout_constraintTop_toTopOf="@+id/ll_my_points_bottom"
             app:srcCompat="@drawable/ic_tp_point_stack" />

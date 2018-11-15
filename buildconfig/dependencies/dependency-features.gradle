@@ -164,6 +164,8 @@ ext {
             logisticdata           : ":features:logistic:logisticdata",
             logisticuploadawb      : ":features:logistic:logisticuploadawb",
             tracking               : ":features:logistic:tracking",
+            logisticinsurance      : ":features:logistic:logisticinsurance",
+//            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
 
             goldMerchant           : ":features:merchant:gold_merchant",
             goldMerchantCommon     : ":features:merchant:gold_merchant_common",
