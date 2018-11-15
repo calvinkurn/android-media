@@ -897,7 +897,7 @@ public class BottomNavigation extends BottomNavigationView {
             return;
         }
         if (mBadgeViews.get(positionItem) != null)
-            mBadgeViews.get(positionItem).setBadgeNumber(0);
+            mBadgeViews.put(positionItem, new BadgeView(getContext()));
     }
     /**
      * Handle back stack event
