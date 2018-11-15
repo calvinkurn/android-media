@@ -116,20 +116,17 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         //Quota text handling
         if (item.getUpperTextDesc() == null || item.getUpperTextDesc().isEmpty()) {
             holder.quota.setVisibility(View.GONE);
+            holder.pbQuota.setVisibility(View.GONE);
         } else {
             holder.quota.setVisibility(View.VISIBLE);
+            holder.pbQuota.setVisibility(View.VISIBLE);
+            holder.pbQuota.setProgress(0);
             StringBuilder upperText = new StringBuilder();
             for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
                 if (i == 1) {
-                    //exclusive case for handling font color of second index.
-                    try {
-                        String percent = item.getUpperTextDesc().get(i).split("%")[0].trim();
-                        holder.pbQuota.setProgress(Integer.parseInt(percent));
-                    } catch (Exception e) {
-
-                    }
-
                     upperText.append(item.getUpperTextDesc().get(i));
+                    if (item.getCatalogType() == 3)        //for flash sale progress bar handling
+                        holder.pbQuota.setProgress(item.getQuota());
                 } else {
                     upperText.append(item.getUpperTextDesc().get(i)).append(" ");
                 }

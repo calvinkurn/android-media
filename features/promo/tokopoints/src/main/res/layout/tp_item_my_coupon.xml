@@ -77,7 +77,8 @@
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/dp_12">
+                    android:paddingBottom="@dimen/tp_padding_regular"
+                    android:paddingTop="@dimen/tp_padding_regular">
 
                     <TextView
                         android:id="@+id/text_time_label"
@@ -85,7 +86,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tp_margin_small"
                         android:layout_marginLeft="@dimen/tp_margin_small"
-                        android:layout_marginTop="@dimen/tp_padding_regular"
+
                         android:text="@string/tp_label_valid_for"
                         android:textColor="@color/black_38"
                         android:textSize="@dimen/tp_text_size_xxsmall"
@@ -144,20 +145,22 @@
                         app:srcCompat="@drawable/ic_tp_rp" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tp_margin_small"
                         android:layout_marginLeft="@dimen/tp_margin_small"
                         android:orientation="vertical"
+                        android:gravity="center_vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/iv_rp"
+                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:id="@+id/tv_min_txn_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/tp_padding_regular"
+
                             android:layout_marginEnd="@dimen/dp_8"
                             android:layout_marginRight="@dimen/dp_8"
                             android:textColor="@color/black_38"
@@ -172,7 +175,6 @@
                             android:fontFamily="sans-serif-medium"
                             android:textColor="@color/black_70"
                             android:textSize="@dimen/tp_text_size_small"
-
                             android:visibility="visible"
                             tool:text="Rp 3000000" />
                     </LinearLayout>
