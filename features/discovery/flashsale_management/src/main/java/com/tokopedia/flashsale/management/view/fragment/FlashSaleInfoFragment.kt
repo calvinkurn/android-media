@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
+import com.tokopedia.flashsale.management.view.activity.CampaignDetailActivity
 import com.tokopedia.flashsale.management.view.adapter.CampaignInfoAdapterTypeFactory
 import com.tokopedia.flashsale.management.view.presenter.CampaignDetailInfoPresenter
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoViewModel
@@ -22,7 +23,13 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
     @Inject
     lateinit var presenter: CampaignDetailInfoPresenter
 
-    override fun getAdapterTypeFactory() = CampaignInfoAdapterTypeFactory()
+    override fun getAdapterTypeFactory() = CampaignInfoAdapterTypeFactory(sellerStatus){
+        activity?.let {
+            if (it is CampaignDetailActivity){
+                it.moveToTabProduct()
+            }
+        }
+    }
 
     override fun onItemClicked(t: CampaignInfoViewModel?) {}
 
@@ -43,20 +50,15 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
         context?.let {
             GraphqlClient.init(it)
         }
+        arguments?.let {
+            campaignUrl = it.getString(EXTRA_PARAM_CAMPAIGN_URL, "") ?: ""
+            sellerStatus = it.getParcelable(EXTRA_PARAM_SELLER_STATUS) ?: SellerStatus()
+        }
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_flash_sale_info, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        arguments?.let {
-            campaignUrl = it.getString(EXTRA_PARAM_CAMPAIGN_URL, "") ?: ""
-            sellerStatus = it.getParcelable(EXTRA_PARAM_SELLER_STATUS) ?: SellerStatus()
-        }
-
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onDestroyView() {

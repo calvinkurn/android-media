@@ -4,10 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetail.*
 import com.tokopedia.flashsale.management.view.viewmodel.*
 
-class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
+class CampaignInfoAdapterTypeFactory(val sellerStatus: SellerStatus,
+                                     val onClickProductList: () -> Unit): BaseAdapterTypeFactory(){
 
     fun type(model: CampaignInfoViewModel): Int {
         return when(model){
@@ -23,7 +25,7 @@ class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            CampaignInfoHeaderViewHolder.LAYOUT -> CampaignInfoHeaderViewHolder(parent)
+            CampaignInfoHeaderViewHolder.LAYOUT -> CampaignInfoHeaderViewHolder(parent, sellerStatus, onClickProductList)
             CampaignInfoCategoryViewHolder.LAYOUT -> CampaignInfoCategoryViewHolder(parent)
             CampaignInfoSectionViewHolder.LAYOUT -> CampaignInfoSectionViewHolder(parent)
             CampaignInfoShopCriteriaViewHolder.LAYOUT -> CampaignInfoShopCriteriaViewHolder(parent)

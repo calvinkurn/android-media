@@ -17,7 +17,8 @@ class CampaignInfoShopCriteriaViewHolder(view: View): AbstractViewHolder<Campaig
         with(itemView){
             shop_type.text = element.shopType
             shop_reputation_min.loadUrl(element.shopMinReputation, 0f)
-            shop_success_transaction.text = element.shopSuccessTransaction
+            shop_success_transaction.text = context.getString(R.string.range_format, "${element.shopMinCancellationRate}%",
+                    "${element.shopMaxCancellationRate}%")
             shop_courrier.text = element.courierNames.joinToString(separator = ", ")
         }
     }

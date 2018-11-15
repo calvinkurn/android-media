@@ -32,9 +32,9 @@ fun Campaign.toListCampaignInfoViewModel(): List<CampaignInfoViewModel> {
     list.add(CampaignInfoHeaderViewModel(this))
     list.add(CampaignInfoSectionViewModel("Kriteria Produk"))
     list.addAll(criteria.map { CampaignInfoCategoryViewModel(it)})
-    list.add(CampaignInfoShopCriteriaViewModel(shopMinReputation = minSellerReputation, shopMaxReputation = maxSellerReputation,
-            courierNames = logistics.map { it.logisticName },
-            shopType = sellerTypes.map { it.title }.joinToString(", ")))
+    list.add(CampaignInfoShopCriteriaViewModel(sellerTypes.map { it.title }.joinToString(", "),
+            minSellerReputation, maxSellerReputation, minCancellationRate, maxCancellationRate,
+            logistics.map { it.logisticName }))
     list.add(CampaignInfoDescriptionViewModel(description))
     list.add(CampaignInfoPromoViewModel(minTransaction, promoCode))
     list.add(CampaignInfoTnCViewModel(tnc))

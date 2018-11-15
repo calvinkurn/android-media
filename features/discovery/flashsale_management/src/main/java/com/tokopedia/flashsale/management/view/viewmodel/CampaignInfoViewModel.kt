@@ -15,7 +15,8 @@ data class CampaignInfoCategoryViewModel(val criteria: Criteria): CampaignInfoVi
 data class CampaignInfoShopCriteriaViewModel(val shopType:String = "-",
                                              val shopMinReputation: String,
                                              val shopMaxReputation: String,
-                                             val shopSuccessTransaction: String = "-",
+                                             val shopMinCancellationRate: Int,
+                                             val shopMaxCancellationRate: Int,
                                              val courierNames: List<String>): CampaignInfoViewModel()
 data class CampaignInfoDescriptionViewModel(val description: String): CampaignInfoViewModel()
 data class CampaignInfoPromoViewModel(val minTransaction: String,
