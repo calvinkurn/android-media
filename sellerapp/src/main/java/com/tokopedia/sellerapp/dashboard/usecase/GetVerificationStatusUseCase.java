@@ -2,7 +2,7 @@ package com.tokopedia.sellerapp.dashboard.usecase;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
