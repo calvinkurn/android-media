@@ -25,7 +25,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -34,7 +33,6 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -53,22 +51,17 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
-import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
-import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
-import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -721,10 +714,23 @@ public class MainParentActivity extends BaseActivity implements
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
                             .build();
                     shortcutInfos.add(productShortcut);
+
+                    if (userSession.isLoggedIn()) {
+                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
+                        wishlistIntent.setAction(Intent.ACTION_VIEW);
+
+                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                                .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
+                                .setIntents(new Intent[]{intentHome, wishlistIntent})
+                                .build();
+                        shortcutInfos.add(wishlistShortcut);
+                    }
 
                     Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
                     digitalIntent.setAction(Intent.ACTION_VIEW);
@@ -732,7 +738,7 @@ public class MainParentActivity extends BaseActivity implements
                     ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
                             .build();
                     shortcutInfos.add(digitalShortcut);
@@ -753,24 +759,12 @@ public class MainParentActivity extends BaseActivity implements
                         ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
                                 .build();
                         shortcutInfos.add(shopShortcut);
-
-                        if (((GlobalNavRouter) getApplication()).getBooleanRemoteConfig(GlobalNavConstant.APP_SHOW_REFERRAL_BUTTON, false)) {
-                            Intent referralIntent = ((GlobalNavRouter) getApplication()).getReferralIntent(this);
-                            referralIntent.setAction(Intent.ACTION_VIEW);
-
-                            ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
-                                    .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                    .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                    .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                                    .setIntents(new Intent[]{intentHome, referralIntent})
-                                    .build();
-                            shortcutInfos.add(referralShortcut);
-                        }
                     }
+
                     shortcutManager.addDynamicShortcuts(shortcutInfos);
                 }
             } catch (SecurityException e) {
