@@ -35,7 +35,7 @@ import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity
 import com.tokopedia.talk.shoptalk.view.listener.ShopTalkContract
 import com.tokopedia.talk.shoptalk.view.presenter.ShopTalkPresenter
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_shop.*
 import javax.inject.Inject
 
@@ -63,7 +63,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     lateinit var presenter: ShopTalkPresenter
 
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: UserSessionInterface
 
     companion object {
         fun newInstance(bundle: Bundle): ShopTalkFragment {

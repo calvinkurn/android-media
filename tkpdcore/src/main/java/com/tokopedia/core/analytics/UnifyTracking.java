@@ -2771,34 +2771,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-
-    public static void eventAppRatingImpression(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.IMPRESSION_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.IMPRESSION,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAppRating(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventCancelAppRating(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CANCEL_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
     public static void eventKolRecommendationViewAllClick() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,

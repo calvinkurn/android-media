@@ -17,11 +17,11 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.BankRouter
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.di.AddEditBankDependencyInjector
-import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
+import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
@@ -331,9 +331,10 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         main_form.visibility = View.VISIBLE
     }
 
-    override fun onSuccessAddEditBank() {
+    override fun onSuccessAddEditBank(accountId: String) {
         val intent = Intent()
         val bundle = Bundle()
+        bankFormModel.accountId = accountId
         bundle.putParcelable(AddEditBankActivity.PARAM_DATA, bankFormModel)
         intent.putExtras(bundle)
         activity?.setResult(Activity.RESULT_OK, intent)

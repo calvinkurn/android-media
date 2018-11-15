@@ -31,4 +31,6 @@ public interface GroupChatModuleRouter {
 
     void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
                         String shareUrl, String userId, String sharing);
+
+    void sendAnalyticsGroupChat(String url, String error);
 }
