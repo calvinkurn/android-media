@@ -288,7 +288,6 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     private fun onSuccessDoAction(it: FlashSaleDataContainer) {
         hideProgressDialog()
-        //TODO show message, activity Result?
         val resultIntent = Intent()
         if (it.flashSaleCriteriaResponseData.isNotEmpty()) {
             val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
