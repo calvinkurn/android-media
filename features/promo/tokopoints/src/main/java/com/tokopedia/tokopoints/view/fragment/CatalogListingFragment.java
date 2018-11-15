@@ -245,10 +245,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                         }
                     }
 
-                    mPagerSortType.postDelayed(() -> refreshTab(filters.getCategories().get(0).getId(),
-                            filters.getCategories().get(0).getSubCategory().get(position).getId()), CommonConstant.TAB_SETUP_DELAY_MS);
-
-                    //TODO update page title hide tabs
                     if (filters.getCategories().get(0).getSubCategory().get(position).getTimeRemainingSeconds() > 0) {
                         startFlashTimer(filters.getCategories().get(0).getSubCategory().get(position));
                         mContainerFlashTimer.setVisibility(View.VISIBLE);
