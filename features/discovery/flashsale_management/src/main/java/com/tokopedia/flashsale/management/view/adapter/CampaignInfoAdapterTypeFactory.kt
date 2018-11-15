@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
+import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetail.*
 import com.tokopedia.flashsale.management.view.viewmodel.*
 

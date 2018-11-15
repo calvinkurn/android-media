@@ -8,7 +8,7 @@ import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.flashsale.management.data.campaignlist.Campaign
 import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
-import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
+import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

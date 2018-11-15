@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
+import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.di.DaggerCampaignComponent
 import com.tokopedia.flashsale.management.view.adapter.CampaignDetailFragmentPagerAdapter

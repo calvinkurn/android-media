@@ -8,7 +8,7 @@ import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
-import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
+import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.ekstension.*
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
 import kotlinx.android.synthetic.main.item_flash_sale_info_camp_detail.view.*

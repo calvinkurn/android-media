@@ -1,4 +1,4 @@
-package com.tokopedia.flashsale.management.data.seller_status
+package com.tokopedia.flashsale.management.common.data
 
 import android.os.Parcel
 import android.os.Parcelable

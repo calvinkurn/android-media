@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
+import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.view.activity.CampaignDetailActivity
 import com.tokopedia.flashsale.management.view.adapter.CampaignInfoAdapterTypeFactory
