@@ -116,6 +116,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     }
 
     private fun handleAppsFlyer(uri: Uri) {
+        Toast.makeText(activity, "HOST: " + uri.host + "\n SCHEME: " + uri.scheme, Toast.LENGTH_SHORT).show()
         if(uri.host == APPSFLYER_SET_USER) {
             if(uri.getQueryParameter(ID) != null) {
                 with (sharedPref.edit()) {
@@ -139,6 +140,8 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
+            Toast.makeText(activity, "eventName: " + eventName, Toast.LENGTH_SHORT).show()
 
             AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
         }
