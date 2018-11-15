@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,10 +12,8 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity;
-import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 import com.tokopedia.tkpd.home.model.VideoPushBannerModel;
-
+import com.tokopedia.tkpd.R;
 import java.util.List;
 
 /**
@@ -48,7 +45,7 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
-        View imageLayout = inflater.inflate(com.tokopedia.events.R.layout.video_push_banner_item, view, false);
+        View imageLayout = inflater.inflate(R.layout.video_push_banner_item, view, false);
 
         assert imageLayout != null;
         final ImageView imageView = imageLayout
@@ -56,14 +53,11 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
 
         ImageHandler.loadImageCover2(imageView, bannerModelList.get(position).getBannerImg());
         view.addView(imageLayout, 0);
-        imageLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!TextUtils.isEmpty(bannerModelList.get(position).getLink())) {
-                    RouteManager.route(context, bannerModelList.get(position).getLink());
-                }
-                ((Activity)context).finish();
+        imageLayout.setOnClickListener(view1 -> {
+            if (!TextUtils.isEmpty(bannerModelList.get(position).getLink())) {
+                RouteManager.route(context, bannerModelList.get(position).getLink());
             }
+            ((Activity)context).finish();
         });
         return imageLayout;
     }
