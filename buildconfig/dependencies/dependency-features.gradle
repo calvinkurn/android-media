@@ -203,6 +203,8 @@ ext {
             logisticgeolocation         : ":features:logistic:logisticgeolocation",
             districtrecommendation      : ":features:logistic:district_recommendation",
             districtRecommendation      : ":features:logistic:district_recommendation",
+            logisticinsurance      : ":features:logistic:logisticinsurance",
+//            logisticinsurance      : ":features:logistic:logisticinsurance_no_op",
 
 
             goldMerchant           : ":features:merchant:gold_merchant",

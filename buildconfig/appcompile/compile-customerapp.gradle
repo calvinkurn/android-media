@@ -49,6 +49,9 @@ include "features:logistic:logisticinputreceiptshipment"
 include "features:logistic:logisticlistaddress"
 include "features:logistic:logisticgeolocation"
 include "features:logistic:logisticcommon"
+include "features:logistic:logisticinsurance"
+include "features:logistic:logisticinsurance_no_op"
+
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_subscribe"

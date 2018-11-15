@@ -145,7 +145,6 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
@@ -391,7 +390,7 @@ import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
-import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
+import com.tokopedia.logisticinsurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
@@ -2036,11 +2035,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetInsuranceTncActivityIntent() {
-        return new Intent(this, InsuranceTnCActivity.class);
-    }
-
-    @Override
     public Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
@@ -2375,7 +2369,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendAnalyticsGroupChat(String url, String error) {
-        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+        if (remoteConfig.getBoolean("groupchat_analytics", false)) {
             AnalyticsLog.logGroupChatWebSocketError(url, error);
         }
     }
@@ -3213,6 +3207,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getDefferedDeeplinkPathIfExists() {
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
+
     @Override
     public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
         TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);

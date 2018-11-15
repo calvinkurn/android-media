@@ -70,6 +70,7 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticinsurance.view.InsuranceTnCActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -1408,7 +1409,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceTncClicked() {
-        startActivity(checkoutModuleRouter.checkoutModuleRouterGetInsuranceTncActivityIntent());
+        startActivity(InsuranceTnCActivity.createIntent(getActivityContext()));
     }
 
     @Override
