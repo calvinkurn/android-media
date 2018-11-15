@@ -74,11 +74,11 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Inject
     public CatalogListItemPresenter mPresenter;
 
-    public static Fragment newInstance(int categoryId, int currentSortType) {
+    public static Fragment newInstance(int categoryId, int subCategoryId) {
         Fragment fragment = new CatalogListItemFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_CATEGORY_ID, categoryId);
-        bundle.putInt(ARGS_SORT_TYPE, currentSortType);
+        bundle.putInt(CommonConstant.ARGS_CATEGORY_ID, categoryId);
+        bundle.putInt(CommonConstant.ARGS_SUB_CATEGORY_ID, subCategoryId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -107,7 +107,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.text_failed_action) {
-            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSortType());
+            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSubCategoryId());
         } else if (view.getId() == R.id.text_empty_action) {
             openWebView(CommonConstant.WebLink.INFO);
         }
@@ -200,6 +200,15 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
     }
 
+    @Override
+    public int getCurrentSubCategoryId() {
+        if (getArguments() != null) {
+            return getArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID);
+        }
+
+        return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
+    }
+
     public void showRedeemCouponDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
         adb.setTitle(R.string.tp_label_use_coupon);
@@ -259,7 +268,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
-
     }
 
     public void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode) {
@@ -515,3 +523,4 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
     }
 }
+

@@ -40,7 +40,6 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
                 timeLabel, timeValue, disabledError, btnContinue,
                 labelPoint, textDiscount;
         ImageView imgBanner, imgTime, imgPoint;
-        ImageButton btnSendGift;
         ProgressBar pbQuota;
         boolean isVisited = false;
 
@@ -59,7 +58,6 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             imgPoint = view.findViewById(R.id.img_points_stack);
             labelPoint = view.findViewById(R.id.text_point_label);
             textDiscount = view.findViewById(R.id.text_point_discount);
-            btnSendGift = view.findViewById(R.id.btn_send_gift);
             pbQuota = view.findViewById(R.id.progress_timer_quota);
         }
     }
@@ -122,20 +120,26 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             holder.pbQuota.setVisibility(View.VISIBLE);
             holder.pbQuota.setProgress(0);
             StringBuilder upperText = new StringBuilder();
-            for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
-                if (i == 1) {
-                    upperText.append(item.getUpperTextDesc().get(i));
-                    if (item.getCatalogType() == 3)        //for flash sale progress bar handling
-                        holder.pbQuota.setProgress(item.getQuota());
-                } else {
-                    upperText.append(item.getUpperTextDesc().get(i)).append(" ");
-                }
-            }
 
-            if (item.getUpperTextDesc().size() > 1) {
+            if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
                 holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.red_150));
             } else {
                 holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.black_38));
+            }
+
+            for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
+                if (i == 1) {
+                    if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                        //for flash sale progress bar handling
+                        holder.pbQuota.setProgress(item.getQuota());
+                        upperText.append(item.getUpperTextDesc().get(i));
+                    } else {
+                        //exclusive case for handling font color of second index.
+                        upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                    }
+                } else {
+                    upperText.append(item.getUpperTextDesc().get(i)).append(" ");
+                }
             }
 
             holder.quota.setText(MethodChecker.fromHtml(upperText.toString()));
@@ -177,14 +181,6 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         } else {
             holder.textDiscount.setVisibility(View.VISIBLE);
             holder.textDiscount.setText(item.getDiscountPercentageStr());
-        }
-
-        if (item.getIsGift() == 1) {
-            holder.btnSendGift.setVisibility(View.VISIBLE);
-            holder.btnSendGift.setOnClickListener(view -> mPresenter.startSendGift(item.getId(), item.getTitle(), item.getPointsStr()));
-        } else {
-            holder.btnSendGift.setVisibility(View.GONE);
-            holder.btnSendGift.setOnClickListener(null);
         }
 
         holder.btnContinue.setOnClickListener(v -> {

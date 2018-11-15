@@ -36,15 +36,12 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     private GraphqlUseCase mSaveCouponUseCase;
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
-    private GraphqlUseCase mStartSendGift;
-    private GraphqlUseCase mDynamicLinksUseCase;
 
     @Inject
     public HomepagePresenter(GraphqlUseCase getTokoPointDetailUseCase,
                              GraphqlUseCase getTokoPointPromoUseCase,
                              GraphqlUseCase saveCouponUseCase,
                              GraphqlUseCase redeemCouponUseCase,
-                             GraphqlUseCase startSendGift,
                              GraphqlUseCase validateCouponUseCase
     ) {
 
@@ -53,8 +50,6 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         this.mSaveCouponUseCase = saveCouponUseCase;
         this.mValidateCouponUseCase = validateCouponUseCase;
         this.mRedeemCouponUseCase = redeemCouponUseCase;
-        this.mStartSendGift = startSendGift;
-        this.mDynamicLinksUseCase = mDynamicLinksUseCase;
     }
 
 
@@ -89,7 +84,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                 TokoPointDetailEntity.class);
         mGetTokoPointDetailUseCase.addRequest(graphqlRequest);
 
-        graphqlRequest= new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
+        graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
                 TokenDetailOuter.class);
 
         mGetTokoPointDetailUseCase.addRequest(graphqlRequest);
@@ -146,7 +141,8 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         variables.put(CommonConstant.GraphqlVariableKeys.PAGE, 1);
         variables.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, 10);  //For home page max page will be 1
         variables.put(CommonConstant.GraphqlVariableKeys.SORT_ID, CommonConstant.DEFAULT_SORT_TYPE); // 1 for all catalog
-        variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, CommonConstant.DEFAULT_CATEGORY_TYPE); // zero for no filter
+        variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0); // zero for no filter
+        variables.put(CommonConstant.GraphqlVariableKeys.SUB_CATEGORY_ID, 0); // zero for no filter
         variables.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, 0); //zero for all catalog
         variables.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
         variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
@@ -315,67 +311,13 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     }
 
     @Override
-    public void startSendGift(int id, String title, String pointStr) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, id);
-        variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 1);
-
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_pre_validate_redeem),
-                PreValidateRedeemBase.class,
-                variables);
-        mStartSendGift.clearRequest();
-        mStartSendGift.addRequest(request);
-        mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                //NA
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                PreValidateRedeemBase data = response.getData(PreValidateRedeemBase.class);
-                if (data != null
-                        && data.getPreValidateRedeem() != null
-                        && data.getPreValidateRedeem().getIsValid() == 1) {
-                    getView().gotoSendGiftPage(id, title, pointStr);
-                } else {
-                    //show error
-                    List<GraphqlError> errors = response.getError(PreValidateRedeemBase.class);
-
-                    String errorTitle = getView().getAppContext().getString(R.string.tp_send_gift_failed_title);
-                    String errorMessage = getView().getAppContext().getString(R.string.tp_send_gift_failed_message);
-
-                    if (errors != null && errors.size() > 0) {
-                        String[] mesList = errors.get(0).getMessage().split("|");
-                        if (mesList.length == 3) {
-                            errorTitle = mesList[0];
-                            errorMessage = mesList[1];
-                        } else if (mesList.length == 2) {
-                            errorMessage = mesList[0];
-                        }
-                    }
-
-                    getView().onPreValidateError(errorTitle, errorMessage);
-                }
-            }
-        });
-    }
-
-
-    @Override
     public void getPopupNotification() {
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_popup_notification),
                 TokoPointDetailEntity.class);
-        mStartSendGift.clearRequest();
-        mStartSendGift.addRequest(request);
-        mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
+        mRedeemCouponUseCase.clearRequest();
+        mRedeemCouponUseCase.addRequest(request);
+        mRedeemCouponUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 

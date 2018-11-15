@@ -10,12 +10,14 @@ import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBannerOuter;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterOuter;
+import com.tokopedia.tokopoints.view.model.CatalogSubCategory;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -45,7 +47,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
     }
 
     @Override
-    public void getHomePageData() {
+    public void getHomePageData(String slugCategory, String slugSubCategory) {
         if (getView() == null) {
             return;
         }
@@ -62,7 +64,8 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         mGetHomePageData.addRequest(graphqlRequestBanners);
 
         Map<String, Object> variableFilter = new HashMap<>();
-        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, "");
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_CATEGORY, slugCategory);
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_SUB_CATEGORY, slugSubCategory);
         GraphqlRequest graphqlRequestFilter = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_filter),
                 CatalogFilterOuter.class,
                 variableFilter);
@@ -164,13 +167,8 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         });
     }
 
-    @Override
-    public int getSelectedCategoryId() {
-        return getView().getSelectedCategoryId();
-    }
-
-    public String getCategoryName(ArrayList<CatalogCategory> catalogCategories, int selectedCategoryId) {
-        for (CatalogCategory each : catalogCategories) {
+    public String getCategoryName(List<CatalogSubCategory> catalogCategories, int selectedCategoryId) {
+        for (CatalogSubCategory each : catalogCategories) {
             if (each == null) {
                 continue;
             }
