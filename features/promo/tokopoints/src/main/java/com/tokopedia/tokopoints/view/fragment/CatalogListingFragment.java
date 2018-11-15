@@ -66,7 +66,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private LobDetails mLobDetails;
     private TextView mTvFlashTimer, mTvFlashTimerLabel;
     private ProgressBar mProgressFlash;
-    private ConstraintLayout mContainerFlashTimer;
+    private ConstraintLayout mContainerFlashTimer, mClPointDetail;
     /*This section is exclusively for handling flash-sale timer*/
     public CountDownTimer mFlashTimer;
 
@@ -104,13 +104,14 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
+        mClPointDetail = view.findViewById(R.id.container_point_detail_header);
         initListener();
 
         if (getArguments() == null) {
-            mPresenter.getHomePageData("", "");
+            mPresenter.getHomePageData("", "", false);
         } else {
             mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                    getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY));
+                    getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
         }
 
         mPresenter.getPointData();
@@ -187,6 +188,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTextMembershipValueBottom.setText(membership);
         mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(rewardValue, false));
         ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
+        mClPointDetail.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -307,10 +309,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             gotoMyCoupons();
         } else if (source.getId() == R.id.text_failed_action) {
             if (getArguments() == null) {
-                mPresenter.getHomePageData("", "");
+                mPresenter.getHomePageData("", "", false);
             } else {
                 mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                        getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY));
+                        getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
             }
 
             mPresenter.getPointData();
@@ -481,10 +483,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             @Override
             public void onFinish() {
                 if (getArguments() == null) {
-                    mPresenter.getHomePageData("", "");
+                    mPresenter.getHomePageData("", "", false);
                 } else {
                     mPresenter.getHomePageData(getArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY),
-                            getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY));
+                            getArguments().getString(CommonConstant.ARGS_SLUG_SUB_CATEGORY), true);
                 }
 
                 mPresenter.getPointData();

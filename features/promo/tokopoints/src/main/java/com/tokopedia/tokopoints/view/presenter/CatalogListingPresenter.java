@@ -47,7 +47,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
     }
 
     @Override
-    public void getHomePageData(String slugCategory, String slugSubCategory) {
+    public void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire) {
         if (getView() == null) {
             return;
         }
@@ -55,13 +55,18 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         mGetHomePageData.clearRequest();
         getView().showLoader();
 
-        //Adding banner query
-        Map<String, Object> variablesBanner = new HashMap<>();
-        variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
-        GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
-                CatalogBannerOuter.class,
-                variablesBanner);
-        mGetHomePageData.addRequest(graphqlRequestBanners);
+        if (isBannerRequire) {
+            Map<String, Object> variablesBanner = new HashMap<>();
+            variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
+            GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
+                    CatalogBannerOuter.class,
+                    variablesBanner);
+            mGetHomePageData.addRequest(graphqlRequestBanners);
+
+            GraphqlRequest graphqlRequestTokenDetail = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
+                    TokoPointDetailEntity.class);
+            mGetHomePageData.addRequest(graphqlRequestTokenDetail);
+        }
 
         Map<String, Object> variableFilter = new HashMap<>();
         variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_CATEGORY, slugCategory);
@@ -74,10 +79,6 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         GraphqlRequest graphqlRequestEgg = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
                 TokenDetailOuter.class);
         mGetHomePageData.addRequest(graphqlRequestEgg);
-
-        GraphqlRequest graphqlRequestTokenDetail = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
-                TokoPointDetailEntity.class);
-        mGetHomePageData.addRequest(graphqlRequestTokenDetail);
 
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
             @Override

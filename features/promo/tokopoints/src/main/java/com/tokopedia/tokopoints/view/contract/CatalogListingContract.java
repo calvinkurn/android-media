@@ -51,7 +51,7 @@ public interface CatalogListingContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getHomePageData(String slugCategory, String slugSubCategory);
+        void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire);
 
         void getPointData();
     }
