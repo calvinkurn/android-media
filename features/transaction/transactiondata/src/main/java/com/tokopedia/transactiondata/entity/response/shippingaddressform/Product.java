@@ -253,4 +253,12 @@ public class Product {
     public ProductPreorder getProductPreorder() {
         return productPreorder;
     }
+
+    public PurchaseProtectionPlanData getPurchaseProtectionPlanData() {
+        return purchaseProtectionPlanData;
+    }
+
+    public void setPurchaseProtectionPlanData(PurchaseProtectionPlanData purchaseProtectionPlanData) {
+        this.purchaseProtectionPlanData = purchaseProtectionPlanData;
+    }
 }

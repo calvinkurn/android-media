@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Fajar Ulin Nuha on 15/11/18.
  */
-class PurchaseProtectionPlanData implements Parcelable {
+public class PurchaseProtectionPlanData implements Parcelable {
 
     private boolean protectionAvailable;
     private int protectionTypeId;
