@@ -5,9 +5,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlist.Criteria
 import com.tokopedia.flashsale.management.common.data.SellerStatus
-import com.tokopedia.flashsale.management.product.data.FlashSaleCategoryListGQL
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
+import com.tokopedia.flashsale.management.product.data.*
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleCategoryListUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleProductUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleTncUseCase
