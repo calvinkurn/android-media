@@ -62,7 +62,7 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
 
         public void bindData(LinksItemEntity linksItemEntity) {
             if (URLUtil.isValidUrl(linksItemEntity.getBackgroundURL())) {
-                ImageHandler.loadImage(context, ivBack, linksItemEntity.getBackgroundURL(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(context, ivBack, linksItemEntity.getBackgroundURL(), R.color.medium_green, R.color.medium_green);
             } else {
                 ivBack.setBackgroundColor(Color.parseColor(linksItemEntity.getBackgroundColor()));
             }
