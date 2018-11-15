@@ -710,6 +710,7 @@ public class MainParentActivity extends BaseActivity implements
 
                     Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
                     productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
@@ -722,6 +723,7 @@ public class MainParentActivity extends BaseActivity implements
                     if (userSession.isLoggedIn()) {
                         Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
                         wishlistIntent.setAction(Intent.ACTION_VIEW);
+                        wishlistIntent.putExtras(args);
 
                         ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
@@ -734,6 +736,7 @@ public class MainParentActivity extends BaseActivity implements
 
                     Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
                     digitalIntent.setAction(Intent.ACTION_VIEW);
+                    digitalIntent.putExtras(args);
 
                     ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
