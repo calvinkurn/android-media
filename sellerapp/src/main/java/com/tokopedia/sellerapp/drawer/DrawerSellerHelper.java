@@ -104,6 +104,19 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     @Override
+    public void showFlashaleMenu() {
+        ArrayList<DrawerItem> items = adapter.getData();
+        for (int i = 0; i < items.size(); ++i){
+            if (items.get(i).id == TkpdState.DrawerPosition.SELLER_TOP_ADS){
+                adapter.getData().add(i+1, new DrawerItem(context.getString(R.string.drawer_title_flash_sale),
+                        TkpdState.DrawerPosition.SELLER_FLASH_SALE,
+                        true));
+                adapter.notifyItemInserted(i+1);
+            }
+        }
+    }
+
+    @Override
     public ArrayList<DrawerItem> createDrawerData() {
         initRemoteConfig();
         ArrayList<DrawerItem> data = new ArrayList<>();
@@ -123,9 +136,6 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
                 TkpdState.DrawerPosition.SELLER_TOP_ADS,
-                true));
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_flash_sale),
-                TkpdState.DrawerPosition.SELLER_FLASH_SALE,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
                 R.drawable.ic_reso,
