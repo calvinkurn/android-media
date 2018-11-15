@@ -170,10 +170,10 @@ public class SearchInputView extends BaseCustomView {
         closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchTextView.setText("");
                 if (reset != null) {
                     reset.onSearchReset();
                 }
-                searchTextView.setText("");
             }
         });
     }

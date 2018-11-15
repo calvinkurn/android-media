@@ -1,5 +1,3 @@
-
-
 package com.tokopedia.flashsale.management.product.data
 
 import android.content.Context
@@ -26,4 +24,15 @@ data class FlashSaleTncGQLData(
 
 data class FlashSaleTncContent(
         @SerializedName("tnc")
-        @Expose val tnc: String)
+        @Expose val tnc: String,
+
+        @SerializedName("status_info")
+        @Expose val statusInfo: StatusInfo
+)
+
+data class StatusInfo(
+        @SerializedName("status_name")
+        @Expose val name: String = "",
+
+        @SerializedName("status_label")
+        @Expose val label: String = "")

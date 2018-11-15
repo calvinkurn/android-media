@@ -11,9 +11,9 @@ import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
-import com.tokopedia.flashsale.management.ekstension.loadUrl
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
-import com.tokopedia.flashsale.management.product.data.StatusColor
+import com.tokopedia.flashsale.management.product.data.getProductStatusColor
+import com.tokopedia.flashsale.management.product.data.getProductStatusString
 import kotlinx.android.synthetic.main.widget_flash_sale_product_widget.view.*
 
 /**
@@ -56,7 +56,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 tvPercentOff.visibility = View.GONE
             } else {
                 tvPercentOff.text = context.getString(R.string.x_percent_off,
-                        KMNumbers.formatToPercentString(item.campaign.discountedPercentage.toDouble() / 100))
+                        KMNumbers.formatToPercentString(item.campaign.discountedPercentage.toDouble() / 100)).replace("%%","%")
                 tvPercentOff.visibility = View.VISIBLE
             }
             ImageHandler.LoadImage(ivProduct, item.campaign.imageUrl)

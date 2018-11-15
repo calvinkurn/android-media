@@ -22,9 +22,11 @@ import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleProductActionTypeDef
-import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
+import com.tokopedia.flashsale.management.product.data.FlashSaleDataContainer
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
+import com.tokopedia.flashsale.management.product.data.getProductStatusAction
+import com.tokopedia.flashsale.management.product.data.getProductStatusActionString
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductDetailPresenter
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_product_detail.*
@@ -37,6 +39,7 @@ import javax.inject.Inject
 class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     var progressDialog: ProgressDialog? = null
+    var canSubmit: Boolean = false
     var canEdit: Boolean = false
     var campaignId: Int = 0
     var currencyTextWatcher: CurrencyTextWatcher? = null
@@ -52,16 +55,16 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     companion object {
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
-        private const val EXTRA_CAN_EDIT = "can_edit"
+        private const val EXTRA_CAN_SUBMIT = "can_edit"
 
         public const val RESULT_IS_CATEGORY_FULL = "is_category_full"
 
         @JvmStatic
-        fun createInstance(campaignId: Int, canEdit: Boolean): Fragment {
+        fun createInstance(campaignId: Int, canSubmit: Boolean): Fragment {
             return FlashSaleProductDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(EXTRA_PARAM_CAMPAIGN_ID, campaignId)
-                    putBoolean(EXTRA_CAN_EDIT, canEdit)
+                    putBoolean(EXTRA_CAN_SUBMIT, canSubmit)
                 }
             }
         }
@@ -69,7 +72,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { GraphqlClient.init(it) }
-        canEdit = arguments!!.getBoolean(EXTRA_CAN_EDIT)
+        canSubmit = arguments!!.getBoolean(EXTRA_CAN_SUBMIT)
         campaignId = arguments!!.getInt(EXTRA_PARAM_CAMPAIGN_ID)
         super.onCreate(savedInstanceState)
     }
@@ -85,11 +88,13 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
         tvCategoryText.text = flashSaleProductItem.getDepartmentNameString()
 
+        canEdit = canSubmit && flashSaleProductItem.campaign.getProductStatusAction() == FlashSaleProductActionTypeDef.RESERVE
+
         renderPrice(savedInstanceState)
         renderDiscount(savedInstanceState)
         renderStock(savedInstanceState)
 
-        if (canEdit && flashSaleProductItem.campaign.getProductStatusAction() != FlashSaleProductStatusTypeDef.REJECTED) {
+        if (canSubmit && flashSaleProductItem.campaign.getProductStatusAction() != FlashSaleProductActionTypeDef.NO_ACTION) {
             context?.run {
                 btnRequestProduct.text = flashSaleProductItem.campaign.getProductStatusActionString(this)
                 btnRequestProduct.setOnClickListener {
@@ -179,7 +184,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     private fun calculateDiscount() {
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
-        val discount: Double = if (canEdit) {
+        val discount: Double = if (canSubmit) {
             (flashSaleProductItem.price - getFinalPrice()) * 100 / flashSaleProductItem.price
         } else {
             flashSaleProductItem.campaign.discountedPercentage.toDouble()
@@ -218,6 +223,12 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
                 isStockValid()
             }
         })
+        if (canEdit) {
+            etStock.isEnabled = true
+        } else {
+            etStock.background = null
+            etStock.isEnabled = false
+        }
     }
 
     override fun initInjector() {
@@ -225,14 +236,13 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun onBtnRequestProductClicked() {
-        if (!canEdit) {
+        if (!canSubmit) {
             return
         }
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
         when (flashSaleProductItem.campaign.getProductStatusAction()) {
             FlashSaleProductActionTypeDef.NO_ACTION -> { /*no-op*/
             }
-            FlashSaleProductActionTypeDef.RE_RESERVE,
             FlashSaleProductActionTypeDef.RESERVE -> {
                 if (!isInputValid()) {
                     return
@@ -242,28 +252,10 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
                         flashSaleProductItem.campaign.criteria.criteriaId,
                         flashSaleProductItem.id, getFinalPrice().toInt(), 0, etStock.text.toString().toInt(),
                         onSuccess = {
-                            hideProgressDialog()
-                            //TODO show message, activity Result?
-                            val resultIntent = Intent()
-                            if (it.flashSaleDataContainer.flashSaleCriteriaResponseData.isNotEmpty()) {
-                                it.flashSaleDataContainer.flashSaleCriteriaResponseData
-                                        .firstOrNull { it.criteriaId == flashSaleProductItem.campaign.criteria.criteriaId }
-                                        ?.run {
-                                            resultIntent.putExtra(RESULT_IS_CATEGORY_FULL, !this.isAvailable)
-                                        }
-                            }
-                            if (!resultIntent.hasExtra(RESULT_IS_CATEGORY_FULL)) {
-                                resultIntent.putExtra(RESULT_IS_CATEGORY_FULL, false)
-                            }
-                            activity?.setResult(Activity.RESULT_OK, resultIntent)
-                            activity?.finish()
+                            onSuccessDoAction(it)
                         },
                         onError = {
-                            hideProgressDialog()
-                            ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
-                                    .setAction(R.string.retry_label) {
-                                        onBtnRequestProductClicked()
-                                    }.show()
+                            onErrorDoAction(it)
                         })
             }
             FlashSaleProductActionTypeDef.CANCEL -> {
@@ -271,29 +263,54 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
                 // cancel reserve
                 presenter.dereserveProduct(campaignId, flashSaleProductItem.id,
                         onSuccess = {
-                            hideProgressDialog()
-                            //TODO show message, activity Result?
-                            val resultIntent = Intent()
-                            resultIntent.putExtra(RESULT_IS_CATEGORY_FULL, false)
-                            activity?.setResult(Activity.RESULT_OK, resultIntent)
-                            activity?.finish()
+                            onSuccessDoAction(it)
                         },
                         onError = {
-                            hideProgressDialog()
-                            ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
-                                    .setAction(R.string.retry_label) {
-                                        onBtnRequestProductClicked()
-                                    }.show()
+                            onErrorDoAction(it)
                         })
 
             }
             FlashSaleProductActionTypeDef.UNDO_CANCEL -> {
                 showProgressDialog()
                 // submit api
+                presenter.submitProduct(campaignId, flashSaleProductItem.id,
+                        onSuccess = {
+                            onSuccessDoAction(it)
+                        },
+                        onError = {
+                            onErrorDoAction(it)
+                        })
             }
             else -> { /*no-op*/
             }
         }
+    }
+
+    private fun onSuccessDoAction(it: FlashSaleDataContainer) {
+        hideProgressDialog()
+        //TODO show message, activity Result?
+        val resultIntent = Intent()
+        if (it.flashSaleCriteriaResponseData.isNotEmpty()) {
+            val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
+            it.flashSaleCriteriaResponseData
+                    .firstOrNull { it.criteriaId == flashSaleProductItem.campaign.criteria.criteriaId }
+                    ?.run {
+                        resultIntent.putExtra(RESULT_IS_CATEGORY_FULL, !this.isAvailable)
+                    }
+        }
+        if (!resultIntent.hasExtra(RESULT_IS_CATEGORY_FULL)) {
+            resultIntent.putExtra(RESULT_IS_CATEGORY_FULL, false)
+        }
+        activity?.setResult(Activity.RESULT_OK, resultIntent)
+        activity?.finish()
+    }
+
+    private fun onErrorDoAction(it: Throwable) {
+        hideProgressDialog()
+        ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
+                .setAction(R.string.retry_label) {
+                    onBtnRequestProductClicked()
+                }.show()
     }
 
     private fun isInputValid(): Boolean {

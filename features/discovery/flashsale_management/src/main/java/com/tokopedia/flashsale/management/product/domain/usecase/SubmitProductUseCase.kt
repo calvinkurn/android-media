@@ -1,5 +1,3 @@
-
-
 package com.tokopedia.flashsale.management.product.domain.usecase
 
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
@@ -18,10 +16,13 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_SUBMIT_PRODUCT) private val g
         setGraphqlQuery(gqlRawString)
     }
 
-    fun setParams(campaignId: Int, shopId: Int) {
+    fun setParams(campaignId: Int, shopId: Int, productId: Int = 0) {
         val map = mutableMapOf<String, Any?>(
                 FlashSaleConstant.PARAM_CAMP_ID to campaignId,
                 FlashSaleConstant.PARAM_SHOP_ID to shopId)
+        if (productId > 0) {
+            map.put(FlashSaleConstant.PARAM_PRODUCT_ID, productId)
+        }
         setRequestParams(map)
     }
 
