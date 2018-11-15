@@ -218,6 +218,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 && filters.getCategories().get(0).getSubCategory() != null) {
             mTabSortType.setVisibility(View.VISIBLE);
             updateToolbarTitle(filters.getCategories().get(0).getName());
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getSubCategory());
+            mPagerSortType.setAdapter(mViewPagerAdapter);
+            mTabSortType.setupWithViewPager(mPagerSortType);
             mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -248,6 +251,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                     //TODO update page title hide tabs
                     if (filters.getCategories().get(0).getSubCategory().get(position).getTimeRemainingSeconds() > 0) {
                         startFlashTimer(filters.getCategories().get(0).getSubCategory().get(position));
+                        mContainerFlashTimer.setVisibility(View.VISIBLE);
+                    } else {
+                        mContainerFlashTimer.setVisibility(View.GONE);
                     }
                 }
 
@@ -256,13 +262,15 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
                 }
             });
-            mPagerSortType.setAdapter(mViewPagerAdapter);
-            mTabSortType.setupWithViewPager(mPagerSortType);
 
             //excluding extra padding from tabs
             TabUtil.wrapTabIndicatorToTitle(mTabSortType,
                     (int) getResources().getDimension(R.dimen.tp_margin_medium),
                     (int) getResources().getDimension(R.dimen.tp_margin_regular));
+
+            //by default load data for first tab
+            mPagerSortType.postDelayed(() -> refreshTab(filters.getCategories().get(0).getId(),
+                    filters.getCategories().get(0).getSubCategory().get(0).getId()), CommonConstant.TAB_SETUP_DELAY_MS);
         }
     }
 
@@ -470,8 +478,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mFlashTimer.cancel();
             mFlashTimer = null;
         }
-
-        mContainerFlashTimer.setVisibility(View.VISIBLE);
 
         if (subCategory.getTimerLabel() != null) {
             mTvFlashTimerLabel.setText(subCategory.getTimerLabel());
