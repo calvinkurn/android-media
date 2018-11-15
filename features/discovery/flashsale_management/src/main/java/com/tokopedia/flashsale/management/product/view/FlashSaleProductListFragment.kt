@@ -28,7 +28,7 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.STATUS_SUBMISSION
+import com.tokopedia.flashsale.management.data.FlashSaleConstant.KEY_STATUS_REGISTRATION
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
@@ -323,7 +323,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         }
     }
 
-    private fun needShowChip() = STATUS_SUBMISSION.equals(statusLabel, false) && submittedCount > 0
+    private fun needShowChip() = KEY_STATUS_REGISTRATION.equals(statusLabel, false) && submittedCount > 0
     private fun needShowBottom() = submitStatus && pendingCount > 0
 
     private fun renderUILabel() {
@@ -375,7 +375,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         context?.let {
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
                     flashSaleProductItem, allowEditProducts && flashSaleProductItem.campaign.isEligible
-                    && statusLabel.equals(STATUS_SUBMISSION, false))
+                    && statusLabel.equals(KEY_STATUS_REGISTRATION, false))
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }

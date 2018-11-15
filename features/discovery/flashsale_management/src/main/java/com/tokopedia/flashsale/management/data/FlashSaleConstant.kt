@@ -39,13 +39,6 @@ object FlashSaleConstant {
     const val NAMED_REQUEST_CAMPAIGN = "request_campaign"
     const val NAMED_REQUEST_SELLER_STATUS = "request_seller_status"
 
-    const val STATUS_SUBMISSION = "pendaftaran"
-    const val STATUS_CANCELLED = "dibatalkan"
-    const val STATUS_PRODUCT_SELECTION_START = "seleksi produk"
-    const val STATUS_PRODUCT_SELECTION_END = "seleksi selesai"
-    const val STATUS_ACTIVE = "aktif"
-    const val STATUS_END = "berakhir"
-
     val statusColorList = mapOf(
             KEY_STATUS_REGISTRATION to Pair(R.color.status_red, R.color.red_50),
             KEY_STATUS_CANCELLED to Pair(R.color.status_red, R.color.red_50),

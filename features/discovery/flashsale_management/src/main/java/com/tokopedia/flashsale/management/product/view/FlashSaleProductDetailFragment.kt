@@ -208,7 +208,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
             if (stock > 0) {
                 etStock.setText(stock.toString())
             } else {
-                etStock.text = null
+                etStock.setText("0")
             }
         }
 
