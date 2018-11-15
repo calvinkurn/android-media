@@ -16,7 +16,6 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
         super(context);
     }
 
-
     @Override
     public Notification createNotification(BaseNotificationModel baseNotificationModel, int notificationId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CMConstant.GENERAL);
@@ -25,6 +24,7 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmapLargeIcon());
         builder.setContentIntent(createPendingIntent(baseNotificationModel.getApplink(), 100, notificationId));
+        builder.setDeleteIntent(createDismissPendingIntent(notificationId));
         builder.setAutoCancel(true);
 
         return builder.build();

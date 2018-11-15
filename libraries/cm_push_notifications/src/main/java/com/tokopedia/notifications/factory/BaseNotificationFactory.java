@@ -1,6 +1,9 @@
 package com.tokopedia.notifications.factory;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationChannelGroup;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -10,12 +13,18 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.notifications.R;
+import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
+import com.tokopedia.notifications.receiver.ActionButtonReceiver;
+import com.tokopedia.notifications.receiver.DismissReceiver;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +42,13 @@ public abstract class BaseNotificationFactory {
     }
 
     public abstract Notification createNotification(BaseNotificationModel baseNotificationModel, int notificationId);
+
+    protected NotificationCompat.Builder getBuilder() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(context);
+        }
+        return new NotificationCompat.Builder(context,CMConstant.NotificationGroup.CHANNEL_ID);
+    }
 
     protected int getDrawableIcon() {
         if (GlobalConfig.isSellerApp())
@@ -58,7 +74,7 @@ public abstract class BaseNotificationFactory {
                     .asBitmap()
                     .into(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e ) {
+        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
         }
     }
@@ -69,6 +85,29 @@ public abstract class BaseNotificationFactory {
 
     protected int getImageHeight() {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
+    }
+
+    protected PendingIntent getActionButtonPendingIntent(ActionButton actionButton, int notificationId) {
+        PendingIntent resultPendingIntent;
+        Intent intent = new Intent(context, ActionButtonReceiver.class);
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId);
+        intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, actionButton.getApplink());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
+        return resultPendingIntent;
     }
 
     protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId) {
@@ -99,12 +138,44 @@ public abstract class BaseNotificationFactory {
         return resultPendingIntent;
     }
 
-//    protected PendingIntent createDismissPendingIntent(int notificationType, int notificationId) {
-//        Intent intent = new Intent(context, DismissBroadcastReceiver.class);
-//        intent.putExtra(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
-//        intent.putExtra(Constant.EXTRA_NOTIFICATION_ID, notificationId);
-//        return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
-//    }
+    protected PendingIntent createDismissPendingIntent(int notificationId) {
+        Intent intent = new Intent(context, DismissReceiver.class);
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId);
+        return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void createNotificationChannel(Context context) {
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(CMConstant.NotificationGroup.CHANNEL_ID,
+                CMConstant.NotificationGroup.CHANNEL,
+                importance);
+        channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+        createChannelGroup(context, CMConstant.NotificationGroup.CHANNEL_GROUP_ID, CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
+        channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void createChannelGroup(Context context, String groupId, String groupName) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannelGroup notificationChannelGroup = new NotificationChannelGroup(groupId, groupName);
+        mNotificationManager.createNotificationChannelGroup(notificationChannelGroup);
+    }
+
+
+    protected long[] getVibratePattern() {
+        return new long[]{500, 500};
+    }
+
+    protected Uri getRingtoneUri() {
+        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    }
+}
+
 
 //    protected Boolean isAllowBell() {
 //        LocalCacheHandler cache = new LocalCacheHandler(context, Constant.CACHE_DELAY);
@@ -123,11 +194,3 @@ public abstract class BaseNotificationFactory {
 //        return settings.getBoolean(Constant.Settings.NOTIFICATION_VIBRATE, false);
 //    }
 
-    protected long[] getVibratePattern() {
-        return new long[]{500, 500};
-    }
-
-    protected Uri getRingtoneUri() {
-        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-    }
-}

@@ -3,8 +3,11 @@ package com.tokopedia.notifications.common;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -13,12 +16,17 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 /**
  * Created by Ashwani Tyagi on 24/10/18.
  */
 public class CMNotificationUtils {
+
+    static String TAG = CMNotificationUtils.class.getSimpleName();
 
     public static boolean tokenUpdateRequired(Context context, String newToken) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
@@ -43,7 +51,6 @@ public class CMNotificationUtils {
         }
         return true;
     }
-
 
     public static boolean mapTokenWithGAdsIdRequired(Context context, String gAdsId) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
@@ -99,5 +106,30 @@ public class CMNotificationUtils {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static Bitmap loadBitmapFromUrl(String imageUrl){
+        if (imageUrl == null || imageUrl.length() == 0) {
+            return null;
+        }
+        Bitmap bitmap = null;
+        try {
+            InputStream inputStream = new java.net.URL(imageUrl).openStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        } catch (OutOfMemoryError e) {
+            Log.e(TAG, String.format("Out of Memory Error in image bitmap download for Url: %s.", imageUrl));
+        } catch (UnknownHostException e) {
+            Log.e(TAG, String.format("Unknown Host Exception in image bitmap download for Url: %s. Device "
+                    + "may be offline.", imageUrl));
+        } catch (MalformedURLException e) {
+            Log.e(TAG, String.format("Malformed URL Exception in image bitmap download for Url: %s. Image "
+                    + "Url may be corrupted.", imageUrl));
+        } catch (Exception e) {
+            Log.e(TAG, String.format("Exception in image bitmap download for Url: %s", imageUrl));
+        }
+        return bitmap;
     }
 }

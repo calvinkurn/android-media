@@ -17,6 +17,8 @@ public interface CMConstant {
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
 
+    String EXTRA_NOTIFICATION_BUNDLE = "work_bundle";
+
     interface NotificationId {
         int GENERAL = 501;
         int BIG_IMAGE = 501;
@@ -39,4 +41,16 @@ public interface CMConstant {
         String ACTION_BUTTONS = "cm_action_btn";
     }
 
+    interface ActionButtonExtra {
+        String ACTION_BUTTON_APP_LINK = "action_button_app_link";
+    }
+
+    interface NotificationGroup {
+        String CHANNEL = "Demo";
+        String CHANNEL_DESCRIPTION = "DESCRIPTION";
+        String CHANNEL_ID = "111";
+
+        String CHANNEL_GROUP_ID = "campaign_group_01";
+        String CHANNEL_GROUP_NAME = "Campaign";
+    }
 }
