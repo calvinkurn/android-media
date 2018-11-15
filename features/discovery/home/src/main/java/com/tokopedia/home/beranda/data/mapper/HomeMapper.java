@@ -69,42 +69,51 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
-                for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
-                    if (channel.getLayout() != null) {
-                        if(!homeData.isCache()) {
-                            position++;
-                            if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
-                                channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                        channel.getEnhanceImpressionSprintSaleHomePage(position)
 
-                                );
-                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
-                                channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                        channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
-                                );
-                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
-                                channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
-                                channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        channel.getEnhanceImpressionLegoBannerHomePage(position)
-                                );
+                if(!homeData.isCache()){
+                    List<Object> legoAndCuratedAndSprintSaleBannerList = new ArrayList<>();
+
+                    for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
+                        if (channel.getLayout() != null) {
+                            if(!homeData.isCache()) {
+                                position++;
+                                if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
+                                    channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
+                                    HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                            channel.getEnhanceImpressionSprintSaleHomePage(position)
+                                    );
+                                } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
+                                    channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
+
+                                    legoAndCuratedAndSprintSaleBannerList.addAll(
+                                            channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination()
+                                    );
+                                } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
+                                    channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
+                                    channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
+
+                                    legoAndCuratedAndSprintSaleBannerList.addAll(
+                                            channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
+                                    );
+                                } else {
+                                    channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
+                                    channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
+
+                                    legoAndCuratedAndSprintSaleBannerList.addAll(
+                                            channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
+                                    );
+                                }
+                            }
+                            if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
+                                list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
                             } else {
-                                channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
-                                channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        channel.getEnhanceImpressionDynamicChannelHomePage(position)
-                                );
+                                list.add(mappingDynamicChannel(channel));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(list.size(),channel);
                             }
                         }
-                        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
-                            list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
-                        } else {
-                            list.add(mappingDynamicChannel(channel));
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(list.size(),channel);
-                        }
                     }
+
+                    HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(legoAndCuratedAndSprintSaleBannerList);
                 }
             }
 

@@ -1,8 +1,10 @@
 package com.tokopedia.core.analytics;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -118,6 +120,24 @@ public class HomePageTracking extends TrackingUtils {
     }
 
     public static void eventEnhancedImpressionDynamicChannelHomePage(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
+
+    public static void eventEnhanceImpressionLegoAndCuratedHomePage(
+            List<Object> legoAndCuratedList) {
+         Map<String, Object> data = DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "home banner impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        legoAndCuratedList.toArray(new Object[legoAndCuratedList.size()])
+                                )
+                        )
+                )
+        );
         eventTrackingEnhancedEcommerce(data);
     }
 
