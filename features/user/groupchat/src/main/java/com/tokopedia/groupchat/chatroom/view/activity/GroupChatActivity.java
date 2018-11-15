@@ -138,7 +138,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
+        Intent detailsIntent = GroupChatActivity.(context, id);
         Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
                 .getInboxChannelsIntent(context);
 
@@ -914,7 +914,7 @@ public class GroupChatActivity extends BaseSimpleActivity
      * @param channelId can also be substitued by channelUrl
      * @return Intent
      */
-    public static Intent getCallingIntent(Context context, String channelId) {
+    public static Intent getCallingIntent(Context cogetCallingIntentntext, String channelId) {
         Intent intent = new Intent(context, GroupChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CHANNEL_UUID, channelId);
