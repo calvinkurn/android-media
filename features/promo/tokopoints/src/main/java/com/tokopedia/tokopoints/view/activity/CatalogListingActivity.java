@@ -11,13 +11,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
-import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.user.session.UserSession;
 
 public class CatalogListingActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
@@ -48,7 +46,7 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
         return tokoPointComponent;
     }
 
-    @DeepLink(ApplinkConstant.CATALOG_LISTING)
+    @DeepLink({ApplinkConstant.CATALOG_LISTING, ApplinkConstant.CATALOG_LISTING2, ApplinkConstant.CATALOG_LISTING3, ApplinkConstant.CATALOG_LISTING4})
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CatalogListingActivity.class);
         intent.putExtras(extras);

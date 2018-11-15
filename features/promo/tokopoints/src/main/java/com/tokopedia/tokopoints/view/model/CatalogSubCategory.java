@@ -3,12 +3,9 @@ package com.tokopedia.tokopoints.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class CatalogCategory implements Parcelable {
+public class CatalogSubCategory implements Parcelable {
     @SerializedName("id")
     private int id;
 
@@ -33,13 +30,19 @@ public class CatalogCategory implements Parcelable {
     @SerializedName("isSelected")
     private boolean isSelected;
 
-    @SerializedName("isHideSubCategory")
-    private boolean isHideSubCategory;
+    @SerializedName("timeRemainingSecondsLabel")
+    private String timerLabel;
 
-    List<CatalogSubCategory> subCategory;
+    public CatalogSubCategory() {
 
-    public CatalogCategory() {
+    }
 
+    public String getTimerLabel() {
+        return timerLabel;
+    }
+
+    public void setTimerLabel(String timerLabel) {
+        this.timerLabel = timerLabel;
     }
 
     public boolean isSelected() {
@@ -106,22 +109,6 @@ public class CatalogCategory implements Parcelable {
         this.slug = slug;
     }
 
-    public boolean isHideSubCategory() {
-        return isHideSubCategory;
-    }
-
-    public void setHideSubCategory(boolean hideSubCategory) {
-        isHideSubCategory = hideSubCategory;
-    }
-
-    public List<CatalogSubCategory> getSubCategory() {
-        return subCategory;
-    }
-
-    public void setSubCategory(List<CatalogSubCategory> subCategory) {
-        this.subCategory = subCategory;
-    }
-
     @Override
     public String toString() {
         return "CatalogCategory{" +
@@ -133,7 +120,6 @@ public class CatalogCategory implements Parcelable {
                 ", slug='" + slug + '\'' +
                 ", timeRemainingSeconds=" + timeRemainingSeconds +
                 ", isSelected=" + isSelected +
-                ", isHideSubCategory=" + isHideSubCategory +
                 '}';
     }
 
@@ -152,26 +138,24 @@ public class CatalogCategory implements Parcelable {
         parcel.writeString(slug);
         parcel.writeInt(parentID);
         parcel.writeByte((byte) (isSelected ? 1 : 0));
-        parcel.writeByte((byte) (isHideSubCategory ? 1 : 0));
     }
 
-    private CatalogCategory(Parcel in) {
+    private CatalogSubCategory(Parcel in) {
         this.id = in.readInt();
         name = in.readString();
         imageId = in.readString();
         imageUrl = in.readString();
         timeRemainingSeconds = in.readLong();
         isSelected = in.readByte() != 0;
-        isHideSubCategory = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public CatalogCategory createFromParcel(Parcel in) {
-            return new CatalogCategory(in);
+    public static final Creator CREATOR = new Creator() {
+        public CatalogSubCategory createFromParcel(Parcel in) {
+            return new CatalogSubCategory(in);
         }
 
-        public CatalogCategory[] newArray(int size) {
-            return new CatalogCategory[size];
+        public CatalogSubCategory[] newArray(int size) {
+            return new CatalogSubCategory[size];
         }
     };
 }

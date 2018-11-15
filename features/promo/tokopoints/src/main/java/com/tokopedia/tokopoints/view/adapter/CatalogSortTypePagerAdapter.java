@@ -8,26 +8,30 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.tokopedia.tokopoints.view.fragment.CatalogListItemFragment;
-import com.tokopedia.tokopoints.view.model.CatalogSortType;
-import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.model.CatalogSubCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<CatalogSortType> mItems;
-    private CatalogListingPresenter mPresenter;
+    private List<CatalogSubCategory> mItems;
     private SparseArray<Fragment> mrRegisteredFragments = new SparseArray<>();
 
-    public CatalogSortTypePagerAdapter(FragmentManager fm, List<CatalogSortType> sortTypes, CatalogListingPresenter presenter) {
+    public CatalogSortTypePagerAdapter(FragmentManager fm, List<CatalogSubCategory> items) {
         super(fm);
-        this.mItems = sortTypes;
-        this.mPresenter = presenter;
+        if (items == null || items.isEmpty()) {
+            this.mItems = new ArrayList<>();
+            mItems.add(new CatalogSubCategory());
+        } else {
+            this.mItems = items;
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
-        return CatalogListItemFragment.newInstance(mPresenter.getSelectedCategoryId(), mItems.get(position).getId());
+        return CatalogListItemFragment.newInstance(mItems.get(position).getParentID(),
+                mItems.get(position).getId());
     }
 
     @Override
@@ -37,7 +41,7 @@ public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return mItems.get(position).getText();
+        return mItems.get(position).getName() == null ? "" : mItems.get(position).getName();
     }
 
     @Override

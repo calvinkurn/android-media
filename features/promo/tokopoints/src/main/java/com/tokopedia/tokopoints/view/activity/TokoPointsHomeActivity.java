@@ -53,7 +53,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
         return tokoPointComponent;
     }
 
-    @DeepLink(ApplinkConstant.HOMEPAGE)
+    @DeepLink({ApplinkConstant.HOMEPAGE, ApplinkConstant.HOMEPAGE2})
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, TokoPointsHomeActivity.class);
     }
@@ -100,7 +100,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     }
 
     protected void openApplink(String applink) {
-        if ( !TextUtils.isEmpty(applink)) {
+        if (!TextUtils.isEmpty(applink)) {
             RouteManager.route(this, applink);
         }
     }
