@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.user.session.UserSession;
 
 public interface SaldoDetailContract {
     interface View extends CustomerView {

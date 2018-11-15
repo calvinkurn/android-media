@@ -26,4 +26,9 @@
     <string name="sp_positive_saldo_balance" >+ Rp %s</string>
     <string name="sp_negative_saldo_balance" >- Rp %s</string>
     <string name="sp_date_time_view" >%s WIB</string>
+    <string name="saldo_hold_balance_text" >Saldo Tertahan %s</string>
+    <string name="check_saldo_hold_balance_status">Cek Status</string>
+    <string name="sp_saldo_withdraw_warning_title">Informasi Penarikan Saldo</string>
+    <string name="sp_saldo_withdraw_warning_desc">Layanan pencairan dana bergantung pada jadwal proses kerja bank. Info lebih lanjut, silakan hubungi layanan nasabah bank.</string>
+    <string name="sp_saldo_withdraw_warning_positiv_button">Mengerti</string>
 </resources>

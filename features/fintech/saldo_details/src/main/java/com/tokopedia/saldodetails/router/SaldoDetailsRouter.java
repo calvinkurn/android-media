@@ -11,4 +11,5 @@ public interface SaldoDetailsRouter {
     Intent getAddPasswordIntent(Context context);
     boolean isSaldoNativeEnabled();
     CacheManager getGlobalCacheManager();
+    public Intent getContactUsIntent(Context context);
 }

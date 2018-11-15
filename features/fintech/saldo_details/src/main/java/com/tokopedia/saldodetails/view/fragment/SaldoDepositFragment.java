@@ -54,7 +54,6 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Inject
     UserSession userSession;
-
     TextView totalBalance;
     RelativeLayout startDateLayout;
     RelativeLayout endDateLayout;
@@ -63,15 +62,15 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     TextView drawButton;
     RecyclerView recyclerView;
     RelativeLayout topSlideOffBar;
-    RelativeLayout reviewWarning;
+    RelativeLayout holdBalanceLayout;
     TextView amountBeingReviewed;
     FrameLayout saldoFrameLayout;
     SaldoDatePickerUtil datePicker;
     SaldoDepositAdapter adapter;
-    RefreshHandler refreshHandler;
     LinearLayoutManager linearLayoutManager;
     Snackbar snackbar;
     private Context context;
+    private TextView checkBalanceStatus;
 
     public static SaldoDepositFragment createInstance() {
         return new SaldoDepositFragment();
@@ -149,11 +148,11 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         endDateTV = view.findViewById(R.id.end_date_tv);
         drawButton = view.findViewById(R.id.withdraw_button);
         topSlideOffBar = view.findViewById(R.id.deposit_header);
-        reviewWarning = view.findViewById(R.id.review_warning_layout);
+        holdBalanceLayout = view.findViewById(R.id.hold_balance_layout);
         amountBeingReviewed = view.findViewById(R.id.amount_review);
+        checkBalanceStatus = view.findViewById(R.id.check_balance);
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
 
-        this.refreshHandler = new RefreshHandler(getActivity(), view, this);
         snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_SHORT);
     }
 
@@ -166,23 +165,50 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     private void initListeners() {
         drawButton.setOnClickListener(v -> {
             try {
-                if (userSession.isMsisdnVerified()) {
-
-                    // TODO: 15/11/18 check for first time dialog
-                    Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context);
-                    saldoDetailsPresenter.onDrawClicked(intent);
+                if (userSession.hasShownSaldoWithdrawalWarning()) {
+                    goToWithdrawActivity();
                 } else {
-                    // TODO: 13/11/18 redirect to user verification screen
-
+                    userSession.setSaldoWithdrawalWaring(true);
+                    showSaldoWarningDialog();
                 }
             } catch (Exception e) {
 
             }
 
         });
+
+        checkBalanceStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
+                            .getContactUsIntent(context);
+                    startActivity(intent);
+                } catch (Exception e) {
+
+                }
+            }
+        });
         startDateLayout.setOnClickListener(onStartDateClicked());
         endDateLayout.setOnClickListener(onEndDateClicked());
         recyclerView.addOnScrollListener(onScroll());
+    }
+
+    private void goToWithdrawActivity() {
+        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context);
+        saldoDetailsPresenter.onDrawClicked(intent);
+    }
+
+    private void showSaldoWarningDialog() {
+
+        new android.support.v7.app.AlertDialog.Builder(getActivity())
+                .setTitle(getActivity().getString(R.string.sp_saldo_withdraw_warning_title))
+                .setMessage(getActivity().getString(R.string.sp_saldo_withdraw_warning_desc))
+                .setPositiveButton(
+                        getActivity().getString(R.string.sp_saldo_withdraw_warning_positiv_button),
+                        (dialog, which) -> goToWithdrawActivity())
+                .setCancelable(true)
+                .show();
     }
 
     protected void initialVar() {
@@ -190,7 +216,6 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setAdapter(adapter);
         if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
@@ -381,9 +406,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
-    public void showHoldWarning(String warningText) {
-        reviewWarning.setVisibility(View.VISIBLE);
-        amountBeingReviewed.setText(MethodChecker.fromHtml(warningText));
+    public void showHoldWarning(String text) {
+        holdBalanceLayout.setVisibility(View.VISIBLE);
+        amountBeingReviewed.setText(String.format(getResources().getString(R.string.saldo_hold_balance_text), text));
         amountBeingReviewed.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
@@ -417,7 +442,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void hideWarning() {
-        reviewWarning.setVisibility(View.GONE);
+        holdBalanceLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -433,7 +458,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public boolean isRefreshing() {
-        return refreshHandler.isRefreshing();
+        return false;//refreshHandler.isRefreshing();
     }
 
     @Override
@@ -443,14 +468,14 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void showRefreshing() {
-        refreshHandler.setRefreshing(true);
-        refreshHandler.setIsRefreshing(true);
+//        refreshHandler.setRefreshing(true);
+//        refreshHandler.setIsRefreshing(true);
     }
 
     @Override
     public void hideRefreshing() {
-        refreshHandler.setRefreshing(false);
-        refreshHandler.setIsRefreshing(false);
+//        refreshHandler.setRefreshing(false);
+//        refreshHandler.setIsRefreshing(false);
     }
 
     @Override

@@ -247,7 +247,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 if ((holdSaldoBalanceResponse.getSaldo().getDeposit() > 0)) {
 
                     Toast.makeText(getView().getContext(), "Hold Warning", Toast.LENGTH_LONG).show();
-//                    getView().showHoldWarning(data.getWarningHoldDeposit());
+                    getView().showHoldWarning(holdSaldoBalanceResponse.getSaldo().getFormattedAmount());
                 } else {
                     getView().hideWarning();
                 }
