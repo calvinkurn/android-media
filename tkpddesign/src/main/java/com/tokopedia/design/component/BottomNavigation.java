@@ -882,7 +882,7 @@ public class BottomNavigation extends BottomNavigationView {
             mBadgeViews.put(positionItem, badgeView);
         }
         if (positionItem == 1)
-            badgeView.setGravityOffset(0, 0, true);
+            badgeView.setGravityOffset(20, 3, true);
         else
             badgeView.setGravityOffset(10, 3, true);
         badgeView.bindTarget(getBottomNavigationItemView(positionItem));
