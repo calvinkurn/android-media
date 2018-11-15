@@ -42,6 +42,10 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
                 campaignUrl, this::onSuccessGetSellerStatus, this::onErrorGetSellerStatus)
     }
 
+    fun moveToTabProduct(){
+        pager.currentItem = TAB_POS_MY_PRODUCT
+    }
+
     fun onSuccessGetSellerStatus(sellerStatus: SellerStatus){
         if (titles.size > 1) titles.removeAt(1)
         if (sellerStatus.isEligible){

@@ -1,6 +1,9 @@
 package com.tokopedia.flashsale.management.view.fragment
 
 import android.os.Bundle
+import android.support.annotation.Px
+import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +16,21 @@ import com.tokopedia.flashsale.management.ekstension.toCampaignViewModel
 import com.tokopedia.flashsale.management.view.activity.CampaignDetailActivity
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
 import com.tokopedia.flashsale.management.view.presenter.CampaignPresenter
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusListViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignViewModel
 import com.tokopedia.graphql.data.GraphqlClient
+import kotlinx.android.synthetic.main.fragment_list_campaign.*
 import javax.inject.Inject
 
 abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, CampaignAdapterTypeFactory>() {
 
     @Inject
     lateinit var presenter: CampaignPresenter
+    @Px
+    private var tempTopPaddingRecycleView: Int = 0
+    @Px
+    private var tempBottomPaddingRecycleView: Int = 0
+    private var scrollFlags: Int = 0
+    private val appBarBehaviour = AppBarLayout.Behavior()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(context!!)
@@ -31,6 +40,17 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_list_campaign, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        tempTopPaddingRecycleView = recycler_view.paddingTop
+        tempBottomPaddingRecycleView = recycler_view.paddingBottom
+        scrollFlags = (searchInputView.layoutParams as AppBarLayout.LayoutParams).scrollFlags
+        searchInputView.setResetListener {
+            searchInputView.searchText = ""
+            loadInitialData()
+        }
     }
 
     override fun onItemClicked(t: CampaignViewModel) {
@@ -52,12 +72,13 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     }
 
     fun onSuccessGetCampaignList(data: DataCampaignList.ResponseData) {
-        val listDummy = data.data.list.map { it.toCampaignViewModel() }
-        renderList(listDummy, data.data.totalData > adapter.dataSize)
+        showSearchInputView()
+        val list = data.data.list.map { it.toCampaignViewModel() }
+        renderList(list, data.data.totalData > adapter.dataSize)
     }
 
     fun onErrorGetCampaignList(throwable: Throwable) {
-
+        showGetListError(throwable)
     }
 
     open fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {}
@@ -69,6 +90,36 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     override fun onDestroyView() {
         presenter.detachView()
         super.onDestroyView()
+    }
+
+    protected fun showSearchView(show: Boolean) {
+        @Px var topPadding = 0
+        @Px var bottomPadding = 0
+        if (show) {
+            topPadding = tempTopPaddingRecycleView
+            bottomPadding = tempBottomPaddingRecycleView
+        }
+        recycler_view.setPadding(0, topPadding, 0, bottomPadding)
+        if (app_bar_layout != null) {
+            val seacrhViewParams = searchInputView.layoutParams as AppBarLayout.LayoutParams
+            seacrhViewParams.scrollFlags = if (show) scrollFlags else 0
+            searchInputView.layoutParams = seacrhViewParams
+
+            val appBarLayoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+            appBarLayoutParams.behavior = if (show) appBarBehaviour else null
+            app_bar_layout.layoutParams = appBarLayoutParams
+        }
+        if (searchInputView != null) {
+            searchInputView.visibility = if (show) View.VISIBLE else View.GONE
+        }
+    }
+
+    override fun showSearchInputView() {
+        showSearchView(true)
+    }
+
+    override fun hideSearchInputView() {
+        showSearchView(false)
     }
 
     companion object {

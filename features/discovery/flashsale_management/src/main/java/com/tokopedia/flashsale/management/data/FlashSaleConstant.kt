@@ -3,6 +3,13 @@ package com.tokopedia.flashsale.management.data
 import com.tokopedia.flashsale.management.R
 
 object FlashSaleConstant {
+    const val KEY_STATUS_REGISTRATION = "pendaftaran"
+    const val KEY_STATUS_CANCELLED = "dibatalkan"
+    const val KEY_STATUS_PRODUCT_SELECTION = "seleksi produk"
+    const val KEY_STATUS_SELECTION_ENDED = "seleksi selesai"
+    const val KEY_STATUS_ACTIVE = "aktif"
+    const val KEY_STATUS_ENDED = "berakhir"
+
     const val PARAM_ALL = "all"
     const val PARAM_OFFSET = "offset"
     const val PARAM_ROWS = "rows"
@@ -40,12 +47,21 @@ object FlashSaleConstant {
     const val STATUS_END = "berakhir"
 
     val statusColorList = mapOf(
-            STATUS_SUBMISSION to Pair(R.color.status_red, R.color.red_50),
-            STATUS_CANCELLED to Pair(R.color.status_red, R.color.red_50),
-            STATUS_PRODUCT_SELECTION_START to Pair(R.color.status_blue, R.color.status_blue_bg),
-            STATUS_PRODUCT_SELECTION_END to Pair(R.color.bg_corner_yellow, R.color.status_yellow_bg),
-            STATUS_ACTIVE to Pair(R.color.tkpd_main_green, R.color.green_50),
-            STATUS_END to Pair(R.color.font_black_disabled_38, R.color.grey_300)
+            KEY_STATUS_REGISTRATION to Pair(R.color.status_red, R.color.red_50),
+            KEY_STATUS_CANCELLED to Pair(R.color.status_red, R.color.red_50),
+            KEY_STATUS_PRODUCT_SELECTION to Pair(R.color.status_blue, R.color.status_blue_bg),
+            KEY_STATUS_SELECTION_ENDED to Pair(R.color.bg_corner_yellow, R.color.status_yellow_bg),
+            KEY_STATUS_ACTIVE to Pair(R.color.tkpd_main_green, R.color.green_50),
+            KEY_STATUS_ENDED to Pair(R.color.font_black_disabled_38, R.color.grey_300)
+    )
+
+    val statusStepImages = mapOf(
+            KEY_STATUS_REGISTRATION to R.drawable.ic_fs_step_registration,
+            KEY_STATUS_CANCELLED to R.drawable.ic_fs_step_cancelled,
+            KEY_STATUS_PRODUCT_SELECTION to R.drawable.ic_fs_step_product_selection,
+            KEY_STATUS_SELECTION_ENDED to R.drawable.ic_fs_step_selection_ended,
+            KEY_STATUS_ACTIVE to R.drawable.ic_fs_step_active,
+            KEY_STATUS_ENDED to R.drawable.ic_fs_step_ended
     )
 
     val defaultPairColor = R.color.font_black_disabled_38 to R.color.grey_300

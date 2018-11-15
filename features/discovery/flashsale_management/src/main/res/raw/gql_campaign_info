@@ -17,6 +17,8 @@ query getCampaignInfo($slug: String!, $shop_id: Int!){
             minimum_transaction
             min_seller_reputation_badge
             max_seller_reputation_badge
+            min_cancellation_rate
+            max_cancellation_rate
             seller_type {
                 title
                 image_url

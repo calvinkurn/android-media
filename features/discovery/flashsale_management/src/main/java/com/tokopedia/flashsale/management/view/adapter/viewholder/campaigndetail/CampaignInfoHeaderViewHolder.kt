@@ -8,11 +8,13 @@ import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
+import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.flashsale.management.ekstension.*
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
 import kotlinx.android.synthetic.main.item_flash_sale_info_camp_detail.view.*
 
-class CampaignInfoHeaderViewHolder(view: View): AbstractViewHolder<CampaignInfoHeaderViewModel>(view) {
+class CampaignInfoHeaderViewHolder(view: View, private val sellerStatus: SellerStatus,
+                                   val onClickProductList: () -> Unit): AbstractViewHolder<CampaignInfoHeaderViewModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_flash_sale_info_camp_detail
     }
@@ -24,6 +26,13 @@ class CampaignInfoHeaderViewHolder(view: View): AbstractViewHolder<CampaignInfoH
         itemView.tvCampaignName.text = campaign.name
         itemView.tvCampaignDate.text = campaign.campaignPeriod
         itemView.tvCampaignType.text = campaign.campaignType
+        val imageStepRes = FlashSaleConstant.statusStepImages.get(campaign.statusInfo.label.toLowerCase())
+        if (imageStepRes == null){
+            itemView.image_step.gone()
+        } else {
+            itemView.image_step.visible()
+            itemView.image_step.setImageResource(imageStepRes)
+        }
         with(itemView.tvStatus){
             text = campaign.statusInfo.label
             val (textColor, bgColor) = FlashSaleConstant.statusColorList.get(campaign.statusInfo.label.toLowerCase()) ?:
@@ -39,6 +48,11 @@ class CampaignInfoHeaderViewHolder(view: View): AbstractViewHolder<CampaignInfoH
         itemView.iv_arrow_down.rotation = 0f
         itemView.iv_arrow_down.setOnClickListener {toggle()}
         itemView.tvStatus.setOnClickListener { toggle() }
+
+        if (sellerStatus.isEligible) {
+            itemView.btn_list_product.visible()
+            itemView.btn_list_product.setOnClickListener { onClickProductList() }
+        } else itemView.btn_list_product.gone()
 
         toggle()
     }

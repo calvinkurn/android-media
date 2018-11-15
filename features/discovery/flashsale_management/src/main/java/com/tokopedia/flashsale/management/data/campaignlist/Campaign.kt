@@ -69,9 +69,6 @@ data class Campaign(
         @Expose
         val minTransaction: String = "",
 
-        /*@SerializedName("banner")
-        @Expose
-        val banner: String,*/
         @SerializedName("min_seller_reputation_badge")
         @Expose val minSellerReputation: String = "",
 
@@ -79,10 +76,10 @@ data class Campaign(
         @Expose val maxSellerReputation: String = "",
 
         @SerializedName("min_cancellation_rate")
-        @Expose val minCancellationRate: String = "",
+        @Expose val minCancellationRate: Int = 0,
 
         @SerializedName("max_cancellation_rate")
-        @Expose val maxCancellationRate: String = "",
+        @Expose val maxCancellationRate: Int = 0,
 
         @SerializedName("is_joined")
         @Expose
