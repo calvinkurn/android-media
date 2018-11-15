@@ -34,18 +34,5 @@
             android:textSize="12sp"
             tools:text="KEBUT" />
 
-        <ImageView
-            android:id="@+id/iv_right_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_8"
-            android:shadowColor="#40000000"
-            android:shadowDy="2"
-            android:shadowRadius="4"
-            android:src="@drawable/ic_arrow_right_default"
-            android:tint="@color/white" />
-
     </RelativeLayout>
 </android.support.v7.widget.CardView>

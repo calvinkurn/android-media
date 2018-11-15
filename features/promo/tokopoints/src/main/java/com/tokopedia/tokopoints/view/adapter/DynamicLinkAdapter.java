@@ -52,26 +52,15 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvDynamicText;
-        private ImageView ivNextArrow;
         private ImageView ivBack;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivBack = itemView.findViewById(R.id.iv_background_image);
             tvDynamicText = itemView.findViewById(R.id.tv_dynamic_text);
-            ivNextArrow = itemView.findViewById(R.id.iv_right_arrow);
         }
 
         public void bindData(LinksItemEntity linksItemEntity) {
-            if (getAdapterPosition() == getItemCount() - 1) {
-                ivNextArrow.setVisibility(View.GONE);
-                if (getItemCount() % 2 != 0) {
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvDynamicText.getLayoutParams();
-                    layoutParams.setMargins(0, 0, 0, 0);
-                    tvDynamicText.setGravity(Gravity.CENTER);
-                }
-            }
-
             if (URLUtil.isValidUrl(linksItemEntity.getBackgroundURL())) {
                 ImageHandler.loadImage(context, ivBack, linksItemEntity.getBackgroundURL(), R.color.grey_1100, R.color.grey_1100);
             } else {
@@ -83,19 +72,15 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
             }
             if (!TextUtils.isEmpty(linksItemEntity.getFontColor())) {
                 tvDynamicText.setTextColor(Color.parseColor(linksItemEntity.getFontColor()));
-                ivNextArrow.setColorFilter(Color.parseColor(linksItemEntity.getFontColor()));
             }
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            itemView.setOnClickListener(view -> {
 
-                    if (!TextUtils.isEmpty(linksItemEntity.getAppLink())) {
-                        RouteManager.route(context, linksItemEntity.getAppLink());
-                    } else if (!TextUtils.isEmpty(linksItemEntity.getUrl())) {
-                        RouteManager.route(context, String.format("%s?url=%s",
-                                ApplinkConst.WEBVIEW,
-                                linksItemEntity.getUrl()));
-                    }
+                if (!TextUtils.isEmpty(linksItemEntity.getAppLink())) {
+                    RouteManager.route(context, linksItemEntity.getAppLink());
+                } else if (!TextUtils.isEmpty(linksItemEntity.getUrl())) {
+                    RouteManager.route(context, String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            linksItemEntity.getUrl()));
                 }
             });
 
