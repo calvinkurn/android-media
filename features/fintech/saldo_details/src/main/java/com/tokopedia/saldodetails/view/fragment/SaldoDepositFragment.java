@@ -60,15 +60,11 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     RelativeLayout endDateLayout;
     TextView startDateTV;
     TextView endDateTV;
-    //    EditText startDate;
-//    EditText endDate;
-//    TextView searchButton;
     TextView drawButton;
     RecyclerView recyclerView;
     RelativeLayout topSlideOffBar;
     RelativeLayout reviewWarning;
     TextView amountBeingReviewed;
-    //    TextView topupButton;
     FrameLayout saldoFrameLayout;
     SaldoDatePickerUtil datePicker;
     SaldoDepositAdapter adapter;
@@ -151,14 +147,10 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         endDateLayout = view.findViewById(R.id.end_date_layout);
         startDateTV = view.findViewById(R.id.start_date_tv);
         endDateTV = view.findViewById(R.id.end_date_tv);
-//        startDate = view.findViewById(R.id.start_date);
-//        endDate = view.findViewById(R.id.end_date);
-//        searchButton = view.findViewById(R.id.search_button);
         drawButton = view.findViewById(R.id.withdraw_button);
         topSlideOffBar = view.findViewById(R.id.deposit_header);
         reviewWarning = view.findViewById(R.id.review_warning_layout);
         amountBeingReviewed = view.findViewById(R.id.amount_review);
-//        topupButton = view.findViewById(R.id.topup_button);
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
 
         this.refreshHandler = new RefreshHandler(getActivity(), view, this);
@@ -175,6 +167,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         drawButton.setOnClickListener(v -> {
             try {
                 if (userSession.isMsisdnVerified()) {
+
+                    // TODO: 15/11/18 check for first time dialog
                     Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context);
                     saldoDetailsPresenter.onDrawClicked(intent);
                 } else {
@@ -188,11 +182,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         });
         startDateLayout.setOnClickListener(onStartDateClicked());
         endDateLayout.setOnClickListener(onEndDateClicked());
-//        startDate.setOnClickListener(onStartDateClicked());
-//        endDate.setOnClickListener(onEndDateClicked());
-//        searchButton.setOnClickListener(onSearchClicked());
         recyclerView.addOnScrollListener(onScroll());
-//        topupButton.setOnClickListener(onTopupSaldoClickedListener(generateTopupUrl()));
     }
 
     protected void initialVar() {
@@ -523,34 +513,6 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     public void setTextColor(View view, int colorId) {
         ((TextView) view).setTextColor(colorId);
     }
-
-    /*@Override
-    public void onNotesClicked(String note) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setPositiveButton("Salin", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ClipboardManager clipBoard = (ClipboardManager) context.getSystemService(context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("simple text", note);
-                clipBoard.setPrimaryClip(clip);
-            }
-        });
-        builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        Dialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
-    }*/
-
-   /* @Override
-    public void onItemClicked(Deposit deposit) {
-
-    }*/
 
     @Override
     public void onEmptyContentItemTextClicked() {

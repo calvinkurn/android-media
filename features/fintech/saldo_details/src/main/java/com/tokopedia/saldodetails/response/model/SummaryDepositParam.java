@@ -12,7 +12,7 @@ public class SummaryDepositParam {
 
     String endDate;
     int page;
-    int perPage = 10;
+    int perPage = 25;
     String startDate;
 
     public String getEndDate() {
