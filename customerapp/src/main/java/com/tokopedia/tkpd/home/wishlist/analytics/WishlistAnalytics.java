@@ -17,7 +17,7 @@ public class WishlistAnalytics {
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     private static final String CLICK_WISHLIST = "Click Wishlist";
-    private static final String LONG_PRESS_SHORTCUT_WISHLIST = "Wishlist";
+    private static final String LONG_PRESS_SHORTCUT_WISHLIST = "Share";
 
     private AnalyticTracker analyticTracker;
 
