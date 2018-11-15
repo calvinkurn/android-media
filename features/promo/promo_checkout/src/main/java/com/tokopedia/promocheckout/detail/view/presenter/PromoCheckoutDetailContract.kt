@@ -16,6 +16,8 @@ interface PromoCheckoutDetailContract {
         fun hideLoading()
         fun onErrorCancelPromo(e: Throwable)
         fun onSuccessCancelPromo()
+        fun showProgressLoading()
+        fun hideProgressLoading()
     }
 
     interface Presenter : CustomerPresenter<View>{

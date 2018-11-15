@@ -59,6 +59,13 @@
                     tools:text="Potensi Cashback senilai Rp. 9.800"
                     tools:visibility="visible" />
 
+                <TextView
+                    android:text="Syarat &amp; Ketentuan"
+                    android:paddingTop="@dimen/dp_16"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    style="@style/TextView.Small.Bold"/>
+
                 <WebView
                     android:id="@+id/webviewTnc"
                     android:layout_width="match_parent"

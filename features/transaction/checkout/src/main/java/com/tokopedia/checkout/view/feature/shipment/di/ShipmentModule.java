@@ -27,6 +27,7 @@ import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
+import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
@@ -38,6 +39,8 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataReques
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
@@ -214,4 +217,13 @@ public class ShipmentModule {
         return context;
     }
 
+    @Provides
+    @ShipmentScope
+    TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
+        if(context instanceof TrackingPromoCheckoutRouter){
+            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
+        }else{
+            return new TrackingPromoCheckoutUtil(null);
+        }
+    }
 }

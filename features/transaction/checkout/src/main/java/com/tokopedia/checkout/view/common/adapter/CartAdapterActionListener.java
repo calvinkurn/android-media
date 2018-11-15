@@ -19,7 +19,7 @@ public interface CartAdapterActionListener {
 
     void onCartPromoCancelVoucherPromoClicked(PromoData cartPromo, int position);
 
-    void onCartPromoTrackingSuccess(PromoData cartPromo, int position);
+    void onCartPromoTrackingImpression(PromoData cartPromo, int position);
 
     void onCartPromoTrackingCancelled(PromoData cartPromo, int position);
 

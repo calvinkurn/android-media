@@ -20,7 +20,11 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -102,5 +106,15 @@ public class CartListModule {
     @ApplicationContext
     Context provideContextAbstraction(Context context){
         return context;
+    }
+
+    @Provides
+    @CartListScope
+    TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
+        if(context instanceof TrackingPromoCheckoutRouter){
+            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
+        }else{
+            return new TrackingPromoCheckoutUtil(null);
+        }
     }
 }

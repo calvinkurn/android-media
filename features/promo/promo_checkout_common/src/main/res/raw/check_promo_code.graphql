@@ -1,4 +1,4 @@
-mutation check_promo_cart_v2($promoCode: String, $skipApply: Boolean, $suggested : Boolean, $oneClickShipment : Boolean){
+mutation check_promo_cart_v2($promoCode: String!, $skipApply: Boolean!, $suggested : Boolean!, $oneClickShipment : Boolean!){
   check_promo_cart_v2(promoCode: $promoCode, skipApply: $skipApply, suggested : $suggested, oneClickShipment : $oneClickShipment){
     status
     error_message

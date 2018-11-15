@@ -14,17 +14,19 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity() {
         return PromoCheckoutListMarketplaceFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(PromoCheckoutListMarketplaceFragment.PROMO_CODE, ""),
-                intent?.extras?.getBoolean(PromoCheckoutListMarketplaceFragment.ONE_CLICK_SHIPMENT, false)
+                intent?.extras?.getBoolean(PromoCheckoutListMarketplaceFragment.ONE_CLICK_SHIPMENT, false),
+                intent?.extras?.getInt(PromoCheckoutListMarketplaceFragment.PAGE_TRACKING, 1)?:1
         )
     }
 
     companion object {
-        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, isOneClickShipment: Boolean): Intent {
+        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, isOneClickShipment: Boolean, pageTracking : Int): Intent {
             val intent = Intent(activity, PromoCheckoutListMarketplaceActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
             bundle.putString(PromoCheckoutListMarketplaceFragment.PROMO_CODE, promoCode)
             bundle.putBoolean(PromoCheckoutListMarketplaceFragment.ONE_CLICK_SHIPMENT, isOneClickShipment)
+            bundle.putInt(PromoCheckoutListMarketplaceFragment.PAGE_TRACKING, pageTracking)
             intent.putExtras(bundle)
             return intent
         }

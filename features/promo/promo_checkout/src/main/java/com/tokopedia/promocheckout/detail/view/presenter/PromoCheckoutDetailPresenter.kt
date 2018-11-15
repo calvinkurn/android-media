@@ -33,7 +33,7 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
 
     override fun cancelPromo() {
-        view.showLoading()
+        view.showProgressLoading()
         cancelPromoUseCase.execute(RequestParams.EMPTY, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
 
@@ -41,13 +41,13 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view.hideLoading()
+                    view.hideProgressLoading()
                     view.onErrorCancelPromo(e)
                 }
             }
 
             override fun onNext(restResponse: Map<Type, RestResponse>) {
-                view.hideLoading()
+                view.hideProgressLoading()
                 val responseCancel = restResponse.get(String::class.java)
                 val responseCancelPromo = responseCancel?.getData<String>()
                 var resultSuccess = false
@@ -69,7 +69,7 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
     }
 
     override fun validatePromoUse(codeCoupon: String, oneClickShipment:Boolean, resources: Resources) {
-        view.showLoading()
+        view.showProgressLoading()
         checkPromoUseCase.execute(checkPromoUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment), object : Subscriber<DataVoucher>() {
             override fun onCompleted() {
 
@@ -77,13 +77,13 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view.hideLoading()
+                    view.hideProgressLoading()
                     view.onErrorValidatePromo(e)
                 }
             }
 
             override fun onNext(dataVoucher: DataVoucher) {
-                view.hideLoading()
+                view.hideProgressLoading()
                 if(dataVoucher.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED){
                     view.onErrorValidatePromo(MessageErrorException(dataVoucher.message?.text))
                 }else{

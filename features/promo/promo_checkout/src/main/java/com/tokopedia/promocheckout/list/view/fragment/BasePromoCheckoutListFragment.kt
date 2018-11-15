@@ -14,11 +14,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
+import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
@@ -28,7 +30,7 @@ import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
-        PromoCheckoutListContract.View, PromoLastSeenViewHolder.ListenerLastSeen {
+        PromoCheckoutListContract.View, PromoLastSeenViewHolder.ListenerLastSeen, PromoCheckoutListViewHolder.ListenerTrackingCoupon {
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
@@ -40,7 +42,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     open var promoCode : String = ""
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
-        return PromoCheckoutListAdapterFactory()
+        return PromoCheckoutListAdapterFactory(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +75,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         view.recyclerViewLastSeenPromo.adapter = promoLastSeenAdapter
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.line_divider)!!)
+        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
 
         populateLastSeen()
@@ -121,6 +123,10 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     override fun getScreenName(): String {
         return ""
+    }
+
+    override fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?) {
+
     }
 
     override fun initInjector() {

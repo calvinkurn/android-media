@@ -40,6 +40,7 @@
 
     <FrameLayout
         android:id="@+id/layoutTicker"
+        android:layout_margin="@dimen/dp_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_checkout_ticker_view">
@@ -58,7 +59,9 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_centerVertical="true"
                 android:background="@drawable/half_circle_green"
-                android:padding="@dimen/dp_3"
+                android:paddingRight="@dimen/dp_4"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
                 android:src="@drawable/ic_check_black" />
 
             <ImageView
@@ -90,7 +93,7 @@
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:adjustViewBounds="true"
-                        tools:src="@drawable/ic_voucher_promo_green" />
+                        tools:src="@drawable/ic_coupon_grey_promo_checkout" />
 
                     <TextView
                         android:id="@+id/titleCoupon"

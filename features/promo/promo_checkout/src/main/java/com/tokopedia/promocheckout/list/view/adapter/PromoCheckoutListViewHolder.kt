@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.list.view.adapter
 
+import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -9,11 +10,19 @@ import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
 import kotlinx.android.synthetic.main.item_list_promo_checkout.view.*
 
-class PromoCheckoutListViewHolder(val view: View?) : AbstractViewHolder<PromoCheckoutListModel>(view) {
+class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: ListenerTrackingCoupon) : AbstractViewHolder<PromoCheckoutListModel>(view) {
 
     override fun bind(element: PromoCheckoutListModel?) {
+        listenerTrackingCoupon.onImpressionCoupon(element)
         ImageHandler.loadImageRounded2(view?.context, view?.imageBannerPromo, element?.imageUrlMobile)
-        view?.textMinTrans?.text = element?.minimumUsage
+        view?.titlePeriod?.text = element?.usage?.text
+        view?.titleMinTrans?.text = element?.minimumUsageLabel
+        if(TextUtils.isEmpty(element?.minimumUsage)) {
+            view?.textMinTrans?.visibility = View.GONE
+        }else{
+            view?.textMinTrans?.visibility = View.VISIBLE
+            view?.textMinTrans?.text = element?.minimumUsage
+        }
         if ((element?.usage?.activeCountdown ?: 0 > 0 &&
                         element?.usage?.activeCountdown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
             view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener{
@@ -57,6 +66,10 @@ class PromoCheckoutListViewHolder(val view: View?) : AbstractViewHolder<PromoChe
         view?.containerUsageDate?.visibility = View.GONE
         view?.timerUsage?.expiredTimer = countDown
         view?.timerUsage?.start()
+    }
+
+    interface ListenerTrackingCoupon{
+        fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?)
     }
 
     companion object {

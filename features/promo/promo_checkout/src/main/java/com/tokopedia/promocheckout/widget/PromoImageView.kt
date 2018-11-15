@@ -18,6 +18,6 @@ class PromoImageView : android.support.v7.widget.AppCompatImageView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
         val width = measuredWidth
-        setMeasuredDimension(width, width * 328 / 600)
+        setMeasuredDimension(width, width * 213 / 640)
     }
 }

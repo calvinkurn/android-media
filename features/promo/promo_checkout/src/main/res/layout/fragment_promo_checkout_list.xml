@@ -95,7 +95,9 @@
 
             <TextView
                 style="@style/TextView.Micro.BlackSecondary"
-                android:padding="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
                 android:text="@string/promo_label_my_coupon" />
 
         </LinearLayout>

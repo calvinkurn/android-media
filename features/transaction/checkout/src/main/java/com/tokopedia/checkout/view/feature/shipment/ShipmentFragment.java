@@ -64,6 +64,9 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -141,6 +144,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
+    @Inject
+    TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
@@ -167,6 +172,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 .cartComponent(getComponent(CartComponent.class))
                 .shipmentModule(new ShipmentModule(this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
+                .promoCheckoutModule(new PromoCheckoutModule())
                 .build();
         component.inject(this);
     }
@@ -1256,11 +1262,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoUseVoucherPromoClicked(PromoData cartPromo,
                                                   int position) {
-        sendAnalyticsOnClickUsePromoCodeAndCoupon();
+        trackingPromoCheckoutUtil.checkoutClickUseTickerPromoOrCoupon();
         startActivityForResult(
                 checkoutModuleRouter
                         .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-                                true, "", isOneClickShipment()
+                                true, "", isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()
                         ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
         );
 
@@ -1276,8 +1282,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartPromoTrackingSuccess(PromoData cartPromo, int position) {
-
+    public void onCartPromoTrackingImpression(PromoData cartPromo, int position) {
+        trackingPromoCheckoutUtil.checkoutImpressionTicker(cartPromo.getDescription());
     }
 
     @Override
@@ -1322,12 +1328,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickDetailPromo(PromoData data, int position) {
+        trackingPromoCheckoutUtil.checkoutClickTicker(data.getDescription());
         if(data.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(data.getPromoCode(),
-                    true, isOneClickShipment()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }else{
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(data.getPromoCode(),
-                    true, isOneClickShipment()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CHECKOUT()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 

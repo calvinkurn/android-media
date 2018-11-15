@@ -17,10 +17,9 @@ class TickerCheckoutView @JvmOverloads constructor(
 
     var state: State = State.EMPTY
         set(value) {
-            initView()
             field = value
+            initView()
         }
-
     var title: String = ""
         set(value) {
             field = value
@@ -53,16 +52,16 @@ class TickerCheckoutView @JvmOverloads constructor(
             State.FAILED -> setViewFailed()
             State.EMPTY -> setViewEmpty()
         }
-        rootView.descCoupon.text = desc
-        rootView.titleCoupon.text = title
-        rootView.imageClose.setOnClickListener {
+        descCoupon?.text = desc
+        titleCoupon?.text = title
+        imageClose?.setOnClickListener {
             resetView()
             actionListener?.onDisablePromoDiscount()
         }
-        rootView.layoutUsePromo.setOnClickListener {
+        layoutUsePromo?.setOnClickListener {
             actionListener?.onClickUsePromo()
         }
-        rootView.layoutTicker.setOnClickListener {
+        layoutTicker?.setOnClickListener {
             actionListener?.onClickDetailPromo()
         }
         invalidate()
@@ -74,34 +73,43 @@ class TickerCheckoutView @JvmOverloads constructor(
     }
 
     private fun setViewEmpty() {
-        rootView.layoutUsePromo.visibility = View.VISIBLE
-        rootView.layoutTicker.visibility = View.GONE
+        layoutUsePromo?.visibility = View.VISIBLE
+        layoutTicker?.visibility = View.GONE
     }
 
     private fun setViewCouponShow(){
-        rootView.layoutUsePromo.visibility = View.GONE
-        rootView.layoutTicker.visibility = View.VISIBLE
+        layoutUsePromo?.visibility = View.GONE
+        layoutTicker?.visibility = View.VISIBLE
     }
 
     private fun setViewFailed() {
         setViewCouponShow()
-        val drawableBackground = rootView.layoutTicker.background.current.mutate() as GradientDrawable
+        val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.bright_red))
-        rootView.imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_red)
+        imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_red)
+        imageCheck.setImageResource(R.drawable.ic_failed_promo_checkout)
+        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_red_promo_checkout)
+        imageClose.setImageResource(R.drawable.ic_close_red_promo_checkout)
     }
 
     private fun setViewActive() {
         setViewCouponShow()
-        val drawableBackground = rootView.layoutTicker.background.current.mutate() as GradientDrawable
+        val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.green_200))
-        rootView.imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_green)
+        imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_green)
+        imageCheck.setImageResource(R.drawable.ic_check_black)
+        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_green_promo_checkout)
+        imageClose.setImageResource(R.drawable.ic_close_green_promo_checkout)
     }
 
     private fun setViewInactive() {
         setViewCouponShow()
-        val drawableBackground = rootView.layoutTicker.background.current.mutate() as GradientDrawable
+        val drawableBackground = layoutTicker.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.grey_300))
-        rootView.imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_grey)
+        imageCheck.background = ContextCompat.getDrawable(context, R.drawable.half_circle_grey)
+        imageCheck.setImageResource(R.drawable.ic_question_promo_checkout)
+        imageTitleCoupon.setImageResource(R.drawable.ic_coupon_grey_promo_checkout)
+        imageClose.setImageResource(R.drawable.ic_close_grey_promo_checkout)
     }
 
     override fun onFinishInflate() {

@@ -40,7 +40,9 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
                 actionListener.onClickDetailPromo(data, position);
             }
         });
-        actionListener.onCartPromoTrackingSuccess(data, position);
+        if(data.getState() != TickerCheckoutView.State.FAILED){
+            actionListener.onCartPromoTrackingImpression(data, position);
+        }
         tickerCheckoutView.setState(data.getState());
         tickerCheckoutView.setDesc(data.getDescription());
         tickerCheckoutView.setTitle(data.getTitle());
