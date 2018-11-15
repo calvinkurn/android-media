@@ -4,7 +4,7 @@ import com.tokopedia.otp.cotp.data.SQLoginApi;
 import com.tokopedia.otp.cotp.di.CotpScope;
 import com.tokopedia.otp.cotp.domain.mapper.MakeLoginMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.OtpLoginDomain;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class MakeLoginDataSource {
     private final MakeLoginMapper makeLoginMapper;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     public MakeLoginDataSource(@CotpScope SQLoginApi otpLoginApi,
@@ -48,9 +48,8 @@ public class MakeLoginDataSource {
                     userSession.setUserId(String.valueOf(makeLoginDomain.getUserId()));
                     userSession.setName(makeLoginDomain.getFullName());
                     userSession.setEmail(userSession.getTempEmail());
-                    userSession.setIsMsisdnVerified(makeLoginDomain.isMsisdnVerified());
+                    userSession.setIsMSISDNVerified(makeLoginDomain.isMsisdnVerified());
                     userSession.setPhoneNumber(userSession.getTempPhoneNumber());
-
                     userSession.setShopId(String.valueOf(makeLoginDomain.getShopId()));
                     userSession.setShopName(makeLoginDomain.getShopName());
                     userSession.setIsGoldMerchant(makeLoginDomain.getShopIsGold());

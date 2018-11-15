@@ -22,9 +22,9 @@ public class PollViewModel extends BaseKolViewModel implements Visitable<FeedPlu
                          String time, boolean isShowComment, boolean isShowLike, String pollId,
                          String totalVoter, boolean voted,
                          List<PollOptionViewModel> optionViewModels) {
-        super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
-                liked, totalLike, totalComment, page, kolId, time, isShowComment, isShowLike,
-                false, false);
+        super(userId, "", cardType, title, name, avatar, label, kolProfileUrl, followed,
+                review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
+                isShowLike, false, false, false);
         this.pollId = pollId;
         this.totalVoter = totalVoter;
         this.voted = voted;

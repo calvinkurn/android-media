@@ -33,6 +33,9 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.applink)
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 apply from: '../../../publish_local.gradle'

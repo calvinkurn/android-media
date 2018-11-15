@@ -30,13 +30,8 @@ class FlightSortAndFilterUseCase @Inject constructor(
         val sortOption = requestParams.getInt(PARAM_SORT, FlightSortOption.CHEAPEST)
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
-        return if (filterModel.isReturn && !filterModel.isBestPairing) {
-            flightSearchRepository.getSearchFilter(sortOption, filterModel)
-                    .map { mapToNormalFlightJourneyViewModel(it) }
-        } else {
-            flightSearchRepository.getSearchFilter(sortOption, filterModel)
+        return flightSearchRepository.getSearchFilter(sortOption, filterModel)
                     .map { mapToFlightJourneyViewModel(it) }
-        }
     }
 
     private fun mapToNormalFlightJourneyViewModel(it: List<JourneyAndRoutes>): List<FlightJourneyViewModel> {

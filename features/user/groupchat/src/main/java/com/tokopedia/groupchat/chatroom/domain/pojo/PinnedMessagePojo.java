@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * @author by StevenFredian on 03/05/18.
  */
 
-public class PinnedMessagePojo {
+public class PinnedMessagePojo extends BaseGroupChatPojo{
 
     @SerializedName("message")
     @Expose

@@ -8,7 +8,7 @@ import rx.Subscriber
 /**
  * @author by milhamj on 9/21/18.
  */
-class GetProfileFirstPageSubscriber(val view: ProfileContract.View)
+class GetProfileFirstPageSubscriber(private val view: ProfileContract.View)
     : Subscriber<ProfileFirstPageViewModel>() {
     override fun onNext(t: ProfileFirstPageViewModel) {
         view.onSuccessGetProfileFirstPage(t)

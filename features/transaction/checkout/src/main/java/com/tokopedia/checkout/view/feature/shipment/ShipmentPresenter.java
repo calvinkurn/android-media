@@ -250,6 +250,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public ShipmentCostModel getShipmentCostModel() {
+        if (shipmentCostModel == null) {
+            shipmentCostModel = new ShipmentCostModel();
+        }
         return shipmentCostModel;
     }
 
