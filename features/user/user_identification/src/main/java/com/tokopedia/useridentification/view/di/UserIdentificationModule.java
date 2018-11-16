@@ -1,6 +1,7 @@
 package com.tokopedia.useridentification.view.di;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
@@ -22,5 +23,11 @@ public class UserIdentificationModule {
     UserIdentificationInfo.Presenter provideUserIdentificationInfoPresenter(@ApplicationContext Context context,
                                                                             GetApprovalStatusUseCase getApprovalStatusUseCase) {
         return new UserIdentificationInfoPresenter(context, getApprovalStatusUseCase);
+    }
+
+    @UserIdentificationScope
+    @Provides
+    Resources provideResources(@ApplicationContext Context context){
+        return context.getResources();
     }
 }

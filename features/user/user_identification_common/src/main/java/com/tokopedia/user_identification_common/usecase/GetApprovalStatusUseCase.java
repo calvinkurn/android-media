@@ -1,6 +1,7 @@
 package com.tokopedia.user_identification_common.usecase;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -25,19 +26,19 @@ public class GetApprovalStatusUseCase {
 
     private static final String PROJECT_ID = "projectId";
 
-    private final Context context;
     private final GraphqlUseCase graphqlUseCase;
+    private final Resources resources;
 
     @Inject
-    public GetApprovalStatusUseCase(Context context,
+    public GetApprovalStatusUseCase(Resources resources,
                                     GraphqlUseCase graphqlUseCase) {
-        this.context = context;
+        this.resources = resources;
         this.graphqlUseCase = graphqlUseCase;
 
     }
 
     public void execute(Map<String, Object> requestParams, Subscriber<GraphqlResponse> subscriber){
-        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw
+        String query = GraphqlHelper.loadRawString(resources, R.raw
                 .query_get_kyc_approval_status);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
