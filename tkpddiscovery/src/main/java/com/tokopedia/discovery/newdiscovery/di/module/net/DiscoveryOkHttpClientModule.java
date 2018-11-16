@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.NoAuth;
 import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
-import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,11 +25,11 @@ public class DiscoveryOkHttpClientModule {
                                                   ChuckInterceptor chuckInterceptor,
                                                   DebugInterceptor debugInterceptor,
                                                   CacheApiInterceptor cacheApiInterceptor,
-                                                  TkpdBaseInterceptor tkpdBaseInterceptor) {
+                                                  TkpdAuthInterceptor tkpdAuthInterceptor) {
 
         cacheApiInterceptor.setResponseValidator(new CacheApiResponseValidator());
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .addInterceptor(tkpdBaseInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(cacheApiInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
