@@ -514,7 +514,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void addTopAdsSection(List<ShopGroupData> shopGroupDataList) {
+    public void mappingTopAdsModel(List<ShopGroupData> shopGroupDataList) {
         CartTopAdsModel model = new CartTopAdsModel();
         for (int i = 0; i < shopGroupDataList.size(); i++) {
             for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {

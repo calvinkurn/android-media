@@ -36,7 +36,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -56,7 +55,6 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTopAdsModel;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
@@ -823,7 +821,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
-        cartAdapter.addTopAdsSection(cartListData.getShopGroupDataList());
+        cartAdapter.mappingTopAdsModel(cartListData.getShopGroupDataList());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cbSelectAll.setChecked(cartListData.isAllSelected());
 

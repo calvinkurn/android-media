@@ -1,5 +1,8 @@
 package com.tokopedia.checkout.view.feature.cartlist.viewholder;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -9,6 +12,8 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTopAdsModel;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -31,9 +36,11 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     private TopAdsCarouselView topAdsCarouselView;
     private boolean loaded;
+    private Context context;
 
     public CartTopAdsViewHolder(View itemView) {
         super(itemView);
+        this.context = itemView.getContext();
         topAdsCarouselView = itemView.findViewById(R.id.topads);
 
     }
@@ -61,23 +68,26 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_ecs());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override
-    public void onShopItemClicked(int position, Shop shop) {
-
-    }
+    public void onShopItemClicked(int position, Shop shop) { }
 
     @Override
-    public void onAddFavorite(int position, Data data) {
-
-    }
+    public void onAddFavorite(int position, Data data) { }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-
-    }
+    public void onAddWishList(int position, Data data) { }
 
     @Override
     public void onTopAdsLoaded(List<Item> list) {
