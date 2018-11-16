@@ -77,12 +77,12 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
 
         //Adding request for main query
         Map<String, Object> variablesMain = new HashMap<>();
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, 1);  //Default page size always will be 1
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, getPageSize());  //Default page size always will be 1
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.SORT_ID, 1); //Default page sort id
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SORT_ID, getSortId()); //Default page sort id
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, categoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.SUB_CATEGORY_ID, subCategoryId);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, 0); //Point range will be zero for all catalog
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, getPointsRange()); //Point range will be zero for all catalog
 
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_listing),
                 CatalogListingOuter.class,
@@ -112,6 +112,18 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                 }
             }
         });
+    }
+
+    private int getPointsRange() {
+        return 0;
+    }
+
+    private int getSortId() {
+        return 1;
+    }
+
+    private int getPageSize() {
+        return 1;  //default page size
     }
 
     @Override
