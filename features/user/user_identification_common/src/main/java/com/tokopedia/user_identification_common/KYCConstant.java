@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view;
+package com.tokopedia.user_identification_common;
 
 /**
  * @author by nisie on 12/11/18.

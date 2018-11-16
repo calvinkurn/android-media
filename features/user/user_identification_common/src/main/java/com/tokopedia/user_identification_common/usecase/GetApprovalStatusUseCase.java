@@ -1,9 +1,7 @@
 package com.tokopedia.user_identification_common.usecase;
 
-import android.content.Context;
 import android.content.res.Resources;
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -37,19 +35,19 @@ public class GetApprovalStatusUseCase {
 
     }
 
-    public void execute(Map<String, Object> requestParams, Subscriber<GraphqlResponse> subscriber){
+    public void execute(Map<String, Object> requestParams, Subscriber<GraphqlResponse> subscriber) {
         String query = GraphqlHelper.loadRawString(resources, R.raw
                 .query_get_kyc_approval_status);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                        GetApprovalStatusPojo.class, requestParams);
+                GetApprovalStatusPojo.class, requestParams);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
     }
 
-    public static Map<String,Object> getRequestParam(){
+    public static Map<String, Object> getRequestParam() {
         Map<String, Object> requestParams = new HashMap<>();
         requestParams.put(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
         return requestParams;
