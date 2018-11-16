@@ -914,7 +914,7 @@ public class GroupChatActivity extends BaseSimpleActivity
      * @param channelId can also be substitued by channelUrl
      * @return Intent
      */
-    public static Intent getCallingIntent(Context cogetCallingIntentntext, String channelId) {
+    public static Intent getCallingIntent(Context context, String channelId) {
         Intent intent = new Intent(context, GroupChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CHANNEL_UUID, channelId);
