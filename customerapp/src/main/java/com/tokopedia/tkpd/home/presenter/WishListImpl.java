@@ -303,25 +303,25 @@ public class WishListImpl implements WishList {
     public void setData(GqlWishListDataResponse.GqlWishList wishlistData) {
         if (mPaging.getPage() == 1) {
             data.clear();
-            if (wishlistData.getWishlistDataList().size() == 0)
+            dataWishlist.addAll(wishlistData.getWishlistDataList());
+            data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
+            if (wishlistData.getWishlistDataList().size() == 0) {
                 wishListView.setSearchNotFound();
+            } else {
+                wishListView.renderTopAdsCarousel();
+            }
+        } else {
+            dataWishlist.addAll(wishlistData.getWishlistDataList());
+            data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         }
         wishListView.displayPull(false);
-
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
-
-        dataWishlist.addAll(wishlistData.getWishlistDataList());
-        data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
-
         if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
             wishListView.displayLoadMore(true);
         } else {
             wishListView.displayLoadMore(false);
         }
-
-        if (!wishlistData.getWishlistDataList().isEmpty())
-            wishListView.renderTopAdsCarousel();
         wishListView.setPullEnabled(true);
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
