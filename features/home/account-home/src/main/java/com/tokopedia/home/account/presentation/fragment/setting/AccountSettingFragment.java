@@ -10,11 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -25,8 +25,9 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AccountSettingConfig;
+import com.tokopedia.home.account.di.component.AccountSettingComponent;
+import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
-import com.tokopedia.home.account.presentation.presenter.AccountSettingPresenter;
 
 import javax.inject.Inject;
 
@@ -35,7 +36,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.KYC;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
 
-public class AccountSettingFragment extends TkpdBaseV4Fragment implements AccountSetting.View {
+public class AccountSettingFragment extends BaseDaggerFragment implements AccountSetting.View {
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
     private static final int REQUEST_CHANGE_PASSWORD = 123;
@@ -43,15 +44,15 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment implements Accoun
     private UserSession userSession;
     private AccountAnalytics accountAnalytics;
 
-    TextView personalDataMenu;
-    TextView addressMenu;
-    TextView passwordMenu;
-    TextView kycMenu;
+    View personalDataMenu;
+    View addressMenu;
+    View passwordMenu;
+    View kycMenu;
     View mainView;
     ProgressBar progressBar;
 
     @Inject
-    AccountSettingPresenter presenter;
+    AccountSetting.Presenter presenter;
 
     public static Fragment createInstance() {
         return new AccountSettingFragment();
@@ -82,6 +83,17 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         setMenuClickListener(view);
         getMenuToggle();
+    }
+
+    @Override
+    protected void initInjector() {
+        AccountSettingComponent component = DaggerAccountSettingComponent.builder()
+                .baseAppComponent(
+                        ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()
+                ).build();
+
+        component.inject(this);
+        presenter.attachView(this);
     }
 
     private void getMenuToggle() {
