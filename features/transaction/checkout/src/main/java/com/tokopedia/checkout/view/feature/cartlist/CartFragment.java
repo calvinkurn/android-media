@@ -840,7 +840,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        cbSelectAll.setChecked(cartListData.isAllSelected());
+        if (cbSelectAll != null) {
+            cbSelectAll.setChecked(cartListData.isAllSelected());
+        }
 
         cartAdapter.checkForShipmentForm();
 
