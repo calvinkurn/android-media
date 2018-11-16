@@ -224,26 +224,22 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         linearDiscountTimerHolder.setVisibility(GONE);
 
         try {
-            if (!countDownView.isTimerActive()) {
-                SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
+            SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
 
-                //*1000 to convert serverTime to millisecond since serverTime is unix
-                long serverTimeMillisecond = data.getServerTimeUnix() * 1000L;
-                long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
+            //*1000 to convert serverTime to millisecond since serverTime is unix
+            long serverTimeMillisecond = data.getServerTimeUnix() * 1000L;
+            long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
 
-                if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
-                    countDownView.setup(
-                            ServerTimeOffsetUtil.getServerTimeOffset(serverTimeMillisecond),
-                            sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
-                                @Override
-                                public void onCountDownFinished() {
-                                    hideProductCampaign(campaign);
-                                    showAlerDialog();
-                                }
-                            });
-                    linearDiscountTimerHolder.setVisibility(VISIBLE);
-                }
-            } else{
+            if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
+                countDownView.setup(
+                        ServerTimeOffsetUtil.getServerTimeOffset(serverTimeMillisecond),
+                        sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
+                            @Override
+                            public void onCountDownFinished() {
+                                hideProductCampaign(campaign);
+                                showAlerDialog();
+                            }
+                        });
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
             }
         } catch (Exception ex) {

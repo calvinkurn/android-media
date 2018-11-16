@@ -44,7 +44,6 @@ public class CountDownView extends FrameLayout {
     private Handler refreshCounterHandler;
     private Runnable runnableRefreshCounter;
 
-    private boolean isTimerActive = false;
 
     public CountDownView(@NonNull Context context) {
         super(context);
@@ -146,7 +145,6 @@ public class CountDownView extends FrameLayout {
     }
 
     public void stopAutoRefreshCounter() {
-        isTimerActive = false;
         if (refreshCounterHandler != null && runnableRefreshCounter != null) {
             refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
         }
@@ -154,10 +152,8 @@ public class CountDownView extends FrameLayout {
 
     private void startAutoRefreshCounter() {
         if (refreshCounterHandler != null &&
-                runnableRefreshCounter != null &&
-                !isTimerActive) {
+                runnableRefreshCounter != null) {
             refreshCounterHandler.post(runnableRefreshCounter);
-            isTimerActive = true;
         }
     }
 
@@ -233,9 +229,5 @@ public class CountDownView extends FrameLayout {
 
     public interface CountDownListener {
         void onCountDownFinished();
-    }
-
-    public boolean isTimerActive() {
-        return isTimerActive;
     }
 }
