@@ -65,10 +65,22 @@ public class ImpressedImageView extends AppCompatImageView {
         if (!view.isShown()) {
             return false;
         }
-        final Rect actualPosition = new Rect();
-        view.getGlobalVisibleRect(actualPosition);
-        final Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
-        return actualPosition.intersect(screen);
+        Rect screen = new Rect();
+        View container = getRootView().findViewById(R.id.list);
+        if (container == null) {
+            screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
+        } else {
+            container.getDrawingRect(screen);
+        }
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        float X = location[0];
+        float Y = location[1];
+        if (screen.top <= Y && screen.bottom >= Y && screen.left <= X && screen.right >= X) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private int getScreenWidth() {
@@ -77,7 +89,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
     private int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels -
-                getResources().getDimensionPixelOffset(R.dimen.dp_85);
+                getResources().getDimensionPixelOffset(R.dimen.dp_45);
     }
 
     public void setViewHintListener(ViewHintListener hintListener) {
