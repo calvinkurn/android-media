@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/channel_price_1"
-        style="@style/TextView.Micro.Orange"
+        style="@style/TextView.Micro.Orange.Bold"
         android:layout_below="@id/channel_before_disc_price_1"
         android:lineSpacingExtra="@dimen/sp_4"
         android:fontFamily="sans-serif-medium"
@@ -69,6 +69,7 @@
         android:paddingTop="@dimen/label_padding_top_bottom"
         android:paddingRight="@dimen/label_padding_left_right"
         android:paddingBottom="@dimen/label_padding_top_bottom"
+        android:textSize="@dimen/dp_10"
         tools:text="Cashback 5%" />
 
 </RelativeLayout>
