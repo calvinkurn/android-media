@@ -246,7 +246,7 @@ public class WishListImpl implements WishList {
         variables.put(QUERY, params.getString(QUERY, ""));
         variables.put(PAGE_NO, params.getInt(PAGE_NO, 0));
         variables.put(ITEM_COUNT, 10);
-        variables.put("params", "page=1&item=2&device=android&ep=product&user_id=7977957&src=wishlist");
+        variables.put("params", "page=1&item=5&device=android&ep=product&user_id=7977957&src=wishlist");
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_search_wishlist),
@@ -277,7 +277,7 @@ public class WishListImpl implements WishList {
 
         variables.put(PAGE_NO, mPaging.getPage());
         variables.put(ITEM_COUNT, 10);
-        variables.put("params", "page=1&item=2&device=android&ep=product&user_id=7977957&src=wishlist");
+        variables.put("params", "page=1&item=5&device=android&ep=product&user_id=7977957&src=wishlist");
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),

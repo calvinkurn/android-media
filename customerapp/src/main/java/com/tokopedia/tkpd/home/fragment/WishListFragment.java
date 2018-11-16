@@ -543,10 +543,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     return footerColumnSize;
                 } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
                         || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
-                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_STATE
-                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST) {
+                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_STATE) {
                     // top ads span column
                     return headerColumnSize;
+                } else if (wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST) {
+                    return regularColumnSize;
                 } else {
                     // regular one column
                     return regularColumnSize;
