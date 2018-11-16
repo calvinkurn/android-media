@@ -306,27 +306,24 @@ public class WishListImpl implements WishList {
         GqlWishListDataResponse.GqlWishList wishlistData = gqlWishListDataResponse.getGqlWishList();
         if (mPaging.getPage() == 1) {
             data.clear();
-            dataWishlist.addAll(wishlistData.getWishlistDataList());
-            data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
-            if (wishlistData.getWishlistDataList().size() == 0) {
+            if (wishlistData.getWishlistDataList().size() == 0)
                 wishListView.setSearchNotFound();
-            } else {
-                data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
-            }
-        } else {
-            dataWishlist.addAll(wishlistData.getWishlistDataList());
-            data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
-            data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
         }
         wishListView.displayPull(false);
+
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
+
+        dataWishlist.addAll(wishlistData.getWishlistDataList());
+        data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
+
         if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
             wishListView.displayLoadMore(true);
         } else {
             wishListView.displayLoadMore(false);
         }
         wishListView.setPullEnabled(true);
+
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
         wishListView.displayLoading(false);
