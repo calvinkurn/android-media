@@ -13,6 +13,7 @@
         android:id="@+id/container_category_label"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56"
+        android:background="@color/white"
         android:descendantFocusability="blocksDescendants"
         android:orientation="horizontal"
         android:padding="@dimen/dp_16">
@@ -53,6 +54,7 @@
                 android:id="@+id/container_cart_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"

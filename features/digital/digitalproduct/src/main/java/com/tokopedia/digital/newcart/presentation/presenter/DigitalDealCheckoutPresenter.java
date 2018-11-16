@@ -92,8 +92,10 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().showCartDetailView();
             if (getView().getSelectedDeals().size() > 0) {
                 getView().showDealsContainerView();
+            }else {
+                getView().hideDealsContainerView();
             }
-            getView().setMinHeight(R.dimen.dp_350);
+//            getView().setMinHeight(R.dimen.dp_350);
             getView().renderIconToCollapse();
         }
     }

@@ -2,14 +2,15 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private ViewPager dealViewPager;
     private LinearLayout dealContainer;
     private FrameLayout checkoutContainer;
+    private View checkoutDim;
     private List<DealProductViewModel> selectedProducts;
     private Map<DealProductViewModel, Integer> selectedDealsMap;
 
@@ -121,6 +123,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         dealViewPager = view.findViewById(R.id.pager_deals);
         dealContainer = view.findViewById(R.id.deal_container);
         checkoutContainer = view.findViewById(R.id.checkout_fragment);
+        checkoutDim = view.findViewById(R.id.checkout_dim);
         return view;
     }
 
@@ -295,6 +298,18 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     @Override
     public int getParentMeasuredHeight() {
         return getView().getHeight();
+    }
+
+    @Override
+    public void showDim(float procentage, int height) {
+        checkoutDim.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getParentMeasuredHeight() - height));
+        checkoutDim.setVisibility(View.VISIBLE);
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (200 * procentage)));
+    }
+
+    @Override
+    public void hideDim() {
+        checkoutDim.setVisibility(View.GONE);
     }
 
     @Override

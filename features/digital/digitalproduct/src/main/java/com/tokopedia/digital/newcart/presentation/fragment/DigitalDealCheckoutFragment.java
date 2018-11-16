@@ -11,7 +11,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.FrameLayout;
@@ -27,7 +25,6 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
@@ -84,6 +81,10 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         void hideFullpageLoading();
 
         int getParentMeasuredHeight();
+
+        void showDim(float procentage, int height);
+
+        void hideDim();
     }
 
     @Inject
@@ -222,23 +223,31 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     public void expandCheckoutView(final View containerLayout) {
-        containerScroll.setVisibility(View.VISIBLE);
         int currentHeight = containerLayout.getHeight();
-        containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lastCollapseHeight = currentHeight;
-        final int targetHeight = interactionListener.getParentMeasuredHeight();
-        containerLayout.getLayoutParams().height = currentHeight;
+        containerScroll.setVisibility(View.VISIBLE);
+        final int targetHeight;
+        if (selectedDeals.size() == 0){
+            containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            targetHeight = containerLayout.getMeasuredHeight();
+            containerLayout.getLayoutParams().height = currentHeight;
+        } else {
+            containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            targetHeight = interactionListener.getParentMeasuredHeight();
+            containerLayout.getLayoutParams().height = currentHeight;
+        }
+
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 int measureWithInterpolate = (int) ((targetHeight - currentHeight) * interpolatedTime) + currentHeight;
-
                 int height = targetHeight;
                 if ((int) interpolatedTime != 1) {
                     if (measureWithInterpolate >= currentHeight) {
                         height = measureWithInterpolate;
                     }
                 }
+                interactionListener.showDim(interpolatedTime, height);
                 containerLayout.getLayoutParams().height = height;
                 containerLayout.requestLayout();
             }
@@ -254,6 +263,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     public void collapseCheckoutView(final View containerLayout) {
+        interactionListener.hideDim();
         int currentHeight = containerLayout.getHeight();
         containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (lastCollapseHeight == 0) {
@@ -262,7 +272,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                     containerCategoryLabel.getMeasuredHeight() +
                     getResources().getDimensionPixelOffset(R.dimen.dp_2);
         }
-        checkoutHolderView.measure(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
                 containerLayout.getMeasuredHeight() : lastCollapseHeight;
         containerLayout.getLayoutParams().height = currentHeight;
