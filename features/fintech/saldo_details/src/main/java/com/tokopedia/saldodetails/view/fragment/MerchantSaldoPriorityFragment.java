@@ -30,7 +30,6 @@ import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.MerchantSaldoPriorityPresenter;
-import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
@@ -69,6 +68,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     @Inject
     MerchantSaldoPriorityPresenter saldoDetailsPresenter;
     private boolean originalSwitchState;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

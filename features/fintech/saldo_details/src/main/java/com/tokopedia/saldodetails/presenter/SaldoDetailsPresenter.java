@@ -20,8 +20,8 @@ import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionLis
 import com.tokopedia.saldodetails.interactor.DepositCacheInteractor;
 import com.tokopedia.saldodetails.interactor.DepositCacheInteractorImpl;
 import com.tokopedia.saldodetails.response.model.GqlDepositSummaryResponse;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlHoldSaldoBalanceResponse;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
@@ -145,18 +145,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void onEndDateClicked(SaldoDatePickerUtil datePicker) {
         String date = getView().getEndDate();
         datePicker.SetDate(getDay(date), getStartMonth(date), getStartYear(date));
-        datePicker.DatePickerCalendar(new SaldoDatePickerUtil.onDateSelectedListener() {
-
-            @Override
-            public void onDateSelected(int year, int month, int day) {
-                getView().setEndDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
-                new android.os.Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        onSearchClicked();
-                    }
-                }, 500);
-            }
+        datePicker.DatePickerCalendar((year, month, day) -> {
+            getView().setEndDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
+            new android.os.Handler().postDelayed(this::onSearchClicked, 500);
         });
 
     }
@@ -165,19 +156,10 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void onStartDateClicked(SaldoDatePickerUtil datePicker) {
         String date = getView().getStartDate();
         datePicker.SetDate(getDay(date), getStartMonth(date), getStartYear(date));
-        datePicker.DatePickerCalendar(new SaldoDatePickerUtil.onDateSelectedListener() {
+        datePicker.DatePickerCalendar((year, month, day) -> {
+            getView().setStartDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
+            new android.os.Handler().postDelayed(this::onSearchClicked, 500);
 
-            @Override
-            public void onDateSelected(int year, int month, int day) {
-                getView().setStartDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
-                new android.os.Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        onSearchClicked();
-                    }
-                }, 500);
-
-            }
         });
     }
 
@@ -225,9 +207,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                     getView().setActionsEnabled(true);
                     getView().hideRefreshing();
                     if (getView().getAdapter().getItemCount() == 0) {
-                        getView().showEmptyState("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                        getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                     } else {
-                        getView().setRetry("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                        getView().setRetry(getView().getString(R.string.sp_empty_state_error));
                     }
                 }
             }
@@ -286,8 +268,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                         }
 
                     } else if (e instanceof SocketTimeoutException) {
-                        /*onTimeout("Timeout connection," +
-                                " Mohon ulangi beberapa saat lagi");*/
                         getView().finishLoading();
                         getView().hideRefreshing();
                         if (getView().getAdapter().getItemCount() == 0) {
@@ -301,9 +281,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                         getView().setActionsEnabled(true);
                         getView().hideRefreshing();
                         if (getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
                         }
                     }
                 }
@@ -348,9 +328,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                         getView().setActionsEnabled(true);
                         getView().hideRefreshing();
                         if (getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                         } else {
-                            getView().setRetry("Terjadi Kesalahan, Mohon ulangi beberapa saat lagi");
+                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
                         }
 
                     }
@@ -358,69 +338,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 }
             });
 
-
-            /*networkInteractor.getSummaryDeposit(getView().getActivity(), getSummaryDepositParam(), new DepositRetrofitInteractor.DepositListener() {
-                @Override
-                public void onSuccess(@NonNull SummaryWithdraw data) {
-                    getView().finishLoading();
-                    getView().hideRefreshing();
-                    getView().setActionsEnabled(true);
-
-                    if (!data.isErrorDate()) {
-                        if (paging.getPage() == 1) {
-                            getView().getAdapter().clearAllElements();
-                            depositCacheInteractor.setSummaryDepositCache(data);
-                        }
-                        paging.setHasNext(PagingHandler.CheckHasNext(data.getPaging()));
-                        setData(data);
-
-                    } else {
-                        onError(getView().getString(R.string.title_max_day));
-                    }
-
-                }
-
-                @Override
-                public void onTimeout(String message) {
-                    getView().finishLoading();
-                    getView().hideRefreshing();
-                    if (getView().getAdapter().getItemCount() == 0) {
-                        getView().showEmptyState();
-                    } else {
-                        getView().setRetry();
-                    }
-                }
-
-                @Override
-                public void onError(String error) {
-                    getView().finishLoading();
-                    getView().setActionsEnabled(true);
-                    getView().hideRefreshing();
-                    if (getView().getAdapter().getItemCount() == 0) {
-                        getView().showEmptyState(error);
-                    } else {
-                        getView().setRetry(error);
-                    }
-                }
-
-                @Override
-                public void onNullData() {
-                    getView().finishLoading();
-                    getView().setActionsEnabled(true);
-                    getView().getAdapter().addElement(getView().getDefaultEmptyViewModel());
-//                    getView().getAdapter().showEmpty(true);
-                }
-
-                @Override
-                public void onNoNetworkConnection() {
-                    getView().finishLoading();
-                        getView().showEmptyState();
-                    } else {
-                        getView().setRetry();
-                    }
-                }
-
-            });*/
         } else {
             getView().finishLoading();
         }
@@ -569,7 +486,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details
+    public void showSaldoPrioritasFragment(GqlDetailsResponse
                                                    sellerDetails) {
         getView().showSaldoPrioritasFragment(sellerDetails);
     }

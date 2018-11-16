@@ -31,4 +31,7 @@
     <string name="sp_saldo_withdraw_warning_title">Informasi Penarikan Saldo</string>
     <string name="sp_saldo_withdraw_warning_desc">Layanan pencairan dana bergantung pada jadwal proses kerja bank. Info lebih lanjut, silakan hubungi layanan nasabah bank.</string>
     <string name="sp_saldo_withdraw_warning_positiv_button">Mengerti</string>
+    <string name="sp_goto_home">Belanja</string>
+    <string name="sp_empty_state_error">Terjadi Kesalahan, Mohon ulangi beberapa saat lagi</string>
+    <string name="sp_cancel">Tutup</string>
 </resources>

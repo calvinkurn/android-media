@@ -8,9 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
-import com.tokopedia.user.session.UserSession;
 
 public interface SaldoDetailContract {
     interface View extends CustomerView {
@@ -66,7 +65,7 @@ public interface SaldoDetailContract {
 
         void showHoldWarning(String warningText);
 
-        void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails);
+        void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 
         void hideSaldoPrioritasFragment();
     }
