@@ -3,8 +3,14 @@
     kycStatus(projectID: $projectId) {
       Message
       Detail {
+        IsSuccess
+        UserId
+        ProjectId
         Status
         StatusName
+        CreateTime
+        CreateBy
+        UpdateTime
       }
     }
   }

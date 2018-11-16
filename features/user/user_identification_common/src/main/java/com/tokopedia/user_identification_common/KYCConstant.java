@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view;
+package com.tokopedia.user_identification_common;
 
 /**
  * @author by nisie on 12/11/18.
@@ -6,6 +6,7 @@ package com.tokopedia.useridentification.view;
 public class KYCConstant {
 
     public static final String ERROR_STATUS_UNKNOWN = "1001";
+    public static final String ERROR_MESSAGE_EMPTY = "1002";
 
     public static final int STATUS_REJECTED = -1;
     public static final int STATUS_PENDING = 0;

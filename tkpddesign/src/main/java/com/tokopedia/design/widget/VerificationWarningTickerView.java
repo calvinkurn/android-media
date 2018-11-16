@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.dashboard.view.widget;
+package com.tokopedia.design.widget;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -16,8 +16,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.sellerapp.R;
+import com.tokopedia.design.R;
 
 /**
  * @author by nisie on 14/11/18.
@@ -54,7 +53,7 @@ public class VerificationWarningTickerView extends FrameLayout {
 
     public void setDescription(String descriptionString) {
         if (!TextUtils.isEmpty(descriptionString)) {
-            tvDescription.setText(MethodChecker.fromHtml(descriptionString));
+            tvDescription.setText(fromHtml(descriptionString));
             tvDescription.setVisibility(View.VISIBLE);
         } else {
             tvDescription.setVisibility(View.GONE);
@@ -95,5 +94,18 @@ public class VerificationWarningTickerView extends FrameLayout {
         };
         description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return description;
+    }
+
+    private Spanned fromHtml(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return new SpannableStringBuilder("");
+        }
+        Spanned result;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(text);
+        }
+        return result;
     }
 }

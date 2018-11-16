@@ -1,4 +1,4 @@
-package com.tokopedia.sellerapp.dashboard.model;
+package com.tokopedia.user_identification_common.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class GetApprovalStatusPojo {
 
     @Expose
-    @SerializedName("is_success")
-    private int isSuccess;
+    @SerializedName("kycStatus")
+    private KycStatusPojo kycStatus;
 
-    public int getIsSuccess() {
-        return isSuccess;
+    public KycStatusPojo getKycStatus() {
+        return kycStatus;
     }
 }

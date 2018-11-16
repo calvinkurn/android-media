@@ -7,8 +7,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.sellerapp.dashboard.model.GetApprovalStatusPojo;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.sellerapp.dashboard.model.kyc.GetApprovalStatusPojo;
 import com.tokopedia.sellerapp.R;
 
 import java.util.HashMap;
@@ -17,7 +16,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.internal.observers.AssertableSubscriberObservable;
 
 /**
  * @author by nisie on 15/11/18.
@@ -25,6 +23,8 @@ import rx.internal.observers.AssertableSubscriberObservable;
 public class GetVerificationStatusUseCase {
 
     private static final String PROJECT_ID = "project_id";
+    private static final int MERCHANT_ID = 1;
+
     private final Context context;
     private final GraphqlUseCase graphqlUseCase;
 
@@ -48,9 +48,9 @@ public class GetVerificationStatusUseCase {
         graphqlUseCase.execute(subscriber);
     }
 
-    public static Map<String,Object> getRequestParam(String projectId){
+    public static Map<String,Object> getRequestParam(){
         Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put(PROJECT_ID, projectId);
+        requestParams.put(PROJECT_ID, MERCHANT_ID);
         return requestParams;
     }
 

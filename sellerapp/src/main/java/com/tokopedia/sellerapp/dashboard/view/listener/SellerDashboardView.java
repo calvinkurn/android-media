@@ -5,7 +5,6 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.dashboard.model.GetApprovalStatusPojo;
 
 /**
  * Created by hendry on 9/8/2017.
@@ -34,5 +33,7 @@ public interface SellerDashboardView extends CustomerView {
 
     void onErrorOpenShop();
 
-    void onSuccessGetVerificationStatus(GetApprovalStatusPojo pojo);
+    Context getContext();
+
+    GetApprovalStatusSubscriber.GetApprovalStatusListener getApprovalStatusListener();
 }

@@ -23,12 +23,13 @@ import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUse
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.seller.shopscore.view.mapper.ShopScoreMapper;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.dashboard.model.GetApprovalStatusPojo;
+import com.tokopedia.sellerapp.dashboard.model.kyc.GetApprovalStatusPojo;
 import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.usecase.GetVerificationStatusUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
+import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
 import javax.inject.Inject;
 
@@ -64,7 +65,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         this.getVerificationStatusUseCase = getVerificationStatusUseCase;
     }
 
-    public void getShopInfoWithScore(){
+    public void getShopInfoWithScore() {
         getShopInfoWithScoreUseCase.execute(
                 RequestParams.EMPTY, getShopInfoAndScoreSubscriber());
     }
@@ -97,7 +98,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         };
     }
 
-    public void refreshShopInfo(){
+    public void refreshShopInfo() {
         cacheApiClearAllUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -117,19 +118,18 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         });
     }
 
-    public void getTicker(){
+    public void getTicker() {
         getTickerUseCase.execute(RequestParams.EMPTY, getTickerSubscriber());
     }
 
-    public void getVerificationStatus(){
-//        getVerificationStatusUseCase.execute(GetVerificationStatusUseCase.getRequestParam(""),
-//                getVerificationSubscriber());
-        getView().onSuccessGetVerificationStatus(new GetApprovalStatusPojo());
-
+    public void getVerificationStatus() {
+        getVerificationStatusUseCase.execute(GetVerificationStatusUseCase.getRequestParam(),
+                new GetApprovalStatusSubscriber(getView().getContext(),getView()
+                        .getApprovalStatusListener()));
     }
 
-    public void getNotification(){
-        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true),getNotificationSubscriber());
+    public void getNotification() {
+        newNotificationUseCase.execute(NotificationUseCase.getRequestParam(true), getNotificationSubscriber());
     }
 
     private Subscriber<NotificationModel> getNotificationSubscriber() {
@@ -138,6 +138,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             public void onErrorGetNotificationDrawer(String errorMessage) {
                 getView().onErrorGetNotifiction(errorMessage);
             }
+
             @Override
             public void onGetNotificationDrawer(DrawerNotification drawerNotification) {
                 getView().onSuccessGetNotification(drawerNotification);
@@ -164,31 +165,6 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         };
     }
 
-    private Subscriber<GraphqlResponse> getVerificationSubscriber() {
-        return new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (getView() != null
-                        && graphqlResponse.getData(GetApprovalStatusPojo.class) != null) {
-
-                    GetApprovalStatusPojo pojo = graphqlResponse.getData(GetApprovalStatusPojo
-                            .class);
-                    getView().onSuccessGetVerificationStatus(pojo);
-                }
-            }
-        };
-    }
-
     public void openShop() {
         getView().showLoading();
         updateShopScheduleUseCase.execute(UpdateShopScheduleUseCase.cerateRequestParams("", "", "", ShopCloseAction.OPEN_SHOP), getSubscriberOpenShop());
@@ -210,16 +186,16 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             @Override
             public void onNext(Boolean isSuccess) {
                 getView().hideLoading();
-                if(isSuccess){
+                if (isSuccess) {
                     getView().onSuccessOpenShop();
-                }else{
+                } else {
                     getView().onErrorOpenShop();
                 }
             }
         };
     }
 
-    public void getProductList(){
+    public void getProductList() {
         getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(0,
                 "", CatalogProductOption.WITH_AND_WITHOUT, ConditionProductOption.ALL_CONDITION, "", 0,
                 PictureStatusProductOption.WITH_AND_WITHOUT, SortProductOption.POSITION), getSubscriberGetListProduct());
@@ -242,6 +218,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             }
         };
     }
+
     @Override
     public void detachView() {
         super.detachView();
