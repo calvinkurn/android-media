@@ -3,7 +3,7 @@ package com.tokopedia.useridentification.view.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.useridentification.view.domain.usecase.GetApprovalStatusUseCase;
+import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 import com.tokopedia.useridentification.view.presenter.UserIdentificationInfoPresenter;
 
