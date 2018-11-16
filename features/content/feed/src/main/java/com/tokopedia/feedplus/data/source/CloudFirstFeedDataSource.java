@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedplus.data.api.FeedApi;
@@ -43,9 +42,11 @@ public class CloudFirstFeedDataSource extends CloudFeedDataSource {
 
     private Action1<FeedDomain> saveToCache() {
         return dataFeedDomains -> {
-            globalCacheManager.save(LocalFeedDataSource.KEY_FEED_PLUS, convertModelToString(dataFeedDomains,
-                    new TypeToken<FeedDomain>() {
-                    }.getType()), 0);
+
+            globalCacheManager.save(LocalFeedDataSource.KEY_FEED_PLUS, new Gson().toJson(dataFeedDomains), 0);
+//            globalCacheManager.save(LocalFeedDataSource.KEY_FEED_PLUS, convertModelToString(dataFeedDomains,
+//                    new TypeToken<FeedDomain>() {
+//                    }.getType()), 0);
         };
     }
 

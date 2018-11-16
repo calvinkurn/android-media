@@ -13,11 +13,14 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.util.hideLoading
 import com.tokopedia.kol.common.util.showLoading
+import com.tokopedia.kol.feature.report.di.kolReportModule
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
 import kotlinx.android.synthetic.main.fragment_content_report.*
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.startKoin
 
 /**
  * @author by milhamj on 08/11/18.
@@ -26,6 +29,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     private var contentId = 0
     private lateinit var adapter: ReportReasonAdapter
+    val presenter: ContentReportContract.Presenter by inject()
 
     companion object {
         fun createInstance(contentId: Int): Fragment {
@@ -42,6 +46,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     override fun initInjector() {
         GraphqlClient.init(context!!)
+        startKoin(context!!, listOf(kolReportModule))
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -52,12 +57,14 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        presenter.attachView(this)
         initVar()
         initView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        presenter.detachView()
     }
 
     override fun hideKeyboard() {
@@ -101,12 +108,13 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
             }
         })
         sendBtn.setOnClickListener {
-            //TODO milhamj
-            adapter.getSelectedItem()
-
-            if (adapter.getSelectedItem().type == adapter.getCustomTypeString()) {
-
-            }
+            presenter.sendReport(
+                    contentId,
+                    adapter.getSelectedItem().type,
+                    adapter.getSelectedItem().description
+            )
+//            if (adapter.getSelectedItem().type == adapter.getCustomTypeString()) {
+//            }
         }
     }
 

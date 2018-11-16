@@ -13,7 +13,7 @@ import rx.Observable
 /**
  * @author by milhamj on 14/11/18.
  */
-class SendReportUseCase(private val context: Context): GraphqlUseCase() {
+class SendReportUseCase(val context: Context): GraphqlUseCase() {
 
     override fun createObservable(params: RequestParams?): Observable<GraphqlResponse> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_send_report)
@@ -21,9 +21,7 @@ class SendReportUseCase(private val context: Context): GraphqlUseCase() {
 
         this.clearRequest()
         this.addRequest(request)
-        return super.createObservable(params).map {
-            it.
-        }
+        return super.createObservable(params)
     }
 
     companion object {

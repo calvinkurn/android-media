@@ -8,7 +8,7 @@ import com.tokopedia.kol.feature.report.view.subscriber.ContentReportSubscriber
 /**
  * @author by milhamj on 12/11/18.
  */
-class ContentReportPresenter(private val sendReportUseCase: SendReportUseCase)
+class ContentReportPresenter(val sendReportUseCase: SendReportUseCase)
     : BaseDaggerPresenter<ContentReportContract.View>(), ContentReportContract.Presenter {
 
     override fun detachView() {
