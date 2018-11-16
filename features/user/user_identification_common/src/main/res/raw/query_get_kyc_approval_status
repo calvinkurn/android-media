@@ -1,4 +1,3 @@
-{
   get_approval_status($projectId: Int!) {
     kycStatus(projectID: $projectId) {
       Message
@@ -14,4 +13,4 @@
       }
     }
   }
-}
+
