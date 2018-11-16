@@ -644,6 +644,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             builder.state(TickerCheckoutView.State.EMPTY);
         }
         shipmentAdapter.addPromoVoucherData(builder.build());
+        shipmentAdapter.notifyDataSetChanged();
     }
 
     @Override

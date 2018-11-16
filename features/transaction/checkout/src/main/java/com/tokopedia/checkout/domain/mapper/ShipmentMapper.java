@@ -65,13 +65,18 @@ public class ShipmentMapper implements IShipmentMapper {
 
         if (shipmentAddressFormDataResponse.getAutoApply() != null) {
             AutoApplyData autoApplyData = new AutoApplyData();
-            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoApply().getCode());
+            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoapplyV2().getCode());
             autoApplyData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoApply().getDiscountAmount());
-            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoApply().getIsCoupon());
-            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoApply().getMessageSuccess());
-            autoApplyData.setPromoId(shipmentAddressFormDataResponse.getAutoApply().getPromoId());
+            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoapplyV2().getIsCoupon());
+            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getText());
+            int promoId = 0;
+            if(!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())){
+                Integer.valueOf(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId());
+            }
+            autoApplyData.setPromoId(promoId);
             autoApplyData.setSuccess(shipmentAddressFormDataResponse.getAutoApply().isSuccess());
-            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoApply().getTitleDescription());
+            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoapplyV2().getTitleDescription());
+            autoApplyData.setState(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getState());
             dataResult.setAutoApplyData(autoApplyData);
         }
 
