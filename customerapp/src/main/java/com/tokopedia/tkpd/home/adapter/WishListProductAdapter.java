@@ -228,7 +228,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     private RecyclerView.ViewHolder createTopAds(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_wishlist_empty_state, null);
+                .inflate(R.layout.layout_wishlist_topads, null);
         return new WishListTopAdsViewHolder(view);
     }
 
