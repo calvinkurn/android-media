@@ -313,6 +313,7 @@ public class WishListImpl implements WishList {
         } else {
             dataWishlist.addAll(wishlistData.getWishlistDataList());
             data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
+            wishListView.renderTopAdsCarousel();
         }
         wishListView.displayPull(false);
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
