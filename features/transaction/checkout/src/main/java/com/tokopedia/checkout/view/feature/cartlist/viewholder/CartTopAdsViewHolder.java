@@ -6,13 +6,12 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTopAdsModel;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.XParamsCart;
-import com.tokopedia.topads.sdk.domain.Xparams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -39,14 +38,14 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     }
 
-    public void renderTopAds(UserSession userSession, XParamsCart xparams) {
+    public void renderTopAds(UserSession userSession, CartTopAdsModel model) {
         if (loaded)
             return;
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, "cart");
         params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
         params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(5));
-        params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
+        params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(model));
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))

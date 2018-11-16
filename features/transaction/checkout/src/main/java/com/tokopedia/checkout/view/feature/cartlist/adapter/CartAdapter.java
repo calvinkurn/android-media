@@ -26,8 +26,6 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTopAdsModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.topads.sdk.domain.XParamsCart;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,18 +139,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holderView.bindViewHolder(data);
         } else if (getItemViewType(position) == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
             final CartTopAdsViewHolder holderView = (CartTopAdsViewHolder) holder;
-            final CartShopHolderData data = (CartShopHolderData) cartDataList.get(position);
-            List<XParamsCart.Products> products = new ArrayList<>();
-            for (int i = 0; i < data.getShopGroupData().getCartItemDataList().size(); i++) {
-                CartItemData itemData = data.getShopGroupData().getCartItemDataList().get(i).getCartItemData();
-                XParamsCart.Products p = new XParamsCart.Products();
-                p.setProductId(itemData.getOriginData().getProductId());
-                p.setSourceShopId(itemData.getOriginData().getShopId());
-                products.add(p);
-            }
-            XParamsCart xParamsCart = new XParamsCart();
-            xParamsCart.setProducts(products);
-            holderView.renderTopAds(userSession, xParamsCart);
+            final CartTopAdsModel data = (CartTopAdsModel) cartDataList.get(position);
+            holderView.renderTopAds(userSession, data);
         }
     }
 
@@ -526,8 +514,18 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void addTopAdsSection() {
-        cartDataList.add(new CartTopAdsModel());
+    public void addTopAdsSection(List<ShopGroupData> shopGroupDataList) {
+        CartTopAdsModel model = new CartTopAdsModel();
+        for (int i = 0; i < shopGroupDataList.size(); i++) {
+            for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {
+                CartItemData data = shopGroupDataList.get(i).getCartItemDataList().get(j).getCartItemData();
+                CartTopAdsModel.Products p = new CartTopAdsModel.Products();
+                p.setProductId(data.getOriginData().getProductId());
+                p.setSourceShopId(data.getOriginData().getShopId());
+                model.getProducts().add(p);
+            }
+        }
+        cartDataList.add(model);
     }
 
     public interface ActionListener extends CartAdapterActionListener {

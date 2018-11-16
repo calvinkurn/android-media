@@ -1,40 +1,51 @@
 package com.tokopedia.checkout.view.feature.cartlist.viewmodel;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CartTopAdsModel {
-    int productId;
-    int shopId;
-    String productName;
+    @SerializedName("products")
+    private List<Products> products;
 
     public CartTopAdsModel() {
+        products = new ArrayList<>();
     }
 
-    public CartTopAdsModel(int productId, int shopId, String productName) {
-        this.productId = productId;
-        this.shopId = shopId;
-        this.productName = productName;
+    public List<Products> getProducts() {
+        return products;
     }
 
-    public int getProductId() {
-        return productId;
+    public void setProducts(List<Products> products) {
+        this.products = products;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
+    public static class Products {
+        /**
+         * product_id : 326464243
+         * source_shop_id : 917717
+         */
 
-    public int getShopId() {
-        return shopId;
-    }
+        @SerializedName("product_id")
+        private String productId;
+        @SerializedName("source_shop_id")
+        private String sourceShopId;
 
-    public void setShopId(int shopId) {
-        this.shopId = shopId;
-    }
+        public String getProductId() {
+            return productId;
+        }
 
-    public String getProductName() {
-        return productName;
-    }
+        public void setProductId(String productId) {
+            this.productId = productId;
+        }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+        public String getSourceShopId() {
+            return sourceShopId;
+        }
+
+        public void setSourceShopId(String sourceShopId) {
+            this.sourceShopId = sourceShopId;
+        }
     }
 }
