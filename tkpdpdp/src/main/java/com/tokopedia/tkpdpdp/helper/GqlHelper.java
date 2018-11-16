@@ -48,16 +48,19 @@ public class GqlHelper {
         Map<Integer, ImageReviewGqlResponse.Review> reviewMap = new HashMap<>();
         Map<Integer, ImageReviewGqlResponse.Image> imageMap = new HashMap<>();
 
-        for (ImageReviewGqlResponse.Image image : gqlResponse.getDetail().getImages()) {
+        ImageReviewGqlResponse.ProductReviewImageListQuery reviewImageListQueryResponse
+                = gqlResponse.getProductReviewImageListQuery();
+
+        for (ImageReviewGqlResponse.Image image : reviewImageListQueryResponse.getDetail().getImages()) {
             imageMap.put(image.getImageAttachmentID(), image);
         }
 
-        for (ImageReviewGqlResponse.Review review : gqlResponse.getDetail().getReviews()) {
+        for (ImageReviewGqlResponse.Review review : reviewImageListQueryResponse.getDetail().getReviews()) {
             reviewMap.put(review.getReviewId(), review);
         }
 
         List<ImageReviewItem> imageReviewItems = new ArrayList<>();
-        for (ImageReviewGqlResponse.Item item : gqlResponse.getList()) {
+        for (ImageReviewGqlResponse.Item item : reviewImageListQueryResponse.getList()) {
             ImageReviewGqlResponse.Image image = imageMap.get(item.getImageID());
             ImageReviewGqlResponse.Review review = reviewMap.get(item.getReviewID());
 

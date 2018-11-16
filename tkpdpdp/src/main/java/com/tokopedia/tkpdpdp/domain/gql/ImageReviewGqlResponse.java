@@ -6,49 +6,60 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ImageReviewGqlResponse {
-    @SerializedName("list")
+
+    @SerializedName("ProductReviewImageListQuery")
     @Expose
-    private List<Item> list;
-    @SerializedName("detail")
-    @Expose
-    private Detail detail;
-    @SerializedName("hasNext")
-    @Expose
-    private boolean hasNext;
-    @SerializedName("hasPrev")
-    @Expose
-    private boolean hasPrev;
+    private ProductReviewImageListQuery productReviewImageListQuery;
 
-    public List<Item> getList() {
-        return list;
+    public ProductReviewImageListQuery getProductReviewImageListQuery() {
+        return productReviewImageListQuery;
     }
 
-    public void setList(List<Item> list) {
-        this.list = list;
-    }
+    public static class ProductReviewImageListQuery {
+        @SerializedName("list")
+        @Expose
+        private List<Item> list;
+        @SerializedName("detail")
+        @Expose
+        private Detail detail;
+        @SerializedName("hasNext")
+        @Expose
+        private boolean hasNext;
+        @SerializedName("hasPrev")
+        @Expose
+        private boolean hasPrev;
 
-    public Detail getDetail() {
-        return detail;
-    }
+        public List<Item> getList() {
+            return list;
+        }
 
-    public void setDetail(Detail detail) {
-        this.detail = detail;
-    }
+        public void setList(List<Item> list) {
+            this.list = list;
+        }
 
-    public boolean isHasNext() {
-        return hasNext;
-    }
+        public Detail getDetail() {
+            return detail;
+        }
 
-    public void setHasNext(boolean hasNext) {
-        this.hasNext = hasNext;
-    }
+        public void setDetail(Detail detail) {
+            this.detail = detail;
+        }
 
-    public boolean isHasPrev() {
-        return hasPrev;
-    }
+        public boolean isHasNext() {
+            return hasNext;
+        }
 
-    public void setHasPrev(boolean hasPrev) {
-        this.hasPrev = hasPrev;
+        public void setHasNext(boolean hasNext) {
+            this.hasNext = hasNext;
+        }
+
+        public boolean isHasPrev() {
+            return hasPrev;
+        }
+
+        public void setHasPrev(boolean hasPrev) {
+            this.hasPrev = hasPrev;
+        }
     }
 
     public static class Item {
