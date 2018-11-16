@@ -17,7 +17,7 @@
         android:id="@+id/channel_price_1"
         style="@style/TextView.Micro.Orange"
         android:layout_below="@id/channel_before_disc_price_1"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="@dimen/sp_4"
         android:fontFamily="sans-serif-medium"
         tools:text="Rp 1.399.500" />
 
@@ -54,6 +54,7 @@
         android:paddingTop="@dimen/label_padding_top_bottom"
         android:paddingRight="@dimen/label_padding_left_right"
         android:paddingBottom="@dimen/label_padding_top_bottom"
+        android:textSize="@dimen/dp_10"
         tools:text="50% OFF" />
 
     <TextView
