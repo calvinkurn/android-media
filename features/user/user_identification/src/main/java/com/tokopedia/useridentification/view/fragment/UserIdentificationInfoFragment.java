@@ -1,5 +1,6 @@
 package com.tokopedia.useridentification.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,10 +14,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.useridentification.R;
-import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
-import com.tokopedia.useridentification.view.KYCConstant;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
+import com.tokopedia.useridentification.view.KYCConstant;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
 import javax.inject.Inject;
@@ -26,6 +27,8 @@ import javax.inject.Inject;
  */
 
 public class UserIdentificationInfoFragment extends BaseDaggerFragment implements UserIdentificationInfo.View {
+
+    private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
 
     private ImageView image;
     private TextView title;
@@ -176,7 +179,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserIdentificationFormActivity.getIntent(getContext());
+                Intent intent = UserIdentificationFormActivity.getIntent(getContext());
+                startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
             }
         };
     }
