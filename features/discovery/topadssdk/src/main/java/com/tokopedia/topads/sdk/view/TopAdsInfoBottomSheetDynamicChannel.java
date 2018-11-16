@@ -37,7 +37,7 @@ public class TopAdsInfoBottomSheetDynamicChannel {
         TopAdsInfoBottomSheetDynamicChannel frag = new TopAdsInfoBottomSheetDynamicChannel();
         frag.dialog = new BottomSheetDialog(context);
         frag.dialog.setContentView(R.layout.promoted_info_dialog_dynamic_channel);
-        frag.closeButton = frag.dialog.findViewById(R.id.close_but)promo_image;
+        frag.closeButton = frag.dialog.findViewById(R.id.close_but);
         frag.moreButton = frag.dialog.findViewById(R.id.more);
         frag.promoImage = frag.dialog.findViewById(R.id.promo_image);
         frag.setView(context);
