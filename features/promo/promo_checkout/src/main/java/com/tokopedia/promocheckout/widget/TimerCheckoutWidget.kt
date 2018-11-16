@@ -27,7 +27,7 @@ class TimerCheckoutWidget @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.timer_checkout_widget, this)
-        progressBar.max = COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY.toInt()
+        progressBar.max = 100
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TimerCheckoutWidget)
         styledAttributes.recycle()
     }
