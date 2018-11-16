@@ -12,8 +12,6 @@ import com.tokopedia.home.account.presentation.AccountSetting;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import static com.tokopedia.home.account.AccountConstants.ErrorCodes.ERROR_CODE_NULL_MENU;
-
 /**
  * @author by nisie on 14/11/18.
  */
@@ -57,8 +55,10 @@ public class GetAccountSettingConfigSubscriber extends BaseAccountSubscriber<Gra
         if (accountSettingConfig != null) {
             view.onSuccessGetConfig(accountSettingConfig);
         } else {
-            view.showError(String.format("%s (%s)", context.getString(R.string
-                    .default_request_error_unknown), ERROR_CODE_NULL_MENU));
+            //TODO alvin change this
+//            view.showError(String.format("%s (%s)", context.getString(R.string
+//                    .default_request_error_unknown), ERROR_CODE_NULL_MENU));
+            view.onSuccessGetConfig(accountSettingConfig);
         }
 
     }

@@ -203,10 +203,16 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void onSuccessGetConfig(AccountSettingConfig accountSettingConfig) {
-        personalDataMenu.setVisibility(accountSettingConfig.isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
-        addressMenu.setVisibility(accountSettingConfig.isAddressEnabled() ? View.VISIBLE : View.GONE);
-        passwordMenu.setVisibility(accountSettingConfig.isPasswordEnabled() ? View.VISIBLE : View.GONE);
-        kycMenu.setVisibility(accountSettingConfig.isIdentityEnabled() ? View.VISIBLE : View.GONE);
+        //TODO alvin change this
+//        personalDataMenu.setVisibility(accountSettingConfig.isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
+//        addressMenu.setVisibility(accountSettingConfig.isAddressEnabled() ? View.VISIBLE : View.GONE);
+//        passwordMenu.setVisibility(accountSettingConfig.isPasswordEnabled() ? View.VISIBLE : View.GONE);
+//        kycMenu.setVisibility(accountSettingConfig.isIdentityEnabled() ? View.VISIBLE : View.GONE);
+
+        personalDataMenu.setVisibility(View.VISIBLE);
+        addressMenu.setVisibility(View.VISIBLE);
+        passwordMenu.setVisibility(View.VISIBLE);
+        kycMenu.setVisibility(View.VISIBLE);
     }
 
     @Override
