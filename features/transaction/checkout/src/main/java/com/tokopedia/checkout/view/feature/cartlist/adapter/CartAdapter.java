@@ -26,6 +26,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTopAdsModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.topads.sdk.domain.XParamsCart;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
 
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewType == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS, parent, false);
-            return new CartTopAdsViewHolder(view, userSession);
+            return new CartTopAdsViewHolder(view);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -138,6 +139,20 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final ShipmentSellerCashbackViewHolder holderView = (ShipmentSellerCashbackViewHolder) holder;
             final ShipmentSellerCashbackModel data = (ShipmentSellerCashbackModel) cartDataList.get(position);
             holderView.bindViewHolder(data);
+        } else if (getItemViewType(position) == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
+            final CartTopAdsViewHolder holderView = (CartTopAdsViewHolder) holder;
+            final CartShopHolderData data = (CartShopHolderData) cartDataList.get(position);
+            List<XParamsCart.Products> products = new ArrayList<>();
+            for (int i = 0; i < data.getShopGroupData().getCartItemDataList().size(); i++) {
+                CartItemData itemData = data.getShopGroupData().getCartItemDataList().get(i).getCartItemData();
+                XParamsCart.Products p = new XParamsCart.Products();
+                p.setProductId(itemData.getOriginData().getProductId());
+                p.setSourceShopId(itemData.getOriginData().getShopId());
+                products.add(p);
+            }
+            XParamsCart xParamsCart = new XParamsCart();
+            xParamsCart.setProducts(products);
+            holderView.renderTopAds(userSession, xParamsCart);
         }
     }
 

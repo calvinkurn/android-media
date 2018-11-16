@@ -11,6 +11,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.XParamsCart;
 import com.tokopedia.topads.sdk.domain.Xparams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -30,18 +31,19 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     public static final int TYPE_VIEW_CART_TOPADS = R.layout.layout_cart_topads;
 
     private TopAdsCarouselView topAdsCarouselView;
+    private boolean loaded;
 
-    public CartTopAdsViewHolder(View itemView, UserSession userSession) {
+    public CartTopAdsViewHolder(View itemView) {
         super(itemView);
         topAdsCarouselView = itemView.findViewById(R.id.topads);
 
-        Xparams xparams = new Xparams();
-        xparams.setProduct_id(12007464);
-        xparams.setProduct_name("Original Baterai Samsung Galaxy Mini GT-S5570 1200mAh");
-        xparams.setSource_shop_id(415979);
+    }
 
+    public void renderTopAds(UserSession userSession, XParamsCart xparams) {
+        if (loaded)
+            return;
         TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, "pdp");
+        params.getParam().put(TopAdsParams.KEY_SRC, "cart");
         params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
         params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(5));
         params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
@@ -81,10 +83,12 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     @Override
     public void onTopAdsLoaded(List<Item> list) {
         topAdsCarouselView.setVisibility(View.VISIBLE);
+        loaded = true;
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
         topAdsCarouselView.setVisibility(View.GONE);
+        loaded = false;
     }
 }
