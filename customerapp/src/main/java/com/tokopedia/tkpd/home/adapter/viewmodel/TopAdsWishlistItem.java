@@ -11,9 +11,13 @@ public class TopAdsWishlistItem extends RecyclerViewItem {
 
     private TopAdsModel topAdsModel;
 
+    public TopAdsWishlistItem() {
+        setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
+    }
 
     public TopAdsWishlistItem(TopAdsModel topAdsModel) {
         this.topAdsModel = topAdsModel;
+        setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
     }
 
     public TopAdsModel getTopAdsModel() {
@@ -24,7 +28,4 @@ public class TopAdsWishlistItem extends RecyclerViewItem {
         this.topAdsModel = topAdsModel;
     }
 
-    public TopAdsWishlistItem() {
-        setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
-    }
 }
