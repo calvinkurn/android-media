@@ -61,6 +61,15 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
         }
 
         public void bindData(LinksItemEntity linksItemEntity) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvDynamicText.getLayoutParams();
+            if (getAdapterPosition() == getItemCount() - 1 && getItemCount() % 2 != 0) {
+                layoutParams.setMargins(0, 0, 0, 0);
+                tvDynamicText.setGravity(Gravity.CENTER);
+            } else {
+                layoutParams.setMargins(context.getResources().getDimensionPixelSize(R.dimen.dp_8), 0, 0, 0);
+                tvDynamicText.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+            }
+
             if (URLUtil.isValidUrl(linksItemEntity.getBackgroundURL())) {
                 ImageHandler.loadImage(context, ivBack, linksItemEntity.getBackgroundURL(), R.color.medium_green, R.color.medium_green);
             } else {

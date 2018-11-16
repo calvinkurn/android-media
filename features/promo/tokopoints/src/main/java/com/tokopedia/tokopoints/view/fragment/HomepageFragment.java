@@ -87,6 +87,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     StartPurchaseBottomSheet mStartPurchaseBottomSheet;
     private View tickerContainer;
+    private View dynamicLinksContainer;
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
 
@@ -109,7 +110,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         @Override
         public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
             verticalOffset = Math.abs(verticalOffset);
-            if (verticalOffset >= appBarLayout.getTotalScrollRange() - tickerContainer.getHeight()) {
+            if (verticalOffset >= appBarLayout.getTotalScrollRange() - tickerContainer.getHeight() - dynamicLinksContainer.getHeight()) {
                 slideUp();
             } else {
                 slideDown();
@@ -266,6 +267,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         tickerContainer = view.findViewById(R.id.cons_ticker_container);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
         mRvDynamicLinks = view.findViewById(R.id.rv_dynamic_link);
+        dynamicLinksContainer = view.findViewById(R.id.container_dynamic_links);
     }
 
     private void initListener() {
@@ -781,8 +783,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     public void onSuccessDynamicLink(TokopointsDynamicLinkEntity tokopointsDynamicLinkEntity) {
         int length = tokopointsDynamicLinkEntity.getLinks().size();
         if (getView() != null) {
-            getView().findViewById(R.id.line_separator_dynamic_link).setVisibility(View.VISIBLE);
-            mRvDynamicLinks.setVisibility(View.VISIBLE);
+            dynamicLinksContainer.setVisibility(View.VISIBLE);
         }
         final boolean isEven = (length % 2 == 0);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);

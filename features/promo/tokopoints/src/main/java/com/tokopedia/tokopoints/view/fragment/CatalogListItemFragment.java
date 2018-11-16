@@ -74,11 +74,12 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Inject
     public CatalogListItemPresenter mPresenter;
 
-    public static Fragment newInstance(int categoryId, int subCategoryId) {
+    public static Fragment newInstance(int categoryId, int subCategoryId, boolean isPointsAvailable) {
         Fragment fragment = new CatalogListItemFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(CommonConstant.ARGS_CATEGORY_ID, categoryId);
         bundle.putInt(CommonConstant.ARGS_SUB_CATEGORY_ID, subCategoryId);
+        bundle.putBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, isPointsAvailable);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -92,6 +93,11 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
+        if(getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
+            mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_membership_and_egg));
+        }else{
+            mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
+        }
         mContainer = rootView.findViewById(R.id.container);
         return rootView;
     }
@@ -207,6 +213,13 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         }
 
         return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
+    }
+
+    public boolean getPointsAvailability(){
+        if(getArguments()!=null){
+            return getArguments().getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false);
+        }
+        return false;
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {

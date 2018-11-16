@@ -81,6 +81,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private ConstraintLayout mContainerPointDetail;
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
+    private boolean isPointsAvailable=false;
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CatalogListingFragment();
@@ -99,6 +100,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         initInjector();
         View view = inflater.inflate(R.layout.tp_fragment_catalog_listing, container, false);
         initViews(view);
+        mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         return view;
     }
 
@@ -188,13 +190,16 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl) {
-        mTextPoints.setText(rewardStr);
-        mTextMembershipValueBottom.setText(membership);
+        if (!rewardStr.isEmpty())
+            mTextPoints.setText(rewardStr);
+        if (!membership.isEmpty())
+            mTextMembershipValueBottom.setText(membership);
         mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(rewardValue, false));
-        ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
+        if (!eggUrl.isEmpty())
+            ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
         mContainerPointDetail.setVisibility(View.VISIBLE);
+        isPointsAvailable=true;
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
-        mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
     }
 
     @Override
@@ -212,11 +217,13 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 || filters.getCategories().isEmpty()) {
             //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.postDelayed(() -> refreshTab(0, 0), CommonConstant.TAB_SETUP_DELAY_MS);
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
                 && (filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
             mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
             mTabSortType.setVisibility(View.GONE);
@@ -231,6 +238,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mTabSortType.setVisibility(View.VISIBLE);
             updateToolbarTitle(filters.getCategories().get(0).getName());
             mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getSubCategory());
+            mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
             mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

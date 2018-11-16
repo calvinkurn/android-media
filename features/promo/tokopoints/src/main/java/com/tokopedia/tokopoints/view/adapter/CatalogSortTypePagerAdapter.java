@@ -15,6 +15,7 @@ import java.util.List;
 
 public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
 
+    private boolean isPointsAvailable;
     private List<CatalogSubCategory> mItems;
     private SparseArray<Fragment> mrRegisteredFragments = new SparseArray<>();
 
@@ -28,10 +29,14 @@ public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    public void setPointsAvailable(boolean isPointsAvailable){
+        this.isPointsAvailable=isPointsAvailable;
+    }
+
     @Override
     public Fragment getItem(int position) {
         return CatalogListItemFragment.newInstance(mItems.get(position).getParentID(),
-                mItems.get(position).getId());
+                mItems.get(position).getId(), isPointsAvailable);
     }
 
     @Override
