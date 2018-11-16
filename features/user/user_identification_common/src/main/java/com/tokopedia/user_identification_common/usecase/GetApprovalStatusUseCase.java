@@ -29,7 +29,7 @@ public class GetApprovalStatusUseCase {
     private final GraphqlUseCase graphqlUseCase;
 
     @Inject
-    public GetApprovalStatusUseCase(@ApplicationContext Context context,
+    public GetApprovalStatusUseCase(Context context,
                                     GraphqlUseCase graphqlUseCase) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
