@@ -315,7 +315,7 @@ public class WishListImpl implements WishList {
 
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
-//        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
+        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
         mPaging.setPagination(wishlistData.getPagination());
 
         if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
@@ -461,7 +461,7 @@ public class WishListImpl implements WishList {
                     data.clear();
                     dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                     data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
-//                    data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
+                    data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
                     mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                     wishListView.loadDataChange();
                     wishListView.displayContentList(true);
@@ -475,7 +475,7 @@ public class WishListImpl implements WishList {
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
                     } else {
-//                        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
+                        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
                     }
                 } else {
                     setData();
@@ -593,7 +593,7 @@ public class WishListImpl implements WishList {
 
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
-//                data.add(new TopAsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
+                data.add(new TopAsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                 if (gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
                     wishListView.displayLoadMore(true);
