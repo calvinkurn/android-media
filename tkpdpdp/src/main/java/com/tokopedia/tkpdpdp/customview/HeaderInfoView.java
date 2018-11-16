@@ -46,6 +46,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
 
+    public static final long ONE_SECOND = 1000L;
     private TextView tvName;
     private TextView cashbackTextView;
     private TextView tvPriceFinal;
@@ -227,7 +228,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
 
             //*1000 to convert serverTime to millisecond since serverTime is unix
-            long serverTimeMillisecond = data.getServerTimeUnix() * 1000L;
+            long serverTimeMillisecond = data.getServerTimeUnix() * ONE_SECOND;
             long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
 
             if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
