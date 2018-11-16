@@ -33,8 +33,12 @@ public class GraphqlCacheDataStore implements GraphqlDataStore {
     @Override
     public Observable<GraphqlResponseInternal> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
         return Observable.fromCallable(() -> {
+            try {
                 String rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(requests.toString(), cacheStrategy.isSessionIncluded()));
                 return new GraphqlResponseInternal(new JsonParser().parse(rawJson).getAsJsonArray(), true);
+            } catch (Exception e){
+                return null;
+            }
         });
     }
 }

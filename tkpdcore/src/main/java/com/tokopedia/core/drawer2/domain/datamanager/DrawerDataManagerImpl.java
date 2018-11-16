@@ -60,6 +60,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     @Override
     public void unsubscribe() {
         tokoCashUseCase.unsubscribe();
+        getSellerStatusUseCase.unsubscribe();
     }
 
 
@@ -159,7 +160,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
             public void onCompleted() { }
 
             @Override
-            public void onError(Throwable e) { }
+            public void onError(Throwable e) {
+                e.printStackTrace(); }
 
             @Override
             public void onNext(Boolean isEligible) {

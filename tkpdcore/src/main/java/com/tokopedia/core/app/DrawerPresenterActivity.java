@@ -218,9 +218,9 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             if (!GlobalConfig.isSellerApp()) {
                 getTokoPointData();
                 getDrawerUserAttrUseCase(sessionHandler);
-                drawerDataManager.getFlashsaleSellerStatus(sessionHandler.getShopID());
             } else {
                 getDrawerSellerAttrUseCase(sessionHandler);
+                drawerDataManager.getFlashsaleSellerStatus(sessionHandler.getShopID());
             }
         }
     }
