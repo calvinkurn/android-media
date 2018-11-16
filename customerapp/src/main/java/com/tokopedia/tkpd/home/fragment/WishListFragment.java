@@ -517,11 +517,12 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(adapter.getItemViewType(position) == TkpdState.RecyclerViewItem.TYPE_LIST
+                if (position == wishList.getData().size()) {
+                    return 2;
+                } else if(position % 5 == 0 && adapter.getItemViewType(position) == TkpdState.RecyclerViewItem.TYPE_LIST
                         || adapter.getItemViewType(position) == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
                         || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_EMPTY_STATE
                         || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST) {
-                    // top ads span column
                     return 2;
                 } else {
                     return 1;
