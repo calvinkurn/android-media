@@ -363,22 +363,21 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
-
-        if (position >= 0 && (!isLastItemPosition(position) || position < data.size())) {
+        if (isLastItemPosition(position) || data.size() == 0) {
+            return super.getItemViewType(position);
+        } else if (data.get(position) instanceof ProductItem) {
             ProductItem product = (ProductItem) data.get(position);
             if (product.getIsWishlist()) {
                 return TkpdState.RecyclerView.VIEW_WISHLIST;
             } else {
                 return TkpdState.RecyclerView.VIEW_PRODUCT;
             }
-        } else if (isRightMostProduct(position)) {
+        }  else if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
         } else if (data.get(position) instanceof EmptySearchItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
         } else if (data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_STATE;
-        } else if (data.get(position) instanceof EmptyStateItem) {
-            return TkpdState.RecyclerView.VIEW_TOP_ADS;
         } else if (data.get(position) instanceof TopAdsWishlistItem) {
             return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
         } else {
