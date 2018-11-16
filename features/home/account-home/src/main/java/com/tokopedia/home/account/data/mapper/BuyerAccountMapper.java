@@ -21,7 +21,6 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
-import com.tokopedia.navigation_common.model.NotificationBuyerOrderModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,10 +180,10 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
         menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
 
-        if(accountModel.getNotifications() != null &&
-                accountModel.getNotifications().getBuyerOrder() != null) {
-            menuGrid.setItems(getBuyerOrderMenu(accountModel.getNotifications().getBuyerOrder()));
-        }
+        menuGrid.setItems(getBuyerOrderMenu(
+            accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
+            accountModel
+        ));
         items.add(menuGrid);
 
 
@@ -307,13 +306,13 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         return buyerCardViewModel;
     }
 
-    private List<MenuGridItemViewModel> getBuyerOrderMenu(NotificationBuyerOrderModel buyerOrder) {
+    private List<MenuGridItemViewModel> getBuyerOrderMenu(Boolean isNotNull, AccountModel accountModel) {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_waiting_for_confirmation,
                 context.getString(R.string.label_menu_waiting_confirmation),
                 ApplinkConst.PURCHASE_CONFIRMED,
-                buyerOrder.getConfirmed(),
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getConfirmed() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction));
         menuGridItems.add(gridItem);
@@ -322,7 +321,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 R.drawable.ic_order_processed,
                 context.getString(R.string.label_menu_order_processed),
                 ApplinkConst.PURCHASE_PROCESSED,
-                buyerOrder.getProcessed(),
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getProcessed() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)
         );
@@ -332,7 +331,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipping),
                 ApplinkConst.PURCHASE_SHIPPED,
-                buyerOrder.getShipped(),
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getShipped() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)
         );
@@ -342,7 +341,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_delivered),
                 ApplinkConst.PURCHASE_DELIVERED,
-                buyerOrder.getArriveAtDestination(),
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getArriveAtDestination() : 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)
         );

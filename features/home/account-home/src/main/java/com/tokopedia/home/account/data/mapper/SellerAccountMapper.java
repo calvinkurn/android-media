@@ -78,10 +78,11 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuGrid.setTitleTrack(PENJUAL);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_sales));
 
-        if(accountModel.getNotifications() != null
-                && accountModel.getNotifications().getSellerOrder() != null) {
-            menuGrid.setItems(getSellerOrderMenu(accountModel.getNotifications().getSellerOrder()));
-        }
+
+        menuGrid.setItems(getSellerOrderMenu(
+                accountModel.getNotifications() != null && accountModel.getNotifications().getSellerOrder() != null,
+                accountModel
+        ));
         items.add(menuGrid);
 
         items.add(getSellerResolutionMenu(accountModel));
@@ -200,13 +201,13 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return shopCard;
     }
 
-    private List<MenuGridItemViewModel> getSellerOrderMenu(NotificationSellerOrderModel sellerOrder) {
+    private List<MenuGridItemViewModel> getSellerOrderMenu(Boolean isNotNull, AccountModel accountModel) {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_new_order,
                 context.getString(R.string.label_menu_new_order),
                 ApplinkConst.SELLER_NEW_ORDER,
-                sellerOrder.getNewOrder(),
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getNewOrder() : 0,
                 PENJUAL,
                 context.getString(R.string.title_menu_sales)
         );
@@ -216,7 +217,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 R.drawable.ic_ready_to_ship,
                 context.getString(R.string.label_menu_ready_to_ship),
                 ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP,
-                sellerOrder.getReadyToShip(),
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getReadyToShip() : 0,
                 PENJUAL,
                 context.getString(R.string.title_menu_sales)
         );
@@ -226,7 +227,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 R.drawable.ic_shipped,
                 context.getString(R.string.label_menu_shipped),
                 ApplinkConst.SELLER_PURCHASE_SHIPPED,
-                sellerOrder.getShipped(),
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getShipped() : 0,
                 PENJUAL,
                 context.getString(R.string.title_menu_sales)
         );
@@ -236,7 +237,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 R.drawable.ic_delivered,
                 context.getString(R.string.label_menu_arrive_at_destination),
                 ApplinkConst.SELLER_PURCHASE_DELIVERED,
-                sellerOrder.getArriveAtDestination(),
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getArriveAtDestination() : 0,
                 PENJUAL,
                 context.getString(R.string.title_menu_sales)
         );
