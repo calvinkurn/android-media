@@ -57,7 +57,7 @@ public abstract class LoginCommonSubscriber<T> extends Subscriber<T> {
                     if (!TextUtils.isEmpty(e.getMessage())
                             && errorMessage.contains(context.getString(R.string
                             .default_request_error_unknown))) {
-                        router.logUnknownError(e.getMessage());
+                        router.logUnknownError(e);
                     }
                 }
             }, e, context);

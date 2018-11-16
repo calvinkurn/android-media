@@ -35,5 +35,7 @@ public interface ChallengesBaseContract {
         void getOpenChallenges();
 
         void getPastChallenges();
+
+        void onDestroy();
     }
 }

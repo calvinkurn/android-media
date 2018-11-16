@@ -39,7 +39,7 @@ public class RequestOtpSubscriber extends Subscriber<RequestOtpViewModel> {
 
             if (!TextUtils.isEmpty(e.getMessage())
                     && errorMessage.contains(view.getContext().getString(R.string.default_request_error_unknown))) {
-                view.logError(RequestOtpSubscriber.class.getSimpleName(), e.getMessage());
+                view.logUnknownError(e);
             }
         }
     }

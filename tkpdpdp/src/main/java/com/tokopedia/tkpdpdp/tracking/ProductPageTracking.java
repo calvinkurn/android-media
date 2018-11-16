@@ -74,6 +74,10 @@ public class ProductPageTracking {
     public static final String EMPTY_LABEL = "";
     public static final String ACTION_CLICK_WISHLIST = "click wishlist";
 
+    public static final String CLICK_BY_ME = "click - by.me";
+
+    public static final String LABEL_CLICK_BY_ME = "%s - %s";
+
     private static String joinDash(String... s) {
         return TextUtils.join(" - ", s);
     }
@@ -437,15 +441,19 @@ public class ProductPageTracking {
         }
     }
 
-    public static void eventClickAffiliate(Context context, String userId) {
+    public static void eventClickAffiliate(Context context,
+                                           String userId,
+                                           String shopId,
+                                           String productId) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         Map<String,Object> eventTracking = new HashMap<>();
-        eventTracking.put("event", EVENT_CLICK_AFFILIATE);
-        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
-        eventTracking.put("eventAction", ACTION_CLICK_TAMBAH_BY_ME);
-        eventTracking.put("eventLabel", EMPTY_LABEL);
+        eventTracking.put("event", CLICK_PDP);
+        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE);
+        eventTracking.put("eventAction", CLICK_BY_ME);
+        eventTracking.put("eventLabel",
+                String.format(LABEL_CLICK_BY_ME, shopId, productId));
         eventTracking.put(USER_ID, userId);
 
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
