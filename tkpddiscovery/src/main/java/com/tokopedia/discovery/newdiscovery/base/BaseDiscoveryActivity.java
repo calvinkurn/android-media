@@ -156,8 +156,8 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleResponseIntermediary(String departmentId) {
-        IntermediaryActivity.moveTo(this, departmentId, isPausing());
+    public void onHandleResponseIntermediary(String departmentId, String query) {
+        IntermediaryActivity.moveTo(this, departmentId, query, isPausing());
         overridePendingTransition(0, 0);
         finish();
     }

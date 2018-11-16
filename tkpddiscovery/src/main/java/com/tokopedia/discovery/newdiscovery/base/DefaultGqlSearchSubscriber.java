@@ -79,7 +79,8 @@ public class DefaultGqlSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     }
 
     protected void onHandleIntermediary(SearchProductGqlResponse gqlResponse) {
-        discoveryView.onHandleResponseIntermediary(gqlResponse.getSearchProduct().getRedirection().getDepartmentId());
+        discoveryView.onHandleResponseIntermediary(gqlResponse.getSearchProduct().getRedirection().getDepartmentId(),
+                gqlResponse.getSearchProduct().getQuery());
     }
 
     protected void onHandleCatalog(SearchProductGqlResponse gqlResponse) {

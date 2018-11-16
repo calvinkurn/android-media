@@ -53,6 +53,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle newBundle = new Bundle();
         newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
+        newBundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, bundle.getString(BrowseProductRouter.EXTRAS_SEARCH_TERM));
         try {
             newBundle.putString(
                     EXTRA_TRACKER_ATTRIBUTION,
@@ -101,13 +102,14 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         context.startActivity(intent);
     }
 
-    public static void moveTo(Context context, String depId, boolean isActivityPaused) {
+    public static void moveTo(Context context, String depId, String query, boolean isActivityPaused) {
         if (context == null)
             return;
 
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, query);
         bundle.putBoolean(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
         intent.putExtras(bundle);
         context.startActivity(intent);
