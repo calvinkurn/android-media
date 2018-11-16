@@ -431,11 +431,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     @Override
-    public void setlikeInvisiblity() {
-        likeBtn.setVisibility(View.GONE);
-    }
-
-    @Override
     public void setResubmitInvisible() {
         btnSubmit.setVisibility(View.GONE);
     }
@@ -482,5 +477,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
         dialog.setOnCancelClickListener(v -> dialog.dismiss());
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroy();
+        super.onDestroyView();
     }
 }
