@@ -593,7 +593,7 @@ public class WishListImpl implements WishList {
 
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
-                data.add(new TopAsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
+                data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                 if (gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
                     wishListView.displayLoadMore(true);
