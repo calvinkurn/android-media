@@ -59,6 +59,6 @@ public class UserIdentificationInfoPresenter extends BaseDaggerPresenter<UserIde
 //            }
 //        });
 
-        getView().onSuccessGetInfo(0);
+        getView().onSuccessGetInfo(3);
     }
 }
