@@ -371,11 +371,11 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 }
             }
         }
-        if (data.get(position) instanceof TopAdsWishlistItem) {
-            return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
-        }
         if (isLastItemPosition(position) || data.size() == 0) {
             return super.getItemViewType(position);
+        }
+        if (data.get(position) instanceof TopAdsWishlistItem) {
+            return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
         }
         if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
