@@ -588,8 +588,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         break;
                     case KYCConstant.STATUS_PENDING:
                         verificationWarningTickerView.setDescriptionWithLink(
-                                getString(R.string.alert_failed_verification_text),
-                                getString(R.string.alert_failed_verification_highlight_text),
+                                getString(R.string.alert_waiting_verification_text),
+                                getString(R.string.alert_waiting_verification_highlight_text),
                                 () -> {
                                     if (getActivity() != null
                                             && getActivity().getApplicationContext() instanceof ApplinkRouter) {
@@ -602,17 +602,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         SpannableString tickerMessage = verificationWarningTickerView
                                 .getSpannableText(getString(R.string.ticker_unverified),
                                         getString(R.string.ticker_unverified_highlight_text),
-                                        new VerificationWarningTickerView.LinkClickListener() {
-                                            @Override
-                                            public void onClickLink() {
-                                                ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-                                                applinkRouter.goToApplinkActivity(getActivity(),
-                                                        String.format("%s?url=%s", ApplinkConst
-                                                                .WEBVIEW, KycCommonUrl
-                                                                .TERMS_CONDITION));
-                                            }
+                                        () -> {
+                                            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
+                                            applinkRouter.goToApplinkActivity(getActivity(),
+                                                    String.format("%s?url=%s", ApplinkConst
+                                                            .WEBVIEW, KycCommonUrl
+                                                            .TERMS_CONDITION));
                                         });
-                        tickerView.addMessage(tickerMessage);
+                        tickerView.addMessage(tickerMessage.toString());
                         verificationWarningTickerView.setDescriptionWithLink(
                                 getString(R.string.alert_not_verified_text),
                                 getString(R.string.alert_not_verified_highlight_text),
