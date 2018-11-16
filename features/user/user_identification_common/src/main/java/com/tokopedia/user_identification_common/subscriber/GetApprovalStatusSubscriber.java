@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo;
 import com.tokopedia.user_identification_common.R;
-
 import rx.Subscriber;
 
 /**

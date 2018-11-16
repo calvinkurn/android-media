@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo;
 import com.tokopedia.user_identification_common.R;
+import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo;
 
 import java.util.HashMap;
 import java.util.Map;
