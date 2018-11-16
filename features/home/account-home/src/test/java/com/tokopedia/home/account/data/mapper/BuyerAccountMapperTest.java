@@ -30,7 +30,7 @@ public class BuyerAccountMapperTest {
     }
 
     @Test
-    public void call_NullModel_ThrowNullPointer1() {
+    public void call_NormalCase() {
         //given
         AccountModel accountModel = Mockito.mock(AccountModel.class);
 
@@ -42,37 +42,4 @@ public class BuyerAccountMapperTest {
         //then
         as.assertError(NullPointerException.class);
     }
-
-//    public AccountModel mockCompleteAccountModel() {
-//        AccountModel accountModel = new AccountModel();
-//
-//        NotificationsModel notificationsModel = new NotificationsModel();
-//        NotificationResolutionModel notificationResolutionModel = new NotificationResolutionModel();
-//        notificationResolutionModel.setBuyer(1);
-//        notificationsModel.setResolution(notificationResolutionModel);
-//        NotificationBuyerOrderModel buyerOrder = new NotificationBuyerOrderModel();
-//        buyerOrder.setArriveAtDestination(1);
-//        buyerOrder.setConfirmed(1);
-//        buyerOrder.setPaymentStatus("1");
-//        buyerOrder.setProcessed(1);
-//        buyerOrder.setShipped(1);
-//        notificationsModel.setBuyerOrder(buyerOrder);
-//        accountModel.setNotifications(notificationsModel);
-//
-//        LePreapproveModel lePreapproveModel = new LePreapproveModel();
-//        accountModel.setLePreapprove(lePreapproveModel);
-//
-//        accountModel.setWallet(walletModel);
-//        accountModel.setTokopointsSumCoupon();
-//        accountModel.setTokopoints();
-//        accountModel.setProfile();
-//        accountModel.setIsAuthenticated();
-//        accountModel.setDeposit();
-//        accountModel.setPendingCashbackModel();
-//        accountModel.setReputationShops();
-//        accountModel.setVccUserBalance();
-//        accountModel.setVccUserStatus();
-//
-//        return accountModel;
-//    }
 }
