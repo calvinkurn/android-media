@@ -25,6 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
+import com.tokopedia.district_recommendation.di.DistrictRecommendationModule;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.Token;
@@ -113,10 +114,9 @@ public class DistrictRecommendationFragment
     }
 
     private void initializeInjector() {
-        AppComponent component = ((DistrictRecommendationActivity) getActivity()).getApplicationComponent();
         DistrictRecommendationComponent districtRecommendationComponent =
                 DaggerDistrictRecommendationComponent.builder()
-                        .appComponent(component)
+                        .districtRecommendationModule(new DistrictRecommendationModule())
                         .build();
         districtRecommendationComponent.inject(this);
     }

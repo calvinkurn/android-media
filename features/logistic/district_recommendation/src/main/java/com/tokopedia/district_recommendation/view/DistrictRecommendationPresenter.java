@@ -3,13 +3,13 @@ package com.tokopedia.district_recommendation.view;
 import android.text.TextUtils;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.AddressResponse;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
+import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
