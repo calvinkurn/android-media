@@ -33,6 +33,8 @@ public interface SaldoDetailContract {
 
         void showErrorMessage(String s);
 
+        void showInvalidDateError(String s);
+
         String getString(int resId);
 
         void removeError();

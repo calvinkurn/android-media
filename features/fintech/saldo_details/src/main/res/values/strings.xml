@@ -34,4 +34,8 @@
     <string name="sp_goto_home">Belanja</string>
     <string name="sp_empty_state_error">Terjadi Kesalahan, Mohon ulangi beberapa saat lagi</string>
     <string name="sp_cancel">Tutup</string>
+    <string name="sp_title_max_day">Pemilihan tanggal mutasi transaksi maksimal 31 hari</string>
+    <string name="sp_end_date">Tanggal Akhir</string>
+    <string name="sp_start_date">Tanggal Awal</string>
+    <string name="sp_transaction_history_heading">Pilih Tanggal Riwayat Saldo</string>
 </resources>

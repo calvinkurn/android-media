@@ -134,10 +134,10 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void onSearchClicked() {
-        getView().getAdapter().clearAllElements();
+
         paramStartDate = getView().getStartDate();
         paramEndDate = getView().getEndDate();
-        paging.resetPage();
+
         getSummaryDeposit();
     }
 
@@ -227,8 +227,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
                 getView().setBalance(usableSaldoBalanceResponse.getSaldo().getFormattedAmount());
                 if ((holdSaldoBalanceResponse.getSaldo().getDeposit() > 0)) {
-
-                    Toast.makeText(getView().getContext(), "Hold Warning", Toast.LENGTH_LONG).show();
                     getView().showHoldWarning(holdSaldoBalanceResponse.getSaldo().getFormattedAmount());
                 } else {
                     getView().hideWarning();
@@ -243,6 +241,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void getSummaryDeposit() {
         getView().removeError();
         if (isValid()) {
+            getView().getAdapter().clearAllElements();
+            paging.resetPage();
             showLoading();
             getView().setActionsEnabled(false);
 
@@ -379,19 +379,18 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         try {
             Date endDate = sdf.parse(paramEndDate);
             Date startDate = sdf.parse(paramStartDate);
-            CommonUtils.dumper("NISIE " + endDate.getTime() + " - " + startDate.getTime());
             if (endDate.getTime() - startDate.getTime() < 0) {
                 isValid = false;
-                getView().showErrorMessage(getView().getString(R.string.error_invalid_date));
+                getView().showInvalidDateError(getView().getString(R.string.error_invalid_date));
             }
 
             if ((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000) > 31) {
                 isValid = false;
-                getView().showErrorMessage(getView().getString(R.string.title_max_day));
+                getView().showInvalidDateError(getView().getString(R.string.sp_title_max_day));
             }
         } catch (ParseException e) {
             isValid = false;
-            getView().showErrorMessage(getView().getString(R.string.error_invalid_date));
+            getView().showInvalidDateError(getView().getString(R.string.error_invalid_date));
         }
         return isValid;
     }

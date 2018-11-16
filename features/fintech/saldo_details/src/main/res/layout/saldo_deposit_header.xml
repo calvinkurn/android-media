@@ -120,49 +120,18 @@
 
     </android.support.v7.widget.CardView>
 
-
-    <!-- <TextView
-         android:id="@+id/topup_button"
-         android:layout_width="@dimen/dp_160"
-         android:layout_height="wrap_content"
-         android:layout_alignParentEnd="true"
-         android:layout_alignParentRight="true"
-         android:layout_below="@id/withdraw_button"
-         android:layout_marginTop="@dimen/dp_16"
-         android:background="@drawable/button_buy_from_cart"
-         android:drawableStart="@drawable/ic_add"
-         android:drawableLeft="@drawable/ic_add"
-         android:gravity="center"
-         android:paddingBottom="@dimen/dp_10"
-         android:paddingEnd="@dimen/dp_16"
-         android:paddingStart="@dimen/dp_16"
-         android:paddingTop="@dimen/dp_10"
-         android:text="@string/sp_topup_saldo"
-         android:textColor="@color/white"
-         android:textSize="@dimen/sp_14"
-         android:textStyle="bold"
-         android:visibility="gone" />-->
-
     <FrameLayout
         android:id="@+id/saldo_prioritas_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/withdraw_layout"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginStart="@dimen/dp_1"
+        android:layout_marginLeft="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_2"
-        android:layout_marginRight="@dimen/dp_2"
+        android:layout_marginEnd="@dimen/dp_1"
+        android:layout_marginRight="@dimen/dp_1"
         android:layout_marginBottom="@dimen/dp_8" />
 
-    <!--<View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@id/review_warning_layout"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:background="@color/greyish_bg" />-->
 
     <android.support.v7.widget.CardView
         android:id="@+id/filter_layout"
@@ -189,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="4sp"
-                android:text="Pilih Tanggal Riwayat Saldo"
+                android:text="@string/sp_transaction_history_heading"
                 android:textColor="@color/black_56"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
@@ -198,6 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
+                android:baselineAligned="false"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -213,7 +183,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="6sp"
-                        android:text="Tanggal Awal"
+                        android:text="@string/sp_start_date"
                         android:textColor="@color/font_black_disabled_38"
                         android:textSize="@dimen/sp_10"
                         android:textStyle="normal" />
@@ -236,7 +206,6 @@
                             android:foregroundGravity="center_vertical"
                             android:gravity="end|center_vertical"
                             android:lineSpacingExtra="@dimen/sp_10"
-                            android:text="01 Jan 2018"
                             android:textColor="@color/green_nob"
                             android:textSize="@dimen/sp_14"
                             android:textStyle="normal" />
@@ -251,13 +220,6 @@
 
                 </RelativeLayout>
 
-                <!--<View
-                    android:padding="@dimen/dp_4"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:layout_width="12dp"
-                    android:layout_height="0.5dp"
-                    android:background="@color/greyish_bg" />-->
-
                 <RelativeLayout
                     android:id="@+id/end_date_layout"
                     android:layout_width="0dp"
@@ -270,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="6sp"
-                        android:text="Tanggal Akhir"
+                        android:text="@string/sp_end_date"
                         android:textColor="@color/font_black_disabled_38"
                         android:textSize="@dimen/sp_10"
                         android:textStyle="normal" />
@@ -293,7 +255,6 @@
                             android:foregroundGravity="center_vertical"
                             android:gravity="end|center_vertical"
                             android:lineSpacingExtra="@dimen/sp_10"
-                            android:text="01 Jan 2018"
                             android:textColor="@color/green_nob"
                             android:textSize="@dimen/sp_14"
                             android:textStyle="normal" />
@@ -303,61 +264,9 @@
                             android:layout_height="0.5dp"
                             android:layout_marginTop="@dimen/dp_8"
                             android:background="@color/black_24" />
-
                     </LinearLayout>
-
-
                 </RelativeLayout>
-
-
             </LinearLayout>
-
-            <!--<EditText
-                android:id="@+id/start_date"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_weight=".50"
-                android:background="@drawable/btn_cancel"
-                android:focusable="false"
-                android:gravity="center"
-                android:inputType="date"
-                android:text="Start Date"
-                android:textSize="@dimen/sp_14" />
-
-            <EditText
-                android:id="@+id/end_date"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_weight=".50"
-                android:background="@drawable/btn_cancel"
-                android:focusable="false"
-                android:gravity="center"
-                android:inputType="date"
-                android:text="End Date"
-                android:textSize="@dimen/sp_14" />
-
-            <com.tokopedia.design.component.ButtonCompat
-                android:id="@+id/search_button"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/dp_30"
-                android:layout_gravity="center"
-                android:layout_weight=".50"
-                android:background="@drawable/btn_shop"
-                android:gravity="center"
-                android:padding="@dimen/dp_5"
-                android:text="@string/sp_prompt_search"
-                android:textAllCaps="false"
-                android:textColor="@color/sp_label_color"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                app:buttonCompatSize="medium"
-                app:buttonCompatType="primary" />-->
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-
 </RelativeLayout>

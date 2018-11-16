@@ -359,6 +359,11 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
+    public void showInvalidDateError(String errorMessage) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
     public void showHoldWarning(String text) {
         holdBalanceLayout.setVisibility(View.VISIBLE);
         amountBeingReviewed.setText(String.format(getResources().getString(R.string.saldo_hold_balance_text), text));
