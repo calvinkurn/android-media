@@ -4,7 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
-
+    <View
+        android:id="@+id/view_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        android:layout_above="@+id/btn_cta"
+        android:background="@drawable/shadow_background" />
     <TextView
         android:id="@+id/btn_cta"
         android:layout_width="match_parent"
@@ -54,7 +59,7 @@
         android:id="@+id/sc_header_layout_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btn_cta"
+        android:layout_above="@+id/view_shadow"
         android:layout_below="@+id/ll_header">
 
         <LinearLayout
