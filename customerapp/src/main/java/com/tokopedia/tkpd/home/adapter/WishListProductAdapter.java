@@ -169,7 +169,6 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             super(itemView);
             topAdsCarouselView = itemView.findViewById(R.id.topads);
             userSession = new UserSession(itemView.getContext());
-            renderTopAds();
         }
 
         private void renderTopAds(){
@@ -360,6 +359,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
+                break;
+            case TkpdState.RecyclerView.VIEW_TOP_ADS:
+                ((WishListTopAdsViewHolder) viewHolder).renderTopAds();
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
