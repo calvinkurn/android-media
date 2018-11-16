@@ -80,7 +80,6 @@ import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
-import com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpdpdp.ProductDetailUrl;
@@ -157,33 +156,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         InstabugInitalize.init(this);
-
-        Intent intent =new Intent(this,TkpdYoutubeVideoActivity.class);
-        Bundle bundle =new Bundle();
-        bundle.putString("video_url","BQC8U6jqiqI");
-        bundle.putString("video_cta","Button");
-        bundle.putString("video_title","The title of the video will be placed here with maximum of 2 lines");
-        bundle.putString("video_desc_head","Video title");
-        bundle.putString("video_desc","It’s the description line of the video. I think we can define the maximum line of the description to maximum of 5 lines for each landing page like this. I think it’s enough to describe the content of this page since the content will heavily on the video itself.");
-        bundle.putString("video_land","tokopedia://referral");
-        bundle.putString("banner"," [{\n" +
-                "  \"name\":\"name\",\n" +
-                "  \"link\":\"tokopedia://referral\",\n" +
-                "  \"img\":\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1qBF4o1PZtsjljckvWjZXdY5R26d2-qZ_QLEDNywf-rz9uN1qPA\"\n" +
-                "},\n" +
-                "{\n" +
-                "  \"name\":\"name2\",\n" +
-                "  \"link\":\"tokopedia://referral\",\n" +
-                "  \"img\":\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1qBF4o1PZtsjljckvWjZXdY5R26d2-qZ_QLEDNywf-rz9uN1qPA\"\n" +
-                "},\n" +
-                "{\n" +
-                "  \"name\":\"name3\",\n" +
-                "  \"link\":\"tokopedia://referral\",\n" +
-                "  \"img\":\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1qBF4o1PZtsjljckvWjZXdY5R26d2-qZ_QLEDNywf-rz9uN1qPA\"\n" +
-                "}\n" +
-                "  ]");
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     private void createCustomSoundNotificationChannel() {
