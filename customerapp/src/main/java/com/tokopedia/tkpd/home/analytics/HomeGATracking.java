@@ -31,7 +31,7 @@ public class HomeGATracking extends UnifyTracking {
     }
 
     public static void eventClickVideoBannerImpression(String label) {
-        sendGTMEvent(new EventTracking(EVENT_VIDEO_GENERAL_EVENT,
+        sendGTMEvent(new EventTracking(EVENT_VIDEO_VIEW,
                 CATEGORY_VIDEO_PUSH,
                 ACTION_VIEW_BNANNER_BUTTON,
                 label)
@@ -41,7 +41,7 @@ public class HomeGATracking extends UnifyTracking {
     public static void eventClickVideoBannerClick(String label) {
         sendGTMEvent(new EventTracking(EVENT_VIDEO_GENERAL_EVENT,
                 CATEGORY_VIDEO_PUSH,
-                ACTION_VIEW_BNANNER_BUTTON,
+                ACTION_CLICK_BNANNER_BUTTON,
                 label)
                 .getEvent());
     }

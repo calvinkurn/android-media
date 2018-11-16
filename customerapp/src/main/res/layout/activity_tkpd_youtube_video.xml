@@ -4,37 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
-    <View
+
+    <android.support.v7.widget.CardView
         android:id="@+id/view_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_above="@+id/btn_cta"
-        android:background="@drawable/shadow_background" />
-    <TextView
-        android:id="@+id/btn_cta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:layout_margin="@dimen/margin_sm"
-        android:background="@color/green_buy"
-        android:elevation="@dimen/dp_8"
-        android:gravity="center"
-        android:padding="@dimen/padding_small"
-        android:text="@string/cta_here"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_large" />
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="@dimen/dp_8">
+        <TextView
+            android:id="@+id/btn_cta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/margin_sm"
+            android:background="@color/green_buy"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            android:text="@string/cta_here"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_large" />
+    </android.support.v7.widget.CardView>
+
 
     <LinearLayout
         android:id="@+id/ll_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_small"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_vs">
+        android:paddingLeft="@dimen/dp_12">
 
         <ImageView
             android:id="@+id/img_cross"
@@ -60,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/view_shadow"
+        android:layout_marginBottom="@dimen/dp_5"
         android:layout_below="@+id/ll_header">
 
         <LinearLayout

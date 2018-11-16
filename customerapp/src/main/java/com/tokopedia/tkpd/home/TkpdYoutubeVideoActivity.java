@@ -172,6 +172,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             adapter = new SlidingImageBannerAdapter(TkpdYoutubeVideoActivity.this, bannerModeList, tvHeadTitle.getText().toString());
             viewPager.setAdapter(adapter);
             circlePageIndicator.setViewPager(viewPager);
+            HomeGATracking.eventClickVideoBannerImpression(tvHeadTitle.getText().toString() + "_" + bannerModeList.get(0).getBannerName() + "_" + 1);
 
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
@@ -181,7 +182,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
                 @Override
                 public void onPageSelected(int position) {
-                    HomeGATracking.eventClickVideoBannerImpression(tvHeadTitle.getText().toString() + "_" + bannerModeList.get(position).getBannerName() + "_" + position);
+                    HomeGATracking.eventClickVideoBannerImpression(tvHeadTitle.getText().toString() + "_" + bannerModeList.get(position).getBannerName() + "_" + (position + 1));
                 }
 
                 @Override

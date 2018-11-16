@@ -60,7 +60,7 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
         imageLayout.setOnClickListener(view1 -> {
             if (!TextUtils.isEmpty(bannerModelList.get(position).getLink())) {
                 RouteManager.route(context, bannerModelList.get(position).getLink());
-                HomeGATracking.eventClickVideoBannerClick(mVideoTitle + "_" + bannerModelList.get(position).getBannerName() + "_" + position);
+                HomeGATracking.eventClickVideoBannerClick(mVideoTitle + "_" + bannerModelList.get(position).getBannerName() + "_" + (position + 1));
 
             }
             ((Activity) context).finish();
