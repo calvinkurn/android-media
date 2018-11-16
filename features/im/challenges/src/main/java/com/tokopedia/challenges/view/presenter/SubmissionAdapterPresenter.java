@@ -48,8 +48,7 @@ public class SubmissionAdapterPresenter extends BaseDaggerPresenter<SubmissionAd
             requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
         if (!TextUtils.isEmpty(result.getId()))
             requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
-        postSubmissionLikeUseCase.setRequestParams(requestParams);
-        postSubmissionLikeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        postSubmissionLikeUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
             }

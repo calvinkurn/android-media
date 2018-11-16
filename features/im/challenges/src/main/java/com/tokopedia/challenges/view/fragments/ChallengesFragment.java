@@ -243,4 +243,10 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             challengeHomePresenter.getOpenChallenges();
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        challengeHomePresenter.onDestroy();
+        super.onDestroyView();
+    }
 }
