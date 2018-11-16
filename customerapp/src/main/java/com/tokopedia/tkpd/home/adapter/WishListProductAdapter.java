@@ -363,7 +363,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (position >= 0 && data.get(position) instanceof ProductItem) {
+        if (data.size() > 0 && data.get(position) instanceof ProductItem) {
             ProductItem product = (ProductItem) data.get(position);
             if (product.getIsWishlist()) {
                 return TkpdState.RecyclerView.VIEW_WISHLIST;
@@ -372,13 +372,13 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             }
         } else if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
-        } else if (position >= 0 && data.get(position) instanceof EmptySearchItem) {
+        } else if (data.size() > 0 && data.get(position) instanceof EmptySearchItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
-        } else if (position >= 0 && data.get(position) instanceof EmptyStateItem) {
+        } else if (data.size() > 0 && data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_STATE;
-        } else if (position >= 0 && data.get(position) instanceof EmptyStateItem) {
+        } else if (data.size() > 0 && data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_TOP_ADS;
-        } else if (position >= 0 && data.get(position) instanceof TopAdsWishlistItem) {
+        } else if (data.size() > 0 && data.get(position) instanceof TopAdsWishlistItem) {
             return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
         } else {
             return super.getItemViewType(position);
