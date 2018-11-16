@@ -363,6 +363,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
+
         if (position >= 0 && (!isLastItemPosition(position) || position < data.size())) {
             ProductItem product = (ProductItem) data.get(position);
             if (product.getIsWishlist()) {
@@ -372,7 +373,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             }
         } else if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
-        } else if (&& data.get(position) instanceof EmptySearchItem) {
+        } else if (data.get(position) instanceof EmptySearchItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
         } else if (data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_STATE;
