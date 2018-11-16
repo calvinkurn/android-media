@@ -546,7 +546,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void onEmptyButtonClicked() {
-
+        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
+                .getHomeIntent(context);
+        startActivity(intent);
     }
 
     @Override
