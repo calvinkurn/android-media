@@ -9,7 +9,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
+import com.tokopedia.otp.cotp.data.CotpApi;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -31,6 +33,8 @@ public interface OtpComponent {
 
     UserSession provideUserSession();
 
+    UserSessionInterface provideUserSessionInterface();
+
     Retrofit.Builder retrofitBuilder();
 
     OkHttpClient provideOkHttpClient();
@@ -47,6 +51,5 @@ public interface OtpComponent {
 
     @MethodListQualifier
     OkHttpClient provideMethodListOkHttpClient();
-
 
 }

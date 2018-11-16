@@ -338,7 +338,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     if (needCreateWebSocket()) {
                         maximize.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
                     }
-                    pickerButton.setVisibility(View.GONE);
+                    pickerButton.setVisibility(isChatBot ? View.VISIBLE : View.GONE);
                     attachButton.setVisibility(View.GONE);
                 }
             }
@@ -754,6 +754,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
             });
         }
+        setResult();
     }
 
     @Override

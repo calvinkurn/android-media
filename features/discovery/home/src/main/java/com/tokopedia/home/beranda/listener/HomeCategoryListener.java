@@ -44,4 +44,6 @@ public interface HomeCategoryListener {
     void onServerTimeReceived(long serverTimeUnix);
 
     long getServerTimeOffset();
+  
+    boolean isHomeFragment();
 }

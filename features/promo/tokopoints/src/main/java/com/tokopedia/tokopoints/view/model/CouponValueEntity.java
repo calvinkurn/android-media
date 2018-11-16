@@ -2,8 +2,9 @@ package com.tokopedia.tokopoints.view.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class CouponValueEntity {
+public class CouponValueEntity extends BaseItem {
     @Expose
     @SerializedName(value = "catalog_id", alternate = {"id"})
     private int catalogId;
@@ -67,8 +68,11 @@ public class CouponValueEntity {
     @SerializedName(value = "howToUse", alternate = {"how_to_use"})
     private String howToUse;
 
-    @SerializedName(value = "minimumUsage", alternate = {"minimum_usage"})
+    @SerializedName(value = "minimum_usage", alternate = {"minimumUsage"})
     private String minimumUsage;
+
+    @SerializedName(value = "minimum_usage_label", alternate = {"minimumUsageLabel"})
+    private String minimumUsageLabel;
 
     @SerializedName("overview")
     private String overview;
@@ -250,6 +254,14 @@ public class CouponValueEntity {
         this.realCode = realCode;
     }
 
+    public String getMinimumUsageLabel() {
+        return minimumUsageLabel;
+    }
+
+    public void setMinimumUsageLabel(String minimumUsageLabel) {
+        this.minimumUsageLabel = minimumUsageLabel;
+    }
+
     @Override
     public String toString() {
         return "CouponValueEntity{" +
@@ -270,6 +282,7 @@ public class CouponValueEntity {
                 ", usage=" + usage +
                 ", howToUse='" + howToUse + '\'' +
                 ", minimumUsage='" + minimumUsage + '\'' +
+                ", minimumUsageLabel='" + minimumUsageLabel + '\'' +
                 ", overview='" + overview + '\'' +
                 ", realCode='" + realCode + '\'' +
                 ", tnc='" + tnc + '\'' +

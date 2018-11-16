@@ -8,12 +8,20 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.nps.NpsAnalytics;
+import com.tokopedia.nps.presentation.di.DaggerFeedbackComponent;
+import com.tokopedia.nps.presentation.di.FeedbackComponent;
+import com.tokopedia.nps.presentation.di.FeedbackModule;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.abstraction.AbstractionRouter;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.nps.NpsConstant.Key.APP_RATING;
 
 /**
  * Created by okasurya on 1/10/18.
@@ -29,15 +37,26 @@ public abstract class AppRatingDialog {
     protected Activity activity;
     protected RemoteConfig remoteConfig;
     protected LocalCacheHandler cacheHandler;
-    protected GlobalCacheManager globalCacheManager;
+    protected CacheManager globalCacheManager;
+
     @Nullable
-    protected AppRatingListener listener;
+    protected DialogInterface.OnDismissListener listener;
+
+    @Inject NpsAnalytics npsAnalytics;
 
     protected AppRatingDialog(Activity activity) {
         this.activity = activity;
+        this.initInjector();
         this.remoteConfig = new FirebaseRemoteConfigImpl(activity);
-        cacheHandler = new LocalCacheHandler(activity, TkpdCache.APP_RATING);
-        globalCacheManager = new GlobalCacheManager();
+        cacheHandler = new LocalCacheHandler(activity, APP_RATING);
+        globalCacheManager = ((AbstractionRouter) activity.getApplication()).getGlobalCacheManager();
+    }
+
+    private void initInjector() {
+        FeedbackComponent component = DaggerFeedbackComponent.builder()
+                .feedbackModule(new FeedbackModule(this.activity))
+                .build();
+        component.inject(this);
     }
 
     public static void openPlayStore(Context context) {
@@ -69,27 +88,13 @@ public abstract class AppRatingDialog {
     protected void showDialog() {
         if(isDialogNeedToBeShown()) {
             AlertDialog alertDialog = buildAlertDialog();
-                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        dismissDialog();
-                    }
-                });
-
+            alertDialog.setOnDismissListener(listener);
             alertDialog.show();
             onShowDialog();
-        } else {
-            dismissDialog();
         }
     }
 
-    private void dismissDialog() {
-        if(listener != null) {
-            listener.onDismiss();
-        }
-    }
-
-    protected void setListener(AppRatingListener listener) {
+    protected void setListener(@Nullable DialogInterface.OnDismissListener listener) {
         this.listener = listener;
     }
 
@@ -101,8 +106,4 @@ public abstract class AppRatingDialog {
      * This will be executed when dialog appear
      */
     protected abstract void onShowDialog();
-
-    public interface AppRatingListener {
-        void onDismiss();
-    }
 }

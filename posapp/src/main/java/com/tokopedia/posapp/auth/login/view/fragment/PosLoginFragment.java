@@ -31,20 +31,16 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.posapp.PosRouterApplication;
 import com.tokopedia.posapp.R;
-import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
 import com.tokopedia.posapp.auth.login.di.component.DaggerPosLoginComponent;
+import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
 import com.tokopedia.posapp.auth.login.view.PosLogin;
-import com.tokopedia.posapp.outlet.view.Outlet;
-import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
-import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
 import java.util.ArrayList;
 
@@ -224,16 +220,6 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
     }
 
     @Override
-    public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> providers) {
-
-    }
-
-    @Override
-    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener() {
-        return null;
-    }
-
-    @Override
     public void onGoToCreatePasswordPage(GetUserInfoDomainData getUserInfoDomainData) {
 
     }
@@ -291,7 +277,7 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
 
     @Override
     public void onForbidden() {
-        ForbiddenActivity.startActivity(getActivity());
+
     }
 
     @Override

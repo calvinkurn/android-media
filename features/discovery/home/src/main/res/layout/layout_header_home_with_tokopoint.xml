@@ -60,7 +60,7 @@
                     android:layout_weight="1"
                     android:lineSpacingExtra="4sp"
                     android:text="TokoCash"
-                    android:textColor="@color/black_54"
+                    android:textColor="@color/font_black_disabled_38"
                     android:textSize="12sp"
                     android:visibility="visible" />
 
@@ -248,6 +248,21 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_coupon_count"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@drawable/circle_red"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_11" />
 
         </LinearLayout>
 

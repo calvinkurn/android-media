@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.adapter.LocationDateListAdapter;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
 
@@ -29,7 +30,7 @@ public class LocationDateBottomSheetFragment extends BottomSheetDialogFragment {
     RecyclerView rvLocationDate;
     @BindView(R2.id.iv_close_bts)
     View closeBts;
-    EventBookTicketPresenter mPresenter;
+    EventBookTicketContract.BookTicketPresenter mPresenter;
     List<LocationDateModel> mData;
     LocationDateListAdapter mAdapter;
 
@@ -43,7 +44,7 @@ public class LocationDateBottomSheetFragment extends BottomSheetDialogFragment {
             mAdapter.setDataSet(mData);
     }
 
-    public void setPresenter(EventBookTicketPresenter presenter) {
+    public void setPresenter(EventBookTicketContract.BookTicketPresenter presenter) {
         mPresenter = presenter;
     }
 

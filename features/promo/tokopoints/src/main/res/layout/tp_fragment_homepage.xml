@@ -19,6 +19,7 @@
             android:layout_margin="@dimen/tp_margin_large" />
 
         <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/col_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -54,18 +55,32 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+
             <LinearLayout
                 android:id="@+id/container_fab_egg_token"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginBottom="24dp"
                 android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/dp_40"
                 android:background="@color/transparent"
+                android:visibility="gone"
                 app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
 
                 <include layout="@layout/tp_layout_floating_token" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bottom_view_membership"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tp_height_bottom_membership_view"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <include layout="@layout/tp_bottomview_membership" />
+            </LinearLayout>
+
 
         </android.support.design.widget.CoordinatorLayout>
 

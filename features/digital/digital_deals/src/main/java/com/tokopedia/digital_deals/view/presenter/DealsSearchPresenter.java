@@ -31,8 +31,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-;
-
 
 public class DealsSearchPresenter
         extends BaseDaggerPresenter<DealsSearchContract.View>
@@ -92,7 +90,9 @@ public class DealsSearchPresenter
     public void initialize() {
 //        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
         mTopDeals = TopDealsCacheHandler.init().getTopDeals();
-        getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+        if (mTopDeals != null && mTopDeals.size() > 0) {
+            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+        }
     }
 
     @Override

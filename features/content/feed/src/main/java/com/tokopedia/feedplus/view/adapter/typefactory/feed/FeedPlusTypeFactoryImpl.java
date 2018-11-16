@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
@@ -24,12 +22,12 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolde
 import com.tokopedia.feedplus.view.adapter.viewholder.promo.PromotedProductViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.promo.PromotedShopViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.topads.FeedTopadsViewHolder;
+import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
@@ -70,15 +68,16 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final FeedPlus.View.Kol kolViewListener;
     private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
+    private final FeedAnalytics analytics;
 
-
-    public FeedPlusTypeFactoryImpl(FeedPlusFragment context) {
+    public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
         this.viewListener = context;
         this.topAdsItemClickListener = context;
         this.topAdsInfoClickListener = context;
         this.kolViewListener = context;
         this.kolPostListener = context;
         this.pollingViewListener = context;
+        this.analytics = analytics;
     }
 
     @Override
@@ -104,14 +103,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(InspirationViewModel inspirationViewModel) {
         return InspirationViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(BlogViewModel viewModel) {
-        if (viewModel.getVideoUrl().equals(""))
-            return ImageBlogViewHolder.LAYOUT;
-        else
-            return VideoBlogViewHolder.LAYOUT;
     }
 
     @Override
@@ -221,14 +212,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new OfficialStoreBrandsViewHolder(view, viewListener);
         else if (type == InspirationViewHolder.LAYOUT)
             viewHolder = new InspirationViewHolder(view, viewListener);
-        else if (type == ImageBlogViewHolder.LAYOUT)
-            viewHolder = new ImageBlogViewHolder(view, viewListener);
-        else if (type == VideoBlogViewHolder.LAYOUT)
-            viewHolder = new VideoBlogViewHolder(view, viewListener);
         else if (type == PromotedProductViewHolder.LAYOUT)
             viewHolder = new PromotedProductViewHolder(view, viewListener);
         else if (type == KolRecommendationViewHolder.LAYOUT)
-            viewHolder = new KolRecommendationViewHolder(view, kolViewListener);
+            viewHolder = new KolRecommendationViewHolder(view, kolViewListener, analytics);
         else if (type == FeedTopadsViewHolder.LAYOUT)
             viewHolder = new FeedTopadsViewHolder(view,
                     topAdsItemClickListener,
@@ -238,7 +225,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == ContentProductViewHolder.LAYOUT)
             viewHolder = new ContentProductViewHolder(view, viewListener);
         else if (type == ProductCommunicationViewHolder.LAYOUT)
-            viewHolder = new ProductCommunicationViewHolder(view, viewListener);
+            viewHolder = new ProductCommunicationViewHolder(view, viewListener, analytics);
         else if (type == PollViewHolder.LAYOUT)
             viewHolder = new PollViewHolder(view, kolViewListener, pollingViewListener);
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)

@@ -93,6 +93,9 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
     private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol) {
         Content content = getContent(postKol);
         Tag tag = getKolTag(content);
+        List<String> imageList = new ArrayList<>();
+        imageList.add(getImageUrl(content));
+
         KolPostViewModel kolPostViewModel = new KolPostViewModel(
                 postKol.getUserId(),
                 "",
@@ -111,7 +114,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 postKol.getCreateTime() == null ? "" : generateTime(postKol.getCreateTime()),
                 true,
                 true,
-                getImageUrl(content),
+                imageList,
                 getTagId(tag),
                 "",
                 getTagType(tag),

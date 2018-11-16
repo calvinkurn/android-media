@@ -1,7 +1,5 @@
 package com.tokopedia.user.session;
 
-import android.content.Context;
-
 /**
  * @author by nisie on 9/25/18.
  */
@@ -39,10 +37,16 @@ public interface UserSessionInterface {
 
     boolean isFirstTimeUser();
 
+    boolean isGoldMerchant();
 
-    /**
-     * SETTER METHOD
-     */
+    String getShopName();
+
+    boolean hasShop();
+
+
+        /**
+         * SETTER METHOD
+         */
 
     void setUUID(String uuid);
 
@@ -53,8 +57,6 @@ public interface UserSessionInterface {
     void setName(String fullName);
 
     void setEmail(String email);
-
-    void setIsMsisdnVerified(boolean isMsisdnVerified);
 
     void setPhoneNumber(String phoneNumber);
 
@@ -68,6 +70,10 @@ public interface UserSessionInterface {
 
     void setTempUserId(String userId);
 
+    void setTempPhoneNumber(String userPhone);
+
+    void setTempLoginEmail(String email);
+
     void setToken(String accessToken, String tokenType);
 
     void clearToken();
@@ -77,4 +83,17 @@ public interface UserSessionInterface {
     void setFirstTimeUserOnboarding(boolean isFirstTime);
 
     void setFirstTimeUser(boolean isFirstTime);
+
+    void setToken(String accessToken, String tokenType, String refreshToken);
+
+    void setLoginSession(boolean isLogin, String userId, String fullName, String shopId,
+                         boolean isMsisdnVerified, String shopName, String email, boolean
+                                 shopIsGold, String phoneNumber);
+
+    void setIsMSISDNVerified(boolean isMsisdnVerified);
+
+    void setHasPassword(boolean hasPassword);
+
+    void setProfilePicture(String profilePicture);
+
 }

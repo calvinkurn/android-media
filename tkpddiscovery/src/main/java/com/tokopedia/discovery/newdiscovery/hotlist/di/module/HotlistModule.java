@@ -14,12 +14,15 @@ import com.tokopedia.discovery.newdiscovery.di.module.ApiModule;
 import com.tokopedia.discovery.newdiscovery.di.module.AttributeModule;
 import com.tokopedia.discovery.newdiscovery.di.module.BannerModule;
 import com.tokopedia.discovery.newdiscovery.di.module.ProductModule;
+import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.scope.HotlistScope;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistInitializeUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
