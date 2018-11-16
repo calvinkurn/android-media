@@ -152,7 +152,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 return createEmptySearch(viewGroup);
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
                 return createEmptyState(viewGroup);
-            case TkpdState.RecyclerView.VIEW_TOP_ADS:
+            case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 return createTopAds(viewGroup);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
@@ -246,7 +246,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class TopAdsItem extends RecyclerViewItem {
         public TopAdsItem() {
-            setType(TkpdState.RecyclerView.VIEW_TOP_ADS);
+            setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
         }
     }
 
@@ -360,7 +360,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
                 break;
-            case TkpdState.RecyclerView.VIEW_TOP_ADS:
+            case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 ((WishListTopAdsViewHolder) viewHolder).renderTopAds();
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
@@ -557,6 +557,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
         if (data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_TOP_ADS;
+        }
+        if (data.get(position) instanceof TopAdsItem) {
+            return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
         }
         return TkpdState.RecyclerView.VIEW_PRODUCT;
     }
