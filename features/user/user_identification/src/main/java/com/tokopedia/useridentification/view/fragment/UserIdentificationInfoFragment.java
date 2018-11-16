@@ -16,8 +16,8 @@ import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubs
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
+import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.user_identification_common.KYCConstant;
-import com.tokopedia.useridentification.view.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
 import javax.inject.Inject;
