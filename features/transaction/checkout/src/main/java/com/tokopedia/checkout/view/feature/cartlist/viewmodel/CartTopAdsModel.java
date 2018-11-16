@@ -28,23 +28,23 @@ public class CartTopAdsModel {
          */
 
         @SerializedName("product_id")
-        private String productId;
+        private int productId;
         @SerializedName("source_shop_id")
-        private String sourceShopId;
+        private int sourceShopId;
 
-        public String getProductId() {
+        public int getProductId() {
             return productId;
         }
 
-        public void setProductId(String productId) {
+        public void setProductId(int productId) {
             this.productId = productId;
         }
 
-        public String getSourceShopId() {
+        public int getSourceShopId() {
             return sourceShopId;
         }
 
-        public void setSourceShopId(String sourceShopId) {
+        public void setSourceShopId(int sourceShopId) {
             this.sourceShopId = sourceShopId;
         }
     }

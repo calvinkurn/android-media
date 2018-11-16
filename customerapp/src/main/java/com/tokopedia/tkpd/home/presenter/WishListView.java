@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.support.v7.widget.GridLayoutManager;
 
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.var.RecyclerViewItem;

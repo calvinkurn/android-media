@@ -1,7 +1,10 @@
-package com.tokopedia.core.network.entity.wishlist;
+package com.tokopedia.tkpd.home.wishlist.domain.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.network.entity.wishlist.Pagination;
+import com.tokopedia.core.network.entity.wishlist.Wishlist;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +14,18 @@ public class GqlWishListDataResponse {
     @SerializedName("wishlist")
     @Expose
     GqlWishList gqlWishList;
+
+    @SerializedName("productAds")
+    @Expose
+    private TopAdsModel topAdsModel;
+
+    public TopAdsModel getTopAdsModel() {
+        return topAdsModel;
+    }
+
+    public void setTopAdsModel(TopAdsModel topAdsModel) {
+        this.topAdsModel = topAdsModel;
+    }
 
     public GqlWishList getGqlWishList() {
         return gqlWishList;

@@ -516,14 +516,17 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void mappingTopAdsModel(List<ShopGroupData> shopGroupDataList) {
         CartTopAdsModel model = new CartTopAdsModel();
-        for (int i = 0; i < shopGroupDataList.size(); i++) {
-            for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {
-                CartItemData data = shopGroupDataList.get(i).getCartItemDataList().get(j).getCartItemData();
-                CartTopAdsModel.Products p = new CartTopAdsModel.Products();
-                p.setProductId(data.getOriginData().getProductId());
-                p.setSourceShopId(data.getOriginData().getShopId());
-                model.getProducts().add(p);
+        try {
+            for (int i = 0; i < shopGroupDataList.size(); i++) {
+                for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {
+                    CartItemData data = shopGroupDataList.get(i).getCartItemDataList().get(j).getCartItemData();
+                    CartTopAdsModel.Products p = new CartTopAdsModel.Products();
+                    p.setProductId(Integer.parseInt(data.getOriginData().getProductId()));
+                    p.setSourceShopId(Integer.parseInt(data.getOriginData().getShopId()));
+                    model.getProducts().add(p);
+                }
             }
+        } catch (Exception e){
         }
         cartDataList.add(model);
     }
