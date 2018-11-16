@@ -3,7 +3,9 @@ package com.tokopedia.topads.sdk.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -30,19 +32,36 @@ public class ImpressedImageView extends AppCompatImageView {
     public static final int BOTTOM_MARGIN = 80;
     private ProductImage image;
     private ViewHintListener hintListener;
+    private float radius = 5.0f;
+    private Path path;
+    private RectF rect;
 
     public ImpressedImageView(Context context) {
         super(context);
+        init();
     }
 
     public ImpressedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         registerObserver(this);
+    }
+
+    private void init() {
+        path = new Path();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        rect = new RectF(0, 0, this.getWidth(), this.getHeight());
+        path.addRoundRect(rect, radius, radius, Path.Direction.CW);
+        canvas.clipPath(path);
+        super.onDraw(canvas);
     }
 
     @Override
