@@ -7,7 +7,7 @@
     android:layout_weight="1"
     android:gravity="center_horizontal">
 
-    <com.tokopedia.design.image.SquareImageView
+    <com.tokopedia.design.image.RoundedCornerImageView
         android:id="@+id/channel_image_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
