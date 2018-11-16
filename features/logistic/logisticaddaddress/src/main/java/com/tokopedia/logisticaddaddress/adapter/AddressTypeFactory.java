@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.logisticaddaddress.di.AddressScope;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 
 import javax.inject.Inject;
 

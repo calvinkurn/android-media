@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import com.tokopedia.logisticaddaddress.di.AddressScope;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.network.utils.AuthUtil;

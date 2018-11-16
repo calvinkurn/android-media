@@ -3016,18 +3016,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
-        return isSupportedDelegateDeepLink(url);
-    }
-
-    @Override
-    public void logisticUploadRouterActionNavigateByApplinksUrl(
-            Object activity, Object applinks, Object bundle
-    ) {
-        actionNavigateByApplinksUrl((Activity) activity,(String) applinks,(Bundle) bundle);
-    }
-
-    @Override
     public String getResultSelectionPath(Intent data) {
         MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
         return item.getRealPath();

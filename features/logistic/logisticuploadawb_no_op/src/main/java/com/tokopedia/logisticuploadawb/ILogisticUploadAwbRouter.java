@@ -1,11 +1,6 @@
 package com.tokopedia.logisticuploadawb;
 
-public interface ILogisticUploadAwbRouter<T> {
+public interface ILogisticUploadAwbRouter {
 
     String logisticUploadRouterGetApplicationBuildFlavor();
-
-    boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url);
-
-    void logisticUploadRouterActionNavigateByApplinksUrl(Object activity, Object applinks, Object bundle);
-
 }

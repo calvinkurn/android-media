@@ -6,6 +6,7 @@ import com.tokopedia.logisticaddaddress.data.DataSource;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressContract;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressPresenter;
 import com.tokopedia.logisticaddaddress.data.ManageAddressRepository;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 
 import dagger.Module;
 import dagger.Provides;

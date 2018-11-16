@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.manage;
 
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
-import com.tokopedia.logisticaddaddress.di.AddressScope;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetAddressUseCase;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;

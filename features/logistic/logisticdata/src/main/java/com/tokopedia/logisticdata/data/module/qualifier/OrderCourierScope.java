@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.di;
+package com.tokopedia.logisticdata.data.module.qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
