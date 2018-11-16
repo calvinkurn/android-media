@@ -253,7 +253,6 @@ public class MainParentActivity extends BaseActivity implements
                 case FEED_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
-                    bottomNavigation.removeNotification(FEED_MENU);
                     break;
                 case ACCOUNT_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);

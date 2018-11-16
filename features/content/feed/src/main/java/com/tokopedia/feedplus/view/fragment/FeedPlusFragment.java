@@ -759,6 +759,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
+        FeedPlusContainerFragment parent = ((FeedPlusContainerFragment)FeedPlusFragment.this.getParentFragment());
+        if (parent != null) {
+            parent.onNotifyBadgeNotification(0);
+        }
     }
 
     @Override
