@@ -11,7 +11,6 @@ import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
@@ -23,13 +22,12 @@ import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUse
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.seller.shopscore.view.mapper.ShopScoreMapper;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.dashboard.model.kyc.GetApprovalStatusPojo;
 import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
-import com.tokopedia.sellerapp.dashboard.usecase.GetVerificationStatusUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
+import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
 
 import javax.inject.Inject;
 
@@ -46,7 +44,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private final CacheApiClearAllUseCase cacheApiClearAllUseCase;
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
     private final GetProductListSellingUseCase getProductListSellingUseCase;
-    private final GetVerificationStatusUseCase getVerificationStatusUseCase;
+    private final GetApprovalStatusUseCase getVerificationStatusUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
@@ -55,7 +53,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                                     CacheApiClearAllUseCase cacheApiClearAllUseCase,
                                     UpdateShopScheduleUseCase updateShopScheduleUseCase,
                                     GetProductListSellingUseCase getProductListSellingUseCase,
-                                    GetVerificationStatusUseCase getVerificationStatusUseCase) {
+                                    GetApprovalStatusUseCase getVerificationStatusUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.newNotificationUseCase = newNotificationUseCase;
@@ -123,8 +121,8 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     }
 
     public void getVerificationStatus() {
-        getVerificationStatusUseCase.execute(GetVerificationStatusUseCase.getRequestParam(),
-                new GetApprovalStatusSubscriber(getView().getContext(),getView()
+        getVerificationStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(),
+                new GetApprovalStatusSubscriber(getView().getContext(), getView()
                         .getApprovalStatusListener()));
     }
 

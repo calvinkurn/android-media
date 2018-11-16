@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.R;
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo;
 
@@ -22,8 +23,7 @@ import rx.Subscriber;
  */
 public class GetApprovalStatusUseCase {
 
-    private static final String PROJECT_ID = "project_id";
-    private static final int MERCHANT_ID = 1;
+    private static final String PROJECT_ID = "projectId";
 
     private final Context context;
     private final GraphqlUseCase graphqlUseCase;
@@ -50,7 +50,7 @@ public class GetApprovalStatusUseCase {
 
     public static Map<String,Object> getRequestParam(){
         Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put(PROJECT_ID, MERCHANT_ID);
+        requestParams.put(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
         return requestParams;
     }
 
