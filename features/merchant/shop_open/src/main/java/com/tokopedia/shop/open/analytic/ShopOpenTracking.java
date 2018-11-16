@@ -1,7 +1,7 @@
 package com.tokopedia.shop.open.analytic;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +14,9 @@ import static com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant.*;
 
 public class ShopOpenTracking {
     private final SellerModuleRouter sellerModuleRouter;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
-    public ShopOpenTracking(SellerModuleRouter sellerModuleRouter, UserSession userSession) {
+    public ShopOpenTracking(SellerModuleRouter sellerModuleRouter, UserSessionInterface userSession) {
         this.sellerModuleRouter = sellerModuleRouter;
         this.userSession = userSession;
     }
