@@ -44,7 +44,7 @@ public class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
         userSession = new UserSession(itemView.getContext());
     }
 
-    private void renderTopAds(TopAdsModel topAdsModel) {
+    public void renderTopAds(TopAdsModel topAdsModel) {
         topAdsCarouselView.setAdsItemClickListener(this);
         topAdsCarouselView.setData(topAdsModel);
     }
