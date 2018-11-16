@@ -609,6 +609,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         wishlistAnalytics.trackEventImpressionOnProductWishlist(getProductAsObjectDataLayerForWishlistImpression(wishListData.getWishlistDataList(), currentSize));
     }
 
+    @Override
+    public void renderTopAdsCarousel() {
+        adapter.setTopAdsCarousel();
+    }
+
     public List<Object> getProductAsObjectDataLayerForWishlistImpression(List<Wishlist> wishlistDataList, int currentSize) {
         int position = currentSize+1;
         List<Object> objects = new ArrayList<>();

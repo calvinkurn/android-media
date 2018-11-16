@@ -146,6 +146,7 @@ public class WishListImpl implements WishList {
     @Override
     public void setData() {
         wishListView.displayPull(false);
+        wishListView.renderTopAdsCarousel();
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
         wishListView.displayLoading(false);
@@ -300,17 +301,21 @@ public class WishListImpl implements WishList {
 
     @Override
     public void setData(GqlWishListDataResponse.GqlWishList wishlistData) {
+        dataWishlist.addAll(wishlistData.getWishlistDataList());
+        data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
+
         if (mPaging.getPage() == 1) {
             data.clear();
-            if (wishlistData.getWishlistDataList().size() == 0)
+            if (wishlistData.getWishlistDataList().size() == 0) {
                 wishListView.setSearchNotFound();
+            } else {
+                wishListView.renderTopAdsCarousel();
+            }
         }
         wishListView.displayPull(false);
 
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
 
-        dataWishlist.addAll(wishlistData.getWishlistDataList());
-        data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
 
         if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
@@ -319,7 +324,6 @@ public class WishListImpl implements WishList {
             wishListView.displayLoadMore(false);
         }
         wishListView.setPullEnabled(true);
-
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
         wishListView.displayLoading(false);
@@ -468,8 +472,9 @@ public class WishListImpl implements WishList {
                     wishListView.setPullEnabled(true);
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
+                    } else {
+                        wishListView.renderTopAdsCarousel();
                     }
-
                 } else {
                     setData();
                 }
@@ -608,6 +613,7 @@ public class WishListImpl implements WishList {
                     wishListView.displayLoadMore(false);
                 }
                 wishListView.setPullEnabled(true);
+                wishListView.renderTopAdsCarousel();
                 wishListView.loadDataChange();
                 wishListView.displayContentList(true);
                 wishListView.displayLoading(false);

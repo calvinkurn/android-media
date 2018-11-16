@@ -134,6 +134,10 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         data.add(new EmptyStateItem());
     }
 
+    public void setTopAdsCarousel(){
+        data.add(new TopAdsItem());
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
@@ -155,8 +159,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    public static class WishListTopAdsViewHolder extends RecyclerView.ViewHolder
-            implements TopAdsListener, TopAdsItemClickListener {
+    public static class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
+            TopAdsListener, TopAdsItemClickListener {
 
         private TopAdsCarouselView topAdsCarouselView;
         private UserSession userSession;

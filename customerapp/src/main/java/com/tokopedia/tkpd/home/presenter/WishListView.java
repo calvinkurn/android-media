@@ -115,4 +115,6 @@ public interface WishListView {
     void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult);
 
     void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData, int currentSize);
+
+    void renderTopAdsCarousel();
 }
