@@ -12,8 +12,10 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 import com.tokopedia.tkpd.home.model.VideoPushBannerModel;
 import com.tokopedia.tkpd.R;
+
 import java.util.List;
 
 /**
@@ -24,11 +26,13 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
     private List<VideoPushBannerModel> bannerModelList;
     private LayoutInflater inflater;
     private Context context;
+    private String mVideoTitle;
 
-    public SlidingImageBannerAdapter(Context context, List<VideoPushBannerModel> bannerModelList) {
+    public SlidingImageBannerAdapter(Context context, List<VideoPushBannerModel> bannerModelList, String videoTitle) {
         this.context = context;
         this.bannerModelList = bannerModelList;
         inflater = LayoutInflater.from(context);
+        this.mVideoTitle = videoTitle;
     }
 
 
@@ -56,8 +60,10 @@ public class SlidingImageBannerAdapter extends PagerAdapter {
         imageLayout.setOnClickListener(view1 -> {
             if (!TextUtils.isEmpty(bannerModelList.get(position).getLink())) {
                 RouteManager.route(context, bannerModelList.get(position).getLink());
+                HomeGATracking.eventClickVideoBannerClick(mVideoTitle + "_" + bannerModelList.get(position).getBannerName() + "_" + position);
+
             }
-            ((Activity)context).finish();
+            ((Activity) context).finish();
         });
         return imageLayout;
     }

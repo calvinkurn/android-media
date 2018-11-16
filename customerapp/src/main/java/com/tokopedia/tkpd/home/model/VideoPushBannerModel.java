@@ -6,26 +6,15 @@ import com.google.gson.annotations.SerializedName;
  * Created by Ashwani Tyagi on 09/11/18.
  */
 public class VideoPushBannerModel {
-    @SerializedName("order")
-    private String order;
 
-    @SerializedName("banner_name")
+    @SerializedName("name")
     private String bannerName;
 
     @SerializedName("link")
     private String link;
 
-    @SerializedName("custom_banner_img")
+    @SerializedName("img")
     private String bannerImg;
-
-
-    public String getOrder() {
-        return order;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
 
     public String getBannerName() {
         return bannerName;

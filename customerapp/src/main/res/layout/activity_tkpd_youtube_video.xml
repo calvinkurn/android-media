@@ -99,9 +99,8 @@
                 android:id="@+id/v_push_bannerpager"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_120"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16" />
+                android:layout_marginTop="@dimen/dp_16"
+                android:visibility="gone"/>
 
 
             <com.tokopedia.events.view.utils.CirclePageIndicator
@@ -120,6 +119,7 @@
                 app:pageColor="@color/grey_400"
                 app:radius="@dimen/dp_3"
                 app:strokeColor="@color/transparent"
+                android:visibility="gone"
                 app:strokeWidth="0dp" />
         </LinearLayout>
     </ScrollView>

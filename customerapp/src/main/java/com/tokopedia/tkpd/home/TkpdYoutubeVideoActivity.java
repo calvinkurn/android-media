@@ -165,7 +165,11 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         }.getType();
         bannerModeList = new Gson().fromJson(jsonArray, listType);
         if (bannerModeList != null && bannerModeList.size() > 0) {
-            adapter = new SlidingImageBannerAdapter(TkpdYoutubeVideoActivity.this, bannerModeList);
+            viewPager.setVisibility(View.VISIBLE);
+            if (bannerModeList.size() > 1) {
+                circlePageIndicator.setVisibility(View.VISIBLE);
+            }
+            adapter = new SlidingImageBannerAdapter(TkpdYoutubeVideoActivity.this, bannerModeList, tvTitle.getText().toString());
             viewPager.setAdapter(adapter);
             circlePageIndicator.setViewPager(viewPager);
 
@@ -177,7 +181,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
                 @Override
                 public void onPageSelected(int position) {
-                    //HomeGATracking.eventClickCTAButton();
+                    HomeGATracking.eventClickVideoBannerImpression(tvTitle.getText().toString() + "_" + bannerModeList.get(position).getBannerName() + "_" + position);
                 }
 
                 @Override
