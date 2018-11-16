@@ -53,4 +53,8 @@ public interface AccountItemListener {
     void onOpenShopClicked();
 
     void onLearnMoreSellerClicked();
+
+    void onKycLinkClicked(int verificationStatus);
+
+    void onTickerLinkClicked(String messageClick);
 }

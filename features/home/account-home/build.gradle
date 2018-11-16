@@ -26,6 +26,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.logout)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

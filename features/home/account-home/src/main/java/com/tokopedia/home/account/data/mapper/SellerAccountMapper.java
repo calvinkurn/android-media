@@ -20,6 +20,7 @@ import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
-        if(accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
+        setKyctoModel(shopCard, accountModel);
+        if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
             shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
         }
         items.add(shopCard);
@@ -221,7 +223,24 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private SellerViewModel getEmptySellerModel(){
+    private static void setKyctoModel(ShopCardViewModel shopCard, AccountModel accountModel) {
+        if (shopCard != null && accountModel != null && accountModel.getKycStatusPojo() != null) {
+
+            if (accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
+                    && accountModel.getKycStatusPojo()
+                    .getKycStatusDetailPojo().getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS) {
+                shopCard.setVerificationStatus(accountModel.getKycStatusPojo()
+                        .getKycStatusDetailPojo().getStatus());
+                shopCard.setVerificationStatusName(accountModel.getKycStatusPojo()
+                        .getKycStatusDetailPojo().getStatusName());
+            } else {
+                shopCard.setVerificationStatus(KYCConstant.STATUS_ERROR);
+                shopCard.setVerificationStatusName("");
+            }
+        }
+    }
+
+    private SellerViewModel getEmptySellerModel() {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 

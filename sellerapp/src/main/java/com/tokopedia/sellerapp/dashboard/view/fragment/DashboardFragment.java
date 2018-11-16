@@ -41,6 +41,7 @@ import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
+import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -57,9 +58,9 @@ import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
-import com.tokopedia.design.widget.VerificationWarningTickerView;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycCommonUrl;
+import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView reviewLabelView;
 
     private ShopWarningTickerView shopWarningTickerView;
-    private VerificationWarningTickerView verificationWarningTickerView;
+    private WarningTickerView verificationWarningTickerView;
 
     private ProgressDialog progressDialog;
 
@@ -567,65 +568,37 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             @Override
             public void onSuccessGetShopVerificationStatus(int status) {
                 verificationWarningTickerView.setVisibility(View.VISIBLE);
-
                 hideLoading();
-                switch (status) {
-                    case KYCConstant.STATUS_VERIFIED:
-                        verificationWarningTickerView.setVisibility(View.GONE);
-                        break;
-                    case KYCConstant.STATUS_REJECTED:
-                    case KYCConstant.STATUS_EXPIRED:
-                        verificationWarningTickerView.setDescriptionWithLink(
-                                getString(R.string.alert_failed_verification_text),
-                                getString(R.string.alert_failed_verification_highlight_text),
-                                () -> {
-                                    if (getActivity() != null
-                                            && getActivity().getApplicationContext() instanceof ApplinkRouter) {
-                                        ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-                                        applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
-                                    }
-                                });
-                        break;
-                    case KYCConstant.STATUS_PENDING:
-                        verificationWarningTickerView.setDescriptionWithLink(
-                                getString(R.string.alert_waiting_verification_text),
-                                getString(R.string.alert_waiting_verification_highlight_text),
-                                () -> {
-                                    if (getActivity() != null
-                                            && getActivity().getApplicationContext() instanceof ApplinkRouter) {
-                                        ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-                                        applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
-                                    }
-                                });
-                        break;
-                    case KYCConstant.STATUS_NOT_VERIFIED:
-                        SpannableString tickerMessage = verificationWarningTickerView
-                                .getSpannableText(getString(R.string.ticker_unverified),
-                                        getString(R.string.ticker_unverified_highlight_text),
-                                        () -> {
-                                            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-                                            applinkRouter.goToApplinkActivity(getActivity(),
-                                                    String.format("%s?url=%s", ApplinkConst
-                                                            .WEBVIEW, KycCommonUrl
-                                                            .TERMS_CONDITION));
-                                        });
-                        tickerView.addMessage(tickerMessage.toString());
-                        verificationWarningTickerView.setDescriptionWithLink(
-                                getString(R.string.alert_not_verified_text),
-                                getString(R.string.alert_not_verified_highlight_text),
-                                () -> {
-                                    if (getActivity() != null
-                                            && getActivity().getApplicationContext() instanceof ApplinkRouter) {
-                                        ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-                                        applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
-                                    }
-                                });
-                        break;
-                    default:
-                        onErrorGetShopVerificationStatus(String.format("%s (%s)", getString(R.string
-                                .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN));
-                        break;
+
+                verificationWarningTickerView.setDescriptionWithLink(
+                        KycWidgetUtil.getDescription(getContext(), status),
+                        KycWidgetUtil.getHighlight(getContext(), status),
+                        () -> {
+                            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
+                            applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
+                        });
+
+                if (TextUtils.isEmpty(KycWidgetUtil.getDescription(getContext(), status))) {
+                    verificationWarningTickerView.setVisibility(View.GONE);
+                } else {
+                    verificationWarningTickerView.setVisibility(View.VISIBLE);
                 }
+
+                if (status == KYCConstant.STATUS_NOT_VERIFIED) {
+                    SpannableString tickerMessage = verificationWarningTickerView
+                            .getSpannableText(getString(R.string.ticker_unverified),
+                                    getString(R.string.ticker_unverified_highlight_text),
+                                    () -> {
+                                        ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
+                                        applinkRouter.goToApplinkActivity(getActivity(),
+                                                String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                                        KycCommonUrl.TERMS_CONDITION));
+                                    });
+                    tickerView.addMessage(tickerMessage.toString());
+                } else {
+
+                }
+
             }
         };
     }

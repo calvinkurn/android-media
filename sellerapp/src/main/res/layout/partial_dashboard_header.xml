@@ -99,7 +99,7 @@
             android:visibility="gone"
             tools:visibility="visible"/>
 
-        <com.tokopedia.design.widget.VerificationWarningTickerView
+        <com.tokopedia.design.widget.WarningTickerView
             android:id="@+id/verification_warning_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

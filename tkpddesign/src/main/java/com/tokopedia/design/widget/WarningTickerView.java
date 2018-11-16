@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
+
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -23,7 +23,7 @@ import com.tokopedia.design.R;
 /**
  * @author by nisie on 14/11/18.
  */
-public class VerificationWarningTickerView extends FrameLayout {
+public class WarningTickerView extends FrameLayout {
 
     public interface LinkClickListener {
         void onClickLink();
@@ -31,17 +31,17 @@ public class VerificationWarningTickerView extends FrameLayout {
 
     private TextView tvDescription;
 
-    public VerificationWarningTickerView(@NonNull Context context) {
+    public WarningTickerView(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public VerificationWarningTickerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public WarningTickerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public VerificationWarningTickerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WarningTickerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

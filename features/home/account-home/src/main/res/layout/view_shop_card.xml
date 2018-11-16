@@ -55,6 +55,16 @@
             app:layout_constraintStart_toEndOf="@+id/image_shop"
             app:layout_constraintTop_toBottomOf="@+id/text_shop_name" />
 
+        <com.tokopedia.design.widget.WarningTickerView
+            android:id="@+id/verification_warning_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_constraintStart_toEndOf="@+id/image_shop"
+            app:layout_constraintTop_toBottomOf="@+id/image_shop"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
         <View
             android:id="@+id/separator"
             android:layout_width="match_parent"
@@ -63,7 +73,7 @@
             android:background="@color/grey_300"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_shop" />
+            app:layout_constraintTop_toBottomOf="@+id/verification_warning_ticker" />
 
         <LinearLayout
             android:id="@+id/layout_deposit"
