@@ -74,7 +74,7 @@ public interface WishList {
 
     void fetchDataFromCache(final Context context);
 
-    void setData(GqlWishListDataResponse.GqlWishList wishlistData);
+    void setData(GqlWishListDataResponse gqlWishListDataResponse);
 
     void deleteWishlist(Context context, String productId, int position);
 

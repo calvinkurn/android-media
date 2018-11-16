@@ -16,6 +16,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
@@ -146,7 +147,6 @@ public class WishListImpl implements WishList {
     @Override
     public void setData() {
         wishListView.displayPull(false);
-        wishListView.renderTopAdsCarousel();
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
         wishListView.displayLoading(false);
@@ -302,7 +302,8 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void setData(GqlWishListDataResponse.GqlWishList wishlistData) {
+    public void setData(GqlWishListDataResponse gqlWishListDataResponse) {
+        GqlWishListDataResponse.GqlWishList wishlistData = gqlWishListDataResponse.getGqlWishList();
         if (mPaging.getPage() == 1) {
             data.clear();
             dataWishlist.addAll(wishlistData.getWishlistDataList());
@@ -310,12 +311,12 @@ public class WishListImpl implements WishList {
             if (wishlistData.getWishlistDataList().size() == 0) {
                 wishListView.setSearchNotFound();
             } else {
-                wishListView.renderTopAdsCarousel();
+                data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
             }
         } else {
             dataWishlist.addAll(wishlistData.getWishlistDataList());
             data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
-            wishListView.renderTopAdsCarousel();
+            data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
         }
         wishListView.displayPull(false);
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
@@ -475,7 +476,7 @@ public class WishListImpl implements WishList {
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
                     } else {
-                        wishListView.renderTopAdsCarousel();
+                        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
                     }
                 } else {
                     setData();
@@ -608,6 +609,7 @@ public class WishListImpl implements WishList {
 
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
+                data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel()));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                 if (gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
                     wishListView.displayLoadMore(true);
@@ -615,7 +617,6 @@ public class WishListImpl implements WishList {
                     wishListView.displayLoadMore(false);
                 }
                 wishListView.setPullEnabled(true);
-                wishListView.renderTopAdsCarousel();
                 wishListView.loadDataChange();
                 wishListView.displayContentList(true);
                 wishListView.displayLoading(false);

@@ -13,55 +13,36 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.tkpd.home.adapter.viewholder.WishListTopAdsViewHolder;
+import com.tokopedia.tkpd.home.adapter.viewmodel.EmptySearchItem;
+import com.tokopedia.tkpd.home.adapter.viewmodel.EmptyStateItem;
+import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.Xparams;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
-import com.tokopedia.topads.sdk.widget.TopAdsView;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.List;
-
-import butterknife.ButterKnife;
-
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
 
 /**
  * Created by Nisie on 16/06/15.
@@ -134,10 +115,6 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         data.add(new EmptyStateItem());
     }
 
-    public void setTopAdsCarousel(){
-        data.add(new TopAdsItem());
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
@@ -159,95 +136,10 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    public static class WishListTopAdsViewHolder extends RecyclerView.ViewHolder implements
-            TopAdsListener, TopAdsItemClickListener {
-
-        private TopAdsCarouselView topAdsCarouselView;
-        private UserSession userSession;
-
-        public WishListTopAdsViewHolder(View itemView) {
-            super(itemView);
-            topAdsCarouselView = itemView.findViewById(R.id.topads);
-            userSession = new UserSession(itemView.getContext());
-        }
-
-        private void renderTopAds(){
-            Xparams xparams = new Xparams();
-            xparams.setProduct_id(12007464);
-            xparams.setProduct_name("Original Baterai Samsung Galaxy Mini GT-S5570 1200mAh");
-            xparams.setSource_shop_id(415979);
-
-            TopAdsParams params = new TopAdsParams();
-            params.getParam().put(TopAdsParams.KEY_SRC, "pdp");
-            params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
-            params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(5));
-            params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
-
-            Config config = new Config.Builder()
-                    .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                    .setUserId(userSession.getUserId())
-                    .topAdsParams(params)
-                    .build();
-
-            topAdsCarouselView.setAdsItemClickListener(this);
-            topAdsCarouselView.setAdsListener(this);
-            topAdsCarouselView.setConfig(config);
-            topAdsCarouselView.loadTopAds();
-        }
-
-        @Override
-        public void onProductItemClicked(int position, Product product) {
-
-        }
-
-        @Override
-        public void onShopItemClicked(int position, Shop shop) {
-
-        }
-
-        @Override
-        public void onAddFavorite(int position, Data data) {
-
-        }
-
-        @Override
-        public void onAddWishList(int position, Data data) {
-
-        }
-
-        @Override
-        public void onTopAdsLoaded(List<Item> list) {
-
-        }
-
-        @Override
-        public void onTopAdsFailToLoad(int errorCode, String message) {
-
-        }
-    }
-
     private RecyclerView.ViewHolder createTopAds(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.layout_wishlist_topads, null);
         return new WishListTopAdsViewHolder(view);
-    }
-
-    public static class EmptyStateItem extends RecyclerViewItem {
-        public EmptyStateItem() {
-            setType(TkpdState.RecyclerView.VIEW_EMPTY_STATE);
-        }
-    }
-
-    public static class EmptySearchItem extends RecyclerViewItem {
-        public EmptySearchItem() {
-            setType(TkpdState.RecyclerView.VIEW_EMPTY_SEARCH);
-        }
-    }
-
-    public static class TopAdsItem extends RecyclerViewItem {
-        public TopAdsItem() {
-            setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
-        }
     }
 
     public RecyclerView.ViewHolder createEmptyState(ViewGroup parent) {
@@ -276,71 +168,6 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         });
     }
 
-    public static class EmptyViewHolder extends RecyclerView.ViewHolder implements
-            TopAdsItemClickListener {
-        TopAdsView topAdsView;
-        Button actionBtn;
-        private Context context;
-        private final String WISHLISH_SRC = "wishlist";
-
-        public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
-            super(itemView);
-            topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
-            actionBtn = (Button) itemView.findViewById(R.id.action_btn);
-            context = itemView.getContext();
-            ButterKnife.bind(this, itemView);
-            TopAdsParams params = new TopAdsParams();
-            params.getParam().put(TopAdsParams.KEY_SRC, WISHLISH_SRC);
-            Config topAdsconfig = new Config.Builder()
-                    .setSessionId(GCMHandler.getRegistrationId(context))
-                    .setUserId(SessionHandler.getLoginID(context))
-                    .withPreferedCategory()
-                    .displayMode(DisplayMode.FEED)
-                    .setEndpoint(Endpoint.PRODUCT)
-                    .topAdsParams(params)
-                    .build();
-            topAdsView.setConfig(topAdsconfig);
-            topAdsView.setDisplayMode(DisplayMode.FEED);
-            topAdsView.setMaxItems(4);
-            topAdsView.setAdsItemClickListener(this);
-            actionBtn.setOnClickListener(clickListener);
-        }
-
-        public void loadTopAds() {
-            topAdsView.loadTopAds();
-        }
-
-        @Override
-        public void onProductItemClicked(int position, Product product) {
-            ProductItem data = new ProductItem();
-            data.setId(product.getId());
-            data.setName(product.getName());
-            data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_ecs());
-            Bundle bundle = new Bundle();
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-        }
-
-        @Override
-        public void onShopItemClicked(int position, Shop shop) {
-            Intent intent = ShopPageActivity.createIntent(context, shop.getId());
-            context.startActivity(intent);
-        }
-
-        @Override
-        public void onAddFavorite(int position, Data data) {
-
-        }
-
-        @Override
-        public void onAddWishList(int position, Data data) {
-            //TODO: next implement wishlist action
-        }
-    }
-
     private ViewHolder createProductView(ViewGroup viewGroup) {
         View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.listview_product_item, null);
@@ -361,7 +188,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
                 break;
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
-                ((WishListTopAdsViewHolder) viewHolder).renderTopAds();
+                TopAdsModel topAdsModel = ((TopAdsWishlistItem) data.get(position)).getTopAdsModel();
+                ((WishListTopAdsViewHolder) viewHolder).renderTopAds(topAdsModel);
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
@@ -558,7 +386,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         if (data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_TOP_ADS;
         }
-        if (data.get(position) instanceof TopAdsItem) {
+        if (data.get(position) instanceof TopAdsWishlistItem) {
             return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
         }
         return TkpdState.RecyclerView.VIEW_PRODUCT;
