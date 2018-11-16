@@ -611,7 +611,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                                                                 .WEBVIEW, KycCommonUrl
                                                                 .TERMS_CONDITION));
                                             }
-                                        })
+                                        });
                         tickerView.addMessage(tickerMessage);
                         verificationWarningTickerView.setDescriptionWithLink(
                                 getString(R.string.alert_not_verified_text),
