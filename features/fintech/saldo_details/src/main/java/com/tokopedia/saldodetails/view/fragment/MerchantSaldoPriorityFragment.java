@@ -31,7 +31,9 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.MerchantSaldoPriorityPresenter;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     private static final String WARNING = "warning";
     private static final String DANGER = "danger";
 
-    GqlMerchantSaldoDetailsResponse.Details sellerDetails;
+    GqlDetailsResponse sellerDetails;
     private Context context;
 
     @Inject
@@ -169,9 +171,9 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
         if (sellerDetails.isShowToggle()) {
             spEnableSwitchCompat.setVisibility(View.VISIBLE);
-            spEnableSwitchCompat.setChecked(sellerDetails.isIsEnabled());
+            spEnableSwitchCompat.setChecked(sellerDetails.isEnabled());
             spEnableSwitchCompat.setClickable(true);
-            originalSwitchState = sellerDetails.isIsEnabled();
+            originalSwitchState = sellerDetails.isEnabled();
         } else {
             spEnableSwitchCompat.setVisibility(View.GONE);
         }
@@ -247,10 +249,13 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void populateAnchorListData(List<GqlMerchantSaldoDetailsResponse.AnchorList> anchorList) {
+    private void populateAnchorListData(List<GqlAnchorListResponse> anchorList) {
         LayoutInflater layoutInflater = getLayoutInflater();
         spActionListLinearLayout.removeAllViews();
 
+        if (anchorList == null) {
+            return;
+        }
         int list_size = anchorList.size();
         for (int i = list_size - 1; i >= 0; i--) {
             View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
@@ -277,10 +282,14 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void populateInfolistData(List<GqlMerchantSaldoDetailsResponse.InfoList> infoList) {
+    private void populateInfolistData(List<GqlInfoListResponse> infoList) {
         LayoutInflater layoutInflater = getLayoutInflater();
         spDetailListLinearLayout.removeAllViews();
-        for (GqlMerchantSaldoDetailsResponse.InfoList infoList1 : infoList) {
+
+        if (infoList == null) {
+            return;
+        }
+        for (GqlInfoListResponse infoList1 : infoList) {
 
             View view = layoutInflater.inflate(R.layout.layout_info_list, null);
             TextView infoLabel = view.findViewById(R.id.info_label_text_view);

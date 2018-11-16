@@ -21,6 +21,7 @@ import com.tokopedia.core.deposit.model.SummaryDepositParam;
 import com.tokopedia.core.deposit.model.SummaryWithdraw;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
 import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
@@ -396,7 +397,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter, M
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+    public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         viewListener.showSaldoPrioritasFragment(sellerDetails);
     }
 

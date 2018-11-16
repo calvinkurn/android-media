@@ -669,9 +669,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
 
             @Override
-            public void logUnknownError(String message) {
+            public void logUnknownError(Throwable message) {
                 try {
-                    Crashlytics.log(0, RegisterInitialFragment.class.getSimpleName(), message);
+                    Crashlytics.logException(message);
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 }

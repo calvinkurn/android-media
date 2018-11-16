@@ -1043,7 +1043,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (getActivity() != null) {
             ProductPageTracking.eventClickAffiliate(
                     getActivityContext(),
-                    getUserId()
+                    getUserId(),
+                    productData.getShopInfo().getShopId(),
+                    String.valueOf(affiliate.getProductId())
             );
             if (userSession.isLoggedIn()) {
                 RouteManager.route(
