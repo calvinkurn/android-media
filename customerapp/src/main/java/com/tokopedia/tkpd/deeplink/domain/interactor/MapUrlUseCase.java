@@ -47,7 +47,7 @@ public class MapUrlUseCase extends UseCase<WhitelistItem> {
 
     private String findApplink(WhitelistItem whitelistItem, String finalSegments) {
         if (whitelistItem != null) {
-            if (whitelistItem.path.equals(finalSegments)) {
+            if (whitelistItem.path.startsWith(finalSegments)) {
                 return whitelistItem.applink;
             }
         }
