@@ -371,6 +371,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 }
             }
         }
+        if (data.get(position) instanceof TopAdsWishlistItem) {
+            return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
+        }
         if (isLastItemPosition(position) || data.size() == 0) {
             return super.getItemViewType(position);
         }
@@ -383,10 +386,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         if (data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_STATE;
         }
-        if (data.get(position) instanceof TopAdsWishlistItem) {
-            return TkpdState.RecyclerView.VIEW_TOP_ADS_LIST;
-        }
-        return super.getItemViewType(position);
+        return TkpdState.RecyclerView.VIEW_PRODUCT;
     }
 
     private boolean isRightMostProduct(int position) {
