@@ -11,7 +11,8 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_KTP;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_KTP;
+
 
 /**
  * @author by alvinatin on 02/11/18.

@@ -1,10 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.useridentification">
+          package="com.tokopedia.useridentification">
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <application
         android:allowBackup="true"
@@ -12,10 +13,12 @@
         android:supportsRtl="true">
 
         <activity android:name=".view.activity.UserIdentificationCameraActivity"/>
-        <activity android:name=".view.activity.UserIdentificationInfoActivity"
+        <activity
+            android:name=".view.activity.UserIdentificationInfoActivity"
             android:label="@string/title_kyc_info"
             android:theme="@style/Theme.White"/>
-        <activity android:name=".view.activity.UserIdentificationFormActivity"
+        <activity
+            android:name=".view.activity.UserIdentificationFormActivity"
             android:label="Upload Foto"
             android:theme="@style/Theme.White"/>
     </application>

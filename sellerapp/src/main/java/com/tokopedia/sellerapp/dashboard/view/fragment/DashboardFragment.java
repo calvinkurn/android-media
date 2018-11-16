@@ -574,8 +574,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         KycWidgetUtil.getDescription(getContext(), status),
                         KycWidgetUtil.getHighlight(getContext(), status),
                         () -> {
-                            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-                            applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
+                            if(getActivity().getApplicationContext() instanceof ApplinkRouter) {
+                                ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
+                                applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
+                            }
                         });
 
                 if (TextUtils.isEmpty(KycWidgetUtil.getDescription(getContext(), status))) {

@@ -31,8 +31,8 @@ import java.io.File;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_FACE;
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_KTP;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_FACE;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_KTP;
 
 /**
  * @author by alvinatin on 12/11/18.
