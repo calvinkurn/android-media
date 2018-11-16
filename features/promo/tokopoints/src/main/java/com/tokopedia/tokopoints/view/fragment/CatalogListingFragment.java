@@ -100,7 +100,6 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         initInjector();
         View view = inflater.inflate(R.layout.tp_fragment_catalog_listing, container, false);
         initViews(view);
-        mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         return view;
     }
 
@@ -185,6 +184,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         pageIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white_two));
         pageIndicator.setViewPager(pager, 0);
         getView().findViewById(R.id.container_pager).setVisibility(View.VISIBLE);
+        mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
 
     }
 
@@ -199,6 +199,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
         mContainerPointDetail.setVisibility(View.VISIBLE);
         isPointsAvailable=true;
+        mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
     }
 
