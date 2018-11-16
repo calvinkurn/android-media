@@ -208,7 +208,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 //        addressMenu.setVisibility(accountSettingConfig.isAddressEnabled() ? View.VISIBLE : View.GONE);
 //        passwordMenu.setVisibility(accountSettingConfig.isPasswordEnabled() ? View.VISIBLE : View.GONE);
 //        kycMenu.setVisibility(accountSettingConfig.isIdentityEnabled() ? View.VISIBLE : View.GONE);
-
+        hideLoading();
         personalDataMenu.setVisibility(View.VISIBLE);
         addressMenu.setVisibility(View.VISIBLE);
         passwordMenu.setVisibility(View.VISIBLE);
