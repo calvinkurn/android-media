@@ -49,7 +49,8 @@ import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
 /**
  * @author rizkyfadillah on 26/07/17.
@@ -72,6 +73,7 @@ import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
         ReputationApplinkModule.class,
         SessionApplinkModule.class,
         PdpApplinkModule.class,
+        UserIdentificationApplinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -96,7 +98,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new CustomerCareApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
-                new PdpApplinkModuleLoader()
+                new PdpApplinkModuleLoader(),
+                new UserIdentificationApplinkModuleLoader()
         );
     }
 

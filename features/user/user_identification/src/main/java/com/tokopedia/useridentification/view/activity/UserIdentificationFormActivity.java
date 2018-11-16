@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormFaceFragment;
+import com.tokopedia.useridentification.view.fragment.UserIdentificationFormFinalFragment;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormKtpFragment;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
@@ -58,6 +59,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
             fragmentList = new ArrayList<>();
             fragmentList.add(UserIdentificationFormKtpFragment.createInstance());
             fragmentList.add(UserIdentificationFormFaceFragment.createInstance());
+            fragmentList.add(UserIdentificationFormFinalFragment.createInstance());
             return fragmentList;
         } else {
             return fragmentList;

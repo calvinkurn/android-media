@@ -9,17 +9,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
+import com.tokopedia.useridentification.view.KYCConstant;
+import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
+import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
+
+import javax.inject.Inject;
 
 /**
  * @author by alvinatin on 02/11/18.
  */
 
-public class UserIdentificationInfoFragment extends BaseDaggerFragment implements UserIdentificationInfo.View{
+public class UserIdentificationInfoFragment extends BaseDaggerFragment implements UserIdentificationInfo.View {
 
     private ImageView image;
     private TextView title;
@@ -28,9 +34,10 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
     private View mainView;
     private TextView button;
 
-    private UserIdentificationInfo.Presenter presenter;
+    @Inject
+    UserIdentificationInfo.Presenter presenter;
 
-    public static UserIdentificationInfoFragment createInstance(){
+    public static UserIdentificationInfoFragment createInstance() {
         UserIdentificationInfoFragment fragment = new UserIdentificationInfoFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -57,10 +64,18 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
 
     @Override
     protected void initInjector() {
+        if (getActivity() != null) {
+            UserIdentificationComponent daggerUserIdentificationComponent =
+                    DaggerUserIdentificationComponent.builder()
+                            .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                            .build();
 
+            daggerUserIdentificationComponent.inject(this);
+            presenter.attachView(this);
+        }
     }
 
-    private void initView(View parentView){
+    private void initView(View parentView) {
         mainView = parentView.findViewById(R.id.main_view);
         image = parentView.findViewById(R.id.main_image);
         title = parentView.findViewById(R.id.title);
@@ -70,65 +85,89 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getStatusInfo();
+    }
+
+    private void getStatusInfo() {
+        showLoading();
+        presenter.getStatus();
+    }
+
+    @Override
     public void onSuccessGetInfo(int status) {
-        switch (status){
-            case -1: //Rejected
-                title.setText(R.string.kyc_failed_title);
-                text.setText(R.string.kyc_failed_text);
-                button.setText(R.string.kyc_failed_button);
-                button.setTextColor(getResources().getColor(R.color.white));
-                button.setBackgroundResource(R.drawable.green_button_rounded);
-                button.setVisibility(View.VISIBLE);
-                button.setOnClickListener(onGoToFormActivityButton());
+        hideLoading();
+        switch (status) {
+            case KYCConstant.STATUS_REJECTED:
+                showStatusRejected();
                 break;
-            case 0: //Pending
-                title.setText(R.string.kyc_pending_title);
-                text.setText(R.string.kyc_pending_text);
+            case KYCConstant.STATUS_PENDING:
+                showStatusPending();
                 break;
-            case 1: //Verified
-                title.setText(R.string.kyc_verified_title);
-                text.setText(R.string.kyc_verified_text);
-                button.setText(R.string.kyc_verified_button);
-                button.setTextColor(getResources().getColor(R.color.black_38));
-                button.setBackgroundResource(R.drawable.white_button_rounded);
-                button.setVisibility(View.VISIBLE);
-                button.setOnClickListener(onGoToTermsButton());
+            case KYCConstant.STATUS_VERIFIED:
+                showStatusVerified();
                 break;
-            case 2: //Expired
+            case KYCConstant.STATUS_EXPIRED:
                 break;
-            case 3: //Not Verified
-                title.setText(R.string.kyc_intro_title);
-                text.setText(R.string.kyc_intro_text);
-                button.setText(R.string.kyc_intro_button);
-                button.setTextColor(getResources().getColor(R.color.white));
-                button.setBackgroundResource(R.drawable.green_button_rounded);
-                button.setVisibility(View.VISIBLE);
-                button.setOnClickListener(onGoToFormActivityButton());
+            case KYCConstant.STATUS_NOT_VERIFIED:
+                showStatusNotVerified();
                 break;
             default:
-                onErrorGetInfo();
+                onErrorGetInfo(String.format("%s (%s)", getString(R.string
+                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN));
                 break;
         }
     }
 
-    @Override
-    public void onErrorGetInfo() {
-        NetworkErrorHelper.showEmptyState(getContext(), mainView, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getStatus();
-            }
-        });
+    private void showStatusNotVerified() {
+        title.setText(R.string.kyc_intro_title);
+        text.setText(R.string.kyc_intro_text);
+        button.setText(R.string.kyc_intro_button);
+        button.setTextColor(getResources().getColor(R.color.white));
+        button.setBackgroundResource(R.drawable.green_button_rounded);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(onGoToFormActivityButton());
+    }
+
+    private void showStatusVerified() {
+        title.setText(R.string.kyc_verified_title);
+        text.setText(R.string.kyc_verified_text);
+        button.setText(R.string.kyc_verified_button);
+        button.setTextColor(getResources().getColor(R.color.black_38));
+        button.setBackgroundResource(R.drawable.white_button_rounded);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(onGoToTermsButton());
+    }
+
+    private void showStatusPending() {
+        title.setText(R.string.kyc_pending_title);
+        text.setText(R.string.kyc_pending_text);
+    }
+
+    private void showStatusRejected() {
+        title.setText(R.string.kyc_failed_title);
+        text.setText(R.string.kyc_failed_text);
+        button.setText(R.string.kyc_failed_button);
+        button.setTextColor(getResources().getColor(R.color.white));
+        button.setBackgroundResource(R.drawable.green_button_rounded);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(onGoToFormActivityButton());
     }
 
     @Override
-    public void showLoading(){
+    public void onErrorGetInfo(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(getContext(), mainView, () -> presenter.getStatus());
+    }
+
+    @Override
+    public void showLoading() {
         mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideLoading(){
+    public void hideLoading() {
         mainView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
@@ -146,7 +185,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //TODO alvinatin add url
             }
         };
     }

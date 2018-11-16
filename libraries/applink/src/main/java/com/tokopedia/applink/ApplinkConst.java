@@ -162,6 +162,7 @@ public interface ApplinkConst {
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
     String CHALLENGE = "tokopedia://challenges";
+    String KYC = "tokopedia://kyc";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

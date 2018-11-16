@@ -99,6 +99,13 @@
             android:visibility="gone"
             tools:visibility="visible"/>
 
+        <com.tokopedia.sellerapp.dashboard.view.widget.VerificationWarningTicker
+            android:id="@+id/verification_warning_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
     </LinearLayout>
 
 

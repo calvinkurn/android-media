@@ -4,30 +4,28 @@ import android.os.Parcel;
 
 import com.tokopedia.abstraction.base.view.model.StepperModel;
 
-import java.io.File;
-
 /**
  * @author by alvinatin on 12/11/18.
  */
 
 public class UserIdentificationStepperModel implements StepperModel {
 
-    private File ktpFile;
-    private File faceFile;
+    private String ktpFile;
+    private String faceFile;
 
-    public File getKtpFile() {
+    public String getKtpFile() {
         return ktpFile;
     }
 
-    public void setKtpFile(File ktpFile) {
+    public void setKtpFile(String ktpFile) {
         this.ktpFile = ktpFile;
     }
 
-    public File getFaceFile() {
+    public String getFaceFile() {
         return faceFile;
     }
 
-    public void setFaceFile(File faceFile) {
+    public void setFaceFile(String faceFile) {
         this.faceFile = faceFile;
     }
 
@@ -47,8 +45,8 @@ public class UserIdentificationStepperModel implements StepperModel {
     }
 
     protected UserIdentificationStepperModel(Parcel in) {
-        this.ktpFile = (File) in.readSerializable();
-        this.faceFile = (File) in.readSerializable();
+        this.ktpFile = (String) in.readSerializable();
+        this.faceFile = (String) in.readSerializable();
     }
 
     public static final Creator<UserIdentificationStepperModel> CREATOR = new
