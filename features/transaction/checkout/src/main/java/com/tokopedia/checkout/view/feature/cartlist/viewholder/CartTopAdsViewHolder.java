@@ -60,7 +60,7 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
                 .topAdsParams(params)
                 .build();
 
-        topAdsCarouselView.setAdsItemClickListener(this);
+        topAdsCarouselView.setAdsItemClickListener(this)WishListImpl;
         topAdsCarouselView.setAdsListener(this);
         topAdsCarouselView.setConfig(config);
         topAdsCarouselView.loadTopAds();

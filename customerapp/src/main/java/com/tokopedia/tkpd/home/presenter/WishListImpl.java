@@ -229,7 +229,7 @@ public class WishListImpl implements WishList {
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                     GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-                    setData(gqlWishListDataResponse.getGqlWishList());
+                    setData(gqlWishListDataResponse);
                 } else {
                     setData();
                 }
@@ -515,21 +515,6 @@ public class WishListImpl implements WishList {
     @Override
     public void fetchDataFromCache(final Context context) {
         fetchDataFromInternet(context);
-       /* if(cache.getWishListCache()!=null){
-            setData(cache.getWishListCache());
-            sendToAppsflyer(context,cache.getWishListCache().getData());
-        }else{
-            wishListView.displayPull(true);
-            fetchDataFromInternet(context);
-        }*/
-
-//        wishListView.displayPull(true);
-//        new android.os.Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                fetchDataFromInternet(context);
-//            }
-//        }, 50);// 1_000
     }
 
     private void sendMoEngageTracker(String productId) {
