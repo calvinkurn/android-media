@@ -119,7 +119,15 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         buttonLayout = view.findViewById(R.id.button_layout);
         reCaptureButton = view.findViewById(R.id.recapture_button);
         nextButton = view.findViewById(R.id.next_button);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        populateView();
+    }
+
+    private void populateView() {
         shutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

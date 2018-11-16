@@ -122,7 +122,7 @@
         android:layout_margin="@dimen/dp_16"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
