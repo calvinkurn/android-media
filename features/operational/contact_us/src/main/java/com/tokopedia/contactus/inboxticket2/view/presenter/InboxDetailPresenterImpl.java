@@ -466,7 +466,7 @@ public class InboxDetailPresenterImpl
     @Override
     public void setBadRating(int position) {
         if (position > 0 && position < 7) {
-            postRatingUseCase.setQueryMap(rateCommentID, NO, 1, position + 1, "");
+            postRatingUseCase.setQueryMap(rateCommentID, NO, 1, position, "");
             mView.showProgressBar();
             mView.toggleTextToolbar(View.VISIBLE);
             sendRating();

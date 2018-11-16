@@ -51,11 +51,12 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
             R2.id.tv_bad_reason_3,
             R2.id.tv_bad_reason_4,
             R2.id.tv_bad_reason_5,
+            R2.id.tv_bad_reason_6,
             R2.id.tv_custom_reason
     })
     void handleClickBadCsat(View v) {
         int id = v.getId();
-        int buttonids[] = {R.id.tv_bad_reason_1, R.id.tv_bad_reason_2, R.id.tv_bad_reason_3, R.id.tv_bad_reason_4, R.id.tv_bad_reason_5};
+        int buttonids[] = {R.id.tv_bad_reason_1, R.id.tv_bad_reason_2, R.id.tv_bad_reason_3, R.id.tv_bad_reason_4, R.id.tv_bad_reason_5, R.id.tv_bad_reason_6};
         int selected = Arrays.binarySearch(buttonids, id) + 1;
         switch (selected) {
             case 1:
@@ -73,6 +74,9 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
             case 5:
                 setBadrating(v, 5);
                 break;
+            case 6:
+                setBadrating(v, 6);
+                break;
             default:
                 break;
         }
@@ -86,7 +90,6 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
                 editText.setVisibility(View.VISIBLE);
             } else {
                 selectedButton = null;
-                tvCustomReason.setVisibility(View.GONE);
                 editText.setVisibility(View.GONE);
             }
         }
