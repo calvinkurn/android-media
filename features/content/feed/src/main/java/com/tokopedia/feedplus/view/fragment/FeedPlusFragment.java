@@ -57,10 +57,11 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -78,7 +79,6 @@ import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LI
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES;
-import static com.tokopedia.profile.view.activity.TopProfileActivity.IS_FOLLOWING_TRUE;
 
 /**
  * @author by nisie on 5/15/17.
@@ -629,7 +629,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
+                            data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING, DEFAULT_VALUE)
                     );
 
                     updatePostState(
@@ -647,7 +647,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     onSuccessFollowUnfollowFromProfileRecommendation(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
+                            data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING,
+                                    DEFAULT_VALUE)
                     );
                 }
             default:
@@ -862,7 +863,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId) {
         if (getContext() != null) {
-            Intent profileIntent = TopProfileActivity.newInstance(getContext(), userId)
+            Intent profileIntent = ProfileActivity.Companion.createIntent(getContext(), userId)
                     .putExtra(ARGS_ROW_NUMBER, position)
                     .putExtra(ARGS_ITEM_ROW_NUMBER, itemPosition);
 
@@ -873,7 +874,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToKolProfile(int rowNumber, String userId, int postId) {
         if (getContext() != null) {
-            Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
+            Intent profileIntent = ProfileActivity.Companion
+                    .createIntentFromFeed(getContext(), userId, postId)
                     .putExtra(ARGS_ROW_NUMBER, rowNumber);
             startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
         }
@@ -885,8 +887,20 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onOpenKolTooltip(int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
         feedModuleRouter.openRedirectUrl(getActivity(), url);
+    }
+
+    @Override
+    public void trackContentClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
+
+    }
+
+    @Override
+    public void trackTooltipClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
+
     }
 
     @Override
@@ -909,7 +923,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKolClicked(int rowNumber, int id) {
+    public void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
@@ -918,7 +933,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUnlikeKolClicked(int rowNumber, int id) {
+    public void onUnlikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                   String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.unlikeKol(id, rowNumber, this);
         } else {
@@ -927,9 +943,36 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int rowNumber, int id) {
+    public void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
         Intent intent = KolCommentActivity.getCallingIntentFromFeed(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
+    }
+
+    @Override
+    public void onLikeKolClicked(int rowNumber, int id) {
+        onLikeKolClicked(rowNumber, id, false, "");
+    }
+
+    @Override
+    public void onUnlikeKolClicked(int adapterPosition, int id) {
+        onUnlikeKolClicked(adapterPosition, id, false, "");
+    }
+
+    @Override
+    public void onGoToKolComment(int rowNumber, int id) {
+        onGoToKolComment(rowNumber, id, false, "");
+    }
+
+    @Override
+    public void onEditClicked(boolean hasMultipleContent, String activityId,
+                              String activityType) {
+
+    }
+
+    @Override
+    public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
+
     }
 
     @Override
@@ -997,7 +1040,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
             kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
             kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
         }
     }
 
@@ -1019,7 +1062,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 kolViewModel.setTotalLike(((BaseKolViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
         }
     }
 
@@ -1051,7 +1094,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     (BaseKolViewModel)
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT);
         }
     }
 
@@ -1062,10 +1105,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
             KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isFollowing != DEFAULT_VALUE) {
-                kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
-                kolViewModel.setTemporarilyFollowed(isFollowing == IS_FOLLOWING_TRUE);
+                kolViewModel.setFollowed(isFollowing
+                        == ProfileActivity.IS_FOLLOWING_TRUE);
+                kolViewModel.setTemporarilyFollowed(isFollowing
+                        == ProfileActivity.IS_FOLLOWING_TRUE);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
         }
     }
 
@@ -1103,7 +1148,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             if (isFollowing != DEFAULT_VALUE) {
                 recommendationViewModel.getListRecommend()
                         .get(itemRowNumber)
-                        .setFollowed(isFollowing == IS_FOLLOWING_TRUE);
+                        .setFollowed(isFollowing
+                                == ProfileActivity.IS_FOLLOWING_TRUE);
             }
 
             adapter.notifyItemChanged(rowNumber);

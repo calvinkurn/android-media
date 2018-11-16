@@ -27,7 +27,7 @@ public class CheckScanOptionUseCase extends RestRequestUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         String url = EventsUrl.EVENTS_DOMAIN + EventsUrl.EVENT_SCAN_TICKET_URL;

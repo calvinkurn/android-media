@@ -49,8 +49,11 @@ import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulat
 import com.tokopedia.posapp.product.productdetail.view.widget.PictureView;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,6 +151,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         info.setProductName(productDetail.getProductName());
         info.setProductPrice(productDetail.getProductPrice());
         info.setProductPriceUnformatted((int)productDetail.getProductPriceUnformatted());
+        info.setProductOriginalPrice((int)productDetail.getProductPriceOriginal());
         info.setProductDescription(productDetail.getProductDescription());
 
         List<ProductImage> productImages = new ArrayList<>();
@@ -252,6 +256,21 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
+
+    }
+
+    @Override
+    public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
+
+    }
+
+    @Override
+    public void showErrorAffiliate(String message) {
+
+    }
+
+    @Override
     public void onWishlistCountLoaded(String wishlistCountText) {
 
     }
@@ -347,6 +366,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onCourierClicked(@NonNull String productId, @Nullable ArrayList<CourierViewData> arrayList) {
+
+    }
+
+    @Override
     public void onWholesaleClicked(@NonNull Bundle bundle) {
 
     }
@@ -403,7 +427,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
+    public void onProductDetailLoaded(@NonNull ProductDetailData successResult, ProductViewData viewData) {
 
     }
 
@@ -609,6 +633,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void restoreIsAppBarCollapsed(boolean isAppBarCollapsed) {
+
+    }
+
+    @Override
+    public void loadPromo() {
 
     }
 

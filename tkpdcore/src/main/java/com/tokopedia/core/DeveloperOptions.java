@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -27,9 +28,12 @@ import com.tokopedia.core.util.SessionHandler;
 @DeepLink("tokopedia://setting/dev-opts")
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
+    public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_CHUCK_ENABLED = "is_enable";
     public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
+    private static final String IP_GROUPCHAT = "ip_groupchat";
+    private static final String LOG_GROUPCHAT = "log_groupchat";
     //developer test
 
     private TextView vCustomIntent;
@@ -49,6 +53,10 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
     private TextView vGoToAnalytics;
     private CheckBox toggleAnalytics;
+
+    private AppCompatEditText ipGroupChat;
+    private View saveIpGroupChat;
+    private ToggleButton groupChatLogToggle;
 
     private static TkpdCoreRouter tkpdCoreRouter;
 
@@ -88,6 +96,10 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
 
         toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
+
+        ipGroupChat = findViewById(R.id.ip_groupchat);
+        saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
+        groupChatLogToggle = findViewById(R.id.groupchat_log);
     }
 
     private void initListener() {
@@ -188,6 +200,43 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 actionSaveValueRemoteConfig();
             }
         });
+
+        saveIpGroupChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionSaveIpGroupChat();
+            }
+        });
+
+        groupChatLogToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                actionLogGroupChat(isChecked);
+            }
+        });
+
+
+        LocalCacheHandler groupChatPreference = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
+        ipGroupChat.setText(groupChatPreference.getString(IP_GROUPCHAT,""));
+        groupChatLogToggle.setChecked(groupChatPreference.getBoolean(LOG_GROUPCHAT, false));
+    }
+
+    private void actionLogGroupChat(boolean check) {
+        LocalCacheHandler editor = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
+        editor.putBoolean(LOG_GROUPCHAT, check);
+        editor.applyEditor();
+    }
+
+    private void actionSaveIpGroupChat() {
+        String ip = ipGroupChat.getText().toString();
+        LocalCacheHandler editor = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
+        if(TextUtils.isEmpty(ip)){
+            editor.putString(IP_GROUPCHAT, null);
+        }else {
+            editor.putString(IP_GROUPCHAT, ip);
+        }
+        editor.applyEditor();
+        Toast.makeText(this, ip + " saved", Toast.LENGTH_SHORT).show();
     }
 
     private void actionSaveValueRemoteConfig() {

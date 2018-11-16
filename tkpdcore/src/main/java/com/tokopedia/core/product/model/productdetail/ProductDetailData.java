@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
+@Deprecated
 public class ProductDetailData implements Parcelable{
     private static final String TAG = ProductDetailData.class.getSimpleName();
 
@@ -47,6 +48,26 @@ public class ProductDetailData implements Parcelable{
     @SerializedName("product_images")
     @Expose
     private List<ProductImage> productImages = new ArrayList<ProductImage>();
+
+    public long getServerTimeUnix() {
+        return serverTimeUnix;
+    }
+
+    public void setServerTimeUnix(long serverTimeUnix) {
+        this.serverTimeUnix = serverTimeUnix;
+    }
+
+    public static Creator<ProductDetailData> getCREATOR() {
+        return CREATOR;
+    }
+
+    @SerializedName("server_time_unix")
+    @Expose
+    private long serverTimeUnix;
+    @SerializedName("is_big_promo")
+    @Expose
+    private boolean isBigPromo;
+
     /**
      * this is not supposed to be here
      * because it is ViewModel
@@ -156,6 +177,14 @@ public class ProductDetailData implements Parcelable{
         this.campaign = campaign;
     }
 
+    public boolean isBigPromo() {
+        return isBigPromo;
+    }
+
+    public void setBigPromo(boolean bigPromo) {
+        isBigPromo = bigPromo;
+    }
+
     public static class Builder {
         private ProductInfo info;
         private ProductStatistic statistic;
@@ -165,6 +194,8 @@ public class ProductDetailData implements Parcelable{
         private ProductRating rating;
         private List<ProductImage> productImages = new ArrayList<ProductImage>();
         private ProductCashback cashBack;
+        private long serverTimeUnix;
+        private boolean isBigPromo;
 
         private Builder() {
         }
@@ -213,8 +244,18 @@ public class ProductDetailData implements Parcelable{
             return this;
         }
 
+        public Builder setServerTimeUnix(long serverTimeUnix){
+            this.serverTimeUnix = serverTimeUnix;
+            return this;
+        }
+
+        public Builder setIsBigPromo(boolean isBigPromo) {
+            this.isBigPromo = isBigPromo;
+            return this;
+        }
+
         public Builder but() {
-            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack);
+            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack).setServerTimeUnix(serverTimeUnix).setIsBigPromo(isBigPromo);
         }
 
         public ProductDetailData build() {
@@ -227,6 +268,8 @@ public class ProductDetailData implements Parcelable{
             productDetailData.setRating(rating);
             productDetailData.setProductImages(productImages);
             productDetailData.setCashBack(cashBack);
+            productDetailData.setServerTimeUnix(serverTimeUnix);
+            productDetailData.setBigPromo(isBigPromo);
             return productDetailData;
         }
     }
@@ -250,6 +293,8 @@ public class ProductDetailData implements Parcelable{
         dest.writeParcelable(this.latestTalkViewModel, flags);
         dest.writeTypedList(this.reviewList);
         dest.writeParcelable(this.campaign,flags);
+        dest.writeLong(this.serverTimeUnix);
+        dest.writeByte(this.isBigPromo ? (byte) 1 : (byte) 0);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -265,6 +310,8 @@ public class ProductDetailData implements Parcelable{
         this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
         this.reviewList = in.createTypedArrayList(Review.CREATOR);
         this.campaign = in.readParcelable(Campaign.class.getClassLoader());
+        this.serverTimeUnix = in.readLong();
+        this.isBigPromo = in.readByte() == 1;
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {

@@ -34,9 +34,11 @@ public class BaseKolView extends BaseCustomView {
     private TextView commentText;
     private View commentButton;
     private View likeButton;
+    private View menuButton;
     private TextView title;
     private TextView name;
     private ImageView avatar;
+    private ImageView badge;
     private TextView label;
     private TextView followText;
     private View followButton;
@@ -66,10 +68,12 @@ public class BaseKolView extends BaseCustomView {
         likeText = view.findViewById(R.id.like_text);
         commentText = view.findViewById(R.id.comment_text);
         commentButton = view.findViewById(R.id.comment_button);
+        menuButton = view.findViewById(R.id.menu_button);
         likeButton = view.findViewById(R.id.like_button);
         title = view.findViewById(R.id.title);
         name = view.findViewById(R.id.name);
         avatar = view.findViewById(R.id.avatar);
+        badge = view.findViewById(R.id.kol_badge);
         label = view.findViewById(R.id.label);
         followText = view.findViewById(R.id.follow_text);
         followButton = view.findViewById(R.id.follow_button);
@@ -101,52 +105,21 @@ public class BaseKolView extends BaseCustomView {
             label.setText(element.getLabel());
         }
 
-        if (element.isFollowed() && !element.isTemporarilyFollowed()) {
-            followButton.setVisibility(View.GONE);
-        } else if (element.isFollowed() && element.isTemporarilyFollowed()) {
-            followButton.setVisibility(View.VISIBLE);
-            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
-                    R.drawable.bg_button_white_border));
-            followText.setText(R.string.following);
-            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
-                    R.color.black_54));
+        if (!TextUtils.isEmpty(element.getReview())) {
+            kolText.setVisibility(View.VISIBLE);
+            setKolText(element);
         } else {
-            followButton.setVisibility(View.VISIBLE);
-            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
-                    R.drawable.bg_button_green));
-            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
-                    R.color.white));
-            followText.setText(R.string.action_follow_english);
+            kolText.setVisibility(View.GONE);
         }
 
-        setKolText(element);
-
-        if (element.isLiked()) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
-            likeText.setText(String.valueOf(element.getTotalLike()));
-            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
-                    .tkpd_main_green));
-
-        } else if (element.getTotalLike() > 0) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
-            likeText.setText(String.valueOf(element.getTotalLike()));
-            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
-                    .black_54));
-        } else {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
-            likeText.setText(R.string.action_like);
-            likeText.setTextColor(MethodChecker.getColor(likeIcon.getContext(), R.color
-                    .black_54));
-        }
-
-        if (element.getTotalComment() == 0) {
-            commentText.setText(R.string.comment);
-        } else {
-            commentText.setText(String.valueOf(element.getTotalComment()));
-        }
+        bindLike(element.isLiked(), element.getTotalLike());
+        bindComment(element.getTotalComment());
+        bindFollow(element.isFollowed(), element.isTemporarilyFollowed());
 
         commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
         likeButton.setVisibility(element.isShowLike() ? View.VISIBLE : View.GONE);
+        menuButton.setVisibility(element.isDeletable() ? View.VISIBLE : View.GONE);
+        badge.setVisibility(element.isKol() ? View.VISIBLE : View.GONE);
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
@@ -169,10 +142,60 @@ public class BaseKolView extends BaseCustomView {
         likeButton.setOnClickListener(v -> viewListener.onLikeButtonClickListener(element));
 
         commentButton.setOnClickListener(v -> viewListener.onCommentClickListener(element));
+
+        menuButton.setOnClickListener(v -> viewListener.onMenuClickListener(element));
     }
 
     public void onViewRecycled() {
         ImageHandler.clearImage(avatar);
+    }
+
+    public void bindLike(boolean isLiked, int totalLike) {
+        if (isLiked) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
+            likeText.setText(String.valueOf(totalLike));
+            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
+                    .tkpd_main_green));
+
+        } else if (totalLike > 0) {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
+            likeText.setText(String.valueOf(totalLike));
+            likeText.setTextColor(MethodChecker.getColor(likeText.getContext(), R.color
+                    .black_54));
+        } else {
+            ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb);
+            likeText.setText(R.string.action_like);
+            likeText.setTextColor(MethodChecker.getColor(likeIcon.getContext(), R.color
+                    .black_54));
+        }
+    }
+
+    public void bindComment(int totalComment) {
+        if (totalComment == 0) {
+            commentText.setText(R.string.comment);
+        } else {
+            commentText.setText(String.valueOf(totalComment));
+        }
+    }
+
+    public void bindFollow(boolean isFollowed, boolean isTemporarilyFollowed) {
+        if (isFollowed && !isTemporarilyFollowed) {
+            followButton.setVisibility(View.GONE);
+        } else if (isFollowed && isTemporarilyFollowed) {
+            followButton.setVisibility(View.VISIBLE);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_white_border));
+            followText.setText(R.string.following);
+            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
+                    R.color.black_54));
+        } else {
+            followButton.setVisibility(View.VISIBLE);
+            followButton.setBackground(MethodChecker.getDrawable(followButton.getContext(),
+                    R.drawable.bg_button_green));
+            followText.setTextColor(MethodChecker.getColor(followText.getContext(),
+                    R.color.white));
+            followText.setText(R.string.action_follow_english);
+        }
     }
 
     private void setKolText(final BaseKolViewModel element) {

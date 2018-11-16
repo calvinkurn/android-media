@@ -24,7 +24,7 @@ import dagger.Component;
  */
 
 @SearchScope
-@Component(modules = {SearchModule.class, ImageSearchModule.class}, dependencies = AppComponent.class)
+@Component(modules = SearchModule.class, dependencies = AppComponent.class)
 public interface SearchComponent {
     void inject(SearchActivity searchActivity);
 
