@@ -1,12 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryCatalogFragment;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
