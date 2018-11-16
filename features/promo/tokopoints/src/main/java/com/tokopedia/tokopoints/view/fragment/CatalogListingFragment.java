@@ -360,7 +360,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                         "");
             }
         } else if (source.getId() == R.id.text_membership_label
-                || source.getId() == R.id.text_membership_value_bottom) {
+                || source.getId() == R.id.bottom_view_membership) {
             openWebView(CommonConstant.WebLink.MEMBERSHIP);
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
@@ -444,7 +444,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
         getView().findViewById(R.id.text_token_title).setOnClickListener(this);
         getView().findViewById(R.id.img_token).setOnClickListener(this);
-        mTextMembershipValueBottom.setOnClickListener(this);
+        bottomViewMembership.setOnClickListener(this);
         mTextPointsBottom.setOnClickListener(this);
     }
 

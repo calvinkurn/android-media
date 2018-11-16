@@ -220,8 +220,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_membership_label
-                || source.getId() == R.id.text_membership_value_bottom) {
+        if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value
+                || source.getId() == R.id.bottom_view_membership) {
             openWebView(CommonConstant.WebLink.MEMBERSHIP);
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -276,10 +276,12 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         }
 
         getView().findViewById(R.id.text_membership_label).setOnClickListener(this);
+        getView().findViewById(R.id.img_egg).setOnClickListener(this);
+        getView().findViewById(R.id.text_membership_value).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
         getView().findViewById(R.id.view_point_saya).setOnClickListener(this);
         getView().findViewById(R.id.view_loyalty_saya).setOnClickListener(this);
-        mTextMembershipValueBottom.setOnClickListener(this);
+        bottomViewMembership.setOnClickListener(this);
         mTextPointsBottom.setOnClickListener(this);
     }
 
