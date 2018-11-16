@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.text.Html;
-
+import android.os.Build;
 import com.tokopedia.design.R;
 
 /**
