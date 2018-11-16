@@ -116,6 +116,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "beranda_trace";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+    public static final long ONE_SECOND = 1000l;
     @Inject
     HomePresenter presenter;
     private RecyclerView recyclerView;
@@ -1051,7 +1052,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onServerTimeReceived(long serverTimeUnix) {
         if(serverTimeOffset == 0){
-            long serverTimemillis = serverTimeUnix * 1000l;
+            long serverTimemillis = serverTimeUnix * ONE_SECOND;
             this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
         }
     }
