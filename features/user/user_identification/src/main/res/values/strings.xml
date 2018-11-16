@@ -28,4 +28,13 @@
 
     <string name="camera_face_title">Ambil Foto Diri Bersama KTP</string>
     <string name="camera_face_subtitle">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
+
+    <string name="change_button">Ubah</string>
+    <string name="form_final_info">Sebelum klik “Unggah”, pastikan foto yang Anda ambil sudah benar dan terlihat jelas.
+Dengan mengunggah, saya menyatakan bahwa data yang saya berikan adalah benar dan telah menyetujui Syarat &amp; Ketentuan.</string>
+    <string name="terms_and_condition">Syarat &amp; Ketentuan</string>
+    <string name="upload_button">Unggah</string>
+    
+    <string name="title_kyc_info">Dokumen Data Diri</string>
+
 </resources>

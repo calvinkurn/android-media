@@ -10,24 +10,25 @@ import com.tokopedia.abstraction.base.view.model.StepperModel;
 
 public class UserIdentificationStepperModel implements StepperModel {
 
-    private boolean isKtpValid;
-    private boolean isFaceValid;
+    private String ktpFile;
+    private String faceFile;
 
-    public boolean isKtpValid() {
-        return isKtpValid;
+    public String getKtpFile() {
+        return ktpFile;
     }
 
-    public void setKtpValid(boolean ktpValid) {
-        isKtpValid = ktpValid;
+    public void setKtpFile(String ktpFile) {
+        this.ktpFile = ktpFile;
     }
 
-    public boolean isFaceValid() {
-        return isFaceValid;
+    public String getFaceFile() {
+        return faceFile;
     }
 
-    public void setFaceValid(boolean faceValid) {
-        isFaceValid = faceValid;
+    public void setFaceFile(String faceFile) {
+        this.faceFile = faceFile;
     }
+
 
     @Override
     public int describeContents() {
@@ -36,16 +37,16 @@ public class UserIdentificationStepperModel implements StepperModel {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.isKtpValid ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFaceValid ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.ktpFile);
+        dest.writeSerializable(this.faceFile);
     }
 
     public UserIdentificationStepperModel() {
     }
 
     protected UserIdentificationStepperModel(Parcel in) {
-        this.isKtpValid = in.readByte() != 0;
-        this.isFaceValid = in.readByte() != 0;
+        this.ktpFile = (String) in.readSerializable();
+        this.faceFile = (String) in.readSerializable();
     }
 
     public static final Creator<UserIdentificationStepperModel> CREATOR = new

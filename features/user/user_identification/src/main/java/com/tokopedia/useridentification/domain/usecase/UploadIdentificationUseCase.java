@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view.domain.usecase;
+package com.tokopedia.useridentification.domain.usecase;
 
 import android.content.Context;
 
@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.useridentification.view.domain.pojo.UploadIdentificationPojo;
+import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 import com.tokopedia.useridentification.R;
 
 import java.util.HashMap;

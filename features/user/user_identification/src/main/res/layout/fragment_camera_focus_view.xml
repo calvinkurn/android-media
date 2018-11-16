@@ -87,7 +87,7 @@
         android:id="@+id/image_button_shutter"
         android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_40"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"

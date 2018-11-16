@@ -107,8 +107,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
-import com.tokopedia.useridentification.view.applink.UserIdentificationApplinkModule;
-import com.tokopedia.useridentification.view.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
 import org.json.JSONObject;
 

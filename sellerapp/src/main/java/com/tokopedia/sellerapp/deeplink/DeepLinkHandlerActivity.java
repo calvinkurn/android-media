@@ -49,8 +49,8 @@ import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-import com.tokopedia.useridentification.view.applink.UserIdentificationApplinkModule;
-import com.tokopedia.useridentification.view.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
 /**
  * @author rizkyfadillah on 26/07/17.

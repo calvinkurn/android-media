@@ -2,17 +2,22 @@ package com.tokopedia.useridentification.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -25,6 +30,9 @@ import java.io.File;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_FACE;
+import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_KTP;
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -48,10 +56,19 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private View buttonLayout;
     private View reCaptureButton;
     private View nextButton;
+    private String imagePath;
 
     private int viewMode;
 
     private CameraListener cameraListener;
+
+    public static Fragment createInstance(int viewMode) {
+        UserIdentificationCameraFragment fragment = new UserIdentificationCameraFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_VIEW_MODE, viewMode);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected String getScreenName() {
@@ -59,10 +76,24 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachActivity(activity);
+        }
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            viewMode = getArguments().getInt(ARG_VIEW_MODE);
+            viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
     }
 
@@ -139,7 +170,18 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onClick(View v) {
                 //TODO add pass image to model
-                getActivity().setResult(Activity.RESULT_OK);
+                Intent intent = new Intent();
+                switch (viewMode) {
+                    case (PARAM_VIEW_MODE_KTP):
+                        intent.putExtra(EXTRA_STRING_KTP, imagePath);
+                        break;
+                    case (PARAM_VIEW_MODE_FACE):
+                        intent.putExtra(EXTRA_STRING_FACE, imagePath);
+                        break;
+                    default:
+                        break;
+                }
+                getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }
         });
@@ -154,27 +196,30 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         cameraView.capturePicture();
     }
 
-    private void capturePictureWithCheck(){
+    private void capturePictureWithCheck() {
         UserIdentificationCameraFragmentPermissionsDispatcher.capturePictureWithCheck(this);
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    public void saveToFile(byte[] imageByte){
-        File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+    public void saveToFile(byte[] imageByte) {
+        File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
+                .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
         onSuccessImageTakenFromCamera(cameraResultFile);
     }
 
-    private void saveToFileWithCheck(byte[] imageByte){
+    private void saveToFileWithCheck(byte[] imageByte) {
         UserIdentificationCameraFragmentPermissionsDispatcher.saveToFileWithCheck(this, imageByte);
     }
 
     private void onSuccessImageTakenFromCamera(File cameraResultFile) {
-        File file = new File(cameraResultFile.getAbsolutePath());
-        if (file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+        if (cameraResultFile.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(cameraResultFile.getAbsolutePath());
             imagePreview.setImageBitmap(bitmap);
+            imagePath = cameraResultFile.getAbsolutePath();
+            showImagePreview();
+        } else {
+            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }
-        showImagePreview();
     }
 
     private void populateViewByViewMode(int viewMode) {

@@ -1,4 +1,4 @@
-package com.tokopedia.user_identification_common;
+package com.tokopedia.useridentification.view;
 
 /**
  * @author by nisie on 12/11/18.
@@ -9,6 +9,9 @@ public class KYCConstant {
     public static final String ERROR_MESSAGE_EMPTY = "1002";
 
     public static final int KYC_PROJECT_ID = 1;
+
+    public final static String EXTRA_STRING_KTP = "image_ktp";
+    public final static String EXTRA_STRING_FACE = "image_face";
 
     public static final int STATUS_ERROR = -2;
     public static final int STATUS_REJECTED = -1;

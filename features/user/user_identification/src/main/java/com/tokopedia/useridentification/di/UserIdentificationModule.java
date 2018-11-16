@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view.di;
+package com.tokopedia.useridentification.di;
 
 import android.content.Context;
 import android.content.res.Resources;

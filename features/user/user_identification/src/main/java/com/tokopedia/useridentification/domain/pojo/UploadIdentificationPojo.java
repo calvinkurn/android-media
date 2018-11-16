@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view.domain.pojo;
+package com.tokopedia.useridentification.domain.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

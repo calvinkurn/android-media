@@ -21,6 +21,8 @@ import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepper
 
 public abstract class BaseUserIdentificationStepperFragment<T extends UserIdentificationStepperModel> extends TkpdBaseV4Fragment {
 
+    protected static final int REQUEST_CODE_CAMERA = 1010;
+
     protected ImageView correctImage;
     protected ImageView wrongImage;
     protected TextView title;
@@ -34,6 +36,9 @@ public abstract class BaseUserIdentificationStepperFragment<T extends UserIdenti
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getContext() instanceof StepperListener) {
+            stepperListener = (StepperListener) getContext();
+        }
         if (getArguments()!= null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
         }
@@ -49,7 +54,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends UserIdenti
         return view;
     }
 
-    private void initView(View view) {
+    protected void initView(View view) {
         correctImage = view.findViewById(R.id.correct_image);
         wrongImage = view.findViewById(R.id.wrong_image);
         title = view.findViewById(R.id.title);

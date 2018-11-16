@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification.view.di;
+package com.tokopedia.useridentification.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFragment;

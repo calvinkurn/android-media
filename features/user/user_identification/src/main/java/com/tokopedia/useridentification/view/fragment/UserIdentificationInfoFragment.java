@@ -14,6 +14,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
+import com.tokopedia.useridentification.view.KYCConstant;
+import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
+import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.view.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.view.di.UserIdentificationComponent;
@@ -26,7 +30,8 @@ import javax.inject.Inject;
  */
 
 public class UserIdentificationInfoFragment extends BaseDaggerFragment
-        implements UserIdentificationInfo.View, GetApprovalStatusSubscriber.GetApprovalStatusListener {
+        implements UserIdentificationInfo.View,
+        GetApprovalStatusSubscriber.GetApprovalStatusListener {
 
     private ImageView image;
     private TextView title;
@@ -128,6 +133,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setTextColor(getResources().getColor(R.color.white));
         button.setBackgroundResource(R.drawable.green_button_rounded);
         button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(onGoToFormActivityButton());
     }
 
     private void showStatusVerified() {
@@ -137,6 +143,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setTextColor(getResources().getColor(R.color.black_38));
         button.setBackgroundResource(R.drawable.white_button_rounded);
         button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(onGoToTermsButton());
     }
 
     private void showStatusPending() {
@@ -151,6 +158,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setTextColor(getResources().getColor(R.color.white));
         button.setBackgroundResource(R.drawable.green_button_rounded);
         button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(onGoToFormActivityButton());
     }
 
     @Override
@@ -175,11 +183,20 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return this;
     }
 
-    private View.OnClickListener onClickNextButton() {
+    private View.OnClickListener onGoToFormActivityButton(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserIdentificationFormActivity.getIntent(getContext());
+            }
+        };
+    }
 
+    private View.OnClickListener onGoToTermsButton(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO alvinatin add url
             }
         };
     }
