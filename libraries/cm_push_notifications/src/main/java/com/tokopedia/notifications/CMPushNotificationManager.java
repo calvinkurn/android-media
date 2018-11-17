@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class CMPushNotificationManager {
 
-    private final String LOG = CMPushNotificationManager.class.getCanonicalName();
+    private final String TAG = CMPushNotificationManager.class.getCanonicalName();
     private static final CMPushNotificationManager sInstance;
     private Context mContext;
 
@@ -50,8 +50,7 @@ public class CMPushNotificationManager {
      * @param token
      */
     public void setFcmTokenCMNotif(String token) {
-        Log.e("error", "token: " + token);
-
+        Log.i(TAG, "token: " + token);
         if (mContext == null) {
             throw new IllegalArgumentException("Kindly invoke init before calling notification library");
         }
@@ -74,14 +73,14 @@ public class CMPushNotificationManager {
         }
         try {
             if (null == extras) {
-                Log.e(LOG, "CMPushNotificationManager: No Intent extra available");
+                Log.e(TAG, "CMPushNotificationManager: No Intent extra available");
             } else if (extras.containsKey(CMConstant.FCM_EXTRA_CONFIRMATION_KEY)) {
                 String confirmationValue =
                         extras.get(CMConstant.FCM_EXTRA_CONFIRMATION_KEY);
                 return confirmationValue.equals(CMConstant.FCM_EXTRA_CONFIRMATION_VALUE);
             }
         } catch (Exception e) {
-            Log.e(LOG, "CMPushNotificationManager: isFromMoEngagePlatform ", e);
+            Log.e(TAG, "CMPushNotificationManager: isFromMoEngagePlatform ", e);
         }
         return false;
     }
@@ -101,10 +100,9 @@ public class CMPushNotificationManager {
                 CMJobIntentService.enqueueWork(mContext, bundle);
             }
         } catch (Exception e) {
-            Log.e(LOG, "CMPushNotificationManager: handlePushPayload ", e);
+            Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e);
         }
     }
-
 
     private Bundle convertMapToBundle(Map<String, String> map) {
         Bundle bundle = new Bundle(map != null ? map.size() : 0);
@@ -115,7 +113,7 @@ public class CMPushNotificationManager {
         }
         return bundle;
     }
-    //todo check for channel enable or disabled by user...
+
 }
 
 /* private void notifyGeneral(BaseNotificationModel baseNotificationModel,

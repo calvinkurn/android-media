@@ -8,6 +8,7 @@
 
         <receiver android:name=".receiver.DismissReceiver" />
         <receiver android:name=".receiver.ActionButtonReceiver" />
+        <receiver android:name=".receiver.PersistentCloseReceiver" />
 
         <service
             android:name=".CMJobIntentService"

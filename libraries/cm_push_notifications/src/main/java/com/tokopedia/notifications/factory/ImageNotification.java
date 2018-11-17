@@ -12,33 +12,29 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
 /**
  * @author lalit.singh
  */
-public class ImageNotificationFactory extends BaseNotificationFactory {
+public class ImageNotification extends BaseNotification {
 
-    static String TAG = ImageNotificationFactory.class.getSimpleName();
 
-    private NotificationCompat.Builder builder;
-
-    public ImageNotificationFactory(Context context) {
-        super(context);
+    public ImageNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
+        super(context, baseNotificationModel, notificationId);
     }
 
     @Override
-    public Notification createNotification(BaseNotificationModel baseNotificationModel, int notificationId) {
-        builder = getBuilder();
+    public Notification createNotification() {
+        NotificationCompat.Builder builder = getBuilder();
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getDesc());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmapLargeIcon());
-        builder.setContentIntent(createPendingIntent(baseNotificationModel.getApplink(), 100, notificationId));
+        builder.setContentIntent(createPendingIntent(baseNotificationModel.getApplink(), 100));
         builder.setAutoCancel(true);
         builder.setDeleteIntent(createDismissPendingIntent(notificationId));
-        setBigPictureNotification(baseNotificationModel);
+        setBigPictureNotification(builder, baseNotificationModel);
         return builder.build();
     }
 
-    private void setBigPictureNotification(BaseNotificationModel baseNotificationModel) {
-        //todo Image link from BaseNotification Model
-        Bitmap bitmap  = CMNotificationUtils.loadBitmapFromUrl("");
+    private void setBigPictureNotification(NotificationCompat.Builder builder, BaseNotificationModel baseNotificationModel) {
+        Bitmap bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getBigImageURL());
         if (null != bitmap) {
             NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle()
                     .bigPicture(bitmap);

@@ -33,22 +33,27 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-public abstract class BaseNotificationFactory {
+public abstract class BaseNotification {
 
+    public int notificationId;
     protected Context context;
+    protected BaseNotificationModel baseNotificationModel;
 
-    public BaseNotificationFactory(Context context) {
+    public BaseNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
         this.context = context;
+        this.notificationId = notificationId;
+        this.baseNotificationModel = baseNotificationModel;
     }
 
-    public abstract Notification createNotification(BaseNotificationModel baseNotificationModel, int notificationId);
+    public abstract Notification createNotification();
 
     protected NotificationCompat.Builder getBuilder() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(context);
         }
-        return new NotificationCompat.Builder(context,CMConstant.NotificationGroup.CHANNEL_ID);
+        return new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
     }
+
 
     protected int getDrawableIcon() {
         if (GlobalConfig.isSellerApp())
@@ -87,20 +92,20 @@ public abstract class BaseNotificationFactory {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
     }
 
-    protected PendingIntent getActionButtonPendingIntent(ActionButton actionButton, int notificationId) {
+    protected PendingIntent getButtonPendingIntent(ActionButton actionButton) {
         PendingIntent resultPendingIntent;
         Intent intent = new Intent(context, ActionButtonReceiver.class);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId);
         intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, actionButton.getApplink());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getBroadcast(
+            resultPendingIntent = PendingIntent.getActivity(
                     context,
                     0,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
-            resultPendingIntent = PendingIntent.getBroadcast(
+            resultPendingIntent = PendingIntent.getActivity(
                     context,
                     notificationId,
                     intent,
@@ -110,7 +115,7 @@ public abstract class BaseNotificationFactory {
         return resultPendingIntent;
     }
 
-    protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId) {
+    protected PendingIntent createPendingIntent(String appLinks, int notificationType) {
         PendingIntent resultPendingIntent;
         Intent intent = RouteManager.getIntent(context, appLinks);
         intent.setData(Uri.parse(appLinks));
@@ -141,9 +146,17 @@ public abstract class BaseNotificationFactory {
     protected PendingIntent createDismissPendingIntent(int notificationId) {
         Intent intent = new Intent(context, DismissReceiver.class);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId);
-        return PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            return PendingIntent.getBroadcast(
+                    context,
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void createNotificationChannel(Context context) {
@@ -165,7 +178,6 @@ public abstract class BaseNotificationFactory {
         NotificationChannelGroup notificationChannelGroup = new NotificationChannelGroup(groupId, groupName);
         mNotificationManager.createNotificationChannelGroup(notificationChannelGroup);
     }
-
 
     protected long[] getVibratePattern() {
         return new long[]{500, 500};

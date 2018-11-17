@@ -10,23 +10,23 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-public class GeneralNotificationFactory extends BaseNotificationFactory {
+public class GeneralNotification extends BaseNotification {
 
-    public GeneralNotificationFactory(Context context) {
-        super(context);
+
+    public GeneralNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
+        super(context, baseNotificationModel, notificationId);
     }
 
     @Override
-    public Notification createNotification(BaseNotificationModel baseNotificationModel, int notificationId) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CMConstant.GENERAL);
+    public Notification createNotification() {
+        NotificationCompat.Builder builder = getBuilder();
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getDesc());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmapLargeIcon());
-        builder.setContentIntent(createPendingIntent(baseNotificationModel.getApplink(), 100, notificationId));
+        builder.setContentIntent(createPendingIntent(baseNotificationModel.getApplink(), 100));
         builder.setDeleteIntent(createDismissPendingIntent(notificationId));
         builder.setAutoCancel(true);
-
         return builder.build();
     }
 }

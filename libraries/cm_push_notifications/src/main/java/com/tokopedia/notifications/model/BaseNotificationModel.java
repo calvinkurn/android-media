@@ -16,9 +16,12 @@ public class BaseNotificationModel {
     private String desc;
     private String message;
     private String applink;
+    private String bigImageURL;
     private List<ActionButton> actionButton =new ArrayList<>();
     private JSONObject customValues;
     private String type;
+
+    private PersistentNotificationData persistentNotificationData;
 
 
     public String getTitle() {
@@ -75,5 +78,21 @@ public class BaseNotificationModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getBigImageURL() {
+        return bigImageURL;
+    }
+
+    public void setBigImageURL(String bigImageURL) {
+        this.bigImageURL = bigImageURL;
+    }
+
+    public PersistentNotificationData getPersistentNotificationData() {
+        return persistentNotificationData;
+    }
+
+    public void setPersistentNotificationData(PersistentNotificationData persistentNotificationData) {
+        this.persistentNotificationData = persistentNotificationData;
     }
 }

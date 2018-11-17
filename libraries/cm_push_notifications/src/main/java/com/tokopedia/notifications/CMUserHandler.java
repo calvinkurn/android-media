@@ -109,4 +109,5 @@ public class CMUserHandler {
     private String getUserId() {
         return ((CMRouter) mContext).getUserId();
     }
+
 }
