@@ -81,7 +81,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private ConstraintLayout mContainerPointDetail;
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
-    private boolean isPointsAvailable=false;
+    private boolean isPointsAvailable = false;
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new CatalogListingFragment();
@@ -198,7 +198,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (!eggUrl.isEmpty())
             ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
         mContainerPointDetail.setVisibility(View.VISIBLE);
-        isPointsAvailable=true;
+        isPointsAvailable = true;
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
     }
@@ -253,8 +253,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                             AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                            "click " + filters.getSortType().get(position).getText(),
-                            filters.getCategories().get(0).getName());
+                            "click " + filters.getCategories().get(0).getSubCategory().get(position).getName(),
+                            filters.getCategories().get(0).getSubCategory().get(position).getName());
 
                     CatalogListItemFragment fragment = (CatalogListItemFragment) mViewPagerAdapter.getRegisteredFragment(position);
 
