@@ -26,7 +26,7 @@ public class ProductImage implements Parcelable {
     private String s_url;
     @SerializedName(KEY_XS_URL)
     private String xs_url;
-    @SerializedName(value = KEY_M_ECS, alternate = KEY_S_ECS)
+    @SerializedName(KEY_M_ECS)
     private String m_ecs;
     @SerializedName(KEY_S_ECS)
     private String s_ecs;
@@ -38,26 +38,26 @@ public class ProductImage implements Parcelable {
     }
 
     public ProductImage(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_M_URL)){
+        if (!object.isNull(KEY_M_URL)) {
             setM_url(object.getString(KEY_M_URL));
-        } else {
+        } else if (!object.isNull(KEY_S_URL)) {
             setM_url(object.getString(KEY_S_URL));
         }
-        if(!object.isNull(KEY_S_URL)){
+        if (!object.isNull(KEY_S_URL)) {
             setS_url(object.getString(KEY_S_URL));
         }
-        if(!object.isNull(KEY_XS_URL)){
+        if (!object.isNull(KEY_XS_URL)) {
             setXs_url(object.getString(KEY_XS_URL));
         }
-        if(!object.isNull(KEY_M_ECS)){
+        if (!object.isNull(KEY_M_ECS)) {
             setM_ecs(object.getString(KEY_M_ECS));
-        } else {
+        } else if (!object.isNull(KEY_S_ECS)) {
             setM_ecs(object.getString(KEY_S_ECS));
         }
-        if(!object.isNull(KEY_S_ECS)){
+        if (!object.isNull(KEY_S_ECS)) {
             setS_ecs(object.getString(KEY_S_ECS));
         }
-        if(!object.isNull(KEY_XS_ECS)){
+        if (!object.isNull(KEY_XS_ECS)) {
             setXs_ecs(object.getString(KEY_XS_ECS));
         }
     }

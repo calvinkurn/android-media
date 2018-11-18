@@ -447,4 +447,9 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         return channelTitle;
     }
 
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroy();
+        super.onDestroyView();
+    }
 }

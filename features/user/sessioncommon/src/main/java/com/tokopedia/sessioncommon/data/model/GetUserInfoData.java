@@ -17,40 +17,40 @@ public class GetUserInfoData {
     private int userId;
     @SerializedName("full_name")
     @Expose
-    private String fullName;
+    private String fullName = "";
     @SerializedName("first_name")
     @Expose
-    private String firstName;
+    private String firstName = "";
     @SerializedName("name")
     @Expose
-    private String name;
+    private String name = "";
     @SerializedName("email")
     @Expose
-    private String email;
+    private String email = "";
     @SerializedName("gender")
     @Expose
     private int gender;
     @SerializedName("bday")
     @Expose
-    private String bday;
+    private String bday = "";
     @SerializedName("age")
     @Expose
     private int age;
     @SerializedName("phone")
     @Expose
-    private String phone;
+    private String phone = "";
     @SerializedName("phone_masked")
     @Expose
-    private String phoneMasked;
+    private String phoneMasked = "";
     @SerializedName("register_date")
     @Expose
-    private String registerDate;
+    private String registerDate = "";
     @SerializedName("status")
     @Expose
     private int status;
     @SerializedName("lang")
     @Expose
-    private String lang;
+    private String lang = "";
     @SerializedName("created_password")
     @Expose
     private boolean createdPassword;
@@ -62,16 +62,16 @@ public class GetUserInfoData {
     private List<Integer> roles = null;
     @SerializedName("profile_picture")
     @Expose
-    private String profilePicture;
+    private String profilePicture = "";
     @SerializedName("client_id")
     @Expose
-    private String clientId;
+    private String clientId = "";
     @SerializedName("completion")
     @Expose
     private int completion;
     @SerializedName("create_password_list")
     @Expose
-    private List<String> createPasswordList ;
+    private List<String> createPasswordList;
 
     public int getUserId() {
         return userId;

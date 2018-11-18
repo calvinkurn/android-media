@@ -43,7 +43,7 @@ public class IndiTokenRefresh {
 
     public void refreshToken() throws IOException {
         indiSession.clearToken();
-        Call<String> responseCall = getRetrofit().create(IndiApi.class).getAccessToken(AuthUtil.KEY.INDI_API_KEY);
+        Call<String> responseCall = getRetrofit().create(IndiApi.class).getAccessToken(ChallengesUrl.API_KEY);
 
         String tokenResponse = null;
         try {
@@ -72,7 +72,7 @@ public class IndiTokenRefresh {
         params.put(CLIENT_USER_NAME, userSession.getName());
         params.put(CLIENT_USER_IMAGE_URL, userSession.getProfilePicture());
 
-        Call<String> responseCall = getRetrofit().create(IndiApi.class).mapUser(params, token, AuthUtil.KEY.INDI_API_KEY);
+        Call<String> responseCall = getRetrofit().create(IndiApi.class).mapUser(params, token, ChallengesUrl.API_KEY);
 
         String responseString = null;
         try {
