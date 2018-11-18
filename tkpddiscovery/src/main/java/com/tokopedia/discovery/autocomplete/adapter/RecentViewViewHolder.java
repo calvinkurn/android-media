@@ -19,6 +19,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,11 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
                 recentImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        AutoCompleteTracking.eventClickRecentView(
+                                itemView.getContext(),
+                                Integer.toString((getAdapterPosition()+1)),
+                                item
+                        );
                         clickListener.onItemClicked(item.getApplink(), item.getUrl());
                     }
                 });
