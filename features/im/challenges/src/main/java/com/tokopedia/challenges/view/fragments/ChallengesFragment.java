@@ -106,10 +106,11 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        ChallengesCacheHandler.resetCache();
                         swipeRefreshLayout.setRefreshing(false);
                         getChallenges();
                     }
-                }, 4000);
+                }, 400);
             }
         });
 
