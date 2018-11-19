@@ -12,6 +12,7 @@ import com.tokopedia.useridentification.view.activity.UserIdentificationCameraAc
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
 
 /**
  * @author by alvinatin on 09/11/18.
@@ -39,7 +40,7 @@ public class UserIdentificationFormFaceFragment extends BaseUserIdentificationSt
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), 1);
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), PARAM_VIEW_MODE_FACE);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA);
             }
         });

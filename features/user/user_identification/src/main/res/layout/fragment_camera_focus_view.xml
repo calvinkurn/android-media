@@ -8,7 +8,7 @@
     android:background="@color/white">
 
     <com.otaliastudios.cameraview.CameraView
-        android:id="@+id/camera_view"
+        android:id="@+id/full_camera_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -64,11 +64,12 @@
         tools:text="Pastikan KTP berada dalam area kotak dan terbaca dengan jelas." />
 
     <ImageView
-        android:id="@+id/image_preview"
+        android:id="@+id/full_image_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:visibility="gone"
         android:layout_gravity="center"/>
 
     <com.tokopedia.useridentification.view.customview.FocusedCameraKTPView

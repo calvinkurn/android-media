@@ -107,11 +107,11 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void initView(View view) {
-        cameraView = view.findViewById(R.id.camera_view);
+        cameraView = view.findViewById(R.id.full_camera_view);
         closeButton = view.findViewById(R.id.close_button);
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
-        imagePreview = view.findViewById(R.id.image_preview);
+        imagePreview = view.findViewById(R.id.full_image_preview);
         focusedFaceView = view.findViewById(R.id.focused_view_face);
         focusedKtpView = view.findViewById(R.id.focused_view_ktp);
         shutterButton = view.findViewById(R.id.image_button_shutter);
