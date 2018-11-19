@@ -64,6 +64,9 @@ public class ProductDetailData implements Parcelable{
     @SerializedName("server_time_unix")
     @Expose
     private long serverTimeUnix;
+    @SerializedName("is_big_promo")
+    @Expose
+    private boolean isBigPromo;
 
     /**
      * this is not supposed to be here
@@ -174,6 +177,14 @@ public class ProductDetailData implements Parcelable{
         this.campaign = campaign;
     }
 
+    public boolean isBigPromo() {
+        return isBigPromo;
+    }
+
+    public void setBigPromo(boolean bigPromo) {
+        isBigPromo = bigPromo;
+    }
+
     public static class Builder {
         private ProductInfo info;
         private ProductStatistic statistic;
@@ -184,6 +195,7 @@ public class ProductDetailData implements Parcelable{
         private List<ProductImage> productImages = new ArrayList<ProductImage>();
         private ProductCashback cashBack;
         private long serverTimeUnix;
+        private boolean isBigPromo;
 
         private Builder() {
         }
@@ -237,8 +249,13 @@ public class ProductDetailData implements Parcelable{
             return this;
         }
 
+        public Builder setIsBigPromo(boolean isBigPromo) {
+            this.isBigPromo = isBigPromo;
+            return this;
+        }
+
         public Builder but() {
-            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack).setServerTimeUnix(serverTimeUnix);
+            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack).setServerTimeUnix(serverTimeUnix).setIsBigPromo(isBigPromo);
         }
 
         public ProductDetailData build() {
@@ -252,6 +269,7 @@ public class ProductDetailData implements Parcelable{
             productDetailData.setProductImages(productImages);
             productDetailData.setCashBack(cashBack);
             productDetailData.setServerTimeUnix(serverTimeUnix);
+            productDetailData.setBigPromo(isBigPromo);
             return productDetailData;
         }
     }
@@ -276,6 +294,7 @@ public class ProductDetailData implements Parcelable{
         dest.writeTypedList(this.reviewList);
         dest.writeParcelable(this.campaign,flags);
         dest.writeLong(this.serverTimeUnix);
+        dest.writeByte(this.isBigPromo ? (byte) 1 : (byte) 0);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -292,6 +311,7 @@ public class ProductDetailData implements Parcelable{
         this.reviewList = in.createTypedArrayList(Review.CREATOR);
         this.campaign = in.readParcelable(Campaign.class.getClassLoader());
         this.serverTimeUnix = in.readLong();
+        this.isBigPromo = in.readByte() == 1;
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {

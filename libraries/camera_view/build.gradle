@@ -1,5 +1,15 @@
 apply plugin: 'com.android.library'
+apply plugin: 'io.hansel.preprocessor.module'
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 // Required by bintray
 version = '1.5.1'
 group = 'com.otaliastudios'
