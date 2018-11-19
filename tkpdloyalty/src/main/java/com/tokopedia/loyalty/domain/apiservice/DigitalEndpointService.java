@@ -36,8 +36,8 @@ public class DigitalEndpointService extends BaseService<DigitalApi> {
     @Override
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
         return RetrofitFactory.createRetrofitDigitalConfig(processedBaseUrl)
-                .client(((DigitalOkHttpFactory)DigitalOkHttpFactory.create()
-                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy()))
+                .client(DigitalOkHttpFactory.create()
+                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
                         .buildClientDigitalAuth(TkpdBaseURL.DigitalApi.HMAC_KEY))
                 .build();
     }
