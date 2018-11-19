@@ -53,7 +53,8 @@ public class UserIdentificationFormFaceFragment extends BaseUserIdentificationSt
             if (getActivity() != null && getActivity().getIntent() != null) {
                 Bundle bundle = getActivity().getIntent().getExtras();
                 if (bundle != null) {
-                    stepperModel.setFaceFile(bundle.getString(EXTRA_STRING_FACE));
+                    String faceFile = data.getStringExtra(EXTRA_STRING_FACE);
+                    stepperModel.setFaceFile(faceFile);
                     stepperListener.goToNextPage(stepperModel);
                 } else {
                     Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();

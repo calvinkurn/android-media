@@ -55,7 +55,8 @@ public class UserIdentificationFormKtpFragment extends
             if (getActivity() != null && getActivity().getIntent() != null) {
                 Bundle bundle = getActivity().getIntent().getExtras();
                 if (bundle != null) {
-                    stepperModel.setKtpFile(bundle.getString(EXTRA_STRING_KTP));
+                    String ktpFile = data.getStringExtra(EXTRA_STRING_KTP);
+                    stepperModel.setKtpFile(ktpFile);
                     stepperListener.goToNextPage(stepperModel);
                 } else {
                     Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();

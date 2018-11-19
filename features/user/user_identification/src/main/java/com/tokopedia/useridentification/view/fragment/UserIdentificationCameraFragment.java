@@ -198,6 +198,24 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         showCameraView();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        destroyCamera();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroyCamera();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showCameraView();
+    }
+
     private void startCamera() {
         try {
             cameraView.clearCameraListeners();
