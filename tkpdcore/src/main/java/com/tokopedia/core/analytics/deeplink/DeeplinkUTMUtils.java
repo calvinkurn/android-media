@@ -112,7 +112,7 @@ public class DeeplinkUTMUtils {
             // App was opened directly by the user
         } else {
             // App was referred via a deep link
-            if (uri.getScheme().equals("http") || uri.getScheme().equals("https")) {
+            if (uri1.getScheme().equals("http") || uri1.getScheme().equals("https")) {
                 // App was opened from a browser
                 String host = uri.getHost();
 
