@@ -1,18 +1,15 @@
 package com.tokopedia.logisticaddaddress.di;
 
-import android.content.Context;
-
 import com.tokopedia.logisticaddaddress.data.DataSource;
+import com.tokopedia.logisticaddaddress.data.ManageAddressRepository;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetAddressUseCase;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressContract;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressPresenter;
-import com.tokopedia.logisticaddaddress.data.ManageAddressRepository;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.module.LogisticNetworkModule;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
