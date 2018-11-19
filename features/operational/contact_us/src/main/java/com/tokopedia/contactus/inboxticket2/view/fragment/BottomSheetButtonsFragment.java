@@ -83,6 +83,7 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
         if (id == R.id.tv_custom_reason) {
             if (selectedButton != null)
                 selectedButton.setSelected(false);
+            btnSend.setVisibility(View.GONE);
             if (v != selectedButton) {
                 v.setSelected(true);
                 selectedButton = v;
