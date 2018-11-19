@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/dp_8"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:elevation="@dimen/dp_16"
-    app:cardUseCompatPadding="true">
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="@dimen/dp_8"
+                                    app:cardCornerRadius="@dimen/dp_4"
+                                    app:cardUseCompatPadding="true"
+                                    app:elevation="@dimen/dp_16">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:minWidth="@dimen/dp_50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_big_notif_customerapp" />
+            tools:src="@drawable/ic_big_notif_customerapp"/>
 
         <ImageView
             android:id="@+id/image_badge"
@@ -31,7 +31,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/image_shop"
             app:layout_constraintEnd_toEndOf="@+id/image_shop"
-            tools:src="@drawable/ic_big_notif_customerapp" />
+            tools:src="@drawable/ic_big_notif_customerapp"/>
 
         <TextView
             android:id="@+id/text_shop_name"
@@ -43,7 +43,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_shop"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Oka Coffee" />
+            tools:text="Oka Coffee"/>
+
+        <TextView
+            android:id="@+id/text_shop_verification_status"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:layout_constraintLeft_toRightOf="@+id/image_shop"
+            app:layout_constraintStart_toEndOf="@+id/image_shop"
+            app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
+            tools:text="Kelengkapan Profile 75%"/>
 
         <ImageView
             android:id="@+id/shop_reputation"
@@ -53,16 +65,16 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@+id/image_shop"
-            app:layout_constraintTop_toBottomOf="@+id/text_shop_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_shop_verification_status"/>
 
         <com.tokopedia.design.widget.WarningTickerView
             android:id="@+id/verification_warning_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/image_shop"
             app:layout_constraintTop_toBottomOf="@+id/image_shop"
-            android:visibility="gone"
             tools:visibility="visible"/>
 
         <View
@@ -73,7 +85,7 @@
             android:background="@color/grey_300"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/verification_warning_ticker" />
+            app:layout_constraintTop_toBottomOf="@+id/verification_warning_ticker"/>
 
         <LinearLayout
             android:id="@+id/layout_deposit"
@@ -90,7 +102,7 @@
                 android:id="@+id/image_saldo"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
-                android:src="@drawable/ic_saldo_green" />
+                android:src="@drawable/ic_saldo_green"/>
 
             <TextView
                 android:id="@+id/text_saldo_label"
@@ -101,7 +113,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                android:text="@string/title_saldo_setting" />
+                android:text="@string/title_saldo_setting"/>
 
             <TextView
                 android:id="@+id/text_saldo_amount"
@@ -110,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:textAlignment="viewEnd"
-                tools:text="Rp 2.000.000" />
+                tools:text="Rp 2.000.000"/>
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

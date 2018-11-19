@@ -18,6 +18,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.user_identification_common.KYCConstant;
@@ -65,6 +66,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
     private static SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
+
+        setTickerSeller(context, accountModel, items);
 
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
@@ -221,6 +224,22 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
         sellerViewModel.setItems(items);
         return sellerViewModel;
+    }
+
+    private static void setTickerSeller(Context context, AccountModel accountModel, List<ParcelableViewModel> items) {
+        TickerViewModel sellerTickerModel = new TickerViewModel(new ArrayList<>());
+
+        if (accountModel.getKycStatusPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
+            sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
+        }
+
+        items.add(sellerTickerModel);
+
     }
 
     private static void setKyctoModel(ShopCardViewModel shopCard, AccountModel accountModel) {
