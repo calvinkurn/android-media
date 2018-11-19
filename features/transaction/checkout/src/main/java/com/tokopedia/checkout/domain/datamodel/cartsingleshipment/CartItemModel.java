@@ -45,6 +45,12 @@ public class CartItemModel implements Parcelable {
     private String errorMessage;
     private String errorMessageDescription;
 
+    private boolean protectionAvailable;
+    private int protectionPricePerProduct;
+    private String protectionLinkText;
+    private String protectionLinkUrl;
+    private boolean protectionOptIn;
+
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
     public AnalyticsProductCheckoutData getAnalyticsProductCheckoutData() {
@@ -245,6 +251,46 @@ public class CartItemModel implements Parcelable {
 
     public void setErrorMessageDescription(String errorMessageDescription) {
         this.errorMessageDescription = errorMessageDescription;
+    }
+
+    public boolean isProtectionAvailable() {
+        return protectionAvailable;
+    }
+
+    public void setProtectionAvailable(boolean protectionAvailable) {
+        this.protectionAvailable = protectionAvailable;
+    }
+
+    public int getProtectionPricePerProduct() {
+        return protectionPricePerProduct;
+    }
+
+    public void setProtectionPricePerProduct(int protectionPricePerProduct) {
+        this.protectionPricePerProduct = protectionPricePerProduct;
+    }
+
+    public String getProtectionLinkText() {
+        return protectionLinkText;
+    }
+
+    public void setProtectionLinkText(String protectionLinkText) {
+        this.protectionLinkText = protectionLinkText;
+    }
+
+    public String getProtectionLinkUrl() {
+        return protectionLinkUrl;
+    }
+
+    public void setProtectionLinkUrl(String protectionLinkUrl) {
+        this.protectionLinkUrl = protectionLinkUrl;
+    }
+
+    public boolean isProtectionOptIn() {
+        return protectionOptIn;
+    }
+
+    public void setProtectionOptIn(boolean protectionOptIn) {
+        this.protectionOptIn = protectionOptIn;
     }
 
     public CartItemModel() {
