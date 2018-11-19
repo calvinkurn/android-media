@@ -30,9 +30,12 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_HERO = "hero_4_image";
         public static final String LAYOUT_3_IMAGE = "3_image";
         public static final String LAYOUT_SPRINT = "sprint_3_image";
+        public static final String LAYOUT_SPRINT_LEGO = "sprint_lego";
+        public static final String LAYOUT_ORGANIC = "organic";
         public static final String LAYOUT_6_IMAGE = "6_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
         public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
+        public static final String LAYOUT_TOPADS = "topads";
 
         @Expose
         @SerializedName("id")
@@ -547,6 +550,42 @@ public class DynamicHomeChannel {
         @Expose
         @SerializedName("attribution")
         private String attribution;
+
+        @Expose
+        @SerializedName("impression")
+        private String impression;
+
+        @Expose
+        @SerializedName("cashback")
+        private String cashback;
+
+        @Expose
+        @SerializedName("productClickUrl")
+        private String productClickUrl;
+
+        public String getProductClickUrl() {
+            return productClickUrl;
+        }
+
+        public void setProductClickUrl(String productClickUrl) {
+            this.productClickUrl = productClickUrl;
+        }
+
+        public String getImpression() {
+            return impression;
+        }
+
+        public void setImpression(String impression) {
+            this.impression = impression;
+        }
+
+        public String getCashback() {
+            return cashback;
+        }
+
+        public void setCashback(String cashback) {
+            this.cashback = cashback;
+        }
 
         public String getLabel() {
             return label;

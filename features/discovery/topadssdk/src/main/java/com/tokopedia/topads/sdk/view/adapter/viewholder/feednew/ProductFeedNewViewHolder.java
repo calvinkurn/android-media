@@ -59,6 +59,10 @@ public class ProductFeedNewViewHolder extends AbstractViewHolder<ProductFeedNewV
 
     }
 
+    public void onViewRecycled() {
+        ImageLoader.clearImage(productImage);
+    }
+
     private void bindProduct(final Product product) {
         productImage.setImage(product.getImage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
