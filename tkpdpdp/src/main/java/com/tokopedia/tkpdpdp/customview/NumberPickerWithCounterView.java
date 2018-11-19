@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -14,6 +15,7 @@ import com.tokopedia.tkpdpdp.R;
 public class NumberPickerWithCounterView extends com.tokopedia.design.component.NumberPickerWithCounterView {
 
     private AppCompatEditText inputQuantity;
+    private String previousString;
 
     public NumberPickerWithCounterView(@NonNull Context context) {
         super(context);
@@ -38,25 +40,28 @@ public class NumberPickerWithCounterView extends com.tokopedia.design.component.
         inputQuantity.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().isEmpty()) {
-                    setTextNumberInputView(defaultValue);
-                    updateButtonState();
+                if (TextUtils.equals(s.toString(), previousString)) {
                     return;
                 }
 
+                previousString = s.toString();
+
                 int current = number;
                 try {
-                    current = Integer.parseInt(s.toString());
+                    current = Integer.valueOf(TextUtils.isEmpty(s.toString()) ? "0" : s.toString());
+                } catch (Exception e) {
+                    current = number;
                 } finally {
-                    if (current > maxValue) {
+                    if (current >= maxValue) {
                         setTextNumberInputView(maxValue);
                         updateButtonState();
                     }
 
-                    if (current < minValue) {
+                    if (current <= minValue) {
                         setTextNumberInputView(minValue);
                         updateButtonState();
                     }
+
                 }
             }
         });
