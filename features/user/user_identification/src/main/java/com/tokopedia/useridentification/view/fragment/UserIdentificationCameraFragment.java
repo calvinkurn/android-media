@@ -196,7 +196,24 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
         populateViewByViewMode(viewMode);
         showCameraView();
-        cameraView.addCameraListener(cameraListener);
+    }
+
+    private void startCamera() {
+        try {
+            cameraView.clearCameraListeners();
+            cameraView.addCameraListener(cameraListener);
+            cameraView.start();
+        } catch (Throwable e) {
+            // no-op
+        }
+    }
+
+    private void destroyCamera() {
+        try {
+            cameraView.destroy();
+        } catch (Throwable e) {
+            // no-op
+        }
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -251,7 +268,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         cameraView.setVisibility(View.VISIBLE);
         shutterButton.setVisibility(View.VISIBLE);
         switchCamera.setVisibility(View.VISIBLE);
-
+        startCamera();
         imagePreview.setVisibility(View.GONE);
         buttonLayout.setVisibility(View.GONE);
     }
@@ -260,7 +277,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         cameraView.setVisibility(View.GONE);
         shutterButton.setVisibility(View.GONE);
         switchCamera.setVisibility(View.GONE);
-
+        destroyCamera();
         imagePreview.setVisibility(View.VISIBLE);
         buttonLayout.setVisibility(View.VISIBLE);
     }

@@ -27,6 +27,28 @@
         app:cameraPlaySounds="true"
         app:cameraSessionType="picture" />
 
+
+    <ImageView
+        android:id="@+id/full_image_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+    <com.tokopedia.useridentification.view.customview.FocusedCameraKTPView
+        android:id="@+id/focused_view_ktp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <com.tokopedia.useridentification.view.customview.FocusCameraFaceView
+        android:id="@+id/focused_view_face"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
     <ImageButton
         android:id="@+id/close_button"
         android:layout_width="@dimen/dp_16"
@@ -63,26 +85,6 @@
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:text="Pastikan KTP berada dalam area kotak dan terbaca dengan jelas." />
 
-    <ImageView
-        android:id="@+id/full_image_preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        android:layout_gravity="center"/>
-
-    <com.tokopedia.useridentification.view.customview.FocusedCameraKTPView
-        android:id="@+id/focused_view_ktp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
-
-    <com.tokopedia.useridentification.view.customview.FocusCameraFaceView
-        android:id="@+id/focused_view_face"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/image_button_shutter"
