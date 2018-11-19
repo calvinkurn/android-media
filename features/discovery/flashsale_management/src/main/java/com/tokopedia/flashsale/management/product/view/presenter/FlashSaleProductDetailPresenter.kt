@@ -8,6 +8,7 @@ import com.tokopedia.flashsale.management.product.data.FlashSaleMutationReserveR
 import com.tokopedia.flashsale.management.product.domain.usecase.DereserveProductUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.ReserveProductUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.SubmitProductUseCase
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 class FlashSaleProductDetailPresenter @Inject constructor(val reserveProductUseCase: ReserveProductUseCase,
@@ -32,27 +33,25 @@ class FlashSaleProductDetailPresenter @Inject constructor(val reserveProductUseC
 
     fun dereserveProduct(campaignId: Int, productId: Int,
                          onSuccess: (FlashSaleDataContainer) -> Unit, onError: (Throwable) -> Unit) {
-        //TODO send the correct message
         dereserveProductUseCase.setParams(campaignId, productId, userSession.shopId.toInt())
         dereserveProductUseCase.execute(
                 {
                     if (it.flashSaleDataContainer.isSuccess()) {
                         onSuccess(it.flashSaleDataContainer)
                     } else {
-                        onError(MessageErrorException(it.flashSaleDataContainer.message))
+                        onError(RuntimeException(it.flashSaleDataContainer.statusCode.toString()))
                     }
                 }, onError)
     }
 
     fun submitProduct(campaignId: Int, productId:Int, onSuccess: (FlashSaleDataContainer) -> Unit, onError: (Throwable) -> Unit) {
-        //TODO send the correct message
         submitProductUseCase.setParams(campaignId, userSession.shopId.toInt(), productId)
         submitProductUseCase.execute(
                 {
                     if ( it.flashSaleDataContainer.isSuccess()) {
                         onSuccess(it.flashSaleDataContainer)
                     } else {
-                        onError(MessageErrorException(it.flashSaleDataContainer.message))
+                        onError(RuntimeException(it.flashSaleDataContainer.statusCode.toString()))
                     }
                 }, onError)
     }

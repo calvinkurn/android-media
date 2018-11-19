@@ -9,14 +9,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.di.DaggerCampaignComponent
+import com.tokopedia.flashsale.management.product.data.FlashSalePostProductItem
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
+import com.tokopedia.flashsale.management.product.data.FlashSaleSubmissionProductItem
 
 class FlashSaleProductDetailActivity : BaseSimpleActivity(), HasComponent<CampaignComponent>,
         FlashSaleProductDetailFragment.OnFlashSaleProductDetailFragmentListener {
     var flashSaleProductItem: FlashSaleProductItem? = null
 
     override fun getProduct(): FlashSaleProductItem {
-        return flashSaleProductItem ?: FlashSaleProductItem()
+        return flashSaleProductItem ?: FlashSaleSubmissionProductItem()
     }
 
     override fun getComponent() = DaggerCampaignComponent.builder()

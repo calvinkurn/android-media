@@ -34,9 +34,7 @@ import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleSubmitLabelAdapter
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
-import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
+import com.tokopedia.flashsale.management.product.data.*
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
 import com.tokopedia.flashsale.management.view.activity.CampaignActivity
 import com.tokopedia.graphql.data.GraphqlClient
@@ -128,7 +126,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         loadCampaignInfoAndTnc()
     }
 
-    fun loadContent() {
+    fun loadInitContent() {
         super.loadInitialData()
     }
 
@@ -249,27 +247,41 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             tvTnc.text = spannable
 
             statusLabel = flashSaleTncContent.statusInfo.label
-            loadContent()
+            loadInitContent()
             renderUILabel()
         }
     }
 
     override fun loadData(page: Int) {
-        //TODO load Data based on campaignStatus
         // status = submission ==> getEligibleProductList
         // status = other ==> getPost
-        // if status is Changed from submission to other, loadInitialData()
-        presenter.getEligibleProductList(campaignId,
-                campaignSlug,
-                (page - 1) * PER_PAGE, PER_PAGE,
-                searchInputView.searchText,
-                getFilterId(),
-                onSuccess = {
-                    onSuccessGetEligibleList(it)
-                },
-                onError = {
-                    super.showGetListError(it)
-                })
+        // when status is loaded, page will always from start
+        if (KEY_STATUS_REGISTRATION.equals(statusLabel, true)) {
+            // in submission
+            presenter.getEligibleProductList(campaignId,
+                    campaignSlug,
+                    (page - 1) * PER_PAGE, PER_PAGE,
+                    searchInputView.searchText,
+                    getFilterId(),
+                    onSuccess = {
+                        onSuccessGetEligibleList(it)
+                    },
+                    onError = {
+                        super.showGetListError(it)
+                    })
+        } else {
+            // post submission
+            presenter.getPostProductList(campaignId,
+                    campaignSlug,
+                    (page - 1) * PER_PAGE, PER_PAGE,
+                    searchInputView.searchText,
+                    onSuccess = {
+                        onSuccessGetPostList(it)
+                    },
+                    onError = {
+                        super.showGetListError(it)
+                    })
+        }
     }
 
     private fun getFilterId(): Int {
@@ -293,10 +305,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         return emptyModel
     }
 
-    private fun onSuccessGetEligibleList(flashSaleProductHeader: FlashSaleProductHeader) {
-        super.renderList(flashSaleProductHeader.flashSaleProduct, hasNextPage(flashSaleProductHeader.flashSaleProduct))
+    private fun onSuccessGetEligibleList(flashSaleSubmissionProductData: FlashSaleSubmissionProductData) {
+        super.renderList(flashSaleSubmissionProductData.flashSaleSubmissionProduct, hasNextPage(flashSaleSubmissionProductData.flashSaleSubmissionProduct))
         if (TextUtils.isEmpty(searchInputView.searchText) &&
-                flashSaleProductHeader.flashSaleProduct.isEmpty() &&
+                flashSaleSubmissionProductData.flashSaleSubmissionProduct.isEmpty() &&
                 currentPage <= 1 &&
                 (flashSaleSubmitLabelAdapter?.selectedIndex ?: -1) == -1) {
             hideSearchInputView()
@@ -304,8 +316,24 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             showSearchInputView()
         }
 
-        pendingCount = flashSaleProductHeader.pendingCount
-        submittedCount = flashSaleProductHeader.submittedCount
+        pendingCount = flashSaleSubmissionProductData.pendingCount
+        submittedCount = flashSaleSubmissionProductData.submittedCount
+        renderUILabel()
+        renderBottom()
+    }
+
+    private fun onSuccessGetPostList(getMojitoPostProduct: GetMojitoPostProduct) {
+        super.renderList(getMojitoPostProduct.data.flashSalePostProductList, hasNextPage(getMojitoPostProduct))
+        if (TextUtils.isEmpty(searchInputView.searchText) &&
+                getMojitoPostProduct.data.flashSalePostProductList.isEmpty() &&
+                currentPage <= 1 &&
+                (flashSaleSubmitLabelAdapter?.selectedIndex ?: -1) == -1) {
+            hideSearchInputView()
+        } else {
+            showSearchInputView()
+        }
+        pendingCount = 0
+        submittedCount = 0
         renderUILabel()
         renderBottom()
     }
@@ -323,7 +351,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         }
     }
 
-    private fun needShowChip() = KEY_STATUS_REGISTRATION.equals(statusLabel, false) && submittedCount > 0
+    private fun needShowChip() = KEY_STATUS_REGISTRATION.equals(statusLabel, true) && submittedCount > 0
     private fun needShowBottom() = submitStatus && pendingCount > 0
 
     private fun renderUILabel() {
@@ -351,6 +379,11 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         return list.isNotEmpty() && list.size >= PER_PAGE
     }
 
+    private fun hasNextPage(getMojitoPostProduct: GetMojitoPostProduct): Boolean {
+        return !getMojitoPostProduct.data.flashSalePostProductList.isEmpty() &&
+                getMojitoPostProduct.data.flashSalePostProductList.size + adapter.dataSize < getMojitoPostProduct.header.totalData
+    }
+
     override fun onSwipeRefresh() {
         presenter.clearCache()
         super.onSwipeRefresh()
@@ -371,10 +404,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         getComponent(CampaignComponent::class.java).inject(this)
     }
 
-    override fun onItemClicked(flashSaleProductItem: FlashSaleProductItem) {
+    override fun onItemClicked(item: FlashSaleProductItem) {
         context?.let {
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
-                    flashSaleProductItem, allowEditProducts && flashSaleProductItem.campaign.isEligible
+                    item, allowEditProducts && item.isEligible()
                     && statusLabel.equals(KEY_STATUS_REGISTRATION, false))
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
@@ -383,15 +416,15 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     override fun isLoading() = adapter.isLoading
 
     override fun onStatusSelected(position: Int) {
-        loadContent()
+        loadInitContent()
     }
 
     override fun onStatusCleared() {
-        loadContent()
+        loadInitContent()
     }
 
     override fun onSearchSubmitted(text: String?) {
-        loadContent()
+        loadInitContent()
     }
 
     override fun onSearchTextChanged(text: String?) {

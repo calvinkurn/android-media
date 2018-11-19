@@ -11,9 +11,7 @@ import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
-import com.tokopedia.flashsale.management.product.data.getProductStatusColor
-import com.tokopedia.flashsale.management.product.data.getProductStatusString
+import com.tokopedia.flashsale.management.product.data.*
 import kotlinx.android.synthetic.main.widget_flash_sale_product_widget.view.*
 
 /**
@@ -46,57 +44,70 @@ class FlashSaleProductWidget @JvmOverloads constructor(
         if (item == null) {
             visibility = View.GONE
         } else {
-            if (item.campaign.message.isEmpty()) {
+            if (item.getMessage().isEmpty()) {
                 vgBlackMessage.visibility = View.GONE
             } else {
-                tvMessage.text = item.campaign.message
+                tvMessage.text = item.getMessage()
                 vgBlackMessage.visibility = View.VISIBLE
             }
-            if (hideDetail || item.campaign.discountedPercentage <= 0) {
+            if (hideDetail || item.getDiscountPercentage() <= 0) {
                 tvPercentOff.visibility = View.GONE
             } else {
                 tvPercentOff.text = context.getString(R.string.x_percent_off,
-                        KMNumbers.formatToPercentString(item.campaign.discountedPercentage.toDouble() / 100)).replace("%%","%")
+                        KMNumbers.formatToPercentString(item.getDiscountPercentage().toDouble() / 100)).replace("%%", "%")
                 tvPercentOff.visibility = View.VISIBLE
             }
-            ImageHandler.LoadImage(ivProduct, item.campaign.imageUrl)
+            ImageHandler.LoadImage(ivProduct, item.getProductImageUrl())
             tvDepartmentName.text = item.getDepartmentNameString()
-            if (item.campaign.productStatus == FlashSaleProductStatusTypeDef.RESERVE) {
-                // show mark
-                ivCheckMark.visibility = View.VISIBLE
-                tvStatus.visibility = View.GONE
-            } else {
-                ivCheckMark.visibility = View.GONE
-                if (item.campaign.getProductStatusString(context).isEmpty()) {
+            if (item is FlashSaleSubmissionProductItem) {
+                if (item.getProductStatus() == FlashSaleProductStatusTypeDef.RESERVE) {
+                    // show mark
+                    ivCheckMark.visibility = View.VISIBLE
                     tvStatus.visibility = View.GONE
                 } else {
-                    tvStatus.text = item.campaign.getProductStatusString(context)
-                    val statusColor = item.campaign.getProductStatusColor()
-                    tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
-                    tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
-                    tvStatus.visibility = View.VISIBLE
+                    ivCheckMark.visibility = View.GONE
+                    if (item.getProductStatus().getProductStatusString(context).isEmpty()) {
+                        tvStatus.visibility = View.GONE
+                    } else {
+                        tvStatus.text = item.getProductStatus().getProductStatusString(context)
+                        val statusColor = item.campaign.getProductStatusColor()
+                        tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
+                        tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
+                        tvStatus.visibility = View.VISIBLE
+                    }
                 }
+            } else {
+                ivCheckMark.visibility = View.GONE
+                tvStatus.visibility = View.GONE
             }
-            tvProductName.text = item.name
-            if (hideDetail || item.campaign.discountedPercentage <= 0) {
+            tvProductName.text = item.getProductName()
+            if (hideDetail || item.getDiscountPercentage() <= 0) {
                 tvStrikePrice.visibility = View.GONE
             } else {
                 tvStrikePrice.paintFlags = tvStrikePrice.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
-                tvStrikePrice.text = KMNumbers.formatRupiahString(item.campaign.originalPrice.toLong())
+                tvStrikePrice.text = KMNumbers.formatRupiahString(item.getCampOriginalPrice().toLong())
                 tvStrikePrice.visibility = View.VISIBLE
             }
-            if (item.campaign.discountedPrice > 0 && !hideDetail) {
-                tvFinalPrice.text = KMNumbers.formatRupiahString(item.campaign.discountedPrice.toLong())
-            } else if (item.campaign.originalPrice > 0) {
-                tvFinalPrice.text = KMNumbers.formatRupiahString(item.campaign.originalPrice.toLong())
+            if (item.getDiscountedPrice() > 0 && !hideDetail) {
+                tvFinalPrice.text = KMNumbers.formatRupiahString(item.getDiscountedPrice().toLong())
+            } else if (item.getCampOriginalPrice() > 0) {
+                tvFinalPrice.text = KMNumbers.formatRupiahString(item.getCampOriginalPrice().toLong())
             } else {
-                tvFinalPrice.text = KMNumbers.formatRupiahString(item.price.toLong())
+                tvFinalPrice.text = KMNumbers.formatRupiahString(item.getProductPrice().toLong())
             }
-            if (hideDetail || item.campaign.stock <= 0) {
-                tvStock.visibility = View.GONE
-            } else {
-                val stockText = "${context.getString(R.string.label_stock)} ${item.campaign.stock}"
-                tvStock.text = stockText
+            // if product is in Submission, text will be Stock xx
+            if (item is FlashSaleSubmissionProductItem) {
+                if (hideDetail || item.getCustomStock() <= 0) {
+                    tvStock.visibility = View.GONE
+                } else {
+                    val stockText = "${context.getString(R.string.label_stock)} ${item.getCustomStock()}"
+                    tvStock.text = stockText
+                    tvStock.visibility = View.VISIBLE
+                }
+            } else { // product is post submission, text will be Sold x from x
+                tvStock.text = context.getString(R.string.label_sold_x_from_x,
+                        item.getOriginalCustomStock() - item.getCustomStock(),
+                        item.getOriginalCustomStock())
                 tvStock.visibility = View.VISIBLE
             }
             visibility = View.VISIBLE

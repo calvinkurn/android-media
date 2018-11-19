@@ -23,10 +23,7 @@ import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleProductActionTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
-import com.tokopedia.flashsale.management.product.data.FlashSaleDataContainer
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
-import com.tokopedia.flashsale.management.product.data.getProductStatusAction
-import com.tokopedia.flashsale.management.product.data.getProductStatusActionString
+import com.tokopedia.flashsale.management.product.data.*
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductDetailPresenter
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_product_detail.*
@@ -88,13 +85,16 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
         tvCategoryText.text = flashSaleProductItem.getDepartmentNameString()
 
-        canEdit = canSubmit && flashSaleProductItem.campaign.getProductStatusAction() == FlashSaleProductActionTypeDef.RESERVE
+        canEdit = canSubmit && flashSaleProductItem is FlashSaleSubmissionProductItem &&
+                flashSaleProductItem.campaign.getProductStatusAction() == FlashSaleProductActionTypeDef.RESERVE
 
         renderPrice(savedInstanceState)
         renderDiscount(savedInstanceState)
         renderStock(savedInstanceState)
 
-        if (canSubmit && flashSaleProductItem.campaign.getProductStatusAction() != FlashSaleProductActionTypeDef.NO_ACTION) {
+        if (flashSaleProductItem is FlashSaleSubmissionProductItem &&
+                canSubmit &&
+                flashSaleProductItem.campaign.getProductStatusAction() != FlashSaleProductActionTypeDef.NO_ACTION) {
             context?.run {
                 btnRequestProduct.text = flashSaleProductItem.campaign.getProductStatusActionString(this)
                 btnRequestProduct.setOnClickListener {
@@ -114,28 +114,33 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
         if (savedInstanceState == null) {
-            if (flashSaleProductItem.campaign.discountedPrice > 0) {
-                etPrice.setText(flashSaleProductItem.campaign.discountedPrice.toString())
+            if (flashSaleProductItem.getDiscountedPrice() > 0) {
+                etPrice.setText(flashSaleProductItem.getDiscountedPrice().toString())
             } else {
                 etPrice.setText("0")
             }
         }
-        if (flashSaleProductItem.campaign.criteria.priceMin > 0) {
-            if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
-                tilPrice.setHelper(context!!.getString(R.string.price_criteria_above_x,
-                        KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMin.toLong())))
+
+        if (flashSaleProductItem is FlashSaleSubmissionProductItem) {
+            if (flashSaleProductItem.campaign.criteria.priceMin > 0) {
+                if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
+                    tilPrice.setHelper(context!!.getString(R.string.price_criteria_above_x,
+                            KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMin.toLong())))
+                } else {
+                    tilPrice.setHelper(context!!.getString(R.string.price_criteria_between_x_and_x,
+                            KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMin.toLong()),
+                            KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMax.toLong())))
+                }
             } else {
-                tilPrice.setHelper(context!!.getString(R.string.price_criteria_between_x_and_x,
-                        KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMin.toLong()),
-                        KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMax.toLong())))
+                if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
+                    tilPrice.setHelper(null)
+                } else {
+                    tilPrice.setHelper(context!!.getString(R.string.price_criteria_below_x,
+                            KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMax.toLong())))
+                }
             }
         } else {
-            if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
-                tilPrice.setHelper(null)
-            } else {
-                tilPrice.setHelper(context!!.getString(R.string.price_criteria_below_x,
-                        KMNumbers.formatRupiahString(flashSaleProductItem.campaign.criteria.priceMax.toLong())))
-            }
+            tilPrice.setHelper(null)
         }
         etPrice.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
@@ -159,35 +164,40 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
             calculateDiscount()
         }
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
-        if (flashSaleProductItem.campaign.criteria.discountPercentageMin > 0) {
-            if (flashSaleProductItem.campaign.criteria.discountPercentageMax <= 0) {
-                tilDiscount.setHelper(context!!.getString(R.string.price_discount_above_x,
-                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
-                                true)))
+        if (flashSaleProductItem is FlashSaleSubmissionProductItem) {
+            if (flashSaleProductItem.campaign.criteria.discountPercentageMin > 0) {
+                if (flashSaleProductItem.campaign.criteria.discountPercentageMax <= 0) {
+                    tilDiscount.setHelper(context!!.getString(R.string.price_discount_above_x,
+                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
+                                    true)))
+                } else {
+                    tilDiscount.setHelper(context!!.getString(R.string.price_discount_between_x_and_x,
+                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
+                                    true),
+                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
+                                    true)))
+                }
             } else {
-                tilDiscount.setHelper(context!!.getString(R.string.price_discount_between_x_and_x,
-                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
-                                true),
-                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
-                                true)))
+                if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
+                    tilDiscount.setHelper(null)
+                } else {
+                    tilDiscount.setHelper(context!!.getString(R.string.price_discount_below_x,
+                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
+                                    true)))
+                }
             }
         } else {
-            if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
-                tilDiscount.setHelper(null)
-            } else {
-                tilDiscount.setHelper(context!!.getString(R.string.price_discount_below_x,
-                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
-                                true)))
-            }
+            tilDiscount.setHelper(null)
         }
     }
 
     private fun calculateDiscount() {
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
         val discount: Double = if (canSubmit) {
-            (flashSaleProductItem.price - getFinalPrice()) * 100 / flashSaleProductItem.price
+            val productPrice = flashSaleProductItem.getProductPrice()
+            (productPrice - getFinalPrice()) * 100 / productPrice
         } else {
-            flashSaleProductItem.campaign.discountedPercentage.toDouble()
+            flashSaleProductItem.getDiscountPercentage().toDouble()
         }
         if (discount > 0 && discount < 100) {
             etDiscount.setText(getString(R.string.flash_sale_x_percent,
@@ -204,7 +214,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     private fun renderStock(savedInstanceState: Bundle?) {
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
         if (savedInstanceState == null) {
-            val stock = flashSaleProductItem.campaign.stock
+            val stock = flashSaleProductItem.getCustomStock()
             if (stock > 0) {
                 etStock.setText(stock.toString())
             } else {
@@ -212,9 +222,13 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
             }
         }
 
-        if (flashSaleProductItem.campaign.criteria.stockMin > 0) {
-            tilStock.setHelper(context!!.getString(R.string.flash_sale_min_stock_x,
-                    flashSaleProductItem.campaign.criteria.stockMin))
+        if (flashSaleProductItem is FlashSaleSubmissionProductItem) {
+            if (flashSaleProductItem.campaign.criteria.stockMin > 0) {
+                tilStock.setHelper(context!!.getString(R.string.flash_sale_min_stock_x,
+                        flashSaleProductItem.campaign.criteria.stockMin))
+            } else {
+                tilStock.setHelper(null)
+            }
         } else {
             tilStock.setHelper(null)
         }
@@ -240,48 +254,50 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
             return
         }
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
-        when (flashSaleProductItem.campaign.getProductStatusAction()) {
-            FlashSaleProductActionTypeDef.NO_ACTION -> { /*no-op*/
-            }
-            FlashSaleProductActionTypeDef.RESERVE -> {
-                if (!isInputValid()) {
-                    return
+        if (flashSaleProductItem is FlashSaleSubmissionProductItem) {
+            when (flashSaleProductItem.campaign.getProductStatusAction()) {
+                FlashSaleProductActionTypeDef.NO_ACTION -> { /*no-op*/
                 }
-                showProgressDialog()
-                presenter.reserveProduct(campaignId,
-                        flashSaleProductItem.campaign.criteria.criteriaId,
-                        flashSaleProductItem.id, getFinalPrice().toInt(), 0, etStock.text.toString().toInt(),
-                        onSuccess = {
-                            onSuccessDoAction(it)
-                        },
-                        onError = {
-                            onErrorDoAction(it)
-                        })
-            }
-            FlashSaleProductActionTypeDef.CANCEL -> {
-                showProgressDialog()
-                // cancel reserve
-                presenter.dereserveProduct(campaignId, flashSaleProductItem.id,
-                        onSuccess = {
-                            onSuccessDoAction(it)
-                        },
-                        onError = {
-                            onErrorDoAction(it)
-                        })
+                FlashSaleProductActionTypeDef.RESERVE -> {
+                    if (!isInputValid()) {
+                        return
+                    }
+                    showProgressDialog()
+                    presenter.reserveProduct(campaignId,
+                            flashSaleProductItem.campaign.criteria.criteriaId,
+                            flashSaleProductItem.id, getFinalPrice().toInt(), 0, etStock.text.toString().toInt(),
+                            onSuccess = {
+                                onSuccessDoAction(it)
+                            },
+                            onError = {
+                                onErrorDoAction(it)
+                            })
+                }
+                FlashSaleProductActionTypeDef.CANCEL -> {
+                    showProgressDialog()
+                    // cancel reserve
+                    presenter.dereserveProduct(campaignId, flashSaleProductItem.id,
+                            onSuccess = {
+                                onSuccessDoAction(it)
+                            },
+                            onError = {
+                                onErrorDoAction(it)
+                            })
 
-            }
-            FlashSaleProductActionTypeDef.UNDO_CANCEL -> {
-                showProgressDialog()
-                // submit api
-                presenter.submitProduct(campaignId, flashSaleProductItem.id,
-                        onSuccess = {
-                            onSuccessDoAction(it)
-                        },
-                        onError = {
-                            onErrorDoAction(it)
-                        })
-            }
-            else -> { /*no-op*/
+                }
+                FlashSaleProductActionTypeDef.UNDO_CANCEL -> {
+                    showProgressDialog()
+                    // submit api
+                    presenter.submitProduct(campaignId, flashSaleProductItem.id,
+                            onSuccess = {
+                                onSuccessDoAction(it)
+                            },
+                            onError = {
+                                onErrorDoAction(it)
+                            })
+                }
+                else -> { /*no-op*/
+                }
             }
         }
     }
@@ -290,7 +306,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         hideProgressDialog()
         val resultIntent = Intent()
         if (it.flashSaleCriteriaResponseData.isNotEmpty()) {
-            val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
+            val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct() as FlashSaleSubmissionProductItem
             it.flashSaleCriteriaResponseData
                     .firstOrNull { it.criteriaId == flashSaleProductItem.campaign.criteria.criteriaId }
                     ?.run {
@@ -321,45 +337,60 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun isPriceValid(): Boolean {
-        val criteria = onFlashSaleProductDetailFragmentListener.getProduct().campaign.criteria
-        val finalPriceInput = getFinalPrice()
-        if ((criteria.priceMin > 0 && finalPriceInput < criteria.priceMin) ||
-                (criteria.priceMax > 0 && finalPriceInput > criteria.priceMax)) {
-            tilPrice.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
-            return false
+        val item = onFlashSaleProductDetailFragmentListener.getProduct()
+        if (item is FlashSaleSubmissionProductItem) {
+            val criteria = item.campaign.criteria
+            val finalPriceInput = getFinalPrice()
+            if ((criteria.priceMin > 0 && finalPriceInput < criteria.priceMin) ||
+                    (criteria.priceMax > 0 && finalPriceInput > criteria.priceMax)) {
+                tilPrice.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
+                return false
+            } else {
+                tilPrice.setHelperTextAppearance(R.style.helperTextAppearance)
+                return true
+            }
         } else {
-            tilPrice.setHelperTextAppearance(R.style.helperTextAppearance)
             return true
         }
     }
 
     private fun isDiscountValid(): Boolean {
-        val criteria = onFlashSaleProductDetailFragmentListener.getProduct().campaign.criteria
-        val discountInput = StringUtils.convertToNumeric(etDiscount.text.toString(), true)
-        if ((criteria.discountPercentageMin > 0 && discountInput < criteria.discountPercentageMin) ||
-                (criteria.discountPercentageMax > 0 && discountInput > criteria.discountPercentageMax)) {
-            tilDiscount.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
-            context?.let {
-                etDiscount.setTextColor(ContextCompat.getColor(it, R.color.tkpd_dark_red))
+        val item = onFlashSaleProductDetailFragmentListener.getProduct()
+        if (item is FlashSaleSubmissionProductItem) {
+            val criteria = item.campaign.criteria
+            val discountInput = StringUtils.convertToNumeric(etDiscount.text.toString(), true)
+            if ((criteria.discountPercentageMin > 0 && discountInput < criteria.discountPercentageMin) ||
+                    (criteria.discountPercentageMax > 0 && discountInput > criteria.discountPercentageMax)) {
+                tilDiscount.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
+                context?.let {
+                    etDiscount.setTextColor(ContextCompat.getColor(it, R.color.tkpd_dark_red))
+                }
+                return false
+            } else {
+                tilDiscount.setHelperTextAppearance(R.style.helperTextAppearance)
+                context?.let {
+                    etDiscount.setTextColor(ContextCompat.getColor(it, R.color.tkpd_main_green))
+                }
+                return true
             }
-            return false
         } else {
-            tilDiscount.setHelperTextAppearance(R.style.helperTextAppearance)
-            context?.let {
-                etDiscount.setTextColor(ContextCompat.getColor(it, R.color.tkpd_main_green))
-            }
             return true
         }
     }
 
     private fun isStockValid(): Boolean {
-        val criteria = onFlashSaleProductDetailFragmentListener.getProduct().campaign.criteria
-        val stockInput = StringUtils.convertToNumeric(etStock.text.toString(), true)
-        if (stockInput < 0 || stockInput < criteria.stockMin) {
-            tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
-            return false
+        val item = onFlashSaleProductDetailFragmentListener.getProduct()
+        if (item is FlashSaleSubmissionProductItem) {
+            val criteria = item.campaign.criteria
+            val stockInput = StringUtils.convertToNumeric(etStock.text.toString(), true)
+            if (stockInput < 0 || stockInput < criteria.stockMin) {
+                tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
+                return false
+            } else {
+                tilStock.setHelperTextAppearance(R.style.helperTextAppearance)
+                return true
+            }
         } else {
-            tilStock.setHelperTextAppearance(R.style.helperTextAppearance)
             return true
         }
     }

@@ -10,5 +10,6 @@ mutation mojito_dereserve_product($campaign_id:Int!, $product_id:Int!, $shop_id:
       message
     }
     message
+    status_code
   }
 }

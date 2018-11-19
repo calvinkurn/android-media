@@ -25,10 +25,16 @@ class CampaignModule {
     fun provideGraphqlUseCase() = com.tokopedia.graphql.domain.GraphqlUseCase()
 
     @CampaignScope
-    @Named(FlashSaleConstant.NAMED_REQUEST_PRODUCT_LIST)
+    @Named(FlashSaleConstant.NAMED_REQUEST_SUBMISSION_PRODUCT_LIST)
     @Provides
     fun provideGqlRawStringRequestProductList(@ApplicationContext context: Context) =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_mojito_eligible_seller_product)
+
+    @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_POST_PRODUCT_LIST)
+    @Provides
+    fun provideGqlRawStringRequestPostProductList(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_mojito_post_seller_product)
 
     @CampaignScope
     @Named(FlashSaleConstant.NAMED_REQUEST_CATEGORY_LIST)

@@ -9,5 +9,6 @@ mutation mojito_submit_product($camp_id:Int!, $shop_id:Int!, $product_id:Int){
               message
           }
           message
+          status_code
       }
 }

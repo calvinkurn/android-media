@@ -22,6 +22,7 @@
     <string name="label_limit_request">Batas Pengajuan</string>
     <string name="label_min_stock">Min Stok</string>
     <string name="label_stock">Stok</string>
+    <string name="label_sold_x_from_x">Terjual %1$d dari %2$d</string>
     <string name="label_min_cashback">Min Cashback</string>
     <string name="label_notes">Catatan Lainnya</string>
     <string name="range_format">%1$s-%2$s</string>

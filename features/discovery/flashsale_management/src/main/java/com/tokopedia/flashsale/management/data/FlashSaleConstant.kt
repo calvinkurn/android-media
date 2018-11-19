@@ -12,22 +12,30 @@ object FlashSaleConstant {
 
     const val PARAM_ALL = "all"
     const val PARAM_OFFSET = "offset"
+    const val PARAM_SOURCE = "source"
+    const val PARAM_START = "start"
     const val PARAM_ROWS = "rows"
     const val PARAM_SLUG = "slug"
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_CAMPAIGN_TYPE = "campaignType"
     const val PARAM_CAMP_ID = "camp_id"
+    const val PARAM_CID = "cid"
     const val PARAM_CAMPAIGN_ID = "campaign_id"
     const val PARAM_CRITERIA_ID = "criteria_id"
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_DISCOUNTED_PRICE = "discounted_price"
     const val PARAM_CUSTOM_STOCK = "custom_stock"
     const val PARAM_CASHBACK = "cashback"
-    const val PARAM_QUERY = "q"
+    const val PARAM_Q = "q"
     const val PARAM_FILTER = "filter"
     const val PARAM_STATUS = "status"
 
-    const val NAMED_REQUEST_PRODUCT_LIST = "request_product_list"
+    const val SOURCE_SELLERDASHBOARD = "sellerdashboard"
+
+
+
+    const val NAMED_REQUEST_SUBMISSION_PRODUCT_LIST = "request_product_list"
+    const val NAMED_REQUEST_POST_PRODUCT_LIST = "request_post_product_list"
     const val NAMED_REQUEST_CATEGORY_LIST = "request_category_list"
     const val NAMED_REQUEST_TNC = "request_tnc"
     const val NAMED_REQUEST_SUBMIT_PRODUCT = "request_submit_product"

@@ -1,28 +1,23 @@
 package com.tokopedia.flashsale.management.product.data
 
-import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.FlashSaleProductActionTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
-import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 
 /**
  * Created by hendry on 25/10/18.
  */
-data class FlashSaleProductGQL(
+data class FlashSaleSubmissionProductGQL(
         @SerializedName("getMojitoEligibleSellerProduct")
-        @Expose val flashSaleProductGQLData: FlashSaleProductGQLData)
+        @Expose val mojitoEligibleSellerProduct: MojitoEligibleSellerProduct)
 
-data class FlashSaleProductGQLData(
+data class MojitoEligibleSellerProduct(
         @SerializedName("data")
-        @Expose val data: FlashSaleProductHeader)
+        @Expose val data: FlashSaleSubmissionProductData)
 
-data class FlashSaleProductHeader(
+data class FlashSaleSubmissionProductData(
         @SerializedName("submitted_count")
         @Expose val submittedCount: Int = 0,
 
@@ -30,18 +25,15 @@ data class FlashSaleProductHeader(
         @Expose val pendingCount: Int = 0,
 
         @SerializedName("products")
-        @Expose val flashSaleProduct: List<FlashSaleProductItem> = listOf()
+        @Expose val flashSaleSubmissionProduct: List<FlashSaleSubmissionProductItem> = listOf()
 )
 
-data class FlashSaleProductItem(
+data class FlashSaleSubmissionProductItem(
         @SerializedName("id")
         @Expose val id: Int = 0,
 
         @SerializedName("price")
         @Expose val price: Int = 0,
-
-        @SerializedName("rating")
-        @Expose val rating: Float = 0F,
 
         @SerializedName("name")
         @Expose val name: String = "",
@@ -53,25 +45,20 @@ data class FlashSaleProductItem(
 
         @SerializedName("campaign")
         @Expose val campaign: FlashSaleProductItemCampaign = FlashSaleProductItemCampaign()
-) : Parcelable, Visitable<FlashSaleProductAdapterTypeFactory> {
-
-    fun getDepartmentNameString() = departmentName.map { it }.joinToString(" > ")
+) : FlashSaleProductItem(), Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readInt(),
-            parcel.readFloat(),
             parcel.readString(),
             parcel.createIntArray().toList(),
             parcel.createStringArrayList(),
             parcel.readParcelable(FlashSaleProductItemCampaign::class.java.classLoader)) {
     }
 
-    override fun type(typeFactory: FlashSaleProductAdapterTypeFactory) = typeFactory.type(this)
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeInt(price)
-        parcel.writeFloat(rating)
         parcel.writeString(name)
         parcel.writeIntArray(departmentId.toIntArray())
         parcel.writeStringList(departmentName)
@@ -82,15 +69,31 @@ data class FlashSaleProductItem(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<FlashSaleProductItem> {
-        override fun createFromParcel(parcel: Parcel): FlashSaleProductItem {
-            return FlashSaleProductItem(parcel)
+    companion object CREATOR : Parcelable.Creator<FlashSaleSubmissionProductItem> {
+        override fun createFromParcel(parcel: Parcel): FlashSaleSubmissionProductItem {
+            return FlashSaleSubmissionProductItem(parcel)
         }
 
-        override fun newArray(size: Int): Array<FlashSaleProductItem?> {
+        override fun newArray(size: Int): Array<FlashSaleSubmissionProductItem?> {
             return arrayOfNulls(size)
         }
     }
+
+    override fun getProductId() = id
+    override fun getProductName() = name
+    override fun getProductDepartmentId()= departmentId
+    override fun getProductImageUrl() = campaign.imageUrl
+    override fun getProductPrice() = price
+    override fun getProductDepartmentName() = departmentName
+    override fun getCampOriginalPrice() = campaign.originalPrice
+    override fun getDiscountPercentage() = campaign.discountedPercentage
+    override fun getDiscountedPrice() = campaign.discountedPrice
+    override fun getCustomStock() = campaign.stock
+    override fun getOriginalCustomStock() = campaign.stock
+    override fun getStockSoldPercentage() = 0
+    override fun isEligible() = campaign.isEligible
+    override fun getMessage() = campaign.message
+    override fun getProductStatus() = campaign.productStatus
 }
 
 data class FlashSaleProductItemCampaign(

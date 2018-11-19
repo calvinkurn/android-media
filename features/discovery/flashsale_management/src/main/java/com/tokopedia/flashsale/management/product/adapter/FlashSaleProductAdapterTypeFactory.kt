@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flashsale.management.product.adapter.viewholder.FlashSaleProductViewHolder
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
+import com.tokopedia.flashsale.management.product.data.FlashSaleSubmissionProductItem
 
 class FlashSaleProductAdapterTypeFactory: BaseAdapterTypeFactory(){
 

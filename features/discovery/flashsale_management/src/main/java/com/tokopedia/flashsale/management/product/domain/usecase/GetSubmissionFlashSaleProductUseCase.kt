@@ -2,21 +2,18 @@ package com.tokopedia.flashsale.management.product.domain.usecase
 
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
-import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.flashsale.management.product.data.FlashSaleSubmissionProductGQL
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetFlashSaleProductUseCase @Inject
-constructor(@Named(FlashSaleConstant.NAMED_REQUEST_PRODUCT_LIST) private val gqlRawString: String,
-            graphqlRepository: GraphqlRepository): GraphqlUseCase<FlashSaleProductGQL>(graphqlRepository) {
+class GetSubmissionFlashSaleProductUseCase @Inject
+constructor(@Named(FlashSaleConstant.NAMED_REQUEST_SUBMISSION_PRODUCT_LIST) private val gqlRawString: String,
+            graphqlRepository: GraphqlRepository): GraphqlUseCase<FlashSaleSubmissionProductGQL>(graphqlRepository) {
 
     init {
-        setTypeClass(FlashSaleProductGQL::class.java)
+        setTypeClass(FlashSaleSubmissionProductGQL::class.java)
         setGraphqlQuery(gqlRawString)
     }
 
@@ -27,7 +24,7 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_PRODUCT_LIST) private val gql
                 FlashSaleConstant.PARAM_ROWS to rows,
                 FlashSaleConstant.PARAM_SHOP_ID to shopId)
         if (query.isNotEmpty()) {
-            map.put(FlashSaleConstant.PARAM_QUERY, query)
+            map.put(FlashSaleConstant.PARAM_Q, query)
         }
         if (filterId != FlashSaleFilterProductListTypeDef.TYPE_ALL.id) {
             map.put(FlashSaleConstant.PARAM_FILTER, filterId)

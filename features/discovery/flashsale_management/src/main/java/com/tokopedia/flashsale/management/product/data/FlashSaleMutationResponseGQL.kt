@@ -23,7 +23,10 @@ class FlashSaleDataContainer(
         @Expose val flashSaleCriteriaResponseData: List<FlashSaleCriteriaResponseData>,
 
         @SerializedName("message")
-        @Expose val message: String) {
+        @Expose val message: String,
+
+        @SerializedName("status_code")
+        @Expose val statusCode: Int) {
     companion object {
         val SUCCESS = "success"
     }

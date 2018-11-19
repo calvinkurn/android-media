@@ -4,14 +4,17 @@ import android.content.Context
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleProductActionTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
+import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef.NOTHING
 
 /**
  * Created by hendry on 14/11/18.
  */
 
-fun FlashSaleProductItemCampaign.getProductStatusString(context: Context): String {
-    return when (productStatus) {
-        FlashSaleProductStatusTypeDef.NOTHING -> ""
+fun FlashSaleProductItem.getDepartmentNameString() = getProductDepartmentName().map { it }.joinToString(" > ")
+
+fun Int.getProductStatusString(context: Context): String {
+    return when (this) {
+        NOTHING -> ""
         FlashSaleProductStatusTypeDef.SUBMITTED -> context.getString(R.string.flash_sale_registered)
         FlashSaleProductStatusTypeDef.REJECTED -> context.getString(R.string.flash_sale_rejected)
         FlashSaleProductStatusTypeDef.RESERVE -> context.getString(R.string.flash_sale_reserve)

@@ -26,7 +26,7 @@ constructor(private val userSession: UserSession,
         val parameters = mapOf(FlashSaleConstant.PARAM_ALL to all,
                 FlashSaleConstant.PARAM_OFFSET to offset,
                 FlashSaleConstant.PARAM_CAMPAIGN_TYPE to campaign_type,
-                FlashSaleConstant.PARAM_QUERY to q,
+                FlashSaleConstant.PARAM_Q to q,
                 FlashSaleConstant.PARAM_ROWS to rows,
                 FlashSaleConstant.PARAM_STATUS to status,
                 FlashSaleConstant.PARAM_SHOP_ID to userSession.shopId.toInt())

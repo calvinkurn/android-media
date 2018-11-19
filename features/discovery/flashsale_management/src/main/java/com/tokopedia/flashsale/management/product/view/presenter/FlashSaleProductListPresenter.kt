@@ -1,22 +1,20 @@
 package com.tokopedia.flashsale.management.product.view.presenter
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlist.Criteria
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.product.data.*
-import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleCategoryListUseCase
-import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleProductUseCase
-import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleTncUseCase
-import com.tokopedia.flashsale.management.product.domain.usecase.SubmitProductUseCase
+import com.tokopedia.flashsale.management.product.domain.usecase.*
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import kotlinx.coroutines.experimental.*
 import java.lang.NullPointerException
+import java.lang.RuntimeException
 import javax.inject.Inject
 import javax.inject.Named
 
-class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductUseCase: GetFlashSaleProductUseCase,
+class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSaleProductUseCase: GetSubmissionFlashSaleProductUseCase,
+                                                        val getPostFlashSaleProductUseCase: GetPostFlashSaleProductUseCase,
                                                         val getFlashSaleCategoryListUseCase: GetFlashSaleCategoryListUseCase,
                                                         @Named(FlashSaleConstant.NAMED_REQUEST_SELLER_STATUS)
                                                         private val sellerStatusUseCase: GraphqlUseCase<SellerStatus.Response>,
@@ -28,7 +26,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
 
     fun getEligibleProductList(campaignId: Int, campaignSlug: String, offset: Int, rows: Int, q: String,
                                filterId: Int,
-                               onSuccess: (FlashSaleProductHeader) -> Unit, onError: (Throwable) -> Unit) {
+                               onSuccess: (FlashSaleSubmissionProductData) -> Unit, onError: (Throwable) -> Unit) {
         getProductListJob.cancel()
         getProductListJob = Job()
         val handler = CoroutineExceptionHandler { _, ex ->
@@ -38,10 +36,10 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
         }
         GlobalScope.launch(Dispatchers.Main + getProductListJob + handler) {
             val shopId = userSession.shopId.toInt()
-            getFlashSaleProductUseCase.setParams(campaignId, offset, rows, q,
+            getSubmissionFlashSaleProductUseCase.setParams(campaignId, offset, rows, q,
                     shopId, filterId)
             val flashSaleProductJob = GlobalScope.async(Dispatchers.Default + handler) {
-                getFlashSaleProductUseCase.executeOnBackground()
+                getSubmissionFlashSaleProductUseCase.executeOnBackground()
             }
 
             getFlashSaleCategoryListUseCase.setParams(campaignSlug, shopId)
@@ -52,23 +50,40 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
         }
     }
 
-    fun mergeResult(flashSaleProductGQLResult: FlashSaleProductGQL,
-                    flashSaleCategoryListResult: FlashSaleCategoryListGQL): FlashSaleProductHeader {
-        val resultProductList = flashSaleProductGQLResult.flashSaleProductGQLData.data
-        if (resultProductList.flashSaleProduct.isEmpty()) {
+    fun getPostProductList(campaignId: Int, campaignSlug: String, start: Int, rows: Int, q: String,
+                           onSuccess: (GetMojitoPostProduct) -> Unit, onError: (Throwable) -> Unit) {
+        getProductListJob.cancel()
+        getProductListJob = Job()
+        val handler = CoroutineExceptionHandler { _, ex ->
+            GlobalScope.launch(Dispatchers.Main) {
+                onError(ex)
+            }
+        }
+        GlobalScope.launch(Dispatchers.Main + getProductListJob + handler) {
+            val shopId = userSession.shopId.toInt()
+            getPostFlashSaleProductUseCase.setParams(campaignId, start, rows, q, shopId.toString())
+            val flashSaleProductJob = GlobalScope.async(Dispatchers.Default + handler) {
+                getPostFlashSaleProductUseCase.executeOnBackground()
+            }
+
+            getFlashSaleCategoryListUseCase.setParams(campaignSlug, shopId)
+            val flashSaleCategoryJob = GlobalScope.async(Dispatchers.Default + handler) {
+                getFlashSaleCategoryListUseCase.executeOnBackground()
+            }
+            onSuccess(mergeResult(flashSaleProductJob.await(), flashSaleCategoryJob.await()))
+        }
+    }
+
+    fun mergeResult(flashSaleSubmissionProductGQLResult: FlashSaleSubmissionProductGQL,
+                    flashSaleCategoryListResult: FlashSaleCategoryListGQL): FlashSaleSubmissionProductData {
+        val resultProductList = flashSaleSubmissionProductGQLResult.mojitoEligibleSellerProduct.data
+        if (resultProductList.flashSaleSubmissionProduct.isEmpty()) {
             return resultProductList
         }
 
-        val resultCategoryList: List<Criteria> = flashSaleCategoryListResult.flashSaleCategoryListGQLData.flashSaleCategoryListGQLContent.criteriaList
+        val categoryMap = getCategoryMap(flashSaleCategoryListResult)
 
-        val categoryMap = HashMap<Long, String>()
-        for (criteria in resultCategoryList) {
-            for (category in criteria.categories) {
-                categoryMap.put(category.depId, category.depName)
-            }
-        }
-
-        for (flashSaleProductItem in resultProductList.flashSaleProduct) {
+        for (flashSaleProductItem in resultProductList.flashSaleSubmissionProduct) {
             val departmentNameList = mutableListOf<String>()
             for (departmentId in flashSaleProductItem.departmentId) {
                 if (categoryMap.containsKey(departmentId.toLong())) {
@@ -83,6 +98,42 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
         return resultProductList
     }
 
+    fun getCategoryMap(flashSaleCategoryListResult: FlashSaleCategoryListGQL):HashMap<Long, String>{
+        val resultCategoryList: List<Criteria> = flashSaleCategoryListResult.flashSaleCategoryListGQLData.flashSaleCategoryListGQLContent.criteriaList
+
+        val categoryMap = HashMap<Long, String>()
+        for (criteria in resultCategoryList) {
+            for (category in criteria.categories) {
+                categoryMap.put(category.depId, category.depName)
+            }
+        }
+        return categoryMap
+    }
+
+    fun mergeResult(flashSalePostProductGQL: FlashSalePostProductGQL,
+                    flashSaleCategoryListResult: FlashSaleCategoryListGQL): GetMojitoPostProduct {
+        val resultProductList = flashSalePostProductGQL.getMojitoPostProduct.data
+        if (resultProductList.flashSalePostProductList.isEmpty()) {
+            return flashSalePostProductGQL.getMojitoPostProduct
+        }
+
+        val categoryMap = getCategoryMap(flashSaleCategoryListResult)
+
+        for (flashSaleProductItem in resultProductList.flashSalePostProductList) {
+            val departmentNameList = mutableListOf<String>()
+            for (departmentId in flashSaleProductItem.departmentId) {
+                if (categoryMap.containsKey(departmentId.toLong())) {
+                    val departmentName = categoryMap.get(departmentId.toLong())
+                    departmentName?.run {
+                        departmentNameList.add(departmentName)
+                    }
+                }
+            }
+            flashSaleProductItem.departmentName = departmentNameList
+        }
+        return flashSalePostProductGQL.getMojitoPostProduct
+    }
+
     fun getSellerStatus(rawQuery: String, campaignSlug: String,
                         onSuccess: (SellerStatus) -> Unit, onError: (Throwable) -> Unit) {
         sellerStatusUseCase.setGraphqlQuery(rawQuery)
@@ -93,14 +144,13 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
     }
 
     fun submitSubmission(campaignId: Int, onSuccess: (FlashSaleDataContainer) -> Unit, onError: (Throwable) -> Unit) {
-        //TODO send the correct message
         submitProductUseCase.setParams(campaignId, userSession.shopId.toInt())
         submitProductUseCase.execute(
                 {
                     if ( it.flashSaleDataContainer.isSuccess()) {
                         onSuccess(it.flashSaleDataContainer)
                     } else {
-                        onError(MessageErrorException(it.flashSaleDataContainer.message))
+                        onError(RuntimeException(it.flashSaleDataContainer.statusCode.toString()))
                     }
                 }, onError)
     }
