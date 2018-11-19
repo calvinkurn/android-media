@@ -53,8 +53,6 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
-    testImplementation 'org.powermock:powermock-module-junit4:1.7.3'
-    testImplementation 'org.powermock:powermock-api-mockito2:1.7.0'
 
     implementation rootProject.ext.debugToolsDependencies.stetho
 }
