@@ -267,6 +267,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
                 focusedFaceView.setVisibility(View.VISIBLE);
                 title.setText(R.string.camera_face_title);
                 subtitle.setText(R.string.camera_face_subtitle);
+                toggleCamera();
                 break;
         }
     }
