@@ -47,5 +47,6 @@
     <string name="dialog_delete_passenger_btn_cancel">Batal</string>
     <string name="snackbar_message_success_delete">Data penumpang berhasil dihapus.</string>
     <string name="title_list_passenger_page">Dafttar Penumpang</string>
-
+    <string name="error_msg_pick_passenger_data_not_valid">Data penumpang belum lengkap.</string>
+    <string name="action_snackbar_error_edit">Edit</string>
 </resources>

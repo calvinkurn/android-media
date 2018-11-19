@@ -15,9 +15,9 @@ public interface TravelPassengerListContract {
 
         void showMessageErrorInSnackBar(int resId);
 
-        void showMessageErrorInSnackBar(String message);
+        void showActionErrorInSnackBar(TravelPassenger travelPassenger, int resId);
 
-        void navigateToBookingPassenger(TravelPassenger trainPassengerViewModel);
+        void showMessageErrorInSnackBar(Throwable throwable);
 
         void renderPassengerList(List<TravelPassenger> travelPassengerList);
 
@@ -25,11 +25,19 @@ public interface TravelPassengerListContract {
 
         void hideProgressBar();
 
+        void onClickSelectPassenger(TravelPassenger travelPassenger);
+
+        void successUpdatePassengerDb();
+
+        void failedUpdatePassengerDb();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getPassengerList(boolean resetPassengerListSelected);
+
+        void selectPassenger(TravelPassenger passengerBooking, TravelPassenger travelPassenger);
 
         void updatePassenger(String travelIdPassenger, boolean isSelected);
 

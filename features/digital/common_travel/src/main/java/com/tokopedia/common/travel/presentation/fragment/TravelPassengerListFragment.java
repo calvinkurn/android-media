@@ -15,16 +15,18 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.di.CommonTravelComponent;
-import com.tokopedia.common.travel.presentation.presenter.TravelPassengerListPresenter;
-import com.tokopedia.common.travel.presentation.activity.TravelPassengerUpdateActivity;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerListActivity;
+import com.tokopedia.common.travel.presentation.activity.TravelPassengerUpdateActivity;
 import com.tokopedia.common.travel.presentation.adapter.TravelPassengerListAdapter;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerListContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.presentation.presenter.TravelPassengerListPresenter;
 import com.tokopedia.common.travel.utils.CommonTravelUtils;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.util.List;
@@ -41,7 +43,7 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     private RecyclerView passengerListRecyclerView;
     private TravelPassengerListAdapter adapter;
     private ActionListener listener;
-    private TravelPassenger passengerSelected;
+    private TravelPassenger passengerBooking;
     private ProgressBar progressBar;
     private LinearLayout layoutPassngerList;
     private boolean resetPassengerListSelected;
@@ -86,40 +88,36 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        passengerSelected = getArguments().getParcelable(TravelPassengerListActivity.PASSENGER_DATA);
-        resetPassengerListSelected = getArguments().getBoolean(TravelPassengerListActivity.RESET_PASSENGER_LIST_SELECTED);
-
+        getDataFromBundle();
         initRecyclerView();
+        setActionListener();
         presenter.getPassengerList(resetPassengerListSelected);
+    }
 
+    private void getDataFromBundle() {
+        passengerBooking = getArguments().getParcelable(TravelPassengerListActivity.PASSENGER_DATA);
+        resetPassengerListSelected = getArguments().getBoolean(TravelPassengerListActivity.RESET_PASSENGER_LIST_SELECTED);
+    }
+
+    private void setActionListener() {
         addNewPassengerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TravelPassengerUpdateActivity.callingIntent(getActivity(), new TravelPassenger(), TravelPassengerUpdateActivity.ADD_PASSENGER_TYPE));
+                startActivity(TravelPassengerUpdateActivity.callingIntent(getActivity(),
+                        new TravelPassenger(), TravelPassengerUpdateActivity.ADD_PASSENGER_TYPE));
             }
         });
     }
 
     private void initRecyclerView() {
-        adapter = new TravelPassengerListAdapter(passengerSelected);
+        adapter = new TravelPassengerListAdapter(passengerBooking);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(passengerListRecyclerView.getContext());
         dividerItemDecoration.setUsePaddingLeft(true);
         passengerListRecyclerView.addItemDecoration(dividerItemDecoration);
         adapter.setListener(new TravelPassengerListAdapter.ActionListener() {
             @Override
             public void onClickChoosePassenger(TravelPassenger travelPassenger) {
-                travelPassenger.setIdLocal(passengerSelected.getIdLocal());
-                listener.onClickPassenger(travelPassenger);
-            }
-
-            @Override
-            public void onUpdatePassenger(String idPassenger, boolean isSelected) {
-                presenter.updatePassenger(idPassenger, isSelected);
-            }
-
-            @Override
-            public void onShowErrorCantPickPassenger() {
-                showMessageErrorInSnackBar(R.string.error_message_choose_passenger);
+                presenter.selectPassenger(passengerBooking, travelPassenger);
             }
         });
         passengerListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -130,17 +128,26 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     @SuppressWarnings("Range")
     @Override
     public void showMessageErrorInSnackBar(int resId) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
+        ToasterError.showClose(getActivity(), getString(resId));
     }
 
     @Override
-    public void showMessageErrorInSnackBar(String message) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+    public void showActionErrorInSnackBar(TravelPassenger travelPassenger, int resId) {
+        ToasterError.make(getActivity().findViewById(android.R.id.content),
+                getString(resId), BaseToaster.LENGTH_LONG)
+                .setAction(getActivity().getString(R.string.action_snackbar_error_edit), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(TravelPassengerUpdateActivity.callingIntent(getActivity(), travelPassenger,
+                                TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE));
+                    }
+                }).show();
     }
 
     @Override
-    public void navigateToBookingPassenger(TravelPassenger travelPassenger) {
-
+    public void showMessageErrorInSnackBar(Throwable throwable) {
+        String errorMessage = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        ToasterError.showClose(getActivity(), errorMessage);
     }
 
     @Override
@@ -162,6 +169,23 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
             progressBar.setVisibility(View.GONE);
             layoutPassngerList.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onClickSelectPassenger(TravelPassenger travelPassenger) {
+        listener.onClickPassenger(travelPassenger);
+        presenter.updatePassenger(passengerBooking.getIdPassenger(), false);
+        presenter.updatePassenger(travelPassenger.getIdPassenger(), true);
+    }
+
+    @Override
+    public void successUpdatePassengerDb() {
+
+    }
+
+    @Override
+    public void failedUpdatePassengerDb() {
+
     }
 
     @Override
