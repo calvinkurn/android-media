@@ -1,6 +1,7 @@
 package com.tokopedia.useridentification.view.fragment;
 
-import android.graphics.BitmapFactory;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,12 +17,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
+
+import java.io.File;
+
+import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.useridentification.view.KYCConstant.REQUEST_CODE_CAMERA_FACE;
+import static com.tokopedia.useridentification.view.KYCConstant.REQUEST_CODE_CAMERA_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 15/11/18.
@@ -52,7 +64,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
         if (getContext() instanceof StepperListener) {
             stepperListener = (StepperListener) getContext();
         }
-        if (getArguments()!= null && savedInstanceState == null) {
+        if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
         }
     }
@@ -73,29 +85,52 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
     }
 
     private void setContentView() {
-        imageKtp.setImageBitmap(BitmapFactory.decodeFile(stepperModel.getKtpFile()));
-        imageFace.setImageBitmap(BitmapFactory.decodeFile(stepperModel.getFaceFile()));
+        setImageKtp(stepperModel.getKtpFile());
+        setImageFace(stepperModel.getFaceFile());
         generateLink();
         buttonKtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO alvin add go to camera activity
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                        PARAM_VIEW_MODE_KTP);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });
 
         buttonFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO alvin add go to camera activity
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                        PARAM_VIEW_MODE_FACE);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
             }
         });
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO change this to upload action
                 stepperListener.finishPage();
             }
         });
+    }
+
+    private void setImageKtp(String imagePath) {
+        File ktpFile = new File(imagePath);
+        if (ktpFile.exists()) {
+            ImageHandler.loadImageFromFile(getContext(), imageKtp, ktpFile);
+        } else {
+            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setImageFace(String imagePath) {
+        File faceFile = new File(imagePath);
+        if (faceFile.exists()) {
+            ImageHandler.loadImageFromFile(getContext(), imageFace, faceFile);
+        } else {
+            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initView(View view) {
@@ -105,6 +140,28 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
         buttonFace = view.findViewById(R.id.change_face);
         info = view.findViewById(R.id.text_info);
         nextButton = view.findViewById(R.id.next_button);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            String imagePath = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
+            switch (requestCode) {
+                case REQUEST_CODE_CAMERA_KTP:
+                    stepperModel.setKtpFile(imagePath);
+                    setImageKtp(imagePath);
+                    break;
+                case REQUEST_CODE_CAMERA_FACE:
+                    stepperModel.setFaceFile(imagePath);
+                    setImageFace(imagePath);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -130,7 +187,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
         SpannableString infoText = new SpannableString(info.getText());
         String linked = getResources().getString(R.string.terms_and_condition);
         int startIndex = info.getText().toString().indexOf(linked);
-        infoText.setSpan(clickableSpan, startIndex, startIndex + linked.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
+        infoText.setSpan(clickableSpan, startIndex, startIndex + linked.length(), Spanned
+                .SPAN_EXCLUSIVE_EXCLUSIVE);
         info.setHighlightColor(Color.TRANSPARENT);
         info.setMovementMethod(LinkMovementMethod.getInstance());
         info.setText(infoText, TextView.BufferType.SPANNABLE);

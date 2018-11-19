@@ -11,7 +11,8 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_FACE;
+import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.useridentification.view.KYCConstant.REQUEST_CODE_CAMERA_FACE;
 import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
         .PARAM_VIEW_MODE_FACE;
 
@@ -44,22 +45,20 @@ public class UserIdentificationFormFaceFragment extends
             public void onClick(View v) {
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_FACE);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
             }
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_CAMERA
-                && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                String faceFile = data.getStringExtra(EXTRA_STRING_FACE);
-                stepperModel.setFaceFile(faceFile);
-                stepperListener.goToNextPage(stepperModel);
-            } else {
-                Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-            }
+        if (requestCode == REQUEST_CODE_CAMERA_FACE
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            String faceFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
+            stepperModel.setFaceFile(faceFile);
+            stepperListener.goToNextPage(stepperModel);
+
         } else {
             Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }

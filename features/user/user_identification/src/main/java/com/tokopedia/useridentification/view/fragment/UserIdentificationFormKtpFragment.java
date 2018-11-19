@@ -11,9 +11,9 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_KTP;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_KTP;
+import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.useridentification.view.KYCConstant.REQUEST_CODE_CAMERA_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -44,22 +44,19 @@ public class UserIdentificationFormKtpFragment extends
             public void onClick(View v) {
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_KTP);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_CAMERA
-                && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                String ktpFile = data.getStringExtra(EXTRA_STRING_KTP);
-                stepperModel.setKtpFile(ktpFile);
-                stepperListener.goToNextPage(stepperModel);
-            } else {
-                Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-            }
+        if (requestCode == REQUEST_CODE_CAMERA_KTP
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            String ktpFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
+            stepperModel.setKtpFile(ktpFile);
+            stepperListener.goToNextPage(stepperModel);
         } else {
             Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }

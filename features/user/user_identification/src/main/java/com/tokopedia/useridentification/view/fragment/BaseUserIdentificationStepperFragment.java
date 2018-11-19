@@ -21,8 +21,6 @@ import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepper
 
 public abstract class BaseUserIdentificationStepperFragment<T extends UserIdentificationStepperModel> extends TkpdBaseV4Fragment {
 
-    protected static final int REQUEST_CODE_CAMERA = 1010;
-
     protected ImageView correctImage;
     protected ImageView wrongImage;
     protected TextView title;

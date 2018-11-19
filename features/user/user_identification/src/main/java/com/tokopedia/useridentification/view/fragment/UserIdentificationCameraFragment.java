@@ -31,8 +31,7 @@ import java.io.File;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_FACE;
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_KTP;
+import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -177,18 +176,8 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO add pass image to model
                 Intent intent = new Intent();
-                switch (viewMode) {
-                    case (PARAM_VIEW_MODE_KTP):
-                        intent.putExtra(EXTRA_STRING_KTP, imagePath);
-                        break;
-                    case (PARAM_VIEW_MODE_FACE):
-                        intent.putExtra(EXTRA_STRING_FACE, imagePath);
-                        break;
-                    default:
-                        break;
-                }
+                intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }
