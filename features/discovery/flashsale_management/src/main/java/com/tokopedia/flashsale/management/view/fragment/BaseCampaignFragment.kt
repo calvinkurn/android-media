@@ -123,8 +123,8 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     }
 
     companion object {
-        const val DEFAULT_PAGE = 0
-        const val DEFAULT_ROWS = 20
+        // campaign info backend process to get campaign list is heavy, so default row is 5
+        const val DEFAULT_ROWS = 5
         const val CAMPAIGN_TYPE = 1
     }
 }
