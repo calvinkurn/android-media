@@ -1,15 +1,15 @@
 package com.tokopedia.logisticaddaddress.di;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenter;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.module.LogisticNetworkModule;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -21,23 +21,20 @@ import dagger.Provides;
 @Module(includes = LogisticNetworkModule.class)
 public class AddressModule {
 
-
     @Provides
     @AddressScope
-    AddAddressPresenter provideAddAddressPresenter(AddAddressPresenterImpl addAddressPresenter) {
-        return addAddressPresenter;
+    AddressRepository provideAddressRepository(
+            @LogisticPeopleActApiQualifier PeopleActApi peopleActApi
+    ){
+        return new AddAddressRetrofitInteractorImpl(peopleActApi);
     }
 
     @Provides
     @AddressScope
-    AddressRepository provideAddressRepo(AddAddressRetrofitInteractorImpl addAddressRetrofitInteractor) {
-        return addAddressRetrofitInteractor;
-    }
-
-    @Provides
-    @AddressScope
-    UserSession provideUserSession(@ApplicationContext Context context) {
-        return new UserSession(context);
+    AddAddressPresenter provideAddAddressPresenter(
+            @LogisticUserSessionQualifier UserSessionInterface userSessionInterface,
+            AddressRepository addressRepository) {
+        return new AddAddressPresenterImpl(userSessionInterface, addressRepository);
     }
 
 }

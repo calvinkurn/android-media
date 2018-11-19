@@ -7,6 +7,7 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -19,10 +20,10 @@ import rx.Observable;
 public class ManageAddressRepository implements DataSource {
 
     private PeopleActApi peopleActApi;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public ManageAddressRepository(PeopleActApi peopleActApi, UserSession userSession) {
+    public ManageAddressRepository(PeopleActApi peopleActApi, UserSessionInterface userSession) {
         this.peopleActApi = peopleActApi;
         this.userSession = userSession;
     }

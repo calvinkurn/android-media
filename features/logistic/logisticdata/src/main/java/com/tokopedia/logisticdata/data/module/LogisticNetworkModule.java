@@ -16,9 +16,6 @@ import com.tokopedia.logisticdata.data.apiservice.MyShopOrderApi;
 import com.tokopedia.logisticdata.data.apiservice.OrderDetailApi;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticdata.data.module.qualifier.CourierDataRepositoryQualifier;
-import com.tokopedia.logisticdata.data.module.qualifier.InsuranceTnCScope;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticAbstractionRouterQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticCacheApiInterceptorQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticChuckInterceptorQualifier;
@@ -26,17 +23,18 @@ import com.tokopedia.logisticdata.data.module.qualifier.LogisticContextQualifier
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticDebugInterceptorQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticFingerprintInterceptorQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticGsonConverterFactoryQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticInsuranceApiQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticMyShopOrderActApiQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticMyShopOrderApiQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticNetworkRouterQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticOkHttpRetryPolicyNoAutoRetryQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticOrderDetailApiQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticRxJavaCallAdapterFactoryQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticStringResponseConverterQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticTokopediaAuthInterceptorQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticTokopediaWsV4ResponseConverterQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
-import com.tokopedia.logisticdata.data.module.qualifier.OrderCourierScope;
-import com.tokopedia.logisticdata.data.repository.InsuranceTnCDataStore;
-import com.tokopedia.logisticdata.data.repository.InsuranceTnCRepository;
-import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -126,6 +124,12 @@ public class LogisticNetworkModule {
     }
 
     @Provides
+    @LogisticRxJavaCallAdapterFactoryQualifier
+    CallAdapter.Factory RxJavaCallAdapterFactory() {
+        return RxJavaCallAdapterFactory.create();
+    }
+
+    @Provides
     @LogisticTokopediaAuthInterceptorQualifier
     Interceptor provideTokopediaAuthInterceptor(
             @LogisticContextQualifier Context context,
@@ -164,12 +168,12 @@ public class LogisticNetworkModule {
     }
 
     @Provides
-    @InsuranceTnCScope
+    @LogisticInsuranceApiQualifier
     InsuranceApi provideInsuranceApi(
             @LogisticOkHttpRetryPolicyNoAutoRetryQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-            @LogisticTokopediaWsV4ResponseConverterQualifier TokopediaWsV4ResponseConverter tokopediaWsV4ResponseConverter,
-            @LogisticStringResponseConverterQualifier StringResponseConverter stringResponseConverter,
-            @LogisticGsonConverterFactoryQualifier GsonConverterFactory gsonConverterFactory,
+            @LogisticTokopediaWsV4ResponseConverterQualifier Converter.Factory tokopediaWsV4ResponseConverter,
+            @LogisticStringResponseConverterQualifier Converter.Factory stringResponseConverter,
+            @LogisticGsonConverterFactoryQualifier Converter.Factory gsonConverterFactory,
             @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
             @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
             @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
@@ -203,18 +207,19 @@ public class LogisticNetworkModule {
 
 
     @Provides
-    @AddressScope
+    @LogisticPeopleActApiQualifier
     PeopleActApi providePeopleActApi(
             @LogisticOkHttpRetryPolicyNoAutoRetryQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-            @LogisticTokopediaWsV4ResponseConverterQualifier TokopediaWsV4ResponseConverter tokopediaWsV4ResponseConverter,
-            @LogisticStringResponseConverterQualifier StringResponseConverter stringResponseConverter,
-            @LogisticGsonConverterFactoryQualifier GsonConverterFactory gsonConverterFactory,
+            @LogisticTokopediaWsV4ResponseConverterQualifier Converter.Factory tokopediaWsV4ResponseConverter,
+            @LogisticStringResponseConverterQualifier Converter.Factory stringResponseConverter,
+            @LogisticGsonConverterFactoryQualifier Converter.Factory gsonConverterFactory,
             @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
             @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
             @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
             @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
             @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
             @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
+
     ) {
 
         OkHttpClient.Builder okHttpPeopleActApiBuilder = new OkHttpClient.Builder()
@@ -222,7 +227,8 @@ public class LogisticNetworkModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(fingerPrintInterceptor)
-                .addInterceptor(tokopediaAuthInterceptor);
+                .addInterceptor(tokopediaAuthInterceptor)
+                .addInterceptor(cacheApiInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             okHttpPeopleActApiBuilder.addInterceptor(chuckInterceptor);
@@ -230,49 +236,31 @@ public class LogisticNetworkModule {
         }
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.BASE_DOMAIN)
-                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(tokopediaWsV4ResponseConverter)
                 .addConverterFactory(stringResponseConverter)
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJavaCallAdapterFactory)
                 .client(okHttpPeopleActApiBuilder.build()).build().create(PeopleActApi.class);
     }
 
-
     @Provides
-    @OrderCourierScope
-    @CourierDataRepositoryQualifier
-    OrderCourierRepository provideOrderCourierRepository(@ApplicationContext Context context) {
+    @LogisticMyShopOrderApiQualifier
+    MyShopOrderApi provideMyShopOrderApi(
+            @LogisticOkHttpRetryPolicyNoAutoRetryQualifier OkHttpRetryPolicy okHttpRetryPolicy,
+            @LogisticTokopediaWsV4ResponseConverterQualifier Converter.Factory tokopediaWsV4ResponseConverter,
+            @LogisticStringResponseConverterQualifier Converter.Factory stringResponseConverter,
+            @LogisticGsonConverterFactoryQualifier Converter.Factory gsonConverterFactory,
+            @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
+            @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
+            @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
+            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
+            @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
+            @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
 
-        NetworkRouter networkRouter = ((NetworkRouter) context);
-        UserSessionInterface userSession = new UserSession(context);
-        AbstractionRouter abstractionRouter = ((AbstractionRouter) context);
-
-        OkHttpRetryPolicy okHttpRetryPolicy = OkHttpRetryPolicy.createdOkHttpNoAutoRetryPolicy();
-
-
-        MyShopOrderApi myShopOrderApi;
-        MyShopOrderActApi myShopOrderActApi;
-        OrderDetailApi orderDetailApi = null;
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-
-        Converter.Factory generatedHostConverterFactory = new GeneratedHostConverter();
-        Converter.Factory tokopediaWsV4ResponseConverter = new TokopediaWsV4ResponseConverter();
-        Converter.Factory stringResponseConverter = new StringResponseConverter();
-        Converter.Factory gsonConverterFactory = GsonConverterFactory.create(gson);
-        CallAdapter.Factory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
-
-        Interceptor fingerPrintInterceptor = new FingerprintInterceptor(networkRouter, userSession);
-        Interceptor tokopediaAuthInterceptor = new TkpdAuthInterceptor(context, networkRouter, userSession);
-        Interceptor cacheApiInterceptor = new CacheApiInterceptor();
-
+    ) {
         Retrofit.Builder retrofitMyShopOrderApiBuilder = new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.Shop.URL_MY_SHOP_ORDER)
-                .addConverterFactory(generatedHostConverterFactory)
+                .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(tokopediaWsV4ResponseConverter)
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(gsonConverterFactory)
@@ -284,10 +272,34 @@ public class LogisticNetworkModule {
                 .addInterceptor(fingerPrintInterceptor)
                 .addInterceptor(tokopediaAuthInterceptor)
                 .addInterceptor(cacheApiInterceptor);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            okHttpClientMyShopOrderApiBuilder.addInterceptor(chuckInterceptor);
+            okHttpClientMyShopOrderApiBuilder.addInterceptor(debugInterceptor);
+        }
 
+        return retrofitMyShopOrderApiBuilder.client(okHttpClientMyShopOrderApiBuilder.build())
+                .build().create(MyShopOrderApi.class);
+    }
+
+
+    @Provides
+    @LogisticMyShopOrderActApiQualifier
+    MyShopOrderActApi provideMyShopOrderActApi(
+            @LogisticOkHttpRetryPolicyNoAutoRetryQualifier OkHttpRetryPolicy okHttpRetryPolicy,
+            @LogisticTokopediaWsV4ResponseConverterQualifier Converter.Factory tokopediaWsV4ResponseConverter,
+            @LogisticStringResponseConverterQualifier Converter.Factory stringResponseConverter,
+            @LogisticGsonConverterFactoryQualifier Converter.Factory gsonConverterFactory,
+            @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
+            @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
+            @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
+            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
+            @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
+            @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
+
+    ) {
         Retrofit.Builder retrofitMyShopOrderActApiBuilder = new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.Shop.URL_MY_SHOP_ORDER_ACTION)
-                .addConverterFactory(generatedHostConverterFactory)
+                .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(tokopediaWsV4ResponseConverter)
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(gsonConverterFactory)
@@ -299,11 +311,33 @@ public class LogisticNetworkModule {
                 .addInterceptor(fingerPrintInterceptor)
                 .addInterceptor(tokopediaAuthInterceptor)
                 .addInterceptor(cacheApiInterceptor);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            okHttpClientMyShopOrderActApiBuilder.addInterceptor(chuckInterceptor);
+            okHttpClientMyShopOrderActApiBuilder.addInterceptor(debugInterceptor);
+        }
 
+        return retrofitMyShopOrderActApiBuilder.client(okHttpClientMyShopOrderActApiBuilder.build())
+                .build().create(MyShopOrderActApi.class);
+    }
 
+    @Provides
+    @LogisticOrderDetailApiQualifier
+    OrderDetailApi provideOrderDetailApi(
+            @LogisticOkHttpRetryPolicyNoAutoRetryQualifier OkHttpRetryPolicy okHttpRetryPolicy,
+            @LogisticTokopediaWsV4ResponseConverterQualifier Converter.Factory tokopediaWsV4ResponseConverter,
+            @LogisticStringResponseConverterQualifier Converter.Factory stringResponseConverter,
+            @LogisticGsonConverterFactoryQualifier Converter.Factory gsonConverterFactory,
+            @LogisticRxJavaCallAdapterFactoryQualifier CallAdapter.Factory rxJavaCallAdapterFactory,
+            @LogisticFingerprintInterceptorQualifier Interceptor fingerPrintInterceptor,
+            @LogisticTokopediaAuthInterceptorQualifier Interceptor tokopediaAuthInterceptor,
+            @LogisticCacheApiInterceptorQualifier Interceptor cacheApiInterceptor,
+            @LogisticChuckInterceptorQualifier Interceptor chuckInterceptor,
+            @LogisticDebugInterceptorQualifier Interceptor debugInterceptor
+
+    ) {
         Retrofit.Builder retrofitOrderDetailApiBuilder = new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.BASE_DOMAIN)
-                .addConverterFactory(generatedHostConverterFactory)
+                .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(tokopediaWsV4ResponseConverter)
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(gsonConverterFactory)
@@ -315,55 +349,13 @@ public class LogisticNetworkModule {
                 .addInterceptor(fingerPrintInterceptor)
                 .addInterceptor(tokopediaAuthInterceptor)
                 .addInterceptor(cacheApiInterceptor);
-
-
         if (GlobalConfig.isAllowDebuggingTools()) {
-
-            Interceptor chuckInterceptor = new ChuckInterceptor(context)
-                    .showNotification(abstractionRouter.isAllowLogOnChuckInterceptorNotification());
-            Interceptor debugInterceptor = new DebugInterceptor();
-
-            okHttpClientMyShopOrderApiBuilder.addInterceptor(chuckInterceptor);
-            okHttpClientMyShopOrderApiBuilder.addInterceptor(debugInterceptor);
-
-            okHttpClientMyShopOrderActApiBuilder.addInterceptor(chuckInterceptor);
-            okHttpClientMyShopOrderActApiBuilder.addInterceptor(debugInterceptor);
-
             okHttpClientOrderDetailtApiBuilder.addInterceptor(chuckInterceptor);
             okHttpClientOrderDetailtApiBuilder.addInterceptor(debugInterceptor);
         }
 
-
-        myShopOrderApi = retrofitMyShopOrderApiBuilder.client(okHttpClientMyShopOrderApiBuilder.build())
-                .build().create(MyShopOrderApi.class);
-
-        myShopOrderActApi = retrofitMyShopOrderActApiBuilder.client(okHttpClientMyShopOrderActApiBuilder.build())
-                .build().create(MyShopOrderActApi.class);
-
-        orderDetailApi = retrofitOrderDetailApiBuilder.client(okHttpClientOrderDetailtApiBuilder.build())
+        return retrofitOrderDetailApiBuilder.client(okHttpClientOrderDetailtApiBuilder.build())
                 .build().create(OrderDetailApi.class);
-
-
-        return new OrderCourierRepository(
-                myShopOrderApi,
-                myShopOrderActApi,
-                orderDetailApi
-        );
-    }
-
-
-    // Provide Data Store
-    @Provides
-    @InsuranceTnCScope
-    InsuranceTnCDataStore provideInsuranceTnCDataStore(InsuranceApi insuranceApi) {
-        return new InsuranceTnCDataStore(insuranceApi);
-    }
-
-    // Provide Repository
-    @Provides
-    @InsuranceTnCScope
-    InsuranceTnCRepository provideInsuranceTnCRepository(InsuranceTnCDataStore insuranceTnCDataStore) {
-        return new InsuranceTnCRepository(insuranceTnCDataStore);
     }
 
 }

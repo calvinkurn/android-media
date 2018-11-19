@@ -12,6 +12,7 @@ import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -36,10 +37,10 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
 
     private AddAddressFragmentView mView;
     private final AddressRepository networkInteractor;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public AddAddressPresenterImpl(UserSession userSession, AddressRepository addressRepository) {
+    public AddAddressPresenterImpl(UserSessionInterface userSession, AddressRepository addressRepository) {
         this.networkInteractor = addressRepository;
         this.userSession = userSession;
     }

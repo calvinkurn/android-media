@@ -28,4 +28,5 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.libraries.userSession)
 }

@@ -81,7 +81,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         DaggerManageAddressComponent.builder()
                 .baseAppComponent(appComponent)
                 .addressModule(new AddressModule())
-                .manageAddressModule(new ManageAddressModule(getContext()))
+                .manageAddressModule(new ManageAddressModule())
                 .build().inject(this);
     }
 

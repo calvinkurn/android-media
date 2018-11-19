@@ -50,10 +50,12 @@ import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.District;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,8 +150,10 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Inject
     AddAddressPresenter mPresenter;
+
     @Inject
-    UserSession userSession;
+    @LogisticUserSessionQualifier
+    UserSessionInterface userSession;
 
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();

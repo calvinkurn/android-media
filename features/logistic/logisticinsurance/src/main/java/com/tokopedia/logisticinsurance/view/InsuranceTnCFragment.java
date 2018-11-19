@@ -1,6 +1,5 @@
 package com.tokopedia.logisticinsurance.view;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,10 +14,12 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticinsurance.R;
 import com.tokopedia.logisticinsurance.di.DaggerInsuranceTnCComponent;
 import com.tokopedia.logisticinsurance.di.InsuranceTnCComponent;
+import com.tokopedia.logisticinsurance.di.InsuranceTnCModule;
 
 import javax.inject.Inject;
 
@@ -29,11 +30,12 @@ import javax.inject.Inject;
 public class InsuranceTnCFragment extends TkpdBaseV4Fragment
         implements InsuranceTnCContract.View {
 
-    private com.tokopedia.abstraction.base.view.webview.TkpdWebView webViewTermsAndCondition;
+    private TkpdWebView webViewTermsAndCondition;
     private ProgressBar pbLoading;
 
     @Inject
     InsuranceTnCContract.Presenter presenter;
+
 
     public static Fragment createInstance() {
         return new InsuranceTnCFragment();
@@ -69,6 +71,7 @@ public class InsuranceTnCFragment extends TkpdBaseV4Fragment
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
         InsuranceTnCComponent insuranceTnCComponent = DaggerInsuranceTnCComponent.builder()
                 .baseAppComponent(appComponent)
+                .insuranceTnCModule(new InsuranceTnCModule())
                 .build();
         insuranceTnCComponent.inject(this);
     }

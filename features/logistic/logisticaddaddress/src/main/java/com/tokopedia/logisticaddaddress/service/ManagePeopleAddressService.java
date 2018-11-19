@@ -15,8 +15,11 @@ import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.SocketTimeoutException;
 
@@ -57,9 +60,11 @@ public class ManagePeopleAddressService extends IntentService {
     private ResultReceiver receiver;
 
     @Inject
+    @LogisticPeopleActApiQualifier
     PeopleActApi peopleActApi;
     @Inject
-    UserSession userSession;
+    @LogisticUserSessionQualifier
+    UserSessionInterface userSession;
 
     public ManagePeopleAddressService() {
         super("ManagePeopleAddressService");
