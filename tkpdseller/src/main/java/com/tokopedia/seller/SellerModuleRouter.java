@@ -46,7 +46,9 @@ public interface SellerModuleRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getSaldoDepositIntent(Context context);
+    void getSaldoDepositIntent(Context context);
+
+    boolean isSaldoNativeEnabled();
 
     Intent getTopProfileIntent(Context context, String userId);
 

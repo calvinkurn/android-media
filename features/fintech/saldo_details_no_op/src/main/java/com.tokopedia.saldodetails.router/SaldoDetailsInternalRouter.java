@@ -2,15 +2,13 @@ package com.tokopedia.saldodetails.router;
 
 import android.content.Context;
 
-import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
-
 public class SaldoDetailsInternalRouter {
 
     public static void getSaldoDepositIntent(Context context) {
-        context.startActivity(SaldoDepositActivity.createInstance(context));
+        // no-op function
     }
 
     public static String getSaldoClassName() {
-        return SaldoDepositActivity.class.getName();
+        return "";
     }
 }

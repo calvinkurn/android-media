@@ -541,8 +541,7 @@ public class DrawerSellerHelper extends DrawerHelper
     public void onGoToDeposit() {
         if (context.getApplicationContext() instanceof SellerModuleRouter) {
             SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) context.getApplicationContext();
-            Intent intent = sellerModuleRouter.getSaldoDepositIntent(context);
-            context.startActivity(intent);
+            sellerModuleRouter.getSaldoDepositIntent(context);
             sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
         }
     }
