@@ -35,7 +35,7 @@ public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
         if (!TextUtils.isEmpty(e.getMessage())
                 && errorMessage.contains(view.getContext().getString(R.string
                 .default_request_error_unknown))) {
-            view.logError(VerifyOtpSubscriber.class.getSimpleName(), e.getMessage());
+            view.logUnknownError(e);
         }
     }
 
@@ -47,6 +47,7 @@ public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
         else {
             view.onErrorVerifyOtpCode(OtpErrorHandler.getDefaultErrorCodeMessage(OtpErrorCode
                     .UNSUPPORTED_FLOW, view.getContext()));
+            view.logUnknownError(new Throwable("Validate is not success"));
         }
     }
 }

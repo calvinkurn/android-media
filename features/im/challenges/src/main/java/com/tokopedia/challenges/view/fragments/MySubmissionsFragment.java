@@ -198,4 +198,10 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     public void onLikeClick(SubmissionResult challengesResult) {
         mySubmissionsHomePresenter.setSubmissionLike(challengesResult);
     }
+
+    @Override
+    public void onDestroyView() {
+        mySubmissionsHomePresenter.onDestroy();
+        super.onDestroyView();
+    }
 }

@@ -29,38 +29,53 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class ConsumerSplashScreen extends SplashScreen {
 
-    public static final String SPLASH_TRACE = "warm_start";
+    public static final String WARM_TRACE = "warm_start";
+    public static final String SPLASH_TRACE = "splash_start";
 
     private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
 
-    private Trace trace;
+    private Trace warmTrace;
+    private Trace splashTrace;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         startWarmStart();
+        startSplashTrace();
+
+        super.onCreate(savedInstanceState);
 
         mainLayout = findViewById(R.id.layout_splash);
         renderDynamicImage();
+
+        finishWarmStart();
     }
 
     @Override
     public void finishSplashScreen() {
         Intent homeIntent = MainParentActivity.start(this);
         startActivity(homeIntent);
-        finishWarmStart();
+        finishSplashTrace();
         finish();
     }
 
     private void startWarmStart() {
-        trace = TrackingUtils.startTrace(SPLASH_TRACE);
+        warmTrace = TrackingUtils.startTrace(WARM_TRACE);
+    }
+
+    private void startSplashTrace() {
+        splashTrace = TrackingUtils.startTrace(SPLASH_TRACE);
     }
 
     private void finishWarmStart() {
-        if (trace != null) {
-            trace.stop();
+        if (warmTrace != null) {
+            warmTrace.stop();
+        }
+    }
+
+    private void finishSplashTrace() {
+        if (splashTrace != null) {
+            splashTrace.stop();
         }
     }
 

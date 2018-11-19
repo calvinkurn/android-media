@@ -45,7 +45,7 @@ public class CatalogsValueEntity implements Serializable {
 
     @Expose
     @SerializedName("quota")
-    private Integer quota;
+    private int quota;
 
     @Expose
     @SerializedName("slug")
@@ -202,11 +202,11 @@ public class CatalogsValueEntity implements Serializable {
         this.promoId = promoId;
     }
 
-    public Integer getQuota() {
+    public int getQuota() {
         return quota;
     }
 
-    public void setQuota(Integer quota) {
+    public void setQuota(int quota) {
         this.quota = quota;
     }
 

@@ -10,6 +10,8 @@ public class HomeGATracking extends UnifyTracking {
     private static final String CATEGORY_VIDEO_PUSH = "video push";
     private static final String ACTION_VIDEO_NOTIFICATION_PAGE = "view video notification page";
     private static final String ACTION_CLICK_CTA_BUTTON = "click cta button";
+    private static final String ACTION_CLICK_BNANNER_BUTTON = "banner_click";
+    private static final String ACTION_VIEW_BNANNER_BUTTON = "banner_view";
 
 
     public static void eventYoutubeVideoImpression() {
@@ -25,6 +27,22 @@ public class HomeGATracking extends UnifyTracking {
                 CATEGORY_VIDEO_PUSH,
                 ACTION_CLICK_CTA_BUTTON,
                 "-")
+                .getEvent());
+    }
+
+    public static void eventClickVideoBannerImpression(String label) {
+        sendGTMEvent(new EventTracking(EVENT_VIDEO_VIEW,
+                CATEGORY_VIDEO_PUSH,
+                ACTION_VIEW_BNANNER_BUTTON,
+                label)
+                .getEvent());
+    }
+
+    public static void eventClickVideoBannerClick(String label) {
+        sendGTMEvent(new EventTracking(EVENT_VIDEO_GENERAL_EVENT,
+                CATEGORY_VIDEO_PUSH,
+                ACTION_CLICK_BNANNER_BUTTON,
+                label)
                 .getEvent());
     }
 }
