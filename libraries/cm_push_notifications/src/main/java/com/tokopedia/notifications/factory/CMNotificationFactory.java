@@ -1,7 +1,5 @@
 package com.tokopedia.notifications.factory;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,7 +11,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
-import com.tokopedia.notifications.model.PersistentNotificationData;
+import com.tokopedia.notifications.model.PersistentButton;
 
 import org.json.JSONObject;
 
@@ -67,7 +65,7 @@ public class CMNotificationFactory {
         model.setType(data.getString("type", ""));
         model.setCustomValues(getCustomValues(data));
         model.setActionButton(getActionButtons(data));
-        model.setPersistentNotificationData(getPersistentNotificationData(data));
+        model.setPersistentButtonList(getPersistentNotificationData(data));
         return model;
     }
 
@@ -90,8 +88,7 @@ public class CMNotificationFactory {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<ActionButton>>() {
-            }.getType();
+            Type listType = new TypeToken<ArrayList<ActionButton>>() {}.getType();
             return new Gson().fromJson(actions, listType);
         } catch (Exception e) {
             Log.e("getActions", e.getMessage());
@@ -99,13 +96,14 @@ public class CMNotificationFactory {
         return null;
     }
 
-    private static PersistentNotificationData getPersistentNotificationData(Bundle bundle){
+    private static List<PersistentButton> getPersistentNotificationData(Bundle bundle){
         String persistentData = bundle.getString(CMConstant.NOTIFICATION_PERSISTENT);
         if (TextUtils.isEmpty(persistentData)) {
             return null;
         }
         try {
-            return new Gson().fromJson(persistentData, PersistentNotificationData.class);
+            Type listType = new TypeToken<ArrayList<ActionButton>>() {}.getType();
+            return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
             Log.e("getActions", e.getMessage());
         }

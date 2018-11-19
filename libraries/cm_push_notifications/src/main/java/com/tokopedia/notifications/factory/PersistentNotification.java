@@ -6,14 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.model.BaseNotificationModel;
-import com.tokopedia.notifications.model.PersistentNotificationData;
-import com.tokopedia.notifications.receiver.DismissReceiver;
+import com.tokopedia.notifications.model.PersistentButton;
 import com.tokopedia.notifications.receiver.PersistentCloseReceiver;
+
+import java.util.List;
 
 /**
  * @author lalit.singh
@@ -48,16 +50,36 @@ public class PersistentNotification extends BaseNotification {
     private RemoteViews getPersistentRemoteView() {
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
         remoteView.setOnClickPendingIntent(R.id.image_icon5, getPersistentClosePIntent());
-        PersistentNotificationData data = baseNotificationModel.getPersistentNotificationData();
-
-        remoteView.setTextViewText(R.id.title1, data.getBtnText());
-        remoteView.setImageViewBitmap(R.id.image_icon1, getBitmap(data.getBtnImageUrl()));
-        remoteView.setTextViewText(R.id.title2, data.getBtnText());
-        remoteView.setImageViewBitmap(R.id.image_icon2, getBitmap(data.getBtnImageUrl()));
-        remoteView.setTextViewText(R.id.title3, data.getBtnText());
-        remoteView.setImageViewBitmap(R.id.image_icon3, getBitmap(data.getBtnImageUrl()));
-        remoteView.setTextViewText(R.id.title4, data.getBtnText());
-        remoteView.setImageViewBitmap(R.id.image_icon4, getBitmap(data.getBtnImageUrl()));
+        List<PersistentButton> persistentButtonList = baseNotificationModel.getPersistentButtonList();
+        int listSize = persistentButtonList.size();
+        PersistentButton persistentButton;
+        if(listSize > 0){
+            persistentButton = persistentButtonList.get(0);
+            remoteView.setTextViewText(R.id.title1, persistentButton.getBtnText());
+            remoteView.setImageViewBitmap(R.id.image_icon1, getBitmap(persistentButton.getBtnImageUrl()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_1, createPendingIntent(persistentButton.getAppLink(), 100));
+        }
+        if(listSize > 1){
+            remoteView.setViewVisibility(R.id.lin_container_2, View.VISIBLE);
+            persistentButton = persistentButtonList.get(1);
+            remoteView.setTextViewText(R.id.title2, persistentButton.getBtnText());
+            remoteView.setImageViewBitmap(R.id.image_icon2, getBitmap(persistentButton.getBtnImageUrl()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_2, createPendingIntent(persistentButton.getAppLink(), 100));
+        }
+        if(listSize > 2){
+            remoteView.setViewVisibility(R.id.lin_container_3, View.VISIBLE);
+            persistentButton = persistentButtonList.get(2);
+            remoteView.setTextViewText(R.id.title3, persistentButton.getBtnText());
+            remoteView.setImageViewBitmap(R.id.image_icon3, getBitmap(persistentButton.getBtnImageUrl()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_3, createPendingIntent(persistentButton.getAppLink(), 100));
+        }
+        if(listSize > 3){
+            remoteView.setViewVisibility(R.id.lin_container_4, View.VISIBLE);
+            persistentButton = persistentButtonList.get(3);
+            remoteView.setTextViewText(R.id.title4, persistentButton.getBtnText());
+            remoteView.setImageViewBitmap(R.id.image_icon4, getBitmap(persistentButton.getBtnImageUrl()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_4, createPendingIntent(persistentButton.getAppLink(), 100));
+        }
 
         return remoteView;
     }
@@ -76,11 +98,4 @@ public class PersistentNotification extends BaseNotification {
             );
         }
     }
-
-
-    /*
-    * task  - add PendingIntent to close Notification...
-    *       - add PendingIntent to ActionButton on Persistent Notification
-    *       -
-    * */
 }

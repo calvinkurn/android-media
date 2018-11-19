@@ -3,7 +3,8 @@ package com.tokopedia.notifications.model;
 /**
  * @author lalit.singh
  */
-public class PersistentNotificationData {
+public class PersistentButton {
+
     String appLink;
     String btnText;
     String btnImageUrl;

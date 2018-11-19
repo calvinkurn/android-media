@@ -1,12 +1,9 @@
 package com.tokopedia.notifications.model;
 
-import com.google.gson.JsonObject;
-
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
@@ -21,7 +18,7 @@ public class BaseNotificationModel {
     private JSONObject customValues;
     private String type;
 
-    private PersistentNotificationData persistentNotificationData;
+    private List<PersistentButton> persistentButtonList;
 
 
     public String getTitle() {
@@ -88,11 +85,11 @@ public class BaseNotificationModel {
         this.bigImageURL = bigImageURL;
     }
 
-    public PersistentNotificationData getPersistentNotificationData() {
-        return persistentNotificationData;
+    public List<PersistentButton> getPersistentButtonList() {
+        return persistentButtonList;
     }
 
-    public void setPersistentNotificationData(PersistentNotificationData persistentNotificationData) {
-        this.persistentNotificationData = persistentNotificationData;
+    public void setPersistentButtonList(List<PersistentButton> persistentButtonList) {
+        this.persistentButtonList = persistentButtonList;
     }
 }
