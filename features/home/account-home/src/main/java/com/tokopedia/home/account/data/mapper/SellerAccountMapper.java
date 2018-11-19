@@ -63,7 +63,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private static SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
+    private SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
@@ -226,7 +226,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private static TickerViewModel parseTickerSeller(Context context, AccountModel accountModel) {
+    private TickerViewModel parseTickerSeller(Context context, AccountModel accountModel) {
         TickerViewModel sellerTickerModel = new TickerViewModel(new ArrayList<>());
 
         if (accountModel.getKycStatusPojo() != null
@@ -242,7 +242,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
     }
 
-    private static void setKyctoModel(ShopCardViewModel shopCard, AccountModel accountModel) {
+    private void setKyctoModel(ShopCardViewModel shopCard, AccountModel accountModel) {
         if (shopCard != null && accountModel != null && accountModel.getKycStatusPojo() != null) {
 
             if (accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null

@@ -14,7 +14,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
  */
 public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_ticker;
+    public static final int LAYOUT = R.layout.item_ticker_account;
     private final AccountItemListener listener;
 
     TickerView tickerView;
