@@ -174,7 +174,7 @@ public class ShopAddressForm extends TActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = DistrictRecommendationActivity.createInstanceIntent(getActivity(), token);
+                Intent intent = com.tokopedia.district_recommendation.view.v2.DistrictRecommendationActivity.createInstanceIntent(getActivity(), token);
                 startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
             }
         };

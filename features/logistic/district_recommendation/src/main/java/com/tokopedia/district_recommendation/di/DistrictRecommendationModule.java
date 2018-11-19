@@ -25,18 +25,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class DistrictRecommendationModule {
 
-    private static final int RETRY_COUNT = 0;
-
     public DistrictRecommendationModule() {
 
     }
-
-    // Provide KeroAuthService
-//    @Provides
-//    @DistrictRecommendationScope
-//    KeroAuthService provideKeroAuthService() {
-//        return new KeroAuthService(RETRY_COUNT);
-//    }
 
     @Provides
     @DistrictRecommendationScope
