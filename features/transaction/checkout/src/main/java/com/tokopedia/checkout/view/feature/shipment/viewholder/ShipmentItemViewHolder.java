@@ -320,6 +320,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     @Override
     public void notifyOnPurchaseProtectionChecked(boolean checked, int position) {
+        mActionListener.onNeedUpdateRequestData();
         if(shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel){
             ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
             data.getCartItemModels().get(position).setUsingProtection(checked);

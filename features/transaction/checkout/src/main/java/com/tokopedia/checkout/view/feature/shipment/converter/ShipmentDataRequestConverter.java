@@ -179,6 +179,7 @@ public class ShipmentDataRequestConverter {
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
         return new ProductDataCheckoutRequest.Builder()
                 .productId(cartItem.getProductId())
+                .purchaseProtection(cartItem.isUsingProtection())
                 .productName(cartItem.getAnalyticsProductCheckoutData().getProductName())
                 .productPrice(cartItem.getAnalyticsProductCheckoutData().getProductPrice())
                 .productBrand(cartItem.getAnalyticsProductCheckoutData().getProductBrand())
