@@ -41,7 +41,7 @@
         android:id="@+id/focused_view_ktp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <com.tokopedia.useridentification.view.customview.FocusCameraFaceView
         android:id="@+id/focused_view_face"
