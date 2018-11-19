@@ -12,15 +12,17 @@ import com.tokopedia.useridentification.view.activity.UserIdentificationCameraAc
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
+        .PARAM_VIEW_MODE_FACE;
 
 /**
  * @author by alvinatin on 09/11/18.
  */
 
-public class UserIdentificationFormFaceFragment extends BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>{
+public class UserIdentificationFormFaceFragment extends
+        BaseUserIdentificationStepperFragment<UserIdentificationStepperModel> {
 
-    public static Fragment createInstance(){
+    public static Fragment createInstance() {
         Fragment fragment = new UserIdentificationFormFaceFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -40,7 +42,8 @@ public class UserIdentificationFormFaceFragment extends BaseUserIdentificationSt
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), PARAM_VIEW_MODE_FACE);
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                        PARAM_VIEW_MODE_FACE);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA);
             }
         });
@@ -50,18 +53,15 @@ public class UserIdentificationFormFaceFragment extends BaseUserIdentificationSt
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_CAMERA
                 && resultCode == Activity.RESULT_OK) {
-            if (getActivity() != null && getActivity().getIntent() != null) {
-                Bundle bundle = getActivity().getIntent().getExtras();
-                if (bundle != null) {
-                    String faceFile = data.getStringExtra(EXTRA_STRING_FACE);
-                    stepperModel.setFaceFile(faceFile);
-                    stepperListener.goToNextPage(stepperModel);
-                } else {
-                    Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-                }
+            if (data != null) {
+                String faceFile = data.getStringExtra(EXTRA_STRING_FACE);
+                stepperModel.setFaceFile(faceFile);
+                stepperListener.goToNextPage(stepperModel);
             } else {
                 Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
             }
+        } else {
+            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

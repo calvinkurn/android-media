@@ -42,7 +42,8 @@ public class UserIdentificationFormKtpFragment extends
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), PARAM_VIEW_MODE_KTP);
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                        PARAM_VIEW_MODE_KTP);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA);
             }
         });
@@ -52,19 +53,15 @@ public class UserIdentificationFormKtpFragment extends
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_CAMERA
                 && resultCode == Activity.RESULT_OK) {
-            if (getActivity() != null && getActivity().getIntent() != null) {
-                Bundle bundle = getActivity().getIntent().getExtras();
-                if (bundle != null) {
-                    String ktpFile = data.getStringExtra(EXTRA_STRING_KTP);
-                    stepperModel.setKtpFile(ktpFile);
-                    stepperListener.goToNextPage(stepperModel);
-                } else {
-                    Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-                }
+            if (data != null) {
+                String ktpFile = data.getStringExtra(EXTRA_STRING_KTP);
+                stepperModel.setKtpFile(ktpFile);
+                stepperListener.goToNextPage(stepperModel);
             } else {
                 Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-
             }
+        } else {
+            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
