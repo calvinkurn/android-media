@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -39,6 +40,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
         if(!isappShowReferralButtonActivated(this)){
             finish();
         }
+        ScreenTracking.screen("/referral/friends");
     }
 
     @Override
