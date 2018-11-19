@@ -34,6 +34,9 @@ public class ProductImage implements Parcelable {
     private String xs_ecs;
     private boolean impressed;
 
+    public ProductImage() {
+    }
+
     public ProductImage(JSONObject object) throws JSONException {
         if (!object.isNull(KEY_M_URL)) {
             setM_url(object.getString(KEY_M_URL));

@@ -69,13 +69,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.page_margin), true));
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8), true));
     }
 
     @Override
     public void bind(final DynamicChannelViewModel element) {
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
+            listener.onServerTimeReceived(element.getChannel().getHeader().getServerTimeUnix());
             itemAdapter.setChannel(channel);
             homeChannelTitle.setText(channel.getHeader().getName());
 
@@ -88,7 +89,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(expiredTime, countDownListener);
+                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);
@@ -113,7 +114,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     }
 
     private static boolean isSprintSale(DynamicHomeChannel.Channels channel) {
-        return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
+        return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.equals(channel.getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(channel.getLayout());
     }
 
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
@@ -147,9 +150,11 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 if (grid != null) {
                     ImageHandler.loadImageThumbs(holder.getContext(),
                             holder.channelImage1, grid.getImageUrl());
+                    TextViewHelper.displayText(holder.channelName, grid.getName());
                     TextViewHelper.displayText(holder.channelPrice1, grid.getPrice());
                     TextViewHelper.displayText(holder.channelDiscount1, grid.getDiscount());
                     TextViewHelper.displayText(holder.channelBeforeDiscPrice1, grid.getSlashedPrice());
+                    TextViewHelper.displayText(holder.channelCashback, grid.getCashback());
 
                     holder.itemContainer1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -180,8 +185,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView channelImage1;
+        private TextView channelName;
         private TextView channelPrice1;
         private TextView channelDiscount1;
+        private TextView channelCashback;
         private TextView channelBeforeDiscPrice1;
         private RelativeLayout itemContainer1;
         private View view;
@@ -191,6 +198,8 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             this.view = itemView;
             channelImage1 = (ImageView) itemView.findViewById(R.id.channel_image_1);
             channelPrice1 = (TextView) itemView.findViewById(R.id.channel_price_1);
+            channelCashback = (TextView) itemView.findViewById(R.id.channel_cashback);
+            channelName = (TextView) itemView.findViewById(R.id.product_name);
             channelDiscount1 = (TextView) itemView.findViewById(R.id.channel_discount_1);
             channelBeforeDiscPrice1 = (TextView) itemView.findViewById(R.id.channel_before_disc_price_1);
             itemContainer1 = itemView.findViewById(R.id.channel_item_container_1);
