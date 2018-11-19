@@ -587,15 +587,15 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
                 if (status == KYCConstant.STATUS_NOT_VERIFIED) {
                     String tickerMessage = getString(R.string.ticker_unverified);
-                    addMessageToTickerView(tickerMessage)
+                    addMessageToTickerView(tickerMessage);
                 }
 
             }
         };
     }
 
-    private void addMessageToTickerView(SpannableString tickerMessage) {
-        if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage.toString())) {
+    private void addMessageToTickerView(String tickerMessage) {
+        if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
             tickerView.addMessage(tickerMessage);
         }
     }
