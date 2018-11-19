@@ -46,7 +46,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
     private TextView buttonKtp;
     private TextView buttonFace;
     private TextView info;
-    private TextView nextButton;
+    private TextView uploadButton;
     private UserIdentificationStepperModel stepperModel;
 
     private StepperListener stepperListener;
@@ -106,7 +106,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
             }
         });
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO change this to upload action
@@ -139,7 +139,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
         buttonKtp = view.findViewById(R.id.change_ktp);
         buttonFace = view.findViewById(R.id.change_face);
         info = view.findViewById(R.id.text_info);
-        nextButton = view.findViewById(R.id.next_button);
+        uploadButton = view.findViewById(R.id.upload_button);
     }
 
     @Override
