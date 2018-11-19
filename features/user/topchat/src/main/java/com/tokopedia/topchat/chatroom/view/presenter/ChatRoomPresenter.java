@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -13,6 +14,9 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topchat.R;
@@ -30,6 +34,7 @@ import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendReasonRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.WebSocketUseCase;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;
@@ -58,7 +63,9 @@ import com.tokopedia.topchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -107,6 +114,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private SendMessageUseCase sendMessageUseCase;
     private WebSocketUseCase webSocketUseCase;
     private WebSocketMapper webSocketMapper;
+    GraphqlUseCase graphqlUseCase;
 
     @Inject
     ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
@@ -123,7 +131,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       GetUserStatusUseCase getUserStatusUseCase,
                       DeleteMessageListUseCase deleteMessageListUseCase,
                       GetChatShopInfoUseCase getChatShopInfoUseCase,
-                      ToggleFavouriteShopUseCase toggleFavouriteShopUseCase) {
+                      ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
+                      GraphqlUseCase graphqlUseCase) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
@@ -139,6 +148,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.deleteMessageListUseCase = deleteMessageListUseCase;
         this.getChatShopInfoUseCase = getChatShopInfoUseCase;
         this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
+        this.graphqlUseCase = graphqlUseCase;
     }
 
     @Override
@@ -170,6 +180,45 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         if (!getView().isChatBot()) {
             getTemplate();
         }
+        initialChatSettings();
+    }
+
+    public void initialChatSettings() {
+        if (!isViewAttached()) {
+            return;
+        }
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("msgId", Integer.parseInt(getView().getArguments().getString(PARAM_MESSAGE_ID)));
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getContext().getResources(),
+                R.raw.checkchatsettings), ChatSettingsResponse.class, variables);
+
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(graphqlRequest);
+
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (graphqlResponse != null) {
+                    ChatSettingsResponse data = graphqlResponse.getData(ChatSettingsResponse.class);
+                    getView().setInboxMessageVisibility(data, data.getChatBlockResponse().getChatBlockStatus().isBlocked());
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -189,6 +238,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         deleteMessageListUseCase.unsubscribe();
         getChatShopInfoUseCase.unsubscribe();
         toggleFavouriteShopUseCase.unsubscribe();
+        graphqlUseCase.unsubscribe();
     }
 
     @Override

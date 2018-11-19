@@ -1,6 +1,8 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -257,5 +259,15 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public Intent getOrderListIntent(Context context) {
         return SellerOrderListActivity.getInstance(context);
+    }
+
+    @Override
+    public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
+
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+
     }
 }

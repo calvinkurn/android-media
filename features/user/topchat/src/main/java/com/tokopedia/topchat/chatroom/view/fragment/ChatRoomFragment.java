@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
@@ -66,6 +67,7 @@ import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
@@ -73,6 +75,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.activity.ChatMarketingThumbnailActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomSettingsActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomTypeFactory;
@@ -122,6 +125,8 @@ import rx.functions.Func1;
 
 import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.MESSAGE_ID;
 import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARAM_WEBSOCKET;
+import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomSettingsActivity.RESULT_CODE_CHAT_SETTINGS_DISABLED;
+import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomSettingsActivity.RESULT_CODE_CHAT_SETTINGS_ENABLED;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -131,6 +136,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+    public static final int REQUEST_CODE_CHAT_SETTINGS = 2326;
     private static final int MAX_SIZE_IMAGE_PICKER = 5;
     public static final int CHAT_DELETED_RESULT_CODE = 101;
     public static final int CHAT_GO_TO_SHOP_DETAILS_REQUEST = 202;
@@ -187,12 +193,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private int mode;
     private View notifier;
     private ImageButton headerMenuButton;
+    private RelativeLayout sendMessageLayout;
 
     private String title, avatarImage, lastOnline;
     private boolean isOnline = false;
 
     private boolean uploading;
     private boolean isChatBot;
+    private ChatSettingsResponse chatSettingsResponse;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -250,6 +258,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         notifier = rootView.findViewById(R.id.notifier);
         replyWatcher = Events.text(replyColumn);
         headerMenuButton = toolbar.findViewById(R.id.header_menu);
+        sendMessageLayout = rootView.findViewById(R.id.send_message_layout);
         headerMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -978,6 +987,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST:
                 presenter.getFollowStatus(getArguments().getString(ChatRoomActivity
                         .PARAM_SENDER_ID, ""));
+            case REQUEST_CODE_CHAT_SETTINGS:
+                if(resultCode == RESULT_CODE_CHAT_SETTINGS_ENABLED){
+                    sendMessageLayout.setVisibility(View.VISIBLE);
+                }else if(resultCode == RESULT_CODE_CHAT_SETTINGS_DISABLED) {
+                    sendMessageLayout.setVisibility(View.GONE);
+                }
+                break;
             default:
                 break;
         }
@@ -1554,6 +1570,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_set_profile));
         if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_add_grey));
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
+        listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
 
         headerMenu.setItemMenuList(listMenu);
         headerMenu.setActionText(getString(R.string.cancel_bottom_sheet));
@@ -1604,6 +1621,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             ).getEvent()
                     );
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+                } else if(itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
+                    Intent intent = new Intent(getContext(), ChatRoomSettingsActivity.class);
+                    intent.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID));
+                    intent.putExtra("ChatResponseModel", chatSettingsResponse);
+                    startActivityForResult(intent, REQUEST_CODE_CHAT_SETTINGS);
                 }
                 headerMenu.dismiss();
             }
@@ -1666,5 +1688,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void finishActivity() {
         getActivity().finish();
+    }
+
+    @Override
+    public void setInboxMessageVisibility(ChatSettingsResponse chatSettingsResponse, boolean isVisible) {
+        this.chatSettingsResponse = chatSettingsResponse;
+        if (isVisible) {
+            sendMessageLayout.setVisibility(View.GONE);
+        } else {
+            sendMessageLayout.setVisibility(View.VISIBLE);
+        }
     }
 }
