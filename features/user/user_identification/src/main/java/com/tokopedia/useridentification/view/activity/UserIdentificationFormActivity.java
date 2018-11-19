@@ -37,7 +37,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA);
         } else {
-            createNewStepperModel();
+            stepperModel = createNewStepperModel();
         }
         super.onCreate(savedInstanceState);
     }
