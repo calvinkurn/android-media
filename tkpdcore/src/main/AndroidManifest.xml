@@ -167,10 +167,6 @@
             android:name=".peoplefave.activity.PeopleFavoritedShop"
             android:label="@string/title_activity_people_favorited_shop"
             android:screenOrientation="portrait" />
-        <!--<activity
-            android:name=".deposit.activity.DepositActivity"
-            android:label="@string/title_activity_people_deposit"
-            android:screenOrientation="portrait" />-->
         <activity
             android:name=".com.tokopedia.seller.OrderHistoryView"
             android:label="@string/title_activity_order_history_view"

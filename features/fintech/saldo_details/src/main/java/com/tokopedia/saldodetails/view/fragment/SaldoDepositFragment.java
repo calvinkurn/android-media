@@ -309,9 +309,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public void showWithdrawalNoPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(getResources().getString(R.string.error_deposit_no_password_title));
-        builder.setMessage(getResources().getString(R.string.error_deposit_no_password_content));
-        builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), (dialogInterface, i) -> {
+        builder.setTitle(getResources().getString(R.string.sp_error_deposit_no_password_title));
+        builder.setMessage(getResources().getString(R.string.sp_error_deposit_no_password_content));
+        builder.setPositiveButton(getResources().getString(R.string.sp_error_no_password_yes), (dialogInterface, i) -> {
             intentToAddPassword(context);
             dialogInterface.dismiss();
         });

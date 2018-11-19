@@ -351,7 +351,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             param.setStartDate(getDateParam(sdf_ws.format(formattedStart)));
             param.setEndDate(getDateParam(sdf_ws.format(formattedEnd)));
         } catch (ParseException e) {
-            getView().showErrorMessage(getView().getString(R.string.error_invalid_date));
+            getView().showErrorMessage(getView().getString(R.string.sp_error_invalid_date));
         }
 
         param.setPage(paging.getPage());
@@ -372,7 +372,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             Date startDate = sdf.parse(paramStartDate);
             if (endDate.getTime() - startDate.getTime() < 0) {
                 isValid = false;
-                getView().showInvalidDateError(getView().getString(R.string.error_invalid_date));
+                getView().showInvalidDateError(getView().getString(R.string.sp_error_invalid_date));
             }
 
             if ((endDate.getTime() - startDate.getTime()) / SEC_TO_DAY_CONVERSION > MAX_DAYS_DIFFERENCE) {
@@ -381,7 +381,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             }
         } catch (ParseException e) {
             isValid = false;
-            getView().showInvalidDateError(getView().getString(R.string.error_invalid_date));
+            getView().showInvalidDateError(getView().getString(R.string.sp_error_invalid_date));
         }
         return isValid;
     }
@@ -416,7 +416,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                         intent.putExtras(bundle);
                         getView().getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
                     } else {
-                        getView().showErrorMessage(getView().getString(R.string.error_no_amount_deposit));
+                        getView().showErrorMessage(getView().getString(R.string.sp_error_no_amount_deposit));
                     }
                 }
 

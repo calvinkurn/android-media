@@ -65,36 +65,6 @@
             android:background="@android:drawable/list_selector_background"
             android:textSize="@dimen/sp_14" />
 
-        <!--<View
-            android:id="@+id/separator"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_below="@+id/note"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:background="@color/greyish_bg" />-->
-
-        <!--<TextView
-            android:id="@+id/title_nominal"
-            android:layout_width="@dimen/half_screen"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/note"
-            android:text="@string/sp_title_nominal"
-            android:textColor="@color/sp_time_color"
-            android:textSize="@dimen/sp_12" />
-
-        <TextView
-            android:id="@+id/title_balance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/note"
-            android:layout_toEndOf="@+id/title_nominal"
-            android:layout_toRightOf="@+id/title_nominal"
-            android:text="@string/sp_saldo_title"
-            android:textColor="@color/sp_time_color"
-            android:textSize="@dimen/sp_12" />-->
-
-
     </RelativeLayout>
 
     <View

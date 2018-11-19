@@ -53,6 +53,9 @@ public class MerchantSaldoPriorityPresenter extends BaseDaggerPresenter<Merchant
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                if (!isViewAttached()) {
+                    return;
+                }
                 if (graphqlResponse != null &&
                         graphqlResponse.getData(GqlSetMerchantSaldoStatus.class) != null) {
 
