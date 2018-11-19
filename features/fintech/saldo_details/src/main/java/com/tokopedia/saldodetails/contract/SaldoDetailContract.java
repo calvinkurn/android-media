@@ -43,13 +43,7 @@ public interface SaldoDetailContract {
 
         void setActionsEnabled(Boolean isEnabled);
 
-        boolean isRefreshing();
-
         void setLoading();
-
-        void showRefreshing();
-
-        void hideRefreshing();
 
         void refresh();
 

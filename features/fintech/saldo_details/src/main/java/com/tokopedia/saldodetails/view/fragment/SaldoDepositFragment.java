@@ -414,25 +414,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
-    public boolean isRefreshing() {
-        return false;//refreshHandler.isRefreshing();
-    }
-
-    @Override
     public void refresh() {
         saldoDetailsPresenter.onRefresh();
-    }
-
-    @Override
-    public void showRefreshing() {
-//        refreshHandler.setRefreshing(true);
-//        refreshHandler.setIsRefreshing(true);
-    }
-
-    @Override
-    public void hideRefreshing() {
-//        refreshHandler.setRefreshing(false);
-//        refreshHandler.setIsRefreshing(false);
     }
 
     @Override

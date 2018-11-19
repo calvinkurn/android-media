@@ -33,6 +33,9 @@ public class MerchantSaldoPriorityPresenter extends BaseDaggerPresenter<Merchant
 
     @Override
     public void updateSellerSaldoStatus(boolean isChecked) {
+        if (!isViewAttached()) {
+            return;
+        }
         getView().showProgressLoading();
         setMerchantSaldoStatusUseCase.execute(isChecked, new Subscriber<GraphqlResponse>() {
             @Override
@@ -42,8 +45,10 @@ public class MerchantSaldoPriorityPresenter extends BaseDaggerPresenter<Merchant
 
             @Override
             public void onError(Throwable e) {
-                getView().hideProgressLoading();
-                getView().onSaldoStatusUpdateError(ErrorHandler.getErrorMessage(getView().getContext(), e));
+                if (isViewAttached()) {
+                    getView().hideProgressLoading();
+                    getView().onSaldoStatusUpdateError(ErrorHandler.getErrorMessage(getView().getContext(), e));
+                }
             }
 
             @Override

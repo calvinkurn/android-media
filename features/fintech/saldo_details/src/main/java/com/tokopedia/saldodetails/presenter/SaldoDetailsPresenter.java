@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -50,6 +48,8 @@ import static android.content.ContentValues.TAG;
 public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContract.View>
         implements SaldoDetailContract.Presenter, MerchantSaldoDetailsActionListener {
 
+    private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
+    private static final long MAX_DAYS_DIFFERENCE = 31;
     private SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
     private static final java.lang.String DATE_FORMAT_VIEW = "dd/MM/yyyy";
     public static final int REQUEST_WITHDRAW_CODE = 1;
@@ -185,8 +185,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
             @Override
             public void onError(Throwable e) {
+                getView().finishLoading();
                 if (e instanceof UnknownHostException) {
-                    getView().finishLoading();
                     if (getView().getAdapter().getItemCount() == 0) {
                         getView().showEmptyState();
                     } else {
@@ -194,18 +194,13 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                     }
 
                 } else if (e instanceof SocketTimeoutException) {
-                    getView().finishLoading();
-                    getView().hideRefreshing();
                     if (getView().getAdapter().getItemCount() == 0) {
                         getView().showEmptyState();
                     } else {
                         getView().setRetry();
                     }
                 } else {
-
-                    getView().finishLoading();
                     getView().setActionsEnabled(true);
-                    getView().hideRefreshing();
                     if (getView().getAdapter().getItemCount() == 0) {
                         getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                     } else {
@@ -259,8 +254,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
 
+                    getView().finishLoading();
+
                     if (e instanceof UnknownHostException) {
-                        getView().finishLoading();
                         if (getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState();
                         } else {
@@ -268,18 +264,13 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                         }
 
                     } else if (e instanceof SocketTimeoutException) {
-                        getView().finishLoading();
-                        getView().hideRefreshing();
                         if (getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState();
                         } else {
                             getView().setRetry();
                         }
                     } else {
-
-                        getView().finishLoading();
                         getView().setActionsEnabled(true);
-                        getView().hideRefreshing();
                         if (getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
                         } else {
@@ -290,57 +281,57 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
                 @Override
                 public void onNext(GraphqlResponse graphqlResponse) {
-
-                    if (graphqlResponse != null &&
-                            graphqlResponse.getData(GqlDepositSummaryResponse.class) != null) {
-
-                        GqlDepositSummaryResponse gqlDepositSummaryResponse =
-                                graphqlResponse.getData(GqlDepositSummaryResponse.class);
-
-                        if (gqlDepositSummaryResponse != null &&
-                                !gqlDepositSummaryResponse.getDepositActivityResponse().isHaveError()) {
-
-                            getView().finishLoading();
-                            getView().hideRefreshing();
-                            getView().setActionsEnabled(true);
-
-                            if (paging.getPage() == 1) {
-                                getView().getAdapter().clearAllElements();
-                                depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
-                            }
-                            paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse().isHaveNextPage());
-                            setData(gqlDepositSummaryResponse);
-                        } else {
-                            getView().finishLoading();
-                            getView().setActionsEnabled(true);
-                            getView().hideRefreshing();
-                            if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.getDepositActivityResponse() != null) {
-                                if (getView().getAdapter().getItemCount() == 0) {
-                                    getView().showEmptyState(gqlDepositSummaryResponse.getDepositActivityResponse().getMessage());
-                                } else {
-                                    getView().setRetry(gqlDepositSummaryResponse.getDepositActivityResponse().getMessage());
-                                }
-                            }
-                        }
-
-                    } else {
-                        getView().finishLoading();
-                        getView().setActionsEnabled(true);
-                        getView().hideRefreshing();
-                        if (getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
-                        } else {
-                            getView().setRetry(getView().getString(R.string.sp_empty_state_error));
-                        }
-
-                    }
-                    finishLoading();
+                    onDepositSummaryFetched(graphqlResponse);
                 }
             });
 
         } else {
             getView().finishLoading();
         }
+    }
+
+    private void onDepositSummaryFetched(GraphqlResponse graphqlResponse) {
+        if (graphqlResponse != null &&
+                graphqlResponse.getData(GqlDepositSummaryResponse.class) != null) {
+
+            GqlDepositSummaryResponse gqlDepositSummaryResponse =
+                    graphqlResponse.getData(GqlDepositSummaryResponse.class);
+
+            if (gqlDepositSummaryResponse != null &&
+                    !gqlDepositSummaryResponse.getDepositActivityResponse().isHaveError()) {
+
+                getView().setActionsEnabled(true);
+                if (paging.getPage() == 1) {
+                    getView().getAdapter().clearAllElements();
+                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
+                }
+                paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse()
+                        .isHaveNextPage());
+                setData(gqlDepositSummaryResponse);
+            } else {
+                getView().setActionsEnabled(true);
+                if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
+                        getDepositActivityResponse() != null) {
+                    if (getView().getAdapter().getItemCount() == 0) {
+                        getView().showEmptyState(gqlDepositSummaryResponse.
+                                getDepositActivityResponse().getMessage());
+                    } else {
+                        getView().setRetry(gqlDepositSummaryResponse.
+                                getDepositActivityResponse().getMessage());
+                    }
+                }
+            }
+
+        } else {
+            getView().setActionsEnabled(true);
+            if (getView().getAdapter().getItemCount() == 0) {
+                getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
+            } else {
+                getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+            }
+
+        }
+        finishLoading();
     }
 
     @Override
@@ -384,7 +375,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 getView().showInvalidDateError(getView().getString(R.string.error_invalid_date));
             }
 
-            if ((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000) > 31) {
+            if ((endDate.getTime() - startDate.getTime()) / SEC_TO_DAY_CONVERSION > MAX_DAYS_DIFFERENCE) {
                 isValid = false;
                 getView().showInvalidDateError(getView().getString(R.string.sp_title_max_day));
             }
@@ -440,13 +431,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     private void showLoading() {
-        if (!getView().isRefreshing() &&
-                getView().getAdapter().getItemCount() == 0) {
-            getView().setLoading();
-
-        } else if (paging.getPage() == 1) {
-            getView().showRefreshing();
-        } else {
+        if (isViewAttached()) {
             getView().getAdapter().showLoading();
         }
     }
