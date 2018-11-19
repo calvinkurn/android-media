@@ -9,6 +9,8 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 
+import static android.view.View.GONE;
+
 /**
  * @author by nisie on 16/11/18.
  */
@@ -27,10 +29,16 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
 
     @Override
     public void bind(TickerViewModel element) {
+        tickerView.clearMessage();
         tickerView.addAllMessage(element.getListMessage());
         tickerView.setOnPartialTextClickListener((view, messageClick) -> listener.onTickerLinkClicked(
                 messageClick
         ));
+        tickerView.setOnActionCloseListener(v -> {
+            tickerView.setStateVisibility(GONE);
+            tickerView.setVisibility(GONE);
+            listener.onTickerClosed();
+        });
         tickerView.buildView();
     }
 }

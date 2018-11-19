@@ -287,6 +287,10 @@ public class TickerView extends BaseCustomView {
         imageViewActionClose.setVisibility(isShowCloseButton? VISIBLE : GONE);
     }
 
+    public void setOnActionCloseListener(OnClickListener listener){
+        imageViewActionClose.setOnClickListener(listener);
+    }
+
     public void setHighLightColor(int highLightColor) {
         GradientDrawable gradientDrawable;
         try {

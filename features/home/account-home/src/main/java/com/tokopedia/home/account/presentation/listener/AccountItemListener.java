@@ -57,4 +57,6 @@ public interface AccountItemListener {
     void onKycLinkClicked(int verificationStatus);
 
     void onTickerLinkClicked(String messageClick);
+
+    void onTickerClosed();
 }
