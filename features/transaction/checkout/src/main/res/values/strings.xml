@@ -222,5 +222,7 @@
     <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
     <string name="label_text_promo_potency">Potensi Promo</string>
     <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
+    <string name="ppp_more">Pelajari</string>
+    <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
 
 </resources>

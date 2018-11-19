@@ -50,6 +50,7 @@ public class CartItemModel implements Parcelable {
     private String protectionLinkText;
     private String protectionLinkUrl;
     private boolean protectionOptIn;
+    private boolean isUsingProtection;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
@@ -291,6 +292,14 @@ public class CartItemModel implements Parcelable {
 
     public void setProtectionOptIn(boolean protectionOptIn) {
         this.protectionOptIn = protectionOptIn;
+    }
+
+    public boolean isUsingProtection() {
+        return isUsingProtection;
+    }
+
+    public void setUsingProtection(boolean usingProtection) {
+        isUsingProtection = usingProtection;
     }
 
     public CartItemModel() {

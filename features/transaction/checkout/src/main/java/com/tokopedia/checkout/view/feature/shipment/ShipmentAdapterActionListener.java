@@ -82,4 +82,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onCourierPromoCanceled(String shipperName);
 
     boolean isToogleYearEndPromoOn();
+
+    void onPurchaseProtectionLogicError();
 }

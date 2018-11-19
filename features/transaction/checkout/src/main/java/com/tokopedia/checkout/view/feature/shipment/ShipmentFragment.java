@@ -1731,6 +1731,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         return false;
     }
 
+    @Override
+    public void onPurchaseProtectionLogicError() {
+        String message = getString(R.string.error_dropshipper);
+        showToastError(message);
+    }
+
     public int getResultCode() {
         if (shipmentPresenter.getCouponStateChanged()) {
             return ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED;

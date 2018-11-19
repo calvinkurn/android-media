@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
@@ -44,6 +45,7 @@ import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProduct
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.component.TextViewCompat;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -53,6 +55,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,7 +70,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
+public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements ShipmentCartItemViewHolder.ShipmentItemListener {
 
     public static final int ITEM_VIEW_SHIPMENT_ITEM = R.layout.item_shipment;
 
@@ -108,6 +111,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvOptionalNoteToSeller;
     private LinearLayout llOptionalNoteToSellerLayout;
     private LinearLayout llItemProductContainer;
+    private RelativeLayout rlPurchaseProtection;
+    private TextView tvPPPLinkText;
+    private TextView tvPPPPrice;
+    private TextView tvPPPMore;
+    private CheckBox cbPPP;
     private TextView tvAddressName;
     private TextView tvAddressStatus;
     private LinearLayout llAddressName;
@@ -215,6 +223,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
+        rlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
+        tvPPPLinkText = itemView.findViewById(R.id.text_link_text);
+        tvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
+        tvPPPMore = itemView.findViewById(R.id.text_ppp_more);
+        cbPPP = itemView.findViewById(R.id.checkbox_ppp);
         ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
@@ -303,6 +316,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
+    }
+
+    @Override
+    public void notifyOnPurchaseProtectionChecked(boolean checked, int position) {
+        if(shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel){
+            ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
+            data.getCartItemModels().get(position).setUsingProtection(checked);
+            if (checked) {
+                if(cbDropshipper.isChecked() && data.getSelectedShipmentDetailData().getUseDropshipper()){
+                    data.getSelectedShipmentDetailData().setUseDropshipper(false);
+                    cbDropshipper.setChecked(false);
+                    mActionListener.onPurchaseProtectionLogicError();
+                }
+            }
+        }
     }
 
     private void initSaveStateDebouncer() {
@@ -475,6 +503,28 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
         tvNoteToSellerLabel.setVisibility(View.GONE);
+
+        rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
+        if (cartItemModel.isProtectionAvailable()) {
+            tvPPPMore.setTag(cartItemModel.getProtectionLinkUrl());
+            tvPPPMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), (String) view.getTag(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            tvPPPLinkText.setText(cartItemModel.getProtectionLinkText());
+            tvPPPPrice.setText(String.format("%s / barang",
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            cartItemModel.getProtectionPricePerProduct(), true)));
+            cbPPP.setChecked(cartItemModel.isProtectionOptIn());
+            cbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    notifyOnPurchaseProtectionChecked(checked, 0);
+                }
+            });
+        }
 
         ivFreeReturnIcon.setVisibility(cartItemModel.isFreeReturn() ? View.VISIBLE : View.GONE);
         tvPreOrder.setVisibility(cartItemModel.isPreOrder() ? View.VISIBLE : View.GONE);
@@ -786,6 +836,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                             ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
                             data.getSelectedShipmentDetailData().setUseDropshipper(checked);
                             if (checked) {
+                                if(isHavingPurchaseProtectionChecked()) {
+                                    compoundButton.setChecked(false);
+                                    mActionListener.onPurchaseProtectionLogicError();
+                                }
                                 etShipperName.setText(data.getDropshiperName());
                                 etShipperPhone.setText(data.getDropshiperPhone());
                                 data.getSelectedShipmentDetailData().setDropshipperName(data.getDropshiperName());
@@ -1170,7 +1224,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         rvCartItem.setLayoutManager(layoutManager);
 
         ShipmentInnerProductListAdapter shipmentInnerProductListAdapter =
-                new ShipmentInnerProductListAdapter(cartItemList);
+                new ShipmentInnerProductListAdapter(cartItemList, this);
         rvCartItem.setAdapter(shipmentInnerProductListAdapter);
     }
 
@@ -1246,6 +1300,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private void setImageFilterNormal() {
         ivProductImage.setColorFilter(null);
         ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
+    }
+
+    private boolean isHavingPurchaseProtectionChecked() {
+        ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
+        for(CartItemModel item :data.getCartItemModels()) {
+            if(item.isUsingProtection()) return true;
+        }
+        return false;
     }
 
     private interface SaveStateDebounceListener {
