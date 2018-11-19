@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +33,10 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         if (requestCode == SaldoDetailsPresenter.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
             ((SaldoDepositFragment) getSupportFragmentManager().findFragmentByTag(TAG)).refresh();
         }
+    }
+
+    public static Intent createInstance(Context context) {
+        return new Intent(context, SaldoDepositActivity.class);
     }
 
     @Override

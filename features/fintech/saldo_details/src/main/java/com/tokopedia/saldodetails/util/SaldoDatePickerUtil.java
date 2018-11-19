@@ -12,63 +12,63 @@ import com.tokopedia.saldodetails.R;
 import java.util.Calendar;
 
 public class SaldoDatePickerUtil {
-    private int Year;
-    private int Month;
-    private int Day;
-    private int MaxYear = 0;
-    private int MinYear = 0;
+    private int year;
+    private int month;
+    private int day;
+    private int maxYear = 0;
+    private int minYear = 0;
     private long maxDate = 0;
     private long minDate = 0;
     private boolean ShowToday = true;
     private Dialog dialog;
     private onDateSelectedListener listener;
-    private Activity context;
-    Calendar c;
+    private Activity activity;
+    private Calendar calendar;
     public static boolean IS_PICKING_DATE = false;
 
-    public SaldoDatePickerUtil(Activity Context) {
-        context = Context;
-        dialog = new Dialog(context);
+    public SaldoDatePickerUtil(Activity activity) {
+        this.activity = activity;
+        dialog = new Dialog(activity);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_calendar);
-        c = Calendar.getInstance();
-        Year = c.get(Calendar.YEAR);
-        Month = c.get(Calendar.MONTH) + 1;
-        Day = c.get(Calendar.DAY_OF_MONTH);
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH) + 1;
+        day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
-    public SaldoDatePickerUtil(Activity Context, int day, int month, int year) {
-        context = Context;
-        dialog = new Dialog(context);
+    public SaldoDatePickerUtil(Activity activity, int day, int month, int year) {
+        this.activity = activity;
+        dialog = new Dialog(activity);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_calendar);
-        Year = year;
-        Month = month;
-        Day = day;
+        this.year = year;
+        this.month = month;
+        this.day = day;
     }
 
     public interface onDateSelectedListener {
         void onDateSelected(int year, int month, int dayOfMonth);
     }
 
-    public void SetDate(int day, int month, int year) {
-        Year = year;
-        Month = month;
-        Day = day;
+    public void setDate(int day, int month, int year) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
     }
 
-    public void SetShowToday(boolean ShowToday) {
+    public void setShowToday(boolean ShowToday) {
         this.ShowToday = ShowToday;
     }
 
-    public void SetMaxYear(int maxyear) {
-        c = Calendar.getInstance();
-        MaxYear = c.get(Calendar.YEAR) - maxyear;
+    public void setMaxYear(int maxyear) {
+        calendar = Calendar.getInstance();
+        maxYear = calendar.get(Calendar.YEAR) - maxyear;
     }
 
-    public void SetMinYear(int minyear) {
-        c = Calendar.getInstance();
-        MinYear = c.get(Calendar.YEAR) - minyear;
+    public void setMinYear(int minyear) {
+        calendar = Calendar.getInstance();
+        minYear = calendar.get(Calendar.YEAR) - minyear;
     }
 
     public void setMaxDate(long maxDate) {
@@ -83,23 +83,23 @@ public class SaldoDatePickerUtil {
     public void DatePickerSpinner(onDateSelectedListener Listener) {
         IS_PICKING_DATE = true;
         listener = Listener;
-        DatePickerDialog dpd = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dpd = new DatePickerDialog(activity, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 listener.onDateSelected(year, monthOfYear + 1, dayOfMonth);
             }
-        }, Year, Month - 1, Day);
+        }, year, month - 1, day);
         dpd.setCanceledOnTouchOutside(false);
         dpd.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if (MaxYear != 0) {
+        if (maxYear != 0) {
             Calendar maxDate = Calendar.getInstance();
-            maxDate.set(maxDate.get(Calendar.YEAR) - MaxYear, maxDate.getMaximum(Calendar.MONTH), maxDate.getMaximum(Calendar.DATE));
+            maxDate.set(maxDate.get(Calendar.YEAR) - maxYear, maxDate.getMaximum(Calendar.MONTH), maxDate.getMaximum(Calendar.DATE));
             dpd.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
         }
-        if (MinYear != 0) {
+        if (minYear != 0) {
             Calendar minDate = Calendar.getInstance();
-            minDate.set(minDate.get(Calendar.YEAR) - MinYear, minDate.getMinimum(Calendar.MONTH), minDate.getMinimum(Calendar.DATE));
+            minDate.set(minDate.get(Calendar.YEAR) - minYear, minDate.getMinimum(Calendar.MONTH), minDate.getMinimum(Calendar.DATE));
             dpd.getDatePicker().setMinDate(minDate.getTimeInMillis() - 1000);
         }
 
@@ -145,23 +145,23 @@ public class SaldoDatePickerUtil {
     public void DatePickerSpinnerShopClose(onDateSelectedListener Listener) {
         IS_PICKING_DATE = true;
         listener = Listener;
-        DatePickerDialog dpd = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dpd = new DatePickerDialog(activity, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 listener.onDateSelected(year, monthOfYear, dayOfMonth);
             }
-        }, Year, Month - 1, Day);
+        }, year, month - 1, day);
         dpd.setCanceledOnTouchOutside(false);
         dpd.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if (MaxYear != 0) {
+        if (maxYear != 0) {
             Calendar maxDate = Calendar.getInstance();
-            maxDate.set(maxDate.get(Calendar.YEAR) - MaxYear, maxDate.getMaximum(Calendar.MONTH), maxDate.getMaximum(Calendar.DATE));
+            maxDate.set(maxDate.get(Calendar.YEAR) - maxYear, maxDate.getMaximum(Calendar.MONTH), maxDate.getMaximum(Calendar.DATE));
             dpd.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
         }
-        if (MinYear != 0) {
+        if (minYear != 0) {
             Calendar minDate = Calendar.getInstance();
-            minDate.set(minDate.get(Calendar.YEAR) - MinYear, minDate.getMinimum(Calendar.MONTH), minDate.getMinimum(Calendar.DATE));
+            minDate.set(minDate.get(Calendar.YEAR) - minYear, minDate.getMinimum(Calendar.MONTH), minDate.getMinimum(Calendar.DATE));
             dpd.getDatePicker().setMinDate(minDate.getTimeInMillis());
         }
 

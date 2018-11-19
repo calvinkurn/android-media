@@ -55,12 +55,12 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private String paramStartDate;
     private String paramEndDate;
-    public static final String BUNDLE_TOTAL_BALANCE = "total_balance";
-    public static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
+    private static final String BUNDLE_TOTAL_BALANCE = "total_balance";
+    private static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
     private static final java.lang.String DATE_FORMAT_WS = "yyyy/MM/dd";
 
-    PagingHandler paging;
-    DepositCacheInteractor depositCacheInteractor;
+    private PagingHandler paging;
+    private DepositCacheInteractor depositCacheInteractor;
 
     @Inject
     GetDepositSummaryUseCase getDepositSummaryUseCase;
@@ -144,7 +144,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     @Override
     public void onEndDateClicked(SaldoDatePickerUtil datePicker) {
         String date = getView().getEndDate();
-        datePicker.SetDate(getDay(date), getStartMonth(date), getStartYear(date));
+        datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
         datePicker.DatePickerCalendar((year, month, day) -> {
             getView().setEndDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
             new android.os.Handler().postDelayed(this::onSearchClicked, 500);
@@ -155,7 +155,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     @Override
     public void onStartDateClicked(SaldoDatePickerUtil datePicker) {
         String date = getView().getStartDate();
-        datePicker.SetDate(getDay(date), getStartMonth(date), getStartYear(date));
+        datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
         datePicker.DatePickerCalendar((year, month, day) -> {
             getView().setStartDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
             new android.os.Handler().postDelayed(this::onSearchClicked, 500);

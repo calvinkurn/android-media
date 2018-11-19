@@ -46,6 +46,8 @@ public interface SellerModuleRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
+    Intent getSaldoDepositIntent(Context context);
+
     Intent getTopProfileIntent(Context context, String userId);
 
     void gotoTopAdsDashboard(Context context);

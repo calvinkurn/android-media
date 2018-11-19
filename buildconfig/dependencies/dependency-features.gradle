@@ -149,6 +149,7 @@ ext {
             instantLoan            : ":features:fintech:instant_loan",
             mitraToppers           : ":features:fintech:mitra_toppers",
             saldodetails           : ":features:fintech:saldo_details",
+            saldodetails_no_op     : ":features:fintech:saldo_details_no_op",
             tokoCash               : ":features:fintech:tokocash",
 
             accountHome            : ":features:home:account-home",

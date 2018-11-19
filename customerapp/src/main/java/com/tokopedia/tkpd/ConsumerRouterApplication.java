@@ -286,6 +286,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
+import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
@@ -2852,10 +2853,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToSaldo(Context context) {
-        Intent intent = new Intent(context, SaldoDepositActivity.class);
-        context.startActivity(intent);
+        context.startActivity(getSaldoDepositIntent(context));
         UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DEPOSIT);
         AnalyticsEventTrackingHelper.homepageSaldoClick(SaldoDepositActivity.class.getName());
+    }
+
+    @Override
+    public Intent getSaldoDepositIntent(Context context) {
+        return SaldoDetailsInternalRouter.getSaldoDepositIntent(context);
     }
 
     public Intent getInboxChatIntent(Context context) {
