@@ -54,7 +54,10 @@ import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListA
 
 import java.util.ArrayList;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by nisie on 5/6/17.
@@ -106,14 +109,20 @@ public class DrawerSellerHelper extends DrawerHelper
     @Override
     public void showFlashaleMenu() {
         ArrayList<DrawerItem> items = adapter.getData();
-        for (int i = 0; i < items.size(); ++i){
-            if (items.get(i).id == TkpdState.DrawerPosition.SELLER_TOP_ADS){
-                adapter.getData().add(i+1, new DrawerItem(context.getString(R.string.drawer_title_flash_sale),
-                        TkpdState.DrawerPosition.SELLER_FLASH_SALE,
-                        true));
-                adapter.notifyItemInserted(i+1);
-            }
-        }
+        Observable.range(0, items.size())
+                .filter(integer -> items.get(integer).id == TkpdState.DrawerPosition.SELLER_TOP_ADS &&
+                        items.get(integer+1).id != TkpdState.DrawerPosition.SELLER_FLASH_SALE)
+                .take(1)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    if (integer != null){
+                        adapter.getData().add(integer+1, new DrawerItem(context.getString(R.string.drawer_title_flash_sale),
+                                TkpdState.DrawerPosition.SELLER_FLASH_SALE,
+                                true));
+                        adapter.notifyDataSetChanged();
+                    }
+                }, throwable -> {});
     }
 
     @Override

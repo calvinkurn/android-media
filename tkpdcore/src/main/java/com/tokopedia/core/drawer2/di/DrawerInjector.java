@@ -73,6 +73,7 @@ public class DrawerInjector {
 
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         FlashsaleGetSellerStatusUseCase flashsaleGetSellerStatusUseCase = new FlashsaleGetSellerStatusUseCase(graphqlUseCase);
+        flashsaleGetSellerStatusUseCase.setCached(true);
 
         return new DrawerDataManagerImpl(
                 drawerDataListener,
