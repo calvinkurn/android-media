@@ -101,7 +101,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_picker_camera, container, false);
+        View view = inflater.inflate(R.layout.fragment_camera_focus_view, container, false);
         initView(view);
         return view;
     }
