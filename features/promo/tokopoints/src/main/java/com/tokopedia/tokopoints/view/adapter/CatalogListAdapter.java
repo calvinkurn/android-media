@@ -194,6 +194,9 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
+
+
+        holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
     }
 
     @Override
