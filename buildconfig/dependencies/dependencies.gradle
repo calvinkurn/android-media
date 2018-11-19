@@ -28,6 +28,9 @@ ext {
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
 
+    KotlinMockitoVersion = '1.5.0'
+    SpekVersion = "1.1.5"
+
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
 
@@ -177,7 +180,11 @@ ext {
             powerMockJUnit     : "org.powermock:powermock-module-junit4:$powerMockVersion",
             powerMockJUnitRule : "org.powermock:powermock-module-junit4-rule:$powerMockVersion",
             powerMockito       : "org.powermock:powermock-api-mockito:$powerMockVersion",
-            powerMockXstream   : "org.powermock:powermock-classloading-xstream:$powerMockVersion"
+            powerMockXstream   : "org.powermock:powermock-classloading-xstream:$powerMockVersion",
+            kotlinMockito      : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
+            spekApi            : "org.jetbrains.spek:spek-api:${SpekVersion}",
+            platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
+            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0"
     ]
 
     debugToolsDependencies = [

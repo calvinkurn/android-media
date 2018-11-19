@@ -67,7 +67,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
-        setTickerSeller(context, accountModel, items);
+        items.add(parseTickerSeller(context, accountModel));
 
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
@@ -226,7 +226,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private static void setTickerSeller(Context context, AccountModel accountModel, List<ParcelableViewModel> items) {
+    private static TickerViewModel parseTickerSeller(Context context, AccountModel accountModel) {
         TickerViewModel sellerTickerModel = new TickerViewModel(new ArrayList<>());
 
         if (accountModel.getKycStatusPojo() != null
@@ -238,7 +238,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
         }
 
-        items.add(sellerTickerModel);
+        return sellerTickerModel;
 
     }
 
