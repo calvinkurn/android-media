@@ -55,10 +55,11 @@ public class NumberPickerWithCounterView extends com.tokopedia.design.component.
                     if (current >= maxValue) {
                         setTextNumberInputView(maxValue);
                         updateButtonState();
-                    }
-
-                    if (current <= minValue) {
+                    } else if (current <= minValue) {
                         setTextNumberInputView(minValue);
+                        updateButtonState();
+                    } else {
+                        setTextNumberInputView(current);
                         updateButtonState();
                     }
 
