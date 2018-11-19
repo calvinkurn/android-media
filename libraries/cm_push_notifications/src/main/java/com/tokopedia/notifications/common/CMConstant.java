@@ -54,8 +54,8 @@ public interface CMConstant {
         String CHANNEL_DESCRIPTION = "DESCRIPTION";
         String CHANNEL_ID = "111";
 
-        String CHANNEL_GROUP_ID = "campaign_group_01";
-        String CHANNEL_GROUP_NAME = "Campaign";
+        String CHANNEL_GROUP_ID = "marketing_group_01";
+        String CHANNEL_GROUP_NAME = "Marketing";
     }
 
     interface PersistentExtra{
