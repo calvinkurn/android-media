@@ -31,8 +31,7 @@ import java.io.File;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_FACE;
-import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_KTP;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -101,17 +100,17 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_image_picker_camera, container, false);
+        View view = inflater.inflate(R.layout.fragment_camera_focus_view, container, false);
         initView(view);
         return view;
     }
 
     private void initView(View view) {
-        cameraView = view.findViewById(R.id.camera_view);
+        cameraView = view.findViewById(R.id.full_camera_view);
         closeButton = view.findViewById(R.id.close_button);
         title = view.findViewById(R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
-        imagePreview = view.findViewById(R.id.image_preview);
+        imagePreview = view.findViewById(R.id.full_image_preview);
         focusedFaceView = view.findViewById(R.id.focused_view_face);
         focusedKtpView = view.findViewById(R.id.focused_view_ktp);
         shutterButton = view.findViewById(R.id.image_button_shutter);
@@ -119,7 +118,15 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         buttonLayout = view.findViewById(R.id.button_layout);
         reCaptureButton = view.findViewById(R.id.recapture_button);
         nextButton = view.findViewById(R.id.next_button);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        populateView();
+    }
+
+    private void populateView() {
         shutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,18 +176,8 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO add pass image to model
                 Intent intent = new Intent();
-                switch (viewMode) {
-                    case (PARAM_VIEW_MODE_KTP):
-                        intent.putExtra(EXTRA_STRING_KTP, imagePath);
-                        break;
-                    case (PARAM_VIEW_MODE_FACE):
-                        intent.putExtra(EXTRA_STRING_FACE, imagePath);
-                        break;
-                    default:
-                        break;
-                }
+                intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }
@@ -188,7 +185,42 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
         populateViewByViewMode(viewMode);
         showCameraView();
-        cameraView.addCameraListener(cameraListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        destroyCamera();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroyCamera();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showCameraView();
+    }
+
+    private void startCamera() {
+        try {
+            cameraView.clearCameraListeners();
+            cameraView.addCameraListener(cameraListener);
+            cameraView.start();
+        } catch (Throwable e) {
+            // no-op
+        }
+    }
+
+    private void destroyCamera() {
+        try {
+            cameraView.destroy();
+        } catch (Throwable e) {
+            // no-op
+        }
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -235,6 +267,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
                 focusedFaceView.setVisibility(View.VISIBLE);
                 title.setText(R.string.camera_face_title);
                 subtitle.setText(R.string.camera_face_subtitle);
+                toggleCamera();
                 break;
         }
     }
@@ -243,7 +276,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         cameraView.setVisibility(View.VISIBLE);
         shutterButton.setVisibility(View.VISIBLE);
         switchCamera.setVisibility(View.VISIBLE);
-
+        startCamera();
         imagePreview.setVisibility(View.GONE);
         buttonLayout.setVisibility(View.GONE);
     }
@@ -252,7 +285,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         cameraView.setVisibility(View.GONE);
         shutterButton.setVisibility(View.GONE);
         switchCamera.setVisibility(View.GONE);
-
+        destroyCamera();
         imagePreview.setVisibility(View.VISIBLE);
         buttonLayout.setVisibility(View.VISIBLE);
     }

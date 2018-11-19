@@ -55,16 +55,16 @@ public class FocusedCameraKTPView extends View {
 //        mPath.addCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 550, Path.Direction.CW);
         if (Build.VERSION.SDK_INT < 21) {
             mPath.addRect(getLeft() + (getRight() - getLeft()) / 20,
-                    (float) (getTop() + (getBottom() - getTop()) / 2.84),
+                    (float) (getTop() + (getBottom() - getTop()) / 3.22),
                     getRight() - (getRight() - getLeft()) / 20,
-                    (float) (getBottom() - (getBottom() - getTop()) / 3.38),
+                    (float) (getBottom() - (getBottom() - getTop()) / 2.96),
                     Path.Direction.CW);
         } else {
             mPath.addRoundRect(
                     getLeft() + (getRight() - getLeft()) / 20,
-                    (float) (getTop() + (getBottom() - getTop()) / 2.84),
+                    (float) (getTop() + (getBottom() - getTop()) / 3.22),
                     getRight() - (getRight() - getLeft()) / 20,
-                    (float) (getBottom() - (getBottom() - getTop()) / 3.38),
+                    (float) (getBottom() - (getBottom() - getTop()) / 2.95),
                     20,
                     20,
                     Path.Direction.CW

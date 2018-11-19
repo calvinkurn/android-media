@@ -11,8 +11,9 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
-import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_KTP;
-
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -41,28 +42,23 @@ public class UserIdentificationFormKtpFragment extends
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(), 1);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA);
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                        PARAM_VIEW_MODE_KTP);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_CAMERA
-                && resultCode == Activity.RESULT_OK) {
-            if (getActivity() != null && getActivity().getIntent() != null) {
-                Bundle bundle = getActivity().getIntent().getExtras();
-                if (bundle != null) {
-                    stepperModel.setKtpFile(bundle.getString(EXTRA_STRING_KTP));
-                    stepperListener.goToNextPage(stepperModel);
-                } else {
-                    Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-
-            }
+        if (requestCode == REQUEST_CODE_CAMERA_KTP
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            String ktpFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
+            stepperModel.setKtpFile(ktpFile);
+            stepperListener.goToNextPage(stepperModel);
+        } else {
+            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

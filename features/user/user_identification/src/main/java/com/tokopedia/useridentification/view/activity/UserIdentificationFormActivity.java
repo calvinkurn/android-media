@@ -34,12 +34,12 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA);
         } else {
-            createNewStepperModel();
+            stepperModel = createNewStepperModel();
         }
+        super.onCreate(savedInstanceState);
     }
 
     @Override

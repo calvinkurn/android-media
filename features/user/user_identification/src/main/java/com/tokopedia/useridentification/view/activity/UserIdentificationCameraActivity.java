@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment;
@@ -27,10 +28,11 @@ public class UserIdentificationCameraActivity extends BaseSimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         if (getIntent().getExtras() != null){
             viewMode = getIntent().getIntExtra(EXTRA_VIEW_MODE, 1);
         }
+        super.onCreate(savedInstanceState);
+        toolbar.setVisibility(View.GONE);
     }
 
     @Override
