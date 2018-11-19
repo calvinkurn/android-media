@@ -2,6 +2,8 @@ package com.tokopedia.common.travel.di;
 
 import com.tokopedia.common.travel.data.TravelPassengerDataStoreFactory;
 import com.tokopedia.common.travel.data.TravelPassengerDbDataStore;
+import com.tokopedia.common.travel.domain.provider.TravelProvider;
+import com.tokopedia.common.travel.domain.provider.TravelScheduler;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,4 +24,8 @@ public class CommonTravelModule {
         return new TravelPassengerDataStoreFactory(travelPassengerDbDataStore);
     }
 
+    @Provides
+    TravelProvider provideTravelProvider() {
+        return new TravelScheduler();
+    }
 }
