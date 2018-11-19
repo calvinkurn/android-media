@@ -466,4 +466,8 @@ public class TickerView extends BaseCustomView {
         imageViewActionClose.setVisibility(GONE);
     }
 
+    public boolean contains(String message){
+        return listMessage!= null && !listMessage.isEmpty() && listMessage.contains(message);
+    }
+
 }

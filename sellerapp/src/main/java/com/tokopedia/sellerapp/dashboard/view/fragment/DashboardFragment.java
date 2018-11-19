@@ -59,7 +59,6 @@ import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
 import com.tokopedia.user_identification_common.KYCConstant;
-import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
@@ -574,7 +573,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         KycWidgetUtil.getDescription(getContext(), status),
                         KycWidgetUtil.getHighlight(getContext(), status),
                         () -> {
-                            if(getActivity().getApplicationContext() instanceof ApplinkRouter) {
+                            if (getActivity().getApplicationContext() instanceof ApplinkRouter) {
                                 ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
                                 applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
                             }
@@ -587,22 +586,19 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 }
 
                 if (status == KYCConstant.STATUS_NOT_VERIFIED) {
-                    SpannableString tickerMessage = verificationWarningTickerView
-                            .getSpannableText(getString(R.string.ticker_unverified),
-                                    getString(R.string.ticker_unverified_highlight_text),
-                                    () -> {
-                                        ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-                                        applinkRouter.goToApplinkActivity(getActivity(),
-                                                String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                                        KycCommonUrl.TERMS_CONDITION));
-                                    });
-                    tickerView.addMessage(tickerMessage.toString());
-                } else {
+                    String tickerMessage = getString(R.string.ticker_unverified);
 
+                    addMessageToTickerView(tickerMessage)
                 }
 
             }
         };
+    }
+
+    private void addMessageToTickerView(SpannableString tickerMessage) {
+        if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage.toString())) {
+            tickerView.addMessage(tickerMessage);
+        }
     }
 
     @Override
