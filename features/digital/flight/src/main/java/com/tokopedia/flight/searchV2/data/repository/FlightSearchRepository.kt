@@ -139,32 +139,39 @@ open class FlightSearchRepository @Inject constructor(
     fun getSearchCombined(flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel):
             Observable<Meta> {
         return flightSearchCombinedDataApiSource.getData(flightSearchCombinedApiRequestModel)
-                .map { response ->
-                    val combosTable = arrayListOf<FlightComboTable>()
-                    for (comboResponse in response.data) {
-                        with(comboResponse) {
-                            with(attributes) {
-                                val onwardJourney = combos[0]
-                                val returnJourney = combos[1]
-                                combosTable.add(FlightComboTable(
-                                        onwardJourney.id,
-                                        returnJourney.id,
-                                        id,
-                                        onwardJourney.adultPrice,
-                                        onwardJourney.childPrice,
-                                        onwardJourney.infantPrice,
-                                        onwardJourney.adultPriceNumeric,
-                                        onwardJourney.childPriceNumeric,
-                                        onwardJourney.infantPriceNumeric,
-                                        isBestPairing
-                                ))
+                .flatMap { response ->
+                    Observable.from(response.data)
+                            .map { comboResponse ->
+                                with(comboResponse) {
+                                    with(comboResponse.attributes) {
+                                        val onwardJourney = combos[0]
+                                        val returnJourney = combos[1]
+                                        FlightComboTable(
+                                                onwardJourney.id,
+                                                onwardJourney.adultPrice,
+                                                onwardJourney.childPrice,
+                                                onwardJourney.infantPrice,
+                                                onwardJourney.adultPriceNumeric,
+                                                onwardJourney.childPriceNumeric,
+                                                onwardJourney.infantPriceNumeric,
+                                                returnJourney.id,
+                                                returnJourney.adultPrice,
+                                                returnJourney.childPrice,
+                                                returnJourney.infantPrice,
+                                                returnJourney.adultPriceNumeric,
+                                                returnJourney.childPriceNumeric,
+                                                returnJourney.infantPriceNumeric,
+                                                id,
+                                                isBestPairing
+                                        )
+                                    }
+                                }
                             }
-                        }
-                    }
-                    ComboAndMetaWrapper(combosTable, response.meta)
-                }.flatMap { comboAndMetaWrapper ->
-                    Observable.just(flightSearchCombinedDataDbSource.insert(comboAndMetaWrapper.flightComboTables))
-                            .map { comboAndMetaWrapper.meta }
+                            .toList()
+                            .flatMap { combosTable ->
+                                Observable.just(flightSearchCombinedDataDbSource.insert(combosTable))
+                                        .map { response.meta }
+                            }
                 }
     }
 

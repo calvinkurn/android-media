@@ -218,9 +218,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
         if (TextUtils.isEmpty(item.getMinimumUsage())) {
             holder.tvMinTxnValue.setVisibility(View.GONE);
-            holder.tvMinTxnLabel.setPadding(0,(int)holder.tvMinTxnLabel.getResources().getDimension(R.dimen.dp_13),0,0);
         } else {
-            holder.tvMinTxnLabel.setPadding(0,0,0,0);
             holder.tvMinTxnValue.setVisibility(View.VISIBLE);
             holder.tvMinTxnValue.setText(item.getMinimumUsage());
         }
