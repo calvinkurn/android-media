@@ -55,13 +55,8 @@ public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
                 if (!travelPassenger.isSelected()) {
                     if (travelPassenger.getPaxType() == passengerSelected.getPaxType()) {
                         showCheckbox = true;
-
-                        listener.onClickChoosePassenger(travelPassenger);
-                        listener.onUpdatePassenger(passengerSelected.getIdPassenger(), false);
-                        listener.onUpdatePassenger(travelPassenger.getIdPassenger(), true);
-                    } else {
-                        listener.onShowErrorCantPickPassenger();
                     }
+                    listener.onClickChoosePassenger(travelPassenger);
                 }
             }
         });
@@ -89,9 +84,5 @@ public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
 
     public interface ActionListener {
         void onClickChoosePassenger(TravelPassenger travelPassenger);
-
-        void onUpdatePassenger(String idPassenger, boolean isSelected);
-
-        void onShowErrorCantPickPassenger();
     }
 }
