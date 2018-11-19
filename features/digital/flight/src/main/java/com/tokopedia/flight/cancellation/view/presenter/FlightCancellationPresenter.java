@@ -71,8 +71,14 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
             flightCancellationViewModel.getPassengerViewModelList().add(passengerViewModel);
             if (passengerViewModel.getRelations().size() > 0) {
                 checkAllRelations(passengerViewModel);
+
+                if (getView().isFirstRelationCheck()) {
+                    getView().showAutoCheckDialog();
+                }
             }
         }
+
+        init();
     }
 
     @Override
@@ -83,6 +89,8 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
         if (passengerViewModel.getRelations().size() > 0) {
             uncheckAllRelations(passengerViewModel);
         }
+
+        init();
     }
 
     @Override
@@ -93,6 +101,30 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean canGoNext() {
+        boolean canGoToNext = false;
+
+        if (getView().getSelectedCancellationViewModel() != null) {
+            for (FlightCancellationViewModel item : getView().getSelectedCancellationViewModel()) {
+                if (item.getPassengerViewModelList().size() > 0) {
+                    canGoToNext = true;
+                }
+            }
+        }
+
+        return canGoToNext;
+    }
+
+    @Override
+    public void init() {
+        if (canGoNext()) {
+            getView().enableNextButton();
+        } else {
+            getView().disableNextButton();
+        }
     }
 
     private void getCancelablePassenger() {

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
@@ -47,6 +48,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
+    public static final String EXTRA_FIRST_CHECK = "EXTRA_FIRST_CHECK";
 
     public static final int REQUEST_REFUND_CANCELLATION = 1;
     public static final int REQUEST_REASON_AND_PROOF_CANCELLATION = 2;
@@ -64,6 +66,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     private LinearLayout btnContainer;
     private AppCompatButton btnSubmit;
 
+    private boolean isFirstRelationCheck = true;
+
     public static FlightCancellationFragment createInstance(String invoiceId,
                                                             List<FlightCancellationJourney> flightCancellationJourneyList) {
         FlightCancellationFragment fragment = new FlightCancellationFragment();
@@ -72,6 +76,15 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         bundle.putParcelableArrayList(EXTRA_CANCEL_JOURNEY, (ArrayList<? extends Parcelable>) flightCancellationJourneyList);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_FIRST_CHECK)) {
+            isFirstRelationCheck = savedInstanceState.getBoolean(EXTRA_FIRST_CHECK);
+        }
     }
 
     @Nullable
@@ -99,6 +112,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         initialVariable();
 
         flightCancellationPresenter.attachView(this);
+        flightCancellationPresenter.init();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -111,6 +125,13 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         errorNetworkModel.setOnRetryListener(this);
         adapter.setErrorNetworkModel(errorNetworkModel);
         return adapter;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(EXTRA_FIRST_CHECK, isFirstRelationCheck);
     }
 
     private void initialVariable() {
@@ -223,6 +244,38 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         hideLoading();
         btnContainer.setVisibility(View.GONE);
         super.showGetListError(throwable);
+    }
+
+    @Override
+    public void showAutoCheckDialog() {
+        isFirstRelationCheck = false;
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.flight_cancellation_auto_check_dialog_title));
+        dialog.setDesc(getString(
+                R.string.flight_cancellation_auto_check_dialog_desc));
+        dialog.setBtnOk("OK, Mengerti");
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public boolean isFirstRelationCheck() {
+        return isFirstRelationCheck;
+    }
+
+    @Override
+    public void disableNextButton() {
+        btnSubmit.setEnabled(false);
+    }
+
+    @Override
+    public void enableNextButton() {
+        btnSubmit.setEnabled(true);
     }
 
     @Override

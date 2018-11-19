@@ -45,6 +45,14 @@ public interface FlightCancellationContract {
         void showFullLoading();
 
         void showGetListError(Throwable throwable);
+
+        void showAutoCheckDialog();
+
+        boolean isFirstRelationCheck();
+
+        void disableNextButton();
+
+        void enableNextButton();
     }
 
     interface Presenter {
@@ -58,5 +66,9 @@ public interface FlightCancellationContract {
         void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
 
         boolean isPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel);
+
+        boolean canGoNext();
+
+        void init();
     }
 }

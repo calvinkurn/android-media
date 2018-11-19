@@ -475,4 +475,6 @@
     <string name="flight_cancellation_asterisks">*</string>
     <string name="flight_cancellation_estimate_note_cashback">Nilai estimasi refund yang Anda terima dapat berubah jika sebelumnya Anda menggunakan promo Cashback</string>
     <string name="flight_cancellation_estimate_note_additional">Estimasi refund tidak termasuk biaya asuransi penerbangan, makanan, biaya bagasi, dan fasilitas lainnya.</string>
+    <string name="flight_cancellation_auto_check_dialog_title">Kebijakan Maskapai</string>
+    <string name="flight_cancellation_auto_check_dialog_desc">Berdasarkan kebijakan maskapai, terdapat penumpang yang harus kami batalkan secara otomatis. Silakan periksa ulang daftar penumpang Anda.</string>
 </resources>
