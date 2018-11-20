@@ -11,15 +11,20 @@ import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseC
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.district_recommendation.data.mapper.DistrictRecommendationEntityMapper;
 import com.tokopedia.district_recommendation.data.repository.DistrictRecommendationRepository;
+import com.tokopedia.district_recommendation.data.repository.ShopAddressRepository;
 import com.tokopedia.district_recommendation.data.service.KeroApi;
+import com.tokopedia.district_recommendation.data.service.MyShopAddressApi;
 import com.tokopedia.district_recommendation.data.source.DistrictRecommendationDataStore;
+import com.tokopedia.district_recommendation.data.source.ShopAddressDataSource;
 import com.tokopedia.district_recommendation.domain.usecase.GetDistrictRequestUseCase;
+import com.tokopedia.district_recommendation.domain.usecase.GetShopAddressUseCase;
 import com.tokopedia.district_recommendation.view.v2.DistrictRecommendationContract;
 import com.tokopedia.district_recommendation.view.v2.DistrictRecommendationPresenter;
 import com.tokopedia.district_recommendation.view.v2.mapper.AddressViewModelMapper;
 import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +50,12 @@ public class DistrictRecommendationModuleV2 {
 
     public DistrictRecommendationModuleV2() {
 
+    }
+
+    @Provides
+    @DistrictRecommendationScopeV2
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @Provides
@@ -75,8 +86,8 @@ public class DistrictRecommendationModuleV2 {
 
     @Provides
     @DistrictRecommendationScopeV2
-    Retrofit provideKeroRetrofit(Gson gson, OkHttpClient okHttpClient) {
-        return new Retrofit.Builder()
+    KeroApi provideKeroApi(Gson gson, OkHttpClient okHttpClient) {
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.KERO_DOMAIN)
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
@@ -85,12 +96,24 @@ public class DistrictRecommendationModuleV2 {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
+
+        return retrofit.create(KeroApi.class);
     }
 
     @Provides
     @DistrictRecommendationScopeV2
-    KeroApi provideKeroApi(Retrofit retrofit) {
-        return retrofit.create(KeroApi.class);
+    MyShopAddressApi provideMyShopAddressApi(Gson gson, OkHttpClient okHttpClient) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(TkpdBaseURL.Shop.URL_MY_SHOP_ADDRESS)
+                .addConverterFactory(new GeneratedHostConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(okHttpClient)
+                .build();
+
+        return retrofit.create(MyShopAddressApi.class);
     }
 
     @Provides
@@ -127,6 +150,26 @@ public class DistrictRecommendationModuleV2 {
             DistrictRecommendationRepository districtRecommendationRepository
     ) {
         return new GetDistrictRequestUseCase(districtRecommendationRepository);
+    }
+
+    @Provides
+    @DistrictRecommendationScopeV2
+    ShopAddressDataSource provideShopAddressDataStore(MyShopAddressApi myShopAddressApi) {
+        return new ShopAddressDataSource(myShopAddressApi);
+    }
+
+    @Provides
+    @DistrictRecommendationScopeV2
+    ShopAddressRepository provideShopAddressRepository(ShopAddressDataSource shopAddressDataSource) {
+        return new ShopAddressRepository(shopAddressDataSource);
+    }
+
+    @Provides
+    @DistrictRecommendationScopeV2
+    GetShopAddressUseCase provideGetShopAddressRequestUseCase(
+            ShopAddressRepository shopAddressRepository
+    ) {
+        return new GetShopAddressUseCase(shopAddressRepository);
     }
 
     @Provides

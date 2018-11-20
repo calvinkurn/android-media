@@ -18,9 +18,11 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.usecase.GetShopAddressUseCase;
 import com.tokopedia.district_recommendation.view.ITransactionAnalyticsDistrictRecommendation;
 import com.tokopedia.district_recommendation.view.v2.di.DaggerDistrictRecommendationComponentV2;
 import com.tokopedia.district_recommendation.view.v2.di.DistrictRecommendationComponentV2;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -42,15 +44,22 @@ public class DistrictRecommendationFragment
     private static final int MINIMUM_SEARCH_KEYWORD_CHAR = 3;
 
     private ITransactionAnalyticsDistrictRecommendation transactionAnalyticsDistrictRecommendation;
+    private FragmentListener fragmentListener;
 
     private TextView tvMessage;
     private SwipeToRefresh swipeRefreshLayout;
+
+    @Inject
+    UserSession userSession;
 
     @Inject
     AddressMapper addressMapper;
 
     @Inject
     DistrictRecommendationContract.Presenter presenter;
+
+    @Inject
+    GetShopAddressUseCase getShopAddressUseCase;
 
     public static DistrictRecommendationFragment newInstance(Token token) {
         DistrictRecommendationFragment fragment = new DistrictRecommendationFragment();
@@ -68,6 +77,8 @@ public class DistrictRecommendationFragment
                         .baseAppComponent(appComponent)
                         .build();
         districtRecommendationComponentV2.inject(this);
+        fragmentListener.setUserSession(userSession);
+        fragmentListener.setShopAddressUseCase(getShopAddressUseCase);
         presenter.attachView(this);
     }
 
@@ -75,6 +86,7 @@ public class DistrictRecommendationFragment
     public void onAttach(Context context) {
         super.onAttach(context);
         transactionAnalyticsDistrictRecommendation = (ITransactionAnalyticsDistrictRecommendation) context;
+        fragmentListener = (FragmentListener) context;
     }
 
     @Nullable
@@ -93,14 +105,17 @@ public class DistrictRecommendationFragment
         showInitialLoadMessage();
         searchInputView.setSearchHint(getString(R.string.hint_district_recommendation_search));
         searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS);
-        searchInputView.getCloseImageButton().setOnClickListener(v ->
-                transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput());
+        searchInputView.getCloseImageButton().setOnClickListener(v -> {
+            searchInputView.setSearchText("");
+            transactionAnalyticsDistrictRecommendation.sendAnalyticsOnClearTextDistrictRecommendationInput();
+        });
         swipeRefreshLayout.setEnabled(false);
     }
 
     @Override
     public void onDetach() {
         transactionAnalyticsDistrictRecommendation = null;
+        fragmentListener = null;
         super.onDetach();
     }
 
