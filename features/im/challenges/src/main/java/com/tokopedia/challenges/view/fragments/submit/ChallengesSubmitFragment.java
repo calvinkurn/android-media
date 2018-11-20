@@ -61,7 +61,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeD
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
@@ -82,8 +81,9 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public static final int REQUEST_IMAGE_SELECT = 1;
     private static final int REQUEST_CODE_VIDEO = 2;
     private static final int REQUEST_CODE_IMAGE_VIDEO = 2;
+    public static final int MAX_VIDEO_SIZE_IN_KB = 300 * 1072;
+    public static final int MAX_IMAGE_SIZE_IN_KB = 15 * 1072; // 15 * 1024KB
 
-    public static final int MAX_VIDEO_SIZE_IN_KB = 3072;
     private String mAttachmentPath;
     private ProgressDialog progress;
     private View parent;
@@ -331,7 +331,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private ImagePickerBuilder getImagePickerBuilder() {
         if (imagePickerBuilder == null) {
             imagePickerBuilder = new ImagePickerBuilder(getString(R.string.choose_image),
-                    new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_IMAGE_SIZE_IN_KB,
                     DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                     new ImagePickerEditorBuilder(
                             new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
