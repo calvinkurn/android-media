@@ -87,7 +87,7 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
         public class ItemViewHolder extends RecyclerView.ViewHolder {
 
             private final ItemClickListener clickListener;
-            RoundedCornerImageView recentImage;
+            ImageView recentImage;
 
             public ItemViewHolder(View itemView, ItemClickListener clickListener) {
                 super(itemView);
