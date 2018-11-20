@@ -83,7 +83,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private static final int REQUEST_CODE_VIDEO = 2;
     private static final int REQUEST_CODE_IMAGE_VIDEO = 2;
 
-    public static final int MAX_VIDEO_SIZE_IN_KB = 30000;
+    public static final int MAX_VIDEO_SIZE_IN_KB = 3072;
     private String mAttachmentPath;
     private ProgressDialog progress;
     private View parent;
