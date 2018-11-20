@@ -4,7 +4,7 @@ import android.content.Context;
 
 public class SaldoDetailsInternalRouter {
 
-    public static void getSaldoDepositIntent(Context context) {
+    public static void startSaldoDepositIntent(Context context) {
         // no-op function
     }
 

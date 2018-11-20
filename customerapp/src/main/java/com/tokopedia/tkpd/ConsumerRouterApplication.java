@@ -2852,14 +2852,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToSaldo(Context context) {
-        getSaldoDepositIntent(context);
+        startSaldoDepositIntent(context);
         UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DEPOSIT);
         AnalyticsEventTrackingHelper.homepageSaldoClick(SaldoDetailsInternalRouter.getSaldoClassName());
     }
 
     @Override
-    public void getSaldoDepositIntent(Context context) {
-        SaldoDetailsInternalRouter.getSaldoDepositIntent(context);
+    public void startSaldoDepositIntent(Context context) {
+        SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
     }
 
     public Intent getInboxChatIntent(Context context) {

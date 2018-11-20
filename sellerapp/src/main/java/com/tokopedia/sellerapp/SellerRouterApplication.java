@@ -1206,8 +1206,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getSaldoDepositIntent(Context context) {
-        return SaldoDetailsInternalRouter.getSaldoDepositIntent(context);
+    public void startSaldoDepositIntent(Context context) {
+        SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
     }
 
     @Override

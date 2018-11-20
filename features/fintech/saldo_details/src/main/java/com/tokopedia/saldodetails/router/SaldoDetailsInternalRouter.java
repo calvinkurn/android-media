@@ -6,7 +6,7 @@ import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 
 public class SaldoDetailsInternalRouter {
 
-    public static void getSaldoDepositIntent(Context context) {
+    public static void startSaldoDepositIntent(Context context) {
         context.startActivity(SaldoDepositActivity.createInstance(context));
     }
 
