@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.image.RoundedCornerImageView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
@@ -86,7 +87,7 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
         public class ItemViewHolder extends RecyclerView.ViewHolder {
 
             private final ItemClickListener clickListener;
-            ImageView recentImage;
+            RoundedCornerImageView recentImage;
 
             public ItemViewHolder(View itemView, ItemClickListener clickListener) {
                 super(itemView);
@@ -95,24 +96,9 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
             }
 
             public void bind(final BaseItemAutoCompleteSearch item) {
-                BitmapImageViewTarget bitmapImageViewTarget = new BitmapImageViewTarget(
-                        recentImage
-                ) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        final float roundPx = (float) resource.getWidth() * 0.06f;
-
-                        RoundedBitmapDrawable roundedBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(
-                                        itemView.getContext().getResources(), resource);
-                        roundedBitmapDrawable.setCornerRadius(roundPx);
-                        recentImage.setImageDrawable(roundedBitmapDrawable);
-                    }
-                };
                 Glide.with(itemView.getContext())
                         .load(item.getImageUrl())
-                        .asBitmap()
-                        .into(bitmapImageViewTarget);
+                        .into(recentImage);
                 recentImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
