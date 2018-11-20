@@ -1,4 +1,4 @@
-package com.tokopedia.district_recommendation.view.v2;
+package com.tokopedia.district_recommendation.view;
 
 import android.view.View;
 import android.widget.TextView;

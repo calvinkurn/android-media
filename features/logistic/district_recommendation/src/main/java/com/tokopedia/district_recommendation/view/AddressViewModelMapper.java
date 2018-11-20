@@ -1,8 +1,7 @@
-package com.tokopedia.district_recommendation.view.v2.mapper;
+package com.tokopedia.district_recommendation.view;
 
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.district_recommendation.domain.model.AddressResponse;
-import com.tokopedia.district_recommendation.view.v2.AddressViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

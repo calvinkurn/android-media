@@ -1,4 +1,4 @@
-package com.tokopedia.district_recommendation.view.v2;
+package com.tokopedia.district_recommendation.view;
 
 import com.tokopedia.district_recommendation.domain.usecase.GetShopAddressUseCase;
 import com.tokopedia.user.session.UserSession;

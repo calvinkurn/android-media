@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.v2.AddressViewModel;
-import com.tokopedia.district_recommendation.view.v2.DistrictRecommendationFragment;
+import com.tokopedia.district_recommendation.view.AddressViewModel;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 

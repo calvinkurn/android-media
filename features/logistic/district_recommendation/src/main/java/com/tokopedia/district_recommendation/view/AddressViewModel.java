@@ -1,8 +1,7 @@
-package com.tokopedia.district_recommendation.view.v2;
+package com.tokopedia.district_recommendation.view;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.district_recommendation.domain.model.Address;
-import com.tokopedia.district_recommendation.view.v2.DistrictRecommendationTypeFactory;
 
 /**
  * Created by Irfan Khoirul on 16/11/18.

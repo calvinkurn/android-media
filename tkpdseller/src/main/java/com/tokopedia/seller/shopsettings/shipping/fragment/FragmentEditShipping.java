@@ -367,7 +367,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     @Override
     public void editAddress() {
-        startActivityForResult(com.tokopedia.district_recommendation.view.v2.DistrictRecommendationActivity.createInstanceIntent(getActivity(),
+        startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(getActivity(),
                 editShippingPresenter.getToken()),
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }

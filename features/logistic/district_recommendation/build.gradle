@@ -31,7 +31,6 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticCommon)

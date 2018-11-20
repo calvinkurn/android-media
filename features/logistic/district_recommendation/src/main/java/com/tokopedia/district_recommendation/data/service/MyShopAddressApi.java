@@ -1,8 +1,7 @@
 package com.tokopedia.district_recommendation.data.service;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.Map;
 

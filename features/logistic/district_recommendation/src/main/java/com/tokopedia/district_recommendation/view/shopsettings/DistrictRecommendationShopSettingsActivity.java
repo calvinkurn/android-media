@@ -10,13 +10,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.v2.DistrictRecommendationActivity;
-import com.tokopedia.district_recommendation.view.v2.DistrictRecommendationFragment;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +39,8 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
-        progressDialog.setLoadingViewId(R.id.include_loading);
+        // Todo : resolve this
+//        progressDialog.setLoadingViewId(R.id.include_loading);
         progressDialog.showDialog();
         requestGetToken();
     }

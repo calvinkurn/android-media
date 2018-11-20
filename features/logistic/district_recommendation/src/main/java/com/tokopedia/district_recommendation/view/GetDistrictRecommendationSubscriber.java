@@ -1,8 +1,6 @@
-package com.tokopedia.district_recommendation.view.v2;
+package com.tokopedia.district_recommendation.view;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.district_recommendation.domain.model.AddressResponse;
-import com.tokopedia.district_recommendation.view.v2.mapper.AddressViewModelMapper;
 
 import rx.Subscriber;
 
