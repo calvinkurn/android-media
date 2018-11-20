@@ -7,6 +7,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.user.session.UserSession;
 
@@ -23,6 +24,11 @@ public class ProductDetailModule {
             @MojitoQualifier MojitoApi mojitoApi
     ){
         return new GetWishlistCountUseCase(mojitoApi);
+    }
+
+    @Provides
+    GetMostHelpfulReviewUseCase provideGetMostHelpfulReviewUseCase(){
+        return new GetMostHelpfulReviewUseCase();
     }
 
     @Provides

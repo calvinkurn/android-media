@@ -43,7 +43,11 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.ImageReviewGalleryActivity;
+import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
+import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -286,6 +290,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private RatingTalkCourierView ratingTalkCourierView;
     private PriceSimulationView priceSimulationView;
     private PromoWidgetView promoWidgetView;
+    private ImageFromBuyerView imageFromBuyerView;
 
     MerchantVoucherListPresenter voucherListPresenter;
     private MerchantVoucherListWidget merchantVoucherListWidget;
@@ -355,7 +360,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     GetWishlistCountUseCase getWishlistCountUseCase;
 
     @Inject
+    GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase;
+
+    @Inject
     GetProductAffiliateGqlUseCase getAffiliateProductDataUseCase;
+
+    @Inject
+    GraphqlUseCase graphqlUseCase;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -418,8 +429,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialPresenter() {
-        this.presenter = new ProductDetailPresenterImpl(getWishlistCountUseCase, this, this,
-                new RetrofitInteractorImpl(), new CacheInteractorImpl(), getAffiliateProductDataUseCase);
+        this.presenter = new ProductDetailPresenterImpl(
+                getWishlistCountUseCase,
+                this,
+                this,
+                new RetrofitInteractorImpl(),
+                new CacheInteractorImpl(),
+                getAffiliateProductDataUseCase,
+                graphqlUseCase,
+                getMostHelpfulReviewUseCase);
         this.presenter.initGetRateEstimationUseCase();
     }
 
@@ -451,6 +469,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         promoWidgetView = view.findViewById(R.id.view_promo_widget);
+        imageFromBuyerView = view.findViewById(R.id.view_image_from_buyer);
         promoContainer = view.findViewById(R.id.promoContainer);
         merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget);
         mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
@@ -1094,6 +1113,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             view -> presenter.requestAffiliateProductData(productData)
                     )
                     .show();
+        }
+    }
+
+    @Override
+    public void onImageReviewLoaded(List<ImageReviewItem> data) {
+        if(data != null && data.size() != 0){
+            imageFromBuyerView.renderData(data);
+            imageFromBuyerView.setVisibility(View.VISIBLE);
+        } else {
+            imageFromBuyerView.setVisibility(View.GONE);
         }
     }
 

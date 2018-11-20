@@ -23,6 +23,7 @@ import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
+import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,8 @@ public interface ProductDetailView extends ViewListener {
     void renderAffiliateButton(AffiliateInfoViewModel affiliate);
 
     void onWishlistCountLoaded(String wishlistCountText);
+
+    void onImageReviewLoaded(List<ImageReviewItem> data);
 
     /**
      * Saat salah satu kategori product di klik.
