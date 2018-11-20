@@ -79,7 +79,6 @@ public class SaldoDatePickerUtil {
         this.minDate = minDate;
     }
 
-    // TODO Temporary fix
     public void DatePickerSpinner(onDateSelectedListener Listener) {
         IS_PICKING_DATE = true;
         listener = Listener;
