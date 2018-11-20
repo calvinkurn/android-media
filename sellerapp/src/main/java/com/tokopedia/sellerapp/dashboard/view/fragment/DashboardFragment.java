@@ -443,7 +443,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
-        if (tickers.length < 1)) {
+        if (tickers.length < 1) {
             tickerView.setVisibility(View.GONE);
             return;
         }

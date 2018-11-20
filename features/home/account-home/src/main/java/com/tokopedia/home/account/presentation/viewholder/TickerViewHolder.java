@@ -31,9 +31,6 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     public void bind(TickerViewModel element) {
         tickerView.clearMessage();
         tickerView.addAllMessage(element.getListMessage());
-        tickerView.setOnPartialTextClickListener((view, messageClick) -> listener.onTickerLinkClicked(
-                messageClick
-        ));
         tickerView.setOnActionCloseListener(v -> {
             tickerView.setStateVisibility(GONE);
             tickerView.setVisibility(GONE);
