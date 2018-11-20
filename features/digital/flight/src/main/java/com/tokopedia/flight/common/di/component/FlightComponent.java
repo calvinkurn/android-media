@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.view.fragment.FlightInsuranceWebViewFragment;
+import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
@@ -17,6 +18,10 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
+import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
+import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
+import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -33,6 +38,8 @@ public interface FlightComponent {
     @FlightQualifier
     Retrofit getFlightRetrofit();
 
+    FlightApi flightApi();
+
     FlightRepository flightRepository();
 
     Gson gson();
@@ -46,6 +53,14 @@ public interface FlightComponent {
     FlightDateUtil flightdateutlil();
 
     FlightModuleRouter flightModuleRouter();
+
+    FlightSearchRoomDb flightSearchRoomDb();
+
+    FlightComboDao flightComboDao();
+
+    FlightJourneyDao flightJourneyDao();
+
+    FlightRouteDao flightRouteDao();
 
     void inject(BaseFlightActivity baseFlightActivity);
 

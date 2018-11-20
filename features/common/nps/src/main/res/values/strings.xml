@@ -9,6 +9,11 @@
     <string name="app_rating_desc_good">Bagus</string>
     <string name="app_rating_desc_super">Super</string>
 
+    <string name="app_rating_button_rate">Beri Rating</string>
+    <string name="app_rating_button_later">Nanti</string>
+    <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
+    <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
+
     <string name="fb_app_title">Feedback</string>
     <string name="fb_title">Ayo Terlibat Langsung dalam Peningkatan Kualitas Aplikasi Tokopedia</string>
     <string name="fb_desc_1">Apa saran Anda untuk peningkatan kualitas aplikasi Tokpedia</string>

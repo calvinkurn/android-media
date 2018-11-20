@@ -10,9 +10,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdreactnative.R;
 
 import java.io.File;
@@ -39,7 +39,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getImageHost(Promise promise) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        promise.resolve(remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST, "http://ecs7.tokopedia.net"));
+        promise.resolve(remoteConfig.getString(RemoteConfigKey.IMAGE_HOST, "http://ecs7.tokopedia.net"));
     }
 
     @ReactMethod

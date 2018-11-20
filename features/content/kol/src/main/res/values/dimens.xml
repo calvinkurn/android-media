@@ -10,4 +10,5 @@
     <dimen name="kol_post_shadow_size">14dp</dimen>
     <dimen name="kol_post_badge_size">14dp</dimen>
     <dimen name="kol_post_icon_size">20dp</dimen>
+    <dimen name="kol_post_footer_size">52dp</dimen>
 </resources>

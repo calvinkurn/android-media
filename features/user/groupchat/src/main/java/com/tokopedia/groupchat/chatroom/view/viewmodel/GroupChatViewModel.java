@@ -11,20 +11,23 @@ public class GroupChatViewModel implements Parcelable {
 
     private String channelUuid;
     private ChannelInfoViewModel channelInfoViewModel;
-    private long timeStampBeforePause = 0;
+    private long timeStampAfterPause = 0;
+    private long timeStampAfterResume = 0;
     private int channelPosition;
 
     public GroupChatViewModel(String channelUuid, int channelPosition) {
         this.channelUuid = channelUuid;
         this.channelInfoViewModel = null;
-        this.timeStampBeforePause = 0;
+        this.timeStampAfterPause = 0;
+        this.timeStampAfterResume = 0;
         this.channelPosition = channelPosition;
     }
 
     protected GroupChatViewModel(Parcel in) {
         channelUuid = in.readString();
         channelInfoViewModel = in.readParcelable(ChannelInfoViewModel.class.getClassLoader());
-        timeStampBeforePause = in.readLong();
+        timeStampAfterPause = in.readLong();
+        timeStampAfterResume = in.readLong();
         channelPosition = in.readInt();
     }
 
@@ -80,12 +83,12 @@ public class GroupChatViewModel implements Parcelable {
         return channelInfoViewModel;
     }
 
-    public long getTimeStampBeforePause() {
-        return timeStampBeforePause;
+    public long getTimeStampAfterPause() {
+        return timeStampAfterPause;
     }
 
-    public void setTimeStampBeforePause(long timeStampBeforePause) {
-        this.timeStampBeforePause = timeStampBeforePause;
+    public void setTimeStampAfterPause(long timeStampBeforePause) {
+        this.timeStampAfterPause = timeStampBeforePause;
     }
 
     public int getChannelPosition() {
@@ -101,7 +104,16 @@ public class GroupChatViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(channelUuid);
         dest.writeParcelable(channelInfoViewModel, flags);
-        dest.writeLong(timeStampBeforePause);
+        dest.writeLong(timeStampAfterPause);
+        dest.writeLong(timeStampAfterResume);
         dest.writeInt(channelPosition);
+    }
+
+    public void setTimeStampAfterResume(long timeStampAfterResume) {
+        this.timeStampAfterResume = timeStampAfterResume;
+    }
+
+    public long getTimeStampAfterResume() {
+        return timeStampAfterResume;
     }
 }

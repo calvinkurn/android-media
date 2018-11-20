@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.usecase.AutoCompleteUseCase;
@@ -12,6 +11,8 @@ import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
 import com.tokopedia.discovery.search.subscriber.SearchSubscriber;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
+
 
 import javax.inject.Inject;
 
@@ -32,6 +33,9 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     @Inject
     DeleteRecentSearchUseCase deleteRecentSearchUseCase;
 
+    @Inject
+    UserSessionInterface userSession;
+
     public SearchPresenter(Context context) {
         this.context = context;
     }
@@ -43,7 +47,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
                 AutoCompleteUseCase.getParams(
                         this.querySearch,
                         GCMHandler.getRegistrationId(context),
-                        SessionHandler.getLoginID(context)
+                        userSession.getUserId()
                 ),
                 new SearchSubscriber(querySearch,
                         new DefaultAutoCompleteViewModel(),
@@ -57,7 +61,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
         RequestParams params = DeleteRecentSearchUseCase.getParams(
                 keyword,
                 GCMHandler.getRegistrationId(context),
-                SessionHandler.getLoginID(context)
+                userSession.getUserId()
         );
         deleteRecentSearchUseCase.execute(
                 params,
@@ -72,7 +76,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     public void deleteAllRecentSearch() {
         RequestParams params = DeleteRecentSearchUseCase.getParams(
                 GCMHandler.getRegistrationId(context),
-                SessionHandler.getLoginID(context)
+                userSession.getUserId()
         );
         deleteRecentSearchUseCase.execute(
                 params,

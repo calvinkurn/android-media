@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
@@ -40,14 +40,14 @@ public class CloudFeedDataSource {
     private final Context context;
     private final FeedApi feedApi;
     private final FeedListMapper feedListMapper;
-    protected final GlobalCacheManager globalCacheManager;
+    protected final CacheManager globalCacheManager;
     protected final FeedResultMapper feedResultMapper;
 
     public CloudFeedDataSource(@ApplicationContext Context context,
                                FeedApi feedApi,
                                FeedListMapper feedListMapper,
                                FeedResultMapper feedResultMapper,
-                               GlobalCacheManager globalCacheManager) {
+                               CacheManager globalCacheManager) {
         this.context = context;
         this.feedApi = feedApi;
         this.feedListMapper = feedListMapper;

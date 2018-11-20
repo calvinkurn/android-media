@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -32,8 +33,8 @@ import java.util.List;
 public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickListener {
 
     private static final String TAG = TopAdsFeedWidgetView.class.getSimpleName();
-    private FeedAdsItemAdapter adapter;
     private static final int DEFAULT_SPAN_COUNT = 3;
+    private FeedAdsItemAdapter adapter;
     private TopAdsItemClickListener itemClickListener;
     private TopAdsInfoClickListener infoClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
@@ -148,6 +149,18 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         adapter.setAdapterPosition(adapterPosition);
     }
 
+    public void onViewRecycled() {
+        if (adapter == null || recyclerView == null) {
+            return;
+        }
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(i);
+            if (holder instanceof AbstractViewHolder) {
+                adapter.onViewRecycled((AbstractViewHolder) holder);
+            }
+        }
+    }
+
     private void setRecyclerViewLeftMargin(int margin) {
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -171,12 +184,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
 
     private View.OnClickListener getOnInfoClickListener() {
         if (onInfoClickListener == null) {
-            onInfoClickListener = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    infoClickListener.onInfoClicked();
-                }
-            };
+            onInfoClickListener = v -> infoClickListener.onInfoClicked();
         }
         return onInfoClickListener;
     }

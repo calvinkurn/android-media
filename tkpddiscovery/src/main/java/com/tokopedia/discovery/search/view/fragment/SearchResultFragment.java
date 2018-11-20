@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteCallback;
@@ -20,10 +19,6 @@ import com.tokopedia.discovery.search.view.adapter.SearchAdapter;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchAdapterTypeFactory;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * @author erry on 23/02/17.
@@ -35,7 +30,6 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     private static final String ARGS_INSTANCE_NAME = "ARGS_INSTANCE_NAME";
     private static final String DEFAULT_INSTANCE_TPE = "unknown";
     private static final String ARGS_INSTANCE_TYPE = "ARGS_INSTANCE_TYPE";
-    private Unbinder unbinder;
     private SearchAdapter adapter;
     private LinearLayoutManager layoutManager;
     private ItemClickListener clickListener;
@@ -43,8 +37,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     private String instanceType;
     private int instanceIndex;
 
-    @BindView(R2.id.list)
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     public SearchResultFragment() {
     }
@@ -85,9 +78,13 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_search_result, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        initView(parentView);
         prepareView(parentView);
         return parentView;
+    }
+
+    private void initView(View view) {
+        recyclerView = view.findViewById(R.id.list);
     }
 
     @Override
@@ -106,7 +103,6 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     public void addSearchResult(Visitable visitable) {

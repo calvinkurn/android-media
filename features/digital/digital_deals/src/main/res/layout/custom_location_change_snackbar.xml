@@ -1,51 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="@color/green_toast_color">
+    android:background="@color/green_toast_color"
+    android:orientation="vertical">
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/green_1100"/>
+        android:background="@color/green_1100" />
+
 
     <TextView
         android:id="@+id/tv_msg"
-        android:layout_width="wrap_content"
+        style="@style/TextView.Micro.Black40"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/snack_ok"
+        android:layout_marginBottom="@dimen/dp_32"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_32"
-        style="@style/TextView.Micro.Black40"
-        android:layout_marginBottom="@dimen/dp_32"
         android:maxLines="2"
-        tools:text="@string/location_changed_to"/>
+        tools:text="@string/location_changed_to" />
 
-    <TextView
-        android:id="@+id/tv_location_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tv_msg"
-        style="@style/TextView.Micro.Bold.Black40"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_alignTop="@+id/tv_msg"
-        android:layout_marginBottom="@dimen/dp_24"
-        android:maxLines="2"
-        tools:text="CIKUPA"/>
 
     <TextView
         android:id="@+id/snack_ok"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:textColor="@color/black_39"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_24"
         android:padding="@dimen/dp_8"
-        android:text="@string/title_ok"/>
+        android:text="@string/title_ok"
+        android:textColor="@color/black_39" />
 </RelativeLayout>

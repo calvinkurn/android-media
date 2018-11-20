@@ -57,7 +57,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@drawable/bg_rounded_comment_input"
+            android:background="@drawable/bg_kol_circle_white"
             android:hint="@string/add_your_comment"
             android:imeOptions="actionDone"
             android:inputType="textMultiLine"

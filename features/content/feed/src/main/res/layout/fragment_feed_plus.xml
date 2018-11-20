@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
             android:tag="feed_plus_list"
             tools:listitem="@layout/kol_post_layout"/>
 
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <LinearLayout
         android:id="@+id/layout_new_feed"

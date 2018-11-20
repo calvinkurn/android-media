@@ -50,6 +50,8 @@ public interface EmptyCartContract {
 
         void navigateToCartFragment(CartListData cartListData);
 
+        void stopTrace();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -61,6 +63,10 @@ public interface EmptyCartContract {
         void processGetRecentViewData(int userId);
 
         void processCancelAutoApply();
+
+        void setLoadApiStatus(@EmptyCartApi int key, boolean status);
+
+        boolean hasLoadAllApi();
 
         void setWishListViewModels(List<Wishlist> wishLists);
 
