@@ -412,7 +412,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 scrollToBottom();
-                rvQuickReply.setVisibility(View.GONE);
                 if (templateAdapter != null && templateAdapter.getList().size() != 0) {
                     templateRecyclerView.setVisibility(View.VISIBLE);
                 }
@@ -1340,7 +1339,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void processReceiveMessage(BaseChatViewModel message) {
-        rvQuickReply.setVisibility(View.GONE);
         if (templateAdapter != null && templateAdapter.getList().size() != 0) {
             templateRecyclerView.setVisibility(View.VISIBLE);
         }
@@ -1408,6 +1406,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
             quickReplyAdapter = new QuickReplyAdapter(model, this);
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
+        }else{
+            rvQuickReply.setVisibility(View.GONE);
         }
     }
 
