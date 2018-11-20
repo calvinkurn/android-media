@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -28,6 +29,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.net.UnknownHostException;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -44,6 +46,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     public static final String ACTION_UPLOAD_FAIL = "action.upload.fail";
     GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
     private String postId;
+    private String[] videoExtensions = {
+            "mp4", "m4v", "mov", "ogv"
+    };
 
 
     @Inject
@@ -266,6 +271,28 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.ch_submit_video));
             getView().setChooseImageText(getView().getActivity().getString(R.string.ch_choose_image_title_video));
         }
+    }
+
+    public boolean isDeviceSupportVideo(){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkAttachmentVideo(String videoPath) {
+        boolean isExtensionAllow = false;
+        for (String extension : videoExtensions) {
+            if (videoPath != null && videoPath.toLowerCase(Locale.US).endsWith(extension)) {
+                isExtensionAllow = true;
+            }
+        }
+        if (!isExtensionAllow) {
+            getView().showMessage(getView().getActivity().getString(R.string.ch_error_Video_version_minimum));
+            return false;
+        }
+
+        return isExtensionAllow;
     }
 
     @Override

@@ -3021,7 +3021,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getResultSelectionPath(Intent data) {
-        MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
+        MediaItem item = data.getParcelableExtra("result_paths");
         return item.getRealPath();
     }
 
