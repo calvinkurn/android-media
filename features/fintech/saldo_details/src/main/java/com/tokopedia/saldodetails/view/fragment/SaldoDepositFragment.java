@@ -117,7 +117,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     protected SaldoDetailTransactionFactory getAdapterTypeFactory() {
-        return null;
+        return new SaldoDetailTransactionFactory(this);
     }
 
     @Override

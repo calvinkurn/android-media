@@ -15,17 +15,24 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment;
+import com.tokopedia.user.session.UserSession;
+
+import javax.inject.Inject;
 
 @DeepLink(ApplinkConst.DEPOSIT)
 public class SaldoDepositActivity extends BaseSimpleActivity implements
         HasComponent<SaldoDetailsComponent> {
 
+    private static final int REQUEST_CODE_LOGIN = 1001;
     private static final String TAG = "DEPOSIT_FRAGMENT";
+    @Inject
+    UserSession userSession;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -33,8 +40,26 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         if (requestCode == SaldoDetailsPresenter.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
             ((SaldoDepositFragment) getSupportFragmentManager().findFragmentByTag(TAG)).refresh();
         }
+        if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                inflateFragment();
+            } else {
+                finish();
+            }
+        }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        initInjector();
+        super.onCreate(savedInstanceState);
+    }
+
+    private void initInjector() {
+        SaldoDetailsComponentInstance.getComponent(getApplication()).inject(this);
+    }
+
+    @DeepLink(ApplinkConst.DEPOSIT)
     public static Intent createInstance(Context context) {
         return new Intent(context, SaldoDepositActivity.class);
     }
@@ -51,7 +76,14 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     @Override
     protected Fragment getNewFragment() {
-        return SaldoDepositFragment.createInstance();
+
+        if (userSession.isLoggedIn()) {
+            return SaldoDepositFragment.createInstance();
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            return null;
+        }
+
     }
 
     @Override

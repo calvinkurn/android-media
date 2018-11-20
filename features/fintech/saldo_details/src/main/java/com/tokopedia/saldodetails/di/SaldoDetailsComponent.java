@@ -19,4 +19,6 @@ public interface SaldoDetailsComponent {
     void inject(MerchantSaldoPriorityFragment fragment);
 
     void inject(SaldoDepositFragment fragment);
+
+    void inject(SaldoDepositActivity saldoDepositActivity);
 }
