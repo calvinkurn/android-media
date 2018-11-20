@@ -12,6 +12,7 @@ import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepositoryImp
 import com.tokopedia.discovery.autocomplete.usecase.AutoCompleteUseCase;
 import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.AutoCompleteQualifier;
+import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
 import com.tokopedia.discovery.newdiscovery.network.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.di.module.ApiModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
@@ -23,13 +24,16 @@ import com.tokopedia.user.session.UserSessionInterface;
 import dagger.Module;
 import dagger.Provides;
 
+@DiscoveryScope
 @Module(includes = DiscoveryNetModule.class)
 public class AutoCompleteModule {
+    @DiscoveryScope
     @Provides
     SearchPresenter provideSearchPresenter(@ApplicationContext Context context) {
         return new SearchPresenter(context);
     }
 
+    @DiscoveryScope
     @Provides
     AutoCompleteUseCase provideSearchUseCase(
             AutoCompleteRepository autoCompleteRepository
@@ -39,6 +43,7 @@ public class AutoCompleteModule {
         );
     }
 
+    @DiscoveryScope
     @Provides
     AutoCompleteRepository provideAutoCompleteRepository(
         @AutoCompleteQualifier BrowseApi browseApi,
@@ -50,11 +55,13 @@ public class AutoCompleteModule {
         );
     }
 
+    @DiscoveryScope
     @Provides
     SearchMapper provideSearchMapper() {
         return new SearchMapper();
     }
 
+    @DiscoveryScope
     @Provides
     DeleteRecentSearchUseCase provideDeleteRecentSearchUseCase(
             AutoCompleteRepository autoCompleteRepository,
@@ -66,7 +73,7 @@ public class AutoCompleteModule {
         );
     }
 
-    @AutoCompleteScope
+    @DiscoveryScope
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
