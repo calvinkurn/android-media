@@ -91,9 +91,9 @@ include "features:transaction:checkout"
 include "features:transaction:transactioninvoice"
 
 include "features:user:groupchat"
-include "features:user:otp"
 include "features:user:topchat"
 include "features:user:changepassword"
+include "features:user:changephonenumber"
 include "features:user:settingbank"
 include "features:user:bankdb"
 include "features:user:talk"
@@ -105,6 +105,7 @@ include "features:user:attachproduct"
 include "features:user:updateinactivephone"
 include "features:user:loginphone"
 include "features:user:loginregister"
+include "features:user:phoneverification"
 include "features:user:sessioncommon"
 
 include 'logisticanalytics'

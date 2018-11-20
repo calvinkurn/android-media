@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.di;
+package com.tokopedia.logisticdata.data.module.qualifier;
 
 import javax.inject.Qualifier;
 

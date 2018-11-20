@@ -5,12 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.logisticaddaddress.di.AddressScope;
-import com.tokopedia.logisticdata.data.apiservice.AddressApi;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
-import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONException;
 

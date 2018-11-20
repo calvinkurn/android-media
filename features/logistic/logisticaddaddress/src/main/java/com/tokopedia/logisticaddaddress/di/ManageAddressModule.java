@@ -1,11 +1,16 @@
 package com.tokopedia.logisticaddaddress.di;
 
-import android.content.Context;
-
 import com.tokopedia.logisticaddaddress.data.DataSource;
+import com.tokopedia.logisticaddaddress.data.ManageAddressRepository;
+import com.tokopedia.logisticaddaddress.domain.usecase.GetAddressUseCase;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressContract;
 import com.tokopedia.logisticaddaddress.features.manage.ManageAddressPresenter;
-import com.tokopedia.logisticaddaddress.data.ManageAddressRepository;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticdata.data.module.LogisticNetworkModule;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier;
+import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,31 +18,33 @@ import dagger.Provides;
 /**
  * Created by Fajar Ulin Nuha on 18/10/18.
  */
-@Module
+@Module(includes = LogisticNetworkModule.class)
 public class ManageAddressModule {
 
-    private final Context context;
 
-    public ManageAddressModule(Context context) {
-        this.context = context;
+    public ManageAddressModule() {
     }
 
     @Provides
     @AddressScope
-    @ActivityContext
-    Context provideContext() {
-        return this.context;
+    DataSource provideDataSource(
+            @LogisticPeopleActApiQualifier PeopleActApi peopleActApi,
+            @LogisticUserSessionQualifier UserSessionInterface userSessionInterface
+    ) {
+        return new ManageAddressRepository(peopleActApi, userSessionInterface);
     }
+
 
     @Provides
     @AddressScope
-    ManageAddressContract.Presenter providePresenter(ManageAddressPresenter presenter) {
-        return presenter;
+    GetAddressUseCase provideGetAddressUseCase(DataSource dataSource) {
+        return new GetAddressUseCase(dataSource);
     }
+
 
     @Provides
     @AddressScope
-    DataSource provideRepository(ManageAddressRepository repository) {
-        return repository;
+    ManageAddressContract.Presenter providePresenter(GetAddressUseCase getAddressUseCase) {
+        return new ManageAddressPresenter(getAddressUseCase);
     }
 }

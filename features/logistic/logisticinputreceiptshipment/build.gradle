@@ -36,11 +36,9 @@ dependencies {
     implementation project(rootProject.ext.features.transactioncommon)
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

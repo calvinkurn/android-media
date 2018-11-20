@@ -1314,16 +1314,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean logisticUploadRouterIsSupportedDelegateDeepLink(String url) {
-        return isSupportedDelegateDeepLink(url);
-    }
-
-    @Override
-    public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        actionNavigateByApplinksUrl(activity, applinks, bundle);
-    }
-
-    @Override
     public void gotoTopAdsDashboard(Context context) {
         context.startActivity(TopAdsDashboardActivity.getCallingIntent(context));
     }

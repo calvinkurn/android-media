@@ -25,6 +25,4 @@ project.ext {
 
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
 }

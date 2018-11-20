@@ -87,10 +87,10 @@ public class WebSocketInfo {
 
     private Visitable mapping(WebSocketResponse response) {
         JsonObject data = response.getData();
-        if(response.getType() == null){
+        if (response.getType() == null) {
             return null;
         }
-        switch (this.response.getType().toLowerCase()){
+        switch (this.response.getType().toLowerCase()) {
             case VoteAnnouncementViewModel.POLLING_START:
             case VoteAnnouncementViewModel.POLLING_FINISHED:
             case VoteAnnouncementViewModel.POLLING_END:
@@ -265,9 +265,9 @@ public class WebSocketInfo {
                 pojo.getTimestamp(),
                 pojo.getTimestamp(),
                 String.valueOf(""),
-                "",
-                "",
-                "",
+                pojo.getUser().getId(),
+                pojo.getUser().getName(),
+                pojo.getUser().getImage(),
                 false,
                 true,
                 mappingToVoteInfoViewModel(pojo)
@@ -355,8 +355,8 @@ public class WebSocketInfo {
     }
 
     private Visitable mapToPinnedMessage(JsonObject json) {
-        if(TextUtils.isEmpty(json.toString())){
-            return new PinnedMessageViewModel("","","","");
+        if (TextUtils.isEmpty(json.toString())) {
+            return new PinnedMessageViewModel("", "", "", "");
         }
         Gson gson = new Gson();
         PinnedMessagePojo pinnedMessage = gson.fromJson(json, PinnedMessagePojo.class);
@@ -364,15 +364,15 @@ public class WebSocketInfo {
     }
 
     private Visitable mapToAds(JsonObject json) {
-        if(TextUtils.isEmpty(json.toString())){
-            return new AdsViewModel("","","");
+        if (TextUtils.isEmpty(json.toString())) {
+            return new AdsViewModel("", "", "");
         }
         Gson gson = new Gson();
         return gson.fromJson(json, AdsViewModel.class);
     }
 
     private Visitable mapToQuickReply(JsonObject json) {
-        if(TextUtils.isEmpty(json.toString())){
+        if (TextUtils.isEmpty(json.toString())) {
             return new GroupChatQuickReplyViewModel();
         }
         Gson gson = new Gson();
@@ -380,7 +380,7 @@ public class WebSocketInfo {
         GroupChatQuickReplyViewModel model = new GroupChatQuickReplyViewModel();
 
         List<GroupChatQuickReplyItemViewModel> list = new ArrayList<>();
-        if (channel!=null && channel.getListQuickReply() != null) {
+        if (channel != null && channel.getListQuickReply() != null) {
             int id = 1;
             for (String quickReply : channel.getListQuickReply()) {
                 GroupChatQuickReplyItemViewModel item = new GroupChatQuickReplyItemViewModel(String.valueOf(id), quickReply);
@@ -394,7 +394,7 @@ public class WebSocketInfo {
     }
 
     private Visitable mapToVideo(JsonObject data) {
-        if(TextUtils.isEmpty(data.toString())){
+        if (TextUtils.isEmpty(data.toString())) {
             return new VideoViewModel("");
         }
         Gson gson = new Gson();

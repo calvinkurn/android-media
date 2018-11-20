@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.domain.usecase;
 
 import com.tokopedia.logisticaddaddress.data.DataSource;
-import com.tokopedia.logisticaddaddress.di.AddressScope;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
