@@ -1,4 +1,4 @@
-package com.tokopedia.useridentification;
+package com.tokopedia.useridentification.applink;
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule;
 
