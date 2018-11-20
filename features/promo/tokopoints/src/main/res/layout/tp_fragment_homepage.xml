@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_24"
                 android:background="@color/transparent"
                 android:visibility="gone"
                 app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
@@ -72,7 +72,7 @@
             <LinearLayout
                 android:id="@+id/bottom_view_membership"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/tp_height_bottom_membership_view"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
                 android:orientation="vertical"
