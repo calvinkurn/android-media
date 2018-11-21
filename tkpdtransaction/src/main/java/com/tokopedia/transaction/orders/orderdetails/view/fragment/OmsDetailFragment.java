@@ -65,6 +65,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private static final String KEY_URI = "tokopedia";
     private static final String KEY_URI_PARAMETER = "idem_potency_key";
     private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
+    public static final String CATEGORY_GIFT_CARD = "Gift-card";
+
     @Inject
     OrderListDetailPresenter presenter;
 
@@ -340,7 +342,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public void setItems(List<Items> items) {
         List<Items> itemsList=new ArrayList<>();
         for (Items item : items) {
-            if (!ItemsAdapter.categoryGiftCard.equalsIgnoreCase(item.getCategory())) {
+            if (!CATEGORY_GIFT_CARD.equalsIgnoreCase(item.getCategory())) {
                 itemsList.add(item);
             }
         }
