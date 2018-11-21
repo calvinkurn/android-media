@@ -9,11 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_4"
-        app:elevation="@dimen/dp_0"
+        app:cardElevation="@dimen/dp_0"
         android:layout_marginRight="@dimen/dp_12"
         >
         <ImageView
-            tools:background="@android:color/black"
             android:id="@+id/autocomplete_recent_view_item"
             android:layout_width="@dimen/dp_72"
             android:layout_height="@dimen/dp_72"

@@ -2,20 +2,16 @@ package com.tokopedia.discovery.autocomplete.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.discovery.newdiscovery.di.module.net.DiscoveryNetModule;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteDataSource;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepositoryImpl;
 import com.tokopedia.discovery.autocomplete.usecase.AutoCompleteUseCase;
 import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.AutoCompleteQualifier;
-import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
+import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
 import com.tokopedia.discovery.newdiscovery.network.BrowseApi;
-import com.tokopedia.discovery.newdiscovery.di.module.ApiModule;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.domain.interactor.SearchMapper;
 import com.tokopedia.user.session.UserSession;
@@ -24,16 +20,16 @@ import com.tokopedia.user.session.UserSessionInterface;
 import dagger.Module;
 import dagger.Provides;
 
-@DiscoveryScope
-@Module(includes = DiscoveryNetModule.class)
+@AutoCompleteScope
+@Module
 public class AutoCompleteModule {
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     SearchPresenter provideSearchPresenter(@ApplicationContext Context context) {
         return new SearchPresenter(context);
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     AutoCompleteUseCase provideSearchUseCase(
             AutoCompleteRepository autoCompleteRepository
@@ -43,7 +39,7 @@ public class AutoCompleteModule {
         );
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     AutoCompleteRepository provideAutoCompleteRepository(
         @AutoCompleteQualifier BrowseApi browseApi,
@@ -55,13 +51,13 @@ public class AutoCompleteModule {
         );
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     SearchMapper provideSearchMapper() {
         return new SearchMapper();
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     DeleteRecentSearchUseCase provideDeleteRecentSearchUseCase(
             AutoCompleteRepository autoCompleteRepository,
@@ -73,7 +69,7 @@ public class AutoCompleteModule {
         );
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);

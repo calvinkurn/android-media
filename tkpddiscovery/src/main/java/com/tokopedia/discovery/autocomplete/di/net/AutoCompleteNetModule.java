@@ -1,9 +1,9 @@
-package com.tokopedia.discovery.newdiscovery.di.module.net;
+package com.tokopedia.discovery.autocomplete.di.net;
 
 import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.AutoCompleteQualifier;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.NoAuth;
-import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
+import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
 import com.tokopedia.discovery.newdiscovery.network.BrowseApi;
 
 import dagger.Module;
@@ -11,9 +11,10 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
-@Module(includes = DiscoveryOkHttpClientModule.class)
-public class DiscoveryNetModule {
-    @DiscoveryScope
+@AutoCompleteScope
+@Module(includes = AutoCompleteOkHttpClientModule.class)
+public class AutoCompleteNetModule {
+    @AutoCompleteScope
     @AutoCompleteQualifier
     @Provides
     BrowseApi provideSearchAutoCompleteApi(Retrofit.Builder builder,

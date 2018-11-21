@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdiscovery.di.module.net;
+package com.tokopedia.discovery.autocomplete.di.net;
 
 import android.content.Context;
 
@@ -7,33 +7,34 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
+import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
 
+@AutoCompleteScope
 @Module
-public class DiscoveryInterceptorModule {
-    @DiscoveryScope
+public class AutoCompleteInterceptorModule {
+    @AutoCompleteScope
     @Provides
     public DebugInterceptor provideDebugInterceptor() {
         return new DebugInterceptor();
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     public CacheApiInterceptor provideApiCacheInterceptor() {
         return new CacheApiInterceptor();
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
         return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     public TkpdBaseInterceptor provideTkpdBaseInterceptor() {
         return new TkpdBaseInterceptor();

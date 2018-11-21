@@ -1,14 +1,14 @@
-package com.tokopedia.discovery.newdiscovery.di.module.net;
+package com.tokopedia.discovery.autocomplete.di.net;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.NoAuth;
-import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
+import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,9 +16,10 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 
-@Module(includes = DiscoveryInterceptorModule.class)
-public class DiscoveryOkHttpClientModule {
-    @DiscoveryScope
+@AutoCompleteScope
+@Module(includes = AutoCompleteInterceptorModule.class)
+public class AutoCompleteOkHttpClientModule {
+    @AutoCompleteScope
     @NoAuth
     @Provides
     public OkHttpClient provideOkHttpClientNoAuth(OkHttpRetryPolicy okHttpRetryPolicy,
@@ -42,7 +43,7 @@ public class DiscoveryOkHttpClientModule {
         return clientBuilder.build();
     }
 
-    @DiscoveryScope
+    @AutoCompleteScope
     @Provides
     OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
