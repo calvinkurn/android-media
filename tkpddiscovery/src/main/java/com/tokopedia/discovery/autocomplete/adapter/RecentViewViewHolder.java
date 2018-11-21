@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.image.RoundedCornerImageView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
@@ -96,9 +97,10 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
             }
 
             public void bind(final BaseItemAutoCompleteSearch item) {
-                Glide.with(itemView.getContext())
-                        .load(item.getImageUrl())
-                        .into(recentImage);
+                ImageHandler.loadImageAndCache(
+                        recentImage,
+                        item.getImageUrl()
+                );
                 recentImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

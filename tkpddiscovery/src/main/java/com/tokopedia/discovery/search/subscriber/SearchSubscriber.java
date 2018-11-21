@@ -10,6 +10,16 @@ import java.util.List;
 import rx.Subscriber;
 
 public class SearchSubscriber extends Subscriber<List<SearchData>> {
+    public static final String RECENT_SEARCH = "recent_search";
+    public static final String RECENT_VIEW = "recent_view";
+    public static final String POPULAR_SEARCH = "popular_search";
+    public static final String DIGITAL = "digital";
+    public static final String CATEGORY = "category";
+    public static final String AUTOCOMPLETE = "autocomplete";
+    public static final String HOTLIST = "hotlist";
+    public static final String IN_CATEGORY = "in_category";
+    public static final String SHOP = "shop";
+
     private final String querySearch;
     private final DefaultAutoCompleteViewModel defaultAutoCompleteViewModel;
     private final TabAutoCompleteViewModel tabAutoCompleteViewModel;
@@ -40,18 +50,18 @@ public class SearchSubscriber extends Subscriber<List<SearchData>> {
         for (SearchData searchData : searchDatas) {
             if (searchData.getItems().size() > 0) {
                 switch (searchData.getId()) {
-                    case "recent_search":
-                    case "recent_view":
-                    case "popular_search":
+                    case RECENT_SEARCH:
+                    case RECENT_VIEW:
+                    case POPULAR_SEARCH:
                         defaultAutoCompleteViewModel.setSearchTerm(querySearch);
                         defaultAutoCompleteViewModel.addList(searchData);
                         continue;
-                    case "digital":
-                    case "category":
-                    case "autocomplete":
-                    case "hotlist":
-                    case "in_category":
-                    case "shop":
+                    case DIGITAL:
+                    case CATEGORY:
+                    case AUTOCOMPLETE:
+                    case HOTLIST:
+                    case IN_CATEGORY:
+                    case SHOP:
                         tabAutoCompleteViewModel.setSearchTerm(querySearch);
                         tabAutoCompleteViewModel.addList(searchData);
                         continue;
