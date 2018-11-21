@@ -84,4 +84,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     boolean isToogleYearEndPromoOn();
 
     void onPurchaseProtectionLogicError();
+
+    void onPurchaseProtectionChangeListener(int position);
 }

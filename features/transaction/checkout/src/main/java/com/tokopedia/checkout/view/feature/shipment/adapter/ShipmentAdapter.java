@@ -595,6 +595,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double additionalFee = 0;
         double totalItemPrice = 0;
         int totalItem = 0;
+        double totalPurchaseProtectionPrice = 0;
+        int totalPurchaseProtectionItem = 0;
         double shippingFee = 0;
         double insuranceFee = 0;
         for (ShipmentData shipmentData : shipmentDataList) {
@@ -605,6 +607,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 for (CartItemModel cartItemModel : cartItemModels) {
                     totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
                     totalItem += cartItemModel.getQuantity();
+
+                    if(cartItemModel.isProtectionOptIn()) {
+                        totalPurchaseProtectionItem += cartItemModel.getProtectionPrice() / cartItemModel.getProtectionPricePerProduct();
+                        totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
+                    }
+
                     totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
                 }
 
@@ -622,13 +630,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + additionalFee - shipmentCostModel.getPromoPrice();
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee - shipmentCostModel.getPromoPrice();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
         shipmentCostModel.setTotalItem(totalItem);
         shipmentCostModel.setShippingFee(shippingFee);
         shipmentCostModel.setInsuranceFee(insuranceFee);
+        shipmentCostModel.setTotalPurchaseProtectionItem(totalPurchaseProtectionItem);
+        shipmentCostModel.setPurchaseProtectionFee(totalPurchaseProtectionPrice);
         if (shipmentDonationModel.isChecked()) {
             shipmentCostModel.setDonation(shipmentDonationModel.getDonation().getNominal());
         } else {

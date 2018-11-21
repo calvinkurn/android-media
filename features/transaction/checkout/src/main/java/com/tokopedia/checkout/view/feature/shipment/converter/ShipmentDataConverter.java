@@ -199,6 +199,7 @@ public class ShipmentDataConverter {
             PurchaseProtectionPlanData ppp = product.getPurchaseProtectionPlanData();
             cartItemModel.setProtectionAvailable(ppp.isProtectionAvailable());
             cartItemModel.setProtectionPricePerProduct(ppp.getProtectionPricePerProduct());
+            cartItemModel.setProtectionPrice(ppp.getProtectionPrice());
             cartItemModel.setProtectionLinkText(ppp.getProtectionLinkText());
             cartItemModel.setProtectionLinkUrl(ppp.getProtectionLinkUrl());
             cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());

@@ -47,6 +47,7 @@ public class CartItemModel implements Parcelable {
 
     private boolean protectionAvailable;
     private int protectionPricePerProduct;
+    private int protectionPrice;
     private String protectionLinkText;
     private String protectionLinkUrl;
     private boolean protectionOptIn;
@@ -291,6 +292,14 @@ public class CartItemModel implements Parcelable {
 
     public void setProtectionOptIn(boolean protectionOptIn) {
         this.protectionOptIn = protectionOptIn;
+    }
+
+    public int getProtectionPrice() {
+        return protectionPrice;
+    }
+
+    public void setProtectionPrice(int protectionPrice) {
+        this.protectionPrice = protectionPrice;
     }
 
     public CartItemModel() {

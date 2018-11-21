@@ -1737,6 +1737,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         showToastError(message);
     }
 
+    @Override
+    public void onPurchaseProtectionChangeListener(int position) {
+        shipmentAdapter.updateShipmentCostModel();
+        shipmentAdapter.updateItemAndTotalCost(position);
+    }
+
     public int getResultCode() {
         if (shipmentPresenter.getCouponStateChanged()) {
             return ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED;
