@@ -320,10 +320,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     @Override
     public void notifyOnPurchaseProtectionChecked(boolean checked, int position) {
-        mActionListener.onNeedUpdateRequestData();
         if(shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel){
             ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
-            data.getCartItemModels().get(position).setUsingProtection(checked);
+            data.getCartItemModels().get(position).setProtectionOptIn(checked);
             if (checked) {
                 if(cbDropshipper.isChecked() && data.getSelectedShipmentDetailData().getUseDropshipper()){
                     data.getSelectedShipmentDetailData().setUseDropshipper(false);
@@ -332,6 +331,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
         }
+        mActionListener.onNeedUpdateRequestData();
     }
 
     private void initSaveStateDebouncer() {
@@ -833,14 +833,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                         mActionListener.hideSoftKeyboard();
+
+                        if(checked && isHavingPurchaseProtectionChecked()) {
+                            compoundButton.setChecked(false);
+                            mActionListener.onPurchaseProtectionLogicError();
+                            return;
+                        }
+
                         if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
                             ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
                             data.getSelectedShipmentDetailData().setUseDropshipper(checked);
                             if (checked) {
-                                if(isHavingPurchaseProtectionChecked()) {
-                                    compoundButton.setChecked(false);
-                                    mActionListener.onPurchaseProtectionLogicError();
-                                }
                                 etShipperName.setText(data.getDropshiperName());
                                 etShipperPhone.setText(data.getDropshiperPhone());
                                 data.getSelectedShipmentDetailData().setDropshipperName(data.getDropshiperName());
@@ -1306,7 +1309,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private boolean isHavingPurchaseProtectionChecked() {
         ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
         for(CartItemModel item :data.getCartItemModels()) {
-            if(item.isUsingProtection()) return true;
+            if(item.isProtectionOptIn()) return true;
         }
         return false;
     }
