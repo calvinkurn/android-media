@@ -285,9 +285,15 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                     (int) getResources().getDimension(R.dimen.tp_margin_medium),
                     (int) getResources().getDimension(R.dimen.tp_margin_regular));
 
-            //by default load data for first tab
-            mPagerSortType.postDelayed(() -> refreshTab(filters.getCategories().get(0).getId(),
-                    filters.getCategories().get(0).getSubCategory().get(0).getId()), CommonConstant.TAB_SETUP_DELAY_MS);
+            mPagerSortType.postDelayed(() -> {
+                int selectedTabIndex = getSelectedCategoryIndex(filters.getCategories().get(0).getSubCategory());
+                if (selectedTabIndex == 0) { // Special handling for zeroth index
+                    refreshTab(filters.getCategories().get(0).getId(),
+                            filters.getCategories().get(0).getSubCategory().get(0).getId());
+                } else {
+                    mPagerSortType.setCurrentItem(selectedTabIndex, false);
+                }
+            }, CommonConstant.TAB_SETUP_DELAY_MS);
         }
     }
 
@@ -542,5 +548,17 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         }
 
         return false;
+    }
+
+    private int getSelectedCategoryIndex(List<CatalogSubCategory> data) {
+        int counter = 0;
+        for (CatalogSubCategory item : data) {
+            if (item.isSelected()) {
+                break;
+            }
+            counter++;
+        }
+
+        return counter;
     }
 }
