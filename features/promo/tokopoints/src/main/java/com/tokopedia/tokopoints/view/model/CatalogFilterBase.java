@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogFilterBase {
-    @Expose
     @SerializedName("categories")
     private ArrayList<CatalogCategory> categories;
 
-    @Expose
     @SerializedName("sortType")
     private List<CatalogSortType> sortType;
+
+    @SerializedName("pointRanges")
+    private List<CatalogFilterPointRange> pointRanges;
 
     public ArrayList<CatalogCategory> getCategories() {
         return categories;

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
+import com.tokopedia.phoneverification.view.fragment.ReferralPhoneNumberVerificationFragment;
 
 import dagger.Component;
 
@@ -19,4 +20,6 @@ public interface PhoneVerificationComponent {
     void inject(PhoneVerificationFragment fragment);
 
     void inject(ChangePhoneNumberFragment fragment);
+
+    void inject(ReferralPhoneNumberVerificationFragment fragment);
 }

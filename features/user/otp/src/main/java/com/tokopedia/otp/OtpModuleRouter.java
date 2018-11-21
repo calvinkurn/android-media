@@ -9,7 +9,7 @@ import android.content.Intent;
 
 public interface OtpModuleRouter {
 
-    Intent getChangePhoneNumberRequestIntent(Context context, String userId);
+    Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber);
 
     Intent getPhoneVerificationActivationIntent(Context context);
 

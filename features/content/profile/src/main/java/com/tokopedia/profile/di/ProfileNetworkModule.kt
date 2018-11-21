@@ -35,6 +35,12 @@ class ProfileNetworkModule {
 
     @ProfileScope
     @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+        return UserSession(context)
+    }
+
+    @ProfileScope
+    @Provides
     fun provideTopAdsApi(retrofit: Retrofit): TopAdsApi {
         return retrofit.create(TopAdsApi::class.java)
     }

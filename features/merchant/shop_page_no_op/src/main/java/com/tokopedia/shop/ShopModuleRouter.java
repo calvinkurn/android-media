@@ -11,8 +11,6 @@ public interface ShopModuleRouter {
 
     Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
 
-    Fragment getShopTalkFragment();
-
     Fragment getKolPostShopFragment(String shopId, String createPostUrl);
 
     void goToEditShop(Context context);
@@ -43,11 +41,9 @@ public interface ShopModuleRouter {
 
     Intent getLoginIntent(Context context);
 
-    void sendEventTrackingShopPage(Map<String, Object> eventTracking);
-
-    void sendScreenName(String screenName);
-
     Intent getTopProfileIntent(Context context, String userId);
 
     boolean isFeedShopPageEnabled();
+
+    void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed);
 }

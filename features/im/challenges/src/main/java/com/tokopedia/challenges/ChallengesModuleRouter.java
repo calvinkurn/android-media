@@ -40,4 +40,6 @@ public interface ChallengesModuleRouter {
 
     void sendMoengageEvents(String eventName, Map<String, Object> values);
 
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
 }

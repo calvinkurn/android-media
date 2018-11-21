@@ -29,6 +29,8 @@ public interface SubmitDetailContract {
         boolean getParticipatedStatus(SubmissionResult challengeResult);
 
         boolean checkIsPastChallenge(Collection collection);
+
+        void onDestroy();
     }
 
     interface View extends CustomerView {
@@ -74,8 +76,6 @@ public interface SubmitDetailContract {
         void setWinnerPosition(String s);
 
         void isParticipated(boolean participated);
-
-        void setlikeInvisiblity();
 
         void setResubmitInvisible();
     }
