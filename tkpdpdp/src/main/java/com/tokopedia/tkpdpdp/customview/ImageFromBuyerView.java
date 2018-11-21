@@ -17,6 +17,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -134,9 +135,7 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
                 reviewImage = itemView.findViewById(R.id.review_image);
             }
             public void bind(final ImageReviewItem item) {
-                Glide.with(itemView.getContext())
-                        .load(item.getImageUrlThumbnail())
-                        .into(reviewImage);
+                ImageHandler.loadImageAndCache(reviewImage, item.getImageUrlThumbnail());
             }
         }
     }

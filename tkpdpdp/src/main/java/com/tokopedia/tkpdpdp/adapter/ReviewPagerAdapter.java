@@ -2,7 +2,6 @@ package com.tokopedia.tkpdpdp.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
@@ -161,9 +160,7 @@ public class ReviewPagerAdapter extends PagerAdapter{
                 reviewImage = itemView.findViewById(R.id.review_image);
             }
             public void bind(final ReviewImageAttachment item) {
-                Glide.with(itemView.getContext())
-                        .load(item.getUriThumbnail())
-                        .into(reviewImage);
+                ImageHandler.loadImageAndCache(reviewImage, item.getUriThumbnail());
             }
         }
     }
