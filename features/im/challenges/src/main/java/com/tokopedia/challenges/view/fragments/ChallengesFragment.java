@@ -103,13 +103,9 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        getChallenges();
-                    }
-                }, 4000);
+                 ChallengesCacheHandler.resetCache();
+                 swipeRefreshLayout.setRefreshing(false);
+                 getChallenges();
             }
         });
 
