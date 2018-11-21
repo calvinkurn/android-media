@@ -1315,8 +1315,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventPDPDetail(ProductDetail productDetail) {
         getGTMEngine()
-                .eventDetail(productDetail)
-                .sendScreen(AppScreen.SCREEN_PRODUCT_INFO_DETAIL);
+                .eventDetail(productDetail);
     }
 
     public static void eventATCSuccess(GTMCart cart) {

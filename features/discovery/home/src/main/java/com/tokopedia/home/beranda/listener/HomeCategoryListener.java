@@ -41,5 +41,9 @@ public interface HomeCategoryListener {
 
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
 
+    void onServerTimeReceived(long serverTimeUnix);
+
+    long getServerTimeOffset();
+  
     boolean isHomeFragment();
 }
