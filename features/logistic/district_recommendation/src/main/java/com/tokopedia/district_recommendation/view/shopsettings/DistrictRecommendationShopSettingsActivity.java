@@ -57,9 +57,6 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         super.onCreate(savedInstanceState);
         initializeInjector();
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
-        // Todo : resolve this
-//        progressDialog.setLoadingViewId(R.id.include_loading);
-        progressDialog.showDialog();
         requestGetToken();
     }
 
@@ -79,6 +76,7 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShopAddressUseCase.PARAM_AUTH, params);
 
+        progressDialog.showDialog();
         getShopAddressUseCase.execute(requestParams, new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
@@ -87,17 +85,13 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
 
             @Override
             public void onError(Throwable e) {
-                NetworkErrorHelper.showEmptyState(DistrictRecommendationShopSettingsActivity.this,
-                        findViewById(R.id.container), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                requestGetToken();
-                            }
-                        });
+                progressDialog.dismiss();
+                showErrorState();
             }
 
             @Override
             public void onNext(Response<TokopediaWsV4Response> tokopediaWsV4ResponseResponse) {
+                progressDialog.dismiss();
                 TokopediaWsV4Response response = tokopediaWsV4ResponseResponse.body();
                 try {
                     JSONObject jsonObject = new JSONObject(response.getStringData());
@@ -105,12 +99,22 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
                     Gson gson = new GsonBuilder().create();
                     ShopAddressTokenResponse data =
                             gson.fromJson(jsonObject.toString(), ShopAddressTokenResponse.class);
-                    showView(data.getToken());
+                    if (data != null && data.getToken() != null) {
+                        showView(data.getToken());
+                    } else {
+                        showErrorState();
+                    }
 
                 } catch (JSONException je) {
+                    je.printStackTrace();
                 }
             }
         });
+    }
+
+    private void showErrorState() {
+        NetworkErrorHelper.showEmptyState(DistrictRecommendationShopSettingsActivity.this,
+                findViewById(R.id.container), this::requestGetToken);
     }
 
     private void showView(Token token) {
