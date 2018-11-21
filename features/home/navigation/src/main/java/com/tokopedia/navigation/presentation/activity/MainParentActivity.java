@@ -324,6 +324,8 @@ public class MainParentActivity extends BaseActivity implements
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
             if (!presenter.isUserLogin())
                 return false;
+        if (position == FEED_MENU)
+            bottomNavigation.setNotification(0, FEED_MENU);
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
