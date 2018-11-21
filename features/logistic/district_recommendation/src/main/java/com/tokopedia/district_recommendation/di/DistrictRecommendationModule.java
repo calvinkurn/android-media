@@ -18,13 +18,17 @@ import com.tokopedia.district_recommendation.data.source.DistrictRecommendationD
 import com.tokopedia.district_recommendation.data.source.ShopAddressDataSource;
 import com.tokopedia.district_recommendation.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.district_recommendation.domain.usecase.GetShopAddressUseCase;
+import com.tokopedia.district_recommendation.view.AddressViewModelMapper;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationPresenter;
-import com.tokopedia.district_recommendation.view.AddressViewModelMapper;
 import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +58,7 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
-    UserSession provideUserSession(@ApplicationContext Context context) {
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
@@ -68,14 +72,40 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
-    OkHttpClient provideKeroOkHttpClient(@ApplicationContext Context context, OkHttpRetryPolicy okHttpRetryPolicy) {
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter) context.getApplicationContext();
+    }
+
+    @Provides
+    @DistrictRecommendationScope
+    FingerprintInterceptor provideFingerPrintInterceptor(NetworkRouter networkRouter,
+                                                                UserSessionInterface userSessionInterface) {
+        return new FingerprintInterceptor(networkRouter, userSessionInterface);
+    }
+
+    @Provides
+    @DistrictRecommendationScope
+    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                          NetworkRouter networkRouter,
+                                                          UserSessionInterface userSession) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+    }
+
+    @Provides
+    @DistrictRecommendationScope
+    OkHttpClient provideKeroOkHttpClient(@ApplicationContext Context context,
+                                         OkHttpRetryPolicy okHttpRetryPolicy,
+                                         TkpdAuthInterceptor tkpdAuthInterceptor,
+                                         FingerprintInterceptor fingerprintInterceptor) {
 
         AbstractionRouter abstractionRouter = ((AbstractionRouter) context);
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS);
+                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(tkpdAuthInterceptor);
         if (GlobalConfig.isAllowDebuggingTools()) {
             Interceptor chuckInterceptor = new ChuckInterceptor(context)
                     .showNotification(abstractionRouter.isAllowLogOnChuckInterceptorNotification());
