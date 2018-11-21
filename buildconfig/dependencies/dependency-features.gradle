@@ -51,7 +51,8 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     transactionCheckoutVersion = '2.22'
-
+    tkpdUserIdentification = '2.22'
+    tkpdUserIdentificationCommon = '2.22'
 
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
@@ -101,6 +102,8 @@ ext {
             topAdsManagement            : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             transaction                 : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon           : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
+            userIdentification          : "com.tokopedia.user:user:${tkpdUserIdentification}",
+            userIdentificationCommon    : "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                        : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon              : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
     ]
@@ -197,8 +200,9 @@ ext {
             topchat                     : ":features:user:topchat",
             updateinactivephone         : ":features:user:updateinactivephone",
             userIdentification          : ":features:user:user_identification",
+//            userIdentification          : ":features:user:user_identification_no_op",
+            userIdentificationCommon    : ":features:user:user_identification_common",
             vote                        : ":features:user:vote",
-
             content                     : ":tkpdcontent",
             core                        : ":tkpdcore",
             discovery                   : ":tkpddiscovery",

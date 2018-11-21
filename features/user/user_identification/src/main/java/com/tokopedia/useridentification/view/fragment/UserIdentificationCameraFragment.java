@@ -31,7 +31,7 @@ import java.io.File;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
 /**
  * @author by alvinatin on 12/11/18.

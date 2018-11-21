@@ -11,8 +11,8 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
-import static com.tokopedia.useridentification.view.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
-import static com.tokopedia.useridentification.view.KYCConstant.REQUEST_CODE_CAMERA_KTP;
+import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
+import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
 import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**

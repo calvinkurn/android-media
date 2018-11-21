@@ -22,7 +22,6 @@ import rx.Subscriber;
  */
 public class GetAccountSettingConfigUseCase  {
 
-    private static final String PROJECT_ID = "project_id";
     private final Context context;
     private final GraphqlUseCase graphqlUseCase;
 

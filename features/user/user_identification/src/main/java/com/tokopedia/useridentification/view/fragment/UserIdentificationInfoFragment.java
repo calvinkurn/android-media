@@ -13,11 +13,13 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
-import com.tokopedia.useridentification.view.KYCConstant;
-import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
+import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
 import javax.inject.Inject;
@@ -26,7 +28,9 @@ import javax.inject.Inject;
  * @author by alvinatin on 02/11/18.
  */
 
-public class UserIdentificationInfoFragment extends BaseDaggerFragment implements UserIdentificationInfo.View {
+public class UserIdentificationInfoFragment extends BaseDaggerFragment
+        implements UserIdentificationInfo.View,
+        GetApprovalStatusSubscriber.GetApprovalStatusListener {
 
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
 
@@ -99,7 +103,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onSuccessGetInfo(int status) {
+    public void onSuccessGetShopVerificationStatus(int status) {
         hideLoading();
         switch (status) {
             case KYCConstant.STATUS_REJECTED:
@@ -117,7 +121,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
                 showStatusNotVerified();
                 break;
             default:
-                onErrorGetInfo(String.format("%s (%s)", getString(R.string
+                onErrorGetShopVerificationStatus(String.format("%s (%s)", getString(R.string
                         .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN));
                 break;
         }
@@ -159,7 +163,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onErrorGetInfo(String errorMessage) {
+    public void onErrorGetShopVerificationStatus(String errorMessage) {
         NetworkErrorHelper.showEmptyState(getContext(), mainView, () -> presenter.getStatus());
     }
 
@@ -173,6 +177,11 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
     public void hideLoading() {
         mainView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public GetApprovalStatusSubscriber.GetApprovalStatusListener getApprovalStatusListener() {
+        return this;
     }
 
     private View.OnClickListener onGoToFormActivityButton(){
