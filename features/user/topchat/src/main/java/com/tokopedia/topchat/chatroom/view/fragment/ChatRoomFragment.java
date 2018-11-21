@@ -1373,7 +1373,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void checkHideQuickReply(BaseChatViewModel message) {
-        if(TextUtils.isEmpty(message.getAttachmentId())){
+        if (TextUtils.isEmpty(message.getAttachmentId())
+                && quickReplyAdapter != null
+                && rvQuickReply != null) {
             quickReplyAdapter.clearData();
             rvQuickReply.setVisibility(View.GONE);
         }
@@ -1414,7 +1416,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             quickReplyAdapter = new QuickReplyAdapter(model, this);
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
-        }else{
+        } else {
             quickReplyAdapter.clearData();
             rvQuickReply.setVisibility(View.GONE);
         }
@@ -1422,7 +1424,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply) {
-        if(getArguments()!= null) {
+        if (getArguments() != null) {
             if (templateAdapter != null && templateAdapter.getList().size() != 0) {
                 templateRecyclerView.setVisibility(View.VISIBLE);
             }
