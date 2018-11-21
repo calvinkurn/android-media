@@ -2,7 +2,6 @@ package com.tokopedia.tokocash.balance.data.mapper;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
@@ -12,6 +11,7 @@ import com.tokopedia.tokocash.balance.data.entity.AbTagEntity;
 import com.tokopedia.tokocash.balance.data.entity.BalanceTokoCashEntity;
 import com.tokopedia.tokocash.balance.view.ActionBalance;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 
@@ -24,12 +24,14 @@ import rx.functions.Func1;
  */
 
 public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, BalanceTokoCash> {
-
+    private static final String OVO_TYPE = "OVO";
     private Context context;
+    private UserSession userSession;
 
     @Inject
-    public BalanceTokoCashMapper(@ApplicationContext Context context) {
+    public BalanceTokoCashMapper(@ApplicationContext Context context, UserSession userSession) {
         this.context = context;
+        this.userSession = userSession;
     }
 
     @Override
@@ -37,16 +39,20 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
         if (balanceTokoCashEntity != null) {
             BalanceTokoCash balanceTokoCash = new BalanceTokoCash();
 
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE);
-            int totalPopUp = localCacheHandler.getInt(CacheUtil.FIRST_TIME_POPUP, 1);
-            if (totalPopUp == 1) {
-                localCacheHandler.putInt(CacheUtil.FIRST_TIME_POPUP, 0);
-                localCacheHandler.applyEditor();
-            }
-
             //create an object if tokocash is not activated
             if (!balanceTokoCashEntity.getLinked()) {
-                balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement() && totalPopUp > 0);
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE);
+                boolean popupHasShown = true;
+                if (userSession.isLoggedIn() && 
+                    balanceTokoCashEntity.getWalletType() != null && 
+                    balanceTokoCashEntity.getWalletType().equalsIgnoreCase(OVO_TYPE)){
+                    popupHasShown = localCacheHandler.getBoolean(CacheUtil.FIRST_TIME_POPUP, false);
+                    if (!popupHasShown) {
+                        localCacheHandler.putBoolean(CacheUtil.FIRST_TIME_POPUP, true);
+                        localCacheHandler.applyEditor();
+                    }
+                }
+                balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement() && !popupHasShown);
 
                 String applinkActivation = ((TokoCashRouter) context).getStringRemoteConfig(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_APPLINK_REGISTER);
                 if (applinkActivation.isEmpty()) {

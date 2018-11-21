@@ -26,8 +26,10 @@ import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -834,7 +836,9 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
                 } else if (e instanceof ResponseCartApiErrorException) {
                     view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
-                } else {
+                }else if (e instanceof CheckPromoCodeException) {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
+                }else {
                     view.renderErrorCheckPromoCodeFromSuggestedPromo(
                             ErrorNetMessage.MESSAGE_ERROR_DEFAULT
                     );
@@ -844,6 +848,7 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onNext(PromoCodeCartListData promoCodeCartListData) {
                 view.hideProgressLoading();
+                view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
                 if (!promoCodeCartListData.isError())
                     view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
                 else if (!isAutoApply)
@@ -951,8 +956,8 @@ public class CartListPresenter implements ICartListPresenter {
         );
         enhancedECommerceProductCartMapData.setDimension38(
                 TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                : cartItemData.getOriginData().getTrackerAttribution()
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : cartItemData.getOriginData().getTrackerAttribution()
         );
         enhancedECommerceProductCartMapData.setListName(
                 TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())

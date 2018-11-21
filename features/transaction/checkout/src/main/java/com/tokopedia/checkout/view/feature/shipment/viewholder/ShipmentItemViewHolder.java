@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -183,7 +184,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
 
-    private List<ShipmentData> shipmentDataList;
+    private List<Object> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
@@ -356,14 +357,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
-                               List<ShipmentData> shipmentDataList,
+                               List<Object> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
                                RatesDataConverter ratesDataConverter,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
         if (this.shipmentDataList == null) {
             this.shipmentDataList = shipmentDataList;
         }
-        renderMarginFirstItem(shipmentCartItemModel);
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
@@ -405,15 +405,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         ShowCaseContentPosition.UNDEFINED)
                 );
             }
-        }
-    }
-
-    private void renderMarginFirstItem(ShipmentCartItemModel shipmentCartItemModel) {
-        // Only set margin for first item on multiple address
-        if (shipmentCartItemModel.isStateHasExtraMarginTop()) {
-            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16));
-        } else {
-            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_0));
         }
     }
 
@@ -580,7 +571,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel.getShopShipmentList(), false);
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), false);
                             shipmentCartItemModel.setStateLoadingCourierState(true);
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
                             llCourierStateLoading.setVisibility(View.VISIBLE);
@@ -632,7 +623,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 mActionListener.onChangeShippingCourier(
                         shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                        currentAddress, getAdapterPosition());
+                        currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
             }
         });
 
@@ -689,7 +680,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel.getShopShipmentList(), true);
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true);
                             shipmentCartItemModel.setStateLoadingCourierState(true);
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
                             llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
@@ -988,6 +979,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
                 llInsurance.setVisibility(View.VISIBLE);
+                llInsurance.setBackground(null);
+                llInsurance.setOnClickListener(null);
                 tvLabelInsurance.setText(R.string.label_must_insurance);
                 cbInsurance.setVisibility(View.GONE);
                 cbInsuranceDisabled.setVisibility(View.VISIBLE);
@@ -1001,12 +994,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
                 cbInsurance.setChecked(false);
                 llInsurance.setVisibility(View.GONE);
+                llInsurance.setBackground(null);
+                llInsurance.setOnClickListener(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                 tvLabelInsurance.setText(R.string.label_shipment_insurance);
                 llInsurance.setVisibility(View.VISIBLE);
                 cbInsuranceDisabled.setVisibility(View.GONE);
                 cbInsurance.setVisibility(View.VISIBLE);
+                TypedValue outValue = new TypedValue();
+                llInsurance.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+                llInsurance.setBackgroundResource(outValue.resourceId);
                 llInsurance.setOnClickListener(getInsuranceClickListener());
                 if (useInsurance == null) {
                     if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {

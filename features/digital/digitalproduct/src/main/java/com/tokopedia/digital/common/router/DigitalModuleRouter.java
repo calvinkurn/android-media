@@ -17,4 +17,6 @@ public interface DigitalModuleRouter {
     Intent getLoyaltyActivity(Context context, String platform, String categoryId);
 
     Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId);
+
+    Intent getLoyaltyActivitySelectedCoupon(Context context, String digitalString, String categoryId);
 }
