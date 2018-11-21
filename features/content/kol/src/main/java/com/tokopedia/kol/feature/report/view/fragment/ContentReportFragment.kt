@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.report.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
@@ -96,7 +97,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     override fun onSuccessSendReport() {
-        activity?.setResult(Activity.RESULT_OK)
+        activity?.setResult(Activity.RESULT_OK, Intent())
         activity?.finish()
     }
 
