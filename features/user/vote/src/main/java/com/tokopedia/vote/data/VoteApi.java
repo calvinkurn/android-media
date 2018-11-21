@@ -20,6 +20,11 @@ import rx.Observable;
 public interface VoteApi {
 
     @FormUrlEncoded
+    @POST(VoteUrl.SEND_VOTE_V1)
+    Observable<Response<DataResponse<SendVotePojo>>> sendVoteV1(@Path(VoteUrl.PATH_POLL_ID) String pollId,
+                                                              @FieldMap Map<String, Object> keyword);
+
+    @FormUrlEncoded
     @POST(VoteUrl.SEND_VOTE)
     Observable<Response<DataResponse<SendVotePojo>>> sendVote(@Path(VoteUrl.PATH_POLL_ID) String pollId,
                                                               @FieldMap Map<String, Object> keyword);

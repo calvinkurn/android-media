@@ -90,8 +90,4 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
     }
-
-    @Override
-    public void startSendGift(int id, String title, String pointStr) {
-    }
 }
