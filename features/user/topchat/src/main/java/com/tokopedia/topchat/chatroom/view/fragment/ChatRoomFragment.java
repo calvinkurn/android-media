@@ -1407,6 +1407,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
         }else{
+            quickReplyAdapter.clearData();
             rvQuickReply.setVisibility(View.GONE);
         }
     }
@@ -1414,7 +1415,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply) {
         if(getArguments()!= null) {
-            rvQuickReply.setVisibility(View.GONE);
             if (templateAdapter != null && templateAdapter.getList().size() != 0) {
                 templateRecyclerView.setVisibility(View.VISIBLE);
             }
