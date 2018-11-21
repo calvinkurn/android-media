@@ -31,6 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
@@ -511,7 +513,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(), (String) view.getTag(), Toast.LENGTH_SHORT).show();
+                    RouteManager.route(view.getContext(),
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, cartItemModel.getProtectionLinkUrl()));
                 }
             });
             tvPPPLinkText.setText(cartItemModel.getProtectionLinkText());
