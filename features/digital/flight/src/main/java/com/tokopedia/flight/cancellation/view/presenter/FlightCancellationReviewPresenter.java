@@ -92,7 +92,6 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
 
                     @Override
                     public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
                         getView().showCancellationError(throwable);
                         getView().hideLoading();
                     }
@@ -155,7 +154,6 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
                         if (isViewAttached() && !isUnsubscribed()) {
                             getView().hideLoading();
                             getView().showErrorFetchEstimateRefund(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));

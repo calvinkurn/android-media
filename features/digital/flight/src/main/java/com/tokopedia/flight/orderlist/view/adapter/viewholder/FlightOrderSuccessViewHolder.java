@@ -121,6 +121,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_flight_order_success, popup.getMenu());
+        // TODO this comment will be use in next release iteration
         /*popup.setOnMenuItemClickListener(new OnMenuPopupClicked() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
