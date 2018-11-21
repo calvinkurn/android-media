@@ -5,11 +5,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
-import com.tokopedia.sessioncommon.R;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.LoginEmailDomain;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
 import com.tokopedia.sessioncommon.network.TokenErrorException;
+import com.tokopedia.sessioncommon.R;
 
 import rx.Subscriber;
 
