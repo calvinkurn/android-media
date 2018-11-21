@@ -88,6 +88,8 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 if(!isViewAttached()) return;
                 getView().removeProgressBarView();
                 getView().setSwipeRefreshing();
+                getView().showErrorNetwork(
+                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
                 e.printStackTrace();
             }
 
