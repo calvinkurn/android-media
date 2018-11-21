@@ -1357,6 +1357,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             readMessage(message.getMessageId());
         }
 
+        checkHideQuickReply(message);
         setResult();
     }
 
@@ -1368,6 +1369,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
             }
         } else {
             addMessageToList(message);
+        }
+    }
+
+    private void checkHideQuickReply(BaseChatViewModel message) {
+        if(TextUtils.isEmpty(message.getAttachmentId())){
+            quickReplyAdapter.clearData();
+            rvQuickReply.setVisibility(View.GONE);
         }
     }
 
