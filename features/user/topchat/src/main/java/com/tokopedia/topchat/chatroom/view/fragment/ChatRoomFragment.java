@@ -1417,7 +1417,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             quickReplyAdapter = new QuickReplyAdapter(model, this);
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
-        } else {
+        } else if(quickReplyAdapter != null){
             quickReplyAdapter.clearData();
             rvQuickReply.setVisibility(View.GONE);
         }
