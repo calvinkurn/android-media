@@ -76,7 +76,9 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(GetShopAddressUseCase.PARAM_AUTH, params);
 
-        progressDialog.showDialog();
+        if (progressDialog != null) {
+            progressDialog.showDialog();
+        }
         getShopAddressUseCase.execute(requestParams, new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
@@ -85,13 +87,17 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
 
             @Override
             public void onError(Throwable e) {
-                progressDialog.dismiss();
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
                 showErrorState();
             }
 
             @Override
             public void onNext(Response<TokopediaWsV4Response> tokopediaWsV4ResponseResponse) {
-                progressDialog.dismiss();
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
                 TokopediaWsV4Response response = tokopediaWsV4ResponseResponse.body();
                 try {
                     JSONObject jsonObject = new JSONObject(response.getStringData());
