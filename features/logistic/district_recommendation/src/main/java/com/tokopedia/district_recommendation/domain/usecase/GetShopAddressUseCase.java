@@ -18,6 +18,8 @@ import rx.Observable;
 
 public class GetShopAddressUseCase extends UseCase<Response<TokopediaWsV4Response>> {
 
+    public static final String PARAM_AUTH = "PARAM_AUTH";
+
     private final ShopAddressRepository repository;
 
     @Inject
@@ -26,11 +28,10 @@ public class GetShopAddressUseCase extends UseCase<Response<TokopediaWsV4Respons
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Observable<Response<TokopediaWsV4Response>> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.putAll(requestParams.getParamsAllValueInString());
+        TKPDMapParam<String, String> param = (TKPDMapParam<String, String>) requestParams.getObject(PARAM_AUTH);
         return repository.getLocation(param);
-
     }
 
 }

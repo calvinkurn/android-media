@@ -12,9 +12,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.district_recommendation.R;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.domain.usecase.GetShopAddressUseCase;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.user.session.UserSession;
 
 import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 
@@ -23,11 +21,9 @@ import static com.tokopedia.district_recommendation.view.DistrictRecommendationC
  */
 
 public class DistrictRecommendationActivity extends BaseSimpleActivity
-        implements HasComponent, ITransactionAnalyticsDistrictRecommendation, FragmentListener {
+        implements HasComponent, ITransactionAnalyticsDistrictRecommendation {
 
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    protected UserSession userSession;
-    protected GetShopAddressUseCase getShopAddressUseCase;
 
     public static Intent createInstanceIntent(Activity activity, Token token) {
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
@@ -87,16 +83,6 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
     @Override
     public void sendAnalyticsOnClearTextDistrictRecommendationInput() {
         checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
-    }
-
-    @Override
-    public void setUserSession(UserSession userSession) {
-        this.userSession = userSession;
-    }
-
-    @Override
-    public void setShopAddressUseCase(GetShopAddressUseCase shopAddressUseCase) {
-        this.getShopAddressUseCase = shopAddressUseCase;
     }
 
 }

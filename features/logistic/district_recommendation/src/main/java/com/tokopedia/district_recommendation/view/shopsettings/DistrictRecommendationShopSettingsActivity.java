@@ -10,16 +10,27 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.R;
+import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComponent;
+import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.district_recommendation.domain.usecase.GetShopAddressUseCase;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -31,6 +42,12 @@ import rx.Subscriber;
 public class DistrictRecommendationShopSettingsActivity extends DistrictRecommendationActivity {
     private TkpdProgressDialog progressDialog;
 
+    @Inject
+    GetShopAddressUseCase getShopAddressUseCase;
+
+    @Inject
+    UserSession userSession;
+
     public static Intent createInstance(Activity activity) {
         return new Intent(activity, DistrictRecommendationShopSettingsActivity.class);
     }
@@ -38,6 +55,7 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initializeInjector();
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
         // Todo : resolve this
 //        progressDialog.setLoadingViewId(R.id.include_loading);
@@ -45,8 +63,23 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         requestGetToken();
     }
 
+    private void initializeInjector() {
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) getApplication()).getBaseAppComponent();
+        DistrictRecommendationComponent districtRecommendationComponent =
+                DaggerDistrictRecommendationComponent.builder()
+                        .baseAppComponent(baseAppComponent)
+                        .build();
+        districtRecommendationComponent.inject(this);
+    }
+
     private void requestGetToken() {
-        getShopAddressUseCase.execute(new Subscriber<Response<TokopediaWsV4Response>>() {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(GetShopAddressUseCase.PARAM_AUTH, params);
+
+        getShopAddressUseCase.execute(requestParams, new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
 

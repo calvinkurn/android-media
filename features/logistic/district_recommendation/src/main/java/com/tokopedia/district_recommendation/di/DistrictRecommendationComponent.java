@@ -2,6 +2,7 @@ package com.tokopedia.district_recommendation.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationFragment;
+import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 
 import dagger.Component;
 
@@ -12,4 +13,6 @@ import dagger.Component;
 @Component(modules = DistrictRecommendationModule.class, dependencies = BaseAppComponent.class)
 public interface DistrictRecommendationComponent {
     void inject(DistrictRecommendationFragment districtRecommendationFragment);
+
+    void inject(DistrictRecommendationShopSettingsActivity districtRecommendationShopSettingsActivity);
 }
