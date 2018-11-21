@@ -327,7 +327,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
             button.setTextColor(getResources().getColor(R.color.black));
         } else if(responseVisibility == OrderDetailTypeDef.GREEN_BUTTON) {
             button.setVisibility(VISIBLE);
-            button.setBackgroundResource(R.drawable.green_button_rounded_unify_logistic_module);
+            button.setBackgroundResource(R.drawable.green_button_rounded_unify);
             button.setTextColor(getResources().getColor(R.color.white));
         } else button.setVisibility(GONE);
     }
