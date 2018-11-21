@@ -71,7 +71,7 @@ public class GetUserInfoData {
     private int completion;
     @SerializedName("create_password_list")
     @Expose
-    private List<String> createPasswordList;
+    private List<String> createPasswordList = new ArrayList();
 
     public int getUserId() {
         return userId;
