@@ -3,7 +3,9 @@ package com.tokopedia.affiliate.feature.createpost.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.affiliate.feature.createpost.view.presenter.CreatePostPresenter;
@@ -14,6 +16,7 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,7 +53,14 @@ public class CreatePostModule {
 
     @Provides
     @CreatePostScope
-    UserSession provideUserSession(@ApplicationContext Context context) {
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    @CreatePostScope
+    AffiliateAnalytics provideAffiliateAnalytics(@ApplicationContext Context context,
+                                                 UserSessionInterface userSessionInterface) {
+        return new AffiliateAnalytics((AbstractionRouter) context, userSessionInterface);
     }
 }

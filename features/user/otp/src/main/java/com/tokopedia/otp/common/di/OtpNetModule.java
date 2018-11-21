@@ -15,6 +15,7 @@ import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
 import com.tokopedia.otp.common.network.WSErrorResponse;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,7 +38,7 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(UserSession
+    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(UserSessionInterface
                                                                                             userSession) {
         return new AccountsAuthorizationInterceptor(userSession);
     }
@@ -57,7 +58,8 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public AuthorizationBearerInterceptor provideAuthorizationBearerInterceptor(UserSession userSession) {
+    public AuthorizationBearerInterceptor provideAuthorizationBearerInterceptor(UserSessionInterface
+                                                                                        userSession) {
         return new AuthorizationBearerInterceptor(userSession);
     }
 

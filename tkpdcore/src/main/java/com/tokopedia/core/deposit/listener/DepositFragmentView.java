@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.core.deposit.adapter.DepositAdapter;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 /**
@@ -59,5 +60,5 @@ public interface DepositFragmentView {
 
     void hideSaldoPrioritasFragment();
 
-    void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails);
+    void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 }

@@ -42,7 +42,7 @@ public interface ChannelVoteContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void sendVote(UserSession userSession, String pollId, boolean voted, VoteViewModel element);
+        void sendVote(UserSession userSession, String pollId, boolean voted, VoteViewModel element, String groupChatToken);
 
     }
 }

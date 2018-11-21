@@ -68,6 +68,11 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         presenter.fetchData()
     }
 
+    override fun onDestroy() {
+        presenter.detachView()
+        super.onDestroy()
+    }
+
     override fun showLoading() {
         mainView.visibility = View.GONE
         loadingView.visibility = View.VISIBLE

@@ -13,6 +13,7 @@ import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
+import com.tokopedia.tokopoints.view.model.TokopointsDynamicLinkEntity;
 
 import java.util.List;
 
@@ -62,6 +63,8 @@ public interface HomepageContract {
         void showPopupNotification(PopupNotification data);
 
         void showTokoPointCoupon(TokoPointSumCoupon data);
+
+        void onSuccessDynamicLink(TokopointsDynamicLinkEntity tokopointsDynamicLinkEntity);
     }
 
     interface Presenter extends CustomerPresenter<View> {

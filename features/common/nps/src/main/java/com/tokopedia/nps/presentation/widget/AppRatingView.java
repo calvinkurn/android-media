@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.enumeration.AppRatingEnum;
 
@@ -21,6 +21,7 @@ import com.tokopedia.nps.presentation.enumeration.AppRatingEnum;
  */
 
 public class AppRatingView extends FrameLayout {
+
     private ImageView imageRating;
     private TextView textDescription;
     private RatingBar ratingBar;
@@ -50,18 +51,20 @@ public class AppRatingView extends FrameLayout {
     }
 
     private RatingBar.OnRatingBarChangeListener getRatingBarListener() {
-        return new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                onRatingChange(rating);
+        return (ratingBar, rating, fromUser) -> {
+            if(rating < 1.0f) {
+                ratingBar.setRating(1.0f);
+                rating = 1;
             }
+            if (fromUser)
+                onRatingChange(rating);
         };
     }
 
     private void onRatingChange(float rating) {
         AppRatingEnum appRating = ratingFactory(rating);
         if(appRating != AppRatingEnum.EMPTY) {
-            ImageHandler.loadImageWithId(imageRating, appRating.getDrawableId(), appRating.getDrawableId());
+            ImageHandler.loadImageWithId(imageRating, appRating.getDrawableId());
             textDescription.setText(appRating.getStringId());
             textDescription.setTextColor(
                     AppCompatResources.getColorStateList(getContext(), appRating.getColorId())
@@ -83,6 +86,11 @@ public class AppRatingView extends FrameLayout {
         }
 
         return AppRatingEnum.EMPTY;
+    }
+
+    public void setDefaultRating(float rating) {
+        if (ratingBar != null)
+            ratingBar.setRating(rating);
     }
 
     public float getRating() {

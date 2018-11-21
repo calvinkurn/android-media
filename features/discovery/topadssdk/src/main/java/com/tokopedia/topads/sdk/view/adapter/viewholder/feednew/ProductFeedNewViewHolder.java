@@ -4,7 +4,6 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -13,6 +12,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feednew.ProductFeedNewViewModel;
 
 /**
@@ -27,15 +27,13 @@ public class ProductFeedNewViewHolder extends AbstractViewHolder<ProductFeedNewV
 
     private Data data;
     private TextView productName;
-    private ImageView productImage;
+    private ImpressedImageView productImage;
     private TextView productPrice;
-    private ImageLoader imageLoader;
     private LocalAdsClickListener itemClickListener;
 
-    public ProductFeedNewViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener
+    public ProductFeedNewViewHolder(View itemView, LocalAdsClickListener
             itemClickListener) {
         super(itemView);
-        this.imageLoader = imageLoader;
         this.itemClickListener = itemClickListener;
 
         productImage = itemView.findViewById(R.id.product_image);
@@ -62,8 +60,12 @@ public class ProductFeedNewViewHolder extends AbstractViewHolder<ProductFeedNewV
 
     }
 
+    public void onViewRecycled() {
+        ImageLoader.clearImage(productImage);
+    }
+
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product, productImage, getAdapterPosition());
+        productImage.setImage(product.getImage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));

@@ -7,11 +7,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.RegisterAnalytics;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameRegisterPhoneFragment;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author by yfsx on 22/03/18.
@@ -19,7 +24,7 @@ import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameR
 
 public class AddNameRegisterPhoneActivity extends BasePresenterActivity implements HasComponent {
 
-    public static final String PARAM_PHONE = "param_phone";
+    public static final String PARAM_PHONE = "phone";
     private RegisterAnalytics analytics;
 
     public static Intent newInstance(Context context, String phoneNumber) {
@@ -28,6 +33,25 @@ public class AddNameRegisterPhoneActivity extends BasePresenterActivity implemen
         bundle.putString(PARAM_PHONE, phoneNumber);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @DeepLink({ApplinkConst.ADD_NAME_REGISTER})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        UserSessionInterface userSession = new UserSession(context);
+        String phone = bundle.getString(PARAM_PHONE, "0");
+
+        if (userSession.isLoggedIn()) {
+            if (context.getApplicationContext() instanceof ApplinkRouter) {
+                return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent
+                        (context, ApplinkConst.HOME);
+            } else {
+                throw new RuntimeException("Applinks intent unsufficient");
+            }
+        } else {
+            Intent intent = newInstance(context, phone);
+            return intent.setData(uri.build());
+        }
     }
 
     @Override

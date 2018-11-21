@@ -131,4 +131,15 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
             return new FlightAirlineDB[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!FlightAirlineDB.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        return ((FlightAirlineDB) obj).getId().equals(this.id);
+    }
 }

@@ -1315,8 +1315,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventPDPDetail(ProductDetail productDetail) {
         getGTMEngine()
-                .eventDetail(productDetail)
-                .sendScreen(AppScreen.SCREEN_PRODUCT_INFO_DETAIL);
+                .eventDetail(productDetail);
     }
 
     public static void eventATCSuccess(GTMCart cart) {
@@ -2768,34 +2767,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.TOKOPOINTS_POP_UP,
                 AppEventTracking.Action.TOKOPOINTS_POP_UP_CLICK,
                 AppEventTracking.EventLabel.TOKOPOINTS_POP_UP_BUTTON
-        ).getEvent());
-    }
-
-
-    public static void eventAppRatingImpression(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.IMPRESSION_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.IMPRESSION,
-                label
-        ).getEvent());
-    }
-
-    public static void eventClickAppRating(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventCancelAppRating(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CANCEL_APP_RATING,
-                AppEventTracking.Category.APP_RATING,
-                AppEventTracking.Action.CLICK,
-                label
         ).getEvent());
     }
 
