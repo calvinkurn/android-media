@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.report.domain.usecase
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -10,12 +11,14 @@ import com.tokopedia.kol.feature.report.data.entity.SendReportResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 14/11/18.
  */
-class SendReportUseCase(private val context: Context,
-                        private val graphqlUseCase: GraphqlUseCase): UseCase<Boolean>() {
+class SendReportUseCase @Inject constructor(
+        @ApplicationContext private val context: Context,
+        private val graphqlUseCase: GraphqlUseCase): UseCase<Boolean>() {
 
     override fun createObservable(params: RequestParams?): Observable<Boolean> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_send_report)

@@ -4,11 +4,12 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.kol.feature.report.domain.usecase.SendReportUseCase
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kol.feature.report.view.subscriber.ContentReportSubscriber
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 12/11/18.
  */
-class ContentReportPresenter(private val sendReportUseCase: SendReportUseCase)
+class ContentReportPresenter @Inject constructor(private val sendReportUseCase: SendReportUseCase)
     : BaseDaggerPresenter<ContentReportContract.View>(), ContentReportContract.Presenter {
 
     override fun detachView() {

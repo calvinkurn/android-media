@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -15,14 +16,13 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.util.hideLoading
 import com.tokopedia.kol.common.util.showLoading
-import com.tokopedia.kol.feature.report.di.kolReportModule
+import com.tokopedia.kol.feature.report.di.DaggerContentReportComponent
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
 import kotlinx.android.synthetic.main.fragment_content_report.*
-import org.koin.android.ext.android.inject
-import org.koin.android.ext.android.startKoin
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 08/11/18.
@@ -31,7 +31,9 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     private var contentId = 0
     private lateinit var adapter: ReportReasonAdapter
-    val presenter: ContentReportContract.Presenter by inject()
+
+    @Inject
+    lateinit var presenter: ContentReportContract.Presenter
 
     companion object {
         fun createInstance(contentId: Int): Fragment {
@@ -48,7 +50,14 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     override fun initInjector() {
         GraphqlClient.init(context!!)
-        startKoin(context!!, listOf(kolReportModule))
+        activity?.let {
+            (it.applicationContext as BaseMainApplication).baseAppComponent
+        }.let {
+            DaggerContentReportComponent.builder()
+                    .baseAppComponent(it)
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,

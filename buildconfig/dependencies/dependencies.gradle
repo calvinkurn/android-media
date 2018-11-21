@@ -153,8 +153,7 @@ ext {
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
-            flexBoxLayout         : "com.google.android:flexbox:0.3.2",
-            koin                  : "org.koin:koin-android:1.0.2"
+            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
     ]
 
     testDependencies = [
