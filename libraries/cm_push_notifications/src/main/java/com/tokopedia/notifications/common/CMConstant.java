@@ -4,14 +4,14 @@ package com.tokopedia.notifications.common;
  * Created by Ashwani Tyagi on 18/10/18.
  */
 public interface CMConstant {
-    String FCM_EXTRA_CONFIRMATION_KEY = "is_from_cm_platform";
+    String FCM_EXTRA_CONFIRMATION_KEY = "isFromCM";
     String FCM_EXTRA_CONFIRMATION_VALUE = "cm_platform";
     String GENERAL = "ANDROID_GENERAL_CHANNEL";
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_cm_notif";
     String EXTRA_NOTIFICATION_TYPE = "notif_type";
     String EXTRA_NOTIFICATION_ID = "notif_id";
 
-    String NOTIFICATION_ACTION_BUTTONS = "action_buttons";
+    String NOTIFICATION_ACTION_BUTTONS = "actionButton";
     String NOTIFICATION_PERSISTENT = "per_data";
 
 
@@ -42,7 +42,7 @@ public interface CMConstant {
         String IN_APP = "cm_in_app";
         String CAROUSEL = "cm_carousel";
         String VIDEO = "cm_video";
-        String ACTION_BUTTONS = "cm_action_btn";
+        String ACTION_BUTTONS = "cm_action_button";
     }
 
     interface ActionButtonExtra {
@@ -50,17 +50,17 @@ public interface CMConstant {
     }
 
     interface NotificationGroup {
-        String CHANNEL = "Demo";
-        String CHANNEL_DESCRIPTION = "DESCRIPTION";
-        String CHANNEL_ID = "111";
-
+        String CHANNEL = "Digital";
+        String CHANNEL_DESCRIPTION = "Digital";
+        String CHANNEL_ID = "Digital";
         String CHANNEL_GROUP_ID = "marketing_group_01";
         String CHANNEL_GROUP_NAME = "Marketing";
     }
 
-    interface PersistentExtra{
-        String KEY_ICON_URL1 = "icon_url1";
-        String EXTRA_APP_LINK_1 = "app_link_1";
+    interface ReceiverAction{
+        String ACTION_BUTTON = "com.tokopedia.notification.ACTION_BUTTON";
+        String ACTION_CANCEL_PERSISTENT = "com.tokopedia.notification.ACTION_CANCEL_PERSISTENT";
+        String ACTION_ON_NOTIFICATION_DISMISS = "com.tokopedia.notification.ACTION_ON_NOTIFICATION_DISMISS";
     }
 
 }

@@ -32,7 +32,7 @@ public class CMJobIntentService extends JobIntentService {
         Bundle bundle = intent.getBundleExtra(CMConstant.EXTRA_NOTIFICATION_BUNDLE);
         if (null != bundle) {
             BaseNotification baseNotification = CMNotificationFactory.getNotification(this.getApplicationContext(), bundle);
-            if(null != baseNotification)
+            if (null != baseNotification)
                 postNotification(baseNotification);
         }
     }
@@ -40,9 +40,9 @@ public class CMJobIntentService extends JobIntentService {
     private void postNotification(BaseNotification baseNotification) {
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification =  baseNotification.createNotification();
+        Notification notification = baseNotification.createNotification();
         if (null != notificationManager)
-            notificationManager.notify(baseNotification.notificationId, notification);
+            notificationManager.notify(baseNotification.baseNotificationModel.getNotificationId(), notification);
     }
 
 }

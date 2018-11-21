@@ -57,7 +57,7 @@ public class CMPushNotificationManager {
         if (TextUtils.isEmpty(token)) {
             return;
         }
-        (new CMUserHandler(mContext)).sendFcmTokenToServer(token);
+        (new CMUserHandler(mContext)).updateToken(token);
     }
 
 

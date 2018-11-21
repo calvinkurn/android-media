@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -23,37 +24,108 @@ import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
-import com.tokopedia.notifications.receiver.ActionButtonReceiver;
-import com.tokopedia.notifications.receiver.DismissReceiver;
+import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static android.app.Notification.BADGE_ICON_SMALL;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
 public abstract class BaseNotification {
 
-    public int notificationId;
     protected Context context;
-    protected BaseNotificationModel baseNotificationModel;
+    public BaseNotificationModel baseNotificationModel;
 
     public BaseNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
         this.context = context;
-        this.notificationId = notificationId;
         this.baseNotificationModel = baseNotificationModel;
     }
 
     public abstract Notification createNotification();
 
     protected NotificationCompat.Builder getBuilder() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(context);
+        NotificationCompat.Builder builder;
+        if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
+            builder = new NotificationCompat.Builder(context, baseNotificationModel.getChannelName());
+        } else {
+            builder = new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
         }
-        return new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannelGroup();
+            createNotificationChannel();
+            builder.setBadgeIconType(BADGE_ICON_SMALL);
+            builder.setNumber(3);
+        } else {
+            setNotificationSound(builder);
+        }
+        if (!baseNotificationModel.getIcon().isEmpty()) {
+            builder.setLargeIcon(getBitmap(baseNotificationModel.getIcon()));
+        } else {
+            builder.setLargeIcon(getBitmapLargeIcon());
+        }
+        return builder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createNotificationChannel() {
+        if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(baseNotificationModel.getChannelName(),
+                    baseNotificationModel.getChannelName(), importance);
+            channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
+
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            if (baseNotificationModel.getSoundFileName() != null && !baseNotificationModel.getSoundFileName().isEmpty()) {
+                AudioAttributes att = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .build();
+                channel.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" +
+                        "/raw/" + baseNotificationModel.getSoundFileName()), att);
+            }
+            channel.setShowBadge(true);
+            notificationManager.createNotificationChannel(channel);
+            channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
+        } else {
+            createDefaultChannel();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createDefaultChannel() {
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        NotificationChannel channel = new NotificationChannel(CMConstant.NotificationGroup.CHANNEL_ID,
+                CMConstant.NotificationGroup.CHANNEL,
+                importance);
+        channel.setShowBadge(true);
+        channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
+        notificationManager.createNotificationChannel(channel);
+        createChannelGroup();
+        channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createChannelGroup() {
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        NotificationChannelGroup notificationChannelGroup = new NotificationChannelGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID,
+                CMConstant.NotificationGroup.CHANNEL_GROUP_NAME);
+        mNotificationManager.createNotificationChannelGroup(notificationChannelGroup);
+    }
+
+    private void setNotificationSound(NotificationCompat.Builder builder) {
+        if (baseNotificationModel.getSoundFileName() != null && !baseNotificationModel.getSoundFileName().isEmpty()) {
+            Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" +
+                    "/raw/" + baseNotificationModel.getSoundFileName());
+            builder.setSound(soundUri);
+        }
+    }
 
     protected int getDrawableIcon() {
         if (GlobalConfig.isSellerApp())
@@ -94,8 +166,9 @@ public abstract class BaseNotification {
 
     protected PendingIntent getButtonPendingIntent(ActionButton actionButton) {
         PendingIntent resultPendingIntent;
-        Intent intent = new Intent(context, ActionButtonReceiver.class);
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId);
+        Intent intent = new Intent(context, CMBroadcastReceiver.class);
+        intent.setAction(CMConstant.ReceiverAction.ACTION_BUTTON);
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
         intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, actionButton.getApplink());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getActivity(
@@ -107,7 +180,7 @@ public abstract class BaseNotification {
         } else {
             resultPendingIntent = PendingIntent.getActivity(
                     context,
-                    notificationId,
+                    baseNotificationModel.getNotificationId(),
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
@@ -134,7 +207,7 @@ public abstract class BaseNotification {
         } else {
             resultPendingIntent = PendingIntent.getActivity(
                     context,
-                    notificationId,
+                    baseNotificationModel.getNotificationId(),
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
@@ -144,7 +217,8 @@ public abstract class BaseNotification {
     }
 
     protected PendingIntent createDismissPendingIntent(int notificationId) {
-        Intent intent = new Intent(context, DismissReceiver.class);
+        Intent intent = new Intent(context, CMBroadcastReceiver.class);
+        intent.setAction(CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -156,27 +230,6 @@ public abstract class BaseNotification {
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void createNotificationChannel(Context context) {
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = new NotificationChannel(CMConstant.NotificationGroup.CHANNEL_ID,
-                CMConstant.NotificationGroup.CHANNEL,
-                importance);
-        channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
-        createChannelGroup(context, CMConstant.NotificationGroup.CHANNEL_GROUP_ID, CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
-        channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void createChannelGroup(Context context, String groupId, String groupName) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationChannelGroup notificationChannelGroup = new NotificationChannelGroup(groupId, groupName);
-        mNotificationManager.createNotificationChannelGroup(notificationChannelGroup);
     }
 
     protected long[] getVibratePattern() {
@@ -206,3 +259,13 @@ public abstract class BaseNotification {
 //        return settings.getBoolean(Constant.Settings.NOTIFICATION_VIBRATE, false);
 //    }
 
+
+
+/*AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
+                    R.raw.tokopedia_endtune), att);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);*/

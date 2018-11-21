@@ -17,7 +17,12 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import rx.Completable;
+import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 /**
  * @author lalit.singh
@@ -34,7 +39,13 @@ public class CMUserHandler {
         mContext = context;
     }
 
+    public void updateToken(String token){
+        Completable.fromAction(() -> sendFcmTokenToServer(token))
+                .subscribeOn(Schedulers.io()).subscribe();
+    }
+
     public void sendFcmTokenToServer(String token) {
+
         String userId = getUserId();
         String accessToken = ((CMRouter) mContext).getAccessToken();
         String gAdId = getGoogleAdId();

@@ -27,7 +27,6 @@ public class CMNotificationFactory {
     private static final String TAG = CMNotificationFactory.class.getSimpleName();
 
     public static BaseNotification getNotification(Context context, Bundle bundle){
-        String notificationType = getNotificationType(bundle);
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
         switch (baseNotificationModel.getType()) {
             case CMConstant.NotificationType.GENERAL:
@@ -42,27 +41,18 @@ public class CMNotificationFactory {
         return null;
     }
 
-    private static String getNotificationType(Bundle extras) {
-        try {
-            if (null == extras) {
-                Log.e(TAG, "CMPushNotificationManager: No Intent extra available");
-            } else if (extras.containsKey(CMConstant.EXTRA_NOTIFICATION_TYPE)) {
-                return extras.getString(CMConstant.EXTRA_NOTIFICATION_TYPE);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "CMPushNotificationManager: ", e);
-        }
-        return CMConstant.EXTRA_NOTIFICATION_TYPE;
-    }
-
     private static BaseNotificationModel convertToBaseModel(Bundle data) {
         BaseNotificationModel model = new BaseNotificationModel();
-        model.setApplink(data.getString("applinks", ApplinkConst.HOME));
-        model.setBigImageURL(data.getString("img", ""));
+        model.setAppLink(data.getString("appLink", ApplinkConst.HOME));
+        model.setNotificationId(Integer.parseInt(data.getString("notiId", "500")));
+        model.setBigImageURL(data.getString("bigImage", ""));
         model.setTitle(data.getString("title", ""));
-        model.setDesc(data.getString("desc", ""));
+        model.setIcon(data.getString("icon", ""));
+        model.setDetailMessage(data.getString("desc", ""));
         model.setMessage(data.getString("message", ""));
-        model.setType(data.getString("type", ""));
+        model.setType(data.getString("notiType", ""));
+        model.setSoundFileName(data.getString("sound", ""));
+        model.setChannelName(data.getString("channel", ""));
         model.setCustomValues(getCustomValues(data));
         model.setActionButton(getActionButtons(data));
         model.setPersistentButtonList(getPersistentNotificationData(data));
@@ -102,7 +92,7 @@ public class CMNotificationFactory {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<ActionButton>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<PersistentButton>>() {}.getType();
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
             Log.e("getActions", e.getMessage());

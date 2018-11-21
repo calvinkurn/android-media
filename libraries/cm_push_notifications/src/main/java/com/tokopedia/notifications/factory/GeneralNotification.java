@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 
-import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
 /**
@@ -21,12 +20,13 @@ public class GeneralNotification extends BaseNotification {
     public Notification createNotification() {
         NotificationCompat.Builder builder = getBuilder();
         builder.setContentTitle(baseNotificationModel.getTitle());
-        builder.setContentText(baseNotificationModel.getDesc());
+        builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setLargeIcon(getBitmapLargeIcon());
-        builder.setContentIntent(createPendingIntent(baseNotificationModel.getApplink(), 100));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationId));
+        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink(), 100));
+        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId()));
         builder.setAutoCancel(true);
+        if (!baseNotificationModel.getDetailMessage().isEmpty())
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(baseNotificationModel.getDetailMessage()));
         return builder.build();
     }
 }

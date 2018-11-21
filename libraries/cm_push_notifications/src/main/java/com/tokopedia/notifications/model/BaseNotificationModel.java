@@ -9,17 +9,31 @@ import java.util.List;
  * Created by Ashwani Tyagi on 18/10/18.
  */
 public class BaseNotificationModel {
+
+    private int notificationId;
     private String title;
-    private String desc;
+    private String detailMessage;
     private String message;
-    private String applink;
+    private String icon;
+    private String soundFileName;
+
+    private String appLink;
     private String bigImageURL;
-    private List<ActionButton> actionButton =new ArrayList<>();
+    private List<ActionButton> actionButton = new ArrayList<>();
     private JSONObject customValues;
     private String type;
 
+    private String channelName;
+
     private List<PersistentButton> persistentButtonList;
 
+    public int getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
+    }
 
     public String getTitle() {
         return title;
@@ -29,12 +43,12 @@ public class BaseNotificationModel {
         this.title = title;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDetailMessage() {
+        return detailMessage;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDetailMessage(String detailMessage) {
+        this.detailMessage = detailMessage;
     }
 
     public String getMessage() {
@@ -45,12 +59,12 @@ public class BaseNotificationModel {
         this.message = message;
     }
 
-    public String getApplink() {
-        return applink;
+    public String getAppLink() {
+        return appLink;
     }
 
-    public void setApplink(String applink) {
-        this.applink = applink;
+    public void setAppLink(String appLink) {
+        this.appLink = appLink;
     }
 
     public List<ActionButton> getActionButton() {
@@ -91,5 +105,29 @@ public class BaseNotificationModel {
 
     public void setPersistentButtonList(List<PersistentButton> persistentButtonList) {
         this.persistentButtonList = persistentButtonList;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getSoundFileName() {
+        return soundFileName;
+    }
+
+    public void setSoundFileName(String soundFileName) {
+        this.soundFileName = soundFileName;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
     }
 }
