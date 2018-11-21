@@ -10,7 +10,9 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -256,19 +258,15 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
                     getView().finishLoading();
 
-                    if (e instanceof UnknownHostException) {
+                    ErrorHandler.getErrorMessage(getView().getContext(), e);
+                    if (e instanceof UnknownHostException ||
+                            e instanceof SocketTimeoutException) {
                         if (getView().getAdapter().getItemCount() == 0) {
                             getView().showEmptyState();
                         } else {
                             getView().setRetry();
                         }
 
-                    } else if (e instanceof SocketTimeoutException) {
-                        if (getView().getAdapter().getItemCount() == 0) {
-                            getView().showEmptyState();
-                        } else {
-                            getView().setRetry();
-                        }
                     } else {
                         getView().setActionsEnabled(true);
                         if (getView().getAdapter().getItemCount() == 0) {
