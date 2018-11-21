@@ -1,27 +1,20 @@
 package com.tokopedia.discovery.search.subscriber;
 
-import com.google.gson.Gson;
-import com.tokopedia.discovery.SearchDataAssetJson;
-import com.tokopedia.discovery.UnitTestFileUtils;
 import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
-import com.tokopedia.discovery.search.domain.model.SearchResponse;
 import com.tokopedia.discovery.search.view.SearchContract;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
