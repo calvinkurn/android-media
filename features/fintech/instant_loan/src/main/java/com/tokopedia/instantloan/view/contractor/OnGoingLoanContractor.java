@@ -1,5 +1,7 @@
 package com.tokopedia.instantloan.view.contractor;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
