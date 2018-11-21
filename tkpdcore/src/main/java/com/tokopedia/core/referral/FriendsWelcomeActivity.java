@@ -21,6 +21,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
 
+    private static final String WELCOME_SCREEN = "/referral/friends";
+
     @DeepLink(Constants.Applinks.REFERRAL_WELCOME)
     public static Intent getCallingReferral(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -40,7 +42,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
         if(!isappShowReferralButtonActivated(this)){
             finish();
         }
-        ScreenTracking.screen("/referral/friends");
+        ScreenTracking.screen(WELCOME_SCREEN);
     }
 
     @Override

@@ -30,6 +30,7 @@ import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 
 public class ReferralActivity extends BasePresenterActivity implements HasComponent<ReferralComponent> {
 
+    private static final String REFERRAL_SCREEN = "/referral";
     ReferralComponent referralComponent = null;
 
     @DeepLink(Constants.Applinks.REFERRAL)
@@ -56,7 +57,7 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
-        ScreenTracking.screen("/referral");
+        ScreenTracking.screen(REFERRAL_SCREEN);
         if (getIntent() != null &&
                 getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventReferralLongClick();
