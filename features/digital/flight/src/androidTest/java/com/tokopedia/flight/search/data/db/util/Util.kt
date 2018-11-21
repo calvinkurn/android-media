@@ -10,7 +10,13 @@ import com.tokopedia.flight.search.data.db.FlightRouteTable
  */
 fun createCombo(onwardJourneyId: String, returnJourneyId: String): FlightComboTable {
     return FlightComboTable(
-            onwardJourneyId, returnJourneyId, "abc", "Rp 250.000", "Rp 0", "Rp 0", 250000, 0, 0, true
+            onwardJourneyId,
+            "Rp 250.000", "Rp 0", "Rp 0",
+            250000, 0,0,
+            returnJourneyId,
+            "Rp 250.000", "Rp 0", "Rp 0",
+            250000, 0, 0,
+            "comboId", true
     )
 }
 

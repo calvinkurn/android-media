@@ -108,8 +108,13 @@ class FlightSearchRepositoryTest {
                 .thenReturn(Observable.just(flightDataResponse))
 
         val flightComboTableList = arrayListOf<FlightComboTable>()
-        val flightComboTable = FlightComboTable("1", "2", "comboId", "adultPrice", "childPrice",
-                "infantPrice", 0, 0, 0, true)
+        val flightComboTable = FlightComboTable("1",
+                "Rp 250.000","childPrice","infantPrice",
+                250000,0,0,
+                "2",
+                "Rp 250.000","returnChildPrice","returnInfantPrice",
+                250000,0,0,
+                "comboId", true)
         flightComboTableList.add(flightComboTable)
 
         `when`(flightSearchCombinedDataDbSource.getSearchReturnCombined("2"))
