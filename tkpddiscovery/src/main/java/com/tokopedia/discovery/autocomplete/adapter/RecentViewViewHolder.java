@@ -1,9 +1,6 @@
 package com.tokopedia.discovery.autocomplete.adapter;
 
-import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.design.image.RoundedCornerImageView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
