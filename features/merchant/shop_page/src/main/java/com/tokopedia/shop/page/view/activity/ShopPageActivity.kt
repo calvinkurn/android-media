@@ -98,6 +98,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
 
+        private const val PAGE_LIMIT = 2
+
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
                 .apply { putExtra(SHOP_ID, shopId) }
@@ -163,6 +165,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
+        viewPager.offscreenPageLimit = PAGE_LIMIT
 
         tabLayout.setupWithViewPager(viewPager)
         tabItemFeed = LayoutInflater
