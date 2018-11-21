@@ -178,12 +178,12 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     private boolean isValidateImageSize(@NonNull String fileLoc) {
         File file = new File(fileLoc);
-        return file.length() <= Utils.MB_10;
+        return file.length() / 1000 <= Utils.MAX_IMAGE_SIZE_IN_KB;
     }
 
     private boolean isValidateVidoeSize(@NonNull String fileLoc) {
         File file = new File(fileLoc);
-        return file.length() <= (Utils.MB_1 * 100);
+        return file.length() / 1000 <= (Utils.MAX_VIDEO_SIZE_IN_KB);
     }
 
     private boolean isValidateDescription(@NonNull String description) {

@@ -81,8 +81,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public static final int REQUEST_IMAGE_SELECT = 1;
     private static final int REQUEST_CODE_VIDEO = 2;
     private static final int REQUEST_CODE_IMAGE_VIDEO = 2;
-    public static final int MAX_VIDEO_SIZE_IN_KB = 300 * 1072;
-    public static final int MAX_IMAGE_SIZE_IN_KB = 15 * 1072; // 15 * 1024KB
 
     private String mAttachmentPath;
     private ProgressDialog progress;
@@ -297,7 +295,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     @Override
     public void selectVideo() {
         if (presenter.isDeviceSupportVideo()) {
-            VideoPickerBuilder builder = new VideoPickerBuilder(getString(R.string.ch_choose_video), MAX_VIDEO_SIZE_IN_KB,
+            VideoPickerBuilder builder = new VideoPickerBuilder(getString(R.string.ch_choose_video), Utils.MAX_VIDEO_SIZE_IN_KB,
                     0, null);
             Intent intent = VideoPickerActivity.getIntent(getActivity(), builder);
             startActivityForResult(intent, REQUEST_CODE_VIDEO);
@@ -331,7 +329,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private ImagePickerBuilder getImagePickerBuilder() {
         if (imagePickerBuilder == null) {
             imagePickerBuilder = new ImagePickerBuilder(getString(R.string.choose_image),
-                    new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, MAX_IMAGE_SIZE_IN_KB,
+                    new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, Utils.MAX_IMAGE_SIZE_IN_KB,
                     DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                     new ImagePickerEditorBuilder(
                             new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
