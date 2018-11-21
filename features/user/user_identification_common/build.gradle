@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
 
     //TEST
+    testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.kotlinMockito
     testImplementation rootProject.ext.testDependencies.spekApi
     testImplementation rootProject.ext.testDependencies.platformEngine

@@ -28,6 +28,7 @@ ext {
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
 
+    JunitVersion = '4.12'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
 

@@ -26,7 +26,6 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
-import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -279,13 +278,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTickerLinkClicked(String messageClick) {
-//        if(messageClick.contains(getString(R.string.ticker_unverified_highlight_text))){
-//            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplication());
-//            applinkRouter.goToApplinkActivity(getActivity(),
-//                    String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-//                            KycCommonUrl.TERMS_CONDITION));
-//        }
+    public void onTickerLinkClicked(String url) {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof ApplinkRouter) {
+            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
+            applinkRouter.goToApplinkActivity(getActivity(),
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+        }
     }
 
     @Override
