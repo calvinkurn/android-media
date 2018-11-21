@@ -30,13 +30,13 @@ public class CMNotificationFactory {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
         switch (baseNotificationModel.getType()) {
             case CMConstant.NotificationType.GENERAL:
-                return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel, CMConstant.NotificationId.GENERAL));
+                return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
             case CMConstant.NotificationType.ACTION_BUTTONS:
-                return (new ActionNotification(context.getApplicationContext(), baseNotificationModel, CMConstant.NotificationId.ACTION_BUTTONS));
+                return (new ActionNotification(context.getApplicationContext(), baseNotificationModel));
             case CMConstant.NotificationType.BIG_IMAGE:
-                return (new ImageNotification(context.getApplicationContext(), baseNotificationModel, CMConstant.NotificationId.BIG_IMAGE));
+                return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
             case CMConstant.NotificationType.PERSISTENT:
-                return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel, CMConstant.NotificationId.PERSISTENT));
+                return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
         }
         return null;
     }

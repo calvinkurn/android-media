@@ -12,8 +12,8 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
 public class GeneralNotification extends BaseNotification {
 
 
-    public GeneralNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
-        super(context, baseNotificationModel, notificationId);
+    public GeneralNotification(Context context, BaseNotificationModel baseNotificationModel) {
+        super(context, baseNotificationModel);
     }
 
     @Override

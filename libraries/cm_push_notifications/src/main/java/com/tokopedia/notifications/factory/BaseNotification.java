@@ -41,7 +41,7 @@ public abstract class BaseNotification {
     protected Context context;
     public BaseNotificationModel baseNotificationModel;
 
-    public BaseNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
+    public BaseNotification(Context context, BaseNotificationModel baseNotificationModel) {
         this.context = context;
         this.baseNotificationModel = baseNotificationModel;
     }
@@ -60,7 +60,7 @@ public abstract class BaseNotification {
             createChannelGroup();
             createNotificationChannel();
             builder.setBadgeIconType(BADGE_ICON_SMALL);
-            builder.setNumber(3);
+            builder.setNumber(1);
         } else {
             setNotificationSound(builder);
         }
@@ -103,6 +103,10 @@ public abstract class BaseNotification {
         NotificationChannel channel = new NotificationChannel(CMConstant.NotificationGroup.CHANNEL_ID,
                 CMConstant.NotificationGroup.CHANNEL,
                 importance);
+        AudioAttributes att = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build();
+        channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), att);
         channel.setShowBadge(true);
         channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
         notificationManager.createNotificationChannel(channel);
@@ -124,6 +128,9 @@ public abstract class BaseNotification {
             Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" +
                     "/raw/" + baseNotificationModel.getSoundFileName());
             builder.setSound(soundUri);
+        }else {
+            Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            builder.setSound(uri);
         }
     }
 

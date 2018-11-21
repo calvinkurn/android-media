@@ -23,8 +23,8 @@ import java.util.List;
 public class PersistentNotification extends BaseNotification {
 
 
-    public PersistentNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
-        super(context, baseNotificationModel, notificationId);
+    public PersistentNotification(Context context, BaseNotificationModel baseNotificationModel) {
+        super(context, baseNotificationModel);
     }
 
     @Override

@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class ActionNotification extends BaseNotification {
 
-    public ActionNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
-        super(context, baseNotificationModel, notificationId);
+    public ActionNotification(Context context, BaseNotificationModel baseNotificationModel) {
+        super(context, baseNotificationModel);
     }
 
     @Override

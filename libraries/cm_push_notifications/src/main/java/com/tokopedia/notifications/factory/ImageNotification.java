@@ -14,8 +14,8 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
  */
 public class ImageNotification extends BaseNotification {
 
-    public ImageNotification(Context context, BaseNotificationModel baseNotificationModel, int notificationId) {
-        super(context, baseNotificationModel, notificationId);
+    public ImageNotification(Context context, BaseNotificationModel baseNotificationModel) {
+        super(context, baseNotificationModel);
     }
 
     @Override
