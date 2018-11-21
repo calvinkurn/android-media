@@ -18,7 +18,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
@@ -34,7 +33,6 @@ import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -53,12 +51,9 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     private static final String EXTRA_STATE_OPERATOR_STYLE_VIEW =
             "EXTRA_STATE_OPERATOR_STYLE_VIEW";
 
-    @BindView(R2.id.rv_list_chooser)
-    RecyclerView rvOperatorList;
-    @BindView(R2.id.field_search)
-    EditText fieldSearch;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
+    private RecyclerView rvOperatorList;
+    private EditText fieldSearch;
+    private ProgressBar pbMainLoading;
 
     private CompositeSubscription compositeSubscription;
 
@@ -168,6 +163,10 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
 
     @Override
     protected void initView(View view) {
+        rvOperatorList = view.findViewById(R.id.rv_list_chooser);
+        fieldSearch = view.findViewById(R.id.field_search);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 

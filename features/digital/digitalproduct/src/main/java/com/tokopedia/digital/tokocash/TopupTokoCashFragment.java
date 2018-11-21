@@ -220,4 +220,5 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         super.onDestroy();
         presenter.destroyView();
     }
+
 }

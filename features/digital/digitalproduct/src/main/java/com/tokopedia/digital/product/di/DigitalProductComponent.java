@@ -19,4 +19,5 @@ public interface DigitalProductComponent {
     @ApplicationContext Context context();
 
     void inject(DigitalProductBaseDaggerActivity digitalProductBaseDaggerActivity);
+
 }

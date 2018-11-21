@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
@@ -29,18 +28,18 @@ import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
 
 public class CartDigitalActivity extends BasePresenterActivity implements
         CartDigitalFragment.ActionListener {
+
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private static final String EXTRA_PASS_EXTRA_FROM = "EXTRA_PASS_EXTRA_FROM";
     public static final int PARAM_WIDGET = 1;
     public static final int PARAM_NATIVE = 2;
-    private DigitalCheckoutPassData passData;
 
+    private DigitalCheckoutPassData passData;
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, CartDigitalActivity.class)
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
-
 
     public static Intent newInstance(Activity activity, DigitalCheckoutPassData passData, int from) {
         return new Intent(activity, CartDigitalActivity.class)
@@ -160,4 +159,5 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
 }

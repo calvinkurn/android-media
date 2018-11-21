@@ -2,8 +2,6 @@ package com.tokopedia.digital.widget.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,7 +26,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
@@ -49,12 +46,11 @@ import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
-import com.tokopedia.digital.widget.view.presenter.DigitalWidgetPresenter;
-import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetPresenter;
+import com.tokopedia.digital.widget.view.presenter.DigitalWidgetCategoryCategoryPresenter;
+import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetCategoryPresenter;
 
 import java.util.List;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -62,13 +58,11 @@ import permissions.dispatcher.RuntimePermissions;
  * @author Rizky on 15/01/18.
  */
 @RuntimePermissions
-public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDigitalWidgetPresenter>
+public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDigitalWidgetCategoryPresenter>
         implements IDigitalWidgetView, BaseDigitalProductView.ActionListener {
 
-    @BindView(R2.id.holder_product_detail)
-    LinearLayout holderProductDetail;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
+    private LinearLayout holderProductDetail;
+    private ProgressBar pbMainLoading;
 
     private final String INSTANT = "instant";
     private final String NO_INSTANT = "no instant";
@@ -83,7 +77,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private CategoryData categoryDataState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
 
-    private DigitalWidgetPresenter presenter;
+    private DigitalWidgetCategoryCategoryPresenter presenter;
 
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
@@ -125,7 +119,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     protected void initialPresenter() {
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalGqlApiService, new GlobalCacheManager(), new ProductDigitalMapper()
@@ -134,7 +127,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(categoryDetailDataSource);
         GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(getContext(), digitalRepository);
 
-        presenter = new DigitalWidgetPresenter(getActivity(),
+        presenter = new DigitalWidgetCategoryCategoryPresenter(getActivity(),
                 new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
                 this,
                 getCategoryByIdUseCase);
@@ -158,7 +151,8 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     protected void initView(View view) {
-
+        holderProductDetail = view.findViewById(R.id.holder_product_detail);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
     }
 
     @Override

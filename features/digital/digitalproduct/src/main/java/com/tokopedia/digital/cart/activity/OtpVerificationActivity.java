@@ -1,8 +1,6 @@
 package com.tokopedia.digital.cart.activity;
 
 import android.Manifest;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -30,7 +28,6 @@ import com.tokopedia.core.otp.domain.OtpRepository;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.interactor.OtpVerificationInteractor;
 import com.tokopedia.digital.cart.listener.IOtpVerificationView;
@@ -39,8 +36,6 @@ import com.tokopedia.digital.cart.presenter.OtpVerificationPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -55,28 +50,21 @@ import rx.subscriptions.CompositeSubscription;
 @RuntimePermissions
 public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificationPresenter>
         implements IOtpVerificationView, IncomingSmsReceiver.ReceiveSMSListener {
+
     public static final int REQUEST_CODE = OtpVerificationActivity.class.hashCode();
     public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     public static final int RESULT_OTP_VERIFIED = 4;
     public static final int RESULT_OTP_UNVERIFIED = 5;
     public static final int RESULT_OTP_CANCELED = 3;
 
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
-    @BindView(R2.id.et_input_otp)
-    PinEntryEditText etOtp;
-    @BindView(R2.id.btn_verify_otp)
-    TextView btnValidateOtp;
-    @BindView(R2.id.tv_pin_error)
-    TextView tvPinError;
-    @BindView(R2.id.btn_request_otp)
-    TextView btnRequestOtp;
-    @BindView(R2.id.tv_message)
-    TextView tvMessage;
-    @BindView(R2.id.btn_request_otp_call)
-    TextView btnRequestOtpCall;
-    @BindView(R2.id.main_container)
-    RelativeLayout mainContainer;
+    private ProgressBar pbMainLoading;
+    private PinEntryEditText etOtp;
+    private TextView btnValidateOtp;
+    private TextView tvPinError;
+    private TextView btnRequestOtp;
+    private TextView tvMessage;
+    private TextView btnRequestOtpCall;
+    private RelativeLayout mainContainer;
 
     private TkpdProgressDialog progressDialog;
     private CompositeSubscription compositeSubscription;
@@ -111,6 +99,19 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     protected void initView() {
+        pbMainLoading = findViewById(R.id.pb_main_loading);
+        etOtp = findViewById(R.id.et_input_otp);
+        btnValidateOtp = findViewById(R.id.btn_verify_otp);
+        tvPinError = findViewById(R.id.tv_pin_error);
+        btnRequestOtp = findViewById(R.id.btn_request_otp);
+        tvMessage = findViewById(R.id.tv_message);
+        btnRequestOtpCall = findViewById(R.id.btn_request_otp_call);
+        mainContainer = findViewById(R.id.main_container);
+
+        btnRequestOtp.setOnClickListener(v -> presenter.processReRequestSmsOtp());
+        btnRequestOtpCall.setOnClickListener(v -> presenter.processRequestCallOtp());
+        btnValidateOtp.setOnClickListener(v -> presenter.processVerifyOtp());
+
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
@@ -359,21 +360,6 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
         unregisterReceiver(incomingSmsReceiver);
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
-    }
-
-    @OnClick(R2.id.btn_request_otp)
-    void actionRequestOtp() {
-        presenter.processReRequestSmsOtp();
-    }
-
-    @OnClick(R2.id.btn_request_otp_call)
-    void actionRequestCallOtp() {
-        presenter.processRequestCallOtp();
-    }
-
-    @OnClick(R2.id.btn_verify_otp)
-    void actionVerifyOtp() {
-        presenter.processVerifyOtp();
     }
 
     @Override

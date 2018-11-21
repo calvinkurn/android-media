@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
@@ -27,7 +26,6 @@ import com.tokopedia.digital.product.view.presenter.ProductChooserPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -44,10 +42,8 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     private static final String EXTRA_STATE_PRODUCT_STYLE_VIEW =
             "EXTRA_STATE_PRODUCT_STYLE_VIEW";
 
-    @BindView(R2.id.rv_list_chooser)
-    RecyclerView rvProductList;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
+    private RecyclerView rvProductList;
+    private ProgressBar pbMainLoading;
 
     private CompositeSubscription compositeSubscription;
 
@@ -141,6 +137,9 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
 
     @Override
     protected void initView(View view) {
+        rvProductList = view.findViewById(R.id.rv_list_chooser);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+
         rvProductList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 

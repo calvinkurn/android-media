@@ -12,6 +12,8 @@ import com.tokopedia.digital.widget.view.model.Recommendation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -22,6 +24,7 @@ public class RecommendationListDataSource {
     private DigitalGqlApiService digitalGqlApiService;
     private Context context;
 
+    @Inject
     public RecommendationListDataSource(DigitalGqlApiService digitalGqlApiService) {
         this.digitalGqlApiService = digitalGqlApiService;
         context = MainApplication.getAppContext();
@@ -31,16 +34,26 @@ public class RecommendationListDataSource {
         return digitalGqlApiService.getApi().getRecommendationList(getCategoryAndFavRequestPayload(deviceId))
                 .map(listResponse -> {
                     List<Recommendation> recommendations = new ArrayList<>();
-                    for (RecommendationItemEntity recommendationItemEntity : listResponse.body().get(0)
-                            .getData().getRechargeFavoriteRecommentaionList().getRecommendationItemEntityList()) {
-                        recommendations.add(new Recommendation(
-                                recommendationItemEntity.getIconUrl(),
-                                recommendationItemEntity.getTitle(),
-                                recommendationItemEntity.getClientNumber(),
-                                recommendationItemEntity.getApplink(),
-                                recommendationItemEntity.getWebLink()
-                        ));
-                    }
+//                    if (!listResponse.body().isEmpty()) {
+//                        if (listResponse.body().get(0).getData() != null) {
+//                            if (listResponse.body().get(0)
+//                                    .getData().getRechargeFavoriteRecommentaionList() != null) {
+//                                if (listResponse.body().get(0)
+//                                        .getData().getRechargeFavoriteRecommentaionList().getRecommendationItemEntityList() != null) {
+//                                    for (RecommendationItemEntity recommendationItemEntity : listResponse.body().get(0)
+//                                            .getData().getRechargeFavoriteRecommentaionList().getRecommendationItemEntityList()) {
+//                                        recommendations.add(new Recommendation(
+//                                                recommendationItemEntity.getIconUrl(),
+//                                                recommendationItemEntity.getTitle(),
+//                                                recommendationItemEntity.getClientNumber(),
+//                                                recommendationItemEntity.getApplink(),
+//                                                recommendationItemEntity.getWebLink()
+//                                        ));
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
                     return recommendations;
                 });
     }

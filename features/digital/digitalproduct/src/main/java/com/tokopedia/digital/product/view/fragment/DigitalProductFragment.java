@@ -46,7 +46,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
@@ -56,7 +55,6 @@ import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
@@ -101,6 +99,7 @@ import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -110,7 +109,6 @@ import com.tokopedia.showcase.ShowCasePreference;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -164,22 +162,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
 
-    @BindView(R2.id.main_container)
-    NestedScrollView mainHolderContainer;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
-    @BindView(R2.id.holder_product_detail)
-    LinearLayout holderProductDetail;
-    @BindView(R2.id.holder_check_balance)
-    LinearLayout holderCheckBalance;
-    @BindView(R2.id.holder_check_emoney_balance)
-    CheckETollBalanceView checkETollBalanceView;
-    @BindView(R2.id.indicator)
-    TabLayout promoTabLayout;
-    @BindView(R2.id.pager)
-    DigitalWrapContentViewPager promoViewPager;
-    @BindView(R2.id.container_promo)
-    LinearLayout containerPromo;
+    private NestedScrollView mainHolderContainer;
+    private ProgressBar pbMainLoading;
+    private LinearLayout holderProductDetail;
+    private LinearLayout holderCheckBalance;
+    private CheckETollBalanceView checkETollBalanceView;
+    private TabLayout promoTabLayout;
+    private DigitalWrapContentViewPager promoViewPager;
+    private LinearLayout containerPromo;
 
     private ProductDigitalPresenter presenter;
 
@@ -266,6 +256,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (context.getApplicationContext() instanceof AbstractionRouter) {
             digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker());
         }
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -392,6 +383,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initView(View view) {
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+        holderProductDetail = view.findViewById(R.id.holder_product_detail);
+        holderCheckBalance = view.findViewById(R.id.holder_check_balance);
+        checkETollBalanceView = view.findViewById(R.id.holder_check_emoney_balance);
+        promoTabLayout = view.findViewById(R.id.indicator);
+        promoViewPager = view.findViewById(R.id.pager);
+        containerPromo = view.findViewById(R.id.container_promo);
+        mainHolderContainer = view.findViewById(R.id.main_container);
+
         mainHolderContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         mainHolderContainer.setFillViewport(true);
         mainHolderContainer.setFocusable(true);
@@ -1314,7 +1314,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             public void onPageSelected(int position) {
                 if (position == PANDUAN_TAB_POSITION) {
                     if(digitalAnalytics != null)
-                    digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
+                        digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
                 }
             }
 
