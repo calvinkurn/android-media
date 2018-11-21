@@ -20,7 +20,7 @@ import com.tokopedia.district_recommendation.di.DaggerDistrictRecommendationComp
 import com.tokopedia.district_recommendation.di.DistrictRecommendationComponent;
 import com.tokopedia.district_recommendation.domain.mapper.AddressMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class DistrictRecommendationFragment
     private SwipeToRefresh swipeRefreshLayout;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     AddressMapper addressMapper;

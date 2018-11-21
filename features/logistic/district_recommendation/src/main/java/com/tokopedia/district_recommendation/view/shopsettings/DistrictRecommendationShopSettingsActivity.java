@@ -25,7 +25,7 @@ import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +46,7 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
     GetShopAddressUseCase getShopAddressUseCase;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     public static Intent createInstance(Activity activity) {
         return new Intent(activity, DistrictRecommendationShopSettingsActivity.class);

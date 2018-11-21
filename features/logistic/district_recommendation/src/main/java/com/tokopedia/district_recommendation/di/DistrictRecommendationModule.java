@@ -79,16 +79,16 @@ public class DistrictRecommendationModule {
     @Provides
     @DistrictRecommendationScope
     FingerprintInterceptor provideFingerPrintInterceptor(NetworkRouter networkRouter,
-                                                                UserSessionInterface userSessionInterface) {
+                                                         UserSessionInterface userSessionInterface) {
         return new FingerprintInterceptor(networkRouter, userSessionInterface);
     }
 
     @Provides
     @DistrictRecommendationScope
     TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                          NetworkRouter networkRouter,
-                                                          UserSessionInterface userSession) {
-        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+                                                   NetworkRouter networkRouter,
+                                                   UserSessionInterface userSessionInterface) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
     }
 
     @Provides
