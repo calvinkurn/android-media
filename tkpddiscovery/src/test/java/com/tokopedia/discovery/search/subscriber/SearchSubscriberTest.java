@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SearchSubscriberTest {
-    @Mock
     DefaultAutoCompleteViewModel defaultAutoCompleteViewModel;
 
     @Mock
@@ -38,6 +37,8 @@ public class SearchSubscriberTest {
 
     @Before
     public void setUp(){
+        defaultAutoCompleteViewModel = new DefaultAutoCompleteViewModel();
+
         this.searchSubscriber = new SearchSubscriber(
                 testSearchQuery,
                 defaultAutoCompleteViewModel,
@@ -46,6 +47,17 @@ public class SearchSubscriberTest {
         );
 
         unitTestFileUtils = new UnitTestFileUtils();
+    }
+
+    @Test
+    public void onSubscriberNext_successResultData_allSearchDataAddedToList() {
+        Gson gson = new Gson();
+        SearchResponse dataResponse =
+                gson.fromJson(unitTestFileUtils.getJsonFromAsset(SearchDataAssetJson.SEARCH_DATA_SUCCESS),
+                        SearchResponse.class);
+        List<SearchData> searchDatas = dataResponse.getData();
+        searchSubscriber.onNext(searchDatas);
+        assertEquals(defaultAutoCompleteViewModel.getList().size(), 3);
     }
 
     @Test
