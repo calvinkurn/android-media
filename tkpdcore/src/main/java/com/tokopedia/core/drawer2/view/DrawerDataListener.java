@@ -44,6 +44,4 @@ public interface DrawerDataListener {
     void onErrorGetNotificationTopchat(String errorMessage);
 
     void onSuccessGetTopChatNotification(int notifUnreads);
-
-    void onSuccessGetFlashsaleSellerStatus(Boolean isEligible);
 }

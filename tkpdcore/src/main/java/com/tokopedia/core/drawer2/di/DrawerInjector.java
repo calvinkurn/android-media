@@ -22,7 +22,6 @@ import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.apiservices.drawer.DrawerService;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.flashsale.management.common.domain.interactor.FlashsaleGetSellerStatusUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;
@@ -71,16 +70,11 @@ public class DrawerInjector {
                 tokoCashModelObservable
         );
 
-        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
-        FlashsaleGetSellerStatusUseCase flashsaleGetSellerStatusUseCase = new FlashsaleGetSellerStatusUseCase(graphqlUseCase);
-        flashsaleGetSellerStatusUseCase.setCached(true);
-
         return new DrawerDataManagerImpl(
                 drawerDataListener,
                 tokoCashUseCase,
                 getUserAttributesUseCase,
-                getSellerrAttributesUseCase,
-                flashsaleGetSellerStatusUseCase);
+                getSellerrAttributesUseCase);
     }
 
 }

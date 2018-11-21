@@ -215,13 +215,8 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (sessionHandler.isV4Login()) {
             setDataDrawer();
 
-            if (!GlobalConfig.isSellerApp()) {
-                getTokoPointData();
-                getDrawerUserAttrUseCase(sessionHandler);
-            } else {
-                getDrawerSellerAttrUseCase(sessionHandler);
-                drawerDataManager.getFlashsaleSellerStatus(sessionHandler.getShopID());
-            }
+            getTokoPointData();
+            getDrawerUserAttrUseCase(sessionHandler);
         }
     }
 
@@ -307,7 +302,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     }
 
-    private void setDataDrawer() {
+    protected void setDataDrawer() {
         if (drawerHelper != null) {
             drawerHelper.getAdapter().getData().clear();
             drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
@@ -433,13 +428,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     public void onSuccessGetTopChatNotification(int notifUnreads) {
 
-    }
-
-    @Override
-    public void onSuccessGetFlashsaleSellerStatus(Boolean isEligible) {
-        if (isEligible && GlobalConfig.isSellerApp()){
-            drawerHelper.showFlashaleMenu();
-        }
     }
 
     public class DrawerActivityBroadcastReceiver extends BroadcastReceiver {
