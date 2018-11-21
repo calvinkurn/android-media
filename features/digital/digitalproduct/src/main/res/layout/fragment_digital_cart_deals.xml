@@ -41,7 +41,7 @@
             android:layout_marginBottom="@dimen/dp_230" />
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
@@ -50,7 +50,7 @@
         <View
             android:id="@+id/checkout_dim"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:clickable="false"
             android:visibility="gone" />
 
@@ -58,8 +58,8 @@
             android:id="@+id/checkout_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_gravity="bottom|center"
             android:visibility="gone" />
 
-    </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

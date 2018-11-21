@@ -132,6 +132,12 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.onViewCreated();
+        checkoutDim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -302,14 +308,18 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void showDim(float procentage, int height) {
-        checkoutDim.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getParentMeasuredHeight() - height));
+//        checkoutDim.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getParentMeasuredHeight() - height));
+        checkoutDim.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         checkoutDim.setVisibility(View.VISIBLE);
         checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (200 * procentage)));
     }
 
     @Override
-    public void hideDim() {
-        checkoutDim.setVisibility(View.GONE);
+    public void hideDim(float procentage) {
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (200 * procentage)));
+        if (procentage == 0.0){
+            checkoutDim.setVisibility(View.GONE);
+        }
     }
 
     @Override

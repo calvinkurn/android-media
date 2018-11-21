@@ -1,6 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
@@ -84,7 +86,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
         void showDim(float procentage, int height);
 
-        void hideDim();
+        void hideDim(float procentage);
     }
 
     @Inject
@@ -124,6 +126,12 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.onDealsCheckout();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            containerLayout.setElevation(60);
+            containerLayout.setBackgroundResource(android.R.color.white);
+        } else {
+            containerLayout.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
+        }
     }
 
     @Override
@@ -227,14 +235,22 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         lastCollapseHeight = currentHeight;
         containerScroll.setVisibility(View.VISIBLE);
         final int targetHeight;
-        if (selectedDeals.size() == 0){
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+//        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_10), 0 , 0);
+        containerLayout.setLayoutParams(
+                layoutParams
+        );
+        if (selectedDeals.size() == 0) {
             containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             targetHeight = containerLayout.getMeasuredHeight();
             containerLayout.getLayoutParams().height = currentHeight;
         } else {
+            containerLayout.getLayoutParams().height = currentHeight;
             containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             targetHeight = interactionListener.getParentMeasuredHeight();
-            containerLayout.getLayoutParams().height = currentHeight;
         }
 
         Animation a = new Animation() {
@@ -263,14 +279,13 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     public void collapseCheckoutView(final View containerLayout) {
-        interactionListener.hideDim();
         int currentHeight = containerLayout.getHeight();
         containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (lastCollapseHeight == 0) {
             lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
                     checkoutHolderView.getCheckoutViewHeight() +
                     containerCategoryLabel.getMeasuredHeight() +
-                    getResources().getDimensionPixelOffset(R.dimen.dp_2);
+                    getResources().getDimensionPixelOffset(R.dimen.dp_6);
         }
 
         final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
@@ -281,6 +296,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 int measureWithInterpolate = (int) (currentHeight - (currentHeight * interpolatedTime));
                 int height = targetHeight;
+                interactionListener.hideDim(1 - interpolatedTime);
+                CommonUtils.dumper("inter " + interpolatedTime);
+                CommonUtils.dumper("height " + height);
                 if ((int) interpolatedTime != 1) {
                     if (measureWithInterpolate > targetHeight) {
                         height = measureWithInterpolate;
@@ -288,11 +306,18 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                     containerLayout.getLayoutParams().height = height;
                     containerLayout.requestLayout();
                 } else {
+                    CommonUtils.dumper("inter2 " + interpolatedTime);
+                    CommonUtils.dumper("height2 " + height);
                     if (containerScroll.getVisibility() != View.GONE) {
-                        containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT)
+                                ViewGroup.LayoutParams.WRAP_CONTENT
                         );
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_10), 0 , 0);
+                        containerLayout.setLayoutParams(
+                                layoutParams
+                        );
+
                         containerScroll.setVisibility(View.GONE);
                     }
                 }
