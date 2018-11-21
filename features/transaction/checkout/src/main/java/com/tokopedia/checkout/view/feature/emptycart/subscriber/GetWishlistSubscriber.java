@@ -29,19 +29,23 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
-        presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
         e.printStackTrace();
         if (view != null) {
-            view.stopTrace();
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
+                view.stopTrace();
+            }
             view.renderHasNoWishList();
         }
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
-        presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
         if (view != null) {
-            view.stopTrace();
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
+                view.stopTrace();
+            }
             if (graphqlResponse != null && graphqlResponse.getData(GetWishlistResponse.class) != null) {
                 GetWishlistResponse getWishlistResponse = graphqlResponse.getData(GetWishlistResponse.class);
                 if (getWishlistResponse != null && getWishlistResponse.getGqlWishList() != null &&
