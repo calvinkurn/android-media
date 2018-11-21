@@ -276,7 +276,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flightDetailOrderPresenter.onHelpButtonClicked(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData.getStatus());
+                flightDetailOrderPresenter.onHelpButtonClicked(getFlightOrder().getContactUsUrl());
             }
         });
         buttonReorder.setOnClickListener(new View.OnClickListener() {
