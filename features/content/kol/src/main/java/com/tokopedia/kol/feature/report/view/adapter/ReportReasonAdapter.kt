@@ -21,7 +21,7 @@ class ReportReasonAdapter(val view: ContentReportContract.View)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = list[position]
 
-        if (model.isSelected) {
+        if (model.isSelected && model.type != getCustomTypeString()) {
             view.enableSendBtn()
         }
 
