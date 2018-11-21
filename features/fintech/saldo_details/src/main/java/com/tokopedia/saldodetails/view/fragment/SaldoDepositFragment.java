@@ -274,7 +274,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public Visitable getDefaultEmptyViewModel() {
         EmptyModel emptyModel = new EmptyModel();
-        emptyModel.setIconRes(R.drawable.ic_empty_search);
+        emptyModel.setIconRes(R.drawable.sp_empty_state_icon);
         emptyModel.setTitle(getString(R.string.no_saldo_transactions));
         emptyModel.setButtonTitle(getString(R.string.sp_goto_home));
         emptyModel.setCallback(this);

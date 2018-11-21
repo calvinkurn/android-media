@@ -78,24 +78,21 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_8"
                 android:background="@color/grey_background"
-                android:padding="@dimen/dp_10"
                 android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/check_status_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_56"
+                    android:layout_height="@dimen/dp_56"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/sp_check_status" />
+                    android:src="@drawable/sp_check_status_icon" />
 
                 <TextView
                     android:id="@+id/amount_review"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_5"
                     android:layout_toEndOf="@+id/check_status_icon"
                     android:layout_toRightOf="@+id/check_status_icon"
@@ -106,8 +103,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/amount_review"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
                     android:layout_toEndOf="@+id/check_status_icon"
                     android:layout_toRightOf="@+id/check_status_icon"
                     android:text="@string/check_saldo_hold_balance_status"
