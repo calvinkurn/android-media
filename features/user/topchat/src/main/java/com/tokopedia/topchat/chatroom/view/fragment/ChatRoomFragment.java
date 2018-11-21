@@ -1375,7 +1375,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private void checkHideQuickReply(BaseChatViewModel message) {
         if (TextUtils.isEmpty(message.getAttachmentId())
                 && quickReplyAdapter != null
-                && rvQuickReply != null) {
+                && rvQuickReply != null
+                && !isMyMessage(message.getFromUid())) {
             quickReplyAdapter.clearData();
             rvQuickReply.setVisibility(View.GONE);
         }
