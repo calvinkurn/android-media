@@ -113,6 +113,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
 
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -759,10 +760,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
-        FeedPlusContainerFragment parent = ((FeedPlusContainerFragment)FeedPlusFragment.this.getParentFragment());
-        if (parent != null) {
-            parent.onNotifyBadgeNotification(0);
-        }
+        Intent intent = new Intent(BROADCAST_FEED);
+        intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
     }
 
     @Override
