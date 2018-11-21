@@ -188,7 +188,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void showLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof CustomerView) {
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
             ((BaseAccountView) currentFragment).showLoading();
         }
     }
@@ -196,7 +196,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void hideLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof CustomerView) {
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
             ((BaseAccountView) currentFragment).hideLoading();
         }
     }
@@ -204,17 +204,16 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void showError(String message) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof CustomerView) {
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
             ((BaseAccountView) currentFragment).showError(message);
         }
     }
 
     @Override
     public void showError(Throwable e) {
-        if (getView() != null && getContext() != null) {
-            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
-                    .setAction(getString(R.string.title_try_again), view -> {})
-                    .show();
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
+            ((BaseAccountView) currentFragment).showError(e);
         }
     }
 
