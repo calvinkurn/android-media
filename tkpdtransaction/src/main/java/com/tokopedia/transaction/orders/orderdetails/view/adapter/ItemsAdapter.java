@@ -46,6 +46,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private String categoryDeals = "deal";
     private String categoryEvents = "event";
 
+
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
         this.context = context;
         this.itemsList = itemsList;
