@@ -50,7 +50,7 @@
     <!--Report-->
     <string name="title_kol_report">Laporan Konten</string>
     <string name="kol_help_understand">Bantu Kami Memahami Apa yang Terjadi. Apa yang salah dari konten tersebut?</string>
-    <string name="kol_reason_here">Isi alasan disini</string>
+    <string name="kol_reason_here">Isi alasan di sini</string>
     <string name="kol_reason_type_spam" translatable="false">spam</string>
     <string name="kol_reason_type_abuse" translatable="false">abuse</string>
     <string name="kol_reason_type_inappropriate" translatable="false">inappropriate image</string>
