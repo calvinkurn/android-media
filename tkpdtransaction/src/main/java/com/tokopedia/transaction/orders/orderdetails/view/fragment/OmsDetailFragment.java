@@ -46,6 +46,7 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -76,6 +77,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private TextView invoiceView;
     private TextView lihat;
     private TextView detailLabel;
+    private LinearLayout detailsLayout;
     private TextView infoLabel;
     private LinearLayout infoValue;
     private LinearLayout totalPrice;
@@ -119,6 +121,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         invoiceView = view.findViewById(R.id.invoice);
         lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
+        detailsLayout = view.findViewById(R.id.details_section);
         infoLabel = view.findViewById(R.id.info_label);
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
@@ -335,7 +338,17 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setItems(List<Items> items) {
-        recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter));
+        List<Items> itemsList=new ArrayList<>();
+        for (Items item : items) {
+            if (!ItemsAdapter.categoryGiftCard.equalsIgnoreCase(item.getCategory())) {
+                itemsList.add(item);
+            }
+        }
+        if(itemsList.size()>0){
+            recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter));
+        }else{
+            detailsLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

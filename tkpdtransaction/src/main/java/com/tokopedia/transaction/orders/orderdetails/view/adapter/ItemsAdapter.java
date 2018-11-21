@@ -45,6 +45,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     OrderListDetailPresenter presenter;
     private String categoryDeals = "deal";
     private String categoryEvents = "event";
+    public static final String categoryGiftCard = "Gift-card";
 
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
