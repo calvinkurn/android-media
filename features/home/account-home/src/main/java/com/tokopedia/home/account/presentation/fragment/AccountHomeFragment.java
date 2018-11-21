@@ -208,6 +208,15 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void showError(Throwable e) {
+        if (getView() != null && getContext() != null) {
+            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
+                    .setAction(getString(R.string.title_try_again), view -> getData())
+                    .show();
+        }
+    }
+
+    @Override
     public void showErroNoConnection() {
         showError(getString(R.string.error_no_internet_connection));
     }
