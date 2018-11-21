@@ -2,7 +2,6 @@ package com.tokopedia.discovery.autocomplete.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.autocomplete.di.net.AutoCompleteNetModule;
-import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 

@@ -10,7 +10,6 @@ import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepositoryImp
 import com.tokopedia.discovery.autocomplete.usecase.AutoCompleteUseCase;
 import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.AutoCompleteQualifier;
-import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
 import com.tokopedia.discovery.newdiscovery.network.BrowseApi;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.domain.interactor.SearchMapper;

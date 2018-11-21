@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.NoAuth;
-import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
+import com.tokopedia.discovery.autocomplete.di.AutoCompleteScope;
 
 import java.util.concurrent.TimeUnit;
 

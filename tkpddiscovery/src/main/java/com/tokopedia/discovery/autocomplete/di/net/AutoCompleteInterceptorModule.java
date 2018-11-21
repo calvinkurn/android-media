@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
+import com.tokopedia.discovery.autocomplete.di.AutoCompleteScope;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import dagger.Module;

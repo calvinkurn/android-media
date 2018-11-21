@@ -3,7 +3,7 @@ package com.tokopedia.discovery.autocomplete.di.net;
 import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.AutoCompleteQualifier;
 import com.tokopedia.discovery.newdiscovery.di.qualifier.NoAuth;
-import com.tokopedia.discovery.newdiscovery.di.scope.AutoCompleteScope;
+import com.tokopedia.discovery.autocomplete.di.AutoCompleteScope;
 import com.tokopedia.discovery.newdiscovery.network.BrowseApi;
 
 import dagger.Module;
