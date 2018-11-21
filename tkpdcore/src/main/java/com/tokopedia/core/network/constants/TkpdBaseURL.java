@@ -604,7 +604,6 @@ public class TkpdBaseURL {
         public static final String PATH_TOP_PICKS = "/hoth/toppicks/widget";
         public static final String PATH_HOTLIST_CATEGORY = "/hoth/hotlist/v1/category";
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
-        public static final String PATH_UNIVERSE_SEARCH_V8 = "/universe/v8";
         public static final String PATH_DELETE_SEARCH = "/universe/v1";
 
         public static final String PATH_SEARCH_V3_1 = "search/product/v3.1";
