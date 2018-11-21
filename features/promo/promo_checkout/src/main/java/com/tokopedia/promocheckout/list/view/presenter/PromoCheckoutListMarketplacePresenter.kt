@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
@@ -11,6 +12,10 @@ import rx.Subscriber
 
 class PromoCheckoutListMarketplacePresenter(val checkPromoCodeUseCase: CheckPromoCodeUseCase): BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter  {
     override fun checkPromoCode(promoCode: String, oneClickShipment: Boolean) {
+        if(TextUtils.isEmpty(promoCode)){
+            view.onErrorEmptyPromoCode()
+            return
+        }
         view.showProgressLoading()
         checkPromoCodeUseCase.execute(checkPromoCodeUseCase.createRequestParams(promoCode, oneClickShipment = oneClickShipment), object : Subscriber<DataVoucher>() {
             override fun onCompleted() {

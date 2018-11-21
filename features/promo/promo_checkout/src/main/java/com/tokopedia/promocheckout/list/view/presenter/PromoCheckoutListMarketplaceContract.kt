@@ -10,6 +10,7 @@ interface PromoCheckoutListMarketplaceContract {
         fun hideProgressLoading()
         fun onErrorCheckPromoCode(e: Throwable)
         fun onSuccessCheckPromoCode(dataVoucher: DataVoucher)
+        fun onErrorEmptyPromoCode()
     }
 
     interface Presenter : CustomerPresenter<View>{

@@ -364,7 +364,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         if (this.shipmentDataList == null) {
             this.shipmentDataList = shipmentDataList;
         }
-        renderMarginFirstItem(shipmentCartItemModel);
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
@@ -406,15 +405,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         ShowCaseContentPosition.UNDEFINED)
                 );
             }
-        }
-    }
-
-    private void renderMarginFirstItem(ShipmentCartItemModel shipmentCartItemModel) {
-        // Only set margin for first item on multiple address
-        if (shipmentCartItemModel.isStateHasExtraMarginTop()) {
-            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16));
-        } else {
-            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_0));
         }
     }
 
