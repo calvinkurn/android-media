@@ -111,7 +111,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 if (e instanceof UnknownHostException) {
                     getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_unknown_host_exp_error_msg));
                 } else {
@@ -236,14 +236,14 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().hideProgress();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().hideProgress();
                 RestResponse res1 = restResponse.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
@@ -273,7 +273,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         }
     }
 
-    public boolean isDeviceSupportVideo(){
+    public boolean isDeviceSupportVideo() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return false;
         }
@@ -281,17 +281,14 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     public boolean checkAttachmentVideo(String videoPath) {
+        if (videoPath == null) return false;
         boolean isExtensionAllow = false;
         for (String extension : videoExtensions) {
-            if (videoPath != null && videoPath.toLowerCase(Locale.US).endsWith(extension)) {
+            if (videoPath.toLowerCase(Locale.US).endsWith(extension)) {
                 isExtensionAllow = true;
+                break;
             }
         }
-        if (!isExtensionAllow) {
-            getView().showMessage(getView().getActivity().getString(R.string.ch_error_Video_version_minimum));
-            return false;
-        }
-
         return isExtensionAllow;
     }
 

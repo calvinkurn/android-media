@@ -268,7 +268,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void setSnackBarErrorMessage(String message) {
-        setSnackBarErrorMessage(message,new View.OnClickListener() {
+        setSnackBarErrorMessage(message, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
@@ -358,6 +358,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
                 if (presenter.checkAttachmentVideo(videoPath)) {
                     mAttachmentPath = videoPath;
                     ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
+                } else if (getActivity() != null) {
+                    showMessage(getActivity().getString(R.string.ch_error_Video_version_minimum));
                 }
             }
         }
