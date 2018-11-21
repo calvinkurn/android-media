@@ -1,5 +1,6 @@
 package com.tokopedia.kol.common.util
 
+import android.content.ComponentCallbacks
 import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -8,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.kol.R
+import org.koin.android.ext.android.startKoin
+import org.koin.dsl.module.Module
+import org.koin.error.BeanOverrideException
 
 /**
  * @author by milhamj on 15/11/18.
@@ -46,4 +50,15 @@ fun View.hide() {
 
 fun Throwable.debugTrace() {
     if (GlobalConfig.isAllowDebuggingTools()) printStackTrace()
+}
+
+fun ComponentCallbacks.startOrLoadKoinModule(androidContext: Context, modules: List<Module>) {
+    try {
+        startKoin(androidContext, modules)
+    } catch (e: Exception) {
+        when(e) {
+            is RuntimeException, is BeanOverrideException -> { }
+            else -> throw e
+        }
+    }
 }

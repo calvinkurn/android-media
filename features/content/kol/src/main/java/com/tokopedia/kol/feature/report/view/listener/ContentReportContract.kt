@@ -18,6 +18,10 @@ interface ContentReportContract {
         fun showLoading()
 
         fun hideLoading()
+
+        fun onSuccessSendReport()
+
+        fun onErrorSendReport(message: String)
     }
 
     interface Presenter : CustomerPresenter<View> {

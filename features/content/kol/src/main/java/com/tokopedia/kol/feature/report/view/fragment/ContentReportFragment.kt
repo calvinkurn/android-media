@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.report.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
@@ -84,6 +86,15 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         mainView.hideLoading()
     }
 
+    override fun onSuccessSendReport() {
+        activity?.setResult(Activity.RESULT_OK)
+        activity?.finish()
+    }
+
+    override fun onErrorSendReport(message: String) {
+        NetworkErrorHelper.showEmptyState(context!!, mainView, message) { sendReport() }
+    }
+
     private fun initVar() {
         arguments?.run {
             contentId = getInt(ContentReportActivity.PARAM_CONTENT_ID, 0)
@@ -99,6 +110,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
             override fun afterTextChanged(s: Editable?) {
                 reasonInput.isCursorVisible = true
                 adapter.setCustomTypeSelected()
+                sendBtn.isEnabled = s.toString().isEmpty().not()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -107,15 +119,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
-        sendBtn.setOnClickListener {
-            presenter.sendReport(
-                    contentId,
-                    adapter.getSelectedItem().type,
-                    adapter.getSelectedItem().description
-            )
-//            if (adapter.getSelectedItem().type == adapter.getCustomTypeString()) {
-//            }
-        }
+        sendBtn.setOnClickListener { sendReport() }
     }
 
     private fun getReasonList(): MutableList<ReportReasonViewModel> {
@@ -146,5 +150,16 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         reasonList.add(reasonOthers)
 
         return reasonList
+    }
+
+    private fun sendReport() {
+        val isCustomType = adapter.getSelectedItem().type == adapter.getCustomTypeString()
+        val reasonMessage = if (isCustomType) reasonInput.text.toString() else adapter.getSelectedItem().description
+
+        presenter.sendReport(
+                contentId,
+                adapter.getSelectedItem().type,
+                reasonMessage
+        )
     }
 }
