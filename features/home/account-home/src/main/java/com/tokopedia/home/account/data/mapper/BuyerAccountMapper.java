@@ -337,7 +337,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(infoCard);
         }
 
-        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_challenges", true)) {
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_indi_challenges", true)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();
             infoCard.setIconRes(R.drawable.ic_challenge_trophy);
             infoCard.setMainText(context.getString(R.string.title_menu_challenge));

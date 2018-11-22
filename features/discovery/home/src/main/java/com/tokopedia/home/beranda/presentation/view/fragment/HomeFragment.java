@@ -77,6 +77,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
+import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
@@ -94,6 +95,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -111,6 +113,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String BERANDA_TRACE = "beranda_trace";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+    public static final long ONE_SECOND = 1000l;
     @Inject
     HomePresenter presenter;
     private RecyclerView recyclerView;
@@ -131,6 +134,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private RecyclerView.OnScrollListener onEggScrollListener;
 
     private MainToolbar mainToolbar;
+
+    private long serverTimeOffset = 0;
 
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
@@ -627,6 +632,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        this.serverTimeOffset = 0;
+
         if (items.get(0) instanceof HeaderViewModel) {
             HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
             updateHeaderItem(dataHeader);
@@ -639,6 +646,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateListOnResume(List<Visitable> visitables) {
+        this.serverTimeOffset = 0;
+
         adapter.updateItems(visitables);
     }
 
@@ -1038,9 +1047,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onServerTimeReceived(long serverTimeUnix) {
+        if(serverTimeOffset == 0){
+            long serverTimemillis = serverTimeUnix * ONE_SECOND;
+            this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
+        }
+    }
+
+    @Override
+    public long getServerTimeOffset() {
+        return this.serverTimeOffset;
+    }
+
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         setUserVisibleHint(!hidden);
     }
-
 }
