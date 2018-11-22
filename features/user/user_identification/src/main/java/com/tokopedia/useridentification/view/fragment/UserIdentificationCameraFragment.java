@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +21,7 @@ import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.useridentification.R;
 
@@ -245,8 +244,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     private void onSuccessImageTakenFromCamera(File cameraResultFile) {
         if (cameraResultFile.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(cameraResultFile.getAbsolutePath());
-            imagePreview.setImageBitmap(bitmap);
+            ImageHandler.loadImageFromFile(getContext(), imagePreview, cameraResultFile);
             imagePath = cameraResultFile.getAbsolutePath();
             showImagePreview();
         } else {

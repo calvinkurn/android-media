@@ -25,9 +25,13 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
+import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
+import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import java.io.File;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
@@ -39,7 +43,8 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
  * @author by alvinatin on 15/11/18.
  */
 
-public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
+public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
+        implements UserIdentificationUploadImage.View{
 
     private ImageView imageKtp;
     private ImageView imageFace;
@@ -50,6 +55,9 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
     private UserIdentificationStepperModel stepperModel;
 
     private StepperListener stepperListener;
+
+    @Inject
+    UserIdentificationUploadImage.Presenter presenter;
 
     public static Fragment createInstance() {
         UserIdentificationFormFinalFragment fragment = new UserIdentificationFormFinalFragment();
@@ -109,8 +117,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO change this to upload action
-                stepperListener.finishPage();
+                presenter.uploadImage(stepperModel);
             }
         });
     }
@@ -192,5 +199,16 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment {
         info.setHighlightColor(Color.TRANSPARENT);
         info.setMovementMethod(LinkMovementMethod.getInstance());
         info.setText(infoText, TextView.BufferType.SPANNABLE);
+    }
+
+    @Override
+    public void goToNextActivity() {
+        Intent intent = new Intent(getContext(), UserIdentificationInfoActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onSuccessUpload() {
+        Toast.makeText(getContext(), "Upload Success", Toast.LENGTH_LONG).show();
     }
 }
