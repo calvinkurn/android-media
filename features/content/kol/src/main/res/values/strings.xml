@@ -56,7 +56,7 @@
     <string name="kol_reason_type_inappropriate" translatable="false">inappropriate image</string>
     <string name="kol_reason_type_others" translatable="false">custom</string>
     <string name="kol_reason_desc_spam">Ini adalah spam</string>
-    <string name="kol_reason_desc_abuse">Mengadung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
+    <string name="kol_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
     <string name="kol_reason_desc_inappropriate">Mengandung pornografi</string>
     <string name="kol_reason_desc_others">Lainnya</string>
     <string name="kol_delete">Hapus</string>
