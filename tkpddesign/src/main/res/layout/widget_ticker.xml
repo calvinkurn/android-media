@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/view_pager_ticker"
             android:padding="@dimen/dp_5" />
 
         <ImageView
