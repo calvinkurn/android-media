@@ -59,9 +59,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
         }
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName() = ""
 
     override fun initInjector() {
         getComponent(CampaignComponent::class.java).inject(this)
@@ -124,7 +122,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
 
     companion object {
         // campaign info backend process to get campaign list is heavy, so default row is 5
-        const val DEFAULT_ROWS = 5
+        const val DEFAULT_ROWS = 10
         const val CAMPAIGN_TYPE = 1
     }
 }

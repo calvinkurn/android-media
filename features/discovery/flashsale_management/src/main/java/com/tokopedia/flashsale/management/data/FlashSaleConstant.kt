@@ -52,7 +52,7 @@ object FlashSaleConstant {
             KEY_STATUS_CANCELLED to Pair(R.color.status_red, R.color.red_50),
             KEY_STATUS_PRODUCT_SELECTION to Pair(R.color.status_blue, R.color.status_blue_bg),
             KEY_STATUS_SELECTION_ENDED to Pair(R.color.bg_corner_yellow, R.color.status_yellow_bg),
-            KEY_STATUS_ACTIVE to Pair(R.color.tkpd_main_green, R.color.green_50),
+            KEY_STATUS_ACTIVE to Pair(R.color.tkpd_main_green, R.color.green_active),
             KEY_STATUS_ENDED to Pair(R.color.font_black_disabled_38, R.color.grey_300)
     )
 

@@ -35,7 +35,7 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
 
     override fun loadData(page: Int) {
         presenter.getCampaignInfo(GraphqlHelper.loadRawString(resources, R.raw.gql_campaign_info),
-                campaignUrl, {onSuccessGetCampaignInfo(it)}){ onErroGetCampaignInfo(it) }
+                campaignUrl, ::onSuccessGetCampaignInfo, ::onErroGetCampaignInfo)
     }
 
     override fun getScreenName(): String? = null
