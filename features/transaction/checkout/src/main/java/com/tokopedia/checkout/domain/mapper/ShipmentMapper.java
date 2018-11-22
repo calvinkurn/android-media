@@ -202,8 +202,12 @@ public class ShipmentMapper implements IShipmentMapper {
 
                                 AnalyticsProductCheckoutData analyticsProductCheckoutData = new AnalyticsProductCheckoutData();
                                 analyticsProductCheckoutData.setProductId(String.valueOf(product.getProductId()));
-                                analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
-                                analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
+
+                                if(product.getProductTrackerData() != null) {
+                                    analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
+                                    analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
+                                }
+
                                 analyticsProductCheckoutData.setProductCategory(product.getProductCategory());
                                 analyticsProductCheckoutData.setProductCategoryId(String.valueOf(product.getProductCatId()));
                                 analyticsProductCheckoutData.setProductName(product.getProductName());
