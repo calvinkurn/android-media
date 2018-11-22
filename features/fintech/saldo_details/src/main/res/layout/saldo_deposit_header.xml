@@ -43,7 +43,7 @@
                     android:id="@+id/total_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/txt_depo"
+                    android:layout_below="@+id/txt_depo"
                     android:gravity="start"
                     android:letterSpacing="-0.02"
                     android:lineSpacingExtra="0sp"

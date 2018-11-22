@@ -123,7 +123,7 @@
                     android:id="@+id/sp_kyc_long_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/kyc_linear_layout"
+                    android:layout_below="@+id/kyc_linear_layout"
                     android:layout_marginTop="@dimen/dp_6"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="4sp"
@@ -151,7 +151,7 @@
                 android:id="@+id/sp_list_separator"
                 android:layout_width="match_parent"
                 android:layout_height="1.5dp"
-                android:layout_below="@id/sp_detail_list"
+                android:layout_below="@+id/sp_detail_list"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginBottom="@dimen/dp_4"
                 android:background="@color/greyish_bg" />

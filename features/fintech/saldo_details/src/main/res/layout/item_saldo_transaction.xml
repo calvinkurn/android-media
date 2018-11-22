@@ -59,7 +59,7 @@
             android:id="@+id/note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/nominal"
+            android:layout_below="@+id/nominal"
             android:layout_marginTop="@dimen/dp_7"
             android:textColor="@color/black_36"
             android:background="@android:drawable/list_selector_background"
