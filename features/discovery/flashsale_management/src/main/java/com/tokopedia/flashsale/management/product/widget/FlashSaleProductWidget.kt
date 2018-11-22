@@ -45,7 +45,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
             visibility = View.GONE
         } else {
             if (item.getMessage().isEmpty() ||
-                    item.getProductStatus() == FlashSaleProductStatusTypeDef.RESERVE) {
+                    item.getProductStatus() == FlashSaleProductStatusTypeDef.SUBMITTED) {
                 vgBlackMessage.visibility = View.GONE
             } else {
                 tvMessage.text = item.getMessage()
@@ -55,7 +55,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 tvPercentOff.visibility = View.GONE
             } else {
                 tvPercentOff.text = context.getString(R.string.x_percent_off,
-                        KMNumbers.formatToPercentString(item.getDiscountPercentage().toDouble() / 100)).replace("%%", "%")
+                        KMNumbers.formatDouble2PCheckRound(item.getDiscountPercentage().toDouble(),true)).replace("%%", "%")
                 tvPercentOff.visibility = View.VISIBLE
             }
             ImageHandler.LoadImage(ivProduct, item.getProductImageUrl())

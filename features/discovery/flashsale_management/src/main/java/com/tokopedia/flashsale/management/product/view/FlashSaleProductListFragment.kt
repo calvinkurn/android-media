@@ -20,7 +20,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -31,6 +33,7 @@ import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.data.FlashSaleConstant.KEY_STATUS_REGISTRATION
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
+import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleSubmitLabelAdapter
@@ -81,6 +84,14 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         context?.let {
             GraphqlClient.init(it)
         }
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<FlashSaleProductItem, FlashSaleProductAdapterTypeFactory> {
+        val adapter =  super.createAdapterInstance()
+        adapter.errorNetworkModel = ErrorNetworkModel().apply {
+            iconDrawableRes = R.drawable.ic_error_cloud_green
+        }
+        return adapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -406,9 +417,12 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onItemClicked(item: FlashSaleProductItem) {
         context?.let {
+            val hasDisableMessage = item.getMessage().isNotEmpty() &&
+                    item.getProductStatus() != FlashSaleProductStatusTypeDef.SUBMITTED
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
                     item, allowEditProducts && item.isEligible()
-                    && KEY_STATUS_REGISTRATION.equals(statusLabel, true))
+                    && KEY_STATUS_REGISTRATION.equals(statusLabel, true) &&
+                    !hasDisableMessage)
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }
