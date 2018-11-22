@@ -16,6 +16,8 @@ public interface ChatSettingsInterface {
 
         void setChatSettingPromotionResponse(ChatSettingsResponse chatSettingsResponse);
 
+        void updateChatSettingResponse(ChatSettingsResponse chatSettingsResponse);
+
         String getMessageId();
 
         Context getAppContext();
@@ -30,7 +32,7 @@ public interface ChatSettingsInterface {
 
         void onPromotionalChatSettingChange(boolean state);
 
-        void initialChatSettings();
+        void initialChatSettings(ChatSettingsResponse chatSettingsResponse);
 
     }
 

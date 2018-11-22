@@ -58,6 +58,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -84,6 +85,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.QuickReplyAdapter;
 import com.tokopedia.topchat.chatroom.view.adapter.ReasonAdapter;
 import com.tokopedia.topchat.chatroom.view.customview.ReasonBottomSheet;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
@@ -106,6 +108,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
 import com.tokopedia.topchat.common.util.Events;
@@ -158,6 +161,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     ChatRoomPresenter presenter;
 
     @Inject
+    ChatSettingsAnalytics chatSettingsAnalytics;
+
+    @Inject
     SessionHandler sessionHandler;
 
     private int networkType;
@@ -194,6 +200,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private View notifier;
     private ImageButton headerMenuButton;
     private RelativeLayout sendMessageLayout;
+    private RelativeLayout chatBlockLayout;
+    private TextView enableChatTextView;
 
     private String title, avatarImage, lastOnline;
     private boolean isOnline = false;
@@ -201,6 +209,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private boolean uploading;
     private boolean isChatBot;
     private ChatSettingsResponse chatSettingsResponse;
+    private boolean isChatEnabled;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -259,6 +268,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyWatcher = Events.text(replyColumn);
         headerMenuButton = toolbar.findViewById(R.id.header_menu);
         sendMessageLayout = rootView.findViewById(R.id.send_message_layout);
+        chatBlockLayout = rootView.findViewById(R.id.chat_blocked_layout);
+        enableChatTextView = rootView.findViewById(R.id.enable_chat_textView);
+        enableChatTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enableChatSettings();
+            }
+        });
         headerMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,6 +289,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
         prepareView();
         initListener();
         return rootView;
+    }
+
+    private void enableChatSettings() {
+        isChatEnabled = true;
+        sendMessageLayout.setVisibility(View.VISIBLE);
+        chatBlockLayout.setVisibility(View.GONE);
+        ToasterNormal.show(getActivity(), "Anda berhasil menerima chat dari Modo Store");
+        chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
     }
 
     private void prepareView() {
@@ -990,8 +1015,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case REQUEST_CODE_CHAT_SETTINGS:
                 if(resultCode == RESULT_CODE_CHAT_SETTINGS_ENABLED){
                     sendMessageLayout.setVisibility(View.VISIBLE);
+                    chatBlockLayout.setVisibility(View.GONE);
                 }else if(resultCode == RESULT_CODE_CHAT_SETTINGS_DISABLED) {
                     sendMessageLayout.setVisibility(View.GONE);
+                    chatBlockLayout.setVisibility(View.VISIBLE);
                 }
                 break;
             default:
@@ -1567,7 +1594,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         String profileText = getString(R.string.follow_store);
         if (isFavorited) profileText = getString(R.string.already_follow_store);
 
-        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_set_profile));
+        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
         if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_add_grey));
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
         listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
@@ -1625,6 +1652,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     Intent intent = new Intent(getContext(), ChatRoomSettingsActivity.class);
                     intent.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID));
                     intent.putExtra("ChatResponseModel", chatSettingsResponse);
+                    intent.putExtra("isChatEnabled", isChatEnabled);
+                    chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
                     startActivityForResult(intent, REQUEST_CODE_CHAT_SETTINGS);
                 }
                 headerMenu.dismiss();
@@ -1695,8 +1724,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         this.chatSettingsResponse = chatSettingsResponse;
         if (isVisible) {
             sendMessageLayout.setVisibility(View.GONE);
+            chatBlockLayout.setVisibility(View.VISIBLE);
         } else {
             sendMessageLayout.setVisibility(View.VISIBLE);
+            chatBlockLayout.setVisibility(View.GONE);
         }
     }
 }

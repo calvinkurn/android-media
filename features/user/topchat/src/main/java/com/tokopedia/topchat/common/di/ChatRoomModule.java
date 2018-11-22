@@ -35,6 +35,7 @@ import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 import com.tokopedia.topchat.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.topchat.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.topchat.uploadimage.data.mapper.UploadImageMapper;
@@ -292,7 +293,7 @@ public class ChatRoomModule {
 
     @InboxChatScope
     @Provides
-    ChatSettingsInterface.Presenter provideChatSettingsPresenter(GraphqlUseCase graphqlUseCase) {
-        return new ChatSettingsPresenter(graphqlUseCase);
+    ChatSettingsInterface.Presenter provideChatSettingsPresenter(GraphqlUseCase graphqlUseCase, ChatSettingsAnalytics chatSettingsAnalytics) {
+        return new ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics);
     }
 }

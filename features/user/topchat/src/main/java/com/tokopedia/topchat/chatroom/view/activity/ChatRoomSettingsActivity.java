@@ -35,6 +35,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     public static final int RESULT_CODE_CHAT_SETTINGS_DISABLED = 2;
     private Locale mLocale;
     private ChatSettingsResponse chatSettingsResponse;
+    private boolean isChatEnabled;
 
 
     @Inject
@@ -47,6 +48,12 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         initInjector();
         chatSettingsPresenter.attachView(this);
         this.chatSettingsResponse = getIntent().getParcelableExtra("ChatResponseModel");
+        isChatEnabled = getIntent().getBooleanExtra("isChatEnabled", true);
+        chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
+        if (isChatEnabled) {
+            chatSettingsPresenter.onPersonalChatSettingChange(true);
+            chatSettingsPresenter.onPromotionalChatSettingChange(true);
+        }
         initView();
     }
 
@@ -68,7 +75,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
         if (this.chatSettingsResponse != null) {
             setPersonalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
-            setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+            setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
         }
     }
 
@@ -90,8 +97,10 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
             if (chatSettingsResponse.getChatBlockResponse() != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus() != null) {
                 if (chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
                     setPersonalInfoViewVisibility(true);
+                    setPromotionalInfoViewVisibility(true);
                 } else if (!chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
                     setPersonalInfoViewVisibility(false);
+                    setPromotionalInfoViewVisibility(false);
                 }
                 setPersonalInfoViewVisibility(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
                 setResult(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() ? RESULT_CODE_CHAT_SETTINGS_DISABLED
@@ -116,6 +125,11 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     }
 
     @Override
+    public void updateChatSettingResponse(ChatSettingsResponse chatSettingsResponse) {
+        this.chatSettingsResponse = chatSettingsResponse;
+    }
+
+    @Override
     public String getMessageId() {
         if (getIntent() != null) {
             return getIntent().getStringExtra(ChatRoomActivity.PARAM_MESSAGE_ID);
@@ -132,7 +146,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
     @Override
     public void setPersonalInfoViewVisibility(boolean isVisible) {
-        if (isVisible) {
+        if (!isVisible) {
             chatPersonalSwitch.setChecked(true);
             chatPersonalInfoView.setVisibility(View.GONE);
         } else {
@@ -146,7 +160,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
     @Override
     public void setPromotionalInfoViewVisibility(boolean isVisible) {
-        if (isVisible) {
+        if (!isVisible) {
             chatPromotionSwitch.setChecked(true);
             chatPromotionInfoView.setVisibility(View.GONE);
         } else {
@@ -161,9 +175,10 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        if (this.chatSettingsResponse != null && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() == isChecked) {
-            return;
+        if (this.chatSettingsResponse != null && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
+            chatPromotionSwitch.setChecked(false);
         }
+
         if (compoundButton.getId() == R.id.chat_personal_switch) {
             chatSettingsPresenter.onPersonalChatSettingChange(isChecked);
         } else if (compoundButton.getId() == R.id.chat_promotion_switch) {

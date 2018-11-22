@@ -16,8 +16,10 @@ public class ChatBlockResponse implements Parcelable {
     @Expose
     private ChatBlockStatus chatBlockStatus;
 
+
     protected ChatBlockResponse(Parcel in) {
         isSuccess = in.readByte() != 0;
+        chatBlockStatus = in.readParcelable(ChatBlockStatus.class.getClassLoader());
     }
 
     public static final Creator<ChatBlockResponse> CREATOR = new Creator<ChatBlockResponse>() {
@@ -48,6 +50,7 @@ public class ChatBlockResponse implements Parcelable {
         this.chatBlockStatus = chatBlockStatus;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -56,5 +59,6 @@ public class ChatBlockResponse implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeByte((byte) (isSuccess ? 1 : 0));
+        parcel.writeParcelable(chatBlockStatus, i);
     }
 }

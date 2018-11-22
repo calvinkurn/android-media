@@ -9,6 +9,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,58 +21,24 @@ import rx.Subscriber;
 public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInterface.View> implements ChatSettingsInterface.Presenter {
 
     private static final String MESSAGE_ID = "messageID";
-    private static final String MSG_ID = "msgId";
     private static final String BLOCK_TYPE = "blockType";
     private static final String BLOKCED = "isBlocked";
 
     GraphqlUseCase graphqlUseCase;
+    private ChatSettingsResponse chatSettingsResponse;
+    private ChatSettingsAnalytics chatSettingsAnalytics;
 
 
     @Inject
-    public ChatSettingsPresenter(GraphqlUseCase graphqlUseCase) {
+    public ChatSettingsPresenter(GraphqlUseCase graphqlUseCase, ChatSettingsAnalytics chatSettingsAnalytics) {
         this.graphqlUseCase = graphqlUseCase;
+        this.chatSettingsAnalytics = chatSettingsAnalytics;
     }
 
 
     @Override
-    public void initialChatSettings() {
-//        if (!isViewAttached()) {
-//            return;
-//        }
-//
-//        Map<String, Object> variables = new HashMap<>();
-//        variables.put(MSG_ID, Integer.parseInt(getView().getMessageId()));
-//        GraphqlRequest graphqlRequest = new
-//                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-//                R.raw.checkchatsettings), ChatSettingsResponse.class, variables);
-//
-//        graphqlUseCase.clearRequest();
-//        graphqlUseCase.addRequest(graphqlRequest);
-//
-//        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(GraphqlResponse graphqlResponse) {
-//
-//                if (graphqlResponse != null) {
-//                    ChatSettingsResponse data = graphqlResponse.getData(ChatSettingsResponse.class);
-//
-//                    getView().setChatSettingPersonalResponse(data.getChatBlockResponse());
-//                    getView().setChatSettingPromotionResponse(data.getChatBlockResponse());
-//                }
-//
-//            }
-//        });
-//
+    public void initialChatSettings(ChatSettingsResponse chatSettingsResponse) {
+        this.chatSettingsResponse = chatSettingsResponse;
     }
 
     public void getChatSettingResponse(String messageId, String blockType, boolean state, Subscriber<GraphqlResponse> graphqlResponseSubscriber) {
@@ -83,7 +50,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
         Map<String, Object> variables = new HashMap<>();
         variables.put(MESSAGE_ID, messageId);
         variables.put(BLOCK_TYPE, blockType);
-        variables.put(BLOKCED, state);
+        variables.put(BLOKCED, !state);
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
@@ -97,52 +64,72 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
 
     @Override
     public void onPersonalChatSettingChange(boolean state) {
-        getChatSettingResponse(getView().getMessageId(), "1", state, new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+        if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() == state) {
+            getChatSettingResponse(getView().getMessageId(), "1", state, new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper("error occured" + e);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-
-                if (response != null) {
-                    ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
-
-                    getView().setChatSettingPersonalResponse(data);
-                    getView().setChatSettingPromotionResponse(data);
                 }
+
+                @Override
+                public void onError(Throwable e) {
+                    CommonUtils.dumper("error occured" + e);
+                }
+
+                @Override
+                public void onNext(GraphqlResponse response) {
+
+                    if (response != null) {
+                        ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
+
+                        chatSettingsResponse = data;
+                        getView().updateChatSettingResponse(chatSettingsResponse);
+                        getView().setChatSettingPersonalResponse(data);
+//                    getView().setChatSettingPromotionResponse(data);
+                    }
+                }
+            });
+
+            if (state) {
+                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_UNBLOCK_ACTION, ChatSettingsAnalytics.CHAT_PERSONAL_LABEL);
+            } else {
+                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_BLOCK_ACTION, ChatSettingsAnalytics.CHAT_PERSONAL_LABEL);
             }
-        });
+        }
     }
 
     @Override
     public void onPromotionalChatSettingChange(boolean state) {
-        getChatSettingResponse(getView().getMessageId(), "2", state, new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+        if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked() == state) {
+            getChatSettingResponse(getView().getMessageId(), "2", state, new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper("error occured" + e);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-
-                if (response != null) {
-                    ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
-
-                    getView().setChatSettingPromotionResponse(data);
                 }
+
+                @Override
+                public void onError(Throwable e) {
+                    CommonUtils.dumper("error occured" + e);
+                }
+
+                @Override
+                public void onNext(GraphqlResponse response) {
+
+                    if (response != null) {
+                        ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
+
+                        chatSettingsResponse = data;
+                        getView().updateChatSettingResponse(chatSettingsResponse);
+                        getView().setChatSettingPromotionResponse(data);
+                    }
+                }
+            });
+
+            if (state) {
+                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_UNBLOCK_ACTION, ChatSettingsAnalytics.CHAT_PROMOTION_LABEL);
+            } else {
+                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_BLOCK_ACTION, ChatSettingsAnalytics.CHAT_PROMOTION_LABEL);
             }
-        });
+        }
     }
 }
