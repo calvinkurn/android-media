@@ -408,7 +408,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         context?.let {
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
                     item, allowEditProducts && item.isEligible()
-                    && statusLabel.equals(KEY_STATUS_REGISTRATION, false))
+                    && KEY_STATUS_REGISTRATION.equals(statusLabel, true))
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }

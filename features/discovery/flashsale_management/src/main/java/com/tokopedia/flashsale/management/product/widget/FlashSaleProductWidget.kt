@@ -44,7 +44,8 @@ class FlashSaleProductWidget @JvmOverloads constructor(
         if (item == null) {
             visibility = View.GONE
         } else {
-            if (item.getMessage().isEmpty()) {
+            if (item.getMessage().isEmpty() ||
+                    item.getProductStatus() == FlashSaleProductStatusTypeDef.RESERVE) {
                 vgBlackMessage.visibility = View.GONE
             } else {
                 tvMessage.text = item.getMessage()
