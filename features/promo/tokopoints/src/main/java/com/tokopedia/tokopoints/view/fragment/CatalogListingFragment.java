@@ -290,6 +290,17 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 if (selectedTabIndex == 0) { // Special handling for zeroth index
                     refreshTab(filters.getCategories().get(0).getId(),
                             filters.getCategories().get(0).getSubCategory().get(0).getId());
+
+                    try {
+                        if (filters.getCategories().get(0).getSubCategory().get(0).getTimeRemainingSeconds() > 0) {
+                            startFlashTimer(filters.getCategories().get(0).getSubCategory().get(0));
+                            mContainerFlashTimer.setVisibility(View.VISIBLE);
+                        } else {
+                            mContainerFlashTimer.setVisibility(View.GONE);
+                        }
+                    } catch (Exception e){
+
+                    }
                 } else {
                     mPagerSortType.setCurrentItem(selectedTabIndex, false);
                 }
