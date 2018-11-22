@@ -184,10 +184,10 @@
             android:name=".SettingsNotification"
             android:label="@string/title_activity_settings_notification"
             android:screenOrientation="portrait" />
-        <!--<activity
+        <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
-            tools:replace="screenOrientation" />-->
+            tools:replace="screenOrientation" />
         <activity
             android:name=".MaintenancePage"
             android:label="@string/title_activity_maintenance_page"
