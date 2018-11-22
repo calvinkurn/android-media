@@ -88,6 +88,7 @@ public abstract class BaseNotification {
                 channel.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" +
                         "/raw/" + baseNotificationModel.getSoundFileName()), att);
             }
+            channel.setVibrationPattern(getVibratePattern());
             channel.setShowBadge(true);
             notificationManager.createNotificationChannel(channel);
             channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
@@ -106,10 +107,11 @@ public abstract class BaseNotification {
         AudioAttributes att = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build();
-        channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), att);
+        channel.setSound(getRingtoneUri(), att);
         channel.setShowBadge(true);
         channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
         notificationManager.createNotificationChannel(channel);
+        channel.setVibrationPattern(getVibratePattern());
         createChannelGroup();
         channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
     }
@@ -129,9 +131,9 @@ public abstract class BaseNotification {
                     "/raw/" + baseNotificationModel.getSoundFileName());
             builder.setSound(soundUri);
         }else {
-            Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            builder.setSound(uri);
+            builder.setSound(getRingtoneUri());
         }
+        builder.setVibrate(getVibratePattern());
     }
 
     protected int getDrawableIcon() {
@@ -178,14 +180,14 @@ public abstract class BaseNotification {
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
         intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, actionButton.getAppLink());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getActivity(
+            resultPendingIntent = PendingIntent.getBroadcast(
                     context,
                     0,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
-            resultPendingIntent = PendingIntent.getActivity(
+            resultPendingIntent = PendingIntent.getBroadcast(
                     context,
                     baseNotificationModel.getNotificationId(),
                     intent,

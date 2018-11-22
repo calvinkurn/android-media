@@ -1,5 +1,6 @@
 package com.tokopedia.notifications.factory;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,7 +27,7 @@ public class CMNotificationFactory {
 
     private static final String TAG = CMNotificationFactory.class.getSimpleName();
 
-    public static BaseNotification getNotification(Context context, Bundle bundle){
+    public static BaseNotification getNotification(Context context, Bundle bundle) {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
         switch (baseNotificationModel.getType()) {
             case CMConstant.NotificationType.GENERAL:
@@ -37,8 +38,17 @@ public class CMNotificationFactory {
                 return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
             case CMConstant.NotificationType.PERSISTENT:
                 return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
+            case CMConstant.NotificationType.DELETE_NOTIFICATION:
+                cancelNotification(context, baseNotificationModel.getNotificationId());
+                return null;
         }
         return null;
+    }
+
+    private static void cancelNotification(Context context, int notificationId) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(notificationId);
     }
 
     private static BaseNotificationModel convertToBaseModel(Bundle data) {
@@ -78,7 +88,8 @@ public class CMNotificationFactory {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<ActionButton>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<ActionButton>>() {
+            }.getType();
             return new Gson().fromJson(actions, listType);
         } catch (Exception e) {
             Log.e("getActions", e.getMessage());
@@ -86,13 +97,14 @@ public class CMNotificationFactory {
         return null;
     }
 
-    private static List<PersistentButton> getPersistentNotificationData(Bundle bundle){
+    private static List<PersistentButton> getPersistentNotificationData(Bundle bundle) {
         String persistentData = bundle.getString(CMConstant.NOTIFICATION_PERSISTENT);
         if (TextUtils.isEmpty(persistentData)) {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<PersistentButton>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<PersistentButton>>() {
+            }.getType();
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
             Log.e("getActions", e.getMessage());

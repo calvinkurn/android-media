@@ -23,6 +23,7 @@ public interface CMConstant {
 
     String EXTRA_NOTIFICATION_BUNDLE = "work_bundle";
 
+
     interface NotificationId {
         int GENERAL = 501;
         int BIG_IMAGE = 502;
@@ -38,6 +39,7 @@ public interface CMConstant {
         String GENERAL = "cm_general";
         String BIG_IMAGE = "cm_big";
         String PERSISTENT = "cm_persistent";
+        String DELETE_NOTIFICATION = "cm_delete_now";
         String CUSTOM = "cm_custom";
         String IN_APP = "cm_in_app";
         String CAROUSEL = "cm_carousel";
