@@ -386,6 +386,7 @@ import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
+import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -2598,7 +2599,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public UseCase<String> setCreditCardSingleAuthentication() {
-        return null;
+        return new CreditCardFingerPrintUseCase();
     }
 
     @Override

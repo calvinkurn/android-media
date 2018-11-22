@@ -117,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/green_button_rounded_unify_logistic_module"
+            android:background="@drawable/green_button_rounded_unify"
             android:gravity="center"
             android:text="@string/button_order_detail_confirm"
             android:textAllCaps="false"
