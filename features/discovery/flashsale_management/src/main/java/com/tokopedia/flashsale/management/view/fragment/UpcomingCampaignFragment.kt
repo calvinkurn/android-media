@@ -13,8 +13,7 @@ class UpcomingCampaignFragment : BaseCampaignFragment(){
         val offset = (page-1)* DEFAULT_ROWS
         presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
                 CAMPAIGN_LIST_TYPE, offset, DEFAULT_ROWS, CAMPAIGN_TYPE, searchInputView.searchText,
-                onSuccess = {onSuccessGetCampaignList(it)},
-                onError = {onErrorGetCampaignList(it)})
+                STATUS_IN_SUBMISSION,::onSuccessGetCampaignList, ::onErrorGetCampaignList)
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -57,5 +56,6 @@ class UpcomingCampaignFragment : BaseCampaignFragment(){
     companion object {
         fun createInstance() = UpcomingCampaignFragment()
         const val CAMPAIGN_LIST_TYPE = true
+        private const val STATUS_IN_SUBMISSION = "4"
     }
 }

@@ -25,6 +25,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
 
     private var campaignUrl: String = ""
     private var campaignId: Long = -1
+    private var campaignType: String? = null
     @Inject lateinit var presenter: CampaignInfoPresenter
 
     val titles by lazy {
@@ -52,7 +53,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
             titles.add(getString(R.string.label_product_list))
         }
         val adapter = CampaignDetailFragmentPagerAdapter(supportFragmentManager, titles,
-                campaignId, campaignUrl, sellerStatus)
+                campaignId, campaignUrl, campaignType, sellerStatus)
 
         pager.adapter = adapter
         pager.currentItem = if (sellerStatus.joinStatus && titles.size == 2) TAB_POS_MY_PRODUCT else TAB_POS_CAMPAIGN_INFO
@@ -77,6 +78,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     override fun setupLayout(savedInstanceState: Bundle?) {
         campaignId = intent.getLongExtra(EXTRA_PARAM_CAMPAIGN_ID, -1)
         campaignUrl = intent.getStringExtra(EXTRA_PARAM_CAMPAIGN_URL) ?: ""
+        campaignType = intent.getStringExtra(EXTRA_PARAM_CAMPAIGN_TYPE)
         super.setupLayout(savedInstanceState)
         indicator.tabMode = TabLayout.MODE_SCROLLABLE
         pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(indicator))
@@ -87,15 +89,17 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context, campaignId: Long, campaignUrl: String) =
+        fun createIntent(context: Context, campaignId: Long, campaignUrl: String, campaignType: String?) =
                 Intent(context, CampaignDetailActivity::class.java)
                         .putExtra(EXTRA_PARAM_CAMPAIGN_ID, campaignId)
                         .putExtra(EXTRA_PARAM_CAMPAIGN_URL, campaignUrl)
+                        .putExtra(EXTRA_PARAM_CAMPAIGN_TYPE, campaignType)
 
 
         private const val TAB_POS_CAMPAIGN_INFO = 0
         private const val TAB_POS_MY_PRODUCT = 1
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
         private const val EXTRA_PARAM_CAMPAIGN_URL = "campaign_url"
+        private const val EXTRA_PARAM_CAMPAIGN_TYPE = "campaign_type"
     }
 }

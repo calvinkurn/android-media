@@ -65,13 +65,11 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
 
     override fun onItemClicked(t: CampaignViewModel) {
         activity?.let {
-            startActivity(CampaignDetailActivity.createIntent(it, t.id, t.campaignUrl))
+            startActivity(CampaignDetailActivity.createIntent(it, t.id, t.campaignUrl, t.campaignType))
         }
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName() = ""
 
     override fun initInjector() {
         getComponent(CampaignComponent::class.java).inject(this)

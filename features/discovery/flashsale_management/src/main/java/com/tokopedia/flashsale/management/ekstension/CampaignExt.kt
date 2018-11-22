@@ -36,7 +36,8 @@ fun Campaign.toListCampaignInfoViewModel(): List<CampaignInfoViewModel> {
             minSellerReputation, maxSellerReputation, minCancellationRate, maxCancellationRate,
             logistics.map { it.logisticName }))
     list.add(CampaignInfoDescriptionViewModel(description))
-    list.add(CampaignInfoPromoViewModel(minTransaction, promoCode))
+    if (minTransaction.isNotBlank() || promoCode.isNotBlank())
+        list.add(CampaignInfoPromoViewModel(minTransaction, promoCode))
     list.add(CampaignInfoTnCViewModel(tnc))
     return list
 }
