@@ -6,8 +6,8 @@ package com.tokopedia.notifications.model;
 public class PersistentButton {
 
     String appLink;
-    String btnText;
-    String btnImageUrl;
+    String text;
+    String icon;
 
 
     public String getAppLink() {
@@ -18,19 +18,19 @@ public class PersistentButton {
         this.appLink = appLink;
     }
 
-    public String getBtnText() {
-        return btnText;
+    public String getText() {
+        return text;
     }
 
-    public void setBtnText(String btnText) {
-        this.btnText = btnText;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getBtnImageUrl() {
-        return btnImageUrl;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setBtnImageUrl(String btnImageUrl) {
-        this.btnImageUrl = btnImageUrl;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

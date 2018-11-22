@@ -5,7 +5,7 @@ package com.tokopedia.notifications.model;
  */
 public class ActionButton {
     private String text;
-    private String applink;
+    private String appLink;
 
     public String getText() {
         return text;
@@ -15,11 +15,11 @@ public class ActionButton {
         this.text = text;
     }
 
-    public String getApplink() {
-        return applink;
+    public String getAppLink() {
+        return appLink;
     }
 
-    public void setApplink(String applink) {
-        this.applink = applink;
+    public void setAppLink(String appLink) {
+        this.appLink = appLink;
     }
 }

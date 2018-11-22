@@ -12,7 +12,7 @@ public interface CMConstant {
     String EXTRA_NOTIFICATION_ID = "notif_id";
 
     String NOTIFICATION_ACTION_BUTTONS = "actionButton";
-    String NOTIFICATION_PERSISTENT = "per_data";
+    String NOTIFICATION_PERSISTENT = "persButton";
 
 
     String NOTIFICATION_CUSTOM_VALUES = "custom_values";

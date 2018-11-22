@@ -26,7 +26,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT:
-                    NotificationManagerCompat.from(context).cancel(CMConstant.NotificationId.PERSISTENT);
+                    NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS:
                     NotificationManagerCompat.from(context).cancel(notificationId);

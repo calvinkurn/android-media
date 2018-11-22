@@ -176,7 +176,7 @@ public abstract class BaseNotification {
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
         intent.setAction(CMConstant.ReceiverAction.ACTION_BUTTON);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
-        intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, actionButton.getApplink());
+        intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, actionButton.getAppLink());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getActivity(
                     context,
@@ -198,7 +198,6 @@ public abstract class BaseNotification {
     protected PendingIntent createPendingIntent(String appLinks, int notificationType) {
         PendingIntent resultPendingIntent;
         Intent intent = RouteManager.getIntent(context, appLinks);
-        intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
         //bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
         //bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
