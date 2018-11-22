@@ -1741,6 +1741,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onPurchaseProtectionChangeListener(int position) {
         shipmentAdapter.updateShipmentCostModel();
         shipmentAdapter.updateItemAndTotalCost(position);
+        shipmentAdapter.updateInsuranceTncVisibility();
     }
 
     public int getResultCode() {

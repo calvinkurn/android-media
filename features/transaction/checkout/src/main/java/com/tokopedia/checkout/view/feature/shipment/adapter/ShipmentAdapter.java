@@ -341,6 +341,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) {
                     return true;
                 }
+
+                for(CartItemModel item : shipmentCartItemModel.getCartItemModels()) {
+                    if (item.isProtectionOptIn()) return true;
+                }
             }
         }
         return false;
