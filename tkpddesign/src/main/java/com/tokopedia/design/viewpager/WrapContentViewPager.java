@@ -1,4 +1,4 @@
-package com.tokopedia.core.customView;
+package com.tokopedia.design.viewpager;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -33,7 +33,6 @@ public class  WrapContentViewPager extends ViewPager {
         int h = currentView.getMeasuredHeight();
         if (h > height) height = h;
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
