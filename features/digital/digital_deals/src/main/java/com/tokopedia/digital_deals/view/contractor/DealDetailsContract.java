@@ -59,6 +59,12 @@ public class DealDetailsContract {
         boolean isRecommendationEnableFromArguments();
 
         void hideRecomendationDealsView();
+
+        boolean isEnableLikeFromArguments();
+
+        void hideLikeButtonView();
+
+        boolean isEnableShareFromArguments();
     }
     public interface Presenter extends CustomerPresenter<DealDetailsContract.View> {
 

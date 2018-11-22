@@ -123,7 +123,12 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
 
     @Override
     public void navigateToDetailPage(DealProductViewModel viewModel) {
-        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), viewModel.getUrl(), false, false));
+        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(),
+                viewModel.getUrl(),
+                false,
+                false,
+                false,
+                false));
     }
 
     public void setInteractionListener(InteractionListener interactionListener) {

@@ -437,7 +437,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void navigateToDealDetailPage(String slug) {
-        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), slug, false, false));
+        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), slug, false, false, false, false));
     }
 
     @Override

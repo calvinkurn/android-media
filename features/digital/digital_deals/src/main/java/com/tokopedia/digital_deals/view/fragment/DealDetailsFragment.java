@@ -49,6 +49,7 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
+import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
@@ -72,8 +73,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.DEFAULT_PARAM_ENABLE;
-import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PARAM_BUTTON_BUY_ENABLE;
-import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PARAM_RECOMENDATION_ENABLE;
+import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PARAM_DEAL_PASSDATA;
 
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
@@ -562,17 +562,24 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public boolean isEnableBuyFromArguments() {
-        if (getArguments() != null) {
-            return getArguments().getBoolean(PARAM_BUTTON_BUY_ENABLE, DEFAULT_PARAM_ENABLE);
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableBuy();
         } else {
             return DEFAULT_PARAM_ENABLE;
         }
     }
 
+    private DealDetailPassData getDealPassData() {
+        if (getArguments() != null && getArguments().getParcelable(PARAM_DEAL_PASSDATA) != null) {
+            return getArguments().getParcelable(PARAM_DEAL_PASSDATA);
+        }
+        return null;
+    }
+
     @Override
     public boolean isRecommendationEnableFromArguments() {
-        if (getArguments() != null) {
-            return getArguments().getBoolean(PARAM_RECOMENDATION_ENABLE, DEFAULT_PARAM_ENABLE);
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableRecommendation();
         } else {
             return DEFAULT_PARAM_ENABLE;
         }
@@ -582,6 +589,29 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void hideRecomendationDealsView() {
         recyclerViewDeals.setVisibility(View.GONE);
         tvRecommendedDeals.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean isEnableLikeFromArguments() {
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableLike();
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
+    }
+
+    @Override
+    public void hideLikeButtonView() {
+        ivFavourite.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean isEnableShareFromArguments() {
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableShare();
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
     }
 
     @Override

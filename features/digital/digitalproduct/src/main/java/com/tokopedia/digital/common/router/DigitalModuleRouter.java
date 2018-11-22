@@ -22,5 +22,10 @@ public interface DigitalModuleRouter {
 
     CacheManager getGlobalCacheManager();
 
-    Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation);
+    Intent getDealDetailIntent(Activity activity,
+                               String slug,
+                               boolean enableBuy,
+                               boolean enableRecommendation,
+                               boolean enableShare,
+                               boolean enableLike);
 }
