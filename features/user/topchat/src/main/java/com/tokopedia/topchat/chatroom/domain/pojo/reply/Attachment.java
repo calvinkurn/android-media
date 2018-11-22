@@ -3,8 +3,6 @@ package com.tokopedia.topchat.chatroom.domain.pojo.reply;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyListPojo;
-import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyListPojo;
 
 public class Attachment {
 
@@ -20,9 +18,6 @@ public class Attachment {
     @SerializedName("fallback_attachment")
     @Expose
     private FallbackAttachment fallbackAttachment;
-    @SerializedName("new_quick_replies")
-    @Expose
-    private QuickReplyListPojo quickReplies;
 
     public String getId() {
         return id;
@@ -54,13 +49,5 @@ public class Attachment {
 
     public void setFallbackAttachment(FallbackAttachment fallbackAttachment) {
         this.fallbackAttachment = fallbackAttachment;
-    }
-
-    public QuickReplyListPojo getQuickReplies() {
-        return quickReplies;
-    }
-
-    public void setQuickReplies(QuickReplyListPojo quickReplies) {
-        this.quickReplies = quickReplies;
     }
 }
