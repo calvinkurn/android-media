@@ -199,7 +199,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 graphqlUseCase,
                 new ImageReviewSubscriber(viewListener)
         );
-        getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber(viewListener));
     }
 
     @Override
