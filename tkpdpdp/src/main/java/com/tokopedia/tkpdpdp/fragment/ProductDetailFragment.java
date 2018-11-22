@@ -1118,12 +1118,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onImageReviewLoaded(List<ImageReviewItem> data) {
-        if(data != null && data.size() != 0){
-            imageFromBuyerView.renderData(data);
-            imageFromBuyerView.setVisibility(View.VISIBLE);
-        } else {
-            imageFromBuyerView.setVisibility(View.GONE);
-        }
+        imageFromBuyerView.renderData(data);
+        imageFromBuyerView.setVisibility(View.VISIBLE);
     }
 
     @Override
