@@ -1,5 +1,6 @@
 package com.tokopedia.useridentification.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,12 +14,13 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.R;
-import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
-import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
 import javax.inject.Inject;
@@ -93,9 +95,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO alvinatin for testing only
-//        getStatusInfo();
-        onSuccessGetShopVerificationStatus(KYCConstant.STATUS_NOT_VERIFIED);
+        getStatusInfo();
+//        onSuccessGetShopVerificationStatus(KYCConstant.STATUS_NOT_VERIFIED);
     }
 
     private void getStatusInfo() {
@@ -117,6 +118,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
                 showStatusVerified();
                 break;
             case KYCConstant.STATUS_EXPIRED:
+                showStatusNotVerified();
                 break;
             case KYCConstant.STATUS_NOT_VERIFIED:
                 showStatusNotVerified();
@@ -195,11 +197,20 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         };
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_OK) {
+            getStatusInfo();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private View.OnClickListener onGoToTermsButton(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO alvinatin add url
+                //TODO alvin change this
+                RouteManager.route(getContext(), "https://31-feature-m-staging.tokopedia.com/terms/merchantkyc");
             }
         };
     }

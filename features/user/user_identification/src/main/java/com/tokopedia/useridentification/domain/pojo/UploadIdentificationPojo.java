@@ -11,8 +11,15 @@ public class UploadIdentificationPojo {
     @Expose
     @SerializedName("is_success")
     private int isSuccess;
+    @Expose
+    @SerializedName("error")
+    private String error;
 
     public int getIsSuccess() {
         return isSuccess;
+    }
+
+    public String getError() {
+        return error;
     }
 }

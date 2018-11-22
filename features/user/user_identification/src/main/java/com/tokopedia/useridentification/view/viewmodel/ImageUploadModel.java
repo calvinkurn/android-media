@@ -8,8 +8,11 @@ import android.os.Parcelable;
  */
 
 public class ImageUploadModel implements Parcelable {
+    private int kycType;
+    private String picObjKyc;
     private String filePath;
-    private String url;
+    private int isSuccess;
+    private String error;
 
     public String getFilePath() {
         return filePath;
@@ -19,16 +22,41 @@ public class ImageUploadModel implements Parcelable {
         this.filePath = filePath;
     }
 
-    public String getUrl() {
-        return url;
+    public int getKycType() {
+        return kycType;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setKycType(int kycType) {
+        this.kycType = kycType;
     }
 
-    public ImageUploadModel(String filePath) {
+    public String getPicObjKyc() {
+        return picObjKyc;
+    }
+
+    public void setPicObjKyc(String picObjKyc) {
+        this.picObjKyc = picObjKyc;
+    }
+
+    public ImageUploadModel(int kycType, String filePath) {
+        this.kycType = kycType;
         this.filePath = filePath;
+    }
+
+    public int getIsSuccess() {
+        return isSuccess;
+    }
+
+    public void setIsSuccess(int isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 
 
@@ -39,13 +67,19 @@ public class ImageUploadModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.kycType);
+        dest.writeString(this.picObjKyc);
         dest.writeString(this.filePath);
-        dest.writeString(this.url);
+        dest.writeInt(this.isSuccess);
+        dest.writeString(this.error);
     }
 
     protected ImageUploadModel(Parcel in) {
+        this.kycType = in.readInt();
+        this.picObjKyc = in.readString();
         this.filePath = in.readString();
-        this.url = in.readString();
+        this.isSuccess = in.readInt();
+        this.error = in.readString();
     }
 
     public static final Creator<ImageUploadModel> CREATOR = new Creator<ImageUploadModel>() {

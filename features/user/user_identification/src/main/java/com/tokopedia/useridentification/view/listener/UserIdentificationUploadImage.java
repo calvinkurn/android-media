@@ -17,6 +17,12 @@ public interface UserIdentificationUploadImage  {
         void goToNextActivity();
 
         void onSuccessUpload();
+
+        void onErrorUpload();
+
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

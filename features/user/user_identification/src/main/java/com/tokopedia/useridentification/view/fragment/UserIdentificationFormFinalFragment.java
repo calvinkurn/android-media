@@ -24,6 +24,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
@@ -57,6 +59,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private TextView buttonFace;
     private TextView info;
     private TextView uploadButton;
+    private View progressBar;
     private UserIdentificationStepperModel stepperModel;
 
     private StepperListener stepperListener;
@@ -130,9 +133,14 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.uploadImage(stepperModel);
+                uploadImage();
             }
         });
+    }
+
+    private void uploadImage(){
+        showLoading();
+        presenter.uploadImage(stepperModel);
     }
 
     private void setImageKtp(String imagePath) {
@@ -160,6 +168,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         buttonFace = view.findViewById(R.id.change_face);
         info = view.findViewById(R.id.text_info);
         uploadButton = view.findViewById(R.id.upload_button);
+        progressBar = view.findViewById(R.id.progress_bar);
     }
 
     @Override
@@ -193,7 +202,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                //TODO alvin add url webview
+                //TODO alvin change this
+                RouteManager.route(getContext(), "https://31-feature-m-staging.tokopedia.com/terms/merchantkyc");
             }
 
             @Override
@@ -222,6 +232,41 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessUpload() {
-        Toast.makeText(getContext(), "Upload Success", Toast.LENGTH_LONG).show();
+        hideLoading();
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onErrorUpload() {
+        hideLoading();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                uploadImage();
+            }
+        });
+    }
+
+    @Override
+    public void showLoading() {
+        imageKtp.setVisibility(View.GONE);
+        imageFace.setVisibility(View.GONE);
+        buttonKtp.setVisibility(View.GONE);
+        buttonFace.setVisibility(View.GONE);
+        info.setVisibility(View.GONE);
+        uploadButton.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        imageKtp.setVisibility(View.VISIBLE);
+        imageFace.setVisibility(View.VISIBLE);
+        buttonKtp.setVisibility(View.VISIBLE);
+        buttonFace.setVisibility(View.VISIBLE);
+        info.setVisibility(View.VISIBLE);
+        uploadButton.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 }

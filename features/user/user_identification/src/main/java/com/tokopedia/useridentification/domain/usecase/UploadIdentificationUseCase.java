@@ -7,14 +7,15 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -22,8 +23,8 @@ import rx.Subscriber;
  */
 public class UploadIdentificationUseCase {
 
-    private static final int TYPE_KTP = 1;
-    private static final int TYPE_SELFIE = 2;
+    public static final int TYPE_KTP = 1;
+    public static final int TYPE_SELFIE = 2;
 
     private static final String KYC_TYPE = "kyc_type";
     private static final String PIC_OBJ_KYC = "pic_obj_kyc";
@@ -54,18 +55,16 @@ public class UploadIdentificationUseCase {
         graphqlUseCase.execute(subscriber);
     }
 
-    public static Map<String, Object> getRequestParam(int kycType,
-                                                      String picObjKyc,
-                                                      String kycNumber,
-                                                      String relationId,
-                                                      boolean autoVerify) {
-        Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put(KYC_TYPE, kycType);
-        requestParams.put(PIC_OBJ_KYC, picObjKyc);
-        requestParams.put(KYC_NUMBER, kycNumber);
-        requestParams.put(RELATION_ID, relationId);
-        requestParams.put(AUTO_VERIFY, autoVerify);
-        return requestParams;
+    public Observable<GraphqlResponse> createObservable(RequestParams params) {
+        return graphqlUseCase.createObservable(params);
+    }
+
+    public static RequestParams getRequestParam(int kycType,
+                                                      String picObjKyc) {
+        RequestParams param = RequestParams.create();
+        param.putInt(KYC_TYPE, kycType);
+        param.putString(PIC_OBJ_KYC, picObjKyc);
+        return param;
     }
 
     public void unsubscribe() {
