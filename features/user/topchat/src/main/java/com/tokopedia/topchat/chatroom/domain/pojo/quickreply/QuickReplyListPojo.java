@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class QuickReplyListPojo {
-    @SerializedName("quick_replies")
+    @SerializedName("new_quick_replies")
     @Expose
     private List<QuickReplyPojo> quickReplies;
 
