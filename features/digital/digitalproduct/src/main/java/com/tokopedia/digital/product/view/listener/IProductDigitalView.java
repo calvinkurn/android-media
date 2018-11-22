@@ -9,6 +9,7 @@ import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import java.util.List;
@@ -87,5 +88,7 @@ public interface IProductDigitalView extends IBaseView {
     void hidePromoGuideTab();
 
     void showPromoGuideTab();
+
+    void goToCartPage(ProductDigitalData productDigitalData);
 
 }

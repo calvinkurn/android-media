@@ -94,6 +94,7 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
@@ -133,6 +134,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
     private static final String ARG_PARAM_EXTRA_PRODUCT_ID = "ARG_PARAM_EXTRA_PRODUCT_ID";
     private static final String ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER";
+    private static final String ARG_PARAM_EXTRA_IS_FROM_WIDGET = "ARG_PARAM_EXTRA_IS_FROM_WIDGET";
+    private static final String ARG_PARAM_EXTRA_IS_COUPON_APPLIED = "ARG_PARAM_EXTRA_IS_COUPON_APPLIED";
     private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE =
             "ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE";
     private static final String ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE =
@@ -191,6 +194,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String operatorId;
     private String productId;
     private String clientNumber;
+    private boolean isFromWidget;
     private String additionalETollLastBalance;
     private String additionalETollLastUpdatedDate;
 
@@ -212,33 +216,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private boolean ussdInProgress = false;
     private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
-    private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
+    private boolean isCouponApplied;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
-            String additionalETollBalance, String additionalETollLastUpdatedDate, int isCouponApplied) {
+            boolean isFromWidget, boolean isCouponApplied, String additionalETollBalance,
+            String additionalETollLastUpdatedDate) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
         bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
         bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
-        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
-        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, additionalETollLastUpdatedDate);
-        bundle.putInt(PARAM_IS_COUPON_ACTIVE, isCouponApplied);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static Fragment newInstance(
-            String categoryId, String operatorId, String productId, String clientNumber,
-            String additionalETollBalance, String additionalETollLastUpdatedDate) {
-        Fragment fragment = new DigitalProductFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
-        bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
-        bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
-        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
+        bundle.putBoolean(ARG_PARAM_EXTRA_IS_FROM_WIDGET, isFromWidget);
+        bundle.putBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED, isCouponApplied);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, additionalETollBalance);
         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, additionalETollLastUpdatedDate);
         fragment.setArguments(bundle);
@@ -269,9 +260,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void onFirstTimeLaunched() {
-        presenter.processGetHelpUrlData(categoryId);
-        presenter.processGetCategoryAndBannerData(
-                categoryId, operatorId, productId, clientNumber);
+        if (!isFromWidget) {
+            presenter.processGetHelpUrlData(categoryId);
+            presenter.processGetCategoryAndBannerData(
+                    categoryId, operatorId, productId, clientNumber);
+        } else {
+            presenter.getCategoryData(
+                    categoryId, operatorId, productId, clientNumber
+            );
+        }
     }
 
     @Override
@@ -368,12 +365,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
         productId = arguments.getString(ARG_PARAM_EXTRA_PRODUCT_ID);
         clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
+        isFromWidget = arguments.getBoolean(ARG_PARAM_EXTRA_IS_FROM_WIDGET);
+        isCouponApplied = arguments.getBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED);
         additionalETollLastBalance = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE);
         additionalETollLastUpdatedDate = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE);
-
-        if (arguments.containsKey(PARAM_IS_COUPON_ACTIVE)) {
-            isCouponApplied = arguments.getInt(PARAM_IS_COUPON_ACTIVE);
-        }
     }
 
     @Override
@@ -396,16 +391,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         mainHolderContainer.setFillViewport(true);
         mainHolderContainer.setFocusable(true);
         mainHolderContainer.setFocusableInTouchMode(true);
-        mainHolderContainer.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (view instanceof ClientNumberInputView) {
-                    view.requestFocusFromTouch();
-                } else {
-                    view.clearFocus();
-                }
-                return false;
+        mainHolderContainer.setOnTouchListener((view1, motionEvent) -> {
+            if (view1 instanceof ClientNumberInputView) {
+                view1.requestFocusFromTouch();
+            } else {
+                view1.clearFocus();
             }
+            return false;
         });
 
         selectedCheckPulsaBalanceView = null;
@@ -413,12 +405,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void setViewListener() {
-        checkETollBalanceView.setListener(new CheckETollBalanceView.OnCheckBalanceClickListener() {
-            @Override
-            public void onClick() {
-                Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity());
-                startActivity(intent);
-            }
+        checkETollBalanceView.setListener(() -> {
+            Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity());
+            startActivity(intent);
         });
     }
 
@@ -443,13 +432,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void renderBannerListData(String title, List<BannerData> bannerDataList) {
         this.bannerDataListState = getBannerDataWithoutEmptyItem(bannerDataList);
         promoGuidePagerAdapter.setBannerDataList(title, bannerDataList);
-        promoViewPager.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (promoViewPager != null) {
-                    promoViewPager.setCurrentItem(0);
-                    promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
-                }
+        promoViewPager.postDelayed(() -> {
+            if (promoViewPager != null) {
+                promoViewPager.setCurrentItem(0);
+                promoViewPager.measureCurrentView(promoViewPager.getChildAt(0));
             }
         }, DEFAULT_POST_DELAYED_VALUE);
     }
@@ -488,7 +474,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         this.digitalProductView.setActionListener(this);
         this.digitalProductView.renderData(categoryData, historyClientNumber);
 
-        if (isCouponApplied == DEFAULT_COUPON_APPLIED) {
+        if (isCouponApplied) {
             holderProductDetail.addView(getTickerCouponApplied());
         }
 
@@ -736,6 +722,31 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void goToCartPage(ProductDigitalData productDigitalData) {
+        DigitalCheckoutPassData digitalCheckoutPassData = presenter.generateCheckoutPassData2(productDigitalData,
+                categoryId,
+                operatorId,
+                productId,
+                clientNumber,
+                VersionInfo.getVersionInfo(getActivity()),
+                SessionHandler.getLoginID(getActivity()));
+
+        if (SessionHandler.isV4Login(getActivity())) {
+            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                IDigitalModuleRouter digitalModuleRouter =
+                        (IDigitalModuleRouter) getActivity().getApplication();
+                navigateToActivityRequest(
+                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                );
+                getActivity().overridePendingTransition(0, 0);
+            }
+        } else {
+            interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
+        }
+    }
+
+    @Override
     public void onButtonCheckBalanceClicked(int simPosition, String ussdCode, CheckPulsaBalanceView checkPulsaBalanceView) {
         if (ussdInProgress) {
             showToastMessage(getString(R.string.msg_ussd_please_wait));
@@ -857,17 +868,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
-                            (Operator) data.getParcelableExtra(
-                                    DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
-                            )
+                            data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA)
                     );
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackProductChooser(
-                            (Product) data.getParcelableExtra(
-                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
-                            )
+                            data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA)
                     );
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
@@ -877,6 +884,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                         if (!TextUtils.isEmpty(message)) {
                             showToastMessage(message);
                         }
+                    }
+                } else if (resultCode == IDigitalModuleRouter.ON_BACK_PRESSED) {
+                    if (isFromWidget) {
+                        presenter.processGetHelpUrlData(categoryId);
+                        presenter.processGetCategoryAndBannerData(
+                                categoryId, operatorId, productId, clientNumber);
                     }
                 }
                 break;
@@ -1137,18 +1150,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
         AlertDialog.Builder accessibiltyDialog = new AlertDialog.Builder(getActivity());
         accessibiltyDialog.setMessage(getActivity().getString(R.string.dialog_accessibility_service_on));
-        accessibiltyDialog.setPositiveButton("ALLOW", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                startActivityForResult(intent, 0);
-            }
+        accessibiltyDialog.setPositiveButton("ALLOW", (dialogInterface, i) -> {
+            Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivityForResult(intent, 0);
         });
-        accessibiltyDialog.setNegativeButton("DENY", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+        accessibiltyDialog.setNegativeButton("DENY", (dialogInterface, i) -> {
 
-            }
         });
         Dialog dialog = accessibiltyDialog.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1164,7 +1171,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             getActivity().registerReceiver(ussdBroadcastReceiver, new IntentFilter(
                     USSDBroadcastReceiver.ACTION_GET_BALANCE_FROM_USSD
             ));
-
         }
         Intent intent = new Intent(context, USSDAccessibilityService.class);
         intent.putExtra(USSDAccessibilityService.KEY_START_SERVICE_FROM_APP, true);
@@ -1204,12 +1210,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             return;
         }
         showCaseDialog = createShowCase();
-        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
-            @Override
-            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                return false;
-            }
-        });
+        showCaseDialog.setShowCaseStepListener((previousStep, nextStep, showCaseObject) -> false);
 
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
@@ -1265,6 +1266,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onResume() {
         super.onResume();
+
         presenter.renderCheckPulsa();
     }
 
@@ -1379,17 +1381,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
         tickerView.buildView();
 
-        tickerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tickerView.setItemPadding(
-                        getResources().getDimensionPixelSize(R.dimen.dp_10),
-                        getResources().getDimensionPixelSize(R.dimen.dp_15),
-                        getResources().getDimensionPixelSize(R.dimen.dp_10),
-                        getResources().getDimensionPixelSize(R.dimen.dp_15)
-                );
-                tickerView.setItemTextAppearance(R.style.TextView_Micro);
-            }
+        tickerView.postDelayed(() -> {
+            tickerView.setItemPadding(
+                    getResources().getDimensionPixelSize(R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(R.dimen.dp_15),
+                    getResources().getDimensionPixelSize(R.dimen.dp_10),
+                    getResources().getDimensionPixelSize(R.dimen.dp_15)
+            );
+            tickerView.setItemTextAppearance(R.style.TextView_Micro);
         }, DEFAULT_POST_DELAYED_VALUE);
     }
+
 }

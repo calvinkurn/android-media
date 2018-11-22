@@ -15,6 +15,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -153,6 +154,13 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
         return SessionHandler.getLoginID(MainApplication.getAppContext()) + "_" + (token.isEmpty() ? timeMillis : token);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(IDigitalModuleRouter.ON_BACK_PRESSED);
+
+        super.onBackPressed();
     }
 
     @Override

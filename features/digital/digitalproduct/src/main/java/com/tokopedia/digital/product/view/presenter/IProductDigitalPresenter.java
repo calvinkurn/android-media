@@ -1,6 +1,8 @@
 package com.tokopedia.digital.product.view.presenter;
 
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ public interface IProductDigitalPresenter {
     void processGetCategoryAndBannerData(
             String categoryId, String operatorId, String productId, String clientNumber
     );
+
+    void getCategoryData(String categoryId, String operatorId, String productId, String clientNumber);
 
     void processStateDataToReRender();
 
@@ -41,4 +45,5 @@ public interface IProductDigitalPresenter {
     void processGetHelpUrlData(String categoryId);
 
     void onHelpMenuClicked();
+
 }

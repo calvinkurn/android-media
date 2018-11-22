@@ -3,10 +3,12 @@ package com.tokopedia.digital.widget.view.fragment
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tkpd.library.utils.CommonUtils
 import com.tkpd.library.utils.LocalCacheHandler
@@ -28,7 +30,6 @@ import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetContract
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetPresenter
-import kotlinx.android.synthetic.main.fragment_digital_widget.*
 import java.util.*
 
 /**
@@ -40,13 +41,18 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     private var rechargeViewPagerAdapter: RechargeViewPagerAdapter? = null
     private lateinit var digitalWidgetPresenter: DigitalWidgetPresenter
 
-//    private lateinit var tabLayout: TabLayout
-//    private lateinit var viewPager: WrapContentViewPager
-//    private lateinit var pulsaPlaceHolder: View
-//    private lateinit var container: LinearLayout
+    private lateinit var tab_layout_widget: TabLayout
+    private lateinit var view_pager_widget: ViewPager
+    private lateinit var container: LinearLayout
+    private lateinit var pulsa_place_holders: RelativeLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootview = inflater.inflate(R.layout.fragment_digital_widget, container, false)
+
+        tab_layout_widget = rootview.findViewById(R.id.tab_layout_widget)
+        view_pager_widget = rootview.findViewById(R.id.view_pager_widget)
+        this.container = rootview.findViewById(R.id.container)
+        pulsa_place_holders = rootview.findViewById(R.id.pulsa_place_holders)
 
         digitalWidgetPresenter.attachView(this)
 
@@ -76,7 +82,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
                 CategoryMapper())
 
         val recommendationListDataSource = RecommendationListDataSource(
-                digitalGqlApiService
+                digitalGqlApiService, context
         )
 
         val digitalWidgetRepository = DigitalWidgetRepository(

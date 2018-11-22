@@ -20,7 +20,7 @@ public class RecommendationItemEntity {
     @Expose
     private String clientNumber;
 
-    @SerializedName("applink")
+    @SerializedName("appLink")
     @Expose
     private String applink;
 

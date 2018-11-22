@@ -78,6 +78,12 @@
 
         </RelativeLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:visibility="gone"
+            android:id="@+id/recyclerview_recommendation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <FrameLayout
             android:visibility="gone"
             android:layout_width="match_parent"

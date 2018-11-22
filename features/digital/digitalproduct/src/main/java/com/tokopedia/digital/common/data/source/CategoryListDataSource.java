@@ -39,30 +39,22 @@ public class CategoryListDataSource {
 
     public Observable<List<Category>> getCategoryList() {
         return Observable.concat(getDataFromDb(), getDataFromCloud())
-                .first(new Func1<List<CategoryEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<CategoryEntity> categoryEntities) {
-                        return categoryEntities != null;
-                    }
-                })
+                .first(categoryEntities -> categoryEntities != null)
                 .map(categoryMapper);
     }
 
     private Observable<List<CategoryEntity>> getDataFromCloud() {
         return digitalEndpointService.getApi().getCategoryList()
                 .map(getFuncTransformCategoryEntityList())
-                .doOnNext(new Action1<List<CategoryEntity>>() {
-                    @Override
-                    public void call(List<CategoryEntity> categoryEntities) {
-                        deleteCache(categoryEntities);
-                        if (categoryEntities != null) {
-                            globalCacheManager.setKey(KEY_CATEGORY_LIST);
-                            globalCacheManager.setValue(
-                                    CacheUtil.convertListModelToString(categoryEntities,
-                                            new TypeToken<List<CategoryEntity>>() {
-                                            }.getType()));
-                            globalCacheManager.store();
-                        }
+                .doOnNext(categoryEntities -> {
+                    deleteCache(categoryEntities);
+                    if (categoryEntities != null) {
+                        globalCacheManager.setKey(KEY_CATEGORY_LIST);
+                        globalCacheManager.setValue(
+                                CacheUtil.convertListModelToString(categoryEntities,
+                                        new TypeToken<List<CategoryEntity>>() {
+                                        }.getType()));
+                        globalCacheManager.store();
                     }
                 });
     }
@@ -89,12 +81,7 @@ public class CategoryListDataSource {
     }
 
     private Func1<Response<TkpdDigitalResponse>, List<CategoryEntity>> getFuncTransformCategoryEntityList() {
-        return new Func1<Response<TkpdDigitalResponse>, List<CategoryEntity>>() {
-            @Override
-            public List<CategoryEntity> call(Response<TkpdDigitalResponse> response) {
-                return response.body().convertDataList(CategoryEntity[].class);
-            }
-        };
+        return response -> response.body().convertDataList(CategoryEntity[].class);
     }
 
 }

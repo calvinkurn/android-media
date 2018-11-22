@@ -30,6 +30,7 @@ public interface IDigitalModuleRouter {
     int PAYMENT_SUCCESS = 5;
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
+    int ON_BACK_PRESSED = 8;
 
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 

@@ -14,7 +14,7 @@ public class RechargeFavoriteRecommentaionList {
     @Expose
     private String title;
 
-    @SerializedName("recommentations")
+    @SerializedName("recommendations")
     @Expose
     private List<RecommendationItemEntity> recommendationItemEntityList;
 
