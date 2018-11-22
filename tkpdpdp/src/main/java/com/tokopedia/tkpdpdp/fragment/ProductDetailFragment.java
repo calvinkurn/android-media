@@ -43,7 +43,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.tkpdpdp.ImageReviewGalleryActivity;
+import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -642,7 +642,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageReviewGalleryActivity.moveTo(getActivity());
+                ImageReviewGalleryActivity.moveTo(getActivity(), 266635420);
                 /*
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
