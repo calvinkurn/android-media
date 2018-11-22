@@ -27,6 +27,7 @@ import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -39,6 +40,7 @@ import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -91,6 +93,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
+    private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
@@ -108,7 +111,8 @@ public class CartListPresenter implements ICartListPresenter {
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                              AddWishListUseCase addWishListUseCase,
                              RemoveWishListUseCase removeWishListUseCase,
-                             UpdateAndReloadCartUseCase updateAndReloadCartUseCase) {
+                             UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
+                             UserSessionInterface userSessionInterface) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -122,6 +126,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
@@ -839,7 +844,13 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processCancelAutoApply() {
-        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
+        com.tokopedia.network.utils.TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new com.tokopedia.network.utils.TKPDMapParam<>());
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CancelAutoApplyCouponUseCase.PARAM_REQUEST_AUTH_MAP_STRING, authParam);
+
+        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())

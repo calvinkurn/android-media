@@ -1,18 +1,13 @@
 package com.tokopedia.checkout.view.feature.addressoptions;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.checkout.R;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +27,6 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
 
     private static final int SHORT_LIST_SIZE = 2;
     private static final int PRIME_ADDRESS = 2;
-
-    private static final String TAG = CartAddressChoicePresenter.class.getSimpleName();
 
     private static final int DEFAULT_ORDER = 1;
     private static final String DEFAULT_QUERY = "";
@@ -74,21 +67,7 @@ public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddress
                         throwable.printStackTrace();
                         if (isViewAttached()) {
                             getView().hideLoading();
-                            String message;
-                            if (throwable instanceof UnknownHostException
-                                    || throwable instanceof ConnectException
-                                    || throwable instanceof SocketTimeoutException) {
-                                message = getView().getActivityContext().getResources().getString(
-                                        R.string.msg_no_connection);
-                            } else if (throwable instanceof UnProcessableHttpException) {
-                                message = TextUtils.isEmpty(throwable.getMessage()) ?
-                                        getView().getActivityContext().getResources().getString(
-                                                R.string.msg_no_connection) :
-                                        throwable.getMessage();
-                            } else {
-                                message = getView().getActivityContext().getResources().getString(
-                                        R.string.default_request_error_unknown);
-                            }
+                            String message = ErrorHandler.getErrorMessage(getView().getActivityContext(), throwable);
                             getView().showNoConnection(message);
                         }
                     }

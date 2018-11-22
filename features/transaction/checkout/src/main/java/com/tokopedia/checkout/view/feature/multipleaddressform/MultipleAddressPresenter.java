@@ -6,8 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -19,20 +18,13 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
-import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
-import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +39,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
+    private final UserSessionInterface userSessionInterface;
 
     private CartListData cartListData;
 
@@ -55,11 +48,13 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     public MultipleAddressPresenter(IMultipleAddressView view,
                                     GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
                                     ChangeShippingAddressUseCase changeShippingAddressUseCase,
-                                    CartApiRequestParamGenerator cartApiRequestParamGenerator) {
+                                    CartApiRequestParamGenerator cartApiRequestParamGenerator,
+                                    UserSessionInterface userSessionInterface) {
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.getCartMultipleAddressListUseCase = getCartMultipleAddressListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.view = view;
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
@@ -76,10 +71,14 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     public void processGetCartList(String cartIds) {
         view.showInitialLoading();
 
+        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramsTmp =
+                cartApiRequestParamGenerator.generateParamMapGetCartList(cartIds);
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.putAll(paramsTmp);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
-                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(cartIds))
+                GetCartMultipleAddressListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
+                getGeneratedAuthParamNetwork(params)
         );
 
         getCartMultipleAddressListUseCase.execute(requestParams, new Subscriber<CartListData>() {
@@ -92,25 +91,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onError(Throwable e) {
                 view.hideInitialLoading();
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    view.showError(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showError(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showError(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showError(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showError(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showError(e.getMessage());
-                } else {
-                    view.showError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                String message = ErrorHandler.getErrorMessage(view.getActivityContext(), e);
+                view.showError(message);
             }
 
             @Override
@@ -150,9 +132,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         RequestParams requestParam = RequestParams.create();
 
         TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
-                view.getActivityContext(), param,
-                SessionHandler.getLoginID(view.getActivityContext()),
-                GCMHandler.getRegistrationId(view.getActivityContext()));
+                userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
 
         requestParam.putAllString(authParam);
 
@@ -251,25 +231,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideLoading();
-                if (e instanceof UnknownHostException) {
-                    view.showError(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    view.showError(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    view.showError(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    view.showError(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    view.showError(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    view.showError(e.getMessage());
-                } else {
-                    view.showError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                String message = ErrorHandler.getErrorMessage(view.getActivityContext(), e);
+                view.showError(message);
             }
 
             @Override
@@ -296,14 +259,11 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         return originParams == null
                 ?
                 AuthUtil.generateParamsNetwork(
-                        view.getActivityContext(), SessionHandler.getLoginID(view.getActivityContext()),
-                        GCMHandler.getRegistrationId(view.getActivityContext())
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>()
                 )
                 :
                 AuthUtil.generateParamsNetwork(
-                        view.getActivityContext(), originParams,
-                        SessionHandler.getLoginID(view.getActivityContext()),
-                        GCMHandler.getRegistrationId(view.getActivityContext())
+                        userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), originParams
                 );
     }
 
