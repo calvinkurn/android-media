@@ -574,7 +574,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 !TextUtils.isEmpty(kolPostDomain.getContentLink()) ? kolPostDomain.getContentLink()
                         : kolPostDomain.getContentUrl()
         );
-        model.setReportable(true);
+        model.setReportable(kolPostDomain.isReportable());
 
         return model;
     }
