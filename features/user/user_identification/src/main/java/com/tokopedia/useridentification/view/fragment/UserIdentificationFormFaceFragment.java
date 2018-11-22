@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
