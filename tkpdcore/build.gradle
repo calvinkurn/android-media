@@ -143,7 +143,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.saldodetails)
-    implementation project(rootProject.ext.features.flashsaleManagementCommon)
 }
 
 apply plugin: 'com.google.gms.google-services'

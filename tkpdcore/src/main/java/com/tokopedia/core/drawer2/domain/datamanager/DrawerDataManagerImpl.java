@@ -19,7 +19,6 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokoCashUtil;
-import com.tokopedia.flashsale.management.common.domain.interactor.FlashsaleGetSellerStatusUseCase;
 
 import java.io.IOException;
 
@@ -35,20 +34,17 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private final TokoCashUseCase tokoCashUseCase;
     private final GetUserAttributesUseCase userAttributesUseCase;
     private final GetSellerUserAttributesUseCase sellerUserAttributesUseCase;
-    private final FlashsaleGetSellerStatusUseCase getSellerStatusUseCase;
 
     private final DrawerDataListener viewListener;
 
     public DrawerDataManagerImpl(DrawerDataListener viewListener,
                                  TokoCashUseCase tokoCashUseCase,
                                  GetUserAttributesUseCase uaUseCase,
-                                 GetSellerUserAttributesUseCase sellerAttributeUseCase,
-                                 FlashsaleGetSellerStatusUseCase getSellerStatusUseCase) {
+                                 GetSellerUserAttributesUseCase sellerAttributeUseCase) {
         this.viewListener = viewListener;
         this.tokoCashUseCase = tokoCashUseCase;
         this.userAttributesUseCase = uaUseCase;
         this.sellerUserAttributesUseCase = sellerAttributeUseCase;
-        this.getSellerStatusUseCase = getSellerStatusUseCase;
     }
 
 
@@ -60,7 +56,6 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     @Override
     public void unsubscribe() {
         tokoCashUseCase.unsubscribe();
-        getSellerStatusUseCase.unsubscribe();
     }
 
 
@@ -147,25 +142,6 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 if (response.getProfile() != null && response.getProfile().getProfilePicture() != null) {
                     sessionHandler.setProfilePicture(response.getProfile().getProfilePicture());
                 }
-            }
-        });
-    }
-
-    @Override
-    public void getFlashsaleSellerStatus(String shopId) {
-        String rawQuery = GraphqlHelper.loadRawString(viewListener.getActivity().getResources(), R.raw.gql_get_seller_status);
-        com.tokopedia.usecase.RequestParams params = FlashsaleGetSellerStatusUseCase.createRequestParams(rawQuery, shopId);
-        getSellerStatusUseCase.execute(params, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() { }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace(); }
-
-            @Override
-            public void onNext(Boolean isEligible) {
-                viewListener.onSuccessGetFlashsaleSellerStatus(isEligible);
             }
         });
     }

@@ -91,8 +91,4 @@ public abstract class NotificationListener implements DrawerDataListener {
 
     }
 
-    @Override
-    public void onSuccessGetFlashsaleSellerStatus(Boolean isEligible) {
-
-    }
 }

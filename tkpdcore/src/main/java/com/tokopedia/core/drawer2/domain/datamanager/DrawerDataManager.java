@@ -16,6 +16,4 @@ public interface DrawerDataManager {
 
     void getSellerUserAttributes(SessionHandler sessionHandler);
 
-    void getFlashsaleSellerStatus(String shopId);
-
 }

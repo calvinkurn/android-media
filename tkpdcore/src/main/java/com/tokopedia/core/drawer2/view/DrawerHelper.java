@@ -57,8 +57,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public abstract ArrayList<DrawerItem> createDrawerData();
 
-    public abstract void showFlashaleMenu();
-
     public void closeDrawer() {
         drawerLayout.closeDrawer(GravityCompat.START);
     }
@@ -172,6 +170,10 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public DrawerAdapter getAdapter() {
         return adapter;
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
     public void setAdapter(DrawerAdapter adapter) {

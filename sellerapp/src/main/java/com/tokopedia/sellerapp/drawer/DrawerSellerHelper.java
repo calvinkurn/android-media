@@ -75,10 +75,6 @@ public class DrawerSellerHelper extends DrawerHelper
 
     private SessionHandler sessionHandler;
 
-    private GetShopInfoUseCase getShopInfoUseCase;
-
-    private boolean isGoldMerchant;
-
     private RemoteConfig remoteConfig;
 
     public DrawerSellerHelper(Activity activity,
@@ -93,36 +89,12 @@ public class DrawerSellerHelper extends DrawerHelper
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
 
-        if (activity.getApplicationContext() instanceof SellerModuleRouter) {
-            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) activity.getApplicationContext();
-            getShopInfoUseCase = sellerModuleRouter.getShopInfo();
-        }
-
     }
 
     public static DrawerSellerHelper createInstance(Activity activity,
                                                     SessionHandler sessionHandler,
                                                     LocalCacheHandler drawerCache) {
         return new DrawerSellerHelper(activity, sessionHandler, drawerCache);
-    }
-
-    @Override
-    public void showFlashaleMenu() {
-        ArrayList<DrawerItem> items = adapter.getData();
-        Observable.range(0, items.size())
-                .filter(integer -> items.get(integer).id == TkpdState.DrawerPosition.SELLER_TOP_ADS &&
-                        items.get(integer+1).id != TkpdState.DrawerPosition.SELLER_FLASH_SALE)
-                .take(1)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(integer -> {
-                    if (integer != null){
-                        adapter.getData().add(integer+1, new DrawerItem(context.getString(R.string.drawer_title_flash_sale),
-                                TkpdState.DrawerPosition.SELLER_FLASH_SALE,
-                                true));
-                        adapter.notifyDataSetChanged();
-                    }
-                }, throwable -> {});
     }
 
     @Override
@@ -140,7 +112,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getProductMenu());
 
         data.add(getPaymentAndTopupMenu());
-        data.add(getGoldMerchantMenu(false));
+        data.add(((SellerDrawerAdapter)adapter).getGoldMerchantMenu(false));
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -179,8 +151,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 true));
         shopLayout.setVisibility(View.VISIBLE);
         footerShadow.setVisibility(View.VISIBLE);
-
-        isGoldMerchantAsync();
 
         return data;
     }
@@ -301,75 +271,9 @@ public class DrawerSellerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0);
     }
 
-    private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
-        DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
-                R.drawable.ic_goldmerchant_drawer,
-                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0);
-
-        String gmString = isGoldMerchant ?
-                context.getString(R.string.extend_gold_merchant) :
-                context.getString(R.string.upgrade_gold_merchant);
-
-        gmMenu.add(new DrawerItem(gmString,
-                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0));
-        gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
-                TkpdState.DrawerPosition.FEATURED_PRODUCT,
-                true
-        ));
-        return gmMenu;
-    }
-
-    private void isGoldMerchantAsync() {
-        getShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<ShopModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(ShopModel shopModel) {
-                DrawerGroup goldMerchantMenu = getGoldMerchantMenu(shopModel.info.isGoldMerchant());
-                goldMerchantMenu.setExpanded(false);
-
-                // update gold merchant
-                isGoldMerchant = shopModel.info.isGoldMerchant();
-
-                // find gold merchant index based on drawerposition
-                int goldMerchantIndex = -1;
-                for (int i = 0; i < adapter.getData().size(); i++) {
-                    if (adapter.getData().get(i).getId() == TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE) {
-                        goldMerchantIndex = i;
-                    }
-                }
-
-                DrawerGroup drawerGroup = (DrawerGroup) adapter.getData().get(goldMerchantIndex);
-                adapter.getData().removeAll(drawerGroup.getList());
-                adapter.getData().remove(goldMerchantIndex);
-
-                adapter.getData().add(goldMerchantIndex, goldMerchantMenu);
-
-                if (drawerGroup.isExpanded()) {
-                    adapter.getData().addAll(goldMerchantIndex + 1, goldMerchantMenu.getList());
-                    goldMerchantMenu.setExpanded(true);
-                }
-
-                adapter.notifyDataSetChanged();
-            }
-        });
-    }
-
     @Override
     public void initDrawer(Activity activity) {
-        this.adapter = DrawerAdapter.createAdapter(activity, this, drawerCache);
+        this.adapter = new SellerDrawerAdapter(activity, this, drawerCache);
         this.adapter.setData(createDrawerData());
         this.adapter.setHeader(new DrawerSellerHeaderDataBinder(adapter, activity, this, drawerCache));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity,
@@ -511,7 +415,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(CampaignActivity.createIntent(context));
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    if (isGoldMerchant) {
+                    if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
                         UnifyTracking.eventClickMenuFeaturedProduct();
                         intent = new Intent(context, GMFeaturedProductActivity.class);
                         context.startActivity(intent);
