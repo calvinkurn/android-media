@@ -13,6 +13,7 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
+import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.useridentification.view.presenter.UserIdentificationInfoPresenter;
@@ -68,8 +69,9 @@ public class UserIdentificationModule {
     @UserIdentificationScope
     @Provides
     UserIdentificationUploadImage.Presenter provideUploadImagePresenter(UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
+                                                                        UploadIdentificationUseCase uploadIdentificationUseCase,
                                                                         com.tokopedia.user.session.UserSession userSession,
                                                                         CompositeSubscription compositeSubscription) {
-        return new UserIdentificationUploadImagePresenter(uploadImageUseCase, userSession, compositeSubscription);
+        return new UserIdentificationUploadImagePresenter(uploadImageUseCase, uploadIdentificationUseCase, userSession, compositeSubscription);
     }
 }
