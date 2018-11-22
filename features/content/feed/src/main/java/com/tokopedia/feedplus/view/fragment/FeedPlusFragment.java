@@ -340,6 +340,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
+        triggerClearNewFeedNotification();
         adapter.clearData();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
@@ -760,6 +761,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
+        triggerClearNewFeedNotification();
+    }
+
+    private void triggerClearNewFeedNotification() {
         Intent intent = new Intent(BROADCAST_FEED);
         intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true);
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
