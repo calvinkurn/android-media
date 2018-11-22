@@ -156,11 +156,11 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
             try {
                 if (!userSession.isMsisdnVerified()) {
                     showMustVerify();
-                } else if (userSession.hasShownSaldoWithdrawalWarning()) {
-                    goToWithdrawActivity();
-                } else {
+                } else if (!userSession.hasShownSaldoWithdrawalWarning()) {
                     userSession.setSaldoWithdrawalWaring(true);
                     showSaldoWarningDialog();
+                } else {
+                    goToWithdrawActivity();
                 }
             } catch (Exception e) {
 
