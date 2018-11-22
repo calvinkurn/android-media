@@ -25,8 +25,8 @@ public class UploadIdentificationUseCase {
     private static final int TYPE_KTP = 1;
     private static final int TYPE_SELFIE = 2;
 
-    private static final String KYC_TYPE = "kyc_type";
-    private static final String PIC_OBJ_KYC = "pic_obj_kyc";
+    private static final String KYC_TYPE = "kycType";
+    private static final String PIC_OBJ_KYC = "picObjKYC";
     private static final String KYC_NUMBER = "kyc_number";
     private static final String RELATION_ID = "relation_id";
     private static final String AUTO_VERIFY = "auto_verify";
@@ -54,17 +54,17 @@ public class UploadIdentificationUseCase {
         graphqlUseCase.execute(subscriber);
     }
 
-    public static Map<String, Object> getRequestParam(int kycType,
-                                                      String picObjKyc,
-                                                      String kycNumber,
-                                                      String relationId,
-                                                      boolean autoVerify) {
+    /**
+     *
+     * @param type from TYPE_KTP OR TYPE_SELFIE
+     * @param picObjKyc from uploadapp
+     * @return request params
+     */
+    public static Map<String, Object> getRequestParam(int type,
+                                                      String picObjKyc) {
         Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put(KYC_TYPE, kycType);
+        requestParams.put(KYC_TYPE, type);
         requestParams.put(PIC_OBJ_KYC, picObjKyc);
-        requestParams.put(KYC_NUMBER, kycNumber);
-        requestParams.put(RELATION_ID, relationId);
-        requestParams.put(AUTO_VERIFY, autoVerify);
         return requestParams;
     }
 

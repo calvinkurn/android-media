@@ -223,7 +223,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TalkUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_INBOX_DOMAIN);
 
         TopChatUrl.TOPCHAT_JS_API = SellerAppBaseUrl.BASE_JS_DOMAIN;
-        KycCommonUrl.BASE_KYC_URL = SellerAppBaseUrl.BASE_WEB_DOMAIN;
     }
 
     private void generateSellerAppNetworkKeys() {
