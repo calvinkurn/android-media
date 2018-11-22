@@ -43,6 +43,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
     private lateinit var recyclerview_recommendation: RecyclerView
     private lateinit var error_view: LinearLayout
     private lateinit var text_error_message: TextView
+    private lateinit var text_see_more: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootview = inflater.inflate(R.layout.fragment_digital_channel, container, false)
@@ -52,6 +53,11 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         recyclerview_recommendation = rootview.findViewById(R.id.recyclerview_recommendation)
         error_view = rootview.findViewById(R.id.error_view)
         text_error_message = rootview.findViewById(R.id.text_error_message)
+        text_see_more = rootview.findViewById(R.id.see_more)
+
+        text_see_more.setOnClickListener {
+            RouteManager.route(activity, "tokopedia://category-explore?type=2")
+        }
 
         digitalChannelPresenter.attachView(this)
 
