@@ -37,7 +37,10 @@ import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleSubmitLabelAdapter
-import com.tokopedia.flashsale.management.product.data.*
+import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
+import com.tokopedia.flashsale.management.product.data.FlashSaleSubmissionProductData
+import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
+import com.tokopedia.flashsale.management.product.data.GetMojitoPostProduct
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
 import com.tokopedia.flashsale.management.view.activity.CampaignActivity
 import com.tokopedia.graphql.data.GraphqlClient
@@ -263,10 +266,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         }
     }
 
+    // status = submission ==> getEligibleProductList
+    // status = other ==> getPost
+    // when status is loaded, page will always from start
     override fun loadData(page: Int) {
-        // status = submission ==> getEligibleProductList
-        // status = other ==> getPost
-        // when status is loaded, page will always from start
         if (KEY_STATUS_REGISTRATION.equals(statusLabel, true)) {
             // in submission
             presenter.getEligibleProductList(campaignId,
@@ -309,7 +312,6 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             emptyModel.title = getString(R.string.no_eligible_product_in_this_flash_sale)
             emptyModel.content = getString(R.string.no_worry_you_can_join_next_flash_sale)
         } else {
-            //TODO wording empty for filter or search text
             emptyModel.title = ""
             emptyModel.content = ""
         }
@@ -356,7 +358,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             needLoadAllPage = false
         }
         if (needLoadCurrentPage) {
-            //TODO currently load all data again
+            //currently load all data again
             loadInitialData()
             needLoadCurrentPage = false
         }
