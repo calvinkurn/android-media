@@ -48,6 +48,8 @@ public class UserIdentificationFormFaceFragment extends
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
             }
         });
+        ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK);
+        ImageHandler.LoadImage(wrongImage, KycUrl.SELFIE_FAIL);
     }
 
     @Override
