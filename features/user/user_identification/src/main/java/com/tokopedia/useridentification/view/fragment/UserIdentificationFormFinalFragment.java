@@ -30,7 +30,6 @@ import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
-import com.tokopedia.useridentification.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import java.io.File;
@@ -63,7 +62,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private StepperListener stepperListener;
 
     @Inject
-    UserIdentificationUploadImagePresenter presenter;
+    UserIdentificationUploadImage.Presenter presenter;
 
     public static Fragment createInstance() {
         UserIdentificationFormFinalFragment fragment = new UserIdentificationFormFinalFragment();

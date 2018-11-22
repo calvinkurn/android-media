@@ -54,9 +54,11 @@ public class UserIdentificationUploadImagePresenter extends BaseDaggerPresenter<
     @Inject
     public UserIdentificationUploadImagePresenter(UploadImageUseCase<AttachmentImageModel>
                                                           uploadImageUseCase,
-                                                  UserSession userSession) {
+                                                  UserSession userSession,
+                                                  CompositeSubscription compositeSubscription) {
         this.uploadImageUseCase = uploadImageUseCase;
         this.userSession = userSession;
+        this.compositeSubscription = compositeSubscription;
     }
 
     @Override
