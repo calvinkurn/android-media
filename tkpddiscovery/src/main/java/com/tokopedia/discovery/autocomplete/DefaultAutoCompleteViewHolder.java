@@ -40,11 +40,6 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
         recyclerView.setLayoutManager(layoutManager);
     }
 
-    public DefaultAutoCompleteViewHolder(View view, SearchAdapter adapter) {
-        super(view);
-        this.adapter = adapter;
-    }
-
     @Override
     public void bind(DefaultAutoCompleteViewModel element) {
         adapter.clearData();
