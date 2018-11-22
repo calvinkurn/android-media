@@ -219,7 +219,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
         ContactUsTracking.eventHomeHubungiKamiClick();
-        String encodedUrl = "";
+        String encodedUrl;
         try {
             encodedUrl = URLEncoder.encode(ContactUsURL.NAVIGATE_NEXT_URL, "UTF-8");
         } catch (UnsupportedEncodingException e) {

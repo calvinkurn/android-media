@@ -13,8 +13,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
-import com.tokopedia.contactus.home.view.fragment.ContactUsWebFragment;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
+import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
 
 /**
  * Created by sandeepgoyal on 02/04/18.
@@ -39,7 +39,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         if (!isNative()) {
-            return ContactUsWebFragment.getWebViewFragment(getIntent().getStringExtra(ContactUsConstant.PARAM_URL));
+            return SimpleWebViewWithFilePickerFragment.createInstance(getIntent().getStringExtra(ContactUsConstant.PARAM_URL));
         } else {
             return ContactUsHomeFragment.newInstance();
         }
