@@ -224,5 +224,6 @@
     <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
     <string name="ppp_more">Pelajari</string>
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
+    <string name="checkout_ppp_label">Proteksi Gadget (3 Barang)</string>
 
 </resources>

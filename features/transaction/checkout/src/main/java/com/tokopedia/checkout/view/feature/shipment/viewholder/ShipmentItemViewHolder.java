@@ -144,6 +144,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvShippingFeePrice;
     private TextView tvInsuranceFee;
     private TextView tvInsuranceFeePrice;
+    private TextView tvProtectionLabel;
+    private TextView tvProtectionFee;
     private TextView tvPromoText;
     private TextView tvPromoPrice;
     private RelativeLayout rlShipmentCost;
@@ -246,6 +248,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
         tvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
         tvRecipientPhone = itemView.findViewById(R.id.tv_recipient_phone);
+        tvProtectionLabel = itemView.findViewById(R.id.tv_purchase_protection_label);
+        tvProtectionFee = itemView.findViewById(R.id.tv_purchase_protection_fee);
         tvChangeAddress = itemView.findViewById(R.id.tv_change_address);
         addressLayout = itemView.findViewById(R.id.address_layout);
         pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
@@ -335,6 +339,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
         mActionListener.onNeedUpdateRequestData();
         mActionListener.onPurchaseProtectionChangeListener(getAdapterPosition());
+//        mActionListener.onNeedUpdateViewItem(getAdapterPosition());
     }
 
     private void initSaveStateDebouncer() {
@@ -769,6 +774,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         double totalWeight = 0;
         int shippingPrice = 0;
         int insurancePrice = 0;
+        long totalPurchaseProtectionPrice = 0;
+        int totalPurchaseProtectionItem = 0;
         int additionalPrice = 0;
         long subTotalPrice = 0;
         long totalItemPrice = 0;
@@ -788,8 +795,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
             totalItem += cartItemModel.getQuantity();
             totalWeight += cartItemModel.getWeight();
+            if(cartItemModel.isProtectionOptIn()) {
+                totalPurchaseProtectionItem += cartItemModel.getProtectionPrice() / cartItemModel.getProtectionPricePerProduct();
+                totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
+            }
         }
         totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
+        String totalPPPItemLabel = String.format("Proteksi Gadget (%d Barang)", totalPurchaseProtectionItem);
 
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
@@ -802,7 +814,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             additionalPrice = shipmentCartItemModel.getSelectedShipmentDetailData()
                     .getSelectedCourier().getAdditionalPrice();
-            subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + additionalPrice);
+            subTotalPrice += (totalItemPrice + shippingPrice + insurancePrice + totalPurchaseProtectionPrice + additionalPrice);
         } else {
             subTotalPrice = totalItemPrice;
         }
@@ -812,6 +824,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvShippingFee.setText(shippingFeeLabel);
         tvShippingFeePrice.setText(getPriceFormat(tvShippingFee, tvShippingFeePrice, shippingPrice));
         tvInsuranceFeePrice.setText(getPriceFormat(tvInsuranceFee, tvInsuranceFeePrice, insurancePrice));
+        tvProtectionLabel.setText(totalPPPItemLabel);
+        tvProtectionFee.setText(getPriceFormat(tvProtectionLabel, tvProtectionFee, totalPurchaseProtectionPrice));
         tvAdditionalFeePrice.setText(getPriceFormat(tvAdditionalFee, tvAdditionalFeePrice, additionalPrice));
         rlCartSubTotal.setOnClickListener(getCostDetailOptionListener(shipmentCartItemModel));
     }
