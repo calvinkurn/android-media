@@ -796,7 +796,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             totalItem += cartItemModel.getQuantity();
             totalWeight += cartItemModel.getWeight();
             if(cartItemModel.isProtectionOptIn()) {
-                totalPurchaseProtectionItem += cartItemModel.getProtectionPrice() / cartItemModel.getProtectionPricePerProduct();
+                totalPurchaseProtectionItem += cartItemModel.getQuantity();
                 totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
             }
         }

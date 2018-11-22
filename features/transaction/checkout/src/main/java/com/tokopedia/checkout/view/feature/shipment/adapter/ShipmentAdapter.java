@@ -613,7 +613,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     totalItem += cartItemModel.getQuantity();
 
                     if(cartItemModel.isProtectionOptIn()) {
-                        totalPurchaseProtectionItem += cartItemModel.getProtectionPrice() / cartItemModel.getProtectionPricePerProduct();
+                        totalPurchaseProtectionItem += cartItemModel.getQuantity();
                         totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
                     }
 
