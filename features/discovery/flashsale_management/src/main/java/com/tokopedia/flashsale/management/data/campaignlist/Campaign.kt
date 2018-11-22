@@ -51,7 +51,7 @@ data class Campaign(
 
         @SerializedName("campaign_type")
         @Expose
-        val campaignType: String = "",
+        var campaignType: String = "",
 
         @SerializedName(value = "cover", alternate = arrayOf("banners"))
         @Expose

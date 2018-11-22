@@ -13,13 +13,14 @@ class CampaignDetailFragmentPagerAdapter(val fragmentManager: FragmentManager,
                                          private val titles: List<String>,
                                          private val campaignId: Long,
                                          private val campaignUrl: String,
+                                         private val campaignType: String?,
                                          private val sellerStatus: SellerStatus)
     : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int) = when(position){
-        0 -> FlashSaleInfoFragment.createInstance(campaignUrl, sellerStatus)
+        0 -> FlashSaleInfoFragment.createInstance(campaignUrl, sellerStatus, campaignType)
         1 -> FlashSaleProductListFragment.createInstance(campaignId.toInt(), campaignUrl)
         else -> Fragment()
     }
