@@ -222,7 +222,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mPagerSortType.postDelayed(() -> refreshTab(0, 0), CommonConstant.TAB_SETUP_DELAY_MS);
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
-                && (filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
+                && (filters.getCategories().get(0).isHideSubCategory() || filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
             mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
@@ -290,6 +290,17 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 if (selectedTabIndex == 0) { // Special handling for zeroth index
                     refreshTab(filters.getCategories().get(0).getId(),
                             filters.getCategories().get(0).getSubCategory().get(0).getId());
+
+                    try {
+                        if (filters.getCategories().get(0).getSubCategory().get(0).getTimeRemainingSeconds() > 0) {
+                            startFlashTimer(filters.getCategories().get(0).getSubCategory().get(0));
+                            mContainerFlashTimer.setVisibility(View.VISIBLE);
+                        } else {
+                            mContainerFlashTimer.setVisibility(View.GONE);
+                        }
+                    } catch (Exception e){
+
+                    }
                 } else {
                     mPagerSortType.setCurrentItem(selectedTabIndex, false);
                 }
