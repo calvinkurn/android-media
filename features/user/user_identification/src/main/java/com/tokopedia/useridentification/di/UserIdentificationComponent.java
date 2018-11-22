@@ -1,6 +1,7 @@
 package com.tokopedia.useridentification.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.useridentification.view.fragment.UserIdentificationFormFinalFragment;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFragment;
 
 import dagger.Component;
@@ -14,4 +15,5 @@ public interface UserIdentificationComponent  {
 
     void inject(UserIdentificationInfoFragment fragment);
 
+    void inject(UserIdentificationFormFinalFragment fragment);
 }

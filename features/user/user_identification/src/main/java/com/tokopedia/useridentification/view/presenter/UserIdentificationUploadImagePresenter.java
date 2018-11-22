@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
@@ -49,6 +51,7 @@ public class UserIdentificationUploadImagePresenter extends BaseDaggerPresenter<
     private final UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private final UserSession userSession;
 
+    @Inject
     public UserIdentificationUploadImagePresenter(UploadImageUseCase<AttachmentImageModel>
                                                           uploadImageUseCase,
                                                   UserSession userSession) {

@@ -19,14 +19,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
+import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
+import com.tokopedia.useridentification.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import java.io.File;
@@ -36,8 +40,10 @@ import javax.inject.Inject;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
+        .PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
+        .PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 15/11/18.
@@ -57,7 +63,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private StepperListener stepperListener;
 
     @Inject
-    UserIdentificationUploadImage.Presenter presenter;
+    UserIdentificationUploadImagePresenter presenter;
 
     public static Fragment createInstance() {
         UserIdentificationFormFinalFragment fragment = new UserIdentificationFormFinalFragment();
@@ -89,7 +95,15 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+        if (getActivity() != null) {
+            UserIdentificationComponent daggerUserIdentificationComponent =
+                    DaggerUserIdentificationComponent.builder()
+                            .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                            .build();
 
+            daggerUserIdentificationComponent.inject(this);
+            presenter.attachView(this);
+        }
     }
 
     private void setContentView() {
