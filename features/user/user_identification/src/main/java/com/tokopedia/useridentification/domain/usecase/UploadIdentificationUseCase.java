@@ -11,6 +11,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,8 +27,8 @@ public class UploadIdentificationUseCase {
     public static final int TYPE_KTP = 1;
     public static final int TYPE_SELFIE = 2;
 
-    private static final String KYC_TYPE = "kyc_type";
-    private static final String PIC_OBJ_KYC = "pic_obj_kyc";
+    private static final String KYC_TYPE = "kycType";
+    private static final String PIC_OBJ_KYC = "picObjKYC";
     private static final String KYC_NUMBER = "kyc_number";
     private static final String RELATION_ID = "relation_id";
     private static final String AUTO_VERIFY = "auto_verify";
@@ -58,7 +59,12 @@ public class UploadIdentificationUseCase {
     public Observable<GraphqlResponse> createObservable(RequestParams params) {
         return graphqlUseCase.createObservable(params);
     }
-
+    /**
+     *
+     * @param kycType from TYPE_KTP OR TYPE_SELFIE
+     * @param picObjKyc from uploadapp
+     * @return request params
+     */
     public static RequestParams getRequestParam(int kycType,
                                                       String picObjKyc) {
         RequestParams param = RequestParams.create();

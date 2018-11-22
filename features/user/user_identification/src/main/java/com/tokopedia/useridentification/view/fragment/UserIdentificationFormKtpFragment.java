@@ -10,6 +10,8 @@ import android.widget.Toast;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.useridentification.KycUrl;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
@@ -47,6 +49,9 @@ public class UserIdentificationFormKtpFragment extends
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });
+        ImageHandler.LoadImage(correctImage, KycUrl.KTP_OK);
+        ImageHandler.LoadImage(wrongImage, KycUrl.KTP_FAIL);
+
     }
 
     @Override

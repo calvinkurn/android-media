@@ -22,6 +22,8 @@ import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.useridentification.KycUrl;
 
 import javax.inject.Inject;
 
@@ -131,6 +133,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private void showStatusNotVerified() {
+        ImageHandler.LoadImage(image, KycUrl.ICON_NOT_VERIFIED);
         title.setText(R.string.kyc_intro_title);
         text.setText(R.string.kyc_intro_text);
         button.setText(R.string.kyc_intro_button);
@@ -141,6 +144,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private void showStatusVerified() {
+        ImageHandler.LoadImage(image, KycUrl.ICON_SUCCESS_VERIFY);
         title.setText(R.string.kyc_verified_title);
         text.setText(R.string.kyc_verified_text);
         button.setText(R.string.kyc_verified_button);
@@ -151,11 +155,13 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private void showStatusPending() {
+        ImageHandler.LoadImage(image, KycUrl.ICON_WAITING);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
     }
 
     private void showStatusRejected() {
+        ImageHandler.LoadImage(image, KycUrl.ICON_FAIL_VERIFY);
         title.setText(R.string.kyc_failed_title);
         text.setText(R.string.kyc_failed_text);
         button.setText(R.string.kyc_failed_button);

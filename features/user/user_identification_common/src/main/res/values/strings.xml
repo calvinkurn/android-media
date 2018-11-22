@@ -14,7 +14,7 @@
     <string name="alert_failed_verification_highlight_text">Verifikasi ulang</string>
 
     <string name="ticker_unverified"><![CDATA[Lakukan proses verifikasi untuk mendapatkan lebih
-        banyak keuntungan. <font color=\'#42b549\'><a href="https://m.tokopedia.com/help/payment?page=account-number">Lihat keuntungan</a></font>
+        banyak keuntungan. <font color=\'#42b549\'><a href="https://m.tokopedia.com/myshop/verify/terms">Lihat keuntungan</a></font>
 ]]></string>
 
 </resources>

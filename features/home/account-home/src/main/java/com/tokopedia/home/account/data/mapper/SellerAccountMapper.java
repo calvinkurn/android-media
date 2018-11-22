@@ -67,7 +67,10 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
-        items.add(parseTickerSeller(context, accountModel));
+        TickerViewModel tickerViewModel = parseTickerSeller(context, accountModel);
+        if (tickerViewModel != null && !tickerViewModel.getListMessage().isEmpty()) {
+            items.add(tickerViewModel);
+        }
 
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
