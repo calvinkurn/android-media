@@ -93,7 +93,9 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getStatusInfo();
+        //TODO alvinatin for testing only
+//        getStatusInfo();
+        onSuccessGetShopVerificationStatus(KYCConstant.STATUS_NOT_VERIFIED);
     }
 
     private void getStatusInfo() {
