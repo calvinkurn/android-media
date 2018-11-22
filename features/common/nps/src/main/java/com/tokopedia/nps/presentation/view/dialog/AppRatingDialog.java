@@ -91,6 +91,8 @@ public abstract class AppRatingDialog {
             alertDialog.setOnDismissListener(listener);
             alertDialog.show();
             onShowDialog();
+        } else if(listener != null) {
+            listener.onDismiss(null);
         }
     }
 

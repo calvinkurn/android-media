@@ -287,6 +287,11 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         }
     }
 
+    @Override
+    public boolean isTraceStopped() {
+        return isTraceStopped;
+    }
+
     private double getItemWidth() {
         DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -558,8 +563,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onTopAdsLoaded(List<Item> list) {
-        presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
-        stopTrace();
+        if (!isTraceStopped) {
+            presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
+            stopTrace();
+        }
         presenter.setRecommendationList(list);
         cartPageAnalytics.enhancedEcommerceProductViewRecommendationOnEmptyCart(
                 presenter.generateEmptyCartAnalyticViewProductRecommendationDataLayer());
@@ -569,8 +576,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-        presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
-        stopTrace();
+        if (!isTraceStopped) {
+            presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
+            stopTrace();
+        }
         cvRecommendation.setVisibility(View.GONE);
         tvRecommendationSeeAllBottom.setVisibility(View.GONE);
     }
