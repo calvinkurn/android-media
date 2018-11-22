@@ -2771,8 +2771,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getEmptyCartFragment(String autoApplyMessage) {
-        return EmptyCartFragment.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName());
+    public Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc) {
+        return EmptyCartFragment.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName(), state, titleDesc);
     }
 
     @Override

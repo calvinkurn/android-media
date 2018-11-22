@@ -1,31 +1,20 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
 import android.content.res.Resources
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
+import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.domain.DetailCouponMarkeplaceModel
-import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
-import org.json.JSONException
-import org.json.JSONObject
 import rx.Subscriber
 import java.lang.reflect.Type
-import java.util.*
 
 class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                    val checkPromoUseCase: CheckPromoCodeUseCase,
@@ -48,27 +37,20 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
 
             override fun onNext(restResponse: Map<Type, RestResponse>) {
                 view.hideProgressLoading()
-                val responseCancel = restResponse.get(String::class.java)
-                val responseCancelPromo = responseCancel?.getData<String>()
-                var resultSuccess = false
-                try {
-                    val jsonObject = JSONObject(responseCancelPromo)
-                    resultSuccess = jsonObject.getJSONObject("data")
-                            .getBoolean("success")
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
+                val responseCancel = restResponse.get(ResponseCancelPromo::class.java)
+                val responseCancelPromo = responseCancel?.getData<ResponseCancelPromo>()
+                var resultSuccess = responseCancelPromo?.data?.isSuccess ?: false
 
-                if(resultSuccess){
+                if (resultSuccess) {
                     view.onSuccessCancelPromo();
-                }else{
+                } else {
                     view.onErrorCancelPromo(RuntimeException())
                 }
             }
         })
     }
 
-    override fun validatePromoUse(codeCoupon: String, oneClickShipment:Boolean, resources: Resources) {
+    override fun validatePromoUse(codeCoupon: String, oneClickShipment: Boolean, resources: Resources) {
         view.showProgressLoading()
         checkPromoUseCase.execute(checkPromoUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment), object : Subscriber<DataVoucher>() {
             override fun onCompleted() {
@@ -84,9 +66,9 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
 
             override fun onNext(dataVoucher: DataVoucher) {
                 view.hideProgressLoading()
-                if(dataVoucher.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED){
+                if (dataVoucher.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED) {
                     view.onErrorValidatePromo(MessageErrorException(dataVoucher.message?.text))
-                }else{
+                } else {
                     view.onSuccessValidatePromo(dataVoucher)
                 }
             }
@@ -96,7 +78,7 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
     override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean) {
         view.showLoading()
         getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment),
-                object : Subscriber<DetailCouponMarkeplaceModel>(){
+                object : Subscriber<DetailCouponMarkeplaceModel>() {
 
                     override fun onError(e: Throwable) {
                         if (isViewAttached) {
@@ -111,9 +93,11 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
 
                     override fun onNext(t: DetailCouponMarkeplaceModel?) {
                         view.hideLoading()
-                        view.onSuccessGetDetailPromo(t?.dataPromoCheckoutDetail?.promoCheckoutDetailModel?:throw RuntimeException())
-                        if(t.dataVoucher?.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED){
-                            view.onErroGetDetail(CheckPromoCodeException(t.dataVoucher?.message?.text?:""))
+                        view.onSuccessGetDetailPromo(t?.dataPromoCheckoutDetail?.promoCheckoutDetailModel
+                                ?: throw RuntimeException())
+                        if (t.dataVoucher?.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED) {
+                            view.onErroGetDetail(CheckPromoCodeDetailException(t.dataVoucher?.message?.text
+                                    ?: ""))
                         }
                     }
                 })

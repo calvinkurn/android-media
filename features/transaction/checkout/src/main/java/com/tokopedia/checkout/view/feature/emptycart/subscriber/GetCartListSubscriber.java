@@ -47,12 +47,7 @@ public class GetCartListSubscriber extends Subscriber<CartListData> {
             if (!cartListData.getShopGroupDataList().isEmpty()) {
                 view.navigateToCartFragment(cartListData);
             } else {
-                String autoApplyMessage = null;
-                if (cartListData.getAutoApplyData() != null &&
-                        cartListData.getAutoApplyData().isSuccess()) {
-                    autoApplyMessage = cartListData.getAutoApplyData().getTitleDescription();
-                }
-                view.renderEmptyCart(autoApplyMessage);
+                view.renderEmptyCart(cartListData.getAutoApplyData());
             }
         }
     }

@@ -21,6 +21,7 @@ import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
+import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailException
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
@@ -122,7 +123,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
         val intent = Intent()
-        val typePromo = if (dataVoucher.isCoupon == PromoData.TYPE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
+        val typePromo = if (dataVoucher.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
         val promoData = PromoData(typePromo, dataVoucher.code ?: "",
                 dataVoucher.message?.text ?: "", dataVoucher.titleDescription ?: "",
                 dataVoucher.cashbackAmount, dataVoucher.message?.state?.mapToStatePromoCheckout()
@@ -159,6 +160,10 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         if (e is CheckPromoCodeException) {
             message = e.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT
             setDisabledButtonUse()
+        } else if (e is CheckPromoCodeDetailException) {
+            setDisabledButtonUse()
+            NetworkErrorHelper.showRedCloseSnackbar(activity,e.message)
+            return
         }
         NetworkErrorHelper.showEmptyState(activity, view, message, { loadData() })
     }

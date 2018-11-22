@@ -98,6 +98,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "cart_trace";
+    public static final int GO_TO_DETAIL = 2;
+    public static final int GO_TO_LIST = 1;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -551,22 +553,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartPromoUseVoucherPromoClicked(PromoData promoData, int position) {
         trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
-        List<CartItemData> cartItemDataList = getSelectedCartDataList();
-        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
-        for (CartItemData data : cartItemDataList) {
-            updateCartRequestList.add(new UpdateCartRequest.Builder()
-                    .cartId(data.getOriginData().getCartId())
-                    .notes(data.getUpdatedData().getRemark())
-                    .quantity(data.getUpdatedData().getQuantity())
-                    .build());
-        }
-        startActivityForResult(
-                checkoutModuleRouter
-                        .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                cartListData.isPromoCouponActive(),
-                                new Gson().toJson(updateCartRequestList), TrackingPromoCheckoutConstantKt.getFROM_CART()
-                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-        );
+        dPresenter.processUpdateCartDataPromo(getSelectedCartDataList(), promoData, GO_TO_LIST);
     }
 
     @Override
@@ -642,13 +629,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onClickDetailPromo(PromoData data, int position) {
         trackingPromoCheckoutUtil.cartClickTicker(data.getPromoCode());
-        if(data.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(data.getPromoCode(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        }else{
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(data.getPromoCode(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        }
+        dPresenter.processUpdateCartDataPromo(getSelectedCartDataList(), data, GO_TO_DETAIL);
     }
 
     @Override
@@ -1112,16 +1093,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         getActivity().invalidateOptionsMenu();
         checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
 
-        String autoApplyMessage = null;
-        if (cartListData != null && cartListData.getAutoApplyData() != null &&
-                cartListData.getAutoApplyData().isSuccess()) {
-            autoApplyMessage = cartListData.getAutoApplyData().getTitleDescription();
-        }
         if (emptyCartListener != null) {
-            emptyCartListener.onCartEmpty(autoApplyMessage);
+            emptyCartListener.onCartEmpty(cartListData.getAutoApplyData().getMessageSuccess(),
+                    cartListData.getAutoApplyData().getState(),
+                    cartListData.getAutoApplyData().getTitleDescription());
         } else {
             if (getActivity() instanceof EmptyCartListener) {
-                ((EmptyCartListener) getActivity()).onCartEmpty(autoApplyMessage);
+                ((EmptyCartListener) getActivity()).onCartEmpty(cartListData.getAutoApplyData().getMessageSuccess(),
+                        cartListData.getAutoApplyData().getState(),
+                        cartListData.getAutoApplyData().getTitleDescription());
             }
         }
         showEmptyCartContainer();
@@ -1201,6 +1181,37 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 .state(TickerCheckoutView.State.EMPTY)
                 .build();
         cartAdapter.addPromoVoucherData(promoData);
+    }
+
+    @Override
+    public void goToCouponList() {
+        List<CartItemData> cartItemDataList = getSelectedCartDataList();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        startActivityForResult(
+                checkoutModuleRouter
+                        .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
+                                cartListData.isPromoCouponActive(),
+                                new Gson().toJson(updateCartRequestList), TrackingPromoCheckoutConstantKt.getFROM_CART()
+                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+        );
+    }
+
+    @Override
+    public void goToDetail(PromoData promoData) {
+        if(promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
+            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCode(),
+                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+        }else{
+            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoData.getPromoCode(),
+                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+        }
     }
 
     @Override
