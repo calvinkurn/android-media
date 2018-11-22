@@ -14,7 +14,9 @@ public interface SaldoDetailsRouter {
 
     CacheManager getGlobalCacheManager();
 
-    Intent getContactUsIntent(Context context);
+    Intent getInboxTicketCallingIntent(Context context);
+
+    Intent getProfileSettingIntent(Context context);
 
     Intent getHomeIntent(Context context);
 }

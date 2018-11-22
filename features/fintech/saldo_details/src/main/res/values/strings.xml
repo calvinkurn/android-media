@@ -37,4 +37,11 @@
     <string name="sp_end_date">Tanggal Akhir</string>
     <string name="sp_start_date">Tanggal Awal</string>
     <string name="sp_transaction_history_heading">Pilih Tanggal Riwayat Saldo</string>
+
+    <string name="sp_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
+    <string name="sp_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
+    <string name="sp_alert_not_verified_yet_positive">Verifikasi</string>
+    <string name="sp_alert_not_verified_yet_negative">Tidak</string>
+
+
 </resources>

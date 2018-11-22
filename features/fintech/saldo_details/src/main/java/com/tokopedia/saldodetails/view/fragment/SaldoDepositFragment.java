@@ -154,7 +154,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     private void initListeners() {
         drawButton.setOnClickListener(v -> {
             try {
-                if (userSession.hasShownSaldoWithdrawalWarning()) {
+                if (!userSession.isMsisdnVerified()) {
+                    showMustVerify();
+                } else if (userSession.hasShownSaldoWithdrawalWarning()) {
                     goToWithdrawActivity();
                 } else {
                     userSession.setSaldoWithdrawalWaring(true);
@@ -169,7 +171,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         checkBalanceStatus.setOnClickListener(v -> {
             try {
                 Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
-                        .getContactUsIntent(context);
+                        .getInboxTicketCallingIntent(context);
                 startActivity(intent);
             } catch (Exception e) {
 
@@ -178,6 +180,21 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         startDateLayout.setOnClickListener(onStartDateClicked());
         endDateLayout.setOnClickListener(onEndDateClicked());
         recyclerView.addOnScrollListener(onScroll());
+    }
+
+    private void showMustVerify() {
+        new android.support.v7.app.AlertDialog.Builder(getActivity())
+                .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
+                .setMessage(getActivity().getString(R.string.sp_alert_not_verified_yet_body))
+                .setPositiveButton(getActivity().getString(R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
+                    Intent intent = ((SaldoDetailsRouter) getActivity().getApplicationContext())
+                            .getProfileSettingIntent(getActivity());
+                    startActivity(intent);
+                    dialog.dismiss();
+                })
+                .setNegativeButton(getActivity().getString(R.string.sp_alert_not_verified_yet_negative), (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 
     private void goToWithdrawActivity() {
@@ -439,7 +456,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public void showEmptyState(String error) {
         setActionsEnabled(false);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, () -> saldoDetailsPresenter.getSummaryDeposit());
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error,
+                () -> saldoDetailsPresenter.getSummaryDeposit());
         try {
             View retryLoad = getView().findViewById(R.id.main_retry);
             retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
@@ -451,7 +469,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public void setRetry(String error) {
         setActionsEnabled(false);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, () -> saldoDetailsPresenter.getSummaryDeposit()).showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), error,
+                () -> saldoDetailsPresenter.getSummaryDeposit()).showRetrySnackbar();
     }
 
     @Override
