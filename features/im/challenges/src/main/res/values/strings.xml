@@ -101,5 +101,6 @@
     <string name="ch_share_your_content_msg">Bagikan konten milikmu di media sosial dan dapatkan skor lebih untuk menang!</string>
     <string name="ch_resubmit_text">Kirim ulang konten lain</string>
     <string name="action_settings">Pengaturan</string>
+    <string name="ch_please_wait">Please wait</string>
 
 </resources>

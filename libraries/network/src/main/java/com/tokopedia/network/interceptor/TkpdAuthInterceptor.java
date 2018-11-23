@@ -7,6 +7,7 @@ import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.CommonUtils;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.inject.Named;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -58,13 +61,26 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
 
     private Context context;
-    protected UserSession userSession;
+    protected UserSessionInterface userSession;
     protected String authKey;
     private NetworkRouter networkRouter;
 
+    @Deprecated
+    /*
+      use interface instead.
+     */
     public TkpdAuthInterceptor(Context context,
                                NetworkRouter networkRouter,
                                UserSession userSession) {
+        this.context = context;
+        this.networkRouter = networkRouter;
+        this.userSession = userSession;
+        this.authKey = AuthUtil.KEY.KEY_WSV4_NEW;
+    }
+
+    public TkpdAuthInterceptor(Context context,
+                               NetworkRouter networkRouter,
+                               @Named("Session") UserSessionInterface userSession) {
         this.context = context;
         this.networkRouter = networkRouter;
         this.userSession = userSession;

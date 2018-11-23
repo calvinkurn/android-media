@@ -1,13 +1,12 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.widget.AppRatingView;
 import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
@@ -15,6 +14,8 @@ import com.tokopedia.nps.presentation.view.activity.FeedbackThankPageActivity;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.tokopedia.nps.NpsConstant.Key.*;
 
 /**
  * Created by okasurya on 1/10/18.
@@ -31,8 +32,6 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
 
     private AlertDialog dialog;
-    private Button buttonSend;
-    private Button buttonClose;
     private AppRatingView appRatingView;
 
     public static void show(Activity activity) {
@@ -40,7 +39,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         dialog.showDialog();
     }
 
-    public static void show(Activity activity, AppRatingListener listener) {
+    public static void show(Activity activity, DialogInterface.OnDismissListener listener) {
         AdvancedAppRatingDialog dialog = new AdvancedAppRatingDialog(activity);
         dialog.setListener(listener);
         dialog.showDialog();
@@ -54,46 +53,39 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     protected AlertDialog buildAlertDialog() {
         View dialogView = activity.getLayoutInflater().inflate(R.layout.dialog_app_rating, null);
 
-        buttonSend = dialogView.findViewById(R.id.button_send);
-        buttonClose = dialogView.findViewById(R.id.button_close);
+        Button buttonSend = dialogView.findViewById(R.id.button_send);
+        Button buttonClose = dialogView.findViewById(R.id.button_close);
         appRatingView = dialogView.findViewById(R.id.view_app_rating);
+
+        appRatingView.setDefaultRating(3);
 
         dialog = new AlertDialog.Builder(activity)
                 .setView(dialogView)
                 .create();
 
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
-                dialog.dismiss();
-                saveVersionCodeForState();
-                saveRating(appRatingView.getRating());
-                if(appRatingView.getRating() > MIN_RATING) {
-                    FeedbackThankPageActivity.startActivity(activity, appRatingView.getRating());
-                } else {
-                    FeedbackActivity.start(activity, appRatingView.getRating());
-                }
+        buttonSend.setOnClickListener(v -> {
+            npsAnalytics.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
+            dialog.dismiss();
+            saveVersionCodeForState();
+            saveRating(appRatingView.getRating());
+            if(appRatingView.getRating() > MIN_RATING) {
+                FeedbackThankPageActivity.startActivity(activity, appRatingView.getRating());
+            } else {
+                FeedbackActivity.start(activity, appRatingView.getRating());
             }
         });
 
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideDialog();
-                UnifyTracking.eventCancelAppRating(LABEL_CANCEL_ADVANCED_APP_RATING);
-                dialog.dismiss();
-            }
+        buttonClose.setOnClickListener(v -> {
+            hideDialog();
+            npsAnalytics.eventCancelAppRating(LABEL_CANCEL_ADVANCED_APP_RATING);
+            dialog.dismiss();
         });
 
         return dialog;
     }
 
     private void hideDialog() {
-        globalCacheManager.setCacheDuration(EXPIRED_TIME);
-        globalCacheManager.setKey(HIDE_ADVANCED_APP_RATING);
-        globalCacheManager.setValue(DEFAULT_VALUE);
-        globalCacheManager.store();
+        globalCacheManager.save(HIDE_ADVANCED_APP_RATING, DEFAULT_VALUE, EXPIRED_TIME);
     }
 
     private void saveVersionCodeForState() {
@@ -102,12 +94,12 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     }
 
     private void saveRating(float rating) {
-        cacheHandler.putInt(TkpdCache.Key.KEY_RATING, Math.round(rating));
+        cacheHandler.putInt(KEY_RATING, Math.round(rating));
         cacheHandler.applyEditor();
     }
 
     private String getLocalKey(){
-        return TkpdCache.Key.KEY_ADVANCED_APP_RATING_VERSION;
+        return KEY_ADVANCED_APP_RATING_VERSION;
     }
 
     private String getRemoteConfigKey(){
@@ -123,16 +115,16 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         if (remoteConfig.getBoolean(getRemoteConfigKey(), false)
                 && globalCacheManager.isExpired(HIDE_ADVANCED_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
-            Integer rating = cacheHandler.getInt(TkpdCache.Key.KEY_RATING);
+            Integer rating = cacheHandler.getInt(KEY_RATING);
             if (appRatingVersion == null || appRatingVersion == -1 || appRatingVersion < GlobalConfig.VERSION_CODE) {
                  return rating == null || rating <= MIN_RATING;
             }
         }
-        return false;
+        return false; // default false
     }
 
     @Override
     protected void onShowDialog() {
-        UnifyTracking.eventAppRatingImpression(this.getClass().getSimpleName());
+        npsAnalytics.eventAppRatingImpression(this.getClass().getSimpleName());
     }
 }

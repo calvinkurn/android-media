@@ -636,14 +636,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartDataEnableToCheckout() {
-        if (isAdded()) {
+        if (isAdded() && btnToShipment != null) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         }
     }
 
     @Override
     public void onCartDataDisableToCheckout(String message) {
-        if (isAdded()) {
+        if (isAdded() && btnToShipment != null) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
     }
@@ -840,7 +840,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        cbSelectAll.setChecked(cartListData.isAllSelected());
+        if (cbSelectAll != null) {
+            cbSelectAll.setChecked(cartListData.isAllSelected());
+        }
 
         cartAdapter.checkForShipmentForm();
 
@@ -1182,7 +1184,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllCartItem) {
-        dPresenter.getCartListData().setAllSelected(selectAllCartItem);
+        if (dPresenter.getCartListData() != null) {
+            dPresenter.getCartListData().setAllSelected(selectAllCartItem);
+        }
         cbSelectAll.setChecked(selectAllCartItem);
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));

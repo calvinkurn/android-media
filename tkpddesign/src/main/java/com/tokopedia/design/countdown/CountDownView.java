@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -43,7 +44,6 @@ public class CountDownView extends FrameLayout {
     private Handler refreshCounterHandler;
     private Runnable runnableRefreshCounter;
 
-    private boolean isTimerActive = false;
 
     public CountDownView(@NonNull Context context) {
         super(context);
@@ -91,30 +91,6 @@ public class CountDownView extends FrameLayout {
         displayTime();
     }
 
-    public void setup(final Date expiredTime, final CountDownListener listener) {
-        if (isExpired(expiredTime)) {
-            handleExpiredTime(listener);
-            return;
-        }
-        stopAutoRefreshCounter();
-        refreshCounterHandler = new Handler();
-        runnableRefreshCounter = new Runnable() {
-            @Override
-            public void run() {
-                if (!isExpired(expiredTime)) {
-                    Date now = new Date();
-                    TimeDiffModel timeDiff = getTimeDiff(now, expiredTime);
-                    setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
-                    refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
-                } else {
-                    handleExpiredTime(listener);
-                }
-            }
-        };
-        startAutoRefreshCounter();
-        isTimerActive = true;
-    }
-
     public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
         Date serverTime = new Date();
@@ -155,10 +131,6 @@ public class CountDownView extends FrameLayout {
         }
     }
 
-    private boolean isExpired(Date expiredTime) {
-        return new Date().after(expiredTime);
-    }
-
     private boolean isExpired(Date serverTime, Date expiredTime) {
         return serverTime.after(expiredTime);
     }
@@ -173,7 +145,6 @@ public class CountDownView extends FrameLayout {
     }
 
     public void stopAutoRefreshCounter() {
-        isTimerActive = false;
         if (refreshCounterHandler != null && runnableRefreshCounter != null) {
             refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
         }
@@ -181,10 +152,8 @@ public class CountDownView extends FrameLayout {
 
     private void startAutoRefreshCounter() {
         if (refreshCounterHandler != null &&
-                runnableRefreshCounter != null &&
-                !isTimerActive) {
-            refreshCounterHandler.postDelayed(runnableRefreshCounter, REFRESH_DELAY_MS);
-            isTimerActive = true;
+                runnableRefreshCounter != null) {
+            refreshCounterHandler.post(runnableRefreshCounter);
         }
     }
 
@@ -260,9 +229,5 @@ public class CountDownView extends FrameLayout {
 
     public interface CountDownListener {
         void onCountDownFinished();
-    }
-
-    public boolean isTimerActive() {
-        return isTimerActive;
     }
 }

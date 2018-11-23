@@ -1,17 +1,16 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.nps.R;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.tokopedia.nps.NpsConstant.Analytic.*;
+import static com.tokopedia.nps.NpsConstant.Key.*;
 
 /**
  * Created by okasurya on 11/29/17.
@@ -21,6 +20,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     private static final String HIDE_SIMPLE_APP_RATING = "HideSimpleAppRating";
     private static final String DEFAULT_VALUE = "1";
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
+
 
     public static void show(Activity activity) {
         SimpleAppRatingDialog simpleAppRatingDialog = new SimpleAppRatingDialog(activity);
@@ -46,22 +46,16 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
                         activity.getString(R.string.app_rating_message)
                     )
                 )
-                .setPositiveButton(R.string.app_rating_button_rate, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        openPlayStore(activity);
-                        saveVersionCodeForState();
-                        UnifyTracking.eventClickAppRating(AppEventTracking.Event.CLICK_APP_RATING);
-                        dialog.dismiss();
-                    }
+                .setPositiveButton(R.string.app_rating_button_rate, (dialog, which) -> {
+                    openPlayStore(activity);
+                    saveVersionCodeForState();
+                    npsAnalytics.eventClickAppRating(CLICK_APP_RATING);
+                    dialog.dismiss();
                 })
-                .setNegativeButton(R.string.app_rating_button_later, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        hideDialog();
-                        UnifyTracking.eventCancelAppRating(AppEventTracking.Event.CANCEL_APP_RATING);
-                        dialog.dismiss();
-                    }
+                .setNegativeButton(R.string.app_rating_button_later, (dialog, which) -> {
+                    hideDialog();
+                    npsAnalytics.eventCancelAppRating(CANCEL_APP_RATING);
+                    dialog.dismiss();
                 })
                 .setCancelable(false)
                 .create();
@@ -71,7 +65,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     protected boolean isDialogNeedToBeShown() {
         if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
                 && globalCacheManager.isExpired(HIDE_SIMPLE_APP_RATING)) {
-            Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_APP_RATING_VERSION);
+            Integer appRatingVersion = cacheHandler.getInt(KEY_APP_RATING_VERSION);
             return appRatingVersion == null || appRatingVersion == -1;
         }
 
@@ -80,21 +74,18 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected void onShowDialog() {
-        UnifyTracking.eventAppRatingImpression(this.getClass().getSimpleName());
+        npsAnalytics.eventAppRatingImpression(this.getClass().getSimpleName());
     }
 
     private void hideDialog() {
-        globalCacheManager.setCacheDuration(EXPIRED_TIME);
-        globalCacheManager.setKey(HIDE_SIMPLE_APP_RATING);
-        globalCacheManager.setValue(DEFAULT_VALUE);
-        globalCacheManager.store();
+        globalCacheManager.save(HIDE_SIMPLE_APP_RATING, DEFAULT_VALUE, EXPIRED_TIME);
     }
 
     /**
      * The value saved for state is app version code, for easier development in the future.
      */
     private void saveVersionCodeForState() {
-        cacheHandler.putInt(TkpdCache.Key.KEY_APP_RATING_VERSION, GlobalConfig.VERSION_CODE);
+        cacheHandler.putInt(KEY_APP_RATING_VERSION, GlobalConfig.VERSION_CODE);
         cacheHandler.applyEditor();
     }
 }

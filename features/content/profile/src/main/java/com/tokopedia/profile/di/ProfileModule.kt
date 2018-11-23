@@ -1,12 +1,9 @@
 package com.tokopedia.profile.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.presenter.ProfileEmptyPresenter
 import com.tokopedia.profile.view.presenter.ProfilePresenter
-import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 
@@ -25,11 +22,5 @@ class ProfileModule {
     fun provideProfileEmptyPresenter(profileEmptyPresenter: ProfileEmptyPresenter)
             : ProfileEmptyContract.Presenter {
         return profileEmptyPresenter
-    }
-
-    @ProfileScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSession {
-        return UserSession(context)
     }
 }
