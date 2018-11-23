@@ -6,6 +6,7 @@ import com.tokopedia.digital.cart.data.entity.response.AdditionalInfo;
 import com.tokopedia.digital.cart.data.entity.response.AutoApplyVoucher;
 import com.tokopedia.digital.cart.data.entity.response.Detail;
 import com.tokopedia.digital.cart.data.entity.response.MainInfo;
+import com.tokopedia.digital.cart.data.entity.response.PostPaidPopup;
 import com.tokopedia.digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCheckoutData;
@@ -19,6 +20,7 @@ import com.tokopedia.digital.cart.model.CartItemDigital;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.OtpData;
+import com.tokopedia.digital.cart.model.PostPaidPopupAttribute;
 import com.tokopedia.digital.cart.model.Relation;
 import com.tokopedia.digital.cart.model.RelationData;
 import com.tokopedia.digital.cart.model.Relationships;
@@ -101,6 +103,19 @@ public class CartMapperData implements ICartMapperData {
             attributesDigital.setDefaultPromoTab(responseCartData.getAttributes().getDefaultPromoTab());
 
             attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
+
+
+            if (responseCartData.getAttributes().getPostPaidPopUp() != null &&
+                    responseCartData.getAttributes().getPostPaidPopUp().getAction() != null &&
+                    responseCartData.getAttributes().getPostPaidPopUp().getAction().getConfirmAction() != null){
+                PostPaidPopup postPaidPopup = responseCartData.getAttributes().getPostPaidPopUp();
+                PostPaidPopupAttribute postPaidPopupAttribute = new PostPaidPopupAttribute();
+                postPaidPopupAttribute.setTitle(postPaidPopup.getTitle());
+                postPaidPopupAttribute.setContent(postPaidPopup.getContent());
+                postPaidPopupAttribute.setImageUrl(postPaidPopup.getImageUrl());
+                postPaidPopupAttribute.setConfirmButtonTitle(postPaidPopup.getAction().getConfirmAction().getTitle());
+                attributesDigital.setPostPaidPopupAttribute(postPaidPopupAttribute);
+            }
 
             RelationshipsCart relationshipsResponse =
                     responseCartData.getRelationships();

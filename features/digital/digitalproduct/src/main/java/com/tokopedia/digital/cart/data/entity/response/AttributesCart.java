@@ -68,6 +68,9 @@ public class AttributesCart {
     @SerializedName("default_promo_dialog_tab")
     @Expose
     private String defaultPromoTab;
+    @SerializedName("pop_up")
+    @Expose
+    private PostPaidPopup postPaidPopUp;
 
     public String getClientNumber() {
         return clientNumber;
@@ -143,5 +146,9 @@ public class AttributesCart {
 
     public String getDefaultPromoTab() {
         return defaultPromoTab;
+    }
+
+    public PostPaidPopup getPostPaidPopUp() {
+        return postPaidPopUp;
     }
 }

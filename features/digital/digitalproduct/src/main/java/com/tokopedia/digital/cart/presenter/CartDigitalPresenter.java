@@ -116,6 +116,18 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     @Override
     public void processToCheckout() {
+        if (view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null){
+            view.showPostPaidDialog(
+                    view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getTitle(),
+                    view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getContent(),
+                    view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
+            );
+        } else {
+            actionCheckout();
+        }
+    }
+
+    private void actionCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
             startOTPProcess();
@@ -126,6 +138,11 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 getRequestBodyCheckout(checkoutData),
                 getSubscriberCheckout()
         );
+    }
+
+    @Override
+    public void onConfirmPostPaidDialog() {
+        actionCheckout();
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -27,6 +28,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -288,6 +290,22 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
             }
         }
+    }
+
+    @Override
+    public void showPostPaidDialog(String title, String content, String confirmButtonTitle) {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(title);
+        dialog.setDesc(MethodChecker.fromHtml(content));
+        dialog.setBtnOk(confirmButtonTitle);
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                presenter.onConfirmPostPaidDialog();
+            }
+        });
+        dialog.show();
     }
 
     @Override

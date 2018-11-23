@@ -99,4 +99,6 @@ public interface IDigitalCartView extends IBaseView {
     CartDigitalInfoData getCartDataInfo();
 
     void navigateToLoggedInPage();
+
+    void showPostPaidDialog(String title, String content, String confirmButtonTitle);
 }
