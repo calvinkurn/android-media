@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
@@ -50,7 +51,7 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
  */
 
 public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
-        implements UserIdentificationUploadImage.View{
+        implements UserIdentificationUploadImage.View {
 
     private ImageView imageKtp;
     private ImageView imageFace;
@@ -60,6 +61,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private TextView uploadButton;
     private View progressBar;
     private UserIdentificationStepperModel stepperModel;
+    private SnackbarRetry snackbar;
 
     private StepperListener stepperListener;
 
@@ -143,7 +145,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         });
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         showLoading();
         presenter.uploadImage(stepperModel);
     }
@@ -244,12 +246,13 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     @Override
     public void onErrorUpload() {
         hideLoading();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 uploadImage();
             }
-        }).showRetrySnackbar();
+        });
+        snackbar.showRetrySnackbar();
     }
 
     @Override
@@ -272,5 +275,19 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         info.setVisibility(View.VISIBLE);
         uploadButton.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (snackbar != null) {
+            snackbar.hideRetrySnackbar();
+        }
     }
 }
