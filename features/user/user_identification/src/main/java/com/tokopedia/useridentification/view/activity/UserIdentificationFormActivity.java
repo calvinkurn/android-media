@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
@@ -79,6 +80,19 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         super.onBackPressed();
         if (snackbar != null && snackbar.isShown()) {
             snackbar.hideRetrySnackbar();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (snackbar != null && snackbar.isShown()) {
+                    snackbar.hideRetrySnackbar();
+                }
+                return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }
