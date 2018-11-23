@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -122,14 +123,15 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             notifyDataSetChanged();
         }
 
+        @NonNull
         @Override
-        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_hero_product_item, parent, false);
             return new ItemViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(ItemViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull ItemViewHolder holder, final int position) {
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
                 if (grid != null) {
