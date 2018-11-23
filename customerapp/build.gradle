@@ -162,9 +162,9 @@ android {
             ext.enableHansel=false
         }
         release {
-//            if (devMode()) {
+            if (devMode()) {
                 signingConfig signingConfigs.debug
-//            }
+            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
