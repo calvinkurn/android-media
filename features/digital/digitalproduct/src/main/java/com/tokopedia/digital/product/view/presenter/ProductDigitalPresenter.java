@@ -153,7 +153,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 view.goToCartPage(productDigitalData);
             }
         });
-
     }
 
     @Override
@@ -263,7 +262,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                                                    List<GuideData> guideDataList,
                                                    HistoryClientNumber historyClientNumber) {
         this.categoryData = categoryData;
-
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
                     .renderCategoryDataAndBannerToView(activity,
@@ -304,7 +302,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     )
             );
         }
-
         renderCheckETollBalance();
         renderCheckPulsa();
     }

@@ -1025,7 +1025,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
-        UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
+        UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO,
+                DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " +
+                        presenter.getDeviceMobileNumber(simPosition));
         UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_allowed_label));
     }
 
@@ -1049,7 +1051,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (orderClientNumber != null) {
             UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
         }
-
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
@@ -1094,7 +1095,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private void handleStyle1(OrderClientNumber orderClientNumber) {
         digitalProductView.renderClientNumber(orderClientNumber.getClientNumber());
         digitalProductView.clearFocusOnClientNumber();
-
         if (orderClientNumber.getOperatorId() != null) {
             for (Operator operator : categoryDataState.getOperatorList()) {
                 if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
@@ -1176,7 +1176,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         intent.putExtra(USSDAccessibilityService.KEY_START_SERVICE_FROM_APP, true);
         context.startService(intent);
         ussdInProgress = true;
-
     }
 
     @Override
