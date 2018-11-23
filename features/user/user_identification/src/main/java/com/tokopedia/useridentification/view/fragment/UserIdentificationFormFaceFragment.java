@@ -9,10 +9,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
+        .PARAM_VIEW_MODE_FACE;
 
 /**
  * @author by alvinatin on 09/11/18.
@@ -27,6 +29,7 @@ public class UserIdentificationFormFaceFragment extends
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Override
     protected String getScreenName() {
@@ -48,11 +51,9 @@ public class UserIdentificationFormFaceFragment extends
         });
         ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK);
         ImageHandler.LoadImage(wrongImage, KycUrl.SELFIE_FAIL);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_face));
+        }
     }
 }

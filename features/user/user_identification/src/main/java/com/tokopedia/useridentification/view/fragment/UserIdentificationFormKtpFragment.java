@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
@@ -48,6 +49,9 @@ public class UserIdentificationFormKtpFragment extends
         });
         ImageHandler.LoadImage(correctImage, KycUrl.KTP_OK);
         ImageHandler.LoadImage(wrongImage, KycUrl.KTP_FAIL);
-
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_ktp));
+        }
     }
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:layout_marginTop="@dimen/dp_48">
 
     <ImageView
@@ -95,7 +96,6 @@ Dengan mengunggah, saya menyatakan bahwa data yang saya berikan adalah benar dan
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_info"
         tools:text="Unggah" />
 
     <ProgressBar

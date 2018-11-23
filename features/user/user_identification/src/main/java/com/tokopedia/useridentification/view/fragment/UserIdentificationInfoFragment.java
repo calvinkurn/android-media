@@ -220,6 +220,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_OK) {
             getStatusInfo();
+            NetworkErrorHelper.showGreenSnackbar(getActivity(), getString(R.string.text_notification_success_upload));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
