@@ -126,6 +126,25 @@
                     android:layout_marginBottom="@dimen/dp_20"
                     android:gravity="center"
                     android:text="@string/title_otp" />
+
+
+                <com.tkpd.library.ui.widget.PinEntryEditText
+                    android:id="@+id/input_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_40"
+                    android:layout_marginRight="@dimen/dp_40"
+                    android:layout_marginBottom="@dimen/dp_30"
+                    android:background="@null"
+                    android:cursorVisible="false"
+                    android:digits="1234567890"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:textIsSelectable="false"
+                    android:textSize="28sp"
+                    app:pinLineColors="@color/pin_line_colors" />
             </LinearLayout>
         </LinearLayout>
 
