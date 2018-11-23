@@ -1273,7 +1273,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onStop() {
         super.onStop();
-        if (getActivity().isFinishing()) {
+        if (getActivity() != null && getActivity().isFinishing()) {
             unRegisterNewFeedReceiver();
         }
     }

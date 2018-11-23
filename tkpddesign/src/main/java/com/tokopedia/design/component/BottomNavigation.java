@@ -40,8 +40,6 @@ public class BottomNavigation extends BottomNavigationView {
 
     private static String INIT_BACKSTACK = "0";
 
-    public static final int FEED_MENU = 1;
-
     private int mShiftAmount;
     private float mScaleUpFactor;
     private float mScaleDownFactor;
@@ -883,12 +881,19 @@ public class BottomNavigation extends BottomNavigationView {
             badgeView = new BadgeView(getContext());
             mBadgeViews.put(positionItem, badgeView);
         }
-        if (positionItem == FEED_MENU)
-            badgeView.setGravityOffset(20, 3, true);
-        else
-            badgeView.setGravityOffset(10, 3, true);
+        setBadgePosition(badgeView, badgeNumber);
         badgeView.bindTarget(getBottomNavigationItemView(positionItem));
         badgeView.setBadgeNumber(badgeNumber);
+    }
+
+    private void setBadgePosition(BadgeView badgeView, int badgeNumber) {
+        if (badgeNumber < 0) {
+            //for empty badge
+            badgeView.setGravityOffset(20, 3, true);
+        } else {
+            //for badge with number
+            badgeView.setGravityOffset(10, 3, true);
+        }
     }
 
     /**
