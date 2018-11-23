@@ -18,7 +18,7 @@ public class UploadIdentificationPojo {
 
     public class KycUpload {
         @Expose
-        @SerializedName("is_success")
+        @SerializedName("isSuccess")
         private int isSuccess;
         @Expose
         @SerializedName("error")
