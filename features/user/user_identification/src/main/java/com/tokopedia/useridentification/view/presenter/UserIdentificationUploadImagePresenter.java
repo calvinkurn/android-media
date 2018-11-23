@@ -108,29 +108,20 @@ public class UserIdentificationUploadImagePresenter extends
                                             (ImageUploadModel imageUploadModel) {
                                         return Observable.zip(Observable.just
                                                         (imageUploadModel),
-                                                uploadIdentificationUseCase
-                                                        .createObservable(
-                                                                UploadIdentificationUseCase
-                                                                        .getRequestParam(
-                                                                        imageUploadModel
-                                                                                .getKycType(),
-                                                                        imageUploadModel
-                                                                                .getPicObjKyc()
+                                                uploadIdentificationUseCase.createObservable(
+                                                                UploadIdentificationUseCase.getRequestParam(
+                                                                        imageUploadModel.getKycType(),
+                                                                        imageUploadModel.getPicObjKyc()
                                                                 )
                                                         ), new Func2<ImageUploadModel,
                                                         GraphqlResponse, ImageUploadModel>() {
                                                     @Override
-                                                    public ImageUploadModel call(ImageUploadModel
-                                                                                         imageUploadModel,
-                                                                                 GraphqlResponse
-                                                                                         graphqlResponse) {
+                                                    public ImageUploadModel call(ImageUploadModel imageUploadModel,
+                                                                                 GraphqlResponse graphqlResponse) {
                                                         UploadIdentificationPojo pojo =
-                                                                graphqlResponse.getData
-                                                                        (UploadIdentificationPojo
-                                                                                .class);
+                                                                graphqlResponse.getData(UploadIdentificationPojo.class);
                                                         imageUploadModel.setError(pojo.getError());
-                                                        imageUploadModel.setIsSuccess(pojo
-                                                                .getIsSuccess());
+                                                        imageUploadModel.setIsSuccess(pojo.getIsSuccess());
                                                         return imageUploadModel;
                                                     }
                                                 });

@@ -11,13 +11,9 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 
 /**
  * @author by nisie on 13/11/18.
@@ -44,19 +40,15 @@ public class UploadIdentificationUseCase {
 
     }
 
-    public void execute(Map<String, Object> requestParams, Subscriber<GraphqlResponse> subscriber) {
+    public Observable<GraphqlResponse> createObservable(RequestParams params) {
         String query = GraphqlHelper.loadRawString(context.getResources(), R.raw
                 .mutation_upload_kyc);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                UploadIdentificationPojo.class, requestParams);
+                UploadIdentificationPojo.class, params.getParameters());
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
-        graphqlUseCase.execute(subscriber);
-    }
-
-    public Observable<GraphqlResponse> createObservable(RequestParams params) {
         return graphqlUseCase.createObservable(params);
     }
     /**
