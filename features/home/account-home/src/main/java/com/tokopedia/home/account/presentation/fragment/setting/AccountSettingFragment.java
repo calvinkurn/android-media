@@ -47,6 +47,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     View personalDataMenu;
     View addressMenu;
     View passwordMenu;
+    View kycSeparator;
     View kycMenu;
     View mainView;
     ProgressBar progressBar;
@@ -75,6 +76,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         kycMenu = view.findViewById(R.id.label_view_kyc);
         mainView = view.findViewById(R.id.main_view);
         progressBar = view.findViewById(R.id.progress_bar);
+        kycSeparator = view.findViewById(R.id.separator_kyc);
         return view;
     }
 
@@ -209,6 +211,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 .isAddressEnabled() ? View.VISIBLE : View.GONE);
         passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
                 .isPasswordEnabled() ? View.VISIBLE : View.GONE);
+        kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
         kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
                 .isIdentityEnabled() ? View.VISIBLE : View.GONE);
         hideLoading();
