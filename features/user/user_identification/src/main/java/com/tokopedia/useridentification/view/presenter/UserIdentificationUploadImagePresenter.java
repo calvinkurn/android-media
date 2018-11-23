@@ -181,4 +181,10 @@ public class UserIdentificationUploadImagePresenter extends
         return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH,
                 DEFAULT_UPLOAD_TYPE, maps);
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        compositeSubscription.unsubscribe();
+    }
 }

@@ -31,12 +31,12 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 
 import butterknife.BindView;
 
@@ -266,7 +266,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         super.onStart();
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+        if (remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
                 true)) {
             presenter.getMerchantSaldoDetails();
         } else {
@@ -456,10 +456,10 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+    public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
 
         if (sellerDetails != null &&
-                sellerDetails.isIsEligible()) {
+                sellerDetails.isEligible()) {
             if (depositScreenListener != null) {
                 depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);
             }
@@ -501,6 +501,6 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     }
 
     public interface DepositScreenListener {
-        void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails);
+        void showSaldoFragment(int resId, GqlDetailsResponse sellerDetails);
     }
 }

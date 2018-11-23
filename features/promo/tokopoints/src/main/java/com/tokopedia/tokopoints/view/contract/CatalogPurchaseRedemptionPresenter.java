@@ -12,6 +12,4 @@ public interface CatalogPurchaseRedemptionPresenter {
     void navigateToWebView(String url);
 
     void showRedeemCouponDialog(String cta, String code, String title);
-
-    void startSendGift(int id, String title, String pointsStr);
 }

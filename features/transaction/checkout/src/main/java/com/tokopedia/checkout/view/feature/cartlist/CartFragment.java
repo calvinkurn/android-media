@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.perf.metrics.Trace;
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -58,6 +59,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -91,6 +93,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
+    private static final String CART_TRACE = "cart_trace";
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -134,6 +137,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
+    private Trace trace;
+    private boolean isTraceStopped;
+
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
             bundle = new Bundle();
@@ -154,6 +160,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
+        trace = TrackingUtils.startTrace(CART_TRACE);
     }
 
     @Override
@@ -629,14 +636,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartDataEnableToCheckout() {
-        if (isAdded()) {
+        if (isAdded() && btnToShipment != null) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         }
     }
 
     @Override
     public void onCartDataDisableToCheckout(String message) {
-        if (isAdded()) {
+        if (isAdded() && btnToShipment != null) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
     }
@@ -775,6 +782,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
+        if (trace != null && !isTraceStopped) {
+            trace.stop();
+            isTraceStopped = true;
+        }
+
         sendAnalyticsScreenName(getScreenName());
         if (refreshHandler != null) {
             refreshHandler.finishRefresh();
@@ -828,7 +840,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        cbSelectAll.setChecked(cartListData.isAllSelected());
+        if (cbSelectAll != null) {
+            cbSelectAll.setChecked(cartListData.isAllSelected());
+        }
 
         cartAdapter.checkForShipmentForm();
 
@@ -1170,7 +1184,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllCartItem) {
-        dPresenter.getCartListData().setAllSelected(selectAllCartItem);
+        if (dPresenter.getCartListData() != null) {
+            dPresenter.getCartListData().setAllSelected(selectAllCartItem);
+        }
         cbSelectAll.setChecked(selectAllCartItem);
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));

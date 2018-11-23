@@ -14,14 +14,18 @@ import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+
+import java.util.Date;
 
 /**
  * Created by henrypriyono on 22/03/18.
@@ -38,10 +42,15 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     private RecyclerView recyclerView;
     private static final int spanCount = 3;
     private HomeCategoryListener listener;
+    private CountDownView countDownView;
+    private CountDownView.CountDownListener countDownListener;
 
-    public SixGridChannelViewHolder(View itemView, HomeCategoryListener listener) {
+    public SixGridChannelViewHolder(View itemView,
+                                    HomeCategoryListener listener,
+                                    CountDownView.CountDownListener countDownListener) {
         super(itemView);
         this.listener = listener;
+        this.countDownListener = countDownListener;
         findViews(itemView);
         itemAdapter = new ItemAdapter(listener, getAdapterPosition());
         recyclerView.setAdapter(itemAdapter);
@@ -52,6 +61,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
         seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
@@ -63,6 +73,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
             String titleText = element.getChannel().getHeader().getName();
+            listener.onServerTimeReceived(channel.getHeader().getServerTimeUnix());
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
                 channelTitle.setText(titleText);
@@ -73,6 +84,13 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                 seeAllButton.setVisibility(View.VISIBLE);
             } else {
                 seeAllButton.setVisibility(View.GONE);
+            }
+            if (isSprintSale(channel)) {
+                Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
+                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setVisibility(View.VISIBLE);
+            } else {
+                countDownView.setVisibility(View.GONE);
             }
             seeAllButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,6 +104,11 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         } catch (Exception e) {
             Crashlytics.log(0, TAG, e.getLocalizedMessage());
         }
+    }
+
+    private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
+        return channel.getHeader().getExpiredTime() != null
+                && !TextUtils.isEmpty(channel.getHeader().getExpiredTime());
     }
 
     private static String getAvailableLink(String applink, String url) {

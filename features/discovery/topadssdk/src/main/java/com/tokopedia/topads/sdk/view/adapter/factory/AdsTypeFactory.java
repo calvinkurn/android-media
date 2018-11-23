@@ -11,6 +11,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewMod
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 /**
  * @author by errysuprayogi on 3/29/17.
@@ -33,6 +34,8 @@ public interface AdsTypeFactory {
     int type(ProductBigViewModel viewModel);
 
     int type(ProductCarouselListViewModel viewModel);
+
+    int type(ProductDynamicChannelViewModel productDynamicChannelViewModel);
 
     AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
 

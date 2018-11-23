@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by HenryPri on 15/05/17.
  */
-
+@Deprecated
 public class ShopShipment implements Parcelable {
 
     @SerializedName("shipping_id")

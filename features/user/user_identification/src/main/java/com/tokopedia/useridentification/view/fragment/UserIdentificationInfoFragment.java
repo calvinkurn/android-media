@@ -233,4 +233,10 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             }
         };
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

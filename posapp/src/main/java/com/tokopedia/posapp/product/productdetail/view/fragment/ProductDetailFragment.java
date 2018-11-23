@@ -52,6 +52,7 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 
 import java.util.ArrayList;
@@ -251,6 +252,21 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void closeView() {
+
+    }
+
+    @Override
+    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
+
+    }
+
+    @Override
+    public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
+
+    }
+
+    @Override
+    public void showErrorAffiliate(String message) {
 
     }
 

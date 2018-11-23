@@ -64,6 +64,7 @@ public interface ApplinkConst {
     String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
+    String OFFICIAL_STORES_CATEGORY = "tokopedia://official-stores/{key_category}";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
@@ -88,6 +89,8 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
+    String PROFILE_AFTER_POST = "tokopedia://people/{user_id}?after_post=true";
+    String PROFILE_AFTER_EDIT = "tokopedia://people/{user_id}?after_edit=true";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
 
@@ -161,7 +164,20 @@ public interface ApplinkConst {
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
+    String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
+    String AFFILIATE_EDIT_POST = "tokopedia://affiliate/edit/{post_id}";
+    String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
+    String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
+    String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
+    String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
+
     String CHALLENGE = "tokopedia://challenges";
+    String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
+    String ADD_NAME_PROFILE = "tokopedia://addname";
+    String CREATE_PASSWORD = "tokopedia://createpassword";
+    String PHONE_VERIFICATION = "tokopedia://phoneverification";
+    String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
+
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
