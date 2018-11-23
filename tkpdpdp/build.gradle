@@ -100,6 +100,8 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+
+    implementation project(rootProject.ext.features.gallery)
 }
 
 apply from: '../publish_local.gradle'
