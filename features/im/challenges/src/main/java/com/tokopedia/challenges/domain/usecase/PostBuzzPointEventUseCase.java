@@ -23,15 +23,9 @@ import javax.inject.Inject;
 public class PostBuzzPointEventUseCase extends RestRequestSupportInterceptorUseCase {
 
 
-    private RequestParams requestParams;
-
     @Inject
     public PostBuzzPointEventUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
-    }
-
-    public void setRequestParams(RequestParams requestParams) {
-        this.requestParams = requestParams;
     }
 
     @Override

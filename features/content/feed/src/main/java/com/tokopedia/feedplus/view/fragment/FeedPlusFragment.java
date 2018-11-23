@@ -915,6 +915,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void trackContentClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
+
+    }
+
+    @Override
+    public void trackTooltipClick(boolean hasMultipleContent, String activityId, String
+            activityType, String position) {
+
+    }
+
+    @Override
     public void onFollowKolClicked(int rowNumber, int id) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.followKol(id, rowNumber, this);
@@ -934,7 +946,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKolClicked(int rowNumber, int id) {
+    public void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
@@ -943,7 +956,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUnlikeKolClicked(int rowNumber, int id) {
+    public void onUnlikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                   String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.unlikeKol(id, rowNumber, this);
         } else {
@@ -952,13 +966,30 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolComment(int rowNumber, int id) {
+    public void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
+                                 String activityType) {
         Intent intent = KolCommentActivity.getCallingIntentFromFeed(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
     }
 
     @Override
-    public void onEditClicked(int id) {
+    public void onLikeKolClicked(int rowNumber, int id) {
+        onLikeKolClicked(rowNumber, id, false, "");
+    }
+
+    @Override
+    public void onUnlikeKolClicked(int adapterPosition, int id) {
+        onUnlikeKolClicked(adapterPosition, id, false, "");
+    }
+
+    @Override
+    public void onGoToKolComment(int rowNumber, int id) {
+        onGoToKolComment(rowNumber, id, false, "");
+    }
+
+    @Override
+    public void onEditClicked(boolean hasMultipleContent, String activityId,
+                              String activityType) {
 
     }
 

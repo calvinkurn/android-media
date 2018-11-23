@@ -329,7 +329,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             loading.setVisibility(View.VISIBLE);
             getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
+            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element
+                        , ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getGroupChatToken());
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View

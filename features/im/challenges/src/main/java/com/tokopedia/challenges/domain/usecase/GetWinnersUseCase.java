@@ -24,16 +24,12 @@ import javax.inject.Inject;
 public class GetWinnersUseCase extends RestRequestSupportInterceptorUseCase {
 
 
-    private RequestParams requestParams;
 
     @Inject
     public GetWinnersUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 
-    public void setRequestParams(RequestParams requestParams) {
-        this.requestParams = requestParams;
-    }
 
     @Override
     protected List<RestRequest> buildRequest(RequestParams requestParams) {

@@ -8,7 +8,8 @@ import rx.Subscriber
 /**
  * @author by milhamj on 10/15/18.
  */
-class GetProfilePostSubscriber(val view: ProfileContract.View) : Subscriber<ContentListDomain>(){
+class GetProfilePostSubscriber(private val view: ProfileContract.View)
+    : Subscriber<ContentListDomain>() {
     override fun onNext(t: ContentListDomain?) {
         if (t == null) {
             view.showGetListError(RuntimeException())

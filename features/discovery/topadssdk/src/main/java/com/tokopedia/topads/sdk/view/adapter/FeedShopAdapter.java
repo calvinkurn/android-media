@@ -1,5 +1,6 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,14 +32,14 @@ public class FeedShopAdapter extends RecyclerView.Adapter<FeedShopAdapter.ViewHo
     }
 
     @Override
-    public FeedShopAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FeedShopAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.topads_shop_product_image_feed, parent, false);
         return new FeedShopAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final FeedShopAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final FeedShopAdapter.ViewHolder holder, int position) {
         if (imageLoader == null) {
             imageLoader = new ImageLoader(holder.imageView.getContext());
         }
@@ -53,6 +54,13 @@ public class FeedShopAdapter extends RecyclerView.Adapter<FeedShopAdapter.ViewHo
         }
 
         return list.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
+
+        ImageLoader.clearImage(holder.imageView);
     }
 
     public List<ImageProduct> getList() {

@@ -3,8 +3,9 @@ package com.tokopedia.groupchat.chatroom.domain.pojo.imageannouncement;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo;
 
-public class AdminImagePojo {
+public class AdminImagePojo extends BaseGroupChatPojo{
 
     @SerializedName("image_url")
     @Expose
