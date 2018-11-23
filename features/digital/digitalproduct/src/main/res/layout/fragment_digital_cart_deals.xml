@@ -37,8 +37,7 @@
         <com.tokopedia.abstraction.base.view.widget.TouchViewPager
             android:id="@+id/pager_deals"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_230" />
+            android:layout_height="@dimen/dp_300"/>
     </LinearLayout>
 
     <FrameLayout

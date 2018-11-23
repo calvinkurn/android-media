@@ -1,10 +1,13 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -33,6 +36,11 @@ import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsP
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealListListener;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsPresenter;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +72,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private DigitalCheckoutPassData cartPassData;
     private DigitalDealsPagerAdapter pagerAdapter;
     private InteractionListener interactionListener;
+    private boolean isOnboardOngoing;
 
     @Override
     public boolean canGoBack() {
@@ -238,6 +247,92 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
+    public boolean isOnboardAlreadyShown() {
+        return ShowCasePreference.hasShown(getActivity(), DigitalCartDealsFragment.class.getName());
+    }
+
+    @Override
+    public void setOnBoardIsOnGoing() {
+        isOnboardOngoing = true;
+    }
+
+    @Override
+    public void setOnBoardIsFinish() {
+        isOnboardOngoing = false;
+    }
+
+    @Override
+    public void notifyCheckoutPageToStartAnimation() {
+        Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
+        if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
+            ((DigitalDealCheckoutFragment) checkoutFragment).startAutomaticCollapse();
+        }
+    }
+
+    @Override
+    public void showOnboard() {
+        ShowCaseDialog showCaseDialog = createShowCaseDialog();
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
+                ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+                if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
+                    ShowCaseObject priceShowCase = new ShowCaseObject(
+                            checkoutFragment.getView(), "Detail Produk",
+                            "Cek kembali detail produk sebelum pembayaran.",
+                            ShowCaseContentPosition.TOP);
+                    showCaseObjectList.add(priceShowCase);
+                }
+
+                ShowCaseObject dealShowCase = new ShowCaseObject(
+                        dealTabLayout, "Penawaran Spesial",
+                        "Tambahkan voucher spesial dan bayar sekaligus bersama produk sebelumnya.",
+                        ShowCaseContentPosition.BOTTOM
+                );
+
+                showCaseObjectList.add(dealShowCase);
+                if (getActivity().getFragmentManager() != null)
+                    getActivity().getFragmentManager().executePendingTransactions();
+                showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+                    @Override
+                    public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                        if (previousStep == 0) {
+                            notifyCheckoutPageToStartAnimation();
+                        } else {
+                            presenter.onOnboardDismiss();
+                        }
+                        return false;
+                    }
+                });
+                showCaseDialog.show(
+                        getActivity(),
+                        DigitalCartDealsFragment.class.getName(),
+                        showCaseObjectList
+                );
+            }
+        }, 800);
+
+    }
+
+    private ShowCaseDialog createShowCaseDialog() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .titleTextColorRes(R.color.white)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .nextStringRes(R.string.next)
+                .prevStringRes(R.string.previous)
+                .useCircleIndicator(true)
+                .clickable(true)
+                .useArrow(true)
+                .build();
+    }
+
+    @Override
     public DigitalCheckoutPassData getCartPassData() {
         return cartPassData;
     }
@@ -308,7 +403,6 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void showDim(float procentage, int height) {
-//        checkoutDim.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getParentMeasuredHeight() - height));
         checkoutDim.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         checkoutDim.setVisibility(View.VISIBLE);
         checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (200 * procentage)));
@@ -317,9 +411,14 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     @Override
     public void hideDim(float procentage) {
         checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (200 * procentage)));
-        if (procentage == 0.0){
+        if (procentage == 0.0) {
             checkoutDim.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean isAlreadyShowOnBoard() {
+        return isOnboardAlreadyShown();
     }
 
     @Override

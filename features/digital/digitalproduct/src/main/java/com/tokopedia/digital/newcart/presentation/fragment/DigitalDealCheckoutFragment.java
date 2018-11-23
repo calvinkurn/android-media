@@ -69,6 +69,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     private InteractionListener interactionListener;
 
+
     public interface InteractionListener {
         void unSelectDeal(DealProductViewModel viewModel);
 
@@ -87,6 +88,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         void showDim(float procentage, int height);
 
         void hideDim(float procentage);
+
+        boolean isAlreadyShowOnBoard();
     }
 
     @Inject
@@ -426,6 +429,11 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         );
     }
 
+    @Override
+    public boolean isAlreadyShowOnBoard() {
+        return interactionListener.isAlreadyShowOnBoard();
+    }
+
     public void updateSelectedDeal(DealProductViewModel viewModel) {
         presenter.onNewSelectedDeal(viewModel);
     }
@@ -501,5 +509,10 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
+    }
+
+
+    public void startAutomaticCollapse() {
+        presenter.autoCollapseCheckoutView();
     }
 }

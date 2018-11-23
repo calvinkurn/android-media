@@ -47,6 +47,16 @@ public interface DigitalCartDealsContract {
         Map<DealProductViewModel, Integer> getSelectedDealsMap();
 
         void notifyAdapterInSpecifyFragment(Integer position);
+
+        boolean isOnboardAlreadyShown();
+
+        void showOnboard();
+
+        void setOnBoardIsOnGoing();
+
+        void setOnBoardIsFinish();
+
+        void notifyCheckoutPageToStartAnimation();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -56,5 +66,7 @@ public interface DigitalCartDealsContract {
         void onSelectDealProduct(DealProductViewModel viewModel, int currentFragmentPosition);
 
         void unSelectDealFromCheckoutView(DealProductViewModel viewModel);
+
+        void onOnboardDismiss();
     }
 }

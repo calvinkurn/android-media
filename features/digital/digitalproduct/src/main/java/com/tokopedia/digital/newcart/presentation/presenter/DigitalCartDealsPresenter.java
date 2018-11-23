@@ -50,8 +50,14 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
                         getView().showDealsPage();
                         getView().showCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
                         getView().renderDealsTab(dealCategoryViewModels);
+
+                        if (!getView().isOnboardAlreadyShown()) {
+                            getView().showOnboard();
+                            getView().setOnBoardIsOnGoing();
+                        }
                     }
                 });
+
     }
 
     @Override
@@ -77,6 +83,12 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
             getView().notifyAdapterInSpecifyFragment(fragmentPosition);
             getView().getSelectedDealsMap().remove(viewModel);
         }
+    }
+
+    @Override
+    public void onOnboardDismiss() {
+        getView().setOnBoardIsFinish();
+        getView().notifyCheckoutPageToStartAnimation();
     }
 
 

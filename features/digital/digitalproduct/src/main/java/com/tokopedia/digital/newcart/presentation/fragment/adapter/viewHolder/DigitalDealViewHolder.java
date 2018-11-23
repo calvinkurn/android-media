@@ -91,8 +91,8 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
         titleTextView.setText(element.getTitle());
         if (element.getSalesPriceNumeric() > 0) {
             priceTextView.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) element.getSalesPriceNumeric()));
-            if (element.getSavePriceNumeric() > 0) {
-                long slashedPrice = element.getSalesPriceNumeric() + element.getSavePriceNumeric();
+            if (element.getBeforePrice() > 0) {
+                long slashedPrice = element.getBeforePrice();
                 slashedPriceTextView.setText(
                         CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
                                 (int) slashedPrice

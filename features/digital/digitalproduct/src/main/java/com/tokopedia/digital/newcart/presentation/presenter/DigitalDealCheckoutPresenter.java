@@ -41,7 +41,6 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         getView().setCheckoutParameter(buildCheckoutData(getView().getCartInfoData(), userSession.getAccessToken()));
         renderBaseCart(getView().getCartInfoData());
         getView().renderCategory(getView().getCartInfoData().getAttributes().getCategoryName());
-        autoCollapseCheckoutView();
         if (getView().getCartInfoData().getCrossSellingConfig() != null) {
             getView().updateToolbarTitle(getView().getCartInfoData().getCrossSellingConfig().getHeaderTitle());
             getView().updateCheckoutButtonText(getView().getCartInfoData().getCrossSellingConfig().getCheckoutButtonText());
@@ -51,9 +50,14 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         } else {
             getView().updateToolbarTitle(R.string.digital_deal_toolbar_title);
         }
+
+        if (!getView().isAlreadyShowOnBoard()){
+            autoCollapseCheckoutView();
+        }
     }
 
-    private void autoCollapseCheckoutView() {
+    @Override
+    public void autoCollapseCheckoutView() {
         Observable.timer(AUTO_COLLAPSE_ANIMATION_DELAY, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -95,7 +99,6 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             }else {
                 getView().hideDealsContainerView();
             }
-//            getView().setMinHeight(R.dimen.dp_350);
             getView().renderIconToCollapse();
         }
     }

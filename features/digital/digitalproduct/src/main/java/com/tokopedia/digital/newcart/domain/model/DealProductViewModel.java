@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFactory> {
     private long salesPriceNumeric;
-    private long savePriceNumeric;
+    private long beforePriceNumeric;
     private String title;
     private String brandName;
     private String imageUrl;
@@ -27,12 +27,12 @@ public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFa
         this.salesPriceNumeric = salesPriceNumeric;
     }
 
-    public long getSavePriceNumeric() {
-        return savePriceNumeric;
+    public long getBeforePrice() {
+        return beforePriceNumeric;
     }
 
-    public void setSavePriceNumeric(long savePriceNumeric) {
-        this.savePriceNumeric = savePriceNumeric;
+    public void setBeforePriceNumeric(long beforePriceNumeric) {
+        this.beforePriceNumeric = beforePriceNumeric;
     }
 
     public String getTitle() {
