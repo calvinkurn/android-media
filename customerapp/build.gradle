@@ -350,6 +350,7 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
+    implementation project(rootProject.ext.features.gallery)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)

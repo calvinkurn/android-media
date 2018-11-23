@@ -188,6 +188,8 @@ ext {
             paymentManagementSystem: ":features:payment:pms",
             withdraw               : ":features:payment:withdraw",
 
+            gallery                : ":features:product:gallery",
+
             gamification           : ":features:promo:gamification",
             merchantVoucher        : ":features:promo:merchant_voucher",
             tokopoints             : ":features:promo:tokopoints",
