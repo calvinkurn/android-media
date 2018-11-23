@@ -85,8 +85,6 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
             }
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_file_too_big));
-        } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
