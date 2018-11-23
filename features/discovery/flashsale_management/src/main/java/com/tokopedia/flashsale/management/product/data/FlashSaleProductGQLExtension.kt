@@ -55,7 +55,7 @@ fun FlashSaleProductItemCampaign.getProductStatusColor(): StatusColor {
         FlashSaleProductStatusTypeDef.REJECTED,
         FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> StatusColor(R.color.white, R.drawable.rect_gray_rounded_left)
         FlashSaleProductStatusTypeDef.SUBMITTED,
-        FlashSaleProductStatusTypeDef.RESERVE -> StatusColor(R.color.tkpd_main_green, 0)
+        FlashSaleProductStatusTypeDef.RESERVE -> StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
         else -> StatusColor(0, 0)
     }
 }
