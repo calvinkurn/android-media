@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.report.view.listener
 
 import android.content.Context
+import android.support.annotation.StringRes
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
@@ -10,6 +11,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 interface ContentReportContract {
     interface View : CustomerView {
         fun getContext(): Context?
+
+        fun getString(@StringRes id: Int): String
 
         fun hideKeyboard()
 
@@ -22,6 +25,8 @@ interface ContentReportContract {
         fun onSuccessSendReport()
 
         fun onErrorSendReport(message: String)
+
+        fun onErrorSendReportDuplicate(message: String)
     }
 
     interface Presenter : CustomerPresenter<View> {

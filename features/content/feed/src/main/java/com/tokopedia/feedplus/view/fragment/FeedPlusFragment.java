@@ -662,12 +662,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 break;
             case OPEN_CONTENT_REPORT:
                 if (resultCode == Activity.RESULT_OK) {
-                    ToasterNormal
-                            .make(getView(),
-                                    getString(R.string.feed_content_reported),
-                                    BaseToaster.LENGTH_LONG)
-                            .setAction(R.string.label_close, v -> { })
-                            .show();
+                    if (data.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                        onSuccessReportContent();
+                    } else {
+                        onErrorReportContent(
+                                data.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG)
+                        );
+                    }
                 }
                 break;
             default:
@@ -1168,6 +1169,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             adapter.notifyItemChanged(rowNumber);
         }
+    }
+
+    private void onSuccessReportContent() {
+        ToasterNormal
+                .make(getView(),
+                        getString(R.string.feed_content_reported),
+                        BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close, v -> { })
+                .show();
+    }
+
+    private void onErrorReportContent(String errorMsg) {
+        ToasterError
+                .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.label_close, v -> { })
+                .show();
     }
 
     @Override

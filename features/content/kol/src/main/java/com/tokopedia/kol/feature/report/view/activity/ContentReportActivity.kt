@@ -13,6 +13,8 @@ class ContentReportActivity : BaseSimpleActivity() {
 
     companion object {
         const val PARAM_CONTENT_ID = "content_id"
+        const val RESULT_SUCCESS = "result_success"
+        const val RESULT_ERROR_MSG = "error_msg"
 
         fun createIntent(context: Context, contentId: Int): Intent {
             val intent = Intent(context, ContentReportActivity::class.java)

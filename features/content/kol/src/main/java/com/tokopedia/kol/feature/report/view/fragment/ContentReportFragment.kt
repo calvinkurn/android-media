@@ -96,12 +96,22 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     override fun onSuccessSendReport() {
-        activity?.setResult(Activity.RESULT_OK, Intent())
+        val intent = Intent()
+        intent.putExtra(ContentReportActivity.RESULT_SUCCESS, true)
+        activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
     override fun onErrorSendReport(message: String) {
         NetworkErrorHelper.showEmptyState(context!!, mainView, message) { sendReport() }
+    }
+
+    override fun onErrorSendReportDuplicate(message: String) {
+        val intent = Intent()
+        intent.putExtra(ContentReportActivity.RESULT_SUCCESS, false)
+        intent.putExtra(ContentReportActivity.RESULT_ERROR_MSG, message)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     private fun initVar() {
