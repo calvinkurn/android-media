@@ -172,7 +172,6 @@ import io.branch.referral.BranchError;
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        ProductManageApplinkModule.class,
         UserIdentificationApplinkModule.class
 })
 
