@@ -21,7 +21,7 @@ import static java.lang.Math.min;
  * @author Irfan Khoirul on 05/02/18
  * Aghny A. Putra on 27/02/18
  */
-
+@Deprecated
 public class CartAddressChoicePresenter extends BaseDaggerPresenter<ICartAddressChoiceView>
         implements ICartAddressChoicePresenter {
 

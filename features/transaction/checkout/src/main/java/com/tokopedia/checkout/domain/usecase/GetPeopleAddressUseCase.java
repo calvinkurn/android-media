@@ -67,6 +67,7 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
         // Create request params which contains the auth params
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(authParams);
+        requestParams.putAllString(params);
 
         return requestParams;
     }

@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.perf.metrics.Trace;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -58,7 +57,6 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -81,6 +79,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+//import com.tokopedia.core.analytics.TrackingUtils;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -137,8 +137,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
-    private Trace trace;
-    private boolean isTraceStopped;
+//    private Trace trace;
+//    private boolean isTraceStopped;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -160,7 +160,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
-        trace = TrackingUtils.startTrace(CART_TRACE);
+//        trace = TrackingUtils.startTrace(CART_TRACE);
     }
 
     @Override
@@ -782,10 +782,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        if (trace != null && !isTraceStopped) {
-            trace.stop();
-            isTraceStopped = true;
-        }
+//        if (trace != null && !isTraceStopped) {
+//            trace.stop();
+//            isTraceStopped = true;
+//        }
 
         sendAnalyticsScreenName(getScreenName());
         if (refreshHandler != null) {

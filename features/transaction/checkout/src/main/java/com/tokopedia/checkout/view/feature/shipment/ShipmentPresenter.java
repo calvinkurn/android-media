@@ -620,6 +620,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return false;
     }
 
+    @Deprecated
     @Override
     public void processVerifyPayment(String transactionId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();

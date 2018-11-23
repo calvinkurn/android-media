@@ -15,4 +15,6 @@ public class LogisticCommonConstant {
     public static final int REQUEST_CODE_PARAM_EDIT = 102;
 
     public static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
+    public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
+
 }

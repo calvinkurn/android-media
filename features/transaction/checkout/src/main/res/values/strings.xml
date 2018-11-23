@@ -224,5 +224,6 @@
     <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
     <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
+    <string name="title_activity_cart">Keranjang</string>
 
 </resources>

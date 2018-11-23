@@ -28,23 +28,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
-import com.tokopedia.logisticgeolocation.util.LocationCache;
 import com.tokopedia.logisticgeolocation.R;
 import com.tokopedia.logisticgeolocation.data.RetrofitInteractor;
 import com.tokopedia.logisticgeolocation.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticgeolocation.di.ActivityContext;
 import com.tokopedia.logisticgeolocation.di.GeolocationScope;
+import com.tokopedia.logisticgeolocation.util.LocationCache;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
-
-import com.tokopedia.logisticgeolocation.domain.LocationPassMapper;
 
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.
@@ -366,10 +365,10 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     public void onSubmitPointer(Activity activity) {
         if (isAllowGenerateAddress) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+            bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
             Intent intent = new Intent();
             intent.putExtras(bundle);
-            intent.putExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+            intent.putExtra(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }

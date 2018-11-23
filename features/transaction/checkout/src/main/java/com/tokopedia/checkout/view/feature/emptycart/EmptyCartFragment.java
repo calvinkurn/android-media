@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -38,7 +37,6 @@ import com.tokopedia.checkout.view.feature.emptycart.adapter.WishlistAdapter;
 import com.tokopedia.checkout.view.feature.emptycart.di.DaggerEmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartModule;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.topads.sdk.base.Config;
@@ -61,6 +59,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
+
+//import com.tokopedia.core.analytics.TrackingUtils;
 
 /**
  * Created by Irfan Khoirul on 14/09/18.
@@ -102,8 +102,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private WishlistAdapter wishlistAdapter;
     private RecentViewAdapter recentViewAdapter;
 
-    private Trace trace;
-    private boolean isTraceStopped;
+//    private Trace trace;
+//    private boolean isTraceStopped;
 
     @Inject
     UserSession userSession;
@@ -137,7 +137,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trace = TrackingUtils.startTrace(EMPTY_CART_TRACE);
+//        trace = TrackingUtils.startTrace(EMPTY_CART_TRACE);
     }
 
     @Override
@@ -281,10 +281,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void stopTrace() {
-        if (trace != null && !isTraceStopped && presenter.hasLoadAllApi()) {
-            trace.stop();
-            isTraceStopped = true;
-        }
+//        if (trace != null && !isTraceStopped && presenter.hasLoadAllApi()) {
+//            trace.stop();
+//            isTraceStopped = true;
+//        }
     }
 
     private double getItemWidth() {

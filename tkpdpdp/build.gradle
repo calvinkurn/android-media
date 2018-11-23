@@ -57,6 +57,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.transactioncommon)
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
 
