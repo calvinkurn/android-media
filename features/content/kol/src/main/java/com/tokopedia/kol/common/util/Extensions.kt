@@ -1,10 +1,13 @@
 package com.tokopedia.kol.common.util
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.kol.R
@@ -42,6 +45,18 @@ fun View.show() {
 
 fun View.hide() {
     this.visibility = View.GONE
+}
+
+fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+    this.addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(editable: Editable?) {
+            afterTextChanged(editable?.toString() ?: "")
+        }
+
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+        override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+    })
 }
 
 fun Throwable.debugTrace() {

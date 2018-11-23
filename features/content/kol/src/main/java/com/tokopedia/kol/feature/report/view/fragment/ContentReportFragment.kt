@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
+import com.tokopedia.kol.common.util.afterTextChanged
 import com.tokopedia.kol.common.util.hideLoading
 import com.tokopedia.kol.common.util.showLoading
 import com.tokopedia.kol.feature.report.di.DaggerContentReportComponent
@@ -116,19 +115,12 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         reasonRv.adapter = adapter
         adapter.addAll(getReasonList())
 
-        reasonInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                reasonInput.isCursorVisible = true
-                adapter.setCustomTypeSelected()
-                sendBtn.isEnabled = s.toString().isEmpty().not()
-            }
+        reasonInput.afterTextChanged {
+            reasonInput.isCursorVisible = true
+            adapter.setCustomTypeSelected()
+            sendBtn.isEnabled = it.isEmpty().not()
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
         sendBtn.setOnClickListener { sendReport() }
     }
 
