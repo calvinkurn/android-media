@@ -173,6 +173,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetShopVerificationStatus(String errorMessage) {
+        hideLoading();
         NetworkErrorHelper.showEmptyState(getContext(), mainView, () -> presenter.getStatus());
     }
 
