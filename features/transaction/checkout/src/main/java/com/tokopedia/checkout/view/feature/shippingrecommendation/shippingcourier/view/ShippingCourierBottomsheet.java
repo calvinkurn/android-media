@@ -21,8 +21,8 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemMo
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierModule;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 

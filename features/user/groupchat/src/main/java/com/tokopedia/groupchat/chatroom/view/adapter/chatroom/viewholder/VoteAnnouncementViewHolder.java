@@ -42,11 +42,12 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     @Override
     public void bind(final VoteAnnouncementViewModel element) {
         super.bind(element);
-        switch (element.getVoteType()) {
+        switch (element.getVoteType().toLowerCase()) {
             case VoteAnnouncementViewModel.POLLING_START:
                 setVoteStarted(element);
                 break;
             case VoteAnnouncementViewModel.POLLING_FINISHED:
+            case VoteAnnouncementViewModel.POLLING_END:
                 setVoteFinished(element);
                 break;
             default:

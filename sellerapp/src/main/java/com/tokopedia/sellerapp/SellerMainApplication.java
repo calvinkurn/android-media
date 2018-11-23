@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -29,9 +28,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
@@ -45,17 +44,15 @@ import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sessioncommon.data.SessionCommonUrl;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
-import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
-import com.tokopedia.user_identification_common.KycCommonUrl;
-
-import rx.Observable;
+import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -221,8 +218,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(SellerAppBaseUrl.PAYMENT_DOMAIN);
         AttachProductUrl.URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TalkUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_INBOX_DOMAIN);
-
         TopChatUrl.TOPCHAT_JS_API = SellerAppBaseUrl.BASE_JS_DOMAIN;
+        LoginRegisterUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionCommonUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionCommonUrl.BASE_WS_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
+
     }
 
     private void generateSellerAppNetworkKeys() {

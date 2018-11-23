@@ -29,7 +29,7 @@ public class GetSearchNextUseCase extends RestRequestUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         String url = params.getString(Utils.NEXT_URL, "");
 
         List<RestRequest> tempRequest = new ArrayList<>();

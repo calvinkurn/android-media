@@ -330,7 +330,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                                 List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                                 list.add(new FeedEnhancedTracking.Promotion(
-                                        kolPostYoutubeViewModel.getKolId(),
+                                        kolPostYoutubeViewModel.getContentId(),
                                         FeedEnhancedTracking.Promotion.createContentNameAnnouncement(
                                                 kolPostYoutubeViewModel.getTagsType(),
                                                 kolPostYoutubeViewModel.getCardType()),
@@ -355,7 +355,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                                 List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                                 list.add(new FeedEnhancedTracking.Promotion(
-                                        kolViewModel.getKolId(),
+                                        kolViewModel.getContentId(),
                                         FeedEnhancedTracking.Promotion.createContentName(
                                                 kolViewModel.getTagsType(),
                                                 kolViewModel.getCardType())
@@ -545,6 +545,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private KolPostViewModel convertToKolViewModel(DataFeedDomain domain) {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
+        List<String> imageList = new ArrayList<>();
+        imageList.add(kolPostDomain.getImageUrl());
+
         return new KolPostViewModel(
                 kolPostDomain.getUserId(),
                 kolPostDomain.getCardType(),
@@ -564,7 +567,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ()),
                 kolPostDomain.isShowComment(),
                 kolPostDomain.isShowLike(),
-                kolPostDomain.getImageUrl(),
+                imageList,
                 kolPostDomain.getItemId(),
                 "",
                 kolPostDomain.getTagsType(),

@@ -4,6 +4,10 @@ query UserPointsQuery {
       code
     }
     status {
+      tier {
+        nameDesc
+        eggImageURL
+      }
       points {
         reward
         rewardStr

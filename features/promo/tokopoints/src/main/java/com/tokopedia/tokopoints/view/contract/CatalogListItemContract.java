@@ -35,6 +35,8 @@ public interface CatalogListItemContract {
 
         int getCurrentCategoryId();
 
+        int getCurrentSubCategoryId();
+
         void showRedeemCouponDialog(String cta, String code, String title);
 
         void showConfirmRedeemDialog(String cta, String code, String title);

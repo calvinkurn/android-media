@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.design.widget.PinEntryEditText;
+import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.contract.ValidateMerchantPinContract;
@@ -27,7 +27,7 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     @Inject
     public ValidateMerchantPinPresenter mPresenter;
 
-    private PinEntryEditText mEditPin;
+    private PinEditText mEditPin;
     private TextView mTextError;
     private TextView mTextInfo;
 
