@@ -1,11 +1,9 @@
 package com.tokopedia.useridentification.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.useridentification.KycUrl;
@@ -13,10 +11,8 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
-import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
 
 /**
  * @author by alvinatin on 09/11/18.
@@ -56,16 +52,7 @@ public class UserIdentificationFormFaceFragment extends
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_CAMERA_FACE
-                && resultCode == Activity.RESULT_OK
-                && data != null) {
-            String faceFile = data.getStringExtra(EXTRA_STRING_IMAGE_RESULT);
-            stepperModel.setFaceFile(faceFile);
-            stepperListener.goToNextPage(stepperModel);
 
-        } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

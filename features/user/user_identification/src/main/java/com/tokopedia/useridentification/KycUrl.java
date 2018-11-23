@@ -1,16 +1,21 @@
 package com.tokopedia.useridentification;
 
+import com.tokopedia.applink.ApplinkConst;
+
 /**
  * @author by nisie on 16/11/18.
  */
-public class KycUrl {
+public interface KycUrl {
 
-    public static String ICON_NOT_VERIFIED = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_intro.png";
-    public static String ICON_WAITING = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_waiting.png";
-    public static String ICON_SUCCESS_VERIFY = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_berhasil_email.png";
-    public static String ICON_FAIL_VERIFY = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_gagal_email_copy.png";
-    public static String KTP_OK = "https://ecs7.tokopedia.net/img/android/others/ktp_ok.png";
-    public static String KTP_FAIL = "https://ecs7.tokopedia.net/img/android/others/ktp_fail.png";
-    public static String SELFIE_OK = "https://ecs7.tokopedia.net/img/android/others/selfie_ok.png";
-    public static String SELFIE_FAIL = "https://ecs7.tokopedia.net/img/android/others/selfie_fail.png";
+    String ICON_NOT_VERIFIED = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_intro.png";
+    String ICON_WAITING = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_waiting.png";
+    String ICON_SUCCESS_VERIFY = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_berhasil_email.png";
+    String ICON_FAIL_VERIFY = "https://ecs7.tokopedia.net/img/android/others/kyc_ilus_gagal_email_copy.png";
+    String KTP_OK = "https://ecs7.tokopedia.net/img/android/others/ktp_ok.png";
+    String KTP_FAIL = "https://ecs7.tokopedia.net/img/android/others/ktp_fail.png";
+    String SELFIE_OK = "https://ecs7.tokopedia.net/img/android/others/selfie_ok.png";
+    String SELFIE_FAIL = "https://ecs7.tokopedia.net/img/android/others/selfie_fail.png";
+    
+    String URL_TERMS_AND_CONDITION = "https://31-feature-m-staging.tokopedia.com/terms/merchantkyc";
+    String APPLINK_TERMS_AND_CONDITION = String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TERMS_AND_CONDITION);
 }

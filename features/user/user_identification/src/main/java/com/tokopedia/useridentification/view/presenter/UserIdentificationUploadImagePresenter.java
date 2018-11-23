@@ -6,6 +6,7 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
 import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
@@ -73,111 +74,99 @@ public class UserIdentificationUploadImagePresenter extends
     public void uploadImage(UserIdentificationStepperModel model) {
         List<ImageUploadModel> attachments = parseToModel(model);
         compositeSubscription.add(Observable.from(attachments)
-                        .flatMap(new Func1<ImageUploadModel, Observable<ImageUploadModel>>() {
-                            @Override
-                            public Observable<ImageUploadModel> call(ImageUploadModel
-                                                                             imageUploadModel) {
-                                return Observable.zip(Observable.just(imageUploadModel),
-                                        uploadImageUseCase.createObservable(
-                                                createParam(imageUploadModel.getFilePath())
-                                        ), new Func2<ImageUploadModel,
-                                                ImageUploadDomainModel<AttachmentImageModel>,
-                                                ImageUploadModel>() {
-                                            @Override
-                                            public ImageUploadModel call(ImageUploadModel
-                                                                                 imageUploadModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
-                                                imageUploadModel.setPicObjKyc(uploadDomainModel
-                                                        .getDataResultImageUpload().getData()
-                                                        .getPicObj());
-                                                return imageUploadModel;
-                                            }
-                                        });
-                            }
-                        }).toList()
-                        .flatMap(new Func1<List<ImageUploadModel>, Observable<ImageUploadModel>>() {
-                            @Override
-                            public Observable<ImageUploadModel> call(List<ImageUploadModel>
-                                                                            imageUploadModels) {
-                                return Observable.from(imageUploadModels)
-                                        .flatMap(new Func1<ImageUploadModel,
-                                                Observable<ImageUploadModel>>() {
-                                            @Override
-                                            public Observable<ImageUploadModel> call
-                                                    (ImageUploadModel imageUploadModel) {
-                                                return Observable.zip(Observable.just
+                .flatMap(new Func1<ImageUploadModel, Observable<ImageUploadModel>>() {
+                    @Override
+                    public Observable<ImageUploadModel> call(ImageUploadModel
+                                                                     imageUploadModel) {
+                        return Observable.zip(Observable.just(imageUploadModel),
+                                uploadImageUseCase.createObservable(
+                                        createParam(imageUploadModel.getFilePath())
+                                ), new Func2<ImageUploadModel,
+                                        ImageUploadDomainModel<AttachmentImageModel>,
+                                        ImageUploadModel>() {
+                                    @Override
+                                    public ImageUploadModel call(ImageUploadModel
+                                                                         imageUploadModel,
+                                                                 ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
+                                        imageUploadModel.setPicObjKyc(uploadDomainModel
+                                                .getDataResultImageUpload().getData()
+                                                .getPicObj());
+                                        return imageUploadModel;
+                                    }
+                                });
+                    }
+                }).toList()
+                .flatMap(new Func1<List<ImageUploadModel>, Observable<ImageUploadModel>>() {
+                    @Override
+                    public Observable<ImageUploadModel> call(List<ImageUploadModel>
+                                                                     imageUploadModels) {
+                        return Observable.from(imageUploadModels)
+                                .flatMap(new Func1<ImageUploadModel,
+                                        Observable<ImageUploadModel>>() {
+                                    @Override
+                                    public Observable<ImageUploadModel> call
+                                            (ImageUploadModel imageUploadModel) {
+                                        return Observable.zip(Observable.just
                                                         (imageUploadModel),
-                                                        uploadIdentificationUseCase
-                                                                .createObservable(
-                                                        UploadIdentificationUseCase.getRequestParam(
-                                                                imageUploadModel.getKycType(),
-                                                                imageUploadModel.getPicObjKyc()
-                                                        )
-                                                ), new Func2<ImageUploadModel, GraphqlResponse, ImageUploadModel>() {
+                                                uploadIdentificationUseCase
+                                                        .createObservable(
+                                                                UploadIdentificationUseCase
+                                                                        .getRequestParam(
+                                                                        imageUploadModel
+                                                                                .getKycType(),
+                                                                        imageUploadModel
+                                                                                .getPicObjKyc()
+                                                                )
+                                                        ), new Func2<ImageUploadModel,
+                                                        GraphqlResponse, ImageUploadModel>() {
                                                     @Override
-                                                    public ImageUploadModel call(ImageUploadModel imageUploadModel,
-                                                                                GraphqlResponse graphqlResponse) {
-                                                        UploadIdentificationPojo pojo = graphqlResponse.getData(UploadIdentificationPojo.class);
+                                                    public ImageUploadModel call(ImageUploadModel
+                                                                                         imageUploadModel,
+                                                                                 GraphqlResponse
+                                                                                         graphqlResponse) {
+                                                        UploadIdentificationPojo pojo =
+                                                                graphqlResponse.getData
+                                                                        (UploadIdentificationPojo
+                                                                                .class);
                                                         imageUploadModel.setError(pojo.getError());
-                                                        imageUploadModel.setIsSuccess(pojo.getIsSuccess());
+                                                        imageUploadModel.setIsSuccess(pojo
+                                                                .getIsSuccess());
                                                         return imageUploadModel;
                                                     }
                                                 });
-                                            }
-                                        });
-                            }
-                        })
-                        .toList()
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<ImageUploadModel>>() {
-                            @Override
-                            public void onCompleted() {
+                                    }
+                                });
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<ImageUploadModel>>() {
+                    @Override
+                    public void onCompleted() {
 
-                            }
+                    }
 
-                            @Override
-                            public void onError(Throwable throwable) {
-                                getView().onErrorUpload();
-                            }
+                    @Override
+                    public void onError(Throwable throwable) {
+                        getView().onErrorUpload();
+                    }
 
-                            @Override
-                            public void onNext(List<ImageUploadModel> imageUploadModels) {
-                                int isSuccess = 0;
-                                for (ImageUploadModel imageUploadModel : imageUploadModels) {
-                                    isSuccess = isSuccess + imageUploadModel.getIsSuccess();
-                                }
-                                if (isSuccess == 2) {
-                                    getView().onSuccessUpload();
-                                } else {
-                                    getView().onErrorUpload();
-                                }
-                            }
-                        })
-//                .subscribe(new Subscriber<List<ImageUploadModel>>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable throwable) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(List<ImageUploadModel> imageUploadModels) {
-//                        for (ImageUploadModel imageUploadModel : imageUploadModels) {
-//                            uploadIdentificationUseCase.execute(
-//                                    UploadIdentificationUseCase.getRequestParam(
-//                                            imageUploadModel.getKycType(),
-//                                            imageUploadModel.getPicObjKyc()
-//                                    ), new UserImageMutationSubscriber()
-//                            );
-//                        }
-//                        getView().onSuccessUpload();
-//                    }
-//                })
+                    @Override
+                    public void onNext(List<ImageUploadModel> imageUploadModels) {
+                        int totalSuccess = 0;
+                        for (ImageUploadModel imageUploadModel : imageUploadModels) {
+                            totalSuccess = totalSuccess + imageUploadModel.getIsSuccess();
+                        }
+
+                        if (totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS) {
+                            getView().onSuccessUpload();
+                        } else {
+                            getView().onErrorUpload();
+                        }
+                    }
+                })
         );
     }
 
@@ -198,6 +187,7 @@ public class UserIdentificationUploadImagePresenter extends
         maps.put(PARAM_WEB_SERVICE, webService);
         maps.put(PARAM_ID, id);
         maps.put(PARAM_RESOLUTION, resolution);
-        return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH, DEFAULT_UPLOAD_TYPE, maps);
+        return uploadImageUseCase.createRequestParam(cameraLoc, DEFAULT_UPLOAD_PATH,
+                DEFAULT_UPLOAD_TYPE, maps);
     }
 }

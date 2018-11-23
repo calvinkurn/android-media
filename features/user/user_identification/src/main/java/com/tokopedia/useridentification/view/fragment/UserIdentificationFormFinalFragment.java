@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
@@ -41,10 +42,8 @@ import javax.inject.Inject;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 15/11/18.
@@ -93,6 +92,12 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         initView(view);
         setContentView();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        hideLoading();
     }
 
     @Override
@@ -202,8 +207,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                //TODO alvin change this
-                RouteManager.route(getContext(), "https://31-feature-m-staging.tokopedia.com/terms/merchantkyc");
+                RouteManager.route(getContext(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
 
             @Override
@@ -234,7 +238,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     public void onSuccessUpload() {
         hideLoading();
         getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        stepperListener.finishPage();
     }
 
     @Override
@@ -245,7 +249,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             public void onRetryClicked() {
                 uploadImage();
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.otaliastudios.cameraview.CameraView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
 
 import java.io.File;
@@ -175,9 +176,13 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
-                getActivity().setResult(Activity.RESULT_OK, intent);
+                if (isFileSizeQualified(imagePath)) {
+                    Intent intent = new Intent();
+                    intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                } else {
+                    getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
+                }
                 getActivity().finish();
             }
         });
@@ -248,7 +253,8 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             imagePath = cameraResultFile.getAbsolutePath();
             showImagePreview();
         } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Terjadi kesalahan, silahkan coba lagi", Toast
+                    .LENGTH_LONG).show();
         }
     }
 
@@ -292,5 +298,16 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         if (cameraView.getVisibility() == View.VISIBLE) {
             cameraView.toggleFacing();
         }
+    }
+
+    private boolean isFileSizeQualified(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            long fileSizeInBytes = file.length();
+            long fileSizeInKB = fileSizeInBytes / 1024;
+            long fileSizeInMB = fileSizeInKB / 1024;
+            return (fileSizeInMB <= 10);
+        } else
+            return false;
     }
 }

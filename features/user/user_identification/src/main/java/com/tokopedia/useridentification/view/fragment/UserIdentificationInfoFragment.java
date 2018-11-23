@@ -215,8 +215,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO alvin change this
-                RouteManager.route(getContext(), "https://31-feature-m-staging.tokopedia.com/terms/merchantkyc");
+                RouteManager.route(getContext(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
         };
     }

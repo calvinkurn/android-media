@@ -37,4 +37,5 @@ Dengan mengunggah, saya menyatakan bahwa data yang saya berikan adalah benar dan
     
     <string name="title_kyc_info">Dokumen Data Diri</string>
 
+    <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
 </resources>
