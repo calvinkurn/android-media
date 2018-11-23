@@ -497,7 +497,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     if (getActivity() != null) {
                         if ((getActivity()).getApplication() instanceof IHomeRouter) {
                             ((IHomeRouter) (getActivity()).getApplication())
-                                    .goToWalletFromHome(getActivity(), url);
+                                    .goToWallet(getActivity(), url);
                         }
                     }
                 } else {

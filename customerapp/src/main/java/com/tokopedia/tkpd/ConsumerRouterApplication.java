@@ -903,19 +903,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToWalletFromHome(Context context, String url) {
-        String seamlessUrl;
-        seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
-                context);
-
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletActivity.EXTRA_URL, seamlessUrl);
-        Intent intent = new Intent(context, WalletActivity.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);

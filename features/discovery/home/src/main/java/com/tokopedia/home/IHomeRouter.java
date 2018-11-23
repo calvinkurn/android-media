@@ -38,7 +38,7 @@ public interface IHomeRouter {
 
     void goToApplinkActivity(Context context, String applink);
 
-    void goToWalletFromHome(Context context, String url);
+    void goToWallet(Context context, String url);
 
     void goToProductDetail(Context context,
                            String productId,
