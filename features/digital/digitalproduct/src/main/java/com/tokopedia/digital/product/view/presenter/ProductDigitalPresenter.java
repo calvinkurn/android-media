@@ -373,24 +373,23 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     return;
                 }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
-            /* Ini kalau ga ada internet */
+                    /* Ini kalau ga ada internet */
                     view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-
                 } else if (e instanceof SocketTimeoutException) {
-            /* Ini kalau timeout */
+                    /* Ini kalau timeout */
                     view.showPulsaBalanceError(
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-             /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.showPulsaBalanceError(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
                     view.showPulsaBalanceError(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
+                    /* Ini Http error, misal 403, 500, 404,
+                    code http errornya bisa diambil
+                    e.getErrorCode */
                     view.showPulsaBalanceError(e.getMessage());
                 } else if (e instanceof ServerErrorException) {
                     ServerErrorHandlerUtil.handleError(e);
