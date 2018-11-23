@@ -13,16 +13,16 @@
 
     <RelativeLayout
         android:id="@+id/image_container"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
         android:background="@drawable/bg_flight_gray_rounded_dashed"
         android:padding="@dimen/dp_1"
         android:gravity="center">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_attachment"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
             app:srcCompat="@drawable/ic_upload_photo" />
 
     </RelativeLayout>
@@ -56,23 +56,6 @@
             android:lines="1"
             android:visibility="gone"
             tools:text="3341aaaa3asdfa123asdf13143413.JPG"
-            tools:visibility="visible" />
-
-        <com.tokopedia.flight.common.view.HorizontalProgressBar
-            android:id="@+id/progress_upload"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/progress_bar_height"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tv_percentage_upload"
-            style="@style/TextView.Micro.BlackDisabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/dp_10"
-            android:visibility="gone"
-            tools:text="@string/flight_cancellation_upload_percentage_label"
             tools:visibility="visible" />
 
     </LinearLayout>

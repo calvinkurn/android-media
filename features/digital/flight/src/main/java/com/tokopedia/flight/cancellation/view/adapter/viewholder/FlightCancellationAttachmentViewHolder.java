@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.common.view.HorizontalProgressBar;
 
 import java.io.File;
 
@@ -35,8 +34,6 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     private AppCompatImageView ivAttachment;
     private AppCompatTextView tvFilename;
     private AppCompatTextView tvPassengerName;
-    private HorizontalProgressBar progressBar;
-    private AppCompatTextView tvPercentageUpload;
     private RelativeLayout imageContainer;
     private LinearLayout tvChangeImage;
 
@@ -59,8 +56,6 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
         ivAttachment = view.findViewById(R.id.iv_attachment);
         tvFilename = view.findViewById(R.id.tv_filename);
         tvPassengerName = view.findViewById(R.id.tv_passenger_name);
-        progressBar = view.findViewById(R.id.progress_upload);
-        tvPercentageUpload = view.findViewById(R.id.tv_percentage_upload);
         tvChangeImage = view.findViewById(R.id.tv_change_image);
     }
 
@@ -69,9 +64,6 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     public void bind(FlightCancellationAttachmentViewModel element) {
         tvFilename.setText(element.getFilename());
         tvPassengerName.setText(element.getPassengerName());
-        tvPercentageUpload.setText(String.format(getString(R.string
-                        .flight_cancellation_upload_percentage_label),
-                Long.toString(element.getPercentageUpload())));
 
         if (element.getFilepath() != null && element.getFilepath().length() > 0) {
             Glide.with(itemView.getContext())
@@ -87,9 +79,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 }
             });
 
-            ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
-            ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
-            ivAttachment.requestLayout();
+            resizeAttachmentTo60x60();
 
             if (showChangeButton) {
                 tvChangeImage.setVisibility(View.VISIBLE);
@@ -121,25 +111,11 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
             tvChangeImage.setVisibility(View.GONE);
             imageContainer.setBackgroundResource(R.drawable.bg_flight_gray_rounded_dashed);
 
-
-            ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
-            ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
-            ivAttachment.requestLayout();
+            resizeAttachmentTo40x40();
         }
 
-        if (element.getFilename() != null && element.getFilename().length() > 0) {
-            tvFilename.setVisibility(View.VISIBLE);
-        } else {
-            tvFilename.setVisibility(View.GONE);
-        }
+        renderFileName(element);
 
-        if (element.getPercentageUpload() > 0) {
-            progressBar.setVisibility(View.VISIBLE);
-            tvPercentageUpload.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            tvPercentageUpload.setVisibility(View.GONE);
-        }
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
@@ -152,5 +128,25 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 imageView.setImageDrawable(circularBitmapDrawable);
             }
         };
+    }
+
+    private void resizeAttachmentTo60x60() {
+        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
+        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
+        ivAttachment.requestLayout();
+    }
+
+    private void resizeAttachmentTo40x40() {
+        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_40);
+        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_40);
+        ivAttachment.requestLayout();
+    }
+
+    private void renderFileName(FlightCancellationAttachmentViewModel element) {
+        if (element.getFilename() != null && element.getFilename().length() > 0) {
+            tvFilename.setVisibility(View.VISIBLE);
+        } else {
+            tvFilename.setVisibility(View.GONE);
+        }
     }
 }

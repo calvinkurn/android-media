@@ -253,7 +253,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         dialog.setTitle(getString(R.string.flight_cancellation_auto_check_dialog_title));
         dialog.setDesc(getString(
                 R.string.flight_cancellation_auto_check_dialog_desc));
-        dialog.setBtnOk("OK, Mengerti");
+        dialog.setBtnOk(getString(R.string.flight_cancellation_auto_check_dialog_button));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
