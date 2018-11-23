@@ -18,7 +18,7 @@ public interface UserIdentificationUploadImage  {
 
         void onSuccessUpload();
 
-        void onErrorUpload();
+        void onErrorUpload(String error);
 
         void showLoading();
 
