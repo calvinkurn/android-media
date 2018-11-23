@@ -140,6 +140,11 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     override fun onSuccessCancelPromo() {
         isUse = false
         validateButton()
+        val intent = Intent()
+        val promoData = PromoData(PromoData.TYPE_COUPON,state =TickerCheckoutView.State.EMPTY)
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun showLoading() {
@@ -152,7 +157,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     }
 
     private fun getFormattedHtml(content: String?): String {
-        return "<html><head><style>li{ font-size: 10pt; color: 8A000000; }</style></head><body>$content</body></html>"
+        return getString(R.string.promo_label_html_tnc_promo, content)
     }
 
     override fun onErroGetDetail(e: Throwable) {
