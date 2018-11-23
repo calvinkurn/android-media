@@ -1,5 +1,5 @@
-mutation uploadKyc($kycType: Int!, $picObjKYC: String!) {
-  kycUpload(input: {picObjKYC: $picObjKYC, kycType: $kycType}) {
+mutation uploadKyc($kycType: Int, $picObjKYC: String) {
+  kycUpload(picObjKYC: $picObjKYC, kycType: $kycType) {
     isSuccess
     error
   }
