@@ -25,20 +25,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
@@ -47,7 +42,6 @@ import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProduct
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -57,7 +51,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -519,8 +512,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    RouteManager.route(view.getContext(),
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, cartItemModel.getProtectionLinkUrl()));
+                    mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl());
                 }
             });
             tvPPPLinkText.setText(cartItemModel.getProtectionLinkText());
