@@ -24,8 +24,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
@@ -44,10 +42,8 @@ import javax.inject.Inject;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 15/11/18.
@@ -64,7 +60,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private TextView uploadButton;
     private View progressBar;
     private UserIdentificationStepperModel stepperModel;
-    private SnackbarRetry snackbar;
 
     private StepperListener stepperListener;
 
@@ -251,15 +246,11 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorUpload() {
+    public void onErrorUpload(String error) {
         hideLoading();
-        snackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                uploadImage();
-            }
-        });
-        snackbar.showRetrySnackbar();
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity()).showError(error, this::uploadImage);
+        }
     }
 
     @Override
@@ -290,11 +281,4 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         presenter.detachView();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (snackbar != null) {
-            snackbar.hideRetrySnackbar();
-        }
-    }
 }

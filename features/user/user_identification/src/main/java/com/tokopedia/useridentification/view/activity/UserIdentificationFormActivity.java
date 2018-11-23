@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.model.StepperModel;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormFaceFragment;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormFinalFragment;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationFormKtpFragment;
@@ -24,6 +26,7 @@ import java.util.List;
 public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     private List<Fragment> fragmentList;
+    private SnackbarRetry snackbar;
 
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, UserIdentificationFormActivity.class);
@@ -48,7 +51,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         outState.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
     }
 
-    private StepperModel createNewStepperModel(){
+    private StepperModel createNewStepperModel() {
         return new UserIdentificationStepperModel();
     }
 
@@ -63,6 +66,19 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
             return fragmentList;
         } else {
             return fragmentList;
+        }
+    }
+
+    public void showError(String error, NetworkErrorHelper.RetryClickedListener retryClickedListener) {
+        snackbar = NetworkErrorHelper.createSnackbarWithAction(this, error, retryClickedListener);
+        snackbar.showRetrySnackbar();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.hideRetrySnackbar();
         }
     }
 }

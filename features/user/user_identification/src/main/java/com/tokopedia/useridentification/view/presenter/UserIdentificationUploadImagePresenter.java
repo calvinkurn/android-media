@@ -1,6 +1,7 @@
 package com.tokopedia.useridentification.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
@@ -141,7 +142,8 @@ public class UserIdentificationUploadImagePresenter extends
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getView().onErrorUpload();
+                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getContext
+                                (), throwable));
                     }
 
                     @Override
@@ -154,7 +156,9 @@ public class UserIdentificationUploadImagePresenter extends
                         if (totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS) {
                             getView().onSuccessUpload();
                         } else {
-                            getView().onErrorUpload();
+                            getView().onErrorUpload(String.format(
+                                    getView().getContext().getString(R.string.error_upload_image_kyc),
+                                    KYCConstant.ERROR_UPLOAD_IMAGE));
                         }
                     }
                 })
