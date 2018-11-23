@@ -17,17 +17,11 @@ query getMojitoEligibleSellerProduct($camp_id: Int!,
             pending_count
             products{
                 id
-                status
                 price
-                rating
-                original_price
-                discounted_price
                 name
                 department_id
                 campaign {
                   campaign_id
-                  start_date
-                  end_date
                   discount_percentage
                   original_price
                   discounted_price
@@ -38,8 +32,6 @@ query getMojitoEligibleSellerProduct($camp_id: Int!,
                     stock_min
                     rating_min
                     rating_max
-                    cashback_minimum
-                    cashback_maximum
                     discount_percentage_min
                     discount_percentage_max
                     submission_max
@@ -54,8 +46,6 @@ query getMojitoEligibleSellerProduct($camp_id: Int!,
                   image_url
                   is_eligible
                   message
-                  submitted_count
-                  pending_count
                 }
                 is_valid
                 product_status

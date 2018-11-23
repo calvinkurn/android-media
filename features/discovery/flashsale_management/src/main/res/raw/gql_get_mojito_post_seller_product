@@ -22,13 +22,9 @@ query getMojitoEligibleSellerProduct($cid: Int!, $source: String!,
            original_price
            discount_percentage
            discounted_price
-           original_price
            custom_stock
            original_custom_stock
            stock_sold_percentage
-           product_map_status
-           status_id
-           admin_status
            max_order
          }
        }

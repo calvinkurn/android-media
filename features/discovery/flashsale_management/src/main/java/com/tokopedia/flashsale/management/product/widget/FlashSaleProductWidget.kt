@@ -55,7 +55,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 tvPercentOff.visibility = View.GONE
             } else {
                 tvPercentOff.text = context.getString(R.string.x_percent_off,
-                        KMNumbers.formatDouble2PCheckRound(item.getDiscountPercentage().toDouble(),true)).replace("%%", "%")
+                        Math.round(item.getDiscountPercentage().toDouble()).toString().replace("%%", "%"))
                 tvPercentOff.visibility = View.VISIBLE
             }
             ImageHandler.LoadImage(ivProduct, item.getProductImageUrl())
