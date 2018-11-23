@@ -43,13 +43,15 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     private View progressBar;
     private View mainView;
     private TextView button;
+    private boolean isSourceSeller;
 
     @Inject
     UserIdentificationInfo.Presenter presenter;
 
-    public static UserIdentificationInfoFragment createInstance() {
+    public static UserIdentificationInfoFragment createInstance(boolean isSourceSeller) {
         UserIdentificationInfoFragment fragment = new UserIdentificationInfoFragment();
         Bundle args = new Bundle();
+        args.putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,6 +67,12 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isSourceSeller = getArguments().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
+        }
+        if (isSourceSeller){
+            goToFormActivity();
+        }
     }
 
     @Override
@@ -198,16 +206,21 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = UserIdentificationFormActivity.getIntent(getContext());
-                startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
+                goToFormActivity();
             }
         };
+    }
+
+    private void goToFormActivity() {
+        Intent intent = UserIdentificationFormActivity.getIntent(getContext());
+        startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_OK) {
             getStatusInfo();
+            NetworkErrorHelper.showGreenSnackbar(getActivity(), getString(R.string.text_notification_success_upload));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

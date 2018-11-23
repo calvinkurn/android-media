@@ -9,17 +9,27 @@ import com.google.gson.annotations.SerializedName;
 public class UploadIdentificationPojo {
 
     @Expose
-    @SerializedName("is_success")
-    private int isSuccess;
-    @Expose
-    @SerializedName("error")
-    private String error;
+    @SerializedName("kycUpload")
+    private KycUpload kycUpload;
 
-    public int getIsSuccess() {
-        return isSuccess;
+    public KycUpload getKycUpload() {
+        return kycUpload;
     }
 
-    public String getError() {
-        return error;
+    public class KycUpload {
+        @Expose
+        @SerializedName("is_success")
+        private int isSuccess;
+        @Expose
+        @SerializedName("error")
+        private String error;
+
+        public int getIsSuccess() {
+            return isSuccess;
+        }
+
+        public String getError() {
+            return error;
+        }
     }
 }

@@ -15,7 +15,8 @@ public interface KycUrl {
     String KTP_FAIL = "https://ecs7.tokopedia.net/img/android/others/ktp_fail.png";
     String SELFIE_OK = "https://ecs7.tokopedia.net/img/android/others/selfie_ok.png";
     String SELFIE_FAIL = "https://ecs7.tokopedia.net/img/android/others/selfie_fail.png";
-    
+
+    //TODO alvin change this url
     String URL_TERMS_AND_CONDITION = "https://31-feature-m-staging.tokopedia.com/terms/merchantkyc";
     String APPLINK_TERMS_AND_CONDITION = String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TERMS_AND_CONDITION);
 }

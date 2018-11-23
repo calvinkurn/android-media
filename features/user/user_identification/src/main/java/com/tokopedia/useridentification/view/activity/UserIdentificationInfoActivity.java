@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFragment;
 
 /**
@@ -17,26 +19,32 @@ import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFrag
 
 public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
+    boolean isSourceSeller;
+
     @DeepLink(ApplinkConst.KYC)
     public static Intent getDeeplinkIntent(Context context, Bundle extras) {
         Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
 
+        String source = extras.getString(KYCConstant.PARAM_KYC_SRC);
         Intent intent = new Intent(context, UserIdentificationInfoActivity.class);
         intent.setData(uri);
+        boolean isSourceSeller = TextUtils.equals(source, KYCConstant.VALUE_KYC_SRC_SELLER);
+        intent.putExtra(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller);
         intent.putExtras(extras);
 
         return intent;
     }
 
-    public static Intent getIntent(Context context) {
-        Intent intent = new Intent(context, UserIdentificationInfoActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
-        return intent;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getIntent()!= null && getIntent().getExtras()!= null) {
+            isSourceSeller = getIntent().getExtras().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
+        }
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return UserIdentificationInfoFragment.createInstance();
+        return UserIdentificationInfoFragment.createInstance(isSourceSeller);
     }
 }

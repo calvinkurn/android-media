@@ -32,6 +32,7 @@ import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
+import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
@@ -43,8 +44,10 @@ import javax.inject.Inject;
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
+        .PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
+        .PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 15/11/18.
@@ -143,6 +146,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 uploadImage();
             }
         });
+        if (getActivity() instanceof UserIdentificationFormActivity) {
+            ((UserIdentificationFormActivity) getActivity())
+                    .updateToolbarTitle(getString(R.string.title_kyc_form_upload));
+        }
     }
 
     private void uploadImage() {

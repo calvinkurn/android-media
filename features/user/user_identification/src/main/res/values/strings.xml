@@ -40,4 +40,10 @@
     <string name="title_kyc_info">Dokumen Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
+
+    <string name="title_kyc_form_ktp">1. Foto KTP</string>
+    <string name="title_kyc_form_face">2. Foto Diri &amp; KTP</string>
+    <string name="title_kyc_form_upload">Unggah Dokumen Data Diri</string>
+
+    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x24 jam.</string>
 </resources>
