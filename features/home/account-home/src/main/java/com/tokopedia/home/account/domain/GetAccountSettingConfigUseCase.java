@@ -22,6 +22,7 @@ import rx.Subscriber;
  */
 public class GetAccountSettingConfigUseCase  {
 
+    private static final int TYPE_CUSTOMER_APP = 11;
     private final Context context;
     private final GraphqlUseCase graphqlUseCase;
 
@@ -46,6 +47,7 @@ public class GetAccountSettingConfigUseCase  {
 
     public static Map<String,Object> getRequestParam(){
         Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put("type", TYPE_CUSTOMER_APP);
         return requestParams;
     }
 
