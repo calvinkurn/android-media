@@ -1,13 +1,16 @@
 package com.tokopedia.useridentification.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.useridentification.domain.pojo.RegisterIdentificationPojo;
 import com.tokopedia.useridentification.domain.pojo.UploadIdentificationPojo;
+import com.tokopedia.useridentification.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.useridentification.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
@@ -55,6 +58,7 @@ public class UserIdentificationUploadImagePresenter extends
 
     private final UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private final UploadIdentificationUseCase uploadIdentificationUseCase;
+    private final RegisterIdentificationUseCase registerIdentificationUseCase;
     private final UserSession userSession;
 
     @Inject
@@ -62,10 +66,12 @@ public class UserIdentificationUploadImagePresenter extends
                                                           uploadImageUseCase,
                                                   UploadIdentificationUseCase
                                                           uploadIdentificationUseCase,
+                                                  RegisterIdentificationUseCase registerIdentificationUseCase,
                                                   UserSession userSession,
                                                   CompositeSubscription compositeSubscription) {
         this.uploadImageUseCase = uploadImageUseCase;
         this.uploadIdentificationUseCase = uploadIdentificationUseCase;
+        this.registerIdentificationUseCase = registerIdentificationUseCase;
         this.userSession = userSession;
         this.compositeSubscription = compositeSubscription;
     }
@@ -130,10 +136,34 @@ public class UserIdentificationUploadImagePresenter extends
                     }
                 })
                 .toList()
+                .flatMap(new Func1<List<ImageUploadModel>, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(List<ImageUploadModel> imageUploadModels) {
+                        int totalSuccess = 0;
+                        for (ImageUploadModel imageUploadModel : imageUploadModels) {
+                            totalSuccess = totalSuccess + imageUploadModel.getIsSuccess();
+                        }
+                        return Observable.just(totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS);
+                    }
+                })
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        return registerIdentificationUseCase.createObservable(
+                                RegisterIdentificationUseCase.getRequestParam()
+                        ).flatMap(new Func1<GraphqlResponse, Observable<Boolean>>() {
+                            @Override
+                            public Observable<Boolean> call(GraphqlResponse graphqlResponse) {
+                                RegisterIdentificationPojo pojo = graphqlResponse.getData(RegisterIdentificationPojo.class);
+                                return Observable.just(pojo != null && pojo.getKycRegister() != null && pojo.getKycRegister().getIsSuccess() == 1);
+                            }
+                        });
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<ImageUploadModel>>() {
+                .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
 
@@ -141,20 +171,17 @@ public class UserIdentificationUploadImagePresenter extends
 
                     @Override
                     public void onError(Throwable throwable) {
-                        getView().onErrorUpload();
+
                     }
 
                     @Override
-                    public void onNext(List<ImageUploadModel> imageUploadModels) {
-                        int totalSuccess = 0;
-                        for (ImageUploadModel imageUploadModel : imageUploadModels) {
-                            totalSuccess = totalSuccess + imageUploadModel.getIsSuccess();
-                        }
-
-                        if (totalSuccess == KYCConstant.IS_ALL_MUTATION_SUCCESS) {
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
                             getView().onSuccessUpload();
                         } else {
-                            getView().onErrorUpload();
+                            getView().onErrorUpload(String.format(
+                                    getView().getContext().getString(R.string.error_upload_image_kyc),
+                                    KYCConstant.ERROR_UPLOAD_IMAGE));
                         }
                     }
                 })
