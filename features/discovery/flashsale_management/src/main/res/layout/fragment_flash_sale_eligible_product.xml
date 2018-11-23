@@ -36,7 +36,8 @@
                 android:paddingTop="@dimen/dp_4"
                 android:paddingRight="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_4"
-                app:layout_scrollFlags="enterAlways" />
+                app:layout_scrollFlags="enterAlways"
+                android:background="@color/white"/>
 
         </android.support.design.widget.AppBarLayout>
 

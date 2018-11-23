@@ -155,6 +155,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingEnd="@dimen/dp_16"
                     android:ellipsize="end"
                     android:maxLines="2"
                     tools:text="Xiaomi Redmi 5 Plus (4GB/64GB) Gold (HMI-RSP-64GOL)" />

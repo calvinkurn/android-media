@@ -32,8 +32,6 @@ object FlashSaleConstant {
 
     const val SOURCE_SELLERDASHBOARD = "sellerdashboard"
 
-
-
     const val NAMED_REQUEST_SUBMISSION_PRODUCT_LIST = "request_product_list"
     const val NAMED_REQUEST_POST_PRODUCT_LIST = "request_post_product_list"
     const val NAMED_REQUEST_CATEGORY_LIST = "request_category_list"

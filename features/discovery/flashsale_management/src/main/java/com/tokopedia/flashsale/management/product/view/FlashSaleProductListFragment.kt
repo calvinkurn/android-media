@@ -20,7 +20,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -31,10 +33,14 @@ import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.data.FlashSaleConstant.KEY_STATUS_REGISTRATION
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
+import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleSubmitLabelAdapter
-import com.tokopedia.flashsale.management.product.data.*
+import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
+import com.tokopedia.flashsale.management.product.data.FlashSaleSubmissionProductData
+import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
+import com.tokopedia.flashsale.management.product.data.GetMojitoPostProduct
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
 import com.tokopedia.flashsale.management.view.activity.CampaignActivity
 import com.tokopedia.graphql.data.GraphqlClient
@@ -81,6 +87,14 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         context?.let {
             GraphqlClient.init(it)
         }
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<FlashSaleProductItem, FlashSaleProductAdapterTypeFactory> {
+        val adapter =  super.createAdapterInstance()
+        adapter.errorNetworkModel = ErrorNetworkModel().apply {
+            iconDrawableRes = R.drawable.ic_error_cloud_green
+        }
+        return adapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -252,10 +266,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         }
     }
 
+    // status = submission ==> getEligibleProductList
+    // status = other ==> getPost
+    // when status is loaded, page will always from start
     override fun loadData(page: Int) {
-        // status = submission ==> getEligibleProductList
-        // status = other ==> getPost
-        // when status is loaded, page will always from start
         if (KEY_STATUS_REGISTRATION.equals(statusLabel, true)) {
             // in submission
             presenter.getEligibleProductList(campaignId,
@@ -298,7 +312,6 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             emptyModel.title = getString(R.string.no_eligible_product_in_this_flash_sale)
             emptyModel.content = getString(R.string.no_worry_you_can_join_next_flash_sale)
         } else {
-            //TODO wording empty for filter or search text
             emptyModel.title = ""
             emptyModel.content = ""
         }
@@ -345,7 +358,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             needLoadAllPage = false
         }
         if (needLoadCurrentPage) {
-            //TODO currently load all data again
+            //currently load all data again
             loadInitialData()
             needLoadCurrentPage = false
         }
@@ -406,9 +419,12 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onItemClicked(item: FlashSaleProductItem) {
         context?.let {
+            val hasDisableMessage = item.getMessage().isNotEmpty() &&
+                    item.getProductStatus() != FlashSaleProductStatusTypeDef.SUBMITTED
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
                     item, allowEditProducts && item.isEligible()
-                    && statusLabel.equals(KEY_STATUS_REGISTRATION, false))
+                    && KEY_STATUS_REGISTRATION.equals(statusLabel, true) &&
+                    !hasDisableMessage)
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }

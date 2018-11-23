@@ -7,6 +7,8 @@ import android.support.design.widget.CoordinatorLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
@@ -51,6 +53,14 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
             searchInputView.searchText = ""
             loadInitialData()
         }
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<CampaignViewModel, CampaignAdapterTypeFactory> {
+        val adapter =  super.createAdapterInstance()
+        adapter.errorNetworkModel = ErrorNetworkModel().apply {
+            iconDrawableRes = R.drawable.ic_error_cloud_green
+        }
+        return adapter
     }
 
     override fun onItemClicked(t: CampaignViewModel) {
@@ -121,7 +131,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     }
 
     companion object {
-        // campaign info backend process to get campaign list is heavy, so default row is 5
+        // campaign info backend process to get campaign list is heavy, so default row is minimized
         const val DEFAULT_ROWS = 10
         const val CAMPAIGN_TYPE = 1
     }
