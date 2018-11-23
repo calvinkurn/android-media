@@ -5,11 +5,43 @@ import com.google.gson.annotations.SerializedName;
 
 public class AccountSettingConfigResponse {
 
-    @SerializedName("data")
+    @SerializedName("dataDiri")
     @Expose
-    private AccountSettingConfigResponseData  data;
+    private boolean isPeopleDataEnabled = true;
 
-    public AccountSettingConfigResponseData getData() {
-        return data;
+    @SerializedName("daftarAlamat")
+    @Expose
+    private boolean isAddressEnabled = true;
+
+    @SerializedName("tokopediaCorner")
+    @Expose
+    private boolean isTokopediaCornerEnabled = false;
+
+    @SerializedName("dokumenDataDiri")
+    @Expose
+    private boolean isIdentityEnabled = false;
+
+    @SerializedName("ubahKataSandi")
+    @Expose
+    private boolean isPasswordEnabled = true;
+
+    public boolean isAddressEnabled() {
+        return isAddressEnabled;
+    }
+
+    public boolean isPeopleDataEnabled() {
+        return isPeopleDataEnabled;
+    }
+
+    public boolean isTokopediaCornerEnabled() {
+        return isTokopediaCornerEnabled;
+    }
+
+    public boolean isIdentityEnabled() {
+        return isIdentityEnabled;
+    }
+
+    public boolean isPasswordEnabled() {
+        return isPasswordEnabled;
     }
 }
