@@ -153,7 +153,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private String getLastProductCursor(List<DataFeedDomain> productList) {
-        return productList.get(productList.size()-1).getCursor();
+        try {
+            return productList.get(productList.size() - 1).getCursor();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private void addMainData(ArrayList<Visitable> listFeedView,

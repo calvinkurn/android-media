@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="@string/you_have_new_feed_v2"
+            android:text="@string/you_have_new_feed"
             android:textColor="@color/font_black_secondary_54"
             android:textSize="@dimen/fontvs" />
     </LinearLayout>
