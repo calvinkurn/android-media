@@ -69,9 +69,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name="com.tokopedia.gallery.ImageReviewGalleryActivity"
-            android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen"/>
-
     </application>
 
 </manifest>
