@@ -7,6 +7,7 @@ public interface KYCConstant {
 
     String ERROR_STATUS_UNKNOWN = "1001";
     String ERROR_MESSAGE_EMPTY = "1002";
+    String ERROR_UPLOAD_IMAGE = "1003";
     String ERROR_REGISTER = "1004";
 
     int KYC_PROJECT_ID = 1;
@@ -32,4 +33,5 @@ public interface KYCConstant {
     String PARAM_KYC_SRC = "source";
     String VALUE_KYC_SRC_SELLER = "seller";
     String EXTRA_IS_SOURCE_SELLER = "source_seller";
+
 }

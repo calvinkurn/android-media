@@ -16,7 +16,7 @@ import com.tokopedia.useridentification.view.listener.UserIdentificationUploadIm
 import com.tokopedia.useridentification.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.useridentification.view.viewmodel.ImageUploadModel;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
-
+import com.tokopedia.useridentification.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -171,7 +171,8 @@ public class UserIdentificationUploadImagePresenter extends
 
                     @Override
                     public void onError(Throwable throwable) {
-
+                        getView().onErrorUpload(ErrorHandler.getErrorMessage(getView().getContext
+                                (), throwable));
                     }
 
                     @Override
