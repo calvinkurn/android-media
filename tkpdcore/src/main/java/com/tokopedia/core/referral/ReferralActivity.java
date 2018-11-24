@@ -52,12 +52,15 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
         return intent;
     }
 
+    @Override
+    public String getScreenName() {
+        return REFERRAL_SCREEN;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
-        ScreenTracking.screen(REFERRAL_SCREEN);
         if (getIntent() != null &&
                 getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventReferralLongClick();

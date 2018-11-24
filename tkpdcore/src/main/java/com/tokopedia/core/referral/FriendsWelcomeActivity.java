@@ -42,7 +42,11 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
         if(!isappShowReferralButtonActivated(this)){
             finish();
         }
-        ScreenTracking.screen(WELCOME_SCREEN);
+    }
+
+    @Override
+    public String getScreenName() {
+        return WELCOME_SCREEN;
     }
 
     @Override
