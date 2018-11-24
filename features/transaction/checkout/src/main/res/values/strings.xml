@@ -226,7 +226,5 @@
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
     <string name="checkout_ppp_label">Proteksi Gadget (3 Barang)</string>
     <string name="title_activity_checkout_webview">Proteksi Gadget</string>
-    <string name="message_tos_agreement">Dengan mengaktifkan fitur perlindungan, saya menyetujui Syarat dan Ketentuan yang berlaku.</string>
-    <string name="text_tos_agreement">Syarat dan Ketentuan</string>
 
 </resources>
