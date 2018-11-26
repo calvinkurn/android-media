@@ -44,11 +44,12 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.gallery.ImageReviewGalleryActivity;
+import com.tokopedia.gallery.domain.GetImageReviewUseCase;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.tkpdpdp.ImageReviewGalleryActivity;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
-import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -369,6 +370,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Inject
     GraphqlUseCase graphqlUseCase;
 
+    @Inject
+    GetImageReviewUseCase getImageReviewUseCase;
+
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
         Bundle args = new Bundle();
@@ -437,7 +441,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 new RetrofitInteractorImpl(),
                 new CacheInteractorImpl(),
                 getAffiliateProductDataUseCase,
-                graphqlUseCase,
+                getImageReviewUseCase,
                 getMostHelpfulReviewUseCase);
         this.presenter.initGetRateEstimationUseCase();
     }
@@ -659,11 +663,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         priceSimulationView.setListener(this);
         latestTalkView.setListener(this);
         buttonAffiliate.setListener(this);
+        imageFromBuyerView.setListener(this);
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageReviewGalleryActivity.moveTo(getActivity(), 266635420);
-                /*
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
 
@@ -671,7 +674,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
                                 getUserId());
                     }
-                }*/
+                }
             }
         });
         fabWishlist.setOnLongClickListener(new View.OnLongClickListener() {
@@ -2606,6 +2609,36 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onAddWishList(int position, Data data) {
 
+    }
+
+    @Override
+    public void onImageFromBuyerClick(int viewType, String reviewId) {
+        if(viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE){
+            ProductPageTracking.eventClickReviewOnBuyersImage(
+                    getActivity(),
+                    String.valueOf(productData.getInfo().getProductId()),
+                    reviewId
+            );
+        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER){
+            ProductPageTracking.eventClickReviewOnSeeAllImage(
+                    getActivity(),
+                    String.valueOf(productData.getInfo().getProductId())
+            );
+        }
+
+        routeToReviewGallery();
+    }
+
+    public void routeToReviewGallery(){
+        if (getActivity() != null) {
+            RouteManager.route(
+                    getActivity(),
+                    ApplinkConst.PRODUCT_IMAGE_REVIEW
+                            .replace(PRODUCT_ID, String.valueOf(
+                                    productData.getInfo().getProductId()
+                            ))
+            );
+        }
     }
 
     public void setDrawableCount(Context context, int count) {

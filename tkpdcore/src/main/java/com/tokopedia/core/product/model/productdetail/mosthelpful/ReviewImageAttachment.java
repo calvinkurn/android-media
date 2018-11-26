@@ -1,10 +1,13 @@
 
 package com.tokopedia.core.product.model.productdetail.mosthelpful;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ReviewImageAttachment {
+public class ReviewImageAttachment  implements Parcelable {
 
     @SerializedName("attachment_id")
     @Expose
@@ -51,4 +54,35 @@ public class ReviewImageAttachment {
         this.uriLarge = uriLarge;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(this.attachmentId);
+        parcel.writeString(this.description);
+        parcel.writeString(this.uriThumbnail);
+        parcel.writeString(this.uriLarge);
+    }
+
+    protected ReviewImageAttachment(Parcel in) {
+        this.attachmentId = in.readInt();
+        this.description = in.readString();
+        this.uriThumbnail = in.readString();
+        this.uriLarge = in.readString();
+    }
+
+    public static final Parcelable.Creator<ReviewImageAttachment> CREATOR = new Parcelable.Creator<ReviewImageAttachment>() {
+        @Override
+        public ReviewImageAttachment createFromParcel(Parcel source) {
+            return new ReviewImageAttachment(source);
+        }
+
+        @Override
+        public ReviewImageAttachment[] newArray(int size) {
+            return new ReviewImageAttachment[size];
+        }
+    };
 }

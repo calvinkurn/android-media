@@ -1,18 +1,13 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
-import com.tokopedia.core.network.entity.wishlistCount.WishlistCountResponse;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.tkpdpdp.domain.gql.ImageReviewGqlResponse;
-import com.tokopedia.tkpdpdp.helper.GqlHelper;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 
 import java.util.List;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
-public class ImageReviewSubscriber extends Subscriber<GraphqlResponse> {
+public class ImageReviewSubscriber extends Subscriber<List<ImageReviewItem>> {
     private final ProductDetailView viewListener;
 
     public ImageReviewSubscriber(ProductDetailView viewListener){
@@ -30,18 +25,11 @@ public class ImageReviewSubscriber extends Subscriber<GraphqlResponse> {
     }
 
     @Override
-    public void onNext(GraphqlResponse graphqlResponse) {
-        ImageReviewGqlResponse gqlResponse = graphqlResponse.getData(ImageReviewGqlResponse.class);
-
-        ImageReviewGqlResponse.ProductReviewImageListQuery productReviewImageListQuery =
-                gqlResponse.getProductReviewImageListQuery();
-
-        if(productReviewImageListQuery != null &&
-                productReviewImageListQuery.getDetail().getImages().size() != 0){
-            List<ImageReviewItem> reviewItemList = GqlHelper.convertToImageReviewItemList(gqlResponse);
-
+    public void onNext(List<ImageReviewItem> imageReviewItems) {
+        if(imageReviewItems != null &&
+                imageReviewItems.size() != 0){
             viewListener.onImageReviewLoaded(
-                    reviewItemList
+                    imageReviewItems
             );
         }
     }

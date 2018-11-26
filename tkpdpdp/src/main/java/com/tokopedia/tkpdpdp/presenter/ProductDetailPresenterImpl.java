@@ -72,6 +72,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
@@ -140,14 +141,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public static final String OFFICIAL_STORE_TYPE = "os";
     public static final String MERCHANT_TYPE = "merchant";
     private static final String NON_LOGIN_USER_ID = "0";
+    public static final int FIRST_PAGE = 0;
+    public static final int TOTAL_IMAGE_FOR_PDP = 4;
 
     private final WishListActionListener wishListActionListener;
     private final GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase;
-    private final GraphqlUseCase graphqlUseCase;
     private final GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase;
+    private final GetImageReviewUseCase getImageReviewUseCase;
 
     private GetWishlistCountUseCase getWishlistCountUseCase;
-
 
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
@@ -167,7 +169,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             RetrofitInteractor retrofitInteractor,
             CacheInteractor cacheInteractor,
             GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase,
-            GraphqlUseCase graphqlUseCase,
+            GetImageReviewUseCase getImageReviewUseCase,
             GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase) {
         this.viewListener = viewListener;
         this.wishListActionListener = wishListActionListener;
@@ -176,7 +178,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         this.getWishlistCountUseCase = getWishlistCountUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         this.getProductAffiliateGqlUseCase = getProductAffiliateGqlUseCase;
-        this.graphqlUseCase = graphqlUseCase;
+        this.getImageReviewUseCase = getImageReviewUseCase;
         this.getMostHelpfulReviewUseCase = getMostHelpfulReviewUseCase;
     }
 
@@ -187,18 +189,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber(viewListener));
     }
 
-    private void checkImageReview(String productId) {
+    private void checkImageReview(int productId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
+        requestParams.putInt(GetImageReviewUseCase.KEY_PRODUCT_ID, productId);
+        requestParams.putInt(GetImageReviewUseCase.KEY_PAGE, FIRST_PAGE);
+        requestParams.putInt(GetImageReviewUseCase.KEY_TOTAL, TOTAL_IMAGE_FOR_PDP);
 
-        GqlHelper.requestImageReview(
-                viewListener.getActivityContext(),
-                1,
-                4,
-                Integer.valueOf(productId),
-                graphqlUseCase,
-                new ImageReviewSubscriber(viewListener)
-        );
+        getImageReviewUseCase.execute(requestParams,
+                new ImageReviewSubscriber(viewListener));
     }
 
     @Override
@@ -539,6 +537,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
+
+                            checkImageReview(productDetailData.getInfo().getProductId());
 
                             requestAffiliateProductData(productDetailData);
 
@@ -1122,7 +1122,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
-                        checkImageReview(String.valueOf(data.getInfo().getProductId()));
+                        checkImageReview(data.getInfo().getProductId());
 
                         requestAffiliateProductData(
                                 data

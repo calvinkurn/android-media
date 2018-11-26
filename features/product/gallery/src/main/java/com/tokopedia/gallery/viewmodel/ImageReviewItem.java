@@ -1,11 +1,20 @@
 package com.tokopedia.gallery.viewmodel;
 
 public class ImageReviewItem {
+    private String reviewId;
     private String formattedDate;
     private String reviewerName;
     private String imageUrlThumbnail;
     private String imageUrlLarge;
     private int rating;
+
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(String reviewId) {
+        this.reviewId = reviewId;
+    }
 
     public String getFormattedDate() {
         return formattedDate;

@@ -63,4 +63,8 @@ public interface PdpRouter {
     int getCartCount(Context context);
 
     Intent getProductTalk(Context context, String productId);
+
+    void eventClickFilterReviewByImage(Context context,
+                                       String filterName,
+                                       String productId);
 }

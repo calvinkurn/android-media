@@ -19,11 +19,11 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
-import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -367,4 +367,5 @@ public interface ProductDetailView extends ViewListener {
 
     boolean isFromExploreAffiliate();
 
+    void onImageFromBuyerClick(int viewType, String reviewId);
 }

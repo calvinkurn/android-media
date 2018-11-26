@@ -1,31 +1,20 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.image.SquareImageView;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import com.tokopedia.tkpdpdp.viewmodel.ImageReviewItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +26,9 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
 
     private Context context;
     private RecyclerView rv_image;
+
+    public static final int VIEW_TYPE_IMAGE = 77;
+    public static final int VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88;
 
     public ImageFromBuyerView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,8 +79,6 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
-        private static final int VIEW_TYPE_IMAGE = 77;
-        private static final int VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88;
         private List<ImageReviewItem> data;
 
         public ItemAdapter() {
@@ -122,7 +112,18 @@ public class ImageFromBuyerView extends BaseView<List<ImageReviewItem>, ProductD
         }
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
-            holder.bind(data.get(position));
+            ImageReviewItem imageReviewItem = data.get(position);
+            holder.bind(imageReviewItem);
+            holder.reviewImage.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (holder.getItemViewType() == VIEW_TYPE_IMAGE){
+
+                    }
+                    listener.onImageFromBuyerClick(holder.getItemViewType(),
+                            imageReviewItem.getReviewId());
+                }
+            });
         }
         @Override
         public int getItemCount() {

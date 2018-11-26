@@ -20,6 +20,7 @@ import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,12 @@ public class ReviewPagerAdapter extends PagerAdapter{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ProductPageTracking.eventClickReviewOnMostHelpfulReview(
+                        context,
+                        String.valueOf(data.getInfo().getProductId()),
+                        String.valueOf(review.getReviewId())
+                );
+
                 String productId = String.valueOf(data.getInfo().getProductId());
                 String shopId = String.valueOf(data.getShopInfo().getShopId());
                 String productName = data.getInfo().getProductName();
