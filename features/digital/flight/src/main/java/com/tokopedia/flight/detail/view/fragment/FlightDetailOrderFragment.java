@@ -51,6 +51,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
+import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
@@ -261,12 +262,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getWebviewActivity(getActivity(), invoiceLink) != null) {
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getWebviewActivity(getActivity(), invoiceLink));
-                }
+                startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
             }
         });
 

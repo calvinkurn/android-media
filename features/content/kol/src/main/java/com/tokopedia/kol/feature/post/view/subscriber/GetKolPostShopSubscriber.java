@@ -15,6 +15,12 @@ import rx.Subscriber;
 
 public class GetKolPostShopSubscriber extends Subscriber<ContentListDomain> {
 
+    private static final String PARAM_COUNT = "{count}";
+    private static final String SINGLE = "single";
+    private static final String MULTIPLE = "multiple";
+    private static final String PARAM_TYPE = "{type}";
+    private static final int COUNT_SINGLE = 1;
+
     private final KolPostShopContract.View view;
 
     public GetKolPostShopSubscriber(KolPostShopContract.View view) {
@@ -47,7 +53,9 @@ public class GetKolPostShopSubscriber extends Subscriber<ContentListDomain> {
                 view.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
                         KolEventTracking.Event.EVENT_SHOP_PAGE,
                         KolEventTracking.Category.SHOP_PAGE_FEED,
-                        KolEventTracking.Action.SHOP_ITEM_IMPRESSION,
+                        KolEventTracking.Action.SHOP_ITEM_IMPRESSION_DYNAMIC
+                                .replace(PARAM_COUNT, kolPostViewModel.getImageList().size() == COUNT_SINGLE ? SINGLE : MULTIPLE)
+                                .replace(PARAM_TYPE, kolPostViewModel.getTagsType()),
                         String.valueOf(kolPostViewModel.getContentId()));
             }
         }

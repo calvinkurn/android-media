@@ -16,6 +16,7 @@ import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,13 +29,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ChangePasswordDependencyInjector {
 
     object Companion {
+        val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
 
         fun inject(context: Context): ChangePasswordPresenter {
 
-            val userSession = UserSession(context)
+            val userSession : UserSessionInterface = UserSession(context)
 
             val gson: Gson = GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                    .setDateFormat(DATE_FORMAT)
                     .setPrettyPrinting()
                     .serializeNulls().create()
 
@@ -59,14 +61,14 @@ class ChangePasswordDependencyInjector {
 
             val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 
+            builder.addInterceptor(fingerprintInterceptor)
+            builder.addInterceptor(tkpdAuthInterceptor)
+
             if (GlobalConfig.isAllowDebuggingTools()) {
                 builder.addInterceptor(chuckInterceptor)
                 builder.addInterceptor(DebugInterceptor())
                 builder.addInterceptor(httpLoggingInterceptor)
             }
-
-            builder.addInterceptor(fingerprintInterceptor)
-            builder.addInterceptor(tkpdAuthInterceptor)
 
             val okHttpClient: OkHttpClient = builder.build()
 

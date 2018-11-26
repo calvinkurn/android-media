@@ -24,9 +24,9 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
     private final EditPostUseCase editPostUseCase;
 
     @Inject
-    public CreatePostPresenter(GetContentFormUseCase getContentFormUseCase,
-                               SubmitPostUseCase submitPostUseCase,
-                               EditPostUseCase editPostUseCase) {
+    CreatePostPresenter(GetContentFormUseCase getContentFormUseCase,
+                        SubmitPostUseCase submitPostUseCase,
+                        EditPostUseCase editPostUseCase) {
         this.getContentFormUseCase = getContentFormUseCase;
         this.submitPostUseCase = submitPostUseCase;
         this.editPostUseCase = editPostUseCase;
@@ -37,6 +37,7 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
         super.detachView();
         getContentFormUseCase.unsubcribe();
         submitPostUseCase.unsubscribe();
+        editPostUseCase.unsubscribe();
     }
 
     @Override

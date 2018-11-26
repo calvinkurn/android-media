@@ -45,14 +45,17 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 e.printStackTrace();
                 getView().removeProgressBarView();
+                getView().setSwipeRefreshing();
                 getView().showErrorNetwork(
                         ErrorHandler.getErrorMessage(getView().getActivity(), e));
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(Challenge.class);
                 Challenge mainDataObject = res1.getData();
@@ -61,7 +64,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 } else {
                     getView().renderEmptyList();
                 }
-
+                getView().setSwipeRefreshing();
             }
         });
     }
@@ -82,12 +85,17 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 getView().removeProgressBarView();
+                getView().setSwipeRefreshing();
+                getView().showErrorNetwork(
+                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 RestResponse res1 = restResponse.get(Challenge.class);
                 Challenge mainDataObject = res1.getData();
                 if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
@@ -96,8 +104,13 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                     getView().renderEmptyList();
                 }
                 getView().removeProgressBarView();
+                getView().setSwipeRefreshing();
             }
         });
     }
 
+    @Override
+    public void onDestroy() {
+        detachView();
+    }
 }

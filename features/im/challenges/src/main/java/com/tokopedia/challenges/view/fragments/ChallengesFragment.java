@@ -70,7 +70,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
-        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),getString(R.string.ch_active_challenges_label));
+        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(), getString(R.string.ch_active_challenges_label));
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
@@ -82,7 +82,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES);
             isPastChallenge = false;
-            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),getString(R.string.ch_active_challenges_label));
+            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(), getString(R.string.ch_active_challenges_label));
 
         });
 
@@ -97,19 +97,15 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES);
             isPastChallenge = true;
-            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),getString(R.string.ch_past_challenges_label));
+            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(), getString(R.string.ch_past_challenges_label));
         });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        getChallenges();
-                    }
-                }, 4000);
+                ChallengesCacheHandler.resetCache();
+                getChallenges();
+
             }
         });
 
@@ -185,10 +181,10 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     public void renderEmptyList() {
         swipeRefreshLayout.setVisibility(View.GONE);
         String error_msg;
-        if(isPastChallenge){
-            error_msg= getString(R.string.ch_no_past_challenge_msg);
-        }else {
-            error_msg= getString(R.string.ch_no_challenge_msg);
+        if (isPastChallenge) {
+            error_msg = getString(R.string.ch_no_past_challenge_msg);
+        } else {
+            error_msg = getString(R.string.ch_no_challenge_msg);
         }
         EmptyStateViewHelper.showEmptyState(
                 getActivity(), getView(),
@@ -242,5 +238,17 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         } else {
             challengeHomePresenter.getOpenChallenges();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        challengeHomePresenter.onDestroy();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void setSwipeRefreshing() {
+        if (swipeRefreshLayout != null)
+            swipeRefreshLayout.setRefreshing(false);
     }
 }

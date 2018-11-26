@@ -556,8 +556,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
         List<String> imageList = new ArrayList<>();
         imageList.add(kolPostDomain.getImageUrl());
-
-        return new KolPostViewModel(
+        KolPostViewModel model = new KolPostViewModel(
                 kolPostDomain.getUserId(),
                 kolPostDomain.getCardType(),
                 kolPostDomain.getHeaderTitle(),
@@ -584,6 +583,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 !TextUtils.isEmpty(kolPostDomain.getContentLink()) ? kolPostDomain.getContentLink()
                         : kolPostDomain.getContentUrl()
         );
+        model.setReportable(kolPostDomain.isReportable());
+
+        return model;
     }
 
     private KolPostYoutubeViewModel convertToKolYoutubeViewModel(DataFeedDomain domain) {
