@@ -88,7 +88,6 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
     @Override
     public void onOnboardDismiss() {
         getView().setOnBoardIsFinish();
-        getView().notifyCheckoutPageToStartAnimation();
     }
 
 
