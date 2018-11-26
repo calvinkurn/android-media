@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.emptycart.subscriber;
 
+import com.tokopedia.checkout.view.feature.emptycart.EmptyCartApi;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.wishlist.common.response.GetWishlistResponse;
@@ -30,6 +31,10 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
+                view.stopTrace();
+            }
             view.renderHasNoWishList();
         }
     }
@@ -37,6 +42,10 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
         if (view != null) {
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.WISH_LIST, true);
+                view.stopTrace();
+            }
             if (graphqlResponse != null && graphqlResponse.getData(GetWishlistResponse.class) != null) {
                 GetWishlistResponse getWishlistResponse = graphqlResponse.getData(GetWishlistResponse.class);
                 if (getWishlistResponse != null && getWishlistResponse.getGqlWishList() != null &&

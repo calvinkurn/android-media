@@ -2,9 +2,12 @@ package com.tokopedia.discovery.util;
 
 import android.content.Context;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
+
+import java.util.Map;
 
 public class AutoCompleteTracking {
 
@@ -18,6 +21,27 @@ public class AutoCompleteTracking {
     public static final String CLICK_SEARCH = "click - search";
     public static final String EVENT_CLICK_SEARCH = "clickSearch";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
+    public static final String EVENT = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String ECOMMERCE = "ecommerce";
+    public static final String PRODUCT_CLICK = "productClick";
+    public static final String CLICK_RECENT_VIEW_PRODUCT = "click - recent view product";
+    public static final String CLICK = "click";
+    public static final String ACTION_FIELD = "actionField";
+    public static final String LIST = "list";
+    public static final String RECENT_VIEW_ACTION_FIELD = "/search - recentview - product";
+    public static final String PRODUCTS = "products";
+    public static final String PRODUCT_NAME = "name";
+    public static final String PRODUCT_ID = "id";
+    public static final String PRODUCT_PRICE = "price";
+    public static final String PRODUCT_BRAND = "brand";
+    public static final String PRODUCT_CATEGORY = "category";
+    public static final String PRODUCT_VARIANT = "variant";
+    public static final String PRODUCT_POSITION = "position";
+    public static final String NONE_OTHER = "none / other";
+    private static final String LABEL_RECENT_VIEW_CLICK = "po: %s - applink: %s";
 
     public static void eventClickPopularSearch(Context context, String label) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -128,4 +152,45 @@ public class AutoCompleteTracking {
         );
     }
 
+    public static void eventClickRecentView(Context context,
+                                            String position,
+                                            BaseItemAutoCompleteSearch data) {
+        Map<String, Object> productData = convertSearchItemToProductData(data, position);
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(EVENT, PRODUCT_CLICK,
+                        EVENT_CATEGORY, TOP_NAV,
+                        EVENT_ACTION, CLICK_RECENT_VIEW_PRODUCT,
+                        EVENT_LABEL, String.
+                                format(LABEL_RECENT_VIEW_CLICK,
+                                position,
+                                data.getApplink()),
+                        ECOMMERCE, DataLayer.mapOf(
+                                CLICK,
+                                        DataLayer.mapOf(
+                                                ACTION_FIELD, DataLayer.mapOf(LIST, RECENT_VIEW_ACTION_FIELD),
+                                                PRODUCTS, DataLayer.listOf(
+                                                        productData
+                                                )
+                                )
+                        )
+                )
+        );
+    }
+
+    private static Map<String, Object> convertSearchItemToProductData(BaseItemAutoCompleteSearch data,
+                                                                      String position) {
+        return DataLayer.mapOf(
+                PRODUCT_NAME, data.getKeyword(),
+                PRODUCT_ID, data.getProductId(),
+                PRODUCT_PRICE, data.getProductPrice(),
+                PRODUCT_BRAND, NONE_OTHER,
+                PRODUCT_CATEGORY, NONE_OTHER,
+                PRODUCT_VARIANT, NONE_OTHER,
+                PRODUCT_POSITION, position
+        );
+    }
 }

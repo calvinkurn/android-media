@@ -5,7 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.util.List;
@@ -54,7 +54,8 @@ public class FlightJourneyTable {
     private int totalNumericCombo;
     private boolean isBestPairing;
     private String beforeTotal;
-    private int sortPrice;
+    private String sortPrice;
+    private int sortPriceNumeric;
     private boolean isReturn;
     private boolean isSpecialPrice;
     private RefundableEnum isRefundable;
@@ -73,8 +74,9 @@ public class FlightJourneyTable {
                               String childCombo, int childNumeric, int childNumericCombo, String infant,
                               String infantCombo, int infantNumeric, int infantNumericCombo, String total,
                               String totalCombo, int totalNumeric, int totalNumericCombo,
-                              boolean isBestPairing, String beforeTotal, int sortPrice, boolean isReturn,
-                              RefundableEnum isRefundable, boolean isSpecialPrice, String comboId) {
+                              boolean isBestPairing, String beforeTotal, String sortPrice,
+                              int sortPriceNumeric, boolean isReturn, RefundableEnum isRefundable,
+                              boolean isSpecialPrice, String comboId) {
         this.id = id;
         this.term = term;
         this.departureAirport = departureAirport;
@@ -112,6 +114,7 @@ public class FlightJourneyTable {
         this.isBestPairing = isBestPairing;
         this.beforeTotal = beforeTotal;
         this.sortPrice = sortPrice;
+        this.sortPriceNumeric = sortPriceNumeric;
         this.isReturn = isReturn;
         this.isRefundable = isRefundable;
         this.isSpecialPrice = isSpecialPrice;
@@ -407,12 +410,20 @@ public class FlightJourneyTable {
         this.beforeTotal = beforeTotal;
     }
 
-    public int getSortPrice() {
+    public String getSortPrice() {
         return sortPrice;
     }
 
-    public void setSortPrice(int sortPrice) {
+    public void setSortPrice(String sortPrice) {
         this.sortPrice = sortPrice;
+    }
+
+    public int getSortPriceNumeric() {
+        return sortPriceNumeric;
+    }
+
+    public void setSortPriceNumeric(int sortPriceNumeric) {
+        this.sortPriceNumeric = sortPriceNumeric;
     }
 
     public boolean isReturn() {

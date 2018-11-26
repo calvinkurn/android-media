@@ -23,7 +23,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;

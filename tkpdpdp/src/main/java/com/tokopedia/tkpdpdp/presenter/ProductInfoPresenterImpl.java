@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.TextureView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -41,12 +42,20 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
         if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
-            viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
-                            .setProductKey(uri.getPathSegments().get(1))
-                            .setShopDomain(uri.getPathSegments().get(0))
-                            .setProductUri(uri.toString())
-                            .build()),
-                    ProductDetailFragment.class.getSimpleName());
+            if (bundle.getBoolean(DeepLink.IS_DEEP_LINK, false)
+                    && !TextUtils.isEmpty(bundle.getString("product_id", ""))) {
+                viewListener.inflateFragment(
+                        ProductDetailFragment.newInstance(generateProductPass(bundle, uri)),
+                        ProductDetailFragment.class.getSimpleName()
+                );
+            } else {
+                viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
+                                .setProductKey(uri.getPathSegments().get(1))
+                                .setShopDomain(uri.getPathSegments().get(0))
+                                .setProductUri(uri.toString())
+                                .build()),
+                        ProductDetailFragment.class.getSimpleName());
+            }
         } else if (isProductDetail(uri, bundle)) {
             viewListener.inflateFragment(ProductDetailFragment
                             .newInstance(generateProductPass(bundle, uri)),
@@ -85,6 +94,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
                         .setShopDomain(bundleData.getString("shop_domain", ""))
                         .setTrackerAttribution(bundleData.getString("tracker_attribution", ""))
                         .setTrackerListName(bundleData.getString("tracker_list_name", ""))
+                        .setFromExploreAffiliate(bundleData.getBoolean("is_from_explore_affiliate", false))
                         .build();
             } else if (productItem != null) {
                 productPass = ProductPass.Builder.aProductPass()

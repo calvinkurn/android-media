@@ -14,9 +14,9 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.di.PaymentOptionComponent;
@@ -85,7 +85,7 @@ public class CreditCardDetailActivity extends TActivity
 
     private String getBackgroundAssets(CreditCardModelItem item) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+        String baseUrl = remoteConfig.getString(RemoteConfigKey.IMAGE_HOST,
                 TkpdBaseURL.Payment.DEFAULT_HOST);
 
         final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;

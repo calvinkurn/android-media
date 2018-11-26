@@ -57,14 +57,6 @@ public interface FeedPlus {
 
             void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position);
 
-            void onGoToKolProfile(int rowNumber, String userId, int postId);
-
-            void onOpenKolTooltip(int rowNumber, String url);
-
-            void onFollowKolClicked(int rowNumber, int id);
-
-            void onUnfollowKolClicked(int rowNumber, int id);
-
             void onLikeKolClicked(int rowNumber, int id);
 
             void onUnlikeKolClicked(int adapterPosition, int id);
@@ -86,6 +78,8 @@ public interface FeedPlus {
         }
 
         void setFirstCursor(String firstCursor);
+
+        void setLastCursorOnFirstPage(String lastCursor);
 
         void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 

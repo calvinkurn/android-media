@@ -13,7 +13,7 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
     RecyclerView recyclerView;
     GuidedSearchAdapter adapter;
 
-    public GuidedSearchViewHolder(View itemView, ItemClickListener itemClickListener) {
+    public GuidedSearchViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
         recyclerView = itemView.findViewById(R.id.recyclerView);
         adapter = new GuidedSearchAdapter(itemClickListener);
@@ -46,9 +46,9 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
     public static class GuidedSearchAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
-        ItemClickListener itemClickListener;
+        ProductListener itemClickListener;
 
-        public GuidedSearchAdapter(ItemClickListener itemClickListener) {
+        public GuidedSearchAdapter(ProductListener itemClickListener) {
             this.itemClickListener = itemClickListener;
         }
 
@@ -77,9 +77,9 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
-        ItemClickListener itemClickListener;
+        ProductListener itemClickListener;
 
-        public ViewHolder(View itemView, ItemClickListener itemClickListener) {
+        public ViewHolder(View itemView, ProductListener itemClickListener) {
             super(itemView);
             textView = itemView.findViewById(R.id.guided_search_text);
             this.itemClickListener = itemClickListener;
