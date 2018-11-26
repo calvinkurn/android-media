@@ -95,7 +95,7 @@ Dengan mengunggah, saya menyatakan bahwa data yang saya berikan adalah benar dan
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="@dimen/dp_64"
         android:background="@drawable/green_button_rounded"
         android:gravity="center"
         android:text="@string/upload_button"
