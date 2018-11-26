@@ -373,7 +373,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 getView().showInvalidDateError(getView().getString(R.string.sp_error_invalid_date));
             }
 
-            if ((endDate.getTime() - startDate.getTime()) / SEC_TO_DAY_CONVERSION > MAX_DAYS_DIFFERENCE) {
+            if ((endDate.getTime() - startDate.getTime()) / SEC_TO_DAY_CONVERSION >= MAX_DAYS_DIFFERENCE) {
                 isValid = false;
                 getView().showInvalidDateError(getView().getString(R.string.sp_title_max_day));
             }
