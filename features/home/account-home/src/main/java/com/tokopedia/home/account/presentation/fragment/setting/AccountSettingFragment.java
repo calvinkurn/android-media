@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ToasterError;
@@ -123,6 +124,11 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getMenuToggle())
                     .show();
         }
+    }
+
+    @Override
+    public void showError(Throwable e) {
+        showError(ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override

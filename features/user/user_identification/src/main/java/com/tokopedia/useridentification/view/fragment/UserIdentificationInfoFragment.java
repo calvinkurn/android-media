@@ -13,17 +13,18 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
+import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.useridentification.KycUrl;
 
 import javax.inject.Inject;
 
@@ -70,7 +71,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             isSourceSeller = getArguments().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
         }
-        if (isSourceSeller){
+        if (isSourceSeller) {
             goToFormActivity();
         }
     }
@@ -180,9 +181,24 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetShopVerificationStatus(String errorMessage) {
-        hideLoading();
-        NetworkErrorHelper.showEmptyState(getContext(), mainView, () -> presenter.getStatus());
+    public void onErrorGetShopVerificationStatus(Throwable errorMessage) {
+        if (getContext() != null) {
+            hideLoading();
+            String error = ErrorHandler.getErrorMessage(getContext(), errorMessage);
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
+                    ());
+        }
+    }
+
+    @Override
+    public void onErrorGetShopVerificationStatusWithErrorCode(String errorCode) {
+        if (getContext() != null) {
+            hideLoading();
+            String error = String.format("%s (%s)", getContext().getString(R.string
+                    .default_request_error_unknown), errorCode);
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
+                    ());
+        }
     }
 
     @Override
@@ -202,7 +218,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return this;
     }
 
-    private View.OnClickListener onGoToFormActivityButton(){
+    private View.OnClickListener onGoToFormActivityButton() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,7 +241,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private View.OnClickListener onGoToTermsButton(){
+    private View.OnClickListener onGoToTermsButton() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
