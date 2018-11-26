@@ -37,6 +37,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceT
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -648,7 +649,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromo(PromoCodeCartShipmentData.DataVoucher dataVoucher) {
-        if (dataVoucher != null) {
+        if (dataVoucher != null && TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState())  == TickerCheckoutView.State.ACTIVE) {
             shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
             shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
             for (int i = 0; i < shipmentDataList.size(); i++) {
