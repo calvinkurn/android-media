@@ -399,18 +399,14 @@ public class CartMapper implements ICartMapper {
         cartListData.setCartPromoSuggestion(cartPromoSuggestion);
 
         AutoApplyData autoApplyData = new AutoApplyData();
-        autoApplyData.setCode(cartDataListResponse.getAutoapplyV2().getCode());
+        autoApplyData.setCode(cartDataListResponse.getAutoApply().getCode());
         autoApplyData.setDiscountAmount(cartDataListResponse.getAutoApply().getDiscountAmount());
-        autoApplyData.setIsCoupon(cartDataListResponse.getAutoapplyV2().getIsCoupon());
-        autoApplyData.setMessageSuccess(cartDataListResponse.getAutoapplyV2().getMessage().getText());
-        int promoId = 0;
-        if(!TextUtils.isEmpty(cartDataListResponse.getAutoapplyV2().getPromoCodeId())){
-            Integer.valueOf(cartDataListResponse.getAutoapplyV2().getPromoCodeId());
-        }
-        autoApplyData.setPromoId(promoId);
+        autoApplyData.setIsCoupon(cartDataListResponse.getAutoApply().getIsCoupon());
+        autoApplyData.setMessageSuccess(cartDataListResponse.getAutoApply().getMessageAutoApply().getText());
+        autoApplyData.setPromoId(cartDataListResponse.getAutoApply().getPromoId());
         autoApplyData.setSuccess(cartDataListResponse.getAutoApply().isSuccess());
-        autoApplyData.setTitleDescription(cartDataListResponse.getAutoapplyV2().getTitleDescription());
-        autoApplyData.setState(cartDataListResponse.getAutoapplyV2().getMessage().getState());
+        autoApplyData.setTitleDescription(cartDataListResponse.getAutoApply().getTitleDescription());
+        autoApplyData.setState(cartDataListResponse.getAutoApply().getMessageAutoApply().getState());
         cartListData.setAutoApplyData(autoApplyData);
 
         return cartListData;
