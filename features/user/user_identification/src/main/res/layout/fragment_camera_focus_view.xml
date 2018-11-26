@@ -81,6 +81,8 @@
         android:lineSpacingExtra="6sp"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
+        android:gravity="start"
+        android:textAlignment="viewStart"
         android:textColor="#ffffff"
         android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
