@@ -1,7 +1,6 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.tkpdpdp.domain.gql.ImageReviewGqlResponse;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import org.junit.Before;
@@ -10,9 +9,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyObject;
+import java.util.List;
+
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,10 +22,7 @@ public class ImageReviewSubscriberTest {
     ProductDetailView viewListener;
 
     @Mock
-    GraphqlResponse graphqlResponse;
-
-    @Mock
-    ImageReviewGqlResponse imageReviewGqlResponse;
+    List<ImageReviewItem> imageReviewItems;
 
     ImageReviewSubscriber imageReviewSubscriber;
 
@@ -37,13 +32,24 @@ public class ImageReviewSubscriberTest {
     }
 
     @Test
-    public void gqlResponseWithNullList_onNext_onImageReviewLoadedNotCalled(){
-        GraphqlResponse graphqlResponse = new GraphqlResponse()
-        when(graphqlResponse.getData(anyObject())).thenReturn(imageReviewGqlResponse);
-        when(imageReviewGqlResponse.getProductReviewImageListQuery()).thenReturn(null);
+    public void nullImageReviewItems_onNext_onImageReviewLoadedNotCalled(){
+        imageReviewSubscriber.onNext(null);
+        verify(viewListener, never()).onImageReviewLoaded(imageReviewItems);
+    }
 
-        imageReviewSubscriber.onNext(graphqlResponse);
+    @Test
+    public void emptyImageReviewItems_onNext_onImageReviewLoadedNotCalled(){
+        when(imageReviewItems.size()).thenReturn(0);
 
-        verify(viewListener, never()).onImageReviewLoaded(anyList());
+        imageReviewSubscriber.onNext(imageReviewItems);
+        verify(viewListener, never()).onImageReviewLoaded(imageReviewItems);
+    }
+
+    @Test
+    public void imageReviewItemsNotNullAndNotEmpty_onNext_onImageReviewLoadedCalled(){
+        when(imageReviewItems.size()).thenReturn(1);
+
+        imageReviewSubscriber.onNext(imageReviewItems);
+        verify(viewListener).onImageReviewLoaded(imageReviewItems);
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import retrofit2.Response;
 import rx.Subscriber;
 
-public class MostHelpfulReviewSubscriber extends Subscriber<Response<MostHelpfulReviewResponse>> {
+public class MostHelpfulReviewSubscriber extends Subscriber<List<Review>> {
     private final ProductDetailView viewListener;
 
     public MostHelpfulReviewSubscriber(ProductDetailView viewListener){
@@ -28,9 +28,8 @@ public class MostHelpfulReviewSubscriber extends Subscriber<Response<MostHelpful
     }
 
     @Override
-    public void onNext(Response<MostHelpfulReviewResponse> mostHelpfulReview) {
-        List<Review> reviewList = mostHelpfulReview.body().getData().getReviews();
-        if (reviewList != null && reviewList.size() > 0)
-            viewListener.showMostHelpfulReview(reviewList);
+    public void onNext(List<Review> mostHelpfulReview) {
+        if (mostHelpfulReview != null && mostHelpfulReview.size() > 0)
+            viewListener.showMostHelpfulReview(mostHelpfulReview);
     }
 }

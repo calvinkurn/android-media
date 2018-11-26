@@ -1257,7 +1257,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         getMostHelpfulReviewUseCase.execute(
                 requestParams,
                 new MostHelpfulReviewSubscriber(viewListener)
-
         );
     }
 
