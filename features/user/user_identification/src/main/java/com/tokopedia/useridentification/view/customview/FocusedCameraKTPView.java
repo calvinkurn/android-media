@@ -16,6 +16,13 @@ import android.view.View;
 
 public class FocusedCameraKTPView extends View {
 
+    private final static int LEFT_DIMEN_DIVIDER = 20;
+    private final static double TOP_DIMEN_DIVIDER = 3.22;
+    private final static int RIGHT_DIMEN_DIVIDER = 20;
+    private final static double BOTTOM_DIMEN_DIVIDER = 2.96;
+    private final static int CONST_RADIUS = 20;
+    private final static int CONST_STROKE_WIDTH = 10;
+
     private Paint mTransparentPaint;
     private Paint mSemiBlackPaint;
     private Path mPath = new Path();
@@ -39,11 +46,11 @@ public class FocusedCameraKTPView extends View {
     private void initPaints() {
         mTransparentPaint = new Paint();
         mTransparentPaint.setColor(Color.TRANSPARENT);
-        mTransparentPaint.setStrokeWidth(10);
+        mTransparentPaint.setStrokeWidth(CONST_STROKE_WIDTH);
 
         mSemiBlackPaint = new Paint();
         mSemiBlackPaint.setColor(Color.TRANSPARENT);
-        mSemiBlackPaint.setStrokeWidth(10);
+        mSemiBlackPaint.setStrokeWidth(CONST_STROKE_WIDTH);
     }
 
     @Override
@@ -52,40 +59,38 @@ public class FocusedCameraKTPView extends View {
 
         mPath.reset();
 
-//        mPath.addCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 550, Path.Direction.CW);
-        if (Build.VERSION.SDK_INT < 21) {
-            mPath.addRect(getLeft() + (getRight() - getLeft()) / 20,
-                    (float) (getTop() + (getBottom() - getTop()) / 3.22),
-                    getRight() - (getRight() - getLeft()) / 20,
-                    (float) (getBottom() - (getBottom() - getTop()) / 2.96),
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mPath.addRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
                     Path.Direction.CW);
         } else {
             mPath.addRoundRect(
-                    getLeft() + (getRight() - getLeft()) / 20,
-                    (float) (getTop() + (getBottom() - getTop()) / 3.22),
-                    getRight() - (getRight() - getLeft()) / 20,
-                    (float) (getBottom() - (getBottom() - getTop()) / 2.95),
-                    20,
-                    20,
+                    getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
+                    CONST_RADIUS,
+                    CONST_RADIUS,
                     Path.Direction.CW
             );
         }
         mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);
 
-//        canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 550, mTransparentPaint);
-        if (Build.VERSION.SDK_INT < 21) {
-            canvas.drawRect(getLeft() + (getRight() - getLeft()) / 20,
-                    (float) (getTop() + (getBottom() - getTop()) / 2.84),
-                    getRight() - (getRight() - getLeft()) / 20,
-                    (float) (getBottom() - (getBottom() - getTop()) / 3.38),
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
                     mTransparentPaint);
         } else {
-            canvas.drawRoundRect(getLeft() + (getRight() - getLeft()) / 20,
-                    (float) (getTop() + (getBottom() - getTop()) / 2.84),
-                    getRight() - (getRight() - getLeft()) / 20,
-                    (float) (getBottom() - (getBottom() - getTop()) / 3.38),
-                    20,
-                    20,
+            canvas.drawRoundRect(getLeft() + (getRight() - getLeft()) / LEFT_DIMEN_DIVIDER,
+                    (float) (getTop() + (getBottom() - getTop()) / TOP_DIMEN_DIVIDER),
+                    getRight() - (getRight() - getLeft()) / RIGHT_DIMEN_DIVIDER,
+                    (float) (getBottom() - (getBottom() - getTop()) / BOTTOM_DIMEN_DIVIDER),
+                    CONST_RADIUS,
+                    CONST_RADIUS,
                     mTransparentPaint);
         }
 

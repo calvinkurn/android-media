@@ -17,19 +17,16 @@ public class AccountSettingPresenter extends BaseDaggerPresenter<AccountSetting.
         AccountSetting.Presenter {
 
     private final GetAccountSettingConfigUseCase getAccountSettingConfigUseCase;
-    private final Context context;
 
     @Inject
-    public AccountSettingPresenter(GetAccountSettingConfigUseCase getAccountSettingConfigUseCase,
-                                   @ApplicationContext Context context) {
+    public AccountSettingPresenter(GetAccountSettingConfigUseCase getAccountSettingConfigUseCase) {
         this.getAccountSettingConfigUseCase = getAccountSettingConfigUseCase;
-        this.context = context;
     }
 
     @Override
     public void getMenuAccountSetting() {
         getAccountSettingConfigUseCase.execute(GetAccountSettingConfigUseCase.getRequestParam(),
-                new GetAccountSettingConfigSubscriber(getView(), context));
+                new GetAccountSettingConfigSubscriber(getView(), getView().getContext()));
     }
 
     @Override

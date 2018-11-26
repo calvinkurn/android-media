@@ -1,5 +1,7 @@
 package com.tokopedia.home.account.presentation;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
@@ -18,5 +20,7 @@ public interface AccountSetting {
         void onSuccessGetConfig(AccountSettingConfig accountSettingConfig);
 
         void logUnknownError(Throwable e);
+
+        Context getContext();
     }
 }
