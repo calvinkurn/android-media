@@ -29,6 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
