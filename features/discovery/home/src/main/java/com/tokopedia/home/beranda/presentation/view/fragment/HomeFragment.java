@@ -471,7 +471,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if ((getActivity()).getApplication() instanceof IHomeRouter) {
             ((IHomeRouter) (getActivity()).getApplication())
                     .goToTokoCash(appLinkBalance,
-                            redirectUrlBalance,
                             getActivity());
         }
     }
