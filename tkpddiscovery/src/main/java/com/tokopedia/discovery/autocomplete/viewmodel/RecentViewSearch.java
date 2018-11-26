@@ -4,16 +4,11 @@ package com.tokopedia.discovery.autocomplete.viewmodel;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchTypeFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CategorySearch implements Visitable<SearchTypeFactory> {
+public class RecentViewSearch implements Visitable<SearchTypeFactory> {
 
     private List<BaseItemAutoCompleteSearch> list;
-
-    public CategorySearch() {
-        list = new ArrayList<>();
-    }
 
     @Override
     public int type(SearchTypeFactory typeFactory) {
