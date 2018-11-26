@@ -1,7 +1,5 @@
 package com.tokopedia.user_identification_common.subscriber;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -19,18 +17,17 @@ import rx.Subscriber;
  */
 public class GetApprovalStatusSubscriber extends Subscriber<GraphqlResponse> {
 
-    private final Context context;
     private final GetApprovalStatusListener listener;
 
     public interface GetApprovalStatusListener {
-        void onErrorGetShopVerificationStatus(String errorMessage);
+        void onErrorGetShopVerificationStatus(Throwable errorMessage);
 
         void onSuccessGetShopVerificationStatus(int status);
+
+        void onErrorGetShopVerificationStatusWithErrorCode(String errorCode);
     }
 
-    public GetApprovalStatusSubscriber(Context context,
-                                       GetApprovalStatusListener listener) {
-        this.context = context;
+    public GetApprovalStatusSubscriber(GetApprovalStatusListener listener) {
         this.listener = listener;
     }
 
@@ -42,7 +39,7 @@ public class GetApprovalStatusSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         if (listener != null) {
-            listener.onErrorGetShopVerificationStatus(ErrorHandler.getErrorMessage(context, e));
+            listener.onErrorGetShopVerificationStatus(e);
         }
     }
 
@@ -59,12 +56,9 @@ public class GetApprovalStatusSubscriber extends Subscriber<GraphqlResponse> {
                 && listener != null
                 && graphqlErrorList.get(0) != null
                 && graphqlErrorList.get(0).getMessage() != null) {
-            listener.onErrorGetShopVerificationStatus(ErrorHandler.getErrorMessage(context,
-                    new MessageErrorException(graphqlErrorList.get(0).getMessage())));
+            listener.onErrorGetShopVerificationStatus(new MessageErrorException(graphqlErrorList.get(0).getMessage()));
         } else if (listener != null) {
-            listener.onErrorGetShopVerificationStatus(String.format("%s (%s)",
-                    context.getString(R.string.default_request_error_unknown),
-                    KYCConstant.UNHANDLED_RESPONSE));
+            listener.onErrorGetShopVerificationStatusWithErrorCode(KYCConstant.UNHANDLED_RESPONSE);
         }
 
     }
@@ -77,12 +71,9 @@ public class GetApprovalStatusSubscriber extends Subscriber<GraphqlResponse> {
         } else if (pojo.getKycStatus() != null
                 && pojo.getKycStatus().getMessage() != null
                 && !pojo.getKycStatus().getMessage().isEmpty()) {
-            listener.onErrorGetShopVerificationStatus(pojo.getKycStatus().getMessage().get(0));
+            listener.onErrorGetShopVerificationStatus(new MessageErrorException(pojo.getKycStatus().getMessage().get(0)));
         } else {
-            listener.onErrorGetShopVerificationStatus(String.format("%s (%s)",
-                    context.getString(R.string
-                    .default_request_error_unknown),
-                    KYCConstant.ERROR_MESSAGE_EMPTY));
+            listener.onErrorGetShopVerificationStatusWithErrorCode(KYCConstant.ERROR_MESSAGE_EMPTY);
         }
     }
 }
