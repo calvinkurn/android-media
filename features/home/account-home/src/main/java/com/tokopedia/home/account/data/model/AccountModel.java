@@ -13,6 +13,7 @@ import com.tokopedia.navigation_common.model.ProfileModel;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
 
 import java.util.List;
 
@@ -56,6 +57,9 @@ public class AccountModel {
 
     @SerializedName("vcc_user_balance")
     private VccUserBalance vccUserBalance;
+
+    @SerializedName("kycStatus")
+    private KycStatusPojo kycStatusPojo;
 
     private PendingCashbackModel pendingCashbackModel;
 
@@ -161,5 +165,9 @@ public class AccountModel {
 
     public void setPendingCashbackModel(PendingCashbackModel pendingCashbackModel) {
         this.pendingCashbackModel = pendingCashbackModel;
+    }
+
+    public KycStatusPojo getKycStatusPojo() {
+        return kycStatusPojo;
     }
 }

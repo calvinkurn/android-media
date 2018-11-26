@@ -347,6 +347,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                     kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
                     kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
                     kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
+                    datum.isAllowReport(),
                     datum.getContent().getType() == null ? "" : datum.getContent().getType()
             );
 
@@ -382,6 +383,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                     kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
                     kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
                     kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
+                    datum.isAllowReport(),
                     datum.getContent().getType() == null ? "" : datum.getContent().getType());
         } else {
             return null;

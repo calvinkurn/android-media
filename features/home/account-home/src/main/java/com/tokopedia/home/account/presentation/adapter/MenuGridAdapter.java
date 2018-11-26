@@ -45,8 +45,10 @@ public class MenuGridAdapter extends RecyclerView.Adapter<MenuGridItemViewHolder
     }
 
     public void setNewData(List<MenuGridItemViewModel> items) {
-        categories.clear();
-        categories.addAll(items);
-        notifyDataSetChanged();
+        if(items != null) {
+            categories.clear();
+            categories.addAll(items);
+            notifyDataSetChanged();
+        }
     }
 }

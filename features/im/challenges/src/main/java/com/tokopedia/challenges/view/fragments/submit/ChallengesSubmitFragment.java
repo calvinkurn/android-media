@@ -18,6 +18,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -39,7 +40,9 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.VideoPickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.imagepicker.picker.main.view.VideoPickerActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,7 +61,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeD
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
-import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
@@ -79,8 +81,9 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public static final int REQUEST_IMAGE_SELECT = 1;
     private static final int REQUEST_CODE_VIDEO = 2;
     private static final int REQUEST_CODE_IMAGE_VIDEO = 2;
+
     private String mAttachmentPath;
-    private  ProgressDialog progress;
+    private ProgressDialog progress;
     private View parent;
     private ScrollView scrollView;
     private TextView txtChooseImageTitle;
@@ -105,7 +108,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         this.channelDesc = getArguments().getString(Utils.QUERY_PARAM_CHANNEL_DESC);
 
         setHasOptionsMenu(true);
-        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Challenge Submissions");
+        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(), "Challenge Submissions");
     }
 
     public static ChallengesSubmitFragment newInstance(Bundle extras) {
@@ -183,7 +186,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mDeleteImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageHandler.loadImageWithId(mSelectedImage,R.drawable.ic_upload);
+                ImageHandler.loadImageWithId(mSelectedImage, R.drawable.ic_upload);
                 mAttachmentPath = null;
                 mDeleteImage.setVisibility(View.GONE);
 
@@ -265,7 +268,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void setSnackBarErrorMessage(String message) {
-        setSnackBarErrorMessage(message,new View.OnClickListener() {
+        setSnackBarErrorMessage(message, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
@@ -291,8 +294,15 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void selectVideo() {
-        ChallengesSubmitFragmentPermissionsDispatcher.actionVideoPickerWithCheck(ChallengesSubmitFragment.this);
+        if (presenter.isDeviceSupportVideo()) {
+            VideoPickerBuilder builder = new VideoPickerBuilder(getString(R.string.ch_choose_video), Utils.MAX_VIDEO_SIZE_IN_KB,
+                    0, null);
+            Intent intent = VideoPickerActivity.getIntent(getActivity(), builder);
+            startActivityForResult(intent, REQUEST_CODE_VIDEO);
+        }
+
     }
+
 
     private void initView(View view) {
         mSelectedImage = view.findViewById(R.id.selected_image);
@@ -319,7 +329,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private ImagePickerBuilder getImagePickerBuilder() {
         if (imagePickerBuilder == null) {
             imagePickerBuilder = new ImagePickerBuilder(getString(R.string.choose_image),
-                    new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, Utils.MAX_IMAGE_SIZE_IN_KB,
                     DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                     new ImagePickerEditorBuilder(
                             new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
@@ -334,16 +344,26 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_SELECT && resultCode == Activity.RESULT_OK && data != null) {
+
             ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
             if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
                 mAttachmentPath = imageUrlOrPathList.get(0);
                 ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
             }
-        }else if ((requestCode == REQUEST_CODE_VIDEO || requestCode == REQUEST_CODE_IMAGE_VIDEO )&& resultCode == Activity.RESULT_OK && data != null) {
-            mAttachmentPath = ((ChallengesModuleRouter) ((getActivity()).getApplication())).getResultSelectionPath(data);
-            ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
+        } else if ((requestCode == REQUEST_CODE_VIDEO || requestCode == REQUEST_CODE_IMAGE_VIDEO) && resultCode == Activity.RESULT_OK && data != null) {
+
+            ArrayList<String> videoPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (videoPathList != null && videoPathList.size() > 0) {
+                String videoPath = videoPathList.get(0);
+                if (presenter.checkAttachmentVideo(videoPath)) {
+                    mAttachmentPath = videoPath;
+                    ImageHandler.loadImageFromFile(getContext(), mSelectedImage, new File(mAttachmentPath));
+                } else if (getActivity() != null) {
+                    showMessage(getActivity().getString(R.string.ch_error_Video_version_minimum));
+                }
+            }
         }
-        if(mAttachmentPath != null)
+        if (mAttachmentPath != null)
             mDeleteImage.setVisibility(View.VISIBLE);
 
     }
@@ -434,7 +454,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void saveLocalpath(String newPostId, String filePath) {
-        ChallengesCacheHandler.saveLocalVideoPath(getContext(),newPostId,filePath);
+        ChallengesCacheHandler.saveLocalVideoPath(getContext(), newPostId, filePath);
     }
 
     @Override
