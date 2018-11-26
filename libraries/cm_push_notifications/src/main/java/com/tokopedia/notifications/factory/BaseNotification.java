@@ -266,14 +266,3 @@ public abstract class BaseNotification {
 //        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 //        return settings.getBoolean(Constant.Settings.NOTIFICATION_VIBRATE, false);
 //    }
-
-
-
-/*AudioAttributes att = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                    .build();
-            mChannel.setSound(Uri.parse("android.resource://" + getPackageName() + "/" +
-                    R.raw.tokopedia_endtune), att);
-            NotificationManager notificationManager = (NotificationManager) getSystemService(
-                    NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(mChannel);*/
