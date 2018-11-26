@@ -226,7 +226,6 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
                             RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                             email,
                             phone);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
                     getActivity().finish();
                 }
