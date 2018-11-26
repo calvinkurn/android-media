@@ -34,9 +34,8 @@ public class UserIdentificationModule {
 
     @UserIdentificationScope
     @Provides
-    UserIdentificationInfo.Presenter provideUserIdentificationInfoPresenter(@ApplicationContext Context context,
-                                                                            GetApprovalStatusUseCase getApprovalStatusUseCase) {
-        return new UserIdentificationInfoPresenter(context, getApprovalStatusUseCase);
+    UserIdentificationInfo.Presenter provideUserIdentificationInfoPresenter(GetApprovalStatusUseCase getApprovalStatusUseCase) {
+        return new UserIdentificationInfoPresenter(getApprovalStatusUseCase);
     }
 
     @UserIdentificationScope

@@ -1,8 +1,5 @@
 package com.tokopedia.home.account.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.home.account.di.scope.AccountSettingScope;
 import com.tokopedia.home.account.domain.GetAccountSettingConfigUseCase;
 import com.tokopedia.home.account.presentation.AccountSetting;
@@ -19,8 +16,7 @@ import dagger.Provides;
 public class AccountSettingModule {
     @Provides
     @AccountSettingScope
-    AccountSetting.Presenter provideAccountSettingPresenter(GetAccountSettingConfigUseCase getAccountSettingConfigUseCase,
-                                                            @ApplicationContext Context context) {
-        return new AccountSettingPresenter(getAccountSettingConfigUseCase, context);
+    AccountSetting.Presenter provideAccountSettingPresenter(GetAccountSettingConfigUseCase getAccountSettingConfigUseCase) {
+        return new AccountSettingPresenter(getAccountSettingConfigUseCase);
     }
 }
