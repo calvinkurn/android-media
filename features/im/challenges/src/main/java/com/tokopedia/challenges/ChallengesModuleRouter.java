@@ -20,8 +20,6 @@ public interface ChallengesModuleRouter {
 
     Intent getGalleryVideoImageIntent(Context activity);
 
-    String getResultSelectionPath(Intent data);
-
     void onShowRationale(Context context, PermissionRequest request, String permission);
 
     void onPermissionDenied(Context context, String permission);

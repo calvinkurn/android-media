@@ -46,4 +46,21 @@
     <string name="kol_post_something">Post sesuatu untuk follower tokomu, yuk!</string>
     <string name="kol_create_post">Buat Post</string>
     <string name="kol_add_image">Tambah Gambar</string>
+
+    <!--Report-->
+    <string name="title_kol_report">Laporan Konten</string>
+    <string name="kol_help_understand">Bantu Kami Memahami Apa yang Terjadi. Apa yang salah dari konten tersebut?</string>
+    <string name="kol_reason_here">Isi alasan di sini</string>
+    <string name="kol_reason_type_spam" translatable="false">spam</string>
+    <string name="kol_reason_type_abuse" translatable="false">abuse</string>
+    <string name="kol_reason_type_inappropriate" translatable="false">inappropriate image</string>
+    <string name="kol_reason_type_others" translatable="false">custom</string>
+    <string name="kol_reason_desc_spam">Ini adalah spam</string>
+    <string name="kol_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
+    <string name="kol_reason_desc_inappropriate">Mengandung pornografi</string>
+    <string name="kol_reason_desc_others">Lainnya</string>
+    <string name="kol_delete">Hapus</string>
+    <string name="kol_report">Laporkan</string>
+    <string name="kol_report_error">Tidak dapat melaporkan konten, silakan coba lagi</string>
+    <string name="kol_duplicate">Laporanmu sedang diproses</string>
 </resources>
