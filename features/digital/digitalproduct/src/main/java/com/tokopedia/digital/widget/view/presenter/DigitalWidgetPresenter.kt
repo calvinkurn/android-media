@@ -2,7 +2,6 @@ package com.tokopedia.digital.widget.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase
-import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException
 import com.tokopedia.digital.widget.view.model.category.Category
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -20,11 +19,7 @@ class DigitalWidgetPresenter(private val digitalWidgetUseCase: DigitalWidgetUseC
             }
 
             override fun onError(e: Throwable) {
-                if (e is WidgetRuntimeException) {
-                    view.renderErrorMessage()
-                } else {
-                    view.renderErrorNetwork()
-                }
+                view.renderErrorNetwork(e.message)
             }
 
             override fun onNext(categories: List<Category>) {

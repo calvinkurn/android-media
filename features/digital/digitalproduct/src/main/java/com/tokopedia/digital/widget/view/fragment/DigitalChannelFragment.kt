@@ -5,10 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -44,6 +41,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
     private lateinit var error_view: LinearLayout
     private lateinit var text_error_message: TextView
     private lateinit var text_see_more: TextView
+    private lateinit var button_try_again: Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootview = inflater.inflate(R.layout.fragment_digital_channel, container, false)
@@ -54,6 +52,15 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         error_view = rootview.findViewById(R.id.error_view)
         text_error_message = rootview.findViewById(R.id.text_error_message)
         text_see_more = rootview.findViewById(R.id.see_more)
+        button_try_again = rootview.findViewById(R.id.button_try_again)
+
+        button_try_again.setOnClickListener {
+            error_view.visibility = View.GONE
+            digital_widget_fragment.visibility = View.GONE
+            pulsa_place_holders.visibility = View.VISIBLE
+
+            digitalChannelPresenter.getRecommendationList(5)
+        }
 
         text_see_more.setOnClickListener {
             RouteManager.route(activity, "tokopedia://category-explore?type=2")

@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -45,6 +46,9 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     private lateinit var view_pager_widget: ViewPager
     private lateinit var container: LinearLayout
     private lateinit var pulsa_place_holders: RelativeLayout
+    private lateinit var error_view: LinearLayout
+    private lateinit var text_error_message: TextView
+    private lateinit var button_try_again: Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootview = inflater.inflate(R.layout.fragment_digital_widget, container, false)
@@ -53,6 +57,17 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
         view_pager_widget = rootview.findViewById(R.id.view_pager_widget)
         this.container = rootview.findViewById(R.id.container)
         pulsa_place_holders = rootview.findViewById(R.id.pulsa_place_holders)
+        error_view = rootview.findViewById(R.id.error_view)
+        text_error_message = rootview.findViewById(R.id.text_error_message)
+        button_try_again = rootview.findViewById(R.id.button_try_again)
+
+        button_try_again.setOnClickListener {
+            error_view.visibility = View.GONE
+            this.container.visibility = View.GONE
+            pulsa_place_holders.visibility = View.VISIBLE
+
+            digitalWidgetPresenter.fetchDataRechargeCategory()
+        }
 
         digitalWidgetPresenter.attachView(this)
 
@@ -122,7 +137,12 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     override fun failedRenderDataRechargeCategory() {
     }
 
-    override fun renderErrorNetwork() {
+    override fun renderErrorNetwork(errorMessage: String?) {
+        container.visibility = View.GONE
+        pulsa_place_holders.visibility = View.GONE
+        error_view.visibility = View.VISIBLE
+
+        text_error_message.text = errorMessage
     }
 
     override fun renderErrorMessage() {
