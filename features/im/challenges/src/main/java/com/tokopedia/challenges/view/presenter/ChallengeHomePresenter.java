@@ -31,6 +31,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
     @Override
     public void getOpenChallenges() {
+        if (!isViewAttached()) return;
         if (getView().getOpenChallenges() != null) {
             getView().setChallengeDataToUI(getView().getOpenChallenges(), false);
         } else {
@@ -45,7 +46,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 e.printStackTrace();
                 getView().removeProgressBarView();
                 getView().setSwipeRefreshing();
@@ -55,7 +56,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(Challenge.class);
                 Challenge mainDataObject = res1.getData();
@@ -71,6 +72,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
     @Override
     public void getPastChallenges() {
+        if (!isViewAttached()) return;
         if (getView().getPastChallenges() != null) {
             getView().setChallengeDataToUI(getView().getPastChallenges(), true);
         } else {
@@ -85,7 +87,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().removeProgressBarView();
                 getView().setSwipeRefreshing();
                 getView().showErrorNetwork(
@@ -95,7 +97,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 RestResponse res1 = restResponse.get(Challenge.class);
                 Challenge mainDataObject = res1.getData();
                 if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {

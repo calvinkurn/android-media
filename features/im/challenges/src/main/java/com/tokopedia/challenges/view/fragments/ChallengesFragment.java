@@ -105,7 +105,6 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             public void onRefresh() {
                 ChallengesCacheHandler.resetCache();
                 getChallenges();
-
             }
         });
 
