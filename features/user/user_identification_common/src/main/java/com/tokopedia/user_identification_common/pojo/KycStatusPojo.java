@@ -25,4 +25,12 @@ public class KycStatusPojo {
     public KycStatusDetailPojo getKycStatusDetailPojo() {
         return kycStatusDetailPojo;
     }
+
+    public void setMessage(List<String> message) {
+        this.message = message;
+    }
+
+    public void setKycStatusDetailPojo(KycStatusDetailPojo kycStatusDetailPojo) {
+        this.kycStatusDetailPojo = kycStatusDetailPojo;
+    }
 }

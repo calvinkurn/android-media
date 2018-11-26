@@ -1,0 +1,8 @@
+mutation SendReport($content: Int!, $contentType: String!, $reasonType: String!, $reasonMessage: String!) {
+  feed_report_submit(content: $content, contentType: $contentType, reasonType: $reasonType, reasonMessage: $reasonMessage) {
+    data {
+      success
+    }
+    error
+  }
+}

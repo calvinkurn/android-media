@@ -29,6 +29,8 @@ public interface ChallengesBaseContract {
         List<Result> getOpenChallenges();
 
         List<Result> getPastChallenges();
+
+        void setSwipeRefreshing();
     }
 
     interface Presenter extends CustomerPresenter<View> {

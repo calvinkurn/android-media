@@ -287,11 +287,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         }
     }
 
-    @Override
-    public void onTickerClosed() {
-
-    }
-
     private void sendTracking(String title, String section, String item) {
         if (accountAnalytics == null)
             return;

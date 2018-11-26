@@ -15,4 +15,8 @@ public class GetApprovalStatusPojo {
     public KycStatusPojo getKycStatus() {
         return kycStatus;
     }
+
+    public void setKycStatus(KycStatusPojo kycStatus) {
+        this.kycStatus = kycStatus;
+    }
 }
