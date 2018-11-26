@@ -770,6 +770,11 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void showSnackbarWithCloseButton(String errorMessage) {
+        NetworkErrorHelper.showCloseSnackbar(this, errorMessage);
+    }
+
+    @Override
     public void dismissSellerActionFragment() {
         //Alternative 1 refresh activity
         /*getFragmentManager().beginTransaction()
