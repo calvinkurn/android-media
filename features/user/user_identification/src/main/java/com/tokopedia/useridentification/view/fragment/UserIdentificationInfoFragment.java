@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -134,8 +135,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
                 showStatusNotVerified();
                 break;
             default:
-                onErrorGetShopVerificationStatus(String.format("%s (%s)", getString(R.string
-                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN));
+                onErrorGetShopVerificationStatus(new MessageErrorException(String.format("%s (%s)", getString(R.string
+                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
                 break;
         }
     }
