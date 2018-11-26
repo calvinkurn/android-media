@@ -2983,39 +2983,12 @@ public class UnifyTracking extends TrackingUtils {
         return TextUtils.join("&", filterList);
     }
 
-    public static void eventBeliLongClick() {
+    public static void eventBillShortcut() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
-                AppEventTracking.Action.CLICK_BELI,
-                AppEventTracking.EventLabel.PRODUCT_SEARCH
-        ).setUserId().getEvent());
-    }
-
-    public static void eventReferralLongClick() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.LONG_CLICK,
-                AppEventTracking.Category.LONG_PRESS,
-                AppEventTracking.Action.CLICK_REFERRAL,
-                AppEventTracking.EventLabel.LONG_PRESS_SHORTCUT_REFERRAL
-        ).setUserId().getEvent());
-    }
-
-    public static void eventBayarLongClick() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.LONG_CLICK,
-                AppEventTracking.Category.LONG_PRESS,
-                AppEventTracking.Action.CLICK_BAYAR,
+                AppEventTracking.Action.CLICK_BILL,
                 AppEventTracking.EventLabel.DIGITAL
-        ).setUserId().getEvent());
-    }
-
-    public static void eventJualLongClick() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.LONG_CLICK,
-                AppEventTracking.Category.LONG_PRESS,
-                AppEventTracking.Action.CLICK_JUAL,
-                AppEventTracking.EventLabel.TAKE_TO_SHOP
         ).setUserId().getEvent());
     }
 

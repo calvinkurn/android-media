@@ -1183,11 +1183,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getReferralIntent(Context context) {
-        return ReferralActivity.getCallingIntent(context);
-    }
-
-    @Override
     public Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData) {
         return ContactUsCreateTicketActivity.getCallingIntent(
                 activity,
