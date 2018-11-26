@@ -1,11 +1,9 @@
 package com.tokopedia.user_identification_common.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.user_identification_common.KYCConstant;
-import com.tokopedia.user_identification_common.R;
 import com.tokopedia.user_identification_common.pojo.GetApprovalStatusPojo;
 
 import java.util.List;
