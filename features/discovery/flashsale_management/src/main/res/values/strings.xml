@@ -28,6 +28,7 @@
     <string name="range_format">%1$s-%2$s</string>
     <string name="submission_count_format">%1$d produk</string>
     <string name="no_eligible_product_in_this_flash_sale">Sayang sekali, tidak ada produk yang diterima pada Flash Sale ini</string>
+    <string name="no_not_submitted_product_in_this_flash_sale">Tidak ada produk yang belum didaftarkan</string>
     <string name="no_worry_you_can_join_next_flash_sale">Namun Anda tidak perlu kecewa, karena toko Anda berkesempatan mengikuti Flash Sale lainnya.</string>
     <string name="flash_sale_registered">Terdaftar</string>
     <string name="flash_sale_not_registered">Belum Didaftarkan</string>
@@ -68,6 +69,7 @@
     <string name="flash_sale_x_percent">%1$s%%</string>
     <string name="flash_sale_min_stock_x">Minimal stok %1$d</string>
     <string name="flash_sale_html_process_web_view"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding:16px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
+    <string name="html_process_web_view_no_padding"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding-top:24px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
 
     <string name="have_not_joined_flashsale_title">Anda belum pernah mengikuti Flash Sale</string>
     <string name="join_flashsale_title">Ikuti Flash Sale dan Nikmati Banyak Keuntungan</string>

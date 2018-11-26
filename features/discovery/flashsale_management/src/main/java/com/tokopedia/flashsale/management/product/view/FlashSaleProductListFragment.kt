@@ -83,7 +83,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
         }
         super.onCreate(savedInstanceState)
-        flashSaleSubmitLabelAdapter = FlashSaleSubmitLabelAdapter(filterIndex, 0, 0, this)
+        flashSaleSubmitLabelAdapter = FlashSaleSubmitLabelAdapter(filterIndex, 0, this)
         context?.let {
             GraphqlClient.init(it)
         }
@@ -133,7 +133,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun loadInitialData() {
-        hideSearchInputView()
+        searchInputView.isEnabled = false
         recyclerViewLabel.visibility = View.GONE
         vgBottom.visibility = View.GONE
         loadSellerStatus()
@@ -312,7 +312,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             emptyModel.title = getString(R.string.no_eligible_product_in_this_flash_sale)
             emptyModel.content = getString(R.string.no_worry_you_can_join_next_flash_sale)
         } else {
-            emptyModel.title = ""
+            emptyModel.title = getString(R.string.no_not_submitted_product_in_this_flash_sale)
             emptyModel.content = ""
         }
         return emptyModel
@@ -320,6 +320,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun onSuccessGetEligibleList(flashSaleSubmissionProductData: FlashSaleSubmissionProductData) {
         super.renderList(flashSaleSubmissionProductData.flashSaleSubmissionProduct, hasNextPage(flashSaleSubmissionProductData.flashSaleSubmissionProduct))
+        searchInputView.isEnabled = true
         if (TextUtils.isEmpty(searchInputView.searchText) &&
                 flashSaleSubmissionProductData.flashSaleSubmissionProduct.isEmpty() &&
                 currentPage <= 1 &&
@@ -369,7 +370,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun renderUILabel() {
         if (needShowChip()) {
-            flashSaleSubmitLabelAdapter?.setData(submittedCount, pendingCount)
+            flashSaleSubmitLabelAdapter?.setData(submittedCount)
             recyclerViewLabel.visibility = View.VISIBLE
         } else {
             hideChipLabel()

@@ -57,7 +57,7 @@ class CampaignInfoTnCViewHolder(view: View): AbstractViewHolder<CampaignInfoTnCV
     }
 
     private fun processWebViewHtmlStyle(html_string: String): String {
-        return getString(R.string.flash_sale_html_process_web_view, html_string)
+        return getString(R.string.html_process_web_view_no_padding, html_string)
     }
 
     companion object {
