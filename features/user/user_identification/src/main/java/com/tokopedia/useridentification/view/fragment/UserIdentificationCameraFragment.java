@@ -43,6 +43,9 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     public static final int PARAM_VIEW_MODE_KTP = 1;
     public static final int PARAM_VIEW_MODE_FACE = 2;
 
+    private static final long DEFAULT_ONE_MEGABYTE = 1024;
+    private static final int MAX_FILE_SIZE = 10240;
+
     private CameraView cameraView;
     private ImageButton closeButton;
     private TextView title;
@@ -303,10 +306,8 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private boolean isFileSizeQualified(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
-            long fileSizeInBytes = file.length();
-            long fileSizeInKB = fileSizeInBytes / 1024;
-            long fileSizeInMB = fileSizeInKB / 1024;
-            return (fileSizeInMB <= 10);
+            int fileSize = Integer.parseInt(String.valueOf(file.length() / DEFAULT_ONE_MEGABYTE));
+            return (fileSize <= MAX_FILE_SIZE);
         } else
             return false;
     }
