@@ -30,6 +30,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
 
     implementation rootProject.ext.playServicesDependencies.analytics
 

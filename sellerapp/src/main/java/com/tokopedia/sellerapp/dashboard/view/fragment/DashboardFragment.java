@@ -39,6 +39,7 @@ import com.tokopedia.design.card.EmptyCardContentView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.component.ticker.TickerView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -371,8 +372,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             gmStatusTextView.setText(R.string.dashboard_label_official_store);
         } else if (shopModelInfo.isGoldMerchant()) {
             gmIconImageView.setVisibility(View.VISIBLE);
-            gmIconImageView.setImageResource(R.drawable.ic_shop_gold);
-            gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
+            gmIconImageView.setImageDrawable(GMConstant.getGMDrawable(getContext()));
+            gmStatusTextView.setText(GMConstant.getGMTitleResource(getContext()));
         } else {
             gmIconImageView.setVisibility(View.GONE);
             gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);

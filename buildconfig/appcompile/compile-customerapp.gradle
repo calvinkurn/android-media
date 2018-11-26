@@ -47,6 +47,7 @@ include "features:logistic:tracking"
 include "features:logistic:logisticaddaddress"
 
 include "features:merchant:gold_merchant_common"
+include "features:merchant:gold_merchant_resource"
 include "features:merchant:gold_merchant_subscribe"
 include "features:merchant:reputation_common"
 include "features:merchant:reputation"

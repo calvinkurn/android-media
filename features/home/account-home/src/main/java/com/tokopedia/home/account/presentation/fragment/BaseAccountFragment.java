@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
 
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -241,7 +242,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onGMInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, AccountHomeUrl.GOLD_MERCHANT));
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, GMConstant.getGMEduUrl(getContext())));
         }
     }
 

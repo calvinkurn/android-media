@@ -14,6 +14,7 @@ import com.bumptech.glide.request.Request;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.ShopData;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
@@ -85,8 +86,8 @@ public class MyShopViewHolder extends AbstractViewHolder<MyShopViewModel> {
             badgeTxt.setText(getString(R.string.official_store));
             badgeImage.setImageResource(R.drawable.ic_official);
         } else if (data.isIsGoldBadge()) {
-            badgeImage.setImageResource(R.drawable.ic_gold);
-            badgeTxt.setText(getString(R.string.gold_merchant));
+            badgeImage.setImageDrawable(GMConstant.INSTANCE.getGMDrawable(context));
+            badgeTxt.setText(GMConstant.INSTANCE.getGMTitleResource(context));
         } else {
             badgeTxt.setVisibility(View.GONE);
             badgeImage.setVisibility(View.GONE);

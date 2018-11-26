@@ -18,6 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
@@ -233,7 +234,9 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                             UnifyTracking.eventSwitchRpToDollarAddProduct()
                             showDialogGoToGM()
                         } else {
-                            Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                            Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content),
+                                    getString(R.string.product_error_must_be_gold_merchant, getString(GMConstant.getGMTitleResource(context))),
+                                    Snackbar.LENGTH_LONG)
                                     .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
                                     .show()
                         }

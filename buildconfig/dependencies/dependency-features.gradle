@@ -167,6 +167,7 @@ ext {
 
             goldMerchant           : ":features:merchant:gold_merchant",
             goldMerchantCommon     : ":features:merchant:gold_merchant_common",
+            goldMerchantResource   : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe",
             productDraftDatabase   : ":features:merchant:product_draft_database",
             productManageItem      : ":features:merchant:product_manage_item",

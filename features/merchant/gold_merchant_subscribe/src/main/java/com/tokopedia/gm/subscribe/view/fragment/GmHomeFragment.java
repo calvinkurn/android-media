@@ -6,15 +6,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.subscribe.R;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
 import com.tokopedia.gm.subscribe.view.presenter.GmHomePresenterImpl;
+import com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView;
 
 
 /**
@@ -103,7 +106,6 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
         });
         return view;
     }
-
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_gm_subscribe_home;
@@ -133,6 +135,11 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
     @Override
     protected void setActionVar() {
         presenter.clearGMProductCache();
+        String gm = getString(GMConstant.getGMTitleResource(getActivity()));
+        TextView titleSubFeature = getView().findViewById(R.id.title_gm_sub_features);
+        titleSubFeature.setText(getString(R.string.gmsubscribe_subfeature_title, gm));
+        GmSubFeatureView filter = getView().findViewById(R.id.sub_feature_video);
+        filter.setDescSubFeature(getString(R.string.gmsubscribe_feature_filter_gold_merchant, gm));
     }
 
 

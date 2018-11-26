@@ -31,6 +31,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -310,8 +311,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             ivShopMembership.setPadding(0, 0, 0, 0)
             tvMembershipName.text = getString(R.string.label_regular_merchant)
 
-            val goldMerchantInviteString = getString(R.string.shop_settings_gold_merchant_invite)
-            val goldMerchantString = getString(R.string.label_gold_merchant)
+            val goldMerchantString = getString(GMConstant.getGMTitleResource(context))
+            val goldMerchantInviteString = getString(R.string.shop_settings_gold_merchant_invite, goldMerchantString);
             val spannable = SpannableString(goldMerchantInviteString)
             val indexStart = goldMerchantInviteString.indexOf(goldMerchantString)
             val indexEnd = indexStart + goldMerchantString.length
@@ -343,9 +344,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                     toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
             vgMembershipContainer.setOnClickListener(null)
         } else if (shopBasicDataModel.isGold) {
-            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm)
+            ivShopMembership.setImageDrawable(GMConstant.getGMDrawable(context))
             ivShopMembership.setPadding(0, 0, 0, 0)
-            tvMembershipName.text = getString(R.string.label_gold_merchant)
+            tvMembershipName.text = getString(GMConstant.getGMTitleResource(context))
             tvMembershipDescription.text = getString(R.string.valid_until_x,
                     toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
             tvManageGmSubscribe.visibility = View.VISIBLE

@@ -56,11 +56,10 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <com.tokopedia.gm.resource.GMImageView
                         android:id="@+id/iv_gold_shop"
                         android:layout_width="@dimen/dp_30"
                         android:layout_height="@dimen/dp_30"
-                        app:srcCompat="@drawable/ic_shop_gold"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 

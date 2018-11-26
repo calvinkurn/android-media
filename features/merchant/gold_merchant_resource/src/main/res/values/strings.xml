@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">gold_merchant_resource</string>
+    <string name="gm_title">Gold Merchant</string>
+    <string name="pm_title">Power Merchant</string>
+</resources>

@@ -27,6 +27,7 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -280,15 +281,16 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
-        DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
+        String gm = context.getString(GMConstant.getGMTitleResource(context));
+        DrawerGroup gmMenu = new DrawerGroup(gm,
                 R.drawable.ic_goldmerchant_drawer,
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0);
 
         String gmString = isGoldMerchant ?
-                context.getString(R.string.extend_gold_merchant) :
-                context.getString(R.string.upgrade_gold_merchant);
+                context.getString(R.string.extend_gold_merchant, gm) :
+                context.getString(R.string.upgrade_gold_merchant, gm);
 
         gmMenu.add(new DrawerItem(gmString,
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
@@ -522,7 +524,8 @@ public class DrawerSellerHelper extends DrawerHelper
     private void showDialogActionGoToGMSubscribe() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(R.string.featured_product_title);
-        alertDialog.setMessage(R.string.featured_product_desc_should_gold_merchant);
+        alertDialog.setMessage(context.getString(R.string.featured_product_desc_should_gold_merchant,
+                context.getString(GMConstant.getGMTitleResource(context))));
         alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
