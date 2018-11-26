@@ -467,7 +467,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void actionAppLinkWalletHeader(String appLinkBalance, String redirectUrlBalance) {
+    public void actionAppLinkWalletHeader(String appLinkBalance) {
         if ((getActivity()).getApplication() instanceof IHomeRouter) {
             ((IHomeRouter) (getActivity()).getApplication())
                     .goToTokoCash(appLinkBalance,
@@ -503,7 +503,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     if ((getActivity()).getApplication() instanceof IHomeRouter) {
                         ((IHomeRouter) (getActivity()).getApplication())
                                 .goToTokoCash(appLink,
-                                        "",
                                         getActivity());
                     }
                 }

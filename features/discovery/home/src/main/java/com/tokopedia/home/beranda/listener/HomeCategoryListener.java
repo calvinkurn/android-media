@@ -21,7 +21,7 @@ public interface HomeCategoryListener {
 
     void openShop();
 
-    void actionAppLinkWalletHeader(String appLinkBalance, String redirectUrl);
+    void actionAppLinkWalletHeader(String appLinkBalance);
 
     void onRequestPendingCashBack();
 
