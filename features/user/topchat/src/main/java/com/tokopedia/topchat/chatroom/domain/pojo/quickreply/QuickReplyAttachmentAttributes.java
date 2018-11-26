@@ -8,7 +8,7 @@ import java.util.List;
 
 public class QuickReplyAttachmentAttributes {
 
-    @SerializedName("quick_replies")
+    @SerializedName("new_quick_replies")
     @Expose
     private List<QuickReplyPojo> quickReplies;
 
