@@ -25,8 +25,6 @@ import java.util.List;
 
 public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem, TypeFactory> implements BottomSheetImageReviewSlider.Callback, GalleryView {
 
-    private static final int SPAN_COUNT = 3;
-
     private ReviewGalleryPresenter presenter;
     private ImageReviewGalleryActivity imageReviewGalleryActivity;
 
@@ -106,18 +104,6 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
     public void handleErrorResult(Throwable e) {
         showGetListError(e);
         imageReviewGalleryActivity.getBottomSheetImageReviewSlider().onLoadDataFailed();
-    }
-
-    @Override
-    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return SPAN_COUNT;
-            }
-        });
-        return gridLayoutManager;
     }
 
     @Override
