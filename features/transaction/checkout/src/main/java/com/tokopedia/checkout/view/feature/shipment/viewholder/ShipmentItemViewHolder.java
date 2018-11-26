@@ -332,7 +332,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
         mActionListener.onNeedUpdateRequestData();
         mActionListener.onPurchaseProtectionChangeListener(getAdapterPosition());
-//        mActionListener.onNeedUpdateViewItem(getAdapterPosition());
     }
 
     @Override
