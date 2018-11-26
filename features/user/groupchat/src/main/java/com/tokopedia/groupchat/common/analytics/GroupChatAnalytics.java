@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +58,7 @@ public class GroupChatAnalytics {
     private static final String EVENT_NAME_PROMO_CLICK = "promoClick";
     private static final String EVENT_NAME_PROMO_VIEW = "promoView";
     private static final String EVENT_NAME_CLICK_BACK = "clickBack";
-    private static final String EVENT_NAME_INTERNAL_PROMOTION = "internalPromotion";
+    private static final String EVENT_NAME_INTERNAL_PROMOTION = "InternalPromotion";
 
 
     public static final String COMPONENT_FLASH_SALE = "flashsale";
@@ -107,11 +106,11 @@ public class GroupChatAnalytics {
         );
     }
 
-    public void eventClickShare() {
+    public void eventClickShare(String channelId) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_SHARE,
-                ""
+                channelId
         );
     }
 
@@ -123,18 +122,49 @@ public class GroupChatAnalytics {
         );
     }
 
-    public void eventClickJoin() {
+    public void eventClickJoin(String channelId) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_JOIN_VOTE_NOW,
-                ""
+                channelId
         );
     }
 
     public void eventClickThumbnail(String id) {
-        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+        analyticTracker.sendEventTracking(EE_PROMO_CLICK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_THUMBNAIL,
+                id
+        );
+    }
+
+    public void eventClickBanner(String channelLabel) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_BANNER),
+                channelLabel
+        );
+    }
+    public void eventViewBanner(String channelLabel) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_BANNER),
+                channelLabel
+        );
+    }
+
+    public void eventViewFlashSale(String id) {
+        analyticTracker.sendEventTracking(EE_PROMO_CLICK,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_FLASH_SALE),
+                id
+        );
+    }
+
+    public void eventClickFlashSale(String id) {
+        analyticTracker.sendEventTracking(EE_PROMO_CLICK,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                String.format("%s%s", EVENT_ACTION_CLICK_COMPONENT, COMPONENT_FLASH_SALE),
                 id
         );
     }
@@ -153,11 +183,11 @@ public class GroupChatAnalytics {
         );
     }
 
-    public void eventClickLoyaltyWidget(String channelName) {
+    public void eventClickLoyaltyWidget() {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_LOYALTY_WIDGET,
-                channelName
+                ""
         );
     }
 
@@ -222,27 +252,27 @@ public class GroupChatAnalytics {
         return map;
     }
 
-    public void eventUserExit(String channelName) {
+    public void eventUserExit(String channelLabel) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_BACK,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_LEAVE_ROOM,
-                ""
+                channelLabel
         );
     }
 
-    public void eventClickQuickReply(String channelId) {
+    public void eventClickQuickReply(String channelLabel) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on quick reply component",
-                channelId
+                channelLabel
         );
     }
 
-    public void eventClickAdminPinnedMessage(String channelId) {
+    public void eventClickAdminPinnedMessage(String channelLabel) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on admin pinned message",
-                channelId
+                channelLabel
         );
     }
 
@@ -254,12 +284,12 @@ public class GroupChatAnalytics {
         );
     }
 
-    public void eventViewBannerPushPromo(ImageAnnouncementViewModel messageItem) {
+    public void eventViewBannerPushPromo(String channelLabel) {
         analyticTracker.sendEventTracking(
                 EVENT_NAME_INTERNAL_PROMOTION,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view banner push promo",
-                messageItem.getMessageId()
+                channelLabel
         );
     }
 
@@ -280,11 +310,11 @@ public class GroupChatAnalytics {
     }
 
 
-    public void eventActionClickVoteInfo() {
+    public void eventActionClickVoteInfo(String channelLabel) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_VOTE_INFO,
-                ""
+                channelLabel
         );
     }
 
