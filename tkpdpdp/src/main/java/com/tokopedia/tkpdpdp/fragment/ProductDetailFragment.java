@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.net.Uri;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
@@ -661,7 +662,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageReviewGalleryActivity.moveTo(getActivity());
+                ImageReviewGalleryActivity.moveTo(getActivity(), 266635420);
                 /*
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
@@ -671,6 +672,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 getUserId());
                     }
                 }*/
+            }
+        });
+        fabWishlist.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("tokopedia://product/266635420/imagereview"));
+                startActivity(intent);
+                return true;
             }
         });
     }
