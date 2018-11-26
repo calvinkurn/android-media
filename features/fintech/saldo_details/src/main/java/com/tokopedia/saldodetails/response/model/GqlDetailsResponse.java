@@ -90,8 +90,8 @@ public class GqlDetailsResponse implements Parcelable {
         this.popupTitle = in.readString();
         this.popupDesc = in.readString();
         this.popupButtonText = in.readString();
-        in.readList(this.infoList, (GqlInfoListResponse.class.getClassLoader()));
-        in.readList(this.anchorList, (GqlAnchorListResponse.class.getClassLoader()));
+        infoList = in.createTypedArrayList(GqlInfoListResponse.CREATOR);
+        anchorList = in.createTypedArrayList(GqlAnchorListResponse.CREATOR);
     }
 
 
