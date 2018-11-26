@@ -24,6 +24,7 @@ public class AccountConstants {
         public static final String PROFILE = "profile";
         public static final String TOKOPOINTS = "tokopoints";
         public static final String MY_COUPON = "kupon saya";
+        public static final String LOAN = "modal usaha";
         public static final String PEMBELI = "pembeli";
         public static final String CLICK_CHALLENGE = "challenge";
         public static final String PENJUAL = "penjual";

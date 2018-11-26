@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.LOAN;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
@@ -169,6 +170,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0")) {
             InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
             infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
+            infoCardViewModel.setTitleTrack(PENJUAL);
+            infoCardViewModel.setSectionTrack(LOAN);
+            infoCardViewModel.setItemTrack(LOAN);
             infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
             infoCardViewModel.setSecondaryText(String.format("%s %s", context.getString(R.string.label_menu_loan), mitraTopperMaxLoan));
             infoCardViewModel.setApplink(AccountConstants.Navigation.MITRA_TOPPERS);
