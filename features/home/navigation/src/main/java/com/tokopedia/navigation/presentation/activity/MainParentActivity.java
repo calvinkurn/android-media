@@ -748,23 +748,42 @@ public class MainParentActivity extends BaseActivity implements
 
                     Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
                     productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
+                            .setRank(0)
                             .build();
                     shortcutInfos.add(productShortcut);
 
+                    if (userSession.isLoggedIn()) {
+                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
+                        wishlistIntent.setAction(Intent.ACTION_VIEW);
+                        wishlistIntent.putExtras(args);
+
+                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                                .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
+                                .setIntents(new Intent[]{intentHome, wishlistIntent})
+                                .setRank(1)
+                                .build();
+                        shortcutInfos.add(wishlistShortcut);
+                    }
+
                     Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
                     digitalIntent.setAction(Intent.ACTION_VIEW);
+                    digitalIntent.putExtras(args);
 
                     ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
+                            .setRank(2)
                             .build();
                     shortcutInfos.add(digitalShortcut);
 
@@ -784,24 +803,13 @@ public class MainParentActivity extends BaseActivity implements
                         ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
+                                .setRank(3)
                                 .build();
                         shortcutInfos.add(shopShortcut);
-
-                        if (((GlobalNavRouter) getApplication()).getBooleanRemoteConfig(GlobalNavConstant.APP_SHOW_REFERRAL_BUTTON, false)) {
-                            Intent referralIntent = ((GlobalNavRouter) getApplication()).getReferralIntent(this);
-                            referralIntent.setAction(Intent.ACTION_VIEW);
-
-                            ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
-                                    .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                    .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                    .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                                    .setIntents(new Intent[]{intentHome, referralIntent})
-                                    .build();
-                            shortcutInfos.add(referralShortcut);
-                        }
                     }
+
                     shortcutManager.addDynamicShortcuts(shortcutInfos);
                 }
             } catch (SecurityException e) {
