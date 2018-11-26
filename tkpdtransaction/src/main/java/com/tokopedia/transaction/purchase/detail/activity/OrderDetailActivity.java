@@ -374,7 +374,7 @@ public class OrderDetailActivity extends TActivity
         }
 
         String protectionLabelStr = String.format(Locale.US,
-                "Biaya Proteksi Gadget (%d barang)", data.getTotalProtectionItem());
+                getString(R.string.protection_count_label), data.getTotalProtectionItem());
         protectionLabel.setText(protectionLabelStr);
         protectionFee.setText(data.getTotalProtectionFee());
     }
