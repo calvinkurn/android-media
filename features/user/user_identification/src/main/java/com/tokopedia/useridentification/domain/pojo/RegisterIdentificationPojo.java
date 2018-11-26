@@ -4,19 +4,20 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author by nisie on 13/11/18.
+ * @author by alvinatin on 23/11/18.
  */
-public class UploadIdentificationPojo {
+
+public class RegisterIdentificationPojo {
 
     @Expose
-    @SerializedName("kycUpload")
-    private KycUpload kycUpload;
+    @SerializedName("kycRegister")
+    private KycRegister kycRegister;
 
-    public KycUpload getKycUpload() {
-        return kycUpload;
+    public KycRegister getKycRegister() {
+        return kycRegister;
     }
 
-    public class KycUpload {
+    public class KycRegister {
         @Expose
         @SerializedName("isSuccess")
         private int isSuccess;

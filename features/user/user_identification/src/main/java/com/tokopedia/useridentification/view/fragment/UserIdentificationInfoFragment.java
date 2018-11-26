@@ -163,6 +163,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void showStatusPending() {
         ImageHandler.LoadImage(image, KycUrl.ICON_WAITING);
+        button.setVisibility(View.GONE);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
     }
