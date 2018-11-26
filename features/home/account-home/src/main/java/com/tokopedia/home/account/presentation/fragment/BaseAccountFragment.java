@@ -306,4 +306,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
         accountAnalytics.eventClickActivationOvoMyAccount();
     }
+
+    @Override
+    public void onTickerClosed() {
+
+    }
 }
