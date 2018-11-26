@@ -61,6 +61,7 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheetListener;
+import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -1488,7 +1489,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
-            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, null, null, cartItemPosition);
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+            List<ShopShipment> shopShipments = shipmentCartItemModel.getShopShipmentList();
+            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, shipmentCartItemModel, shopShipments, cartItemPosition);
         } else {
             if (recommendedCourier.isUsePinPoint()
                     && (recipientAddressModel.getLatitude() == null ||
@@ -1729,6 +1732,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
         }
         return false;
+    }
+
+    @Override
+    public void onPurchaseProtectionLogicError() {
+        String message = getString(R.string.error_dropshipper);
+        showToastError(message);
+    }
+
+    @Override
+    public void onPurchaseProtectionChangeListener(int position) {
+        shipmentAdapter.updateShipmentCostModel();
+        shipmentAdapter.updateItemAndTotalCost(position);
+        shipmentAdapter.updateInsuranceTncVisibility();
+    }
+
+    @Override
+    public void navigateToProtectionMore(String url) {
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
+        startActivity(intent);
     }
 
     public int getResultCode() {

@@ -784,6 +784,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 .setOrderQuantity(selectedQuantity)
                 .setSkipToCart(source.equals(SOURCE_BUTTON_BUY_VARIANT) || source.equals(SOURCE_BUTTON_BUY_PDP))
                 .setSourceAtc(source)
+                .setBigPromo(productData.isBigPromo())
                 .build();
 
         if (!productData.getBreadcrumb().isEmpty()) {
@@ -1692,7 +1693,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             return;
         }
         if (getActivity() != null && productData != null &&
-                !voucherListPresenter.isMyShop(productData.getShopInfo().getShopId())){
+                !voucherListPresenter.isMyShop(productData.getShopInfo().getShopId())) {
             ProductPageTracking.eventImpressionMerchantVoucherUse(getActivity(), merchantVoucherViewModelList);
         }
         merchantVoucherListWidget.setData(merchantVoucherViewModelList);
@@ -2270,10 +2271,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
-        if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
-            Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                    .getCheckoutIntent(getActivity());
-            startActivity(intent);
+        if (productData != null && getActivity() != null &&
+                getActivity().getApplicationContext() instanceof PdpRouter) {
+            if (productData.isBigPromo()) {
+                Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                        .getCartIntent(getActivity());
+                startActivity(intent);
+            } else {
+                Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                        .getCheckoutIntent(getActivity());
+                startActivity(intent);
+            }
         }
     }
 

@@ -6,34 +6,38 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class CatalogCategory implements Parcelable {
-    @Expose
     @SerializedName("id")
     private int id;
 
-    @Expose
+    @SerializedName("parentID")
+    private int parentID;
+
     @SerializedName("name")
     private String name;
 
-    @Expose
     @SerializedName("imageID")
     private String imageId;
 
-    @Expose
     @SerializedName("imageURL")
     private String imageUrl;
 
-    @Expose
-    @SerializedName("index")
-    private int index;
+    @SerializedName("slug")
+    private String slug;
 
-    @Expose
     @SerializedName("timeRemainingSeconds")
     private long timeRemainingSeconds;
 
-    @Expose
     @SerializedName("isSelected")
     private boolean isSelected;
+
+    @SerializedName("isHideSubCategory")
+    private boolean isHideSubCategory;
+
+    @SerializedName("subCategory")
+    List<CatalogSubCategory> subCategory;
 
     public CatalogCategory() {
 
@@ -87,22 +91,50 @@ public class CatalogCategory implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public int getIndex() {
-        return index;
+    public int getParentID() {
+        return parentID;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setParentID(int parentID) {
+        this.parentID = parentID;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public boolean isHideSubCategory() {
+        return isHideSubCategory;
+    }
+
+    public void setHideSubCategory(boolean hideSubCategory) {
+        isHideSubCategory = hideSubCategory;
+    }
+
+    public List<CatalogSubCategory> getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(List<CatalogSubCategory> subCategory) {
+        this.subCategory = subCategory;
     }
 
     @Override
     public String toString() {
         return "CatalogCategory{" +
                 "id=" + id +
+                ", parentID=" + parentID +
                 ", name='" + name + '\'' +
                 ", imageId='" + imageId + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", index=" + index +
+                ", slug='" + slug + '\'' +
+                ", timeRemainingSeconds=" + timeRemainingSeconds +
+                ", isSelected=" + isSelected +
+                ", isHideSubCategory=" + isHideSubCategory +
                 '}';
     }
 
@@ -114,20 +146,24 @@ public class CatalogCategory implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
-        parcel.writeInt(index);
         parcel.writeString(name);
         parcel.writeString(imageId);
         parcel.writeString(imageUrl);
         parcel.writeLong(timeRemainingSeconds);
+        parcel.writeString(slug);
+        parcel.writeInt(parentID);
+        parcel.writeByte((byte) (isSelected ? 1 : 0));
+        parcel.writeByte((byte) (isHideSubCategory ? 1 : 0));
     }
 
     private CatalogCategory(Parcel in) {
         this.id = in.readInt();
-        index = in.readInt();
         name = in.readString();
         imageId = in.readString();
         imageUrl = in.readString();
         timeRemainingSeconds = in.readLong();
+        isSelected = in.readByte() != 0;
+        isHideSubCategory = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

@@ -15,6 +15,8 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
     private String shopImageUrl;
     private Boolean isGoldMerchant;
     private String reputationImageUrl;
+    private String verificationStatusName;
+    private int verificationStatus;
 
     public String getShopId() {
         return shopId;
@@ -64,6 +66,22 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.reputationImageUrl = reputationImageUrl;
     }
 
+    public String getVerificationStatusName() {
+        return verificationStatusName;
+    }
+
+    public void setVerificationStatusName(String verificationStatusName) {
+        this.verificationStatusName = verificationStatusName;
+    }
+
+    public int getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(int verificationStatus) {
+        this.verificationStatus = verificationStatus;
+    }
+
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -85,6 +103,9 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
         dest.writeString(this.shopImageUrl);
         dest.writeValue(this.isGoldMerchant);
         dest.writeString(this.reputationImageUrl);
+        dest.writeString(this.verificationStatusName);
+        dest.writeInt(this.verificationStatus);
+
     }
 
     protected ShopCardViewModel(Parcel in) {
@@ -94,6 +115,8 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.shopImageUrl = in.readString();
         this.isGoldMerchant = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.reputationImageUrl = in.readString();
+        this.verificationStatusName = in.readString();
+        this.verificationStatus = in.readInt();
     }
 
     public static final Creator<ShopCardViewModel> CREATOR = new Creator<ShopCardViewModel>() {

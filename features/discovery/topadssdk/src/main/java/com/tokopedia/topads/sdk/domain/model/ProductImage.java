@@ -26,13 +26,16 @@ public class ProductImage implements Parcelable {
     private String s_url;
     @SerializedName(KEY_XS_URL)
     private String xs_url;
-    @SerializedName(value = KEY_M_ECS, alternate = KEY_S_ECS)
+    @SerializedName(KEY_M_ECS)
     private String m_ecs;
     @SerializedName(KEY_S_ECS)
     private String s_ecs;
     @SerializedName(KEY_XS_ECS)
     private String xs_ecs;
     private boolean impressed;
+
+    public ProductImage() {
+    }
 
     public ProductImage(JSONObject object) throws JSONException {
         if (!object.isNull(KEY_M_URL)) {

@@ -93,6 +93,9 @@ public class MainParentActivity extends BaseActivity implements
     private static final int EXIT_DELAY_MILLIS = 2000;
     private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     public static final String DEFAULT_NO_SHOP = "0";
+    public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
 
     private static final String SHORTCUT_BELI_ID = "Beli";
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
@@ -119,6 +122,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
+    private BroadcastReceiver newFeedClickedReceiver;
 
     private Handler handler = new Handler();
 
@@ -235,6 +239,7 @@ public class MainParentActivity extends BaseActivity implements
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
         initHockeyBroadcastReceiver();
+        initNewFeedClickReceiver();
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -266,6 +271,7 @@ public class MainParentActivity extends BaseActivity implements
     protected void onPause() {
         super.onPause();
         unregisterBroadcastHockeyApp();
+        unRegisterNewFeedClickedReceiver();
     }
 
     @Override
@@ -315,7 +321,6 @@ public class MainParentActivity extends BaseActivity implements
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
             if (!presenter.isUserLogin())
                 return false;
-
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
@@ -387,6 +392,7 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
 
         registerBroadcastHockeyApp();
+        registerNewFeedClickedReceiver();
 
         if(!((BaseMainApplication)getApplication()).checkAppSignature()){
             finish();
@@ -438,7 +444,14 @@ public class MainParentActivity extends BaseActivity implements
         this.notification = notification;
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-
+        if (notification.getHaveNewFeed()) {
+            bottomNavigation.setNotification(-1, FEED_MENU);
+            Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        } else {
+            bottomNavigation.setNotification(0, FEED_MENU);
+        }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
@@ -657,6 +670,31 @@ public class MainParentActivity extends BaseActivity implements
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
+
+    private void initNewFeedClickReceiver() {
+        newFeedClickedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
+                    boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
+                    if (isHaveNewFeed) {
+                        bottomNavigation.setNotification(0, FEED_MENU);
+                    }
+                }
+            }
+        };
+    }
+
+    private void registerNewFeedClickedReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BROADCAST_FEED);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(newFeedClickedReceiver, intentFilter);
+    }
+
+    private void unRegisterNewFeedClickedReceiver() {
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
+    }
+
 
     @Override
     public void onCartEmpty(String autoApplyMessage) {

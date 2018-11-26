@@ -98,10 +98,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         }
 
         if (TextUtils.isEmpty(item.getMinimumUsage())) {
-            holder.tvMinTxnLabel.setPadding(0,(int)holder.tvMinTxnLabel.getResources().getDimension(R.dimen.dp_13),0,0);
             holder.tvMinTxnValue.setVisibility(View.GONE);
         } else {
-            holder.tvMinTxnLabel.setPadding(0,0,0,0);
             holder.tvMinTxnValue.setVisibility(View.VISIBLE);
             holder.tvMinTxnValue.setText(item.getMinimumUsage());
         }

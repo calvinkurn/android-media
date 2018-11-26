@@ -50,7 +50,7 @@ public class MakeLoginPojo {
     private String userImage = "";
     @SerializedName("security")
     @Expose
-    private SecurityPojo securityPojo;
+    private SecurityPojo securityPojo = new SecurityPojo();
 
     public int getShopIsGold() {
         return shopIsGold;

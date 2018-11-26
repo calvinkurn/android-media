@@ -3014,12 +3014,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         actionNavigateByApplinksUrl(activity, applinks, bundle);
     }
 
-    @Override
-    public String getResultSelectionPath(Intent data) {
-        MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-        return item.getRealPath();
-    }
-
     public void onShowRationale(Context context, PermissionRequest request, String permission) {
         RequestPermissionUtil.onShowRationale(context, request, permission);
     }
