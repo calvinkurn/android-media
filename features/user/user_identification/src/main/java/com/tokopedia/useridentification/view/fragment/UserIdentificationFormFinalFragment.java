@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
@@ -156,8 +155,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         File ktpFile = new File(imagePath);
         if (ktpFile.exists()) {
             ImageHandler.loadImageFromFile(getContext(), imageKtp, ktpFile);
-        } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -165,8 +162,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         File faceFile = new File(imagePath);
         if (faceFile.exists()) {
             ImageHandler.loadImageFromFile(getContext(), imageFace, faceFile);
-        } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -196,8 +191,6 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 default:
                     break;
             }
-        } else {
-            Toast.makeText(getContext(), "Terjadi kesalahan", Toast.LENGTH_LONG).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

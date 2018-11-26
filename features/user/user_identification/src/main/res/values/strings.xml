@@ -50,4 +50,6 @@
     <string name="error_upload_image_kyc">Terjadi kesalahan. Mohon coba beberapa saat lagi
         (%s)</string>
 
+    <string name="camera_recapture_text">Foto Ulang</string>
+    <string name="camera_next_button">Lanjut</string>
 </resources>
