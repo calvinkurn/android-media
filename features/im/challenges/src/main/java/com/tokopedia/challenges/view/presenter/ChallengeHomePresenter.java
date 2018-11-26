@@ -49,6 +49,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 if (!isViewAttached()) return;
                 e.printStackTrace();
                 getView().removeProgressBarView();
+                getView().setSwipeRefreshing();
                 getView().showErrorNetwork(
                         ErrorHandler.getErrorMessage(getView().getActivity(), e));
             }
@@ -64,7 +65,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 } else {
                     getView().renderEmptyList();
                 }
-
+                getView().setSwipeRefreshing();
             }
         });
     }
@@ -88,6 +89,9 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
             public void onError(Throwable e) {
                 if (!isViewAttached()) return;
                 getView().removeProgressBarView();
+                getView().setSwipeRefreshing();
+                getView().showErrorNetwork(
+                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
                 e.printStackTrace();
             }
 
@@ -102,6 +106,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                     getView().renderEmptyList();
                 }
                 getView().removeProgressBarView();
+                getView().setSwipeRefreshing();
             }
         });
     }

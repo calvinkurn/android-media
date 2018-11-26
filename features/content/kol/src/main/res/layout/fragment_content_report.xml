@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/mainView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16"
+            tools:ignore="UselessParent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="@dimen/sp_8"
+                android:text="@string/kol_help_understand"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/reasonRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:reverseLayout="false"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_report_reason" />
+
+            <com.tokopedia.design.component.EditTextCompat
+                android:id="@+id/reasonInput"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/reason_input_left"
+                android:layout_marginLeft="@dimen/reason_input_left"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:hint="@string/kol_reason_here"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/sendBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="0dp"
+                android:enabled="false"
+                android:text="@string/button_send"
+                android:textAllCaps="false"
+                app:buttonCompatSize="big"
+                app:buttonCompatType="primary"
+                tools:ignore="UnusedAttribute" />
+        </LinearLayout>
+    </FrameLayout>
+</android.support.v4.widget.NestedScrollView>
