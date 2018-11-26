@@ -8,6 +8,7 @@ public interface KYCConstant {
     String ERROR_STATUS_UNKNOWN = "1001";
     String ERROR_MESSAGE_EMPTY = "1002";
     String ERROR_UPLOAD_IMAGE = "1003";
+    String UNHANDLED_RESPONSE = "1004";
 
     int KYC_PROJECT_ID = 1;
 

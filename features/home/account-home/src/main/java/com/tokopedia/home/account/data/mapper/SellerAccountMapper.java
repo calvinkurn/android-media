@@ -79,7 +79,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
-        setKyctoModel(shopCard, accountModel);
+        setKycToModel(shopCard, accountModel);
         if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
             shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
         }
@@ -245,7 +245,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
     }
 
-    private void setKyctoModel(ShopCardViewModel shopCard, AccountModel accountModel) {
+    private void setKycToModel(ShopCardViewModel shopCard, AccountModel accountModel) {
         if (shopCard != null && accountModel != null && accountModel.getKycStatusPojo() != null) {
 
             if (accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null

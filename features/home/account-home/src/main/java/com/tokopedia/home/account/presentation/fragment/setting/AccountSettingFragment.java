@@ -44,13 +44,13 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private UserSession userSession;
     private AccountAnalytics accountAnalytics;
 
-    View personalDataMenu;
-    View addressMenu;
-    View passwordMenu;
-    View kycSeparator;
-    View kycMenu;
-    View mainView;
-    ProgressBar progressBar;
+    private View personalDataMenu;
+    private View addressMenu;
+    private View passwordMenu;
+    private View kycSeparator;
+    private View kycMenu;
+    private View mainView;
+    private ProgressBar progressBar;
 
     @Inject
     AccountSetting.Presenter presenter;
