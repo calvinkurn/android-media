@@ -8,6 +8,7 @@ ext {
     tkpdContactUsVersion = '2.22'
     tkpdCoreVersion = '2.23'
     tkpdDealsVersion = '2.22'
+    tkpdDeveloperOptions = '2.22'
     tkpdDigitalVersion = '2.22'
     tkpdDiscoveryVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
@@ -121,6 +122,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     features = [
             nps                    : ":features:common:nps",
+            developerOptions       : ":features:common:developer_options",
 
             feed                        : ":features:content:feed",
             explore                     : ":features:content:explore",

@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:developer_options"
 
 include "features:content:affiliate"
 //include "features:content:affiliate_no_op"

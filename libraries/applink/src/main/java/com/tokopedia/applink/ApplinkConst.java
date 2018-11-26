@@ -138,6 +138,7 @@ public interface ApplinkConst {
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
+    String SETTING_DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts/{type}";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";

@@ -30,6 +30,7 @@ public interface ReactConst {
         String CONTENT_DETAIL = "content-detail";
         String BRANDLIST_PAGE = "brandlist-page";
         String HOW_TO_PAY = "how-to-pay";
+        String DEV_OPTIONS = "dev-options-rn";
     }
 
     interface EventEmitter{
