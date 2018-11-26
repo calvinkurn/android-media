@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.dashboard.di;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -48,6 +49,8 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
+
+import javax.annotation.Resource;
 
 import dagger.Module;
 import dagger.Provides;
@@ -222,5 +225,11 @@ public class SellerDashboardModule {
     @Provides
     CacheApiClearAllUseCase provideCacheApiClearAllUseCase() {
         return new CacheApiClearAllUseCase();
+    }
+
+    @SellerDashboardScope
+    @Provides
+    Resources provideResources(@ApplicationContext Context context){
+        return context.getResources();
     }
 }

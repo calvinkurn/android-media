@@ -18,10 +18,12 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.model.NotificationResolutionModel;
 import com.tokopedia.navigation_common.model.NotificationSellerOrderModel;
+import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,11 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
     private SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
+
+        TickerViewModel tickerViewModel = parseTickerSeller(context, accountModel);
+        if (tickerViewModel != null && !tickerViewModel.getListMessage().isEmpty()) {
+            items.add(tickerViewModel);
+        }
 
         if(accountModel.getShopInfo() != null && accountModel.getShopInfo().getInfo() != null) {
             items.add(getShopInfoMenu(accountModel));
@@ -172,7 +179,40 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private SellerViewModel getEmptySellerModel(){
+    private TickerViewModel parseTickerSeller(Context context, AccountModel accountModel) {
+        TickerViewModel sellerTickerModel = new TickerViewModel(new ArrayList<>());
+
+        if (accountModel.getKycStatusPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
+            sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
+        }
+
+        return sellerTickerModel;
+
+    }
+
+    private void setKycToModel(ShopCardViewModel shopCard, AccountModel accountModel) {
+        if (shopCard != null && accountModel != null && accountModel.getKycStatusPojo() != null) {
+
+            if (accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
+                    && accountModel.getKycStatusPojo()
+                    .getKycStatusDetailPojo().getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS) {
+                shopCard.setVerificationStatus(accountModel.getKycStatusPojo()
+                        .getKycStatusDetailPojo().getStatus());
+                shopCard.setVerificationStatusName(accountModel.getKycStatusPojo()
+                        .getKycStatusDetailPojo().getStatusName());
+            } else {
+                shopCard.setVerificationStatus(KYCConstant.STATUS_ERROR);
+                shopCard.setVerificationStatusName("");
+            }
+        }
+    }
+
+    private SellerViewModel getEmptySellerModel() {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
