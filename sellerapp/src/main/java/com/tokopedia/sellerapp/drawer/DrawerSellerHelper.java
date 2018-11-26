@@ -35,7 +35,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.flashsale.management.view.activity.CampaignActivity;
+import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
@@ -112,7 +112,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getProductMenu());
 
         data.add(getPaymentAndTopupMenu());
-        data.add(((SellerDrawerAdapter)adapter).getGoldMerchantMenu(false));
+        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu(false));
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -412,7 +412,10 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
-                    context.startActivity(CampaignActivity.createIntent(context));
+                    if (context.getApplication() instanceof FlashSaleRouter) {
+                        intent = ((FlashSaleRouter) context.getApplication()).getFlashSaleDashboardIntent(context);
+                        context.startActivity(intent);
+                    }
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                     if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {

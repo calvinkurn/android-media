@@ -11,6 +11,7 @@ include "features:content:kol_common"
 include "features:digital:digitalproduct"
 
 include "features:discovery:flashsale_management"
+//include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'
 include "features:discovery:wishlist_common"
 include "features:discovery:topadssdk"

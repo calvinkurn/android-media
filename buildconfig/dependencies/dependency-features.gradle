@@ -131,6 +131,7 @@ ext {
             train                       : ":features:digital:train",
 
             flashsaleManagement         : ":features:discovery:flashsale_management",
+//            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon   : ":features:discovery:flashsale_management_common",
             home                        : ":features:discovery:home",
             recentview                  : ":features:discovery:recentview",
