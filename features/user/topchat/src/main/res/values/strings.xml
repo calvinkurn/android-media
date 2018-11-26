@@ -79,8 +79,9 @@ yang ditemukan</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
     <string name="chat_promotion_text">Chat Promosi</string>
     <string name="chat_information_text">Berisi informasi promo, notifikasi harga, dan penawaran menarik lainnya</string>
-    <string name="chat_promotion_blocked_validity">Anda berhenti menerima chat promosi dari Modo Store hingga %s</string>
+    <string name="chat_promotion_blocked_validity">Anda berhenti menerima chat promosi dari <b>%s</b> hingga %s</string>
     <string name="chat_personal_text">Chat Personal</string>
     <string name="chat_personal_info_text">Berisi tanggapan langsung dari penjual atas pertanyaan Anda</string>
-    <string name="chat_personal_blocked_validity">Anda berhenti menerima chat personal dari Modo Store hingga %s</string>
+    <string name="chat_personal_blocked_validity">Anda berhenti menerima chat personal dari <b>%s</b> hingga %s</string>
+    <string name="enable_chat_settings">Kembali Menerima Chat</string>
 </resources>

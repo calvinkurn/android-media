@@ -210,6 +210,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private boolean isChatBot;
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
+    private String role= "";
+    private String senderName= "";
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -230,6 +232,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             title = getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME, "");
             avatarImage = getArguments().getString(InboxMessageConstant.PARAM_SENDER_IMAGE, "");
+            role = getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "");
+            senderName = getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME, "");
             boolean isChatBotArguments = getArguments().getString(TkpdInboxRouter.IS_CHAT_BOT,
                     "false").equals("true");
             isChatBot = (getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false) ||
@@ -295,7 +299,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         isChatEnabled = true;
         sendMessageLayout.setVisibility(View.VISIBLE);
         chatBlockLayout.setVisibility(View.GONE);
-        ToasterNormal.show(getActivity(), "Anda berhasil menerima chat dari Modo Store");
+        ToasterNormal.show(getActivity(), "Anda berhasil menerima semua chat dari Modo Store");
         chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
     }
 
@@ -715,29 +719,61 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 label.setVisibility(View.GONE);
             }
 
-            toolbar.setOnClickListener(new View.OnClickListener() {
+            avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
-                    if (TextUtils.isEmpty(senderId)) {
-                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
-                    }
-                    TrackingUtils.sendGTMEvent(
-                            new EventTracking(
-                                    "clickInboxChat",
-                                    "message room",
-                                    "click header - shop icon",
-                                    ""
-                            ).getEvent()
-                    );
-                    presenter.onGoToDetail(senderId,
-                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
-                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
+                public void onClick(View view) {
+                    openProfilePage();
+                }
+            });
+            user.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openProfilePage();
                 }
             });
 
+//            toolbar.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
+//                    if (TextUtils.isEmpty(senderId)) {
+//                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+//                    }
+//                    TrackingUtils.sendGTMEvent(
+//                            new EventTracking(
+//                                    "clickInboxChat",
+//                                    "message room",
+//                                    "click header - shop icon",
+//                                    ""
+//                            ).getEvent()
+//                    );
+//                    presenter.onGoToDetail(senderId,
+//                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
+//                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
+//                }
+//            });
+
             setOnlineDesc(lastOnline, isOnline);
         }
+    }
+
+
+    private void openProfilePage() {
+        String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
+        if (TextUtils.isEmpty(senderId)) {
+            senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+        }
+        TrackingUtils.sendGTMEvent(
+                new EventTracking(
+                        "clickInboxChat",
+                        "message room",
+                        "click header - shop icon",
+                        ""
+                ).getEvent()
+        );
+        presenter.onGoToDetail(senderId,
+                getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
+                getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
     }
 
     @Override
@@ -1015,11 +1051,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case REQUEST_CODE_CHAT_SETTINGS:
                 if(resultCode == RESULT_CODE_CHAT_SETTINGS_ENABLED){
                     sendMessageLayout.setVisibility(View.VISIBLE);
+                    templateRecyclerView.setVisibility(View.VISIBLE);
                     chatBlockLayout.setVisibility(View.GONE);
                 }else if(resultCode == RESULT_CODE_CHAT_SETTINGS_DISABLED) {
                     sendMessageLayout.setVisibility(View.GONE);
+                    templateRecyclerView.setVisibility(View.GONE);
                     chatBlockLayout.setVisibility(View.VISIBLE);
                 }
+                presenter.initialChatSettings();
                 break;
             default:
                 break;
@@ -1594,7 +1633,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         String profileText = getString(R.string.follow_store);
         if (isFavorited) profileText = getString(R.string.already_follow_store);
 
-        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
+//        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
         if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_add_grey));
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
         listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
@@ -1653,6 +1692,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     intent.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID));
                     intent.putExtra("ChatResponseModel", chatSettingsResponse);
                     intent.putExtra("isChatEnabled", isChatEnabled);
+                    intent.putExtra("chatRole", role);
+                    intent.putExtra("senderName", senderName);
                     chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
                     startActivityForResult(intent, REQUEST_CODE_CHAT_SETTINGS);
                 }
@@ -1724,9 +1765,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         this.chatSettingsResponse = chatSettingsResponse;
         if (isVisible) {
             sendMessageLayout.setVisibility(View.GONE);
+            templateRecyclerView.setVisibility(View.GONE);
             chatBlockLayout.setVisibility(View.VISIBLE);
         } else {
             sendMessageLayout.setVisibility(View.VISIBLE);
+            templateRecyclerView.setVisibility(View.VISIBLE);
             chatBlockLayout.setVisibility(View.GONE);
         }
     }

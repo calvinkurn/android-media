@@ -191,6 +191,7 @@
             android:layout_marginBottom="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_16"
             android:padding="@dimen/dp_8"
+            android:visibility="gone"
             android:layout_marginRight="@dimen/dp_16"
             android:background="@drawable/border_green_reputation">
 
@@ -210,7 +211,7 @@
                 android:textSize="12sp"
                 android:textColor="@color/tkpd_main_green"
                 android:layout_below="@+id/anda"
-                android:text="Kembali Menerima Chat"
+                android:text="@string/enable_chat_settings"
                 />
 
 

@@ -25,6 +25,8 @@ public interface ChatSettingsInterface {
         void setPersonalInfoViewVisibility(boolean isVisible);
 
         void setPromotionalInfoViewVisibility(boolean isVisible);
+
+        void setChatSettingsVisibility(String chatRole);
     }
 
     interface Presenter extends CustomerPresenter<View> {

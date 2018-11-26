@@ -4,8 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -30,12 +33,14 @@ import javax.inject.Inject;
 public class ChatRoomSettingsActivity extends BaseSimpleActivity implements ChatSettingsInterface.View, CompoundButton.OnCheckedChangeListener {
     private Switch chatPromotionSwitch, chatPersonalSwitch;
     private ConstraintLayout chatPromotionInfoView, chatPersonalInfoView;
+    private CardView chatPersonalCardView, chatPromotionalcardView;
     private TextView chatPromotionInfoText, chatPersonalInfoText;
     public static final int RESULT_CODE_CHAT_SETTINGS_ENABLED = 1;
     public static final int RESULT_CODE_CHAT_SETTINGS_DISABLED = 2;
     private Locale mLocale;
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
+    private String chatRole, senderName;
 
 
     @Inject
@@ -49,12 +54,17 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         chatSettingsPresenter.attachView(this);
         this.chatSettingsResponse = getIntent().getParcelableExtra("ChatResponseModel");
         isChatEnabled = getIntent().getBooleanExtra("isChatEnabled", true);
+        chatRole = getIntent().getStringExtra("chatRole");
+        senderName = getIntent().getStringExtra("senderName");
+
+        initView();
+        setChatSettingsVisibility(chatRole);
         chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
         if (isChatEnabled) {
             chatSettingsPresenter.onPersonalChatSettingChange(true);
             chatSettingsPresenter.onPromotionalChatSettingChange(true);
         }
-        initView();
+
     }
 
     protected void initInjector() {
@@ -70,13 +80,10 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         chatPersonalInfoView = findViewById(R.id.chat_personal_layout);
         chatPromotionInfoText = findViewById(R.id.chat_promotion_info);
         chatPersonalInfoText = findViewById(R.id.chat_personal_info);
+        chatPersonalCardView = findViewById(R.id.chat_personal_cardview);
+        chatPromotionalcardView = findViewById(R.id.chat_promotional_cardview);
         chatPersonalSwitch.setOnCheckedChangeListener(this);
         chatPromotionSwitch.setOnCheckedChangeListener(this);
-
-        if (this.chatSettingsResponse != null) {
-            setPersonalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
-            setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
-        }
     }
 
 
@@ -148,12 +155,18 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     public void setPersonalInfoViewVisibility(boolean isVisible) {
         if (!isVisible) {
             chatPersonalSwitch.setChecked(true);
+            if (chatRole.equalsIgnoreCase("Penjual")) {
+                chatPromotionalcardView.setAlpha(0.0f);
+            }
             chatPersonalInfoView.setVisibility(View.GONE);
         } else {
             chatPersonalSwitch.setChecked(false);
             chatPersonalInfoView.setVisibility(View.VISIBLE);
+            if (chatRole.equalsIgnoreCase("Penjual")) {
+                chatPromotionalcardView.setAlpha(0.2f);
+            }
             if (!TextUtils.isEmpty(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())) {
-                chatPersonalInfoText.setText(String.format(getString(R.string.chat_personal_blocked_validity), getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+                chatPersonalInfoText.setText(Html.fromHtml(String.format(getString(R.string.chat_personal_blocked_validity), senderName, getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate()))));
             }
         }
     }
@@ -167,9 +180,31 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
             chatPromotionSwitch.setChecked(false);
             chatPromotionInfoView.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())) {
-                chatPromotionInfoText.setText(String.format(getString(R.string.chat_promotion_blocked_validity), getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+                chatPromotionInfoText.setText(Html.fromHtml(String.format(getString(R.string.chat_promotion_blocked_validity), senderName, getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate()))));
             }
 
+        }
+    }
+
+    @Override
+    public void setChatSettingsVisibility(String chatRole) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) chatPromotionalcardView.getLayoutParams();
+        if (!TextUtils.isEmpty(chatRole)) {
+            if (chatRole.equalsIgnoreCase("Official")) {
+                setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+                chatPromotionalcardView.setVisibility(View.VISIBLE);
+            } else if (chatRole.equalsIgnoreCase("Penjual")) {
+                layoutParams.setMargins(0, 24, 0, 0);
+                chatPromotionalcardView.requestLayout();
+                chatPromotionalcardView.setVisibility(View.VISIBLE);
+                chatPersonalCardView.setVisibility(View.VISIBLE);
+                setPersonalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+                setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+            } else {
+                setPersonalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+                chatPersonalCardView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
