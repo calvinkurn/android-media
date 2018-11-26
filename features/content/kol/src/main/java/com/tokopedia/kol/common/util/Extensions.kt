@@ -81,7 +81,7 @@ fun View.showNormalToaster(errorMessage: String, actionMessage: String?, action:
 }
 
 fun View.showEmptyState(@StringRes errorMessage: Int, action: () -> Unit) {
-    showEmptyState(context.getString(errorMessage), action)
+    this.showEmptyState(context.getString(errorMessage), action)
 }
 
 fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
