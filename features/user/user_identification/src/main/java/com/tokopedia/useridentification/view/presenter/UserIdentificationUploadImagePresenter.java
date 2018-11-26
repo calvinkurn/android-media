@@ -43,17 +43,12 @@ public class UserIdentificationUploadImagePresenter extends
         BaseDaggerPresenter<UserIdentificationUploadImage.View>
         implements UserIdentificationUploadImage.Presenter {
 
-    private static final String DEFAULT_RESOLUTION = "100-square";
     private static final String RESOLUTION_300 = "300";
     private static final String PARAM_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
     private static final String PARAM_RESOLUTION = "param_resolution";
     private static final String DEFAULT_UPLOAD_PATH = "/upload/attachment";
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
-    private static final int MAX_FILE_SIZE = 15360;
-    private static final int MINIMUM_HEIGHT = 100;
-    private static final int MINIMUM_WIDTH = 300;
-    private static final long DEFAULT_ONE_MEGABYTE = 1024;
     private CompositeSubscription compositeSubscription;
 
     private final UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
