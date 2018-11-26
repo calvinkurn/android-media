@@ -508,17 +508,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItemModel.isProtectionAvailable()) {
-            tvPPPMore.setTag(cartItemModel.getProtectionLinkUrl());
+            tvPPPMore.setText(cartItemModel.getProtectionLinkText());
             tvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl());
                 }
             });
-            tvPPPLinkText.setText(cartItemModel.getProtectionLinkText());
-            tvPPPPrice.setText(String.format("%s / barang",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            cartItemModel.getProtectionPricePerProduct(), true)));
+            tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
+            tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
             cbPPP.setChecked(cartItemModel.isProtectionOptIn());
             cbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

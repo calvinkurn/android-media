@@ -200,6 +200,8 @@ public class ShipmentDataConverter {
             cartItemModel.setProtectionAvailable(ppp.isProtectionAvailable());
             cartItemModel.setProtectionPricePerProduct(ppp.getProtectionPricePerProduct());
             cartItemModel.setProtectionPrice(ppp.getProtectionPrice());
+            cartItemModel.setProtectionTitle(ppp.getProtectionTitle());
+            cartItemModel.setProtectionSubTitle(ppp.getProtectionSubtitle());
             cartItemModel.setProtectionLinkText(ppp.getProtectionLinkText());
             cartItemModel.setProtectionLinkUrl(ppp.getProtectionLinkUrl());
             cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());

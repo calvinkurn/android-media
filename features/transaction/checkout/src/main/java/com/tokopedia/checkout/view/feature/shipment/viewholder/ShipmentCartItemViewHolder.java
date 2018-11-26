@@ -107,7 +107,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
 
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if(cartItem.isProtectionAvailable()) {
-            mTvPPPMore.setTag(cartItem.getProtectionLinkUrl());
+            mTvPPPMore.setText(cartItem.getProtectionLinkText());
             mTvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -115,10 +115,8 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
                             String.format("%s?url=%s", ApplinkConst.WEBVIEW, cartItem.getProtectionLinkUrl()));
                 }
             });
-            mTvPPPLinkText.setText(cartItem.getProtectionLinkText());
-            mTvPPPPrice.setText(String.format("%s / barang",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                            cartItem.getProtectionPricePerProduct(), true)));
+            mTvPPPLinkText.setText(cartItem.getProtectionTitle());
+            mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
             mCbPPP.setChecked(cartItem.isProtectionOptIn());
             mCbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
