@@ -20,7 +20,7 @@ public class ReactNativeDeveloperOptionsActivity
         return createScreenLink(
                 ctx,
                 ReactConst.Screen.DEV_OPTIONS,
-                ctx.getString(R.string.react_native_developer_options_log),
+                ctx.getString(R.string.react_native_logger_title),
                 extras);
     }
 
