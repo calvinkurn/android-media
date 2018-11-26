@@ -322,12 +322,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if(shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel){
             ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
             data.getCartItemModels().get(position).setProtectionOptIn(checked);
-            if (checked) {
-                if(cbDropshipper.isChecked() && data.getSelectedShipmentDetailData().getUseDropshipper()){
-                    data.getSelectedShipmentDetailData().setUseDropshipper(false);
-                    cbDropshipper.setChecked(false);
-                    mActionListener.onPurchaseProtectionLogicError();
-                }
+            if (checked && (cbDropshipper.isChecked() && data.getSelectedShipmentDetailData().getUseDropshipper())) {
+                data.getSelectedShipmentDetailData().setUseDropshipper(false);
+                cbDropshipper.setChecked(false);
+                mActionListener.onPurchaseProtectionLogicError();
             }
         }
         mActionListener.onNeedUpdateRequestData();
