@@ -44,6 +44,7 @@
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count">Jumlah</string>
     <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
+    <string name="label_item_count_purchase_protection">Proteksi Gadget (%d Barang)</string>
     <string name="label_item_count_with_format">Harga (%d Barang)</string>
     <string name="label_item_count_without_format">Jumlah Barang</string>
     <string name="label_error_choose_address">Pilih alamat pengiriman</string>

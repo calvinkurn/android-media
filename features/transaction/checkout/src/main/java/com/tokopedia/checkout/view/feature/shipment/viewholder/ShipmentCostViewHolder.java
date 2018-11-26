@@ -82,7 +82,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
-        mTvPurchaseProtectionLabel.setText(getTotalPurchaseProtectionItemLabel(shipmentCost.getTotalPurchaseProtectionItem()));
+        mTvPurchaseProtectionLabel.setText(getTotalPurchaseProtectionItemLabel(mTvPurchaseProtectionLabel.getContext(), shipmentCost.getTotalPurchaseProtectionItem()));
         mTvPurchaseProtectionFee.setText(getPriceFormat(mTvPurchaseProtectionLabel, mTvPurchaseProtectionFee, shipmentCost.getPurchaseProtectionFee()));
         mTvPromoDiscount.setText(String.format(mTvPromoDiscount.getContext().getString(R.string.promo_format),
                 getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.getPromoPrice())));
@@ -134,8 +134,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         return String.format(context.getString(R.string.label_item_count_summary_with_format), totalItem);
     }
 
-    private String getTotalPurchaseProtectionItemLabel(int totalItem) {
-        return String.format("Proteksi Gadget (%d Barang)", totalItem);
+    private String getTotalPurchaseProtectionItemLabel(Context context, int totalItem) {
+        return String.format(context.getString(R.string.label_item_count_summary_with_format), totalItem);
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, double price) {
