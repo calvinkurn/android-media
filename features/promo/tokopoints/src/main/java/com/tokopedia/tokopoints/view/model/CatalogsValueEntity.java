@@ -130,6 +130,18 @@ public class CatalogsValueEntity implements Serializable {
     @SerializedName("cta")
     private String cta;
 
+    @Expose
+    @SerializedName("isShowTukarButton")
+    private boolean isShowTukarButton;
+
+    public boolean isShowTukarButton() {
+        return isShowTukarButton;
+    }
+
+    public void setShowTukarButton(boolean showTukarButton) {
+        isShowTukarButton = showTukarButton;
+    }
+
     public String getBaseCode() {
         return baseCode;
     }

@@ -31,4 +31,16 @@ public class KycStatusDetailPojo {
     public String getStatusName() {
         return statusName;
     }
+
+    public void setIsSuccess(int isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
 }
