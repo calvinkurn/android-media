@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by Rizky on 31/08/18.
  */
-public class MitraDigitalCategoryView extends LinearLayout {
+public class DigitalCategoryNoStyleView extends LinearLayout {
 
     private LinearLayout containerDigitalOperatorWidgetView;
     private LinearLayout containerDigitalProductWidgetView;
@@ -44,23 +44,23 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
     }
 
-    public MitraDigitalCategoryView(Context context) {
+    public DigitalCategoryNoStyleView(Context context) {
         super(context);
         init(context);
     }
 
-    public MitraDigitalCategoryView(Context context, @Nullable AttributeSet attrs) {
+    public DigitalCategoryNoStyleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public MitraDigitalCategoryView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public DigitalCategoryNoStyleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MitraDigitalCategoryView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public DigitalCategoryNoStyleView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }
@@ -206,10 +206,10 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
             private void showInquiryResult() {
                 if (containerDigitalProductWidgetView.findViewWithTag("inquiry_result_view") == null) {
-                    MitraDigitalInquiryResultView mitraDigitalInquiryResultView =
-                            new MitraDigitalInquiryResultView(getContext());
-                    mitraDigitalInquiryResultView.setTag("inquiry_result_view");
-                    containerDigitalProductWidgetView.addView(mitraDigitalInquiryResultView,
+                    DigitalInquiryResultNoStyleView digitalInquiryResultNoStyleView =
+                            new DigitalInquiryResultNoStyleView(getContext());
+                    digitalInquiryResultNoStyleView.setTag("inquiry_result_view");
+                    containerDigitalProductWidgetView.addView(digitalInquiryResultNoStyleView,
                             (Integer) productInquiryWidgetView.getTag());
                 }
             }

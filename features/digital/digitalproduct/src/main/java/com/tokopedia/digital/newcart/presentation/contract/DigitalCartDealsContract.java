@@ -52,10 +52,6 @@ public interface DigitalCartDealsContract {
 
         void showOnboard();
 
-        void setOnBoardIsOnGoing();
-
-        void setOnBoardIsFinish();
-
         void notifyCheckoutPageToStartAnimation();
     }
 
@@ -66,7 +62,5 @@ public interface DigitalCartDealsContract {
         void onSelectDealProduct(DealProductViewModel viewModel, int currentFragmentPosition);
 
         void unSelectDealFromCheckoutView(DealProductViewModel viewModel);
-
-        void onOnboardDismiss();
     }
 }

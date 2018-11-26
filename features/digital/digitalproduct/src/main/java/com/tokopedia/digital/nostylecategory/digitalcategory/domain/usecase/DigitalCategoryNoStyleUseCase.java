@@ -16,12 +16,12 @@ import rx.Subscriber;
 /**
  * Created by Rizky on 30/08/18.
  */
-public class MitraDigitalCategoryUseCase {
+public class DigitalCategoryNoStyleUseCase {
 
     private final Context context;
     private GraphqlUseCase graphqlUseCase;
 
-    public MitraDigitalCategoryUseCase(Context context, GraphqlUseCase graphqlUseCase) {
+    public DigitalCategoryNoStyleUseCase(Context context, GraphqlUseCase graphqlUseCase) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
         GraphqlClient.init(context);

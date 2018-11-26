@@ -16,28 +16,28 @@ import com.tokopedia.digital.R;
 /**
  * Created by Rizky on 07/09/18.
  */
-public class MitraDigitalBuyView extends LinearLayout {
+public class DigitalBuyNoStyleView extends LinearLayout {
 
     private TextView textTotalPrice;
     private TextView textBalance;
 
-    public MitraDigitalBuyView(Context context) {
+    public DigitalBuyNoStyleView(Context context) {
         super(context);
         init(context);
     }
 
-    public MitraDigitalBuyView(Context context, @Nullable AttributeSet attrs) {
+    public DigitalBuyNoStyleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public MitraDigitalBuyView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public DigitalBuyNoStyleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MitraDigitalBuyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public DigitalBuyNoStyleView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }

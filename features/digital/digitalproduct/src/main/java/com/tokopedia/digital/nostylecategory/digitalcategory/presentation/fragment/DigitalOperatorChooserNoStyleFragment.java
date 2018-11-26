@@ -22,11 +22,11 @@ import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.nostylecategory.digitalcategory.di.DaggerMitraDigitalCategoryComponent;
-import com.tokopedia.digital.nostylecategory.digitalcategory.di.MitraDigitalCategoryComponent;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.adapter.MitraDigitalOperatorChooserAdapter;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.MitraDigitalOperatorChooserContract;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.MitraDigitalOperatorChooserPresenter;
+import com.tokopedia.digital.nostylecategory.digitalcategory.di.DaggerDigitalCategoryNoStyleComponent;
+import com.tokopedia.digital.nostylecategory.digitalcategory.di.DigitalCategoryNoStyleComponent;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.adapter.DigitalOperatorChooserNoStyleAdapter;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.DigitalOperatorChooserNoStyleContract;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.DigitalOperatorChooserNoStylePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,8 @@ import javax.inject.Inject;
 /**
  * Created by Rizky on 06/09/18.
  */
-public class MitraDigitalOperatorChooserFragment extends BaseDaggerFragment
-        implements MitraDigitalOperatorChooserContract.View, MitraDigitalOperatorChooserAdapter.ActionListener {
+public class DigitalOperatorChooserNoStyleFragment extends BaseDaggerFragment
+        implements DigitalOperatorChooserNoStyleContract.View, DigitalOperatorChooserNoStyleAdapter.ActionListener {
 
     private static final String ARG_PARAM_CATEGORY_ID = "ARG_PARAM_CATEGORY_ID";
     private static final String ARG_PARAM_OPERATOR_LABEL = "ARG_PARAM_OPERATOR_LABEL";
@@ -51,14 +51,14 @@ public class MitraDigitalOperatorChooserFragment extends BaseDaggerFragment
     private EditText fieldSearch;
     private ProgressBar pbMainLoading;
 
-    private MitraDigitalOperatorChooserAdapter operatorChooserAdapter;
+    private DigitalOperatorChooserNoStyleAdapter operatorChooserAdapter;
 
     private List<Operator> operatorList = new ArrayList<>();
 
     private ActionListener actionListener;
 
     @Inject
-    MitraDigitalOperatorChooserPresenter presenter;
+    DigitalOperatorChooserNoStylePresenter presenter;
 
     public interface ActionListener {
 
@@ -71,7 +71,7 @@ public class MitraDigitalOperatorChooserFragment extends BaseDaggerFragment
         bundle.putString(ARG_PARAM_CATEGORY_ID, categoryId);
         bundle.putString(ARG_PARAM_OPERATOR_LABEL, operatorLabel);
         bundle.putString(ARG_PARAM_CATEGORY, categoryName);
-        Fragment fragment = new MitraDigitalOperatorChooserFragment();
+        Fragment fragment = new DigitalOperatorChooserNoStyleFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -102,7 +102,7 @@ public class MitraDigitalOperatorChooserFragment extends BaseDaggerFragment
 
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        operatorChooserAdapter = new MitraDigitalOperatorChooserAdapter(this, operatorList);
+        operatorChooserAdapter = new DigitalOperatorChooserNoStyleAdapter(this, operatorList);
 
         rvOperatorList.setAdapter(operatorChooserAdapter);
 
@@ -124,10 +124,10 @@ public class MitraDigitalOperatorChooserFragment extends BaseDaggerFragment
                 DaggerDigitalComponent.builder().baseAppComponent((
                         (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                         .build();
-        MitraDigitalCategoryComponent mitraDigitalCategoryComponent =
-                DaggerMitraDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
+        DigitalCategoryNoStyleComponent digitalCategoryNoStyleComponent =
+                DaggerDigitalCategoryNoStyleComponent.builder().digitalComponent(digitalComponent)
                         .build();
-        mitraDigitalCategoryComponent.inject(this);
+        digitalCategoryNoStyleComponent.inject(this);
     }
 
     @Override

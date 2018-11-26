@@ -19,10 +19,10 @@ import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.common_digital.product.presentation.adapter.ProductChooserAdapter;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.nostylecategory.digitalcategory.di.DaggerMitraDigitalCategoryComponent;
-import com.tokopedia.digital.nostylecategory.digitalcategory.di.MitraDigitalCategoryComponent;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.MitraDigitalProductChooserContract;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.MitraDigitalProductChooserPresenter;
+import com.tokopedia.digital.nostylecategory.digitalcategory.di.DaggerDigitalCategoryNoStyleComponent;
+import com.tokopedia.digital.nostylecategory.digitalcategory.di.DigitalCategoryNoStyleComponent;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.DigitalProductChooserNoStyleContract;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.DigitalProductChooserNoStylePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +32,8 @@ import javax.inject.Inject;
 /**
  * Created by Rizky on 06/09/18.
  */
-public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
-        implements MitraDigitalProductChooserContract.View, ProductChooserAdapter.ActionListener {
+public class DigitalProductChooserNoStyleFragment extends BaseDaggerFragment
+        implements DigitalProductChooserNoStyleContract.View, ProductChooserAdapter.ActionListener {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
@@ -51,7 +51,7 @@ public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
     private ActionListener actionListener;
 
     @Inject
-    MitraDigitalProductChooserPresenter mitraDigitalProductChooserPresenter;
+    DigitalProductChooserNoStylePresenter digitalProductChooserNoStylePresenter;
 
     public interface ActionListener {
 
@@ -63,7 +63,7 @@ public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
-        Fragment fragment = new MitraDigitalProductChooserFragment();
+        Fragment fragment = new DigitalProductChooserNoStyleFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -100,9 +100,9 @@ public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mitraDigitalProductChooserPresenter.attachView(this);
+        digitalProductChooserNoStylePresenter.attachView(this);
 
-        mitraDigitalProductChooserPresenter.getProducts(Integer.valueOf(categoryId), operatorId);
+        digitalProductChooserNoStylePresenter.getProducts(Integer.valueOf(categoryId), operatorId);
     }
 
     @Override
@@ -116,10 +116,10 @@ public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
                 DaggerDigitalComponent.builder().baseAppComponent((
                         (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                         .build();
-        MitraDigitalCategoryComponent mitraDigitalCategoryComponent =
-                DaggerMitraDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
+        DigitalCategoryNoStyleComponent digitalCategoryNoStyleComponent =
+                DaggerDigitalCategoryNoStyleComponent.builder().digitalComponent(digitalComponent)
                         .build();
-        mitraDigitalCategoryComponent.inject(this);
+        digitalCategoryNoStyleComponent.inject(this);
     }
 
     @Override

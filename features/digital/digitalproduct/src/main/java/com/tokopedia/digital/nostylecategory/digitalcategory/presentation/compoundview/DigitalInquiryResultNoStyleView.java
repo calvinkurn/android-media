@@ -15,25 +15,25 @@ import com.tokopedia.digital.R;
 /**
  * Created by Rizky on 14/09/18.
  */
-public class MitraDigitalInquiryResultView extends LinearLayout {
+public class DigitalInquiryResultNoStyleView extends LinearLayout {
 
-    public MitraDigitalInquiryResultView(Context context) {
+    public DigitalInquiryResultNoStyleView(Context context) {
         super(context);
         init(context);
     }
 
-    public MitraDigitalInquiryResultView(Context context, @Nullable AttributeSet attrs) {
+    public DigitalInquiryResultNoStyleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public MitraDigitalInquiryResultView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public DigitalInquiryResultNoStyleView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MitraDigitalInquiryResultView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public DigitalInquiryResultNoStyleView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }

@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class DigitalWidgetView extends FrameLayout {
 
-    private MitraClientNumberInputView mitraClientNumberInputView;
+    private ClientNumberInputNoStyleView clientNumberInputNoStyleView;
     private DigitalWidgetDropdownInputView digitalWidgetDropdownInputView;
     private RecyclerView recyclerview;
     private DigitalWidgetRadioInputView digitalWidgetRadioInputView;
@@ -73,7 +73,7 @@ public class DigitalWidgetView extends FrameLayout {
     private void init(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.view_digital_operator_chooser,
                 this, true);
-        mitraClientNumberInputView = view.findViewById(R.id.client_number_input_view);
+        clientNumberInputNoStyleView = view.findViewById(R.id.client_number_input_view);
         recyclerview = view.findViewById(R.id.recyclerview);
         digitalWidgetDropdownInputView = view.findViewById(R.id.dropdown_input_view);
         digitalWidgetRadioInputView = view.findViewById(R.id.radio_input_view);
@@ -144,9 +144,9 @@ public class DigitalWidgetView extends FrameLayout {
     }
 
     private void showClientNumber(ClientNumber clientNumber, List<BaseWidgetItem> items) {
-        mitraClientNumberInputView.setVisibility(VISIBLE);
-        mitraClientNumberInputView.renderData(clientNumber, items);
-        mitraClientNumberInputView.setActionListener(new MitraClientNumberInputView.MitraClientNumberActionListener() {
+        clientNumberInputNoStyleView.setVisibility(VISIBLE);
+        clientNumberInputNoStyleView.renderData(clientNumber, items);
+        clientNumberInputNoStyleView.setActionListener(new ClientNumberInputNoStyleView.MitraClientNumberActionListener() {
             @Override
             public void onButtonContactPickerClicked() {
 

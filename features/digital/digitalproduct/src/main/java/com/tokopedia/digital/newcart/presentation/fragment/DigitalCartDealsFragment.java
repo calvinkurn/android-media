@@ -72,7 +72,6 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private DigitalCheckoutPassData cartPassData;
     private DigitalDealsPagerAdapter pagerAdapter;
     private InteractionListener interactionListener;
-    private boolean isOnboardOngoing;
 
     @Override
     public boolean canGoBack() {
@@ -252,16 +251,6 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void setOnBoardIsOnGoing() {
-        isOnboardOngoing = true;
-    }
-
-    @Override
-    public void setOnBoardIsFinish() {
-        isOnboardOngoing = false;
-    }
-
-    @Override
     public void notifyCheckoutPageToStartAnimation() {
         Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
         if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
@@ -280,15 +269,15 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
                 ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
                 if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
                     ShowCaseObject priceShowCase = new ShowCaseObject(
-                            checkoutFragment.getView(), "Detail Produk",
-                            "Cek kembali detail produk sebelum pembayaran.",
+                            checkoutFragment.getView(), getString(R.string.digital_cart_deals_showcase_product_detail),
+                            getString(R.string.digital_cart_deals_showcase_product_detail_detail),
                             ShowCaseContentPosition.TOP);
                     showCaseObjectList.add(priceShowCase);
                 }
 
                 ShowCaseObject dealShowCase = new ShowCaseObject(
-                        dealTabLayout, "Penawaran Spesial",
-                        "Tambahkan voucher spesial dan bayar sekaligus bersama produk sebelumnya.",
+                        dealTabLayout, getString(R.string.digital_cart_deals_showcase_special),
+                        getString(R.string.digital_cart_deals_showcase_special_detail),
                         ShowCaseContentPosition.BOTTOM
                 );
 
@@ -300,8 +289,6 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
                     public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
                         if (previousStep == 0) {
                             notifyCheckoutPageToStartAnimation();
-                        } else {
-                            presenter.onOnboardDismiss();
                         }
                         return false;
                     }

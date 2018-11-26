@@ -10,7 +10,7 @@ import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.model.
 /**
  * Created by Rizky on 30/08/18.
  */
-public class MitraDigitalCategoryContract {
+public class DigitalCategoryNoStyleContract {
 
     public interface View extends CustomerView {
 

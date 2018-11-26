@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Rizky on 06/09/18.
  */
-public class MitraDigitalOperatorChooserAdapter extends RecyclerView.Adapter<MitraDigitalOperatorChooserAdapter.ViewHolder> {
+public class DigitalOperatorChooserNoStyleAdapter extends RecyclerView.Adapter<DigitalOperatorChooserNoStyleAdapter.ViewHolder> {
 
     private List<Operator> operatorList;
 
@@ -29,7 +29,7 @@ public class MitraDigitalOperatorChooserAdapter extends RecyclerView.Adapter<Mit
 
     }
 
-    public MitraDigitalOperatorChooserAdapter(ActionListener actionListener, List<Operator> operatorList) {
+    public DigitalOperatorChooserNoStyleAdapter(ActionListener actionListener, List<Operator> operatorList) {
         this.actionListener = actionListener;
         this.operatorList = operatorList;
     }

@@ -26,21 +26,21 @@ import java.util.regex.Pattern;
 /**
  * Created by Rizky on 05/09/18.
  */
-public class MitraClientNumberInputView extends CommonClientNumberInputView {
+public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
 
     private MitraClientNumberActionListener actionListener;
 
     private List<BaseWidgetItem> items;
 
-    public MitraClientNumberInputView(Context context) {
+    public ClientNumberInputNoStyleView(Context context) {
         super(context);
     }
 
-    public MitraClientNumberInputView(Context context, AttributeSet attrs) {
+    public ClientNumberInputNoStyleView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MitraClientNumberInputView(Context context, AttributeSet attrs, int defaultStyle) {
+    public ClientNumberInputNoStyleView(Context context, AttributeSet attrs, int defaultStyle) {
         super(context, attrs, defaultStyle);
     }
 

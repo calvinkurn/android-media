@@ -12,14 +12,14 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.fragment.MitraDigitalOperatorChooserFragment;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.fragment.MitraDigitalProductChooserFragment;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.fragment.DigitalOperatorChooserNoStyleFragment;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.fragment.DigitalProductChooserNoStyleFragment;
 
 /**
  * Created by Rizky on 06/09/18.
  */
-public class MitraDigitalChooserActivity extends BaseSimpleActivity
-        implements MitraDigitalOperatorChooserFragment.ActionListener, MitraDigitalProductChooserFragment.ActionListener {
+public class DigitalChooserNoStyleActivity extends BaseSimpleActivity
+        implements DigitalOperatorChooserNoStyleFragment.ActionListener, DigitalProductChooserNoStyleFragment.ActionListener {
 
     private static final String EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID";
     private static final String EXTRA_OPERATOR_ID = "EXTRA_OPERATOR_ID";
@@ -42,7 +42,7 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
     public static Intent newInstanceProductChooser(
             Activity activity, String categoryId, String operatorId, String titleChooser
     ) {
-        Intent intent = new Intent(activity, MitraDigitalChooserActivity.class);
+        Intent intent = new Intent(activity, DigitalChooserNoStyleActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(EXTRA_OPERATOR_ID, operatorId);
@@ -53,7 +53,7 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
 
     public static Intent newInstanceProductChooser2(FragmentActivity activity, String categoryId,
                                                     String operatorId, String titleChooser, int position) {
-        Intent intent = new Intent(activity, MitraDigitalChooserActivity.class);
+        Intent intent = new Intent(activity, DigitalChooserNoStyleActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(EXTRA_OPERATOR_ID, operatorId);
@@ -65,7 +65,7 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
 
     public static Intent newInstanceOperatorChooser(Activity activity, String categoryId, String titleChooser,
                                                     String operatorLabel, String categoryName) {
-        Intent intent = new Intent(activity, MitraDigitalChooserActivity.class);
+        Intent intent = new Intent(activity, DigitalChooserNoStyleActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(EXTRA_TITLE_CHOOSER, titleChooser);
@@ -103,10 +103,10 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
     protected Fragment getNewFragment() {
         Fragment fragment = null;
         if (categoryId != null & operatorId != null) {
-            fragment = MitraDigitalProductChooserFragment.newInstance(
+            fragment = DigitalProductChooserNoStyleFragment.newInstance(
                     categoryId, operatorId);
         } else if (categoryId != null) {
-            fragment = MitraDigitalOperatorChooserFragment.newInstance(
+            fragment = DigitalOperatorChooserNoStyleFragment.newInstance(
                     categoryId, operatorLabel, categoryName);
         }
         return fragment;

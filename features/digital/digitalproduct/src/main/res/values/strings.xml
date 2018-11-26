@@ -154,4 +154,8 @@
     <string name="digital_cart_checkout_skip_menu_label">Lewati</string>
     <string name="digital_deal_promo_restriction_message">Promo hanya berlaku untuk <b>Tagihan dan Top Up</b></string>
     <string name="digital_deal_promo_restriction_action_label">OK</string>
+    <string name="digital_cart_deals_showcase_product_detail">Detail Produk</string>
+    <string name="digital_cart_deals_showcase_product_detail_detail">Cek kembali detail produk sebelum pembayaran.</string>
+    <string name="digital_cart_deals_showcase_special">Penawaran Spesial</string>
+    <string name="digital_cart_deals_showcase_special_detail">Tambahkan voucher spesial dan bayar sekaligus bersama produk sebelumnya.</string>
 </resources>

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Rizky on 10/09/18.
  */
-public class MitraDigitalProductChooserContract {
+public class DigitalProductChooserNoStyleContract {
 
     public interface View extends CustomerView {
 

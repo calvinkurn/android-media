@@ -5,7 +5,7 @@ import android.util.Log;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.digital.nostylecategory.digitalcategory.data.api.entity.ResponseAgentDigitalCategory;
-import com.tokopedia.digital.nostylecategory.digitalcategory.domain.usecase.MitraDigitalCategoryUseCase;
+import com.tokopedia.digital.nostylecategory.digitalcategory.domain.usecase.DigitalCategoryNoStyleUseCase;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.mapper.RechargeCategoryDetailMapper;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.model.DigitalCategoryModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -18,25 +18,25 @@ import rx.Subscriber;
 /**
  * Created by Rizky on 10/09/18.
  */
-public class MitraDigitalProductChooserPresenter extends BaseDaggerPresenter<MitraDigitalProductChooserContract.View>
-        implements MitraDigitalProductChooserContract.Presenter {
+public class DigitalProductChooserNoStylePresenter extends BaseDaggerPresenter<DigitalProductChooserNoStyleContract.View>
+        implements DigitalProductChooserNoStyleContract.Presenter {
 
-    private final String TAG = MitraDigitalProductChooserPresenter.class.getSimpleName();
+    private final String TAG = DigitalProductChooserNoStylePresenter.class.getSimpleName();
 
-    private MitraDigitalCategoryUseCase mitraDigitalCategoryUseCase;
+    private DigitalCategoryNoStyleUseCase digitalCategoryNoStyleUseCase;
     private RechargeCategoryDetailMapper rechargeCategoryDetailMapper;
 
     @Inject
-    public MitraDigitalProductChooserPresenter(MitraDigitalCategoryUseCase mitraDigitalCategoryUseCase,
-                                               RechargeCategoryDetailMapper rechargeCategoryDetailMapper) {
-        this.mitraDigitalCategoryUseCase = mitraDigitalCategoryUseCase;
+    public DigitalProductChooserNoStylePresenter(DigitalCategoryNoStyleUseCase digitalCategoryNoStyleUseCase,
+                                                 RechargeCategoryDetailMapper rechargeCategoryDetailMapper) {
+        this.digitalCategoryNoStyleUseCase = digitalCategoryNoStyleUseCase;
         this.rechargeCategoryDetailMapper = rechargeCategoryDetailMapper;
     }
 
     @Override
     public void getProducts(int categoryId, String operatorId) {
-        RequestParams requestParams = mitraDigitalCategoryUseCase.createRequestParams(categoryId);
-        mitraDigitalCategoryUseCase.execute(requestParams, new Subscriber<GraphqlResponse>() {
+        RequestParams requestParams = digitalCategoryNoStyleUseCase.createRequestParams(categoryId);
+        digitalCategoryNoStyleUseCase.execute(requestParams, new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
 

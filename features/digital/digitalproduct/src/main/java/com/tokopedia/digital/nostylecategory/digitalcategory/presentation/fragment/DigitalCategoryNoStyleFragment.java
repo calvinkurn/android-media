@@ -18,26 +18,26 @@ import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.nostylecategory.digitalcategory.di.DaggerMitraDigitalCategoryComponent;
-import com.tokopedia.digital.nostylecategory.digitalcategory.di.MitraDigitalCategoryComponent;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.activity.MitraDigitalChooserActivity;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.compoundview.MitraDigitalBuyView;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.compoundview.MitraDigitalCategoryView;
+import com.tokopedia.digital.nostylecategory.digitalcategory.di.DaggerDigitalCategoryNoStyleComponent;
+import com.tokopedia.digital.nostylecategory.digitalcategory.di.DigitalCategoryNoStyleComponent;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.activity.DigitalChooserNoStyleActivity;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.compoundview.DigitalBuyNoStyleView;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.compoundview.DigitalCategoryNoStyleView;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.model.DigitalCategoryModel;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.MitraDigitalCategoryContract;
-import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.MitraDigitalCategoryPresenter;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.DigitalCategoryNoStyleContract;
+import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.presenter.DigitalCategoryNoStylePresenter;
 
 import javax.inject.Inject;
 
 /**
  * Created by Rizky on 30/08/18.
  */
-public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements MitraDigitalCategoryContract.View {
+public class DigitalCategoryNoStyleFragment extends BaseDaggerFragment implements DigitalCategoryNoStyleContract.View {
 
     private static final String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
 
-    private MitraDigitalCategoryView mitraDigitalCategoryView;
-    private MitraDigitalBuyView mitraDigitalBuyView;
+    private DigitalCategoryNoStyleView digitalCategoryNoStyleView;
+    private DigitalBuyNoStyleView digitalBuyNoStyleView;
 
     private DigitalCategoryModel digitalCategoryModel;
 
@@ -49,7 +49,7 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
     private ActionListener actionListener;
 
     @Inject
-    MitraDigitalCategoryPresenter presenter;
+    DigitalCategoryNoStylePresenter presenter;
 
     public interface ActionListener {
 
@@ -58,7 +58,7 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
     }
 
     public static Fragment newInstance(int categoryId) {
-        Fragment fragment = new MitraDigitalCategoryFragment();
+        Fragment fragment = new DigitalCategoryNoStyleFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_CATEGORY_ID, categoryId);
         fragment.setArguments(bundle);
@@ -79,8 +79,8 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_agent_digital_category, container, false);
 
-        mitraDigitalCategoryView = rootview.findViewById(R.id.view_category);
-        mitraDigitalBuyView = rootview.findViewById(R.id.view_buy);
+        digitalCategoryNoStyleView = rootview.findViewById(R.id.view_category);
+        digitalBuyNoStyleView = rootview.findViewById(R.id.view_buy);
 
         return rootview;
     }
@@ -100,10 +100,10 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                 DaggerDigitalComponent.builder().baseAppComponent((
                         (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                         .build();
-        MitraDigitalCategoryComponent mitraDigitalCategoryComponent =
-                DaggerMitraDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
+        DigitalCategoryNoStyleComponent digitalCategoryNoStyleComponent =
+                DaggerDigitalCategoryNoStyleComponent.builder().digitalComponent(digitalComponent)
                         .build();
-        mitraDigitalCategoryComponent.inject(this);
+        digitalCategoryNoStyleComponent.inject(this);
     }
 
     @Override
@@ -117,12 +117,12 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
 
         actionListener.updateToolbarTitle(digitalCategoryModel.getName());
 
-        mitraDigitalCategoryView.setActionListener(new MitraDigitalCategoryView.ActionListener() {
+        digitalCategoryNoStyleView.setActionListener(new DigitalCategoryNoStyleView.ActionListener() {
             @Override
             public void onClickOperatorDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
                 if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
                     String titleChooser = inputFieldModel.getText() + " " + digitalCategoryModel.getOperatorLabel();
-                    Intent intent = MitraDigitalChooserActivity.newInstanceOperatorChooser(getActivity(),
+                    Intent intent = DigitalChooserNoStyleActivity.newInstanceOperatorChooser(getActivity(),
                             digitalCategoryModel.getId(), titleChooser, digitalCategoryModel.getOperatorLabel(),
                             digitalCategoryModel.getName());
                     startActivityForResult(intent, 1001);
@@ -131,13 +131,13 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
 
             @Override
             public void onProductSelected(Product product) {
-                mitraDigitalBuyView.setVisibility(View.VISIBLE);
-                mitraDigitalBuyView.renderBuyView(product);
+                digitalBuyNoStyleView.setVisibility(View.VISIBLE);
+                digitalBuyNoStyleView.renderBuyView(product);
             }
 
             @Override
             public void removeBuyView() {
-                mitraDigitalBuyView.setVisibility(View.GONE);
+                digitalBuyNoStyleView.setVisibility(View.GONE);
             }
 
             @Override
@@ -146,14 +146,14 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                     selectedOperatorId = operatorId;
                     tempProductInputFieldModel = inputFieldModel;
                     String titleChooser = inputFieldModel.getText();
-                    Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser2(getActivity(),
+                    Intent intent = DigitalChooserNoStyleActivity.newInstanceProductChooser2(getActivity(),
                             digitalCategoryModel.getId(), operatorId, titleChooser, position);
                     startActivityForResult(intent, 1002);
                 }
             }
         });
 
-        mitraDigitalCategoryView.renderCategory(digitalCategoryModel.getRenderOperatorModel(),
+        digitalCategoryNoStyleView.renderCategory(digitalCategoryModel.getRenderOperatorModel(),
                 digitalCategoryModel.getDefaultOperatorId());
     }
 
@@ -166,7 +166,7 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallbackOperatorChooser(
                             data.getParcelableExtra(
-                                    MitraDigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
+                                    DigitalChooserNoStyleActivity.EXTRA_CALLBACK_OPERATOR_DATA
                             )
                     );
                 break;
@@ -174,16 +174,16 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallbackProductChooser2(
                             data.getParcelableExtra(
-                                    MitraDigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
+                                    DigitalChooserNoStyleActivity.EXTRA_CALLBACK_PRODUCT_DATA
                             ),
-                            data.getIntExtra(MitraDigitalChooserActivity.EXTRA_CALLBACK_POSITION, 0)
+                            data.getIntExtra(DigitalChooserNoStyleActivity.EXTRA_CALLBACK_POSITION, 0)
                     );
                 break;
         }
     }
 
     private void handleCallbackOperatorChooser(Operator operator) {
-        mitraDigitalCategoryView.renderCategory(digitalCategoryModel.getRenderOperatorModel(),
+        digitalCategoryNoStyleView.renderCategory(digitalCategoryModel.getRenderOperatorModel(),
                 operator.getOperatorId());
     }
 
@@ -194,7 +194,7 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
 //    }
 
     private void handleCallbackProductChooser2(Product product, int position) {
-        mitraDigitalCategoryView.updateProductDropdownView(digitalCategoryModel.getRenderOperatorModel(),
+        digitalCategoryNoStyleView.updateProductDropdownView(digitalCategoryModel.getRenderOperatorModel(),
                 tempProductInputFieldModel, selectedOperatorId, product.getProductId(), position);
     }
 

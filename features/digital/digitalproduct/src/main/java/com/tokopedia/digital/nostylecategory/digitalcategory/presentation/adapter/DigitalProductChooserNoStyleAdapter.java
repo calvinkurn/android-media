@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * Created by Rizky on 10/09/18.
  */
-public class MitraDigitalProductChooserAdapter extends RecyclerView.Adapter<MitraDigitalProductChooserAdapter.ViewHolder> {
+public class DigitalProductChooserNoStyleAdapter extends RecyclerView.Adapter<DigitalProductChooserNoStyleAdapter.ViewHolder> {
 
     private List<Product> products;
 
-    public MitraDigitalProductChooserAdapter(List<Product> products) {
+    public DigitalProductChooserNoStyleAdapter(List<Product> products) {
         this.products = products;
     }
 
