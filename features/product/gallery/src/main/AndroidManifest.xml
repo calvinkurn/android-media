@@ -8,6 +8,7 @@
         android:supportsRtl="true">
 
         <activity android:name=".ImageReviewGalleryActivity"
+            android:label="@string/gallery_top_bar_title"
             android:theme="@style/Theme.White"/>
 
     </application>

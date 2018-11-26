@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.gallery.R;
+import com.tokopedia.gallery.adapter.viewholder.GalleryItemViewHolder;
 
 public class ImageReviewRecyclerView extends RecyclerView {
     private static final int SPAN_COUNT = 3;
@@ -34,7 +35,11 @@ public class ImageReviewRecyclerView extends RecyclerView {
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return SPAN_COUNT;
+                if (getAdapter().getItemViewType(position) == GalleryItemViewHolder.LAYOUT) {
+                    return 1;
+                } else {
+                    return SPAN_COUNT;
+                }
             }
         });
         this.setLayoutManager(gridLayoutManager);
