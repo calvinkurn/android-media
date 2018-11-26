@@ -27,6 +27,7 @@ import com.tokopedia.gallery.customview.GalleryItemDecoration;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenter;
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenterImpl;
+import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
@@ -237,6 +238,7 @@ public class ImageReviewGalleryActivity extends AppCompatActivity implements Bot
     @Override
     public void onGalleryItemClicked(int position) {
         bottomSheetImageReviewSlider.displayImage(position);
+        ImageReviewGalleryTracking.eventClickReviewGalleryItem(this, Integer.toString(productId));
     }
 
     public static class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
