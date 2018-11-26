@@ -20,11 +20,10 @@ public class ReviewGalleryPresenterImpl implements ReviewGalleryPresenter {
     }
 
     @Override
-    public void loadData(int productId, int startRow) {
-        int page = startRow / DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE + 1;
+    public void loadData(int productId, int page) {
         getImageReviewUseCase.execute(
                 GetImageReviewUseCase.createRequestParams(page,
                         DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE,
-                        productId), new GetImageReviewSubscriber(galleryView, startRow));
+                        productId), new GetImageReviewSubscriber(galleryView));
     }
 }

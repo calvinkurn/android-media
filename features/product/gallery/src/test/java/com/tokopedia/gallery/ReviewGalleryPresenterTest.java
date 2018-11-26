@@ -46,15 +46,14 @@ public class ReviewGalleryPresenterTest {
     {
         //given
         int productId = 1234;
-        int startRow = 5;
-        int page = startRow / ReviewGalleryPresenter.DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE + 1;
+        int page = 1;
 
         ArgumentCaptor<RequestParams> requestParams = ArgumentCaptor.forClass(RequestParams.class);
         ArgumentCaptor<GetImageReviewSubscriber> getImageReviewSubscriber
                 = ArgumentCaptor.forClass(GetImageReviewSubscriber.class);
 
         //when
-        reviewGalleryPresenter.loadData(productId, startRow);
+        reviewGalleryPresenter.loadData(productId, page);
 
         //then
         Mockito.verify(getImageReviewUseCase).execute(
@@ -65,6 +64,5 @@ public class ReviewGalleryPresenterTest {
         assertEquals(page, requestParams.getValue().getInt(GetImageReviewUseCase.KEY_PAGE, 0));
         assertEquals(ReviewGalleryPresenter.DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE, requestParams.getValue().getInt(GetImageReviewUseCase.KEY_TOTAL, 0));
         assertEquals(galleryView, getImageReviewSubscriber.getValue().galleryView);
-        assertEquals(startRow, getImageReviewSubscriber.getValue().startRow);
     }
 }

@@ -8,7 +8,7 @@
         android:supportsRtl="true">
 
         <activity android:name=".ImageReviewGalleryActivity"
-            android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen"/>
+            android:theme="@style/Theme.White"/>
 
     </application>
 

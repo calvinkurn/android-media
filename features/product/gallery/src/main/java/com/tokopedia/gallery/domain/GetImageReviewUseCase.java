@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.gallery.R;
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
+import com.tokopedia.gallery.viewmodel.ImageReviewListModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -20,7 +21,7 @@ import java.util.Map;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class GetImageReviewUseCase extends UseCase<List<ImageReviewItem>> {
+public class GetImageReviewUseCase extends UseCase<ImageReviewListModel> {
 
     public static final String KEY_PRODUCT_ID = "productID";
     public static final String KEY_PAGE = "page";
@@ -37,7 +38,7 @@ public class GetImageReviewUseCase extends UseCase<List<ImageReviewItem>> {
     }
 
     @Override
-    public Observable<List<ImageReviewItem>> createObservable(RequestParams requestParams) {
+    public Observable<ImageReviewListModel> createObservable(RequestParams requestParams) {
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
@@ -46,10 +47,15 @@ public class GetImageReviewUseCase extends UseCase<List<ImageReviewItem>> {
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map(new Func1<GraphqlResponse, List<ImageReviewItem>>() {
+                .map(new Func1<GraphqlResponse, ImageReviewListModel>() {
                     @Override
-                    public List<ImageReviewItem> call(GraphqlResponse graphqlResponse) {
-                        return convertToImageReviewItemList(graphqlResponse.getData(ImageReviewGqlResponse.class));
+                    public ImageReviewListModel call(GraphqlResponse graphqlResponse) {
+                        ImageReviewGqlResponse imageReviewGqlResponse
+                                = graphqlResponse.getData(ImageReviewGqlResponse.class);
+                        return new ImageReviewListModel(
+                                convertToImageReviewItemList(imageReviewGqlResponse),
+                                imageReviewGqlResponse.getProductReviewImageListQuery().isHasNext()
+                        );
                     }
         });
     }

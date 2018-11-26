@@ -10,7 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.R;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,7 +76,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
     }
 
     private void initRecyclerView() {
-        adapter = new SliderAdapter(null);
+        adapter = new SliderAdapter();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -83,7 +86,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (callback.isAllowLoadMore()) {
-                    callback.onRequestLoadMore();
+                    callback.onRequestLoadMore(page);
                 } else {
                     updateStateAfterGetData();
                 }
@@ -138,12 +141,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
     }
 
     @Override
-    public void onLoadDataEmpty() {
-        adapter.removeLoading();
-    }
-
-    @Override
-    public void onLoadDataRetry() {
+    public void onLoadingData() {
         adapter.addLoading();
     }
 
@@ -160,51 +158,94 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
     }
 
     @Override
-    public void onLoadDataSuccess(List<ImageReviewItem> imageReviewItems) {
+    public void onLoadDataSuccess(List<ImageReviewItem> imageReviewItems, boolean isHasNextPage) {
+        adapter.removeLoading();
         adapter.appendItems(imageReviewItems);
         loadMoreTriggerListener.updateStateAfterGetData();
+        loadMoreTriggerListener.setHasNextPage(isHasNextPage);
     }
 
     @Override
     public void onLoadDataFailed() {
+        adapter.removeLoading();
         loadMoreTriggerListener.updateStateAfterGetData();
         recyclerView.scrollToPosition(adapter.getGalleryItemCount() - 1);
-        adapter.removeLoading();
     }
 
     public interface Callback {
-        void onRequestLoadMore();
+        void onRequestLoadMore(int page);
         boolean isAllowLoadMore();
     }
 
-    private static class SliderAdapter extends ImageReviewGalleryActivity.GalleryAdapter {
+    private static class SliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        public SliderAdapter(GalleryView galleryView) {
-            super(galleryView);
-        }
-
-        @Override
-        protected int getItemLayoutRes() {
-            return ImageSliderViewHolder.LAYOUT;
-        }
-
-        protected int getLoadingLayoutRes() {
-            return LoadingSliderViewHolder.LAYOUT;
-        }
-
-        protected RecyclerView.ViewHolder getItemViewHolder(View view) {
-            return new ImageSliderViewHolder(view);
-        }
-
-        protected RecyclerView.ViewHolder getLoadingViewHolder(View view) {
-            return new LoadingSliderViewHolder(view);
-        }
+        private List<ImageReviewItem> imageReviewItemList = new ArrayList<>();
+        private boolean loadingItemEnabled = true;
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof ImageSliderViewHolder) {
                 ((ImageSliderViewHolder) holder).bind(imageReviewItemList.get(position));
             }
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(viewType, parent, false);
+            if (viewType == ImageSliderViewHolder.LAYOUT) {
+                return new ImageSliderViewHolder(view);
+            } else {
+                return new LoadingSliderViewHolder(view);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return loadingItemEnabled ? imageReviewItemList.size() + 1 : imageReviewItemList.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (isGalleryItem(position)) {
+                return ImageSliderViewHolder.LAYOUT;
+            } else {
+                return LoadingSliderViewHolder.LAYOUT;
+            }
+        }
+
+        public void appendItems(List<ImageReviewItem> imageReviewItems) {
+            imageReviewItemList.addAll(imageReviewItems);
+            notifyDataSetChanged();
+        }
+
+        public void resetState() {
+            imageReviewItemList.clear();
+            loadingItemEnabled = true;
+            notifyDataSetChanged();
+        }
+
+        public boolean isGalleryItem(int position) {
+            return position < imageReviewItemList.size();
+        }
+
+        public void removeLoading() {
+            loadingItemEnabled = false;
+            notifyDataSetChanged();
+        }
+
+        public void addLoading() {
+            loadingItemEnabled = true;
+            notifyDataSetChanged();
+        }
+
+        public boolean isLoadingItemEnabled() {
+            return loadingItemEnabled;
+        }
+
+        public int getGalleryItemCount() {
+            return imageReviewItemList.size();
         }
     }
 
