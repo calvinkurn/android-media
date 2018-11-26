@@ -111,8 +111,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             mTvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    RouteManager.route(view.getContext(),
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, cartItem.getProtectionLinkUrl()));
+                    shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl());
                 }
             });
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
@@ -207,6 +206,8 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
 
     public interface ShipmentItemListener {
         void notifyOnPurchaseProtectionChecked(boolean checked, int position);
+
+        void navigateToWebView(String protectionLinkUrl);
     }
 
 }

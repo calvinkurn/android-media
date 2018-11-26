@@ -335,6 +335,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 //        mActionListener.onNeedUpdateViewItem(getAdapterPosition());
     }
 
+    @Override
+    public void navigateToWebView(String protectionLinkUrl) {
+        mActionListener.navigateToProtectionMore(protectionLinkUrl);
+    }
+
     private void initSaveStateDebouncer() {
         compositeSubscription.add(Observable.create(new Observable.OnSubscribe<ShipmentCartItemModel>() {
             @Override
