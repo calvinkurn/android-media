@@ -8,9 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/dp_4"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true">
+        app:cardElevation="0dp">
 
         <com.tokopedia.design.image.SquareImageView
             android:id="@+id/galleryImage"
