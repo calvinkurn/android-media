@@ -84,7 +84,6 @@ import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
-import com.tokopedia.tkpdpdp.helper.GqlHelper;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.subscriber.AffiliateProductDataSubscriber;
 import com.tokopedia.tkpdpdp.presenter.subscriber.ImageReviewSubscriber;
