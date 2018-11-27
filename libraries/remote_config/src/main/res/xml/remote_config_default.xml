@@ -273,7 +273,7 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>enable_power_merchant_rebrand</key>
+        <key>app_enable_power_merchant_rebrand</key>
         <value>true</value>
     </entry>
 </defaultsMap>

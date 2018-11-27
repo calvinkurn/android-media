@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import java.util.*
 
 object GMConstant {
-    const val GM_REMOTE_CONFIG_KEY = "enable_power_merchant_rebrand"
-    const val DEFAULT_IS_POWER_ACTIVE = false
+    const val GM_REMOTE_CONFIG_KEY = "app_enable_power_merchant_rebrand"
+    val DEFAULT_IS_POWER_ACTIVE
+        get() = Calendar.getInstance().get(Calendar.YEAR) == 2019
     const val BASE_SELLER_URL = "https://seller.tokopedia.com/"
     const val GOLD_MERCHANT_URL = BASE_SELLER_URL + "gold-merchant/"
     const val POWER_MERCHANT_URL = BASE_SELLER_URL + "edu/power-merchant"
