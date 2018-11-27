@@ -6,11 +6,9 @@ import java.util.List;
 
 public interface ImageReviewSliderView {
         void displayImage(int position);
-        void onLoadDataSuccess(List<ImageReviewItem> imageReviewItems);
+        void onLoadDataSuccess(List<ImageReviewItem> imageReviewItems, boolean isHasNextPage);
         void onLoadDataFailed();
         boolean onBackPressed();
         void resetState();
-        void onLoadDataEmpty();
-
-        void onLoadDataRetry();
+        void onLoadingData();
 }

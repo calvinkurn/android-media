@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface GalleryView {
     void onGalleryItemClicked(int position);
-    void handleItemResult(List<ImageReviewItem> imageReviewItemList);
-    void handleEmptyResult();
-    void handleErrorResult(int startRow);
+    void handleItemResult(List<ImageReviewItem> imageReviewItemList, boolean isHasNextPage);
+    void handleErrorResult(Throwable e);
 }

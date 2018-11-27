@@ -2,6 +2,7 @@ package com.tokopedia.gallery;
 
 import com.tokopedia.gallery.subscriber.GetImageReviewSubscriber;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
+import com.tokopedia.gallery.viewmodel.ImageReviewListModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,28 +18,13 @@ import java.util.List;
  */
 public class GetImageReviewSubscriberTest {
 
-    private static final int TEST_START_ROW = 5;
-
     private GetImageReviewSubscriber getImageReviewSubscriber;
     private GalleryView galleryView;
 
     @Before
     public void setUp() throws Exception {
         galleryView = Mockito.mock(GalleryView.class);
-        getImageReviewSubscriber = new GetImageReviewSubscriber(galleryView, TEST_START_ROW);
-    }
-
-    @Test
-    public void onNext_emptyResult_handleEmptyResult()
-    {
-        //given
-        List<ImageReviewItem> imageReviewItems = new ArrayList<>();
-
-        //when
-        getImageReviewSubscriber.onNext(imageReviewItems);
-
-        //then
-        Mockito.verify(galleryView).handleEmptyResult();
+        getImageReviewSubscriber = new GetImageReviewSubscriber(galleryView);
     }
 
     @Test
@@ -52,22 +38,26 @@ public class GetImageReviewSubscriberTest {
         imageReviewItems.add(imageReviewItem1);
         imageReviewItems.add(imageReviewItem2);
 
+        boolean isHasNextPage = true;
+        ImageReviewListModel imageReviewListModel = new ImageReviewListModel(imageReviewItems, isHasNextPage);
+
         //when
-        getImageReviewSubscriber.onNext(imageReviewItems);
+        getImageReviewSubscriber.onNext(imageReviewListModel);
 
         //then
-        Mockito.verify(galleryView).handleItemResult(imageReviewItems);
+        Mockito.verify(galleryView).handleItemResult(imageReviewItems, isHasNextPage);
     }
 
     @Test
     public void onError_handleErrorResult()
     {
         //given
+        Throwable e = new Throwable();
 
         //when
-        getImageReviewSubscriber.onError(new Throwable());
+        getImageReviewSubscriber.onError(e);
 
         //then
-        Mockito.verify(galleryView).handleErrorResult(TEST_START_ROW);
+        Mockito.verify(galleryView).handleErrorResult(e);
     }
 }

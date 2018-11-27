@@ -9,36 +9,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:orientation="vertical">
 
-        <include layout="@layout/gallery_top_bar_layout"/>
-
-        <RelativeLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="?actionBarSize"
+            app:elevation="@dimen/dp_4"
+            android:elevation="@dimen/dp_4"
+            android:theme="?toolbarTheme"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:subtitleTextAppearance="?subtitleTextAppearance"
+            app:titleTextAppearance="?titleTextAppearance" />
 
-            <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-                android:id="@+id/swipe_refresh_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/galleryRecyclerView"
-                    android:paddingLeft="@dimen/review_gallery_default_padding"
-                    android:paddingRight="@dimen/review_gallery_default_padding"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/white"/>
-
-            </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/review_gallery_top_bar_shadow" />
-
-        </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/parent_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
