@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -83,16 +84,7 @@ public class ReviewPagerAdapter extends PagerAdapter{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProductPageTracking.eventClickReviewOnMostHelpfulReview(
-                        context,
-                        String.valueOf(data.getInfo().getProductId()),
-                        String.valueOf(review.getReviewId())
-                );
-
-                String productId = String.valueOf(data.getInfo().getProductId());
-                String shopId = String.valueOf(data.getShopInfo().getShopId());
-                String productName = data.getInfo().getProductName();
-                listener.onProductReviewClicked(productId, shopId, productName);
+                onMostHelpfulClick();
             }
         });
 
@@ -100,7 +92,10 @@ public class ReviewPagerAdapter extends PagerAdapter{
             rv_image.setVisibility(View.VISIBLE);
             tv_text_review.setLines(2);
 
-            ItemAdapter adapter = new ItemAdapter();
+            ItemAdapter adapter = new ItemAdapter(
+                    String.valueOf(data.getInfo().getProductId()),
+                    String.valueOf(review.getReviewId())
+            );
             adapter.setData(review.getReviewImageAttachment());
             GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3);
             rv_image.setLayoutManager(gridLayoutManager);
@@ -109,6 +104,13 @@ public class ReviewPagerAdapter extends PagerAdapter{
 
         container.addView(view);
         return view;
+    }
+
+    private void onMostHelpfulClick() {
+        String productId = String.valueOf(data.getInfo().getProductId());
+        String shopId = String.valueOf(data.getShopInfo().getShopId());
+        String productName = data.getInfo().getProductName();
+        listener.onProductReviewClicked(productId, shopId, productName);
     }
 
     private int getRatingDrawable(int param) {
@@ -132,9 +134,14 @@ public class ReviewPagerAdapter extends PagerAdapter{
 
     private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
         private List<ReviewImageAttachment> data;
+        private String productId;
+        private String reviewId;
 
-        public ItemAdapter() {
+        public ItemAdapter(String productId,
+                           String reviewId) {
             this.data = new ArrayList<>();
+            this.productId = productId;
+            this.reviewId = reviewId;
         }
 
         public void setData(List<ReviewImageAttachment> data) {
@@ -151,7 +158,20 @@ public class ReviewPagerAdapter extends PagerAdapter{
         }
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
-            holder.bind(data.get(position));
+            ReviewImageAttachment reviewImageAttachment = data.get(position);
+            holder.bind(reviewImageAttachment);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ProductPageTracking.eventClickReviewOnMostHelpfulReview(
+                            context,
+                            productId,
+                            reviewId
+                    );
+
+                    onMostHelpfulClick();
+                }
+            });
         }
         @Override
         public int getItemCount() {

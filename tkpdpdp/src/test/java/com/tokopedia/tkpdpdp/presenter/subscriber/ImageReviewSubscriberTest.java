@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
+import com.tokopedia.gallery.viewmodel.ImageReviewListModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import org.junit.Before;
@@ -22,6 +23,9 @@ public class ImageReviewSubscriberTest {
     ProductDetailView viewListener;
 
     @Mock
+    ImageReviewListModel imageReviewListModel;
+
+    @Mock
     List<ImageReviewItem> imageReviewItems;
 
     ImageReviewSubscriber imageReviewSubscriber;
@@ -40,16 +44,18 @@ public class ImageReviewSubscriberTest {
     @Test
     public void emptyImageReviewItems_onNext_onImageReviewLoadedNotCalled(){
         when(imageReviewItems.size()).thenReturn(0);
+        when(imageReviewListModel.getImageReviewItemList()).thenReturn(imageReviewItems);
 
-        imageReviewSubscriber.onNext(imageReviewItems);
+        imageReviewSubscriber.onNext(imageReviewListModel);
         verify(viewListener, never()).onImageReviewLoaded(imageReviewItems);
     }
 
     @Test
     public void imageReviewItemsNotNullAndNotEmpty_onNext_onImageReviewLoadedCalled(){
         when(imageReviewItems.size()).thenReturn(1);
+        when(imageReviewListModel.getImageReviewItemList()).thenReturn(imageReviewItems);
 
-        imageReviewSubscriber.onNext(imageReviewItems);
+        imageReviewSubscriber.onNext(imageReviewListModel);
         verify(viewListener).onImageReviewLoaded(imageReviewItems);
     }
 }

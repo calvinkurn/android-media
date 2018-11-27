@@ -79,6 +79,8 @@ public class ProductPageTracking {
     public static final String EVENT_ACTION_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW = "click - review gallery on most helpful review";
     public static final String EVENT_LABEL_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW = "product_id: %s - review:id : %s";
     public static final String EVENT_ACTION_CLICK_FILTER_REVIEW_BY_IMAGE = "click - filter review by %s";
+    public static final String EVENT_ACTION_CLICK_IMAGE_ON_REVIEW_LIST = "click - review gallery on review list";
+    public static final String EVENT_LABEL_CLICK_IMAGE_ON_REVIEW_LIST = "product_id: %s - review_id : %s";
 
     private static String joinDash(String... s) {
         return TextUtils.join(" - ", s);
@@ -543,6 +545,26 @@ public class ProductPageTracking {
                         filterName
                 ),
                 productId
+        );
+    }
+
+    public static void eventClickImageOnReviewList(Context context,
+                                                     String productId,
+                                                     String reviewId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker =
+                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                EVENT_ACTION_CLICK_IMAGE_ON_REVIEW_LIST,
+                String.format(
+                        EVENT_LABEL_CLICK_IMAGE_ON_REVIEW_LIST,
+                        productId,
+                        reviewId
+                )
         );
     }
 }

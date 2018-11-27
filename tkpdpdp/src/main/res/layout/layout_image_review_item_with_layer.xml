@@ -2,8 +2,8 @@
 <com.tokopedia.tkpdpdp.customview.SquareCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
     app:cardCornerRadius="@dimen/dp_4"
     app:cardElevation="@dimen/dp_0"
     android:layout_margin="@dimen/dp_4">
