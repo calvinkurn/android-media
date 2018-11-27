@@ -24,7 +24,9 @@ import javax.inject.Inject;
 
 /**
  * Created by Zulfikar on 5/19/2016.
+ * use ShopSettings Module
  */
+@Deprecated
 public class ShopEditorActivity extends TActivity implements
         ShopSettingView, ShopEditorFragment.OnShopEditorFragmentListener {
 

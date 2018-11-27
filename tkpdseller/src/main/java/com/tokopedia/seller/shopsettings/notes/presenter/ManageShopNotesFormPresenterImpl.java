@@ -15,8 +15,9 @@ import java.util.HashMap;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
-
+@Deprecated
 public class ManageShopNotesFormPresenterImpl implements ManageShopNotesFormPresenter {
 
 

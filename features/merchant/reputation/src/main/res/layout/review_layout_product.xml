@@ -3,9 +3,9 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/margin_small_sm"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_8"
     android:paddingTop="@dimen/margin_small_sm"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -39,7 +39,7 @@
                 style="@style/TextView.Small.BlackSecondary"/>
 
             <TextView
-                style="@style/TextView.Small.Bold.BlackSecondary"
+                style="@style/TextView.Small.Bold"
                 android:ellipsize="end"
                 android:id="@+id/reviewer_name"
                 android:maxLines="1"
@@ -68,11 +68,12 @@
         style="@style/TextView.Small.BlackSecondary"
         android:enabled="true"
         android:id="@+id/review"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:lineSpacingExtra="21px"
         android:longClickable="true"
         tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya" />
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/dp_10"
         android:id="@+id/product_review_image"
         android:layout_height="wrap_content"
         android:layout_width="match_parent" />

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -17,18 +18,24 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.recentview.R;
+import com.tokopedia.recentview.analytics.RecentViewTracking;
 import com.tokopedia.recentview.di.DaggerRecentViewComponent;
+import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl;
 import com.tokopedia.recentview.view.listener.RecentView;
 import com.tokopedia.recentview.view.presenter.RecentViewPresenter;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
 import com.tokopedia.recentview.view.viewmodel.RecentViewProductViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * @author by nisie on 7/4/17.
@@ -36,6 +43,8 @@ import javax.inject.Inject;
 
 public class RecentViewFragment extends BaseDaggerFragment
         implements RecentView.View, WishListActionListener {
+
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     private RecyclerView recyclerView;
     private RecentViewDetailAdapter adapter;
@@ -170,6 +179,35 @@ public class RecentViewFragment extends BaseDaggerFragment
     public void onEmptyGetRecentView() {
         adapter.dismissLoading();
         adapter.showEmpty();
+    }
+
+    @Override
+    public void sendRecentViewClickTracking(RecentViewDetailProductViewModel element) {
+        RecentViewTracking.trackEventClickOnProductRecentView(getActivity(),
+                element.getRecentViewAsObjectDataLayerForClick()
+                );
+    }
+
+    @Override
+    public void sendRecentViewImpressionTracking(List<RecentViewDetailProductViewModel> recentViewModel) {
+        RecentViewTracking.trackEventImpressionOnProductRecentView(getActivity(),
+                getRecentViewAsDataLayerForImpression(recentViewModel));
+    }
+
+    public List<Object> getRecentViewAsDataLayerForImpression(List<RecentViewDetailProductViewModel> recentViewModel) {
+        List<Object> objects = new ArrayList<>();
+        for(RecentViewDetailProductViewModel model : recentViewModel){
+            objects.add(DataLayer.mapOf(
+                    "name", model.getName(),
+                    "id", model.getProductId(),
+                    "price", Integer.toString(convertRupiahToInt(String.valueOf(model.getPrice()))),
+                    "list", "/recent",
+                    "brand", DEFAULT_VALUE_NONE_OTHER,
+                    "category", "",
+                    "position", String.valueOf(model.getPositionForRecentViewTracking())
+            ));
+        }
+        return objects;
     }
 
     @Override

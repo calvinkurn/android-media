@@ -22,13 +22,14 @@ public class ShareData implements Parcelable {
     public static final String RIDE_TYPE = "Ride";
     public static final String PROMO_TYPE = "Promo";
 
-    private static final String ARG_UTM_MEDIUM = "Share";
+    public static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
     public static final String APP_SHARE_TYPE = "App";
     public static final String REFERRAL_TYPE = "Referral";
-    private static final String ARG_UTM_SOURCE = "Android";
+    public static final String ARG_UTM_SOURCE = "Android";
     public static final String FEED_TYPE = "feed";
-    public static final String GROUPCHAT_TYPE = "group_chat";
+    public static final String GROUPCHAT_TYPE = "tokopedia_play";
+    public static final String INDI_CHALLENGE_TYPE = "tokopedia_challenge";
 
     private String type = "";
     private String name;
@@ -41,6 +42,12 @@ public class ShareData implements Parcelable {
     private String id = "";
     private String shareUrl;
     private String pathSticker;
+    private String ogUrl;
+    private String ogTitle;
+    private String ogDescription;
+    private String ogImageUrl;
+    private String deepLink;
+
 
     public ShareData() {
     }
@@ -57,6 +64,11 @@ public class ShareData implements Parcelable {
         id = in.readString();
         shareUrl = in.readString();
         pathSticker = in.readString();
+        ogUrl = in.readString();
+        ogTitle = in.readString();
+        ogDescription = in.readString();
+        ogImageUrl = in.readString();
+        deepLink = in.readString();
     }
 
     @Override
@@ -72,6 +84,11 @@ public class ShareData implements Parcelable {
         dest.writeString(id);
         dest.writeString(shareUrl);
         dest.writeString(pathSticker);
+        dest.writeString(ogUrl);
+        dest.writeString(ogTitle);
+        dest.writeString(ogDescription);
+        dest.writeString(ogImageUrl);
+        dest.writeString(deepLink);
     }
 
     @Override
@@ -182,19 +199,17 @@ public class ShareData implements Parcelable {
         if (getUri() == null) {
             return "";
         }
-        String campaign = "Product%20Share";
-        if (getType() != null)
-            campaign = getType() + "%20Share";
+        String campaign = getCampaignName();
 
         String renderedUrl;
         if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
             if (getUri().contains("?")) {
-                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
+                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
                 renderedUrl = uri.toString();
             } else {
-                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
+                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
                 renderedUrl = uri.toString();
             }
         } else {
@@ -203,29 +218,11 @@ public class ShareData implements Parcelable {
         return renderedUrl;
     }
 
-    public String renderBranchShareUri(String url) {
-        if (url == null) {
-            return "";
-        }
-        String campaign = "Product%20Share";
+    public String getCampaignName() {
+        String campaign = "Product Share";
         if (getType() != null)
             campaign = getType() + "%20Share";
-
-        String renderedUrl;
-        if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
-            if (url.contains("?")) {
-                Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
-                renderedUrl = uri.toString();
-            } else {
-                Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
-                        url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign, getSource()));
-                renderedUrl = uri.toString();
-            }
-        } else {
-            renderedUrl = url;
-        }
-        return   renderedUrl;
+        return campaign;
     }
 
     public String getTextContentForBranch(String shortUrl) {
@@ -250,6 +247,46 @@ public class ShareData implements Parcelable {
         this.pathSticker = pathSticker;
     }
 
+    public String getOgUrl() {
+        return ogUrl;
+    }
+
+    public void setOgUrl(String ogUrl) {
+        this.ogUrl = ogUrl;
+    }
+
+    public String getOgTitle() {
+        return ogTitle;
+    }
+
+    public void setOgTitle(String ogTitle) {
+        this.ogTitle = ogTitle;
+    }
+
+    public String getOgDescription() {
+        return ogDescription;
+    }
+
+    public void setOgDescription(String ogDescription) {
+        this.ogDescription = ogDescription;
+    }
+
+    public String getOgImageUrl() {
+        return ogImageUrl;
+    }
+
+    public void setOgImageUrl(String ogImageUrl) {
+        this.ogImageUrl = ogImageUrl;
+    }
+
+    public String getDeepLink() {
+        return deepLink;
+    }
+
+    public void setDeepLink(String deepLink) {
+        this.deepLink = deepLink;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -262,6 +299,11 @@ public class ShareData implements Parcelable {
         private String id;
         private String shareUrl;
         private String pathSticker;
+        private String ogUrl;
+        private String ogTitle;
+        private String ogDescription;
+        private String ogImageUrl;
+        private String deepLink;
 
         private Builder() {
         }
@@ -324,6 +366,31 @@ public class ShareData implements Parcelable {
             return this;
         }
 
+        public Builder setOgUrl(String ogUrl) {
+            this.ogUrl = ogUrl;
+            return this;
+        }
+
+        public Builder setOgTitle(String ogTitle) {
+            this.ogTitle = ogTitle;
+            return this;
+        }
+
+        public Builder setOgDescription(String ogDescription) {
+            this.ogDescription = ogDescription;
+            return this;
+        }
+
+        public Builder setOgImageUrl(String ogImageUrl) {
+            this.ogImageUrl = ogImageUrl;
+            return this;
+        }
+
+        public Builder setDeepLink(String deepLink) {
+            this.deepLink = deepLink;
+            return this;
+        }
+
         public Builder but() {
             return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -341,6 +408,11 @@ public class ShareData implements Parcelable {
             shareData.setId(id);
             shareData.setShareUrl(shareUrl);
             shareData.setPathSticker(pathSticker);
+            shareData.setOgUrl(ogUrl);
+            shareData.setOgTitle(ogTitle);
+            shareData.setOgDescription(ogDescription);
+            shareData.setOgImageUrl(ogImageUrl);
+            shareData.setDeepLink(deepLink);
             return shareData;
         }
 

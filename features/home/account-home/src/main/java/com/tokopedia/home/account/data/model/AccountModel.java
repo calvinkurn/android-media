@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import com.tokopedia.navigation_common.model.DepositModel;
+import com.tokopedia.navigation_common.model.LePreapproveModel;
+import com.tokopedia.navigation_common.model.PendingCashbackModel;
 import com.tokopedia.navigation_common.model.ReputationShop;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -45,6 +47,17 @@ public class AccountModel {
     @SerializedName("tokopointsSumCoupon")
     @Expose
     private TokopointsSumCoupon tokopointsSumCoupon;
+    @SerializedName("le_preapprove")
+    @Expose
+    private LePreapproveModel lePreapprove;
+
+    @SerializedName("vcc_user_status")
+    private VccUserStatus vccUserStatus;
+
+    @SerializedName("vcc_user_balance")
+    private VccUserBalance vccUserBalance;
+
+    private PendingCashbackModel pendingCashbackModel;
 
     public Integer getIsAuthenticated() {
         return isAuthenticated;
@@ -116,5 +129,37 @@ public class AccountModel {
 
     public void setTokopointsSumCoupon(TokopointsSumCoupon tokopointsSumCoupon) {
         this.tokopointsSumCoupon = tokopointsSumCoupon;
+    }
+
+    public LePreapproveModel getLePreapprove() {
+        return lePreapprove;
+    }
+
+    public void setLePreapprove(LePreapproveModel lePreapprove) {
+        this.lePreapprove = lePreapprove;
+    }
+  
+    public VccUserStatus getVccUserStatus() {
+        return vccUserStatus;
+    }
+
+    public void setVccUserStatus(VccUserStatus vccUserStatus) {
+        this.vccUserStatus = vccUserStatus;
+    }
+
+    public VccUserBalance getVccUserBalance() {
+        return vccUserBalance;
+    }
+
+    public void setVccUserBalance(VccUserBalance vccUserBalance) {
+        this.vccUserBalance = vccUserBalance;
+    }
+
+    public PendingCashbackModel getPendingCashbackModel() {
+        return pendingCashbackModel;
+    }
+
+    public void setPendingCashbackModel(PendingCashbackModel pendingCashbackModel) {
+        this.pendingCashbackModel = pendingCashbackModel;
     }
 }

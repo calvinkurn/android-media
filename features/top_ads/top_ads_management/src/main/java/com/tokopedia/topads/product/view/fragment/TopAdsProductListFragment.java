@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;

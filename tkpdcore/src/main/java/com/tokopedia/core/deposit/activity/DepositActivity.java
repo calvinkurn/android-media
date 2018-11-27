@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -18,14 +19,19 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.deposit.presenter.DepositPresenter;
 import com.tokopedia.core.deposit.presenter.DepositPresenterImpl;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.view.fragment.MerchantSaldoPriorityFragment;
 
 /**
  * Created by Nisie on 3/30/16.
  */
 @DeepLink(Constants.Applinks.DEPOSIT)
-public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
+public class DepositActivity extends BasePresenterActivity<DepositPresenter> implements
+        DepositFragment.DepositScreenListener, MerchantSaldoPriorityFragment.InteractionListener {
 
     private static final String TAG = "DEPOSIT_FRAGMENT";
+
+    private TkpdProgressDialog tkpdProgressDialog;
 
     public static Intent createInstance(Context context) {
         return new Intent(context, DepositActivity.class);
@@ -93,13 +99,41 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == DepositFragmentPresenterImpl.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK){
-            ((DepositFragment)getFragmentManager().findFragmentByTag(TAG)).refresh();
+        if (requestCode == DepositFragmentPresenterImpl.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
+            ((DepositFragment) getFragmentManager().findFragmentByTag(TAG)).refresh();
         }
     }
 
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void showSaldoFragment(int resId, GqlDetailsResponse sellerDetails) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("seller_details", sellerDetails);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(resId, MerchantSaldoPriorityFragment.newInstance(bundle))
+                .commit();
+    }
+
+    @Override
+    public void showLoading() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        tkpdProgressDialog.setCancelable(false);
+        tkpdProgressDialog.showDialog("", "Updating Status...");
+        tkpdProgressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissLoading() {
+        if (tkpdProgressDialog == null) {
+            return;
+        }
+        tkpdProgressDialog.dismiss();
     }
 }

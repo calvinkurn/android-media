@@ -32,7 +32,7 @@ public class GmProductViewHolder extends RecyclerView.ViewHolder {
 
     TextView lastPricePakcage;
 
-    ImageView iconCheck;
+    public ImageView iconCheck;
 
     RelativeLayout layoutView;
 

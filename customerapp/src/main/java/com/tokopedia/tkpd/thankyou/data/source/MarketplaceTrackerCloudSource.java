@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
@@ -13,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import rx.Observable;
 
@@ -22,21 +24,23 @@ import rx.Observable;
 
 public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private Context context;
+    private SessionHandler sessionHandler;
     private MarketplaceTrackerApi marketplaceTrackerApi;
     private MarketplaceTrackerMapper mapper;
 
     public MarketplaceTrackerCloudSource(RequestParams requestParams,
                                          MarketplaceTrackerApi marketplaceTrackerApi,
-                                         MarketplaceTrackerMapper mapper,
+                                         SessionHandler sessionHandler,
                                          Context context) {
         super(requestParams);
         this.context = context;
+        this.sessionHandler = sessionHandler;
         this.marketplaceTrackerApi = marketplaceTrackerApi;
-        this.mapper = mapper;
     }
 
     @Override
     public Observable<Boolean> sendAnalytics() {
+        mapper = new MarketplaceTrackerMapper(sessionHandler, (List<String>) requestParams.getObject(ThanksTrackerConst.Key.SHOP_TYPES));
         return marketplaceTrackerApi.getTrackingData(getRequestPayload()).map(mapper);
     }
 

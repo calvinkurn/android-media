@@ -1,16 +1,20 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.home.account.AccountConstants;
 
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -23,14 +27,9 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 
 /**
@@ -40,6 +39,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         AccountItemListener {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
+    public static final String OVO = "OVO";
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
@@ -73,7 +73,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
                     (getContext()));
         } else if (applink.equals(AccountConstants.Navigation.FEATURED_PRODUCT)
-            && getContext().getApplicationContext() instanceof AccountHomeRouter) {
+                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             Intent launchIntent = getContext().getPackageManager()
                     .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
             if (launchIntent != null) {
@@ -81,6 +81,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
+        } else if (applink.equals(AccountConstants.Navigation.MITRA_TOPPERS)
+                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getMitraToppersActivityIntent
+                    (getContext()));
         }
 
         return false;
@@ -166,9 +170,59 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTokopediaPayItemClicked(String label, String applink) {
+    public void onTokopediaPayLeftItemClicked(String label, String applink, TokopediaPayBSModel bsData,
+                                              boolean isLinked, String walletType) {
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
-        openApplink(applink);
+
+        if (walletType.equals(OVO) && !isLinked) {
+            sendTrackingOvoActivation();
+        }
+
+        if (applink != null && applink.startsWith("http")) {
+            openApplink(String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    applink));
+        } else if (applink != null && applink.startsWith("tokopedia")) {
+            openApplink(applink);
+        }
+    }
+
+    @Override
+    public void onTokopediaPayRightItemClicked(String label, String applink, TokopediaPayBSModel bsData) {
+        sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
+
+        if (applink != null && applink.startsWith("http")) {
+            openApplink(String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    applink));
+        } else if (applink != null && applink.startsWith("tokopedia")) {
+            openApplink(applink);
+        } else {
+            if (getContext() == null
+                    || bsData == null
+                    || bsData.isInvalid()) {
+                return;
+            }
+
+            BottomSheetView toolTip = new BottomSheetView(getContext());
+            toolTip.renderBottomSheet(new BottomSheetView.BottomSheetField
+                    .BottomSheetFieldBuilder()
+                    .setTitle(bsData.getTitle())
+                    .setBody(bsData.getBody())
+                    .setCloseButton(bsData.getButtonText() == null || bsData.getButtonText().trim().isEmpty() ? getString(R.string.error_no_password_no) : bsData.getButtonText())
+                    .build());
+
+            if (URLUtil.isValidUrl(bsData.getButtonRedirectionUrl())) {
+                toolTip.setBtnCloseOnClick(dialogInterface -> {
+                    toolTip.cancel();
+                    openApplink(String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            bsData.getButtonRedirectionUrl()));
+                });
+            }
+
+            toolTip.show();
+        }
     }
 
     @Override
@@ -187,8 +241,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onGMInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).
-                    goToGMSubscribe(getContext());
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, AccountHomeUrl.GOLD_MERCHANT));
         }
     }
 
@@ -209,7 +262,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onLearnMoreSellerClicked() {
         openApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountConstants.Url.MORE_SELLER));
+                AccountHomeUrl.MORE_SELLER));
     }
 
     private void sendTracking(String title, String section, String item) {
@@ -223,5 +276,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                 title.toLowerCase(),
                 section.toLowerCase(),
                 item.toLowerCase());
+    }
+
+    private void sendTrackingOvoActivation() {
+        if (accountAnalytics == null)
+            return;
+
+        accountAnalytics.eventClickActivationOvoMyAccount();
     }
 }

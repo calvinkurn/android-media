@@ -24,7 +24,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -37,11 +36,12 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneral
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.CatalogAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogAdapterTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -49,6 +49,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class CategoryCatalogFragment extends BrowseSectionFragment implements
-        CatalogFragmentContract.View, ItemClickListener, TopAdsItemClickListener,
+        CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
         TopAdsListener, SearchSectionGeneralAdapter.OnItemChangeView {
 
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
@@ -82,6 +83,8 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Inject
     CatalogPresenter presenter;
+    @Inject
+    UserSessionInterface userSession;
 
     public static CategoryCatalogFragment createInstanceByQuery(String query) {
         CategoryCatalogFragment fragment = new CategoryCatalogFragment();
@@ -236,6 +239,16 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     }
 
     @Override
+    public boolean isUserHasLogin() {
+        return userSession.isLoggedIn();
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.getUserId();
+    }
+
+    @Override
     public void onBannerAdsClicked(String appLink) {
         if (!TextUtils.isEmpty(appLink)) {
             ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
@@ -256,7 +269,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
 
@@ -475,7 +488,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getContext()));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
@@ -486,14 +499,14 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getDepartmentId());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getContext()));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         enrichWithFilterAndSortParams(adsParams);
         topAdsConfig.setTopAdsParams(adsParams);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
     }
 
     @Override
-    public void onTopAdsLoaded() {
+    public void onTopAdsLoaded(List<Item> list) {
 
     }
 
@@ -508,7 +521,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
+        data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);

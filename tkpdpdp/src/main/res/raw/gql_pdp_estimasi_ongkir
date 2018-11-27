@@ -11,6 +11,16 @@ query RateEstimate($weight: Float!, $domain: String!) {
             lat
             long
             phone
+            addr_name
+           }
+           shop {
+               district_name
+               postal_code
+               origin
+               addr_street
+               latitude
+               longitude
+               city_name
           }
           rates {
             id

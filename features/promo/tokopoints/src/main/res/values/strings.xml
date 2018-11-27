@@ -1,5 +1,7 @@
 <resources>
     <string name="tp_title_tokopoints">TokoPoints</string>
+    <string name="tp_title_detail">Detail Kupon</string>
+    <string name="tp_title_send_coupon">Kirim Kupon</string>
     <string name="tp_label_coupon">Kupon</string>
     <string name="tp_mes_coupon_part_2">akan digunakan pada transaksi selanjutnya.</string>
     <string name="tp_label_later">Nanti Saja</string>
@@ -17,8 +19,9 @@
     <string name="tp_label_know_tokopoints">Apa itu TokoPoints?</string>
     <string name="tp_label_my_membership">Membership Saya</string>
     <string name="tp_label_see_membership">Lihat Status Membership</string>
-    <string name="tp_label_see_loyalty">Loyalty Saya</string>
-    <string name="tp_label_see_point">Points Saya</string>
+    <string name="tp_label_see_loyalty">Loyalty</string>
+    <string name="tp_label_membership">Status membership</string>
+    <string name="tp_label_see_point">Points</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
@@ -36,8 +39,29 @@
     <string name="tp_label_too_many_access">Failed to Redeem</string>
     <string name="tp_label_wait">Tunggu beberapa saat lagi</string>
     <string name="tp_label_exchange_point">Tukar Points</string>
+    <string name="tp_label_how_to_use">Cara Pakai</string>
+    <string name="tp_label_tnc">Ketentuan</string>
+    <string name="tp_label_min_exchange">Minimal transaksi:</string>
+    <string name="tp_label_min_exchange_sort">Min. transaksi:</string>
+    <string name="tp_label_refresh_repeat">Refresh Ulang</string>
+    <string name="tp_label_send">Kirim</string>
+    <string name="tp_label_email">Email Penerima</string>
+    <string name="tp_label_notes">Tulis Pesan (Opsional)</string>
+    <string name="tp_label_send_coupon_as_gift">Kirim Kupon sebagai Hadiah</string>
+    <string name="tp_label_for">Untuk :</string>
+    <string name="tp_label_message">Pesan :</string>
+    <string name="tp_label_send_now">Kirim Sekarang</string>
+    <string name="tp_send_gift_success_title">Kupon Berhasil Terkirim</string>
+    <string name="tp_send_gift_success_message">Hore, hadiah Kupon yang kamu kirim sudah sampai di penerima!</string>
+    <string name="tp_send_gift_failed_title">Kupon Gagal Dikirim</string>
+    <string name="tp_send_gift_failed_message">Oops, ada yang tidak beres. Coba ulangi beberapa saat lagi.</string>
 
     <string name="tp_default_empty_coupons_title">Anda tidak memiliki Kupon untuk kategori ini.</string>
     <string name="tp_default_empty_coupons_subtitle">Tukar Points Anda dengan Kupon di halaman TokoPoints.</string>
+    <string name="tp_mes_copy_code">Copied to clipboard.</string>
+    <string name="tp_label_copy_code">Salin</string>
+    <string name="tp_label_barcode">Barcode</string>
+    <string name="tp_label_qrcode">QR Code</string>
+    <string name="tp_label_see_point_saya">Points Saya</string>
 
 </resources>

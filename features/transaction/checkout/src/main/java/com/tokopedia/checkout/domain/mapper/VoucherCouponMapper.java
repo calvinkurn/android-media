@@ -90,6 +90,7 @@ public class VoucherCouponMapper implements IVoucherCouponMapper {
             dataVoucher.setVoucherNoOtherPromotion(dataResponse.getDataVoucher().getVoucherNoOtherPromotion());
             dataVoucher.setVoucherStatus(dataResponse.getDataVoucher().getVoucherStatus());
             dataVoucher.setVoucherPromoDesc(dataResponse.getDataVoucher().getVoucherPromoDesc());
+            dataVoucher.setIsCoupon(dataResponse.getDataVoucher().getIsCoupon());
             promoCodeCartShipmentData.setDataVoucher(dataVoucher);
         }
         return promoCodeCartShipmentData;

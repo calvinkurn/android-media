@@ -46,7 +46,7 @@ public class ChangeInactivePhonePresenter extends BaseDaggerPresenter<ChangeInac
         check = m.matches();
 
         if (TextUtils.isEmpty(phoneNumber)) {
-            getView().showErrorPhoneNumber(R.string.error_field_required);
+            getView().showErrorPhoneNumber(R.string.phone_field_empty);
             isValid = false;
         } else if (check && phoneNumber.length() < 8) {
             getView().showErrorPhoneNumber(R.string.phone_number_invalid_min_8);

@@ -4,17 +4,21 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.util.IntegerUtil;
+import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 
 import java.util.List;
 
 import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.GlobalNavConstant.BUYER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
 import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
@@ -27,6 +31,8 @@ import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
 import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
 import static com.tokopedia.navigation.GlobalNavConstant.SELLER_INFO;
 import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
 
 /**
  * Created by meta on 03/07/18.
@@ -86,7 +92,7 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
         }
     }
 
-    public void updateValue(NotificationsModel data) {
+    public void updateValue(NotificationsModel data, NotifcenterUnread unread) {
         if (this.items == null)
             return;
 
@@ -109,6 +115,8 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
                             child.setBadge(data.getBuyerOrder().getShipped());
                         } else if (child.getId() == SAMPAI_TUJUAN) {
                             child.setBadge(data.getBuyerOrder().getArriveAtDestination());
+                        } else if (child.getId() == BUYER_INFO) {
+                            child.setBadge(getNotifCenterUnread(unread));
                         }
                     } else if (item.getId() == PENJUALAN) {
                         if (child.getId() == PESANAN_BARU) {
@@ -133,5 +141,15 @@ public class NotificationAdapter extends BaseListAdapter<DrawerNotification, Bas
             }
         }
         notifyDataSetChanged();
+    }
+
+    private static Integer getNotifCenterUnread(NotifcenterUnread unread) {
+        if (unread == null) {
+            return 0;
+        }
+
+        return TextUtils.equals(unread.getNotifUnread(), NOTIF_99)
+                ? NOTIF_99_NUMBER
+                : IntegerUtil.tryParseInt(unread.getNotifUnread());
     }
 }

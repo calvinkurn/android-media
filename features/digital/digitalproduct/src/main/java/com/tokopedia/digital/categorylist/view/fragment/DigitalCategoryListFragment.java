@@ -14,6 +14,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -22,21 +25,23 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.repository.DigitalCategoryListRepository;
@@ -57,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import retrofit2.Retrofit;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
@@ -105,7 +111,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
     private boolean fromAppShortcut = false;
     private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
-
     private RemoteConfig remoteConfig;
 
     public static DigitalCategoryListFragment newInstance() {
@@ -169,16 +174,24 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     protected void initialPresenter() {
-        MojitoService mojitoService = new MojitoService();
+
         ICategoryDigitalListDataMapper mapperData = new CategoryDigitalListDataMapper();
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        Retrofit retrofit = RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.MOJITO_DOMAIN)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(
+                                OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
+                        )
+                        .buildClientNoAuth())
+                .build();
+        DigitalCategoryListApi digitalCategoryListApi = retrofit.create(DigitalCategoryListApi.class);
         presenter = new DigitalCategoryListPresenter(
                 new DigitalCategoryListInteractor(
                         compositeSubscription,
-                        new DigitalCategoryListRepository(
-                                mojitoService, new GlobalCacheManager(), mapperData,
+                        new DigitalCategoryListRepository(digitalCategoryListApi
+                                , new GlobalCacheManager(), mapperData,
                                 sessionHandler)), this);
     }
 
@@ -412,7 +425,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
-        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName());
+        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName().toLowerCase());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
                 )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {
@@ -460,7 +473,18 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onRefresh(View view) {
-        if (refreshHandler.isRefreshing()) presenter.processGetDigitalCategoryList();
+        if (refreshHandler.isRefreshing()) {
+            presenter.processGetDigitalCategoryList(getDeviceAndAppVersion());
+        }
+    }
+
+    private String getDeviceAndAppVersion() {
+        if (GlobalConfig.isCustomerApp()) {
+            return String.format(getString(R.string.digital_list_device_consumer_app_prefix), GlobalConfig.VERSION_NAME);
+        } else if (GlobalConfig.isSellerApp()) {
+            return String.format(getString(R.string.digital_list_device_seller_app_prefix), GlobalConfig.VERSION_NAME);
+        }
+        return "";
     }
 
     private void renderErrorStateData(String message) {
@@ -474,7 +498,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         switch (data.getTypeMenu()) {
             case TRANSACTION:
                 if (isDigitalOmsEnable()) {
-                    startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
+                    if (GlobalConfig.isCustomerApp()) {
+                        RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+                    } else {
+                        startActivity(((IDigitalModuleRouter) getActivity().getApplication()).
+                                getOrderListIntent(getActivity()));
+                    }
                     break;
                 }
             default:

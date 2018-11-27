@@ -8,8 +8,9 @@ import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
-
+@Deprecated
 public interface ManageShopNotesView {
     void showLoading();
 

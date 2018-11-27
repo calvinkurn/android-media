@@ -5,5 +5,4 @@
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:background="@color/white"
-    android:paddingBottom="@dimen/dp_16"
     android:nestedScrollingEnabled="false" />

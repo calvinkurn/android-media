@@ -8,11 +8,16 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBannerOuter;
+import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterOuter;
+import com.tokopedia.tokopoints.view.model.CatalogSubCategory;
+import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -42,7 +47,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
     }
 
     @Override
-    public void getHomePageData() {
+    public void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire) {
         if (getView() == null) {
             return;
         }
@@ -50,20 +55,30 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         mGetHomePageData.clearRequest();
         getView().showLoader();
 
-        //Adding banner query
-        Map<String, Object> variablesBanner = new HashMap<>();
-        variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
-        GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
-                CatalogBannerOuter.class,
-                variablesBanner);
-        mGetHomePageData.addRequest(graphqlRequestBanners);
+        if (isBannerRequire) {
+            Map<String, Object> variablesBanner = new HashMap<>();
+            variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
+            GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
+                    CatalogBannerOuter.class,
+                    variablesBanner);
+            mGetHomePageData.addRequest(graphqlRequestBanners);
+        }
+
+        GraphqlRequest graphqlRequestTokenDetail = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
+                TokoPointDetailEntity.class);
+        mGetHomePageData.addRequest(graphqlRequestTokenDetail);
 
         Map<String, Object> variableFilter = new HashMap<>();
-        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, "");
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_CATEGORY, slugCategory);
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_SUB_CATEGORY, slugSubCategory);
         GraphqlRequest graphqlRequestFilter = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_filter),
                 CatalogFilterOuter.class,
                 variableFilter);
         mGetHomePageData.addRequest(graphqlRequestFilter);
+
+        GraphqlRequest graphqlRequestEgg = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
+                TokenDetailOuter.class);
+        mGetHomePageData.addRequest(graphqlRequestEgg);
 
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -91,6 +106,17 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                     getView().onErrorFilter(null);
                 } else {
                     getView().onSuccessFilter(catalogFilterOuter.getFilter());
+                }
+
+                //handling for lucky egg data
+                TokenDetailOuter tokenDetail = graphqlResponse.getData(TokenDetailOuter.class);
+                TokoPointDetailEntity data = graphqlResponse.getData(TokoPointDetailEntity.class);
+                if (tokenDetail != null
+                        && tokenDetail.getTokenDetail() != null
+                        && tokenDetail.getTokenDetail().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS
+                        && data != null
+                        && data.getTokoPoints() != null) {
+                    getView().onSuccessTokenDetail(tokenDetail.getTokenDetail(), data.getTokoPoints().getLobs());
                 }
             }
         });
@@ -131,7 +157,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                     getView().onErrorPoint(null);
                 } else {
                     if (pointDetailEntity.getTokoPoints().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                        getView().onSuccessPoints(pointDetailEntity.getTokoPoints().getStatus().getPoints().getRewardStr());
+                        getView().onSuccessPoints(pointDetailEntity.getTokoPoints().getStatus().getPoints().getRewardStr(),
+                                pointDetailEntity.getTokoPoints().getStatus().getPoints().getReward(),
+                                pointDetailEntity.getTokoPoints().getStatus().getTier().getNameDesc(),
+                                pointDetailEntity.getTokoPoints().getStatus().getTier().getEggImageUrl());
                     }
                 }
 
@@ -139,8 +168,17 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         });
     }
 
-    @Override
-    public int getSelectedCategoryId() {
-        return getView().getSelectedCategoryId();
+    public String getCategoryName(List<CatalogSubCategory> catalogCategories, int selectedCategoryId) {
+        for (CatalogSubCategory each : catalogCategories) {
+            if (each == null) {
+                continue;
+            }
+
+            if (selectedCategoryId == each.getId()) {
+                return each.getName();
+            }
+        }
+
+        return "";
     }
 }

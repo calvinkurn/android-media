@@ -16,9 +16,10 @@
 
         <ImageView
             android:id="@+id/image_shop"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
-            android:padding="@dimen/dp_8"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:minHeight="@dimen/dp_50"
+            android:minWidth="@dimen/dp_50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_big_notif_customerapp" />

@@ -22,4 +22,5 @@ public interface FlightSearchComponent {
     void inject(FlightSearchReturnFragment flightSearchFragment);
 
     void inject(FlightSearchFilterActivity flightSearchFilterActivity);
+
 }

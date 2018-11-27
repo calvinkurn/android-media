@@ -22,12 +22,14 @@ public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewMod
     private final TextView etalasePickerItemName;
     private final ImageView etalasePickerRadioButton;
     private final ImageView etalaseBadgeImageView;
+    private final TextView tvCount;
 
     public ShopEtalaseViewHolder(View itemView) {
         super(itemView);
         etalasePickerItemName = itemView.findViewById(R.id.text_view_name);
         etalasePickerRadioButton = itemView.findViewById(R.id.image_view_etalase_checked);
         etalaseBadgeImageView = itemView.findViewById(R.id.image_view_etalase_badge);
+        tvCount = itemView.findViewById(R.id.tv_count);
     }
 
     @Override
@@ -45,6 +47,14 @@ public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewMod
             etalasePickerRadioButton.setVisibility(View.VISIBLE);
         } else {
             etalasePickerRadioButton.setVisibility(View.GONE);
+        }
+
+        if (shopEtalaseViewModel.getEtalaseCount() > 0) {
+            tvCount.setText(getString(R.string.x_product,
+                    String.valueOf(shopEtalaseViewModel.getEtalaseCount())));
+            tvCount.setVisibility(View.VISIBLE);
+        } else {
+            tvCount.setVisibility(View.GONE);
         }
     }
 }

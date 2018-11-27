@@ -18,7 +18,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.pms.payment.view.activity.PaymentListActivity;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -34,7 +33,6 @@ import javax.inject.Inject;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;

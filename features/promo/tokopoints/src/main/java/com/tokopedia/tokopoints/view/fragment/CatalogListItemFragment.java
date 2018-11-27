@@ -19,19 +19,19 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.ArrayList;
@@ -53,7 +53,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private ViewFlipper mContainer;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
-    private RemoteConfig mRemoteConfig;
     private long mRefreshTime;
     private Timer mTimer;
     private Handler mHandler = new Handler();
@@ -75,11 +74,12 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Inject
     public CatalogListItemPresenter mPresenter;
 
-    public static Fragment newInstance(int categoryId, int currentSortType) {
+    public static Fragment newInstance(int categoryId, int subCategoryId, boolean isPointsAvailable) {
         Fragment fragment = new CatalogListItemFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_CATEGORY_ID, categoryId);
-        bundle.putInt(ARGS_SORT_TYPE, currentSortType);
+        bundle.putInt(CommonConstant.ARGS_CATEGORY_ID, categoryId);
+        bundle.putInt(CommonConstant.ARGS_SUB_CATEGORY_ID, subCategoryId);
+        bundle.putBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, isPointsAvailable);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -93,6 +93,11 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
+        if(getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
+            mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_membership_and_egg));
+        }else{
+            mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
+        }
         mContainer = rootView.findViewById(R.id.container);
         return rootView;
     }
@@ -108,7 +113,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.text_failed_action) {
-            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSortType());
+            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSubCategoryId());
         } else if (view.getId() == R.id.text_empty_action) {
             openWebView(CommonConstant.WebLink.INFO);
         }
@@ -162,7 +167,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             mAdapter.notifyDataSetChanged();
         } else {
             mAdapter = new CatalogListAdapter(mPresenter, items);
-            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14)));
             mRecyclerViewCatalog.setAdapter(mAdapter);
         }
 
@@ -199,6 +206,22 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
     }
 
+    @Override
+    public int getCurrentSubCategoryId() {
+        if (getArguments() != null) {
+            return getArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID);
+        }
+
+        return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
+    }
+
+    public boolean getPointsAvailability(){
+        if(getArguments()!=null){
+            return getArguments().getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false);
+        }
+        return false;
+    }
+
     public void showRedeemCouponDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
         adb.setTitle(R.string.tp_label_use_coupon);
@@ -214,9 +237,19 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         AlertDialog.Builder builder = adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
             //Call api to validate the coupon
             mPresenter.redeemCoupon(code, cta);
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
         });
         adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
-
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                    title);
         });
         AlertDialog dialog = adb.create();
         dialog.show();
@@ -225,18 +258,29 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     public void showConfirmRedeemDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
-        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> showRedeemCouponDialog(cta, code, title));
+        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> {
+            showRedeemCouponDialog(cta, code, title);
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
+        });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            //Open webview with lihat kupon
-            openWebView(CommonConstant.WebLink.SEE_COUPON);
+            startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
+                    "");
         });
 
         adb.setTitle(R.string.tp_label_successful_exchange);
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
-
     }
 
     public void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode) {
@@ -274,24 +318,71 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
         if (labelNegative != null && !labelNegative.isEmpty()) {
             adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
-
+                switch (resCode) {
+                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                                "");
+                        break;
+                    case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                                "");
+                        break;
+                    case CommonConstant.CouponRedemptionCode.SUCCESS:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
+                                title);
+                        break;
+                    default:
+                }
             });
         }
 
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                            getAppContext()));
+                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
                     dialogInterface.cancel();
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                     startActivity(new Intent(getAppContext(), ProfileCompletionActivity.class));
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.SUCCESS:
                     mPresenter.startSaveCoupon(item);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                            title);
+
                     break;
                 default:
                     dialogInterface.cancel();
@@ -318,7 +409,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                 CatalogsValueEntity item = mAdapter.getItems().get(i);
                 if (each.getCatalogID() == item.getId()) {
                     item.setDisabled(each.isDisabled());
-                    item.setDisabledButton(each.isDisabled());
+                    item.setDisabledButton(each.isDisabledButton());
                     item.setUpperTextDesc(each.getUpperTextDesc());
                     item.setQuota(each.getQuota());
                 }
@@ -362,8 +453,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     private void fetchRemoteConfig() {
-        mRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        mRefreshTime = mRemoteConfig.getLong(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
+        mRefreshTime = ((TokopointRouter) getAppContext())
+                .getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
 
     @Override
@@ -419,4 +510,30 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         dialog.show();
         decorateDialog(dialog);
     }
+
+    @Override
+    public void onPreValidateError(String title, String message) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
+
+        adb.setTitle(title);
+        adb.setMessage(message);
+
+        adb.setPositiveButton(R.string.tp_label_ok, (dialogInterface, i) -> {
+                }
+        );
+
+        AlertDialog dialog = adb.create();
+        dialog.show();
+        decorateDialog(dialog);
+    }
+
+    @Override
+    public void gotoSendGiftPage(int id, String title, String pointStr) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
+        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
+        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
+        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+    }
 }
+

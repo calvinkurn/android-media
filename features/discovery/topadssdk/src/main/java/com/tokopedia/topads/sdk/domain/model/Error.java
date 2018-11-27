@@ -1,5 +1,10 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,10 +12,13 @@ import org.json.JSONObject;
  * @author by errysuprayogi on 4/10/17.
  */
 
-public class Error {
+public class Error implements Parcelable {
 
+    @SerializedName(KEY_CODE)
     private int code;
+    @SerializedName(KEY_TITLE)
     private String title;
+    @SerializedName(KEY_DETAIL)
     private String detail;
 
     private static final String KEY_CODE = "code";
@@ -31,6 +39,36 @@ public class Error {
             setDetail(object.getString(KEY_DETAIL));
         }
     }
+
+    protected Error(Parcel in) {
+        code = in.readInt();
+        title = in.readString();
+        detail = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(code);
+        dest.writeString(title);
+        dest.writeString(detail);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Error> CREATOR = new Creator<Error>() {
+        @Override
+        public Error createFromParcel(Parcel in) {
+            return new Error(in);
+        }
+
+        @Override
+        public Error[] newArray(int size) {
+            return new Error[size];
+        }
+    };
 
     public int getCode() {
         return code;

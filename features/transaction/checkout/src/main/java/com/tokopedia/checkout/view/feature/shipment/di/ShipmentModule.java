@@ -13,8 +13,12 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
+import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
@@ -28,6 +32,8 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
@@ -113,9 +119,40 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    GetShipmentAddressFormOneClickShipementUseCase provideGetShipmentAddressFormOneClickShipmentUseCase(
+            ICartRepository cartRepository, IShipmentMapper shipmentMapper) {
+        return new GetShipmentAddressFormOneClickShipementUseCase(cartRepository, shipmentMapper);
+    }
+
+    @Provides
+    @ShipmentScope
     CheckPromoCodeCartListUseCase provideCheckPromoCodeCartListUseCase(ICartRepository cartRepository,
                                                                        IVoucherCouponMapper voucherCouponMapper) {
         return new CheckPromoCodeCartListUseCase(cartRepository, voucherCouponMapper);
+    }
+
+    @Provides
+    @ShipmentScope
+    SaveShipmentStateUseCase provideSaveShipmentStateUseCase(ICartRepository iCartRepository) {
+        return new SaveShipmentStateUseCase(iCartRepository);
+    }
+
+    @Provides
+    @ShipmentScope
+    ShippingDurationConverter provideShippingDurationConverter() {
+        return new ShippingDurationConverter();
+    }
+
+    @Provides
+    @ShipmentScope
+    GetCourierRecommendationUseCase provideGetCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
+        return new GetCourierRecommendationUseCase(shippingDurationConverter);
+    }
+
+    @Provides
+    @ShipmentScope
+    ShippingCourierConverter provideShippingCourierConverter() {
+        return new ShippingCourierConverter();
     }
 
     @Provides
@@ -125,14 +162,21 @@ public class ShipmentModule {
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
                                                         CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                        GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                                                         CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                         EditAddressUseCase editAddressUseCase,
                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
-                                                        ChangeShippingAddressUseCase changeShippingAddressUseCase) {
+                                                        ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                                                        SaveShipmentStateUseCase saveShipmentStateUseCase,
+                                                        GetRatesUseCase getRatesUseCase,
+                                                        GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+                                                        ShippingCourierConverter shippingCourierConverter) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
                 checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
-                checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase,
-                changeShippingAddressUseCase, shipmentAnalyticsActionListener);
+                getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
+                editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
+                saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
+                shippingCourierConverter, shipmentAnalyticsActionListener);
     }
 
     @Provides
@@ -143,13 +187,15 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    ShipmentAdapter provideShipmentAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter) {
-        return new ShipmentAdapter(shipmentAdapterActionListener, shipmentDataRequestConverter);
+    RatesDataConverter provideRatesDataConverter() {
+        return new RatesDataConverter();
     }
 
     @Provides
     @ShipmentScope
-    RatesDataConverter provideRatesDataConverter() {
-        return new RatesDataConverter();
+    ShipmentAdapter provideShipmentAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter,
+                                           RatesDataConverter ratesDataConverter) {
+        return new ShipmentAdapter(shipmentAdapterActionListener, shipmentDataRequestConverter, ratesDataConverter);
     }
+
 }

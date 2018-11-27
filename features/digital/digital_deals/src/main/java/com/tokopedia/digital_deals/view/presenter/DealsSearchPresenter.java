@@ -13,6 +13,7 @@ import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
+import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
@@ -29,8 +30,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-
-;
 
 
 public class DealsSearchPresenter
@@ -59,7 +58,7 @@ public class DealsSearchPresenter
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
         Location location = Utils.getSingletonInstance().getLocation(getView().getActivity());
-        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
+        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
         getSearchDealsListRequestUseCase.setRequestParams(requestParams);
         getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -89,8 +88,11 @@ public class DealsSearchPresenter
 
     @Override
     public void initialize() {
-        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
-        getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+//        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
+        mTopDeals = TopDealsCacheHandler.init().getTopDeals();
+        if (mTopDeals != null && mTopDeals.size() > 0) {
+            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+        }
     }
 
     @Override

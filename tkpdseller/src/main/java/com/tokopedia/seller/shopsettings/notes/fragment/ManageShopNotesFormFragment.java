@@ -27,7 +27,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
+@Deprecated
 public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageShopNotesFormPresenter>
         implements ManageShopNoteFormView {
 

@@ -13,6 +13,7 @@ import com.tokopedia.kol.feature.post.domain.model.KolProfileModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,8 @@ public class GetProfileKolDataMapper
         for (PostKolData postKolData : postKol.postKolData) {
             PostKolContent content = getPostKolContent(postKolData);
             TagsFeedKol tag = getKolTag(content);
+            List<String> imageList = new ArrayList<>();
+            imageList.add(getImageUrl(content));
 
             KolPostViewModel kolPostViewModel = new KolPostViewModel(
                     postKolData.id != null ? postKolData.id : 0,
@@ -60,13 +63,14 @@ public class GetProfileKolDataMapper
                     postKolData.createTime != null ? postKolData.createTime : "",
                     postKolData.showComment != null ? postKolData.showComment : true,
                     postKolData.showLike != null ? postKolData.showLike : true,
-                    getImageUrl(content),
+                    imageList,
                     getTagId(tag),
                     "",
                     getTagType(tag),
                     getTagCaption(tag),
                     !TextUtils.isEmpty(getTagLink(tag)) ? getTagLink(tag) : getTagUrl(tag)
             );
+            kolPostViewModel.setShowTopShadow(true);
             kolPostViewModels.add(kolPostViewModel);
         }
         return new KolProfileModel(kolPostViewModels, postKol.lastCursor);

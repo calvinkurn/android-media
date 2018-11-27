@@ -62,6 +62,11 @@ public class AlbumLoader extends CursorLoader {
                     + " AND " + BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
                     + ") GROUP BY (bucket_id";
 
+    private static final String SELECTION_VIDEO_ONLY =
+            MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                    + ") GROUP BY (bucket_id";
+
     private static final String[] SELECTION_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
@@ -69,6 +74,10 @@ public class AlbumLoader extends CursorLoader {
 
     private static final String[] SELECTION_ARGS_IMAGE_ONLY = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+    };
+
+    private static final String[] SELECTION_ARGS_VIDEO_ONLY = {
+            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
     };
 
     private static final String BUCKET_ORDER_BY = "datetaken DESC";
@@ -83,6 +92,9 @@ public class AlbumLoader extends CursorLoader {
         if (galleryType == GalleryType.IMAGE_ONLY) {
             selection = SELECTION_IMAGE_ONLY;
             selectionArgs = SELECTION_ARGS_IMAGE_ONLY;
+        } else if (galleryType == GalleryType.VIDEO_ONLY) {
+            selection = SELECTION_VIDEO_ONLY;
+            selectionArgs = SELECTION_ARGS_VIDEO_ONLY;
         } else {
             selection = SELECTION;
             selectionArgs = SELECTION_ARGS;

@@ -24,9 +24,17 @@ def getAPKArchiveFolder(variant) {
     return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
 }
 
+def isProduction() {
+    return project.hasProperty('tkpdBuildType') && tkpdBuildType == "production";
+}
+
+def isAlpha() {
+    return project.hasProperty('tkpdBuildType') && tkpdBuildType == "alpha";
+}
+
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
-            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
+    return gradle.startParameter.taskNames.contains("assembleLiveProdRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit")
 }
 
 def allowDistribution() {
@@ -38,6 +46,10 @@ def allowDistribution() {
 
 def allowProguard() {
     return project.hasProperty('tkpdBuildType')
+}
+
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
 }
 
 def getTkpdVersionCode() {
@@ -91,8 +103,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 229001101;
-        defaultVersionName = "2.29";
+        defaultVersionCode = 307001101;
+        defaultVersionName = "3.7";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -115,6 +127,7 @@ android {
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
             assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
+            jniLibs.srcDirs = ["jniLibs"]
         }
 
         String sharedTestDir = 'src/sharedTest/java'
@@ -149,6 +162,9 @@ android {
             ext.enableHansel=false
         }
         release {
+            if (devMode()) {
+                signingConfig signingConfigs.debug
+            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -163,6 +179,7 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+
             if (allowSplit()) {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
@@ -175,12 +192,6 @@ android {
                                 archiveAPK(variant, output);
                             }
                         }
-                    }
-                }
-            } else {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100);
                     }
                 }
             }
@@ -213,11 +224,12 @@ android {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
         resConfigs "en", "id"
+
     }
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
@@ -231,8 +243,8 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
-    // Specifies two flavor dimensions.
-    flavorDimensions "tier"
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
 
     productFlavors {
         live {
@@ -241,6 +253,19 @@ android {
         staging {
             dimension "tier"
         }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+}
+
+afterEvaluate {
+    dependencies {
+        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
@@ -251,9 +276,15 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.explore)
+    implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
@@ -261,11 +292,11 @@ dependencies {
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.tokoCash)
     implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.inbox)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.flightDbFlow)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
@@ -277,12 +308,11 @@ dependencies {
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
-    implementation project(rootProject.ext.features.districtrecommendation)
+    implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
-    implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
@@ -290,6 +320,7 @@ dependencies {
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.settingbank)
@@ -300,17 +331,31 @@ dependencies {
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.explore)
+    implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.train)
+    implementation project(rootProject.ext.features.browse)
+    implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
+<<<<<<< HEAD
     implementation project(rootProject.ext.features.mybills)
 
+=======
+    implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.phoneVerification)
+    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.sessioncommon)
+>>>>>>> master
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
+
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
@@ -327,10 +372,16 @@ dependencies {
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.bcaOneClick
+
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
 
@@ -339,6 +390,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation project(rootProject.ext.features.train)
+    implementation project(rootProject.ext.features.paymentSetting)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -374,7 +426,6 @@ dependencies {
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    implementation rootProject.ext.miscDependencies.sendBird
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.reactNative
@@ -388,9 +439,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation(rootProject.ext.miscDependencies.trueCaller) {
-        exclude group: 'com.android.support'
-    }
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -449,6 +497,7 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.challenges)
 }
 
 

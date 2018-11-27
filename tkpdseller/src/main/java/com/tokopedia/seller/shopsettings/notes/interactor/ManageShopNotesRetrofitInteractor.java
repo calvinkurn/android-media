@@ -10,8 +10,9 @@ import java.util.Map;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
-
+@Deprecated
 public interface ManageShopNotesRetrofitInteractor {
     void getShopNotes(@NonNull Context context, @NonNull Map<String, String> params,
                       @NonNull GetShopNotesListener listener);

@@ -20,8 +20,9 @@ import java.util.List;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
-
+@Deprecated
 public class ShopNotesAdapter extends BaseLinearRecyclerViewAdapter {
 
     private static final int VIEW_NOTE = 100;

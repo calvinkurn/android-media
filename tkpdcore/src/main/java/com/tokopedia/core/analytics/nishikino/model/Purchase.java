@@ -36,6 +36,15 @@ public class Purchase {
     private String userId;
     private String event;
     private String paymentStatus;
+    private String eventCategory;
+    private String eventLabel;
+    private String shopType;
+
+    public String getItemPrice() {
+        return itemPrice;
+    }
+
+    private String itemPrice;
 
     public Purchase() {
 
@@ -47,6 +56,14 @@ public class Purchase {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
+    }
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
     }
 
     public String getPaymentId() {
@@ -87,6 +104,18 @@ public class Purchase {
 
     public void setEvent(String event) {
         this.event = event;
+    }
+
+    public String getEventCategory() { return eventCategory; }
+
+    public void setEventCategory(String eventCategory) {
+        this.eventCategory = eventCategory;
+    }
+
+    public String getEventLabel() { return eventLabel; }
+
+    public void setEventLabel(String eventLabel) {
+        this.eventLabel = eventLabel;
     }
 
     public void setTransactionID(Object id) {
@@ -159,4 +188,10 @@ public class Purchase {
         ListProduct = null;
         currency = null;
     }
+
+    public void setItemPrice(String itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+
 }

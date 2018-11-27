@@ -20,6 +20,7 @@ public interface ThanksTrackerConst {
         String ID = "transaction_id";
         String PLATFORM = "platform";
         String TEMPLATE = "template";
+        String SHOP_TYPES = "shop_types";
     }
 
 }

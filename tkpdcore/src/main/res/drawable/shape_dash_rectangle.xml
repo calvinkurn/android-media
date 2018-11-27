@@ -7,4 +7,6 @@
         android:color="@color/grey_700"
         android:dashGap="10px"
         android:dashWidth="10px" />
+
+    <corners android:radius="@dimen/dp_5" />
 </shape>

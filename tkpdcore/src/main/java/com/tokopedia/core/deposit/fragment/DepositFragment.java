@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,6 +33,10 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 
 import butterknife.BindView;
 
@@ -74,6 +79,11 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     @BindView(R2.id.topup_button)
     TextView topupButton;
 
+    @BindView(R2.id.saldo_prioritas_widget)
+    FrameLayout saldoFrameLayout;
+
+    DepositScreenListener depositScreenListener;
+
     DatePickerUtil datePicker;
     DepositAdapter adapter;
     RefreshHandler refreshHandler;
@@ -102,6 +112,13 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         setActionsEnabled(false);
         presenter.setFirstDateParameter();
         presenter.setCache();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof DepositScreenListener)
+            depositScreenListener = (DepositScreenListener) activity;
     }
 
     @Override
@@ -178,7 +195,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
             public void onClick(View v) {
                 UnifyTracking.eventDepositTopUp();
                 Bundle bundle = new Bundle();
-                bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url,getActivity()));
+                bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
                 Intent intent = new Intent(context, LoyaltyDetail.class);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
@@ -242,6 +259,19 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listViewBalance.setLayoutManager(linearLayoutManager);
         listViewBalance.setAdapter(adapter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true)) {
+            presenter.getMerchantSaldoDetails();
+        } else {
+            hideSaldoPrioritasFragment();
+        }
     }
 
     @Override
@@ -419,6 +449,26 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     }
 
     @Override
+    public void hideSaldoPrioritasFragment() {
+        if (saldoFrameLayout != null) {
+            saldoFrameLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
+
+        if (sellerDetails != null &&
+                sellerDetails.isEligible()) {
+            if (depositScreenListener != null) {
+                depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);
+            }
+        } else {
+            hideSaldoPrioritasFragment();
+        }
+    }
+
+    @Override
     public void showWithdrawalNoPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getResources().getString(R.string.error_deposit_no_password_title));
@@ -446,7 +496,11 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     private void intentToAddPassword(Context context) {
         context.startActivity(
-                ((TkpdCoreRouter)context.getApplicationContext())
+                ((TkpdCoreRouter) context.getApplicationContext())
                         .getAddPasswordIntent(context));
+    }
+
+    public interface DepositScreenListener {
+        void showSaldoFragment(int resId, GqlDetailsResponse sellerDetails);
     }
 }

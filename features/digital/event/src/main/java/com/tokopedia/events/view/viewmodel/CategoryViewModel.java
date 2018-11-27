@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class CategoryViewModel implements Parcelable {
+    private int categoryId;
     private String title;
     private String name;
     private String mediaURL;
@@ -37,6 +38,14 @@ public class CategoryViewModel implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getMediaURL() {

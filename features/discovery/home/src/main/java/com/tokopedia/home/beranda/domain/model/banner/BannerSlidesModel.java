@@ -43,6 +43,18 @@ public class BannerSlidesModel {
     private int slideIndex;
     @SerializedName("promo_code")
     private String promoCode;
+    @SerializedName("topads_view_url")
+    private String topadsViewUrl;
+
+    private boolean impressed;
+
+    public String getTopadsViewUrl() {
+        return topadsViewUrl;
+    }
+
+    public void setTopadsViewUrl(String topadsViewUrl) {
+        this.topadsViewUrl = topadsViewUrl;
+    }
 
     public int getId() {
         return id;
@@ -188,4 +200,11 @@ public class BannerSlidesModel {
         this.promoCode = promoCode;
     }
 
+    public void setImpressed(boolean impressed) {
+        this.impressed = impressed;
+    }
+
+    public boolean isImpressed() {
+        return impressed;
+    }
 }

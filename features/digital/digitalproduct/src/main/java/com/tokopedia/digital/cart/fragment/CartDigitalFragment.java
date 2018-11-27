@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -17,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -53,15 +53,16 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.user.session.UserSession;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -78,9 +79,11 @@ import rx.subscriptions.CompositeSubscription;
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
         InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener {
+    private static final int REQUEST_CODE_LOGIN = 1000;
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
+    private static final String ARG_CART_DIGITAL_FROM = "ARG_CART_DIGITAL_FROM";
 
     private static final String EXTRA_STATE_CART_DIGITAL_INFO_DATA =
             "EXTRA_STATE_CART_DIGITAL_INFO_DATA";
@@ -90,6 +93,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER";
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA =
             "EXTRA_STATE_CHECKOUT_PASS_DATA";
+    private static final String EXTRA_STATE_DIGITAL_FROM =
+            "EXTRA_STATE_DIGITAL_FROM";
 
     private final int COUPON_ACTIVE = 1;
 
@@ -111,15 +116,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private TkpdProgressDialog progressDialogNormal;
     private CheckoutDataParameter.Builder checkoutDataBuilder;
 
+    private int extraComeFrom;
     private DigitalCheckoutPassData passData;
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
     private CompositeSubscription compositeSubscription;
 
-    public static Fragment newInstance(Parcelable passData) {
+    public static Fragment newInstance(DigitalCheckoutPassData passData, int from) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_CART_DIGITAL_DATA_PASS, passData);
+        bundle.putInt(ARG_CART_DIGITAL_FROM, from);
         cartDigitalFragment.setArguments(bundle);
         return cartDigitalFragment;
     }
@@ -131,7 +138,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-        presenter.processAddToCart();
+        presenter.onFirstTimeLaunched();
     }
 
     @Override
@@ -139,6 +146,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         state.putParcelable(EXTRA_STATE_CART_DIGITAL_INFO_DATA, cartDigitalInfoDataState);
         state.putParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER, checkoutDataBuilder.build());
         state.putParcelable(EXTRA_STATE_VOUCHER_DIGITAL, voucherDigitalState);
+        state.putInt(EXTRA_STATE_DIGITAL_FROM, extraComeFrom);
     }
 
     @Override
@@ -157,6 +165,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (cartDigitalInfoData != null) renderCartDigitalInfoData(cartDigitalInfoData);
         VoucherDigital voucherDigital = (VoucherDigital) savedState.get(EXTRA_STATE_VOUCHER_DIGITAL);
         if (voucherDigital != null) renderVoucherInfoData(voucherDigital);
+        extraComeFrom = savedState.getInt(EXTRA_STATE_DIGITAL_FROM);
     }
 
     @Override
@@ -187,6 +196,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         presenter = new CartDigitalPresenter(
                 this,
+                new UserSession(getActivity()),
+                new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker()),
                 new CartDigitalInteractor(
                         compositeSubscription,
                         new CartDigitalRepository(digitalEndpointService, cartMapperData),
@@ -203,6 +214,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     protected void setupArguments(Bundle arguments) {
         passData = arguments.getParcelable(ARG_CART_DIGITAL_DATA_PASS);
+        extraComeFrom = arguments.getInt(ARG_CART_DIGITAL_FROM, 0);
     }
 
     @Override
@@ -260,6 +272,22 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void showProgressLoading(String title, String message) {
         progressDialogNormal.showDialog(title, message);
+    }
+
+    @Override
+    public CartDigitalInfoData getCartDataInfo() {
+        return cartDigitalInfoDataState;
+    }
+
+    @Override
+    public void navigateToLoggedInPage() {
+        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
+            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
+                    .getLoginIntent(getActivity());
+            if (intent != null) {
+                navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
+            }
+        }
     }
 
     @Override
@@ -375,7 +403,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
-        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData);
+        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData, extraComeFrom);
 
         sendGTMAnalytics(
                 cartDigitalInfoData.getAttributes().getCategoryName(),
@@ -754,14 +782,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
-                        @Override
-                        public void onDismiss() {
+                    if (getApplicationContext() instanceof DigitalModuleRouter) {
+                        ((DigitalModuleRouter)getApplicationContext()).
+                                showAdvancedAppRatingDialog(getActivity(), dialog -> {
                             getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
                             closeView();
-                        }
-                    });
-
+                        });
+                    }
                     presenter.onPaymentSuccess(passData.getCategoryId());
 
                     break;
@@ -838,6 +865,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     }
                 }
             }
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            presenter.onLoginResultReceived();
         }
     }
 

@@ -65,17 +65,6 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         buyerCardPresenter.attachView(this);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        buyerCardPresenter.detachView();
-    }
-
     public void renderData(BuyerCard buyerCard) {
         buyerCardPresenter.setData(buyerCard);
     }

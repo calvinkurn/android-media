@@ -3,11 +3,9 @@ package com.tokopedia.core.referral.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.R;
@@ -15,7 +13,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -27,16 +24,14 @@ import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.domain.GetReferralDataUseCase;
 import com.tokopedia.core.referral.listener.ReferralView;
 import com.tokopedia.core.referral.model.ShareApps;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.router.wallet.WalletRouterUtil;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.var.TokoCashTypeDef;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -77,10 +72,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public void initialize() {
         remoteConfig = new FirebaseRemoteConfigImpl(getView().getActivity());
         activity = getView().getActivity();
+        checkLoginAndFetchReferralCode();
+    }
+
+    @Override
+    public void checkLoginAndFetchReferralCode() {
         if (sessionHandler.isV4Login(getView().getActivity())) {
             if (isAppShowReferralButtonActivated()) {
                 if (sessionHandler.isMsisdnVerified()) {
-                    fetchTokoCashBalance();
+                    getReferralVoucherCode();
                 } else {
                     getView().showVerificationPhoneNumberPage();
                     TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_phone_number_verify_screen_name));
@@ -191,7 +191,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public String getReferralSubHeader() {
         if (isAppShowReferralButtonActivated()) {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_SUBHEADER, getView().getActivity().getString(R.string.app_share_referral_label_desc));
+            return remoteConfig.getString(RemoteConfigKey.REFERRAL_SUBHEADER, getView().getActivity().getString(R.string.app_share_referral_label_desc));
         } else {
             return getView().getActivity().getString(R.string.app_share_label_desc);
         }
@@ -199,7 +199,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public String getHowItWorks() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_HOWITWORKS, getView().getActivity().getString(R.string.title_app_referral_howitworks));
+        return remoteConfig.getString(RemoteConfigKey.APP_REFERRAL_HOWITWORKS, getView().getActivity().getString(R.string.title_app_referral_howitworks));
     }
 
     @Override
@@ -210,15 +210,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public Boolean isAppShowReferralButtonActivated() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
 
     private String getAppShareDescription() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DESCRIPTION, getView().getActivity().getString(R.string.app_share_label_desc));
+        return remoteConfig.getString(RemoteConfigKey.APP_SHARE_DESCRIPTION, getView().getActivity().getString(R.string.app_share_label_desc));
     }
 
     private String getAppShareDefaultMessage() {
-        String message = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DEFAULT_MESSAGE, getView().getActivity().getString(R.string.app_share_default_msg));
+        String message = remoteConfig.getString(RemoteConfigKey.APP_SHARE_DEFAULT_MESSAGE, getView().getActivity().getString(R.string.app_share_default_msg));
         if (TextUtils.isEmpty(message)) {
             message = getView().getActivity().getString(R.string.app_share_default_msg);
         }
@@ -228,53 +228,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public String getReferralTitleDesc() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_TITLE_DESC, getView().getActivity().getString(R.string.referral_title_desc));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_TITLE_DESC, getView().getActivity().getString(R.string.referral_title_desc));
     }
-
-
-    /**
-     * This function fetches the tokocash balance and then check Voucher code
-     */
-    private void fetchTokoCashBalance() {
-        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper("ManagePaymentOptionsPresenter :: inside tokocash subscriber error");
-            }
-
-            @Override
-            public void onNext(TokoCashData tokoCashData) {
-                if (!isViewAttached()) {
-                    return;
-                }
-
-                if (tokoCashData != null
-                        && tokoCashData.getAction() != null) {
-                    if (tokoCashData.getLink()) {
-                        getReferralVoucherCode();
-                    } else {
-
-                        WalletRouterUtil.navigateWallet(
-                                getView().getActivity().getApplication(),
-                                getView().getActivity(),
-                                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                                tokoCashData.getAction().getmAppLinks() == null ?
-                                        "" : tokoCashData.getAction().getmAppLinks(),
-                                tokoCashData.getAction().getRedirectUrl() == null ?
-                                        "" : tokoCashData.getAction().getRedirectUrl(),
-                                new Bundle()
-                        );
-                    }
-                }
-            }
-        });
-    }
-
 
     public ShareApps[] checkInstalledApps() {
         int index = 0;

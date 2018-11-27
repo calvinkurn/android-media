@@ -8,7 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.SessionApplinkModule;
+import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
+import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.deeplink.CoreDeeplinkModule;
+import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
@@ -19,6 +25,10 @@ import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
+import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
+import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
+import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
@@ -29,12 +39,26 @@ import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
+import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
+import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
+import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
+import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
+import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
+import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
+import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
+import com.tokopedia.transaction.applink.TransactionApplinkModule;
+import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
+import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 
 
 /**
@@ -44,16 +68,28 @@ import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
         DigitalApplinkModule.class,
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
+        TransactionApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
         InboxDeeplinkModule.class,
         ShopAppLinkModule.class,
         ProfileApplinkModule.class,
         TrackingAppLinkModule.class,
-        ProductAddDeeplinkModule.class
+        ProductAddDeeplinkModule.class,
+        TopChatAppLinkModule.class,
+        CoreDeeplinkModule.class,
+        CustomerCareApplinkModule.class,
+        ReputationApplinkModule.class,
+        SessionApplinkModule.class,
+        PdpApplinkModule.class,
+        SettingBankApplinkModule.class,
+        InboxTalkApplinkModule.class,
+        LoginRegisterApplinkModule.class,
+        ChangeInactivePhoneApplinkModule.class,
+        PhoneVerificationApplinkModule.class
 })
-public class DeepLinkHandlerActivity extends AppCompatActivity {
 
+public class DeepLinkHandlerActivity extends AppCompatActivity {
 
 
     public static DeepLinkDelegate getDelegateInstance() {
@@ -61,13 +97,25 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
+                new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new ShopAppLinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader()
+                new ProductAddDeeplinkModuleLoader(),
+                new TopChatAppLinkModuleLoader(),
+                new CoreDeeplinkModuleLoader(),
+                new CustomerCareApplinkModuleLoader(),
+                new ReputationApplinkModuleLoader(),
+                new SessionApplinkModuleLoader(),
+                new PdpApplinkModuleLoader(),
+                new SettingBankApplinkModuleLoader(),
+                new InboxTalkApplinkModuleLoader(),
+                new LoginRegisterApplinkModuleLoader(),
+                new ChangeInactivePhoneApplinkModuleLoader(),
+                new PhoneVerificationApplinkModuleLoader()
         );
     }
 

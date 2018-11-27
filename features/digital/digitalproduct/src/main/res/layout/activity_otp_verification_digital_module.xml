@@ -1,10 +1,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:background="@color/white"
-                                                 android:fitsSystemWindows="false">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="false">
 
 
     <RelativeLayout
@@ -31,7 +31,7 @@
 
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"/>
+                    android:layout_height="?actionBarSize" />
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -42,7 +42,7 @@
                     android:text="@string/label_otp_verification_digital_module"
                     android:textColor="@color/body_text_5_inverse"
                     android:textSize="@dimen/font_medium"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_message"
@@ -54,7 +54,7 @@
                     android:paddingBottom="@dimen/dp_20"
                     android:textColor="@color/body_text_5_inverse"
                     android:textSize="@dimen/sp_14"
-                    tools:text="Kode verifikasi telah dikirimkan ke nomor 08788574394534"/>
+                    tools:text="Kode verifikasi telah dikirimkan ke nomor 08788574394534" />
 
                 <TextView
                     android:id="@+id/tv_label"
@@ -66,7 +66,7 @@
                     android:paddingBottom="@dimen/dp_20"
                     android:text="@string/label_hint_input_otp_digital_module"
                     android:textColor="@color/body_text_5_inverse"
-                    android:textSize="@dimen/sp_14"/>
+                    android:textSize="@dimen/sp_14" />
 
                 <com.tkpd.library.ui.widget.PinEntryEditText
                     android:id="@+id/et_input_otp"
@@ -85,7 +85,7 @@
                     android:textIsSelectable="false"
                     android:textSize="20sp"
                     android:visibility="visible"
-                    app:pinLineColors="@color/tkpd_main_green"/>
+                    app:pinLineColors="@color/tkpd_main_green" />
 
                 <TextView
                     android:id="@+id/tv_pin_error"
@@ -96,7 +96,7 @@
                     android:textColor="@color/tkpd_dark_red"
                     android:textSize="@dimen/fontvs"
                     tools:text="Kode verifikasi salah"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible" />
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
@@ -124,7 +124,7 @@
                 android:textAllCaps="true"
                 android:textColor="@color/body_text_5_inverse"
                 android:textSize="@dimen/fontvs"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btn_request_otp"
@@ -139,7 +139,7 @@
                 android:textAllCaps="true"
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="@dimen/fontvs"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -153,7 +153,7 @@
                     android:layout_marginEnd="@dimen/dp_5"
                     android:layout_marginRight="@dimen/dp_5"
                     android:text="@string/label_or_call_otp_digital_module"
-                    android:textSize="@dimen/sp_14"/>
+                    android:textSize="@dimen/sp_14" />
 
                 <TextView
                     android:id="@+id/btn_request_otp_call"
@@ -163,7 +163,7 @@
                     android:layout_marginRight="@dimen/dp_5"
                     android:text="@string/label_btn_call_otp_digital_module"
                     android:textColor="@color/tkpd_main_green"
-                    android:textSize="@dimen/sp_14"/>
+                    android:textSize="@dimen/sp_14" />
 
             </LinearLayout>
         </LinearLayout>
@@ -177,7 +177,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:visibility="gone"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
 
 </android.support.design.widget.CoordinatorLayout>

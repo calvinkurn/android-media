@@ -1,6 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.adapter;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,17 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         holder.bind(visitables.get(position));
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(visitables.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return visitables.size();
@@ -61,6 +73,9 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {
+        if (position < 0 || position >= visitables.size()) {
+            return HideViewHolder.LAYOUT;
+        }
         return visitables.get(position).type(adapterTypeFactory);
     }
 
@@ -85,7 +100,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         }
     }
 
-    protected boolean isShowLoadingMore(){
+    protected boolean isShowLoadingMore() {
         return visitables.size() > 0;
     }
 
@@ -151,6 +166,11 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
+    public void setVisitables(List<Visitable> visitables) {
+        this.visitables = visitables;
+        notifyDataSetChanged();
+    }
+
     public void setElement(int position, Visitable element) {
         visitables.set(position, element);
         notifyDataSetChanged();
@@ -185,6 +205,11 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     public void clearAllElements() {
         visitables.clear();
+        notifyDataSetChanged();
+    }
+
+    public void softClear() {
+        visitables = new ArrayList<>();
     }
 
     public void addMoreData(List<? extends Visitable> data) {

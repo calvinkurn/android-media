@@ -49,7 +49,10 @@ public abstract class BaseListAdapter<T, VH extends BaseViewHolder> extends Recy
     }
 
     public T getItem(int position) {
-        return items.get(position);
+        try {
+            return items.get(position);
+        } catch (IndexOutOfBoundsException e) { /* ignore */ }
+        return null;
     }
 
     public List<T> getItems() {

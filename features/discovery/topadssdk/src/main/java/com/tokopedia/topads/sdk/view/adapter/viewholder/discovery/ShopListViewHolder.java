@@ -89,8 +89,7 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
         data = element.getData();
         Shop shop = data.getShop();
         if(shop!=null){
-            imageLoader.loadImage(shop.getImageShop().getsEcs(), shop.getImageShop().getsUrl(),
-                    shopImage);
+            imageLoader.loadImage(shop, shopImage);
             if(shop.getImageProduct()!=null){
                 ShopImageListAdapter imageListAdapter = new ShopImageListAdapter(context, imageLoader,
                         shop.getImageProduct(), this, R.layout.layout_shop_product_image_small);

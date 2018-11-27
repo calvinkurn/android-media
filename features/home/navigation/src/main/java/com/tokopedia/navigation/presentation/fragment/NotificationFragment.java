@@ -7,11 +7,12 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
+import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
@@ -32,6 +33,8 @@ import static com.tokopedia.navigation.GlobalNavConstant.*;
  * Created by meta on 24/07/18.
  */
 public class NotificationFragment extends BaseParentFragment implements NotificationView {
+
+    private static final String IS_ENABLE_NOTIF_CENTER = "mainapp_enable_notif_center";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private View emptyLayout;
@@ -66,6 +69,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         emptyLayout = parentView.findViewById(R.id.empty_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
+        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
         adapter = new NotificationAdapter(getActivity());
         recyclerView.setAdapter(adapter);
@@ -75,8 +79,11 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         adapter.setOnNotifClickListener((parent, child) -> {
             sendTracking(parent, child);
             DrawerNotification item = adapter.getItem(parent);
-            DrawerNotification.ChildDrawerNotification childItem = item.getChilds().get(child);
-            RouteManager.route(getActivity(), childItem.getApplink());
+            if (getActivity() != null && item != null
+                    && item.getChilds() != null
+                    && item.getChilds().get(child) != null) {
+                RouteManager.route(getActivity(), item.getChilds().get(child).getApplink());
+            }
         });
 
         adapter.addAll(getData());
@@ -123,7 +130,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     }
 
     @Override
-    public void renderNotification(NotificationsModel data, boolean isHasShop) {
+    public void renderNotification(NotificationsModel data, NotifcenterUnread unread,
+                                   boolean isHasShop) {
         emptyLayout.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         if (!isHasAdded) {
@@ -133,7 +141,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             adapter.add(complain(isHasShop));
             isHasAdded = !isHasAdded;
         }
-        adapter.updateValue(data);
+        adapter.updateValue(data, unread);
     }
 
     private List<DrawerNotification> getData() {
@@ -154,6 +162,12 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                 getString(R.string.sedang_dikirim), ApplinkConst.PURCHASE_SHIPPED));
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
+
+        if (shouldAddUserInfo()) {
+            childBuyer.add(new DrawerNotification.ChildDrawerNotification(BUYER_INFO,
+                    getString(R.string.user_info), ApplinkConst.BUYER_INFO));
+        }
+
         buyer.setChilds(childBuyer);
         notifications.add(buyer);
 
@@ -199,19 +213,26 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private void sendTracking(int parent, int child) {
         DrawerNotification parentItem = adapter.getItem(parent);
-        if (parentItem == null)
-            return;
+        if (parentItem != null && parentItem.getChilds() != null) {
+            DrawerNotification.ChildDrawerNotification childItem =
+                    parentItem.getChilds().get(child);
 
-        DrawerNotification.ChildDrawerNotification childItem =
-                parentItem.getChilds().get(child);
-        if (childItem == null)
-            return;
+            String section = "";
+            if (parentItem.getTitle() != null)
+                section = parentItem.getTitle();
 
-        String section = "";
-        if (parentItem.getTitle() != null)
-            section = parentItem.getTitle();
+            if (childItem != null) {
+                globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
+                        childItem.getTitle().toLowerCase());
+            }
+        }
 
-        globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
-                childItem.getTitle().toLowerCase());
+    }
+
+    private boolean shouldAddUserInfo() {
+        return getActivity()!= null
+                && getActivity().getApplicationContext() instanceof GlobalNavRouter
+                && ((GlobalNavRouter) getActivity().getApplicationContext())
+                .getBooleanRemoteConfig(IS_ENABLE_NOTIF_CENTER, Boolean.TRUE);
     }
 }

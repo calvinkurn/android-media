@@ -25,5 +25,4 @@ public class AddPasswordActivity extends BaseSimpleActivity {
         return AddPasswordFragment.newInstance(new Bundle());
     }
 
-
 }

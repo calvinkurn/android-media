@@ -31,13 +31,22 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String warningTitle;
     private String warningDescription;
 
-    private int shopId;
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
     private List<ShopShipment> shopShipmentList;
+
+    // Shop data
+    private int shopId;
     private String shopName;
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
+
+    // Cart item state
+    private int shippingId;
+    private int spId;
+    private String dropshiperName;
+    private String dropshiperPhone;
+    private boolean isInsurance;
 
     private int weightUnit;
     private boolean productFinsurance;
@@ -53,10 +62,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String unixTime;
     private Store store;
 
+    // View state
     private boolean stateDetailSubtotalViewExpanded;
     private boolean stateAllItemViewExpanded = true;
     private boolean stateDropshipperDetailExpanded;
     private boolean stateDropshipperHasError;
+    private boolean stateLoadingCourierState;
+    private boolean stateHasLoadCourierState;
+    private boolean stateHasExtraMarginTop;
 
     // Address Model for multiple address shipment, null if single address shipment
     private RecipientAddressModel recipientAddressModel;
@@ -98,6 +111,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
         useCourierRecommendation = in.readByte() != 0;
+        shippingId = in.readInt();
+        spId = in.readInt();
+        dropshiperName = in.readString();
+        dropshiperPhone = in.readString();
+        isInsurance = in.readByte() != 0;
+        stateLoadingCourierState = in.readByte() != 0;
+        stateHasLoadCourierState = in.readByte() != 0;
+        stateHasExtraMarginTop = in.readByte() != 0;
     }
 
     @Override
@@ -132,6 +153,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeParcelable(recipientAddressModel, flags);
         dest.writeTypedList(cartItemModels);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
+        dest.writeInt(shippingId);
+        dest.writeInt(spId);
+        dest.writeString(dropshiperName);
+        dest.writeString(dropshiperPhone);
+        dest.writeByte((byte) (isInsurance ? 1 : 0));
+        dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
+        dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
+        dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
     }
 
     @Override
@@ -181,6 +210,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setUseCourierRecommendation(shipmentCartItemModel.isUseCourierRecommendation());
+        newShipmentCartItemModel.setShippingId(shipmentCartItemModel.getShippingId());
+        newShipmentCartItemModel.setSpId(shipmentCartItemModel.getSpId());
+        newShipmentCartItemModel.setDropshiperName(shipmentCartItemModel.getDropshiperName());
+        newShipmentCartItemModel.setDropshiperPhone(shipmentCartItemModel.getDropshiperPhone());
+        newShipmentCartItemModel.setInsurance(shipmentCartItemModel.isInsurance());
+        newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
+        newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
+        newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
 
         return newShipmentCartItemModel;
     }
@@ -423,6 +460,70 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setUseCourierRecommendation(boolean useCourierRecommendation) {
         this.useCourierRecommendation = useCourierRecommendation;
+    }
+
+    public int getShippingId() {
+        return shippingId;
+    }
+
+    public void setShippingId(int shippingId) {
+        this.shippingId = shippingId;
+    }
+
+    public int getSpId() {
+        return spId;
+    }
+
+    public void setSpId(int spId) {
+        this.spId = spId;
+    }
+
+    public String getDropshiperName() {
+        return dropshiperName;
+    }
+
+    public void setDropshiperName(String dropshiperName) {
+        this.dropshiperName = dropshiperName;
+    }
+
+    public String getDropshiperPhone() {
+        return dropshiperPhone;
+    }
+
+    public void setDropshiperPhone(String dropshiperPhone) {
+        this.dropshiperPhone = dropshiperPhone;
+    }
+
+    public boolean isInsurance() {
+        return isInsurance;
+    }
+
+    public void setInsurance(boolean insurance) {
+        isInsurance = insurance;
+    }
+
+    public boolean isStateLoadingCourierState() {
+        return stateLoadingCourierState;
+    }
+
+    public void setStateLoadingCourierState(boolean stateLoadingCourierState) {
+        this.stateLoadingCourierState = stateLoadingCourierState;
+    }
+
+    public boolean isStateHasLoadCourierState() {
+        return stateHasLoadCourierState;
+    }
+
+    public void setStateHasLoadCourierState(boolean stateHasLoadCourierState) {
+        this.stateHasLoadCourierState = stateHasLoadCourierState;
+    }
+
+    public boolean isStateHasExtraMarginTop() {
+        return stateHasExtraMarginTop;
+    }
+
+    public void setStateHasExtraMarginTop(boolean stateHasExtraMarginTop) {
+        this.stateHasExtraMarginTop = stateHasExtraMarginTop;
     }
 
     @Override

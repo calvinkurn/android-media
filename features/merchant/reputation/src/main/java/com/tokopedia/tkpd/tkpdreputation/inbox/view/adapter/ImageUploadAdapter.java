@@ -27,6 +27,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     private static final int VIEW_UPLOAD_BUTTON = 100;
     private static final int MAX_IMAGE = 5;
+    public static final int RADIUS_CORNER = 4;
     private int canUpload = 0;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -65,7 +66,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_image_upload, viewGroup, false));
+                .inflate(R.layout.listview_image_upload_review, viewGroup, false));
     }
 
     @Override
@@ -84,13 +85,13 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         try {
             if (data.get(position).getFileLoc() == null) {
-                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc());
+                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc(), convertDpToPx(holder.image.getContext(), RADIUS_CORNER));
             } else {
                 Glide.with(holder.image.getContext())
                         .load(new File(data.get(position).getFileLoc()))
                         .asBitmap()
                         .centerCrop()
-                        .into(getRoundedImageViewTarget(holder.image, 5.0f));
+                        .into(getRoundedImageViewTarget(holder.image, convertDpToPx(holder.image.getContext(), RADIUS_CORNER)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,6 +101,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         setBorder(holder, position);
 
+    }
+
+    public float convertDpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {

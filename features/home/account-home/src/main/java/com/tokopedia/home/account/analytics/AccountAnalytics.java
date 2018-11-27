@@ -8,6 +8,9 @@ import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.AccountHomeRouter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 
 /**
@@ -125,6 +128,27 @@ public class AccountAnalytics {
                 String.format("%s %s", CLICK, item),
                 ""
         );
+    }
+
+    public void eventClickActivationOvoMyAccount() {
+        analyticTracker.sendEventTracking(
+                AccountConstants.Analytics.EVENT_SALDO_OVO,
+                AccountConstants.Analytics.MY_ACCOUNT,
+                AccountConstants.Analytics.CLICK_MY_ACCOUNT_ACTIVATION_OVO, "");
+    }
+
+    public void eventTrackingNotification() {
+        if (analyticTracker == null)
+            return;
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SCREEN_NAME, SCREEN_NAME_ACCOUNT);
+        eventTracking.put(EVENT, CLICK_HOME_PAGE);
+        eventTracking.put(EVENT_CATEGORY, TOP_NAV);
+        eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
+        eventTracking.put(EVENT_LABEL, "");
+
+        analyticTracker.sendEventTracking(eventTracking);
     }
 
     public void setUserAttributes(UserAttributeData data) {

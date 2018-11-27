@@ -50,7 +50,9 @@ import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PIC
 
 /**
  * Created by Toped10 on 5/19/2016.
+ * use ShopSettings Module
  */
+@Deprecated
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";

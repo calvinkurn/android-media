@@ -5,7 +5,7 @@ package com.tokopedia.searchbar;
  */
 public class SearchBarConstant {
 
-    public static final String CLICK_TOP_NAV = "clickTopNav";
+    public static final String CLICK_HOME_PAGE = "clickHomePage";
 
     public static final String CLICK_WISHLIST = "clickWishlist";
 
@@ -18,5 +18,15 @@ public class SearchBarConstant {
     public static final String NOTIFICATION = "notification";
 
     public static final String SCAN_QR = "scan qr";
+
+    public static final String SCREEN_NAME = "screenName";
+
+    public static final String EVENT = "event";
+
+    public static final String EVENT_CATEGORY = "eventCategory";
+
+    public static final String EVENT_ACTION = "eventAction";
+
+    public static final String EVENT_LABEL = "eventLabel";
 
 }

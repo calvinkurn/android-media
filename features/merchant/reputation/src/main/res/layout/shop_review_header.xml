@@ -7,8 +7,8 @@
     android:orientation="horizontal"
     android:paddingTop="@dimen/dp_10"
     android:paddingBottom="@dimen/dp_10"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_8">
 
     <com.tokopedia.core.customView.RoundedCornerImageView
         android:id="@+id/product_image"
@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/product_name"
-        style="@style/TextView.Small.Bold.BlackSecondary"
+        style="@style/TextView.Small.Bold"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_gravity="center_vertical"

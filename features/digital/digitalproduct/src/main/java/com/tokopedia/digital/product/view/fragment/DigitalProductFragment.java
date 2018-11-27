@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -45,7 +46,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
@@ -262,8 +263,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        digitalAnalytics = new DigitalAnalytics();
-
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
+            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker());
+        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -1311,6 +1313,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             @Override
             public void onPageSelected(int position) {
                 if (position == PANDUAN_TAB_POSITION) {
+                    if(digitalAnalytics != null)
                     digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
                 }
             }

@@ -7,17 +7,20 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 /**
  * Created by meta on 18/07/18.
  */
 public interface GlobalNavRouter {
 
-    Fragment getHomeFragment();
+    Fragment getHomeFragment(boolean scroll);
 
     Fragment getFeedPlusFragment(Bundle bundle);
 
-    Fragment getCartFragment();
+    Fragment getCartFragment(Bundle bundle);
+
+    Fragment getEmptyCartFragment(String autoApplyMessage);
 
     Intent getInboxTalkCallingIntent(Context context);
 
@@ -34,4 +37,18 @@ public interface GlobalNavRouter {
     void setCartCount(Context context, int count);
 
     void sendAnalyticsFirstTime();
+
+    Intent getShopPageIntent(Context context, String shopID);
+
+    Intent getOpenShopIntent(Context context);
+
+    Intent getHomeIntent(Context context);
+
+    Intent gotoSearchPage(Context context);
+
+    Intent instanceIntentDigitalCategoryList();
+
+    Intent getReferralIntent(Context context);
+
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 }

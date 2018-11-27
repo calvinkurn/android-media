@@ -30,9 +30,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.datePickerRange)
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.seller)
 
     implementation rootProject.ext.networkDependencies.glide

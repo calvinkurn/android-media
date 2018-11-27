@@ -201,7 +201,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
                         getView().getPassengerFirstName(),
                         getView().getPassengerLastName(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                                FlightDateUtil.FORMAT_DATE_API,
+                                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 getView().getPassengerBirthdate()),
                         getView().getPassportNumber(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,

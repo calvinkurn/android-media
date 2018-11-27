@@ -1,0 +1,18 @@
+query dynamicHomeIcon($type: Int!) {
+    dynamicHomeIcon {
+        categoryGroup(types:$type){
+          id
+          title
+          desc
+          categoryRows{
+            id
+            name
+            url
+            imageUrl
+            categoryId
+            applinks
+            categoryLabel
+          }
+        }
+      }
+}

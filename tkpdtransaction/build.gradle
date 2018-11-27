@@ -27,6 +27,7 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.logisticanalytics)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
@@ -38,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.libraries.graphql)
 
@@ -73,6 +75,7 @@ dependencies {
 
     implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
     implementation project(path: ':libraries:applink')
+    implementation project(path: ':libraries:user_session')
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
 }

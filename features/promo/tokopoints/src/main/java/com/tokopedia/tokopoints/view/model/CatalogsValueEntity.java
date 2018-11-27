@@ -20,31 +20,15 @@ public class CatalogsValueEntity implements Serializable {
     private int id;
 
     @Expose
-    @SerializedName("imageURL")
+    @SerializedName(value = "imageURL", alternate = {"image_url"})
     private String imageUrl;
 
     @Expose
-    @SerializedName("imageUrlMobile")
+    @SerializedName(value = "imageUrlMobile", alternate = {"image_url_mobile"})
     private String imageUrlMobile;
 
     @Expose
-    @SerializedName("thumbnailV2URLMobile")
-    private String thumbnailV2URLMobile;
-
-    @Expose
-    @SerializedName("thumbnailV2URL")
-    private String thumbnailV2URL;
-
-    @Expose
-    @SerializedName("imageV2URL")
-    private String imageV2URL;
-
-    @Expose
-    @SerializedName("imageV2URLMobile")
-    private String imageV2URLMobile;
-
-    @Expose
-    @SerializedName("isGift")
+    @SerializedName(value = "isGift", alternate = {"is_gift"})
     private int isGift;
 
     @Expose
@@ -52,7 +36,7 @@ public class CatalogsValueEntity implements Serializable {
     private String points;
 
     @Expose
-    @SerializedName("pointsStr")
+    @SerializedName(value = "pointsStr", alternate = {"points_str"})
     private String pointsStr;
 
     @Expose
@@ -61,22 +45,22 @@ public class CatalogsValueEntity implements Serializable {
 
     @Expose
     @SerializedName("quota")
-    private Integer quota;
+    private int quota;
 
     @Expose
     @SerializedName("slug")
     private String slug;
 
     @Expose
-    @SerializedName("subtitle")
+    @SerializedName(value = "subtitle", alternate = {"sub_title"})
     private String subTitle;
 
     @Expose
-    @SerializedName("thumbnailURL")
+    @SerializedName(value = "thumbnailURL", alternate = {"thumbnail_url"})
     private String thumbnailUrl;
 
     @Expose
-    @SerializedName("thumbnailURLMobile")
+    @SerializedName(value = "thumbnailURLMobile", alternate = {"thumbnail_url_mobile"})
     private String thumbnailUrlMobile;
 
     @Expose
@@ -84,79 +68,78 @@ public class CatalogsValueEntity implements Serializable {
     private String title;
 
     @Expose
-    @SerializedName("isDisabled")
+    @SerializedName(value = "isDisabled", alternate = {"is_disabled"})
     private boolean isDisabled;
 
     @Expose
-    @SerializedName("isDisabledButton")
+    @SerializedName(value = "isDisabledButton", alternate = {"is_disabled_button"})
     private boolean isDisabledButton;
 
     @Expose
-    @SerializedName("upperTextDesc")
+    @SerializedName(value = "upperTextDesc", alternate = {"upper_text_desc"})
     private List<String> upperTextDesc;
 
     @Expose
-    @SerializedName("expiredLabel")
+    @SerializedName(value = "expiredLabel", alternate = {"expired_label"})
     private String expiredLabel;
 
     @Expose
-    @SerializedName("disableErrorMessage")
+    @SerializedName(value = "disableErrorMessage", alternate = {"disable_error_message"})
     private String disableErrorMessage;
 
     @Expose
-    @SerializedName("expiredStr")
+    @SerializedName(value = "expiredStr", alternate = {"expired_str"})
     private String expiredStr;
 
     @Expose
-    @SerializedName("catalogType")
+    @SerializedName(value = "catalogType", alternate = {"catalog_type"})
     private int catalogType;
 
     @Expose
-    @SerializedName("pointsSlash")
+    @SerializedName(value = "pointsSlash", alternate = {"points_slash"})
     private int pointsSlash;
 
     @Expose
-    @SerializedName("pointsSlashStr")
+    @SerializedName(value = "pointsSlashStr", alternate = {"points_slash_str"})
     private String pointsSlashStr;
 
     @Expose
-    @SerializedName("discountPercentage")
+    @SerializedName(value = "discountPercentage", alternate = {"discount_percentage"})
     private int discountPercentage;
 
     @Expose
-    @SerializedName("discountPercentageStr")
+    @SerializedName(value = "discountPercentageStr", alternate = {"discount_percentage_str"})
     private String discountPercentageStr;
 
-    public int getPointsSlash() {
-        return pointsSlash;
+    @SerializedName(value = "buttonStr", alternate = {"button_str"})
+    private String buttonStr;
+
+    @Expose
+    @SerializedName(value = "howToUse", alternate = {"how_to_use"})
+    private String howToUse;
+
+    @Expose
+    @SerializedName("overview")
+    private String overview;
+
+    @Expose
+    @SerializedName("tnc")
+    private String tnc;
+
+    @Expose
+    @SerializedName("cta")
+    private String cta;
+
+    @Expose
+    @SerializedName("isShowTukarButton")
+    private boolean isShowTukarButton;
+
+    public boolean isShowTukarButton() {
+        return isShowTukarButton;
     }
 
-    public void setPointsSlash(int pointsSlash) {
-        this.pointsSlash = pointsSlash;
-    }
-
-    public String getPointsSlashStr() {
-        return pointsSlashStr;
-    }
-
-    public void setPointsSlashStr(String pointsSlashStr) {
-        this.pointsSlashStr = pointsSlashStr;
-    }
-
-    public int getDiscountPercentage() {
-        return discountPercentage;
-    }
-
-    public void setDiscountPercentage(int discountPercentage) {
-        this.discountPercentage = discountPercentage;
-    }
-
-    public String getDiscountPercentageStr() {
-        return discountPercentageStr;
-    }
-
-    public void setDiscountPercentageStr(String discountPercentageStr) {
-        this.discountPercentageStr = discountPercentageStr;
+    public void setShowTukarButton(boolean showTukarButton) {
+        isShowTukarButton = showTukarButton;
     }
 
     public String getBaseCode() {
@@ -199,38 +182,6 @@ public class CatalogsValueEntity implements Serializable {
         this.imageUrlMobile = imageUrlMobile;
     }
 
-    public String getThumbnailV2URLMobile() {
-        return thumbnailV2URLMobile;
-    }
-
-    public void setThumbnailV2URLMobile(String thumbnailV2URLMobile) {
-        this.thumbnailV2URLMobile = thumbnailV2URLMobile;
-    }
-
-    public String getThumbnailV2URL() {
-        return thumbnailV2URL;
-    }
-
-    public void setThumbnailV2URL(String thumbnailV2URL) {
-        this.thumbnailV2URL = thumbnailV2URL;
-    }
-
-    public String getImageV2URL() {
-        return imageV2URL;
-    }
-
-    public void setImageV2URL(String imageV2URL) {
-        this.imageV2URL = imageV2URL;
-    }
-
-    public String getImageV2URLMobile() {
-        return imageV2URLMobile;
-    }
-
-    public void setImageV2URLMobile(String imageV2URLMobile) {
-        this.imageV2URLMobile = imageV2URLMobile;
-    }
-
     public int getIsGift() {
         return isGift;
     }
@@ -263,11 +214,11 @@ public class CatalogsValueEntity implements Serializable {
         this.promoId = promoId;
     }
 
-    public Integer getQuota() {
+    public int getQuota() {
         return quota;
     }
 
-    public void setQuota(Integer quota) {
+    public void setQuota(int quota) {
         this.quota = quota;
     }
 
@@ -367,6 +318,78 @@ public class CatalogsValueEntity implements Serializable {
         this.catalogType = catalogType;
     }
 
+    public int getPointsSlash() {
+        return pointsSlash;
+    }
+
+    public void setPointsSlash(int pointsSlash) {
+        this.pointsSlash = pointsSlash;
+    }
+
+    public String getPointsSlashStr() {
+        return pointsSlashStr;
+    }
+
+    public void setPointsSlashStr(String pointsSlashStr) {
+        this.pointsSlashStr = pointsSlashStr;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public String getDiscountPercentageStr() {
+        return discountPercentageStr;
+    }
+
+    public void setDiscountPercentageStr(String discountPercentageStr) {
+        this.discountPercentageStr = discountPercentageStr;
+    }
+
+    public String getButtonStr() {
+        return buttonStr;
+    }
+
+    public void setButtonStr(String buttonStr) {
+        this.buttonStr = buttonStr;
+    }
+
+    public String getHowToUse() {
+        return howToUse;
+    }
+
+    public void setHowToUse(String howToUse) {
+        this.howToUse = howToUse;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getTnc() {
+        return tnc;
+    }
+
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
+
+    public String getCta() {
+        return cta;
+    }
+
+    public void setCta(String cta) {
+        this.cta = cta;
+    }
+
     @Override
     public String toString() {
         return "CatalogsValueEntity{" +
@@ -375,10 +398,6 @@ public class CatalogsValueEntity implements Serializable {
                 ", id=" + id +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", imageUrlMobile='" + imageUrlMobile + '\'' +
-                ", thumbnailV2URLMobile='" + thumbnailV2URLMobile + '\'' +
-                ", thumbnailV2URL='" + thumbnailV2URL + '\'' +
-                ", imageV2URL='" + imageV2URL + '\'' +
-                ", imageV2URLMobile='" + imageV2URLMobile + '\'' +
                 ", isGift=" + isGift +
                 ", points='" + points + '\'' +
                 ", pointsStr='" + pointsStr + '\'' +
@@ -400,6 +419,11 @@ public class CatalogsValueEntity implements Serializable {
                 ", pointsSlashStr='" + pointsSlashStr + '\'' +
                 ", discountPercentage=" + discountPercentage +
                 ", discountPercentageStr='" + discountPercentageStr + '\'' +
+                ", buttonStr='" + buttonStr + '\'' +
+                ", howToUse='" + howToUse + '\'' +
+                ", overview='" + overview + '\'' +
+                ", tnc='" + tnc + '\'' +
+                ", cta='" + cta + '\'' +
                 '}';
     }
 }

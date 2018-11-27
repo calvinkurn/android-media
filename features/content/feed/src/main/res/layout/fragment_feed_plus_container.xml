@@ -20,7 +20,8 @@
             android:fitsSystemWindows="true"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:screenName="/feed"/>
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_layout"

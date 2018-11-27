@@ -255,12 +255,6 @@
         <item name="colorControlNormal">@color/grey_hint</item>
     </style>
 
-    <style name="Theme.Tokopedia3.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/launch_screen</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
     <style name="TextAppearance.Tokopedia.Title.Collapsed" parent="android:TextAppearance">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">17sp</item>
@@ -283,8 +277,8 @@
         <item name="android:actionModeBackground">@color/tkpd_main_green</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
-        <item name="android:actionMenuTextColor">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
+        <item name="android:actionMenuTextColor">@color/abc_primary_text_material_light</item>
         <item name="android:textColorSecondary">@color/abc_primary_text_material_dark</item>
     </style>
 

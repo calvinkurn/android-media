@@ -13,6 +13,10 @@ public class Pagination implements Parcelable {
     @SerializedName("next_url")
     String NextUrl;
 
+    public void setNextUrl(String nextUrl) {
+        NextUrl = nextUrl;
+    }
+
     public String getNextUrl() {
         return NextUrl;
     }

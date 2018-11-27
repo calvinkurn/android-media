@@ -631,6 +631,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
         public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
         public static final String URL_CHECK_PROMO = "v1/promo/check";
+
+        public static final String PATH_GET_PDP_AFFILIATE_DATA = "affiliate/v1/pdp/affiliate_data";
     }
 
     public static class Galadriel {
@@ -658,6 +660,7 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
         public static final String PATH_V1_BRAND_CAMPAIGN_PRODUCT = "/os/v1/campaign/product/info";
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
+        public static final String API_V1_WISHLIST_COUNT = "/wishlist/count/v1";
     }
 
     public static class KunyitTalk {

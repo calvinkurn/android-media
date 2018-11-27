@@ -8,6 +8,7 @@ import android.view.View;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.MenuGridAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
@@ -123,7 +124,7 @@ public class SeeAllView extends BottomSheets {
                 getContext().getString(R.string.title_menu_reksadana),
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
-                        AccountConstants.Url.REKSA_DANA_TX_URL),
+                        AccountHomeUrl.REKSA_DANA_TX_URL),
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)
@@ -135,7 +136,7 @@ public class SeeAllView extends BottomSheets {
                 getContext().getString(R.string.title_menu_gold),
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
-                        AccountConstants.Url.EMAS_TX_URL),
+                        AccountHomeUrl.EMAS_TX_URL),
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)

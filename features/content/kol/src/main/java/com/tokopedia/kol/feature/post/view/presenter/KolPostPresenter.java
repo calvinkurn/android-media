@@ -1,8 +1,8 @@
 package com.tokopedia.kol.feature.post.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase;
-import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.subscriber.GetKolPostSubscriber;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
@@ -26,6 +26,13 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
                             LikeKolPostUseCase likeKolPostUseCase) {
         this.getKolPostUseCase = getKolPostUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getKolPostUseCase.unsubscribe();
+        likeKolPostUseCase.unsubscribe();
     }
 
     @Override

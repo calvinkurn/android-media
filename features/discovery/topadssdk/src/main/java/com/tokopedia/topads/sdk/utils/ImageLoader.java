@@ -1,13 +1,18 @@
 package com.tokopedia.topads.sdk.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Rect;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -15,12 +20,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.imageutils.ImageCache;
 import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
 import com.tokopedia.topads.sdk.imageutils.ImageWorker;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-
-import android.graphics.Bitmap;
 
 import java.util.List;
 
@@ -65,9 +65,9 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (!product.isLoaded() && isVisible(imageView)) {
+                        if (!product.isLoaded()) {
                             product.setLoaded(true);
-                            new ImpresionTask().execute(product.getImage().getXs_url());
+                            new ImpresionTask().execute(product.getImage().getS_url());
                             if(impressionListener!=null){
                                 impressionListener.onImpressionProductAdsItem(pos, product);
                             }
@@ -85,7 +85,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (!shop.isLoaded() && isVisible(imageView)) {
+                        if (!shop.isLoaded()) {
                             shop.setLoaded(true);
                             new ImpresionTask().execute(shop.getImageShop().getsUrl());
                         }
@@ -102,7 +102,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (url!=null && url.contains(PATH_VIEW) && isVisible(imageView)) {
+                        if (url!=null && url.contains(PATH_VIEW)) {
                             new ImpresionTask().execute(url);
                         }
                     }
@@ -131,6 +131,26 @@ public class ImageLoader {
         }
     }
 
+    public static void clearImage(final ImageView imageView) {
+        if (imageView != null) {
+            Glide.clear(imageView);
+            imageView.setImageDrawable(
+                    getDrawable(imageView.getContext(), R.drawable.ic_loading_image)
+            );
+        }
+    }
+
+    private static Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return context.getResources().getDrawable(
+                    resId,
+                    context.getApplicationContext().getTheme()
+            );
+        } else {
+            return AppCompatResources.getDrawable(context, resId);
+        }
+    }
+
     public static int getRatingDrawable(int param) {
         switch (param) {
             case 0:
@@ -150,25 +170,5 @@ public class ImageLoader {
         }
     }
 
-    public static boolean isVisible(final View view) {
-        if (view == null) {
-            return false;
-        }
-        if (!view.isShown()) {
-            return false;
-        }
-        final Rect actualPosition = new Rect();
-        view.getGlobalVisibleRect(actualPosition);
-        final Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
-        return actualPosition.intersect(screen);
-    }
-
-    public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
-
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
-    }
 
 }

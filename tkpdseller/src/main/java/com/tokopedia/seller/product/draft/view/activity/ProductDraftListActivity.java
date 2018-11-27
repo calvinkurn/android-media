@@ -28,7 +28,6 @@ import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +39,8 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
         implements HasComponent<ProductComponent>, ProductDraftSaveBulkView,
         ProductDraftListFragment.OnProductDraftListFragmentListener {
     public static final String TAG = ProductDraftListActivity.class.getSimpleName();
+
+    public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
 
     private static final String INSTAGRAM_MEDIA_LIST = "insta_media_list";
     private static final String LOCAL_PATH_IMAGE_LIST = "loca_img_list";
@@ -97,7 +98,7 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
                 }
                 ImageDownloadHelper imageDownloadHelper = new ImageDownloadHelper(this);
                 imageDownloadHelper.convertHttpPathToLocalPath(standardResoImageUrlList,
-                        ProductManageSellerFragment.DEFAULT_NEED_COMPRESS_TKPD,
+                        DEFAULT_NEED_COMPRESS_TKPD,
                         new ImageDownloadHelper.OnImageDownloadListener() {
                             @Override
                             public void onError(Throwable e) {

@@ -34,7 +34,8 @@ public class ShopProductEtalaseListViewHolder extends AbstractViewHolder<ShopPro
     }
 
     private EtalaseChipAdapter etalaseChipAdapter;
-    public ShopProductEtalaseListViewHolder(View itemView, OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener) {
+    public ShopProductEtalaseListViewHolder(View itemView,
+                                            OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener) {
         super(itemView);
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);

@@ -2,6 +2,7 @@ package com.tokopedia.searchbar;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -20,26 +21,26 @@ public class MainToolbar extends Toolbar {
 
     private ImageButton btnNotification;
     private ImageButton btnWishlist;
-
     private BadgeView badgeView;
 
+    private SearchBarAnalytics searchBarAnalytics;
     private UserSession userSession;
 
-    private SearchBarAnalytics searchBarAnalytics;
+    private String screenName = "";
 
     public MainToolbar(Context context) {
         super(context);
-        init();
+        init(context, null);
     }
 
     public MainToolbar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context, attrs);
     }
 
     public MainToolbar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context, attrs);
     }
 
     public void setNotificationNumber(int badgeNumber) {
@@ -53,16 +54,25 @@ public class MainToolbar extends Toolbar {
         }
     }
 
-    private void init() {
+    private void init(Context context, @Nullable AttributeSet attrs) {
 
         userSession = ((AbstractionRouter) this.getContext().getApplicationContext()).getSession();
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
-        inflate(getContext(), R.layout.main_toolbar, this);
+        inflate(context, R.layout.main_toolbar, this);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
         btnWishlist = findViewById(R.id.btn_wishlist);
         EditText editTextSearch = findViewById(R.id.et_search);
+
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.MainToolbar, 0, 0);
+            try {
+                screenName = ta.getString(R.styleable.MainToolbar_screenName);
+            } finally {
+                ta.recycle();
+            }
+        }
 
         if ((getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK) >=
@@ -77,7 +87,7 @@ public class MainToolbar extends Toolbar {
         });
 
         btnWishlist.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingWishlist();
+            searchBarAnalytics.eventTrackingWishlist(screenName);
             if (userSession.isLoggedIn()) {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoWishlistPage(getContext()));
@@ -93,7 +103,7 @@ public class MainToolbar extends Toolbar {
         });
 
         btnNotification.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingNotification();
+            searchBarAnalytics.eventTrackingNotification(screenName);
             if (userSession.isLoggedIn()) {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
                         .gotoNotificationPage(getContext()));

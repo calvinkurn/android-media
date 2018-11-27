@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.router.wallet.TokoCashCoreRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
@@ -18,7 +18,7 @@ import rx.Observable;
  * Created by nabillasabbaha on 10/5/17.
  */
 
-public interface TokoCashRouter extends TokoCashCoreRouter {
+public interface TokoCashRouter {
 
     Intent goToDatePicker(Activity activity, List<PeriodRangeModelData> periodRangeModelData, long startDate, long endDate,
                           int datePickerSelection, int datePickerType);
@@ -38,4 +38,14 @@ public interface TokoCashRouter extends TokoCashCoreRouter {
     Observable<PendingCashback> getPendingCashbackUseCase();
 
     Intent getLoginIntent();
+
+    String getStringRemoteConfig(String key);
+
+    long getLongConfig(String key);
+
+    Intent getWebviewActivityWithIntent(Context context, String url);
+
+    String getExtraBroadcastReceiverWallet();
+
+    AnalyticTracker getAnalyticTracker();
 }

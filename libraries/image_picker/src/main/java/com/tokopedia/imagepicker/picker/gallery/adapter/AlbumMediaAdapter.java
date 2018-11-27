@@ -48,9 +48,9 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
     public interface OnMediaClickListener {
         void onMediaClick(MediaItem item, boolean checked, int adapterPosition);
 
-        boolean isImageValid(MediaItem item);
+        boolean isMediaValid(MediaItem item);
 
-        boolean canAddMoreImage();
+        boolean canAddMoreMedia();
     }
 
     @Override
@@ -60,11 +60,11 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
             isChecked = !selectionImagePathList.contains(item.getRealPath());
         }
 
-        if (isChecked && !mOnMediaClickListener.canAddMoreImage()) {
+        if (isChecked && !mOnMediaClickListener.canAddMoreMedia()) {
             return;
         }
 
-        if (isChecked && !mOnMediaClickListener.isImageValid(item)) {
+        if (isChecked && !mOnMediaClickListener.isMediaValid(item)) {
             return;
         }
 

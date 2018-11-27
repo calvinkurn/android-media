@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
@@ -66,6 +67,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         recyclerView = view.findViewById(R.id.recycler_buyer);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
+        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
         return view;
     }
 
@@ -130,7 +132,18 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     @Override
     public void showError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
+            ToasterError.make(getView(), message)
+                    .setAction(getString(R.string.title_try_again), view -> getData())
+                    .show();
+        }
+    }
+
+    @Override
+    public void showError(Throwable e) {
+        if (getView() != null && getContext() != null) {
+            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
+                    .setAction(getString(R.string.title_try_again), view -> getData())
+                    .show();
         }
     }
 
@@ -144,5 +157,11 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }

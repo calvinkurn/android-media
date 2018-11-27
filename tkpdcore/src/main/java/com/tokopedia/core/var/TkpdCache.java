@@ -52,7 +52,6 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
-    public static final String APP_RATING = "APP_RATING";
     public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
     public static final String REFERRAL = "REFERRAL";
     public static final String ADVERTISINGID = "ADVERTISINGID";
@@ -222,21 +221,13 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String HOME_DATA_CACHE = "HOME_DATA_CACHE";
         public static final String EXPLORE_DATA_CACHE = "EXPLORE_DATA_CACHE";
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
-        public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
         public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
         public static final String REFERRAL_CODE = "REFERRAL_CODE";
-        public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
-        public static final String KEY_RATING = "RATING";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
         public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
     }
 
     public class RemoteConfigKey {
-        public static final String MAINAPP_WALLET_APPLINK = "mainapp_wallet_applink";
-        public static final String MAINAPP_WALLET_APPLINK_REGISTER = "mainapp_wallet_applink_register";
-        public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
-        public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
-
         public static final String MAINAPP_SHOW_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
         public static final String APP_SHARE_DESCRIPTION = "app_share_description";
         public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
@@ -244,25 +235,19 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String TOKO_CASH_TOP_UP = "toko_cash_top_up";
         public static final String TOKO_CASH_LABEL = "toko_cash_label";
 
-        public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
-        public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
-
         public static final String REFERRAL_SUBHEADER = "referral_subheader";
         public static final String APP_REFERRAL_TITLE = "app_referral_title";
         public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
         public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
         public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
+        public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
         public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
         public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
         public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message";
         public static final String REFFERAL_TERMS = "referral_terms";
         public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
 
-        public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
-        public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
         public static final String MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads";
-
-        public static final String SELLERAPP_SHOW_ADVANCED_APP_RATING = "sellerapp_show_advanced_app_rating";
 
         public static final String NOTIFICATION_LOGGER = "notification_logger";
         public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
@@ -279,6 +264,12 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
         public static final String SHOW_TOKOCARD = "app_enable_toko_card";
         public static final String APP_ENABLE_UPDATE_INACTIVE_PHONE = "app_enable_update_inactive_phone";
+        public static final String SALDO_PRIORITAS_NATIVE_ANDROID = "mainapp_saldo_prioritas_native_android";
+        public static final String SHOW_REFERRAL_HELP_LINK = "app_show_apa_itu_tokocash_referral";
+        public static final String REFERRAL_HELP_LINK_TEXT= "app_apa_itu_tokocash_referral_text";
+        public static final String REFERRAL_HELP_LINK_TEXT_WELCOME= "app_apa_itu_tokocash_referral_text_welcome";
+        public static final String REFERRAL_HELP_LINK_CONTENT_TITLE= "app_apa_itu_tokocash_referral_content_title";
+        public static final String REFERRAL_HELP_LINK_CONTENT_SUBTITLE= "app_apa_itu_tokocash_referral_content_subtitle";
     }
 
 }

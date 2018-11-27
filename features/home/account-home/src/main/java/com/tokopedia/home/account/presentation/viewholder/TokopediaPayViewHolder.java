@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.viewholder;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
@@ -35,14 +36,21 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
             tokopediaPayCardView.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
         }
         tokopediaPayCardView.setTextDescLeft(element.getLabelLeft());
-        tokopediaPayCardView.setTextAmountRight(element.getAmountRight());
+        tokopediaPayCardView.setTextAmountRight(element.getAmountRight(), element.isRightImportant());
         tokopediaPayCardView.setTextDesctRight(element.getLabelRight());
+        tokopediaPayCardView.setIconLeft(element.getIconUrlLeft());
+        tokopediaPayCardView.setIconRight(element.getIconUrlRight());
+
         tokopediaPayCardView.setActionTextClickListener(v -> listener.onTokopediaPayLinkClicked());
-        tokopediaPayCardView.setLeftItemClickListener(v -> listener.onTokopediaPayItemClicked(
+        tokopediaPayCardView.setLeftItemClickListener(v -> listener.onTokopediaPayLeftItemClicked(
                 element.getLabelLeft(),
-                element.getApplinkLeft()));
-        tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayItemClicked(
+                element.getApplinkLeft(),
+                element.getBsDataLeft(),
+                element.isLinked(),
+                element.getWalletType()));
+        tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayRightItemClicked(
                 element.getLabelRight(),
-                element.getApplinkRight()));
+                element.getApplinkRight(),
+                element.getBsDataRight()));
     }
 }

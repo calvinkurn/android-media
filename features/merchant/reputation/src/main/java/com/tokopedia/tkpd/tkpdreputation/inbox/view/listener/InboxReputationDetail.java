@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;

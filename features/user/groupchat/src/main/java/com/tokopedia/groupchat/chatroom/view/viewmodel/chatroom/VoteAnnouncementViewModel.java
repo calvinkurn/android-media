@@ -15,6 +15,7 @@ public class VoteAnnouncementViewModel extends BaseChatViewModel implements Visi
 
     public static final String POLLING_START = "polling_start";
     public static final String POLLING_FINISHED = "polling_finish";
+    public static final String POLLING_END = "polling_end";
     public static final String POLLING_CANCEL = "polling_cancel";
     public static final String POLLING_UPDATE = "polling_update";
 

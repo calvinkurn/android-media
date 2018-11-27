@@ -125,7 +125,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 tvPaymentUniqueCodeLabel.setVisibility(View.VISIBLE);
                 tvPaymentUniqueCode.setVisibility(View.VISIBLE);
                 tvPaymentDescription.setVisibility(View.GONE);
-                if (element.getPayment().getNeedToPayAmount() > 0){
+                if (element.getPayment().getNeedToPayAmount() > 0) {
                     tvPaymentCostLabel.setVisibility(View.VISIBLE);
                     tvPaymentCost.setVisibility(View.VISIBLE);
                     tvPaymentCost.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(element.getPayment().getNeedToPayAmount()));
@@ -136,8 +136,14 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 tvPaymentUniqueCode.setText(element.getPayment().getTransactionCode());
             }
 
-            tvPaymentDueDate.setText(FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, element.getPayment().getExpireOn()));
-
+            if (element.getPayment().getExpireOn() != null && element.getPayment().getExpireOn().length() > 0) {
+                tvPaymentDueDate.setVisibility(View.VISIBLE);
+                tvPaymentDueDateLabel.setVisibility(View.VISIBLE);
+                tvPaymentDueDate.setText(FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, element.getPayment().getExpireOn()));
+            }else {
+                tvPaymentDueDate.setVisibility(View.GONE);
+                tvPaymentDueDateLabel.setVisibility(View.GONE);
+            }
         } else {
             paymentLayout.setVisibility(View.GONE);
         }

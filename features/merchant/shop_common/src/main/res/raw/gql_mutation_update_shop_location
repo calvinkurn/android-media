@@ -1,0 +1,18 @@
+mutation updateShopLocation($id:String!, $name:String, $address:String, $districtId:Int, $cityId:Int,
+                         $stateId:Int, $postalCode:Int, $email:String, $phone:String, $fax:String){
+  updateShopLocation(input: {
+      id: $id,
+      name: $name,
+      address: $address,
+      districtId: $districtId,
+      cityId: $cityId,
+      stateId: $stateId,
+      postalCode: $postalCode,
+      email: $email,
+      phone: $phone,
+      fax: $fax
+    }) {
+      success
+      message
+    }
+}

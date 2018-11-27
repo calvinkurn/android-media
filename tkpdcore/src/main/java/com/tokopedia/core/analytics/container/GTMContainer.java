@@ -274,7 +274,7 @@ public class GTMContainer implements IGTMContainer {
 
         CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
-        eventAuthenticate(authEvent).sendScreen(screenName);
+        eventAuthenticate(authEvent);
 
         return this;
     }
@@ -644,9 +644,9 @@ public class GTMContainer implements IGTMContainer {
                 context,
                 DataLayer.mapOf(
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
-                        AppEventTracking.EVENT_CATEGORY, "purchase category",
-                        AppEventTracking.EVENT_ACTION, "purchase action",
-                        AppEventTracking.EVENT_LABEL, "purchase label",
+                        AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
+                        AppEventTracking.EVENT_ACTION, purchase.getShopType(),
+                        AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
                         Purchase.SHOP_ID, purchase.getShopId(),
                         Purchase.PAYMENT_ID, purchase.getPaymentId(),
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),

@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.SimpleDatabaseModel;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
@@ -27,36 +27,36 @@ import rx.functions.Func1;
 
 public class DigitalCategoryListRepository implements IDigitalCategoryListRepository {
 
+    private DigitalCategoryListApi digitalApi;
     private final GlobalCacheManager globalCacheManager;
     private final ICategoryDigitalListDataMapper digitalListDataMapper;
-    private final MojitoService mojitoService;
     private final SessionHandler sessionHandler;
 
-    public DigitalCategoryListRepository(MojitoService mojitoService,
+    public DigitalCategoryListRepository(DigitalCategoryListApi digitalApi,
                                          GlobalCacheManager globalCacheManager,
                                          ICategoryDigitalListDataMapper digitalListDataMapper,
                                          SessionHandler sessionHandler) {
+        this.digitalApi = digitalApi;
         this.globalCacheManager = globalCacheManager;
         this.digitalListDataMapper = digitalListDataMapper;
-        this.mojitoService = mojitoService;
         this.sessionHandler = sessionHandler;
     }
 
     @Override
-    public Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList() {
+    public Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataList(String deviceVersion) {
         return Observable.just(
                 globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_ITEM_LIST)
         ).flatMap(getFuncObservableDigitalCategoryListDataFromCache())
-                .onErrorResumeNext(getResumeFunctionObservableDigitalCategoryListDataFromNetwork());
+                .onErrorResumeNext(getResumeFunctionObservableDigitalCategoryListDataFromNetwork(deviceVersion));
     }
 
     @NonNull
     private Func1<Throwable, Observable<? extends List<DigitalCategoryItemData>>>
-    getResumeFunctionObservableDigitalCategoryListDataFromNetwork() {
+    getResumeFunctionObservableDigitalCategoryListDataFromNetwork(String deviceVersion) {
         return new Func1<Throwable, Observable<? extends List<DigitalCategoryItemData>>>() {
             @Override
             public Observable<? extends List<DigitalCategoryItemData>> call(Throwable throwable) {
-                return getDigitalCategoryItemDataListFromNetwork();
+                return getDigitalCategoryItemDataListFromNetwork(deviceVersion);
             }
         };
     }
@@ -86,12 +86,15 @@ public class DigitalCategoryListRepository implements IDigitalCategoryListReposi
     }
 
     @NonNull
-    private Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataListFromNetwork() {
-        return mojitoService.getApi().getHomeCategoryMenu(sessionHandler.getLoginID(),
-                GlobalConfig.getPackageApplicationName()
-        ).map(
-                getFuncTransformResponseHomeCategoryToDigitalCategoryItemDataList()
-        );
+    private Observable<List<DigitalCategoryItemData>> getDigitalCategoryItemDataListFromNetwork(String deviceVersion) {
+        return digitalApi
+                .getDigitalCategoryList(
+                        sessionHandler.getLoginID(),
+                        GlobalConfig.getPackageApplicationName(),
+                        deviceVersion)
+                .map(
+                        getFuncTransformResponseHomeCategoryToDigitalCategoryItemDataList()
+                );
     }
 
     @NonNull

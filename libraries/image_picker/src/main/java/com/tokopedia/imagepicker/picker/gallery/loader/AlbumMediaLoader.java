@@ -26,7 +26,8 @@ public class AlbumMediaLoader extends CursorLoader {
             MediaStore.MediaColumns.DISPLAY_NAME,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
-            "duration"};
+            MediaStore.Video.VideoColumns.DURATION,
+            MediaStore.Video.VideoColumns.RESOLUTION};
 
     // we exclude TOKOPEDIA_FOLDER_PREFIX so the edit result and camera result will not show up.
     // the edit result are too much and not needed.
@@ -56,9 +57,19 @@ public class AlbumMediaLoader extends CursorLoader {
                     BUCKET_DISPLAY_NAME
             );
 
+    private static final String SELECTION_ALL_VIDEO_ONLY =
+            String.format("(%s=?) AND %s>0 " ,
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.MediaColumns.SIZE
+            );
+
     private static final String[] SELECTION_IMAGE_ONLY_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
             MimeType.GIF.toString()
+    };
+
+    private static final String[] SELECTION_VIDEO_ONLY_ARGS = {
+            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
     };
 
     private static final String SELECTION_ALBUM =
@@ -77,6 +88,13 @@ public class AlbumMediaLoader extends CursorLoader {
                     BUCKET_ID,
                     MediaStore.MediaColumns.SIZE,
                     BUCKET_DISPLAY_NAME
+            );
+
+    private static final String SELECTION_ALBUM_VIDEO_ONLY =
+            String.format("%s=? AND %s=? AND %s>0 ",
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    BUCKET_ID,
+                    MediaStore.MediaColumns.SIZE
             );
 
     private static String[] getSelectionAlbumArgs(String albumId) {
@@ -106,6 +124,17 @@ public class AlbumMediaLoader extends CursorLoader {
                         albumItem.getmId()
                 };
                 selectionString = SELECTION_ALBUM_IMAGE_ONLY;
+            }
+        }else if(galeryType == GalleryType.VIDEO_ONLY){
+            if (albumItem.isAll()) {
+                selectionArgs = SELECTION_VIDEO_ONLY_ARGS;
+                selectionString = SELECTION_ALL_VIDEO_ONLY;
+            }else{
+                selectionArgs = new String[] {
+                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
+                        albumItem.getmId()
+                };
+                selectionString = SELECTION_ALBUM_VIDEO_ONLY;
             }
         }else {
             if (albumItem.isAll()) {

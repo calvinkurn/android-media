@@ -22,6 +22,7 @@ import com.tokopedia.home.account.constant.SettingType;
 import com.tokopedia.home.account.data.model.AppNotificationSettingModel;
 import com.tokopedia.home.account.data.model.SettingEditResponse;
 import com.tokopedia.home.account.di.component.EmailNotificationSettingComponent;
+import com.tokopedia.home.account.presentation.activity.EmailNotificationSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.setting.EmailNotifAdapter;
 import com.tokopedia.home.account.presentation.presenter.EmailNotificationPresenter;
 import com.tokopedia.home.account.presentation.listener.EmailNotificationView;
@@ -35,7 +36,8 @@ import javax.inject.Inject;
 import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 
 public class EmailNotificationSettingFragment extends BaseDaggerFragment implements
-        EmailNotificationView, EmailNotifAdapter.OnItemChangeListener {
+        EmailNotificationView, EmailNotifAdapter.OnItemChangeListener,
+        EmailNotificationSettingActivity.OnBackPressedFragmentListener {
     @Inject
     EmailNotificationPresenter presenter;
     private RecyclerView recyclerView;
@@ -43,6 +45,8 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     private View loadingView;
 
     private AccountAnalytics accountAnalytics;
+
+    private boolean isChanged;
 
     public static Fragment createInstance() {
         return new EmailNotificationSettingFragment();
@@ -71,12 +75,12 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         populateSettings();
-        getSetting(false);
+        getSetting();
     }
 
-    private void getSetting(boolean forceRefresh) {
+    private void getSetting() {
         loadingView.setVisibility(View.VISIBLE);
-        presenter.getEmailNotifSetting(forceRefresh);
+        presenter.getEmailNotifSetting(true);
     }
 
     private void populateSettings() {
@@ -124,11 +128,13 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
     public void onSuccesSaveSetting(SettingEditResponse data) {
         loadingView.setVisibility(View.GONE);
         if (data.getMessageError() == null || data.getMessageError().size() < 1) {
-            getSetting(true);
             Toast.makeText(getActivity(), data.getMessageStatus().get(0), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getActivity(), data.getMessageError().get(0), Toast.LENGTH_SHORT).show();
         }
+
+        if (getActivity() != null)
+            getActivity().finish();
     }
 
     @Override
@@ -150,7 +156,15 @@ public class EmailNotificationSettingFragment extends BaseDaggerFragment impleme
         } else if (key.equals(getString(R.string.label_bulletin))) {
             accountAnalytics.eventClickEmailSetting(String.format("%s %s", NEWS_LETTER, NOTIFICATION));
         }
+        isChanged = true;
+    }
 
-        presenter.saveEmailNotifUseCase(adapter.getSelectedSetting());
+    @Override
+    public void onBackPressed() {
+        if (isChanged) {
+            presenter.saveEmailNotifUseCase(adapter.getSelectedSetting());
+        } else {
+            if (getActivity() != null) getActivity().finish();
+        }
     }
 }

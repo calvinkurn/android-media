@@ -84,6 +84,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
@@ -91,11 +92,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
-            Inbox inbox = inboxes.get(position);
+            Inbox inbox = adapter.getItem(position);
             if (inbox == null)
                 return;
 
-            globalNavAnalytics.eventInboxPage(inbox.getTitle().toString().toLowerCase());
+            globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
         });
 
@@ -145,7 +146,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onResume();
+        if(isVisible()) presenter.onResume();
     }
 
     @Override
@@ -164,8 +165,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         super.setupToolbar(view);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         menuItemNotification = toolbar.findViewById(R.id.action_notification);
-        menuItemNotification.setOnClickListener(v ->
-                startActivity(NotificationActivity.start(getActivity())));
+        menuItemNotification.setOnClickListener(v -> {
+            globalNavAnalytics.eventTrackingNotification();
+            startActivity(NotificationActivity.start(getActivity()));
+        });
     }
 
     @Override

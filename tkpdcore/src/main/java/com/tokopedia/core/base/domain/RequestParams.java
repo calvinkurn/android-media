@@ -136,9 +136,7 @@ public class RequestParams {
     private TKPDMapParam<String, String> convertMapObjectToString(TKPDMapParam<String,Object> map) {
         TKPDMapParam<String,String> newMap =new TKPDMapParam<>();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if(entry.getValue() instanceof String){
-                newMap.put(entry.getKey(), String.valueOf(entry.getValue()));
-            }
+            newMap.put(entry.getKey(), String.valueOf(entry.getValue()));
         }
         return newMap;
     }

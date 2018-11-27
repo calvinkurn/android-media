@@ -62,6 +62,11 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
             shopId[0] = Integer.parseInt(userSession.getShopId());
         }
         variables.put("shop_ids", shopId);
+        int merchantId = 0;
+        if (!TextUtils.isEmpty(userSession.getShopId())) {
+            merchantId = Integer.parseInt(userSession.getShopId());
+        }
+        variables.put("merchantID", merchantId);
         requestParams.putObject(VARIABLES, variables);
 
         getSellerAccountUseCase.execute(requestParams, new GetSellerAccountSubscriber(view));

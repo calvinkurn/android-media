@@ -10,6 +10,7 @@ import com.tokopedia.transactiondata.entity.response.couponlist.CouponDataRespon
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.saveshipmentstate.SaveShipmentStateResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
@@ -32,11 +33,15 @@ public interface ICartRepository {
 
     Observable<AddToCartDataResponse> addToCartData(Map<String, String> param);
 
+    Observable<AddToCartDataResponse> addToCartDataOneClickShipment(Map<String, String> param);
+
     Observable<UpdateCartDataResponse> updateCartData(Map<String, String> param);
 
     Observable<ShippingAddressDataResponse> setShippingAddress(Map<String, String> param);
 
     Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(Map<String, String> param);
+
+    Observable<ShipmentAddressFormDataResponse> getShipmentAddressFormOneClickCheckout(Map<String, String> param);
 
     Observable<ResetCartDataResponse> resetCart(Map<String, String> param);
 
@@ -51,4 +56,6 @@ public interface ICartRepository {
     Observable<NotifCounterCartDataResponse> getNotificationCounter();
 
     Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params);
+
+    Observable<SaveShipmentStateResponse> saveShipmentState(Map<String, String> params);
 }

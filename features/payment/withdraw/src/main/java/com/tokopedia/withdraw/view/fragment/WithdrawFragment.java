@@ -42,6 +42,7 @@ import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivit
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
@@ -98,6 +99,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Inject
     WithdrawPresenter presenter;
+
+    @Inject
+    WithdrawAnalytics analytics;
 
     @Override
     protected void initInjector() {
@@ -163,7 +167,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         super.onViewCreated(view, savedInstanceState);
 
         listBank = new ArrayList<>();
-        bankAdapter = BankAdapter.createAdapter(this, listBank);
+        bankAdapter = BankAdapter.createAdapter(this, listBank, analytics);
         bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         bankRecyclerView.setAdapter(bankAdapter);
         bankAdapter.setList(listBank);
@@ -193,6 +197,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickWithdrawalAll();
                 totalWithdrawal.setText(getArguments().getString(BUNDLE_TOTAL_BALANCE_INT, DEFAULT_TOTAL_BALANCE));
             }
         });
@@ -252,6 +257,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             @Override
             public void onClick(View v) {
                 infoDialog.show();
+                analytics.eventClickInformasiPenarikanSaldo();
             }
         });
 
@@ -260,6 +266,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        analytics.eventClickCloseErrorMessage();
                         snackBarError.dismiss();
                     }
                 });
@@ -326,7 +333,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             return false;
         }
         BankAccountViewModel bankAccountViewModel = bankAdapter.getSelectedBank();
-        return bankAccountViewModel != null;
+        return bankAccountViewModel != null
+                && (!TextUtils.isEmpty(bankAccountViewModel.getBankName()));
     }
 
 
@@ -421,6 +429,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showConfirmPassword() {
+        analytics.eventClickWithdrawal();
         Intent intent = new Intent(getActivity(), WithdrawPasswordActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(WithdrawPasswordActivity.BUNDLE_WITHDRAW, totalWithdrawal.getText().toString());
@@ -469,7 +478,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     model.setBankAccountNumber(parcelable.getAccountNumber());
                     bankAdapter.addItem(model);
                     bankAdapter.changeItemSelected(listBank.size()-2);
-
+                    itemSelected();
                     snackBarInfo.setText(R.string.success_add_bank);
                     snackBarInfo.show();
                 }
@@ -481,7 +490,19 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 break;
             case CONFIRM_PASSWORD_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    getActivity().finish();
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
+                            .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
+                            .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    getActivity().setResult(Activity.RESULT_OK);
+                                    getActivity().finish();
+                                }
+                            })
+                            .setCancelable(false)
+                            .show();
                 }
                 break;
             default:

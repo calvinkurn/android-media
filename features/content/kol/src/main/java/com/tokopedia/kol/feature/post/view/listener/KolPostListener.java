@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface KolPostListener {
 
         AbstractionRouter getAbstractionRouter();
 
-        UserSession getUserSession();
+        UserSessionInterface getUserSession();
 
         void showLoading();
 
@@ -48,7 +49,7 @@ public interface KolPostListener {
         interface ViewHolder {
             Context getContext();
 
-            UserSession getUserSession();
+            UserSessionInterface getUserSession();
 
             AbstractionRouter getAbstractionRouter();
 
@@ -56,17 +57,31 @@ public interface KolPostListener {
 
             void onGoToKolProfileUsingApplink(int rowNumber, String applink);
 
-            void onOpenKolTooltip(int rowNumber, String url);
+            void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url);
+
+            void trackContentClick(boolean hasMultipleContent, String activityId,
+                                   String activityType, String position);
+
+            void trackTooltipClick(boolean hasMultipleContent, String activityId,
+                                   String activityType, String position);
 
             void onFollowKolClicked(int rowNumber, int id);
 
             void onUnfollowKolClicked(int rowNumber, int id);
 
-            void onLikeKolClicked(int rowNumber, int id);
+            void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                  String activityType);
 
-            void onUnlikeKolClicked(int adapterPosition, int id);
+            void onUnlikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                    String activityType);
 
-            void onGoToKolComment(int rowNumber, int id);
+            void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
+                                  String activityType);
+
+            void onEditClicked(boolean hasMultipleContent, String activityId,
+                               String activityType);
+
+            void onMenuClicked(int rowNumber, BaseKolViewModel element);
         }
     }
 

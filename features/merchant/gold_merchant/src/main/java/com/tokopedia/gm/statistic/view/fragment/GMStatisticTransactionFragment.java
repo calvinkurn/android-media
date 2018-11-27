@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.R;
@@ -27,8 +29,6 @@ import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionView;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionPresenter;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.common.widget.LabelView;
 

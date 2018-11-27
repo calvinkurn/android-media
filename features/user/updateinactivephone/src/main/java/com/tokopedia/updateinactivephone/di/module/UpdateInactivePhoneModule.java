@@ -8,6 +8,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.updateinactivephone.di.UpdateInactivePhoneScope;
 import com.tokopedia.updateinactivephone.usecase.CheckPhoneNumberStatusUsecase;
+import com.tokopedia.updateinactivephone.usecase.GetUploadHostUseCase;
 import com.tokopedia.updateinactivephone.usecase.SubmitImageUseCase;
 import com.tokopedia.updateinactivephone.usecase.UploadChangePhoneNumberRequestUseCase;
 import com.tokopedia.updateinactivephone.usecase.UploadImageUseCase;
@@ -18,6 +19,8 @@ import dagger.Provides;
 
 @Module
 public class UpdateInactivePhoneModule {
+
+    private static final String WS_SERVICE = "WS_SERVICE";
 
     @UpdateInactivePhoneScope
     @Provides
@@ -41,12 +44,22 @@ public class UpdateInactivePhoneModule {
 
     @UpdateInactivePhoneScope
     @Provides
+    GetUploadHostUseCase provideGetUploadHostUseCase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     UploadImageRepositoryImpl uploadImageRepository) {
+        return new GetUploadHostUseCase(threadExecutor, postExecutionThread, uploadImageRepository);
+    }
+
+    @UpdateInactivePhoneScope
+    @Provides
     UploadChangePhoneNumberRequestUseCase provideUploadChangePhoneNumberRequestUseCase(ThreadExecutor threadExecutor,
                                                                                        PostExecutionThread postExecutionThread,
                                                                                        UploadImageUseCase uploadImageUseCase,
-                                                                                       SubmitImageUseCase submitImageUseCase) {
+                                                                                       SubmitImageUseCase submitImageUseCase,
+                                                                                       GetUploadHostUseCase getUploadHostUseCase) {
 
-        return new UploadChangePhoneNumberRequestUseCase(threadExecutor, postExecutionThread, uploadImageUseCase, submitImageUseCase);
+        return new UploadChangePhoneNumberRequestUseCase(threadExecutor, postExecutionThread,
+                uploadImageUseCase, submitImageUseCase, getUploadHostUseCase);
     }
 
     @UpdateInactivePhoneScope

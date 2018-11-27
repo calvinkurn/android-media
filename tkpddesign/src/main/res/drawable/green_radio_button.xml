@@ -10,5 +10,5 @@
         android:drawable="@drawable/green_radio_selected"
         android:state_checked="true" />
     <item
-        android:drawable="@drawable/green_radio_unselected" />
+        android:drawable="@drawable/green_radio_unselected"/>
 </selector>

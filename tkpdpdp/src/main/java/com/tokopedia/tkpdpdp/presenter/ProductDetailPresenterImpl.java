@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -27,6 +26,7 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -42,7 +42,6 @@ import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
-import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
@@ -50,6 +49,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
@@ -66,7 +66,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -77,18 +76,23 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
-import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.presenter.subscriber.AffiliateProductDataSubscriber;
+import com.tokopedia.tkpdpdp.presenter.subscriber.WishlistCountSubscriber;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -123,18 +127,20 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
  * Created by ANGGA on 11/2/2015.
  */
 public class ProductDetailPresenterImpl implements ProductDetailPresenter {
-
     public static final String TAG = ProductDetailPresenterImpl.class.getSimpleName();
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String PRODUCT_NAME = "CACHE_PRODUCT_NAME";
     private static final String DATE_EXPIRE = "CACHE_EXPIRED_DATE";
     private static final String IS_UNPROMOTED_PRODUCT = "0";
 
-    private static final int SHOP_IS_OFFICIAL_TRUE = 1;
+    public static final String OFFICIAL_STORE_TYPE = "os";
+    public static final String MERCHANT_TYPE = "merchant";
     private static final String NON_LOGIN_USER_ID = "0";
-    private static final String OFFICIAL_STORE_TYPE = "os";
-    private static final String MERCHANT_TYPE = "merchant";
+
     private final WishListActionListener wishListActionListener;
+    private final GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase;
+
+    private GetWishlistCountUseCase getWishlistCountUseCase;
 
 
     private ProductDetailView viewListener;
@@ -148,13 +154,27 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
     private GetRateEstimationUseCase getRateEstimationUseCase;
 
-    public ProductDetailPresenterImpl(ProductDetailView viewListener,
-                                      WishListActionListener wishListActionListener) {
+    public ProductDetailPresenterImpl(
+            GetWishlistCountUseCase getWishlistCountUseCase,
+            ProductDetailView viewListener,
+            WishListActionListener wishListActionListener,
+            RetrofitInteractor retrofitInteractor,
+            CacheInteractor cacheInteractor,
+            GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase) {
         this.viewListener = viewListener;
         this.wishListActionListener = wishListActionListener;
-        this.retrofitInteractor = new RetrofitInteractorImpl();
-        this.cacheInteractor = new CacheInteractorImpl();
+        this.retrofitInteractor = retrofitInteractor;
+        this.cacheInteractor = cacheInteractor;
+        this.getWishlistCountUseCase = getWishlistCountUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+        this.getProductAffiliateGqlUseCase = getProductAffiliateGqlUseCase;
+    }
+
+    private void checkWishlistCount(String productId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
+
+        getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber(viewListener));
     }
 
     @Override
@@ -163,7 +183,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void initGetRateEstimationUseCase(){
+    public void initGetRateEstimationUseCase() {
         getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase());
     }
 
@@ -173,11 +193,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain){
+    public void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain) {
         getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_pdp_estimasi_ongkir), productWeight, shopDomain),
                 new Subscriber<RatesEstimationModel>() {
                     @Override
-                    public void onCompleted() { }
+                    public void onCompleted() {
+                    }
 
                     @Override
                     public void onError(Throwable throwable) {
@@ -213,7 +234,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()));
+        boolean skipToCart = data.isSkipToCart();
+        Subscriber subscriber = skipToCart ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc());
+        boolean isOneClickShipment = skipToCart && !data.isBigPromo();
+        routeToNewCheckout(context, data, subscriber, isOneClickShipment);
         UnifyTracking.eventPDPCart();
     }
 
@@ -285,7 +309,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess()) {
                     addToCartResult.setSource(sourceAtc);
-                    viewListener.renderAddToCartSuccessOpenCart(addToCartResult);
+                    viewListener.renderAddToCartSuccessOpenCheckout(addToCartResult);
                 } else {
                     viewListener.showToastMessage(addToCartResult.getMessage());
                 }
@@ -299,7 +323,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         );
     }
 
-    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data, Subscriber subscriber) {
+    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data,
+                                    Subscriber subscriber, boolean isOneClickShipment) {
         if (context.getApplication() instanceof PdpRouter) {
             viewListener.showProgressLoading();
             ((PdpRouter) context.getApplication()).addToCartProduct(
@@ -310,7 +335,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             .trackerAttribution(data.getTrackerAttribution())
                             .trackerListName(data.getListName())
                             .shopId(Integer.parseInt(data.getShopId()))
-                            .build()
+                            .build(), isOneClickShipment
             ).subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -345,8 +370,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToTalk(@NonNull Context context, @NonNull Bundle bundle) {
         UnifyTracking.eventPDPTalk();
-        Intent intent = new Intent(context, TalkProductActivity.class);
-        intent.putExtras(bundle);
+        Intent intent = ((PdpRouter) context.getApplicationContext()).getProductTalk(context,
+                bundle.getString("product_id", ""));
         viewListener.navigateToActivityRequest(intent,
                 ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT);
     }
@@ -486,20 +511,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     new CacheInteractor.GetProductDetailCacheListener() {
                         @Override
                         public void onSuccess(ProductDetailData productDetailData) {
-                            viewListener.onProductDetailLoaded(productDetailData);
+                            Campaign campaign = productDetailData.getCampaign();
+                            viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
+
+                            checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
+                            requestAffiliateProductData(productDetailData);
+
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setVideoProduct(context, productDetailData);
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
-                            String shopType = productDetailData.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
-                            if (!GlobalConfig.isSellerApp()) {
-                                getPromoWidget(context, generatePromoTargetType(productDetailData, context),
-                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
-                            }
+                            viewListener.loadPromo();
                             if (productDetailData.getInfo().getHasVariant() && useVariant) {
                                 getProductVariant(context
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
@@ -510,6 +536,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData, productPass, context);
+
+                            if (campaign.getActive()) {
+                                getProductDetailFromNetwork(context, productPass, useVariant);
+                            }
                         }
 
                         @Override
@@ -674,11 +704,80 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
     }
 
+    /**
+     * this is no longer used in next release (need confirmation)
+     * replaced by merchant voucher
+     */
+    @Deprecated
+    public void getPromoWidget(final @NonNull Context context, @NonNull final ProductDetailData productDetailData) {
+        String shopType = productDetailData.getShopInfo().isOfficial() ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+        cacheInteractor.getPromoWidgetCache(generatePromoTargetType(productDetailData, context),
+                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
+                shopType, new CacheInteractor.GetPromoWidgetCacheListener() {
+                    @Override
+                    public void onSuccess(PromoAttributes result) {
+                        if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
+                                && result.getShortDescHtml() != null) {
+                            viewListener.showPromoWidget(result);
+                            ProductPageTracking.eventImpressionWidgetPromo(
+                                    context,
+                                    result.getShortDesc(),
+                                    result.getCustomPromoId(),
+                                    result.getCode()
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        retrofitInteractor.getPromo(context,
+                                generatePromoTargetType(productDetailData, context),
+                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
+                                new RetrofitInteractor.PromoListener() {
+                                    @Override
+                                    public void onSucccess(DataPromoWidget dataPromoWidget) {
+                                        cacheInteractor.storePromoWidget(
+                                                generatePromoTargetType(productDetailData, context),
+                                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
+                                                shopType, dataPromoWidget);
+                                        if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
+                                            PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
+                                            PromoAttributes attributes = item.getPromoAttributes();
+                                            attributes.setCustomPromoId(item.getId());
+                                            viewListener.showPromoWidget(attributes);
+                                            ProductPageTracking.eventImpressionWidgetPromo(
+                                                    context,
+                                                    attributes.getShortDesc(),
+                                                    attributes.getCustomPromoId(),
+                                                    attributes.getCode()
+                                            );
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(String error) {
+                                    }
+                                });
+                    }
+                });
+    }
+
+    public String generatePromoTargetType(ProductDetailData productData, Context context) {
+        if (productData.getShopInfo().getShopIsOwner() == 1 && productData.getShopInfo().getShopIsGold() == 1) {
+            return VALUE_TARGET_GOLD_MERCHANT;
+        } else if (productData.getShopInfo().getShopIsOwner() == 1) {
+            return VALUE_TARGET_MERCHANT;
+        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
+            return VALUE_TARGET_LOGIN_USER;
+        }
+        return VALUE_TARGET_GUEST;
+    }
+
     @Override
     public void processResultTalk(int resultCode, Intent data) {
         if (isResultOK(resultCode) & isIntentOK(data)) {
             if (data.getExtras() != null && data.getBooleanExtra(
-                    TalkProductActivity.RESULT_TALK_HAS_ADDED, false
+                    "RESULT_TALK_HAS_ADDED", false
             )) {
                 viewListener.onProductTalkUpdated();
             }
@@ -870,7 +969,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
-            viewListener.onProductDetailLoaded(productData);
+            viewListener.onProductDetailLoaded(productData, mappingToViewData(productData));
             viewListener.onOtherProductLoaded(productOthers);
             if (videoData != null) {
                 viewListener.loadVideo(videoData);
@@ -896,6 +995,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
 
         viewListener.restoreIsAppBarCollapsed(isAppBarCollapsed);
+        viewListener.loadPromo();
     }
 
     @Override
@@ -994,7 +1094,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onSuccess(@NonNull ProductDetailData data) {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
-                        viewListener.onProductDetailLoaded(data);
+
+                        viewListener.onProductDetailLoaded(data, mappingToViewData(data));
+
+                        checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
+
+                        requestAffiliateProductData(
+                                data
+                        );
+
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
@@ -1002,12 +1110,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
-                        String shopType = data.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
-                        if (!GlobalConfig.isSellerApp()) {
-                            getPromoWidget(context, generatePromoTargetType(data, context),
-                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType
-                            );
-                        }
+                        viewListener.loadPromo();
                         if (data.getInfo().getHasVariant() && useVariant) {
                             getProductVariant(context
                                     , Integer.toString(data.getInfo().getProductId()));
@@ -1046,15 +1149,28 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 });
     }
 
-    public String generatePromoTargetType(ProductDetailData productData, Context context) {
-        if (productData.getShopInfo().getShopIsOwner() == 1 && productData.getShopInfo().getShopIsGold() == 1) {
-            return VALUE_TARGET_GOLD_MERCHANT;
-        } else if (productData.getShopInfo().getShopIsOwner() == 1) {
-            return VALUE_TARGET_MERCHANT;
-        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
-            return VALUE_TARGET_LOGIN_USER;
+    private ProductViewData mappingToViewData(ProductDetailData data) {
+        ProductViewData viewData = new ProductViewData();
+        viewData.setProductId(String.valueOf(data.getInfo().getProductId()));
+        viewData.setCourierList(mappingToListCourierViewData(data));
+        return viewData;
+    }
+
+    private ArrayList<CourierViewData> mappingToListCourierViewData(ProductDetailData data) {
+        ArrayList<CourierViewData> list = new ArrayList<>();
+        for (ShopShipment shopShipment : data.getShopInfo().getShopShipments()) {
+            CourierViewData items = new CourierViewData();
+            items.setCourierId(shopShipment.getShippingId());
+            items.setLogo(shopShipment.getLogo());
+            if (shopShipment.getPackageNames() != null) {
+                items.setPackageName(shopShipment.getPackageNames());
+            } else {
+                items.setPackageName(new ArrayList<>());
+            }
+            items.setCourierName(shopShipment.getShippingName());
+            list.add(items);
         }
-        return VALUE_TARGET_GUEST;
+        return list;
     }
 
     private void getOtherProductFromNetwork(Context context, final Map<String, String> param) {
@@ -1086,7 +1202,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
-        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {
@@ -1106,51 +1221,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private void setVideoProduct(Context context, ProductDetailData productDetailData) {
         requestVideo(context, productDetailData.getInfo().getProductId().toString());
-    }
-
-    public void getPromoWidget(final @NonNull Context context, @NonNull final String targetType, @NonNull final String userId, @NonNull final String shopType) {
-        cacheInteractor.getPromoWidgetCache(targetType, userId, shopType, new CacheInteractor.GetPromoWidgetCacheListener() {
-            @Override
-            public void onSuccess(PromoAttributes result) {
-                if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
-                        && result.getShortDescHtml() != null) {
-                    viewListener.showPromoWidget(result);
-                    ProductPageTracking.eventImpressionWidgetPromo(
-                            context,
-                            result.getShortDesc(),
-                            result.getCustomPromoId(),
-                            result.getCode()
-                    );
-                }
-            }
-
-            @Override
-            public void onError() {
-                retrofitInteractor.getPromo(context, targetType, userId, shopType,
-                        new RetrofitInteractor.PromoListener() {
-                            @Override
-                            public void onSucccess(DataPromoWidget dataPromoWidget) {
-                                cacheInteractor.storePromoWidget(targetType, userId, shopType, dataPromoWidget);
-                                if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
-                                    PromoAttributes attributes = item.getPromoAttributes();
-                                    attributes.setCustomPromoId(item.getId());
-                                    viewListener.showPromoWidget(attributes);
-                                    ProductPageTracking.eventImpressionWidgetPromo(
-                                            context,
-                                            attributes.getShortDesc(),
-                                            attributes.getCustomPromoId(),
-                                            attributes.getCode()
-                                    );
-                                }
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                            }
-                        });
-            }
-        });
     }
 
     public void getMostHelpfulReview(@NonNull Context context, @NonNull String productId, String
@@ -1298,26 +1368,41 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         });
     }
 
-    public void getProductVariant(@NonNull Context context, @NonNull String id) {
-        retrofitInteractor.getProductVariant(context, id,
-                new RetrofitInteractor.ProductVariantListener() {
-                    @Override
-                    public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0
-                                && productVariant.getChildren() != null && productVariant.getChildren().size() > 0) {
-                            viewListener.addProductVariant(productVariant);
-                        } else {
-                            viewListener.setVariantFalse();
-                        }
-                        viewListener.updateButtonBuyListener();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        viewListener.showErrorVariant();
-                    }
-                }
+    @Override
+    public void requestAffiliateProductData(ProductDetailData productDetailData) {
+        ArrayList<Integer> productList = new ArrayList<>();
+        productList.add(productDetailData.getInfo().getProductId());
+        getProductAffiliateGqlUseCase.execute(
+                GetProductAffiliateGqlUseCase.Companion.createRequestParams(
+                        productList,
+                        Integer.parseInt(productDetailData.getShopInfo().getShopId())
+                ),
+                new AffiliateProductDataSubscriber(viewListener)
         );
+    }
+
+    public void getProductVariant(@NonNull Context context, @NonNull String id) {
+        if (!viewListener.isFromExploreAffiliate()) {
+            retrofitInteractor.getProductVariant(context, id,
+                    new RetrofitInteractor.ProductVariantListener() {
+                        @Override
+                        public void onSucccess(final ProductVariant productVariant) {
+                            if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0
+                                    && productVariant.getChildren() != null && productVariant.getChildren().size() > 0) {
+                                viewListener.addProductVariant(productVariant);
+                            } else {
+                                viewListener.setVariantFalse();
+                            }
+                            viewListener.updateButtonBuyListener();
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            viewListener.showErrorVariant();
+                        }
+                    }
+            );
+        }
     }
 
     public void getProductStock(@NonNull Context context, @NonNull String id) {
@@ -1355,4 +1440,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             }
         }
     }
+
+
 }

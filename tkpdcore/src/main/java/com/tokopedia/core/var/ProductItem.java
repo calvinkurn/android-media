@@ -3,6 +3,7 @@ package com.tokopedia.core.var;
 import android.os.Parcelable;
 import android.text.Spanned;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.entity.topads.TopAds;
@@ -13,6 +14,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
+
 /**
  * Created by Nathania on 4/06/15.
  * modified by m.normansyah - set type for certainly
@@ -21,6 +24,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
 
     public static final int PRODUCT_ITEM_TYPE = 192_012;
     public static final String CASHBACK = "cashback";
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     @SerializedName("product_id")
     @Expose
@@ -516,5 +520,17 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
 
     public String getTrackerAttribution() {
         return trackerAttribution;
+    }
+
+    public Object getProductAsObjectDataLayerForWishlistClick(int position) {
+        return DataLayer.mapOf(
+                "name", getName(),
+                "id", getId(),
+                "price", Integer.toString(convertRupiahToInt(getPrice())),
+                "brand", DEFAULT_VALUE_NONE_OTHER,
+                "category", DEFAULT_VALUE_NONE_OTHER,
+                "variant", DEFAULT_VALUE_NONE_OTHER,
+                "position", Integer.toString(position)
+        );
     }
 }

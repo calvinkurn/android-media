@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd;
 
+import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
+
 /**
  * Created by hangnadi on 1/24/17.
  */
@@ -8,6 +10,7 @@ package com.tokopedia.tkpd;
 public class ConsumerAppBaseUrl {
 
     public static final String BASE_TOKOPEDIA_WEBSITE = "https://www.tokopedia.com/";
+    public static final String BASE_INSTANT_LOAN_URL = "https://www.tokopedia.com/";
     public static final String BASE_TOKOPEDIA_GQL = "https://gql.tokopedia.com";
     public static final String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api.tokopedia.com/";
@@ -55,5 +58,7 @@ public class ConsumerAppBaseUrl {
     public static final String CHANGE_PHONE_DOMAIN = BASE_MOBILE_DOMAIN;
     public static final String KAI_WEB_DOMAIN = "https://tiket.tokopedia.com/";
     public static final String TOKOCARD_BASE_DOMAIN = "https://www.tokopedia.com/tokocard/";
-    public static final String UPDATE_INACTIVE_PHONE_IMAGE_UPLOAD = "https://u12.tokopedia.net/";
+    public static final String LOGISTIC_BASE_DOMAIN = "https://gw.tokopedia.com/";
+    public static final String CART_BASE_DOMAIN = "https://api.tokopedia.com/";
+    public static final String TRANSACTION_BASE_DOMAIN = "https://ws.tokopedia.com/";
 }

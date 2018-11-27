@@ -1,31 +1,33 @@
 package com.tokopedia.tokopoints.view.adapter;
 
+import android.content.Context;
 import android.graphics.Paint;
-import android.os.CountDownTimer;
-import android.os.Handler;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Map;
 
 public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.ViewHolder> {
 
@@ -34,10 +36,12 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     private boolean mIsLimitEnable;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView quota, description, pointLabel, pointValue,
+        TextView quota, description, pointLabel, pointValue,
                 timeLabel, timeValue, disabledError, btnContinue,
                 labelPoint, textDiscount;
         ImageView imgBanner, imgTime, imgPoint;
+        ProgressBar pbQuota;
+        boolean isVisited = false;
 
         public ViewHolder(View view) {
             super(view);
@@ -54,6 +58,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             imgPoint = view.findViewById(R.id.img_points_stack);
             labelPoint = view.findViewById(R.id.text_point_label);
             textDiscount = view.findViewById(R.id.text_point_discount);
+            pbQuota = view.findViewById(R.id.progress_timer_quota);
         }
     }
 
@@ -82,8 +87,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
-
+        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
         //setting points info if exist in response
         if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
             holder.pointValue.setVisibility(View.GONE);
@@ -110,17 +114,34 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         //Quota text handling
         if (item.getUpperTextDesc() == null || item.getUpperTextDesc().isEmpty()) {
             holder.quota.setVisibility(View.GONE);
+            holder.pbQuota.setVisibility(View.GONE);
         } else {
             holder.quota.setVisibility(View.VISIBLE);
+            holder.pbQuota.setVisibility(View.VISIBLE);
+            holder.pbQuota.setProgress(0);
             StringBuilder upperText = new StringBuilder();
+
+            if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.red_150));
+            } else {
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.black_38));
+            }
+
             for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
                 if (i == 1) {
-                    //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                    if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                        //for flash sale progress bar handling
+                        holder.pbQuota.setProgress(item.getQuota());
+                        upperText.append(item.getUpperTextDesc().get(i));
+                    } else {
+                        //exclusive case for handling font color of second index.
+                        upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                    }
                 } else {
                     upperText.append(item.getUpperTextDesc().get(i)).append(" ");
                 }
             }
+
             holder.quota.setText(MethodChecker.fromHtml(upperText.toString()));
         }
 
@@ -167,7 +188,15 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             mPresenter.startValidateCoupon(item);
         });
 
-        holder.imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(CommonConstant.WebLink.COUPON_DETAIL + mItems.get(position).getSlug()));
+        holder.imgBanner.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, mItems.get(position).getSlug());
+            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
+            sendClickEvent(holder.imgBanner.getContext(), item, position);
+        });
+
+
+        holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -185,5 +214,61 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
     public List<CatalogsValueEntity> getItems() {
         return this.mItems;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
+        CatalogsValueEntity data = mItems.get(holder.getAdapterPosition());
+        if (data == null) {
+            return;
+        }
+
+        if (!holder.isVisited) {
+            Map<String, String> item = new HashMap<>();
+            item.put("id", String.valueOf(data.getId()));
+            item.put("name", data.getTitle());
+            item.put("position", String.valueOf(holder.getAdapterPosition()));
+            item.put("creative", data.getTitle());
+            item.put("creative_url", data.getImageUrlMobile());
+            item.put("promo_code", data.getBaseCode());
+
+            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+            promotions.put("promotions", Arrays.asList(item));
+
+            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
+            promoView.put("promoView", promotions);
+
+            AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                    data.getTitle(), promoView);
+
+            holder.isVisited = true;
+        }
+    }
+
+    private void sendClickEvent(Context context, CatalogsValueEntity data, int position) {
+        Map<String, String> item = new HashMap<>();
+        item.put("id", String.valueOf(data.getId()));
+        item.put("name", data.getTitle());
+        item.put("position", String.valueOf(position));
+        item.put("creative", data.getTitle());
+        item.put("creative_url", data.getImageUrlMobile());
+        item.put("promo_code", data.getBaseCode());
+
+        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+        promotions.put("promotions", Arrays.asList(item));
+
+        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
+        promoClick.put("promoClick", promotions);
+
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                data.getTitle(), promoClick);
     }
 }

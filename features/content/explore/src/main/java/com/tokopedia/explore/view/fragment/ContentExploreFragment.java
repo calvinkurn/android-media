@@ -118,12 +118,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         loadData();
@@ -193,10 +187,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     private void loadData() {
-        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null
-                && !hasLoadedOnce) {
-            presenter.getExploreData(true);
-            hasLoadedOnce = !hasLoadedOnce;
+        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null) {
+            if (!hasLoadedOnce) {
+                presenter.getExploreData(true);
+                hasLoadedOnce = !hasLoadedOnce;
+            }
+            abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
         }
     }
 
@@ -339,7 +335,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public void goToKolPostDetail(KolPostViewModel kolPostViewModel) {
         Intent intent = KolPostDetailActivity.getInstance(
                 getContext(),
-                String.valueOf(kolPostViewModel.getKolId())
+                String.valueOf(kolPostViewModel.getContentId())
         );
         startActivity(intent);
         abstractionRouter.getAnalyticTracker().sendEventTracking(
@@ -349,7 +345,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 String.format(
                         ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
                         kolPostViewModel.getName(),
-                        kolPostViewModel.getKolId()
+                        kolPostViewModel.getContentId()
                 )
         );
     }
