@@ -768,7 +768,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             analytics.eventViewBannerPushPromo(
                     String.format("%s - %s"
                             , ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelId()
-                            , ((ImageAnnouncementViewModel) messageItem).getMessageId()));
+                            , ((ImageAnnouncementViewModel) messageItem).getRedirectUrl()));
         }
 
         if (!hideMessage) {
@@ -1044,7 +1044,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getTitle() != null) {
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
-            analytics.eventClickLoyaltyWidget();
+            analytics.eventClickLoyaltyWidget(((GroupChatActivity) getActivity()).getChannelInfoViewModel().getChannelId());
         }
     }
 

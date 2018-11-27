@@ -183,11 +183,11 @@ public class GroupChatAnalytics {
         );
     }
 
-    public void eventClickLoyaltyWidget() {
+    public void eventClickLoyaltyWidget(String channelId) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_LOYALTY_WIDGET,
-                ""
+                channelId
         );
     }
 
@@ -325,6 +325,5 @@ public class GroupChatAnalytics {
                 officialPartner
         );
     }
-
 
 }
