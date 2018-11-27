@@ -109,7 +109,7 @@
 
     </FrameLayout>
 
-    <FrameLayout
+    <ImageView
         android:id="@+id/image_button_flip"
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
