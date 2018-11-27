@@ -245,7 +245,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteManager.route(getContext(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
         };
     }
