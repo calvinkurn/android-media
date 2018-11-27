@@ -163,16 +163,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
     public void onDestroy() {
         cartAdapter.unsubscribeSubscription();
         super.onDestroy();
@@ -245,9 +235,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
 
             cartListData = arguments.getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData);
-            }
         }
     }
 
@@ -312,6 +299,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
         });
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        if (cartListData != null) {
+            renderInitialGetCartListDataSuccess(cartListData);
+        }
     }
 
     private void setupToolbar(View view) {
