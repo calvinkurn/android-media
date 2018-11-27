@@ -278,7 +278,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                     detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, mainDataObject.getSubmissionResults().get(0));
                     getView().navigateToActivity(detailsIntent);
                 }else {
-                    getView().setSnackBarErrorMessage("Please wait.. try after some time.");
+                    getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_wait_msg));
                 }
             }
         });
