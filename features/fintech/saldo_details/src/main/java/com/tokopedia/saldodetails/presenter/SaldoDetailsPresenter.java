@@ -238,8 +238,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     public void getSummaryDeposit() {
         getView().removeError();
         if (isValid()) {
-            getView().getAdapter().clearAllElements();
-            paging.resetPage();
             showLoading();
             getView().setActionsEnabled(false);
 
@@ -255,9 +253,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.toString());
-
-                    getView().finishLoading();
-
+                    hideLoading();
                     ErrorHandler.getErrorMessage(getView().getContext(), e);
                     if (e instanceof UnknownHostException ||
                             e instanceof SocketTimeoutException) {
@@ -279,6 +275,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
                 @Override
                 public void onNext(GraphqlResponse graphqlResponse) {
+                    hideLoading();
                     onDepositSummaryFetched(graphqlResponse);
                 }
             });
@@ -301,8 +298,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 getView().setActionsEnabled(true);
                 if (paging.getPage() == 1) {
                     getView().getAdapter().clearAllElements();
-                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
                 }
+                depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
                 paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse()
                         .isHaveNextPage());
                 setData(gqlDepositSummaryResponse);
@@ -431,6 +428,12 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     private void showLoading() {
         if (isViewAttached()) {
             getView().getAdapter().showLoading();
+        }
+    }
+
+    private void hideLoading(){
+        if(isViewAttached()) {
+            getView().finishLoading();
         }
     }
 
