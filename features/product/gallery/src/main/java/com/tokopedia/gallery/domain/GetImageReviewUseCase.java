@@ -81,6 +81,7 @@ public class GetImageReviewUseCase extends UseCase<ImageReviewListModel> {
             ImageReviewGqlResponse.Review review = reviewMap.get(item.getReviewID());
 
             ImageReviewItem imageReviewItem = new ImageReviewItem();
+            imageReviewItem.setReviewId(String.valueOf(item.getReviewID()));
             imageReviewItem.setImageUrlLarge(image.getUriLarge());
             imageReviewItem.setImageUrlThumbnail(image.getUriThumbnail());
             imageReviewItem.setFormattedDate(review.getTimeFormat().getDateTimeFmt1());

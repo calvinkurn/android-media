@@ -151,6 +151,22 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
         allFilterItem.setSelected(true);
 
         quickFilterItemList.add(allFilterItem);
+
+        ReviewProductItemFilterView productReviewItemFilterViewWithPhoto = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewWithPhoto.setActive(false);
+        productReviewItemFilterViewWithPhoto.setWithPhoto(true);
+
+        ReviewProductItemFilterView productReviewItemFilterViewWithPhotoActive = new ReviewProductItemFilterView(getActivity());
+        productReviewItemFilterViewWithPhotoActive.setActive(true);
+        productReviewItemFilterViewWithPhotoActive.setWithPhoto(true);
+
+        CustomViewQuickFilterItem imageFilterItem = new CustomViewQuickFilterItem();
+        imageFilterItem.setType(getString(R.string.review_label_with_photo));
+        imageFilterItem.setDefaultView(productReviewItemFilterViewWithPhoto);
+        imageFilterItem.setSelectedView(productReviewItemFilterViewWithPhotoActive);
+
+        quickFilterItemList.add(imageFilterItem);
+
         for (int i = 1; i <= TOTAL_FILTER_ITEM; i++) {
             CustomViewQuickFilterItem quickFilterItem = new CustomViewQuickFilterItem();
             quickFilterItem.setType(String.valueOf(i));
@@ -170,6 +186,16 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
         customViewQuickFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
+                if(typeFilter.equals(getString(R.string.review_label_all))){
+                    if (getActivity().getApplicationContext() instanceof PdpRouter) {
+                        PdpRouter pdpRouter = (PdpRouter) getActivity().getApplicationContext();
+                        pdpRouter.eventClickFilterReviewByImage(
+                                getContext(),
+                                getString(R.string.review_label_all),
+                                productId
+                                );
+                    }
+                }
                 loadInitialData();
             }
         });
@@ -177,15 +203,18 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void loadData(int page) {
+        boolean isWithPhoto = false;
         if (page <= INITIAL_PAGE && customViewQuickFilterView.getSelectedFilter().equals(getString(R.string.review_label_all))) {
             productReviewPresenter.getRatingReview(productId);
             productReviewPresenter.getHelpfulReview(productId);
         }
         String filter = customViewQuickFilterView.getSelectedFilter();
-        if(filter.equals(getString(R.string.review_label_all))){
+        if(filter.equals(getString(R.string.review_label_all)) ||
+                filter.equals(getString(R.string.review_label_with_photo))){
             filter = "";
+            isWithPhoto = true;
         }
-        productReviewPresenter.getProductReview(productId, page, filter);
+        productReviewPresenter.getProductReview(productId, page, filter, isWithPhoto);
     }
 
     @Override

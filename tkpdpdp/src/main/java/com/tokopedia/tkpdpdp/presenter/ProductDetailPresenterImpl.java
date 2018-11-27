@@ -72,18 +72,23 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
+import com.tokopedia.tkpdpdp.helper.GqlHelper;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.subscriber.AffiliateProductDataSubscriber;
+import com.tokopedia.tkpdpdp.presenter.subscriber.ImageReviewSubscriber;
+import com.tokopedia.tkpdpdp.presenter.subscriber.MostHelpfulReviewSubscriber;
 import com.tokopedia.tkpdpdp.presenter.subscriber.WishlistCountSubscriber;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
@@ -136,12 +141,15 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public static final String OFFICIAL_STORE_TYPE = "os";
     public static final String MERCHANT_TYPE = "merchant";
     private static final String NON_LOGIN_USER_ID = "0";
+    public static final int FIRST_PAGE = 0;
+    public static final int TOTAL_IMAGE_FOR_PDP = 4;
 
     private final WishListActionListener wishListActionListener;
     private final GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase;
+    private final GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase;
+    private final GetImageReviewUseCase getImageReviewUseCase;
 
     private GetWishlistCountUseCase getWishlistCountUseCase;
-
 
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
@@ -160,7 +168,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             WishListActionListener wishListActionListener,
             RetrofitInteractor retrofitInteractor,
             CacheInteractor cacheInteractor,
-            GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase) {
+            GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase,
+            GetImageReviewUseCase getImageReviewUseCase,
+            GetMostHelpfulReviewUseCase getMostHelpfulReviewUseCase) {
         this.viewListener = viewListener;
         this.wishListActionListener = wishListActionListener;
         this.retrofitInteractor = retrofitInteractor;
@@ -168,6 +178,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         this.getWishlistCountUseCase = getWishlistCountUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         this.getProductAffiliateGqlUseCase = getProductAffiliateGqlUseCase;
+        this.getImageReviewUseCase = getImageReviewUseCase;
+        this.getMostHelpfulReviewUseCase = getMostHelpfulReviewUseCase;
     }
 
     private void checkWishlistCount(String productId) {
@@ -175,6 +187,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         requestParams.putString(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
 
         getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber(viewListener));
+    }
+
+    private void checkImageReview(int productId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putInt(GetImageReviewUseCase.KEY_PRODUCT_ID, productId);
+        requestParams.putInt(GetImageReviewUseCase.KEY_PAGE, FIRST_PAGE);
+        requestParams.putInt(GetImageReviewUseCase.KEY_TOTAL, TOTAL_IMAGE_FOR_PDP);
+
+        getImageReviewUseCase.execute(requestParams,
+                new ImageReviewSubscriber(viewListener));
     }
 
     @Override
@@ -515,6 +537,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
+
+                            checkImageReview(productDetailData.getInfo().getProductId());
+
                             requestAffiliateProductData(productDetailData);
 
                             requestOtherProducts(context,
@@ -1097,6 +1122,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
+                        checkImageReview(data.getInfo().getProductId());
+
                         requestAffiliateProductData(
                                 data
                         );
@@ -1223,19 +1250,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     public void getMostHelpfulReview(@NonNull Context context, @NonNull String productId, String
             shopId) {
-        retrofitInteractor.getMostHelpfulReview(context, productId, shopId,
-                new MostHelpfulListener() {
-                    @Override
-                    public void onSucccess(List<Review> reviews) {
-                        if (reviews != null && reviews.size() > 0)
-                            viewListener.showMostHelpfulReview(reviews);
-                    }
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetMostHelpfulReviewUseCase.PRODUCT_ID_PARAM, productId);
+        requestParams.putString(GetMostHelpfulReviewUseCase.SHOP_ID, shopId);
 
-                    @Override
-                    public void onError(String error) {
-
-                    }
-                }
+        getMostHelpfulReviewUseCase.execute(
+                requestParams,
+                new MostHelpfulReviewSubscriber(viewListener)
         );
     }
 

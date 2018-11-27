@@ -1,17 +1,24 @@
 package com.tokopedia.gallery.viewmodel;
-
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.gallery.adapter.TypeFactory;
 
 public class ImageReviewItem implements Visitable<TypeFactory>, Parcelable {
+    private String reviewId;
     private String formattedDate;
     private String reviewerName;
     private String imageUrlThumbnail;
     private String imageUrlLarge;
     private int rating;
+
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(String reviewId) {
+        this.reviewId = reviewId;
+    }
 
     public String getFormattedDate() {
         return formattedDate;
