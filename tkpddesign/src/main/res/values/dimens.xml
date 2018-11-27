@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-
     <dimen name="dp_minus8">-8dp</dimen>
     <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
     <dimen name="dp_minus4">-4dp</dimen>
@@ -92,4 +91,5 @@
     <dimen name="sp_56">56sp</dimen>
     <dimen name="dep_64">64dp</dimen>
     <integer name="int_3">3</integer>
+    <dimen name="keyboard_min_height">200dp</dimen>
 </resources>
