@@ -134,11 +134,31 @@
             tools:text="Rp 20.000" />
 
         <TextView
-            android:id="@+id/tv_additional_fee"
+            android:id="@+id/tv_purchase_protection_label"
             style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_insurance_fee"
+            android:layout_marginBottom="@dimen/dp_16"
+            tools:text="Proteksi Gadget (3 Barang)" />
+
+        <TextView
+            android:id="@+id/tv_purchase_protection_fee"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_insurance_fee"
+            android:gravity="end"
+            tools:text="Rp 2.000" />
+
+        <TextView
+            android:id="@+id/tv_additional_fee"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_purchase_protection_label"
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_seller_additional_cost" />
 
@@ -149,7 +169,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/tv_insurance_fee"
+            android:layout_below="@id/tv_purchase_protection_label"
             android:gravity="end"
             tools:text="Rp 19.000" />
 
