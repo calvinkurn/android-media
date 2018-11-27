@@ -299,9 +299,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
         });
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        if (cartListData != null) {
-            renderInitialGetCartListDataSuccess(cartListData);
-        }
     }
 
     private void setupToolbar(View view) {
@@ -412,18 +409,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void initialVar() {
-        if (getActivity() != null) {
-            setHasOptionsMenu(true);
-            getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
-            if (cartListData == null) {
-                refreshHandler.startRefresh();
-            }
-        }
+
     }
 
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            setHasOptionsMenu(true);
+            getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
+            if (cartListData == null) {
+                refreshHandler.startRefresh();
+            } else {
+                renderInitialGetCartListDataSuccess(cartListData);
+            }
+        }
     }
 
     @Override
