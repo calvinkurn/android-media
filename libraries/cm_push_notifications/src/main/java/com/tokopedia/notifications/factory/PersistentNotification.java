@@ -23,7 +23,7 @@ import java.util.List;
 public class PersistentNotification extends BaseNotification {
 
 
-    public PersistentNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    PersistentNotification(Context context, BaseNotificationModel baseNotificationModel) {
         super(context, baseNotificationModel);
     }
 
@@ -56,14 +56,14 @@ public class PersistentNotification extends BaseNotification {
             persistentButton = persistentButtonList.get(0);
             remoteView.setTextViewText(R.id.title1, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon1, getBitmap(persistentButton.getIcon()));
-            remoteView.setOnClickPendingIntent(R.id.lin_container_1, createPendingIntent(persistentButton.getAppLink(), 100));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_1, createPendingIntent(persistentButton.getAppLink()));
         }
         if (listSize > 1) {
             remoteView.setViewVisibility(R.id.lin_container_2, View.VISIBLE);
             persistentButton = persistentButtonList.get(1);
             remoteView.setTextViewText(R.id.title2, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon2, getBitmap(persistentButton.getIcon()));
-            remoteView.setOnClickPendingIntent(R.id.lin_container_2, createPendingIntent(persistentButton.getAppLink(), 100));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_2, createPendingIntent(persistentButton.getAppLink()));
         }
         if (listSize > 2) {
             remoteView.setViewVisibility(R.id.lin_container_3, View.VISIBLE);
@@ -71,14 +71,14 @@ public class PersistentNotification extends BaseNotification {
             remoteView.setTextViewText(R.id.title3, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon3, getBitmap(persistentButton.getIcon()));
 
-            remoteView.setOnClickPendingIntent(R.id.lin_container_3, createPendingIntent(persistentButton.getAppLink(), 100));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_3, createPendingIntent(persistentButton.getAppLink()));
         }
         if (listSize > 3) {
             remoteView.setViewVisibility(R.id.lin_container_4, View.VISIBLE);
             persistentButton = persistentButtonList.get(3);
             remoteView.setTextViewText(R.id.title4, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon4, getBitmap(persistentButton.getIcon()));
-            remoteView.setOnClickPendingIntent(R.id.lin_container_4, createPendingIntent(persistentButton.getAppLink(), 100));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_4, createPendingIntent(persistentButton.getAppLink()));
         }
 
 
@@ -89,7 +89,7 @@ public class PersistentNotification extends BaseNotification {
     }
 
     private PendingIntent getMainContentIntent(){
-        return createPendingIntent("tokopedia://home", 100);
+        return createPendingIntent(baseNotificationModel.getAppLink());
     }
 
     private PendingIntent getPersistentClosePIntent() {

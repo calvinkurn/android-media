@@ -41,7 +41,7 @@ public abstract class BaseNotification {
     protected Context context;
     public BaseNotificationModel baseNotificationModel;
 
-    public BaseNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    BaseNotification(Context context, BaseNotificationModel baseNotificationModel) {
         this.context = context;
         this.baseNotificationModel = baseNotificationModel;
     }
@@ -197,14 +197,14 @@ public abstract class BaseNotification {
         return resultPendingIntent;
     }
 
-    protected PendingIntent createPendingIntent(String appLinks, int notificationType) {
+    protected PendingIntent createPendingIntent(String appLinks) {
         PendingIntent resultPendingIntent;
         Intent intent = RouteManager.getIntent(context, appLinks);
-        Bundle bundle = new Bundle();
+        /*Bundle bundle = new Bundle();
         //bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
         //bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
         //bundle.putInt(Constant.EXTRA_NOTIFICATION_ID, notificationId);
-        intent.putExtras(bundle);
+        intent.putExtras(bundle);*/
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getActivity(
                     context,

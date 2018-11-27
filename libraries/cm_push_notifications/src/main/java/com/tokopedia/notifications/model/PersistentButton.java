@@ -1,12 +1,20 @@
 package com.tokopedia.notifications.model;
 
+import com.google.gson.annotations.SerializedName;
+import com.tokopedia.notifications.common.CMConstant;
+
 /**
  * @author lalit.singh
  */
 public class PersistentButton {
 
+    @SerializedName(CMConstant.PayloadKeys.APP_LINK)
     String appLink;
+
+    @SerializedName(CMConstant.PayloadKeys.TEXT)
     String text;
+
+    @SerializedName(CMConstant.PayloadKeys.ICON)
     String icon;
 
 

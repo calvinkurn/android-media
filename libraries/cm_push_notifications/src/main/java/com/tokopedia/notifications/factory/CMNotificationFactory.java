@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
+import com.tokopedia.notifications.model.Media;
 import com.tokopedia.notifications.model.PersistentButton;
 
 import org.json.JSONObject;
@@ -53,24 +54,37 @@ public class CMNotificationFactory {
 
     private static BaseNotificationModel convertToBaseModel(Bundle data) {
         BaseNotificationModel model = new BaseNotificationModel();
-        model.setAppLink(data.getString("appLink", ApplinkConst.HOME));
-        model.setNotificationId(Integer.parseInt(data.getString("notiId", "500")));
-        model.setBigImageURL(data.getString("bigImage", ""));
-        model.setTitle(data.getString("title", ""));
-        model.setIcon(data.getString("icon", ""));
-        model.setDetailMessage(data.getString("desc", ""));
-        model.setMessage(data.getString("message", ""));
-        model.setType(data.getString("notiType", ""));
-        model.setSoundFileName(data.getString("sound", ""));
-        model.setChannelName(data.getString("channel", ""));
-        model.setCustomValues(getCustomValues(data));
+        model.setIcon(data.getString(CMConstant.PayloadKeys.ICON, ""));
+        model.setSoundFileName(data.getString(CMConstant.PayloadKeys.SOUND, ""));
+        model.setNotificationId(Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_ID, "500")));
+        model.setTribeKey(data.getString(CMConstant.PayloadKeys.TRIBE_KEY, ""));
+        model.setType(data.getString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, ""));
+        model.setChannelName(data.getString(CMConstant.PayloadKeys.CHANNEL, ""));
+        model.setTitle(data.getString(CMConstant.PayloadKeys.TITLE, ""));
+        model.setDetailMessage(data.getString(CMConstant.PayloadKeys.DESCRIPTION, ""));
+        model.setMessage(data.getString(CMConstant.PayloadKeys.MESSAGE, ""));
+        model.setMedia(getMedia(data));
+        model.setAppLink(data.getString(CMConstant.PayloadKeys.APP_LINK, ApplinkConst.HOME));
         model.setActionButton(getActionButtons(data));
         model.setPersistentButtonList(getPersistentNotificationData(data));
+        model.setCustomValues(getCustomValues(data));
         return model;
     }
 
+    private static Media getMedia(Bundle extras) {
+        String actions = extras.getString(CMConstant.PayloadKeys.MEDIA);
+        if (TextUtils.isEmpty(actions)) {
+            return null;
+        }
+        try {
+            return new Gson().fromJson(actions, Media.class);
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
     private static JSONObject getCustomValues(Bundle extras) {
-        String values = extras.getString(CMConstant.NOTIFICATION_CUSTOM_VALUES);
+        String values = extras.getString(CMConstant.PayloadKeys.CUSTOM_VALUE);
         if (TextUtils.isEmpty(values)) {
             return null;
         }
@@ -83,7 +97,7 @@ public class CMNotificationFactory {
     }
 
     private static List<ActionButton> getActionButtons(Bundle extras) {
-        String actions = extras.getString(CMConstant.NOTIFICATION_ACTION_BUTTONS);
+        String actions = extras.getString(CMConstant.PayloadKeys.ACTION_BUTTON);
         if (TextUtils.isEmpty(actions)) {
             return null;
         }
@@ -98,7 +112,7 @@ public class CMNotificationFactory {
     }
 
     private static List<PersistentButton> getPersistentNotificationData(Bundle bundle) {
-        String persistentData = bundle.getString(CMConstant.NOTIFICATION_PERSISTENT);
+        String persistentData = bundle.getString(CMConstant.PayloadKeys.PERSISTENT_DATA);
         if (TextUtils.isEmpty(persistentData)) {
             return null;
         }

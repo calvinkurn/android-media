@@ -17,21 +17,33 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
 
     private RequestParams requestParams = RequestParams.create();
 
+    private static final String USER_ID = "userid";
+    private static final String SOURCE = "source";
+    private static final String FCM_TOKEN = "fcm_token";
+    private static final String APP_ID = "appId";
+    private static final String SDK_VERSION = "sdkVersion";
+    private static final String APP_VERSION = "appVersion";
+    private static final String REQUEST_TIMESTAMP = "requesttimestamp";
+
+    private static final String SOURCE_ANDROID = "ANDROID";
+
+
+
     public UpdateFcmTokenUseCase() {
     }
 
     public void createRequestParams(String userId, String token, int sdkVersion, String appId ,int appVersion) {
-        requestParams.putString("userid", userId);
+        requestParams.putString(USER_ID, userId);
        // requestParams.putString("authtoken", accessToken);
-        requestParams.putString("source", "ANDROID");
-        requestParams.putString("fcm_token", token);
-        requestParams.putString("appId", appId);
+        requestParams.putString(SOURCE, SOURCE_ANDROID);
+        requestParams.putString(FCM_TOKEN, token);
+        requestParams.putString(APP_ID, appId);
        // requestParams.putString("identifier", gAdsId);
-        requestParams.putInt("sdkVersion", sdkVersion);
-        requestParams.putInt("appVersion", appVersion);
+        requestParams.putInt(SDK_VERSION, sdkVersion);
+        requestParams.putInt(APP_VERSION, appVersion);
        // requestParams.putString("state", appId);
 
-        requestParams.putString("requesttimestamp", CMNotificationUtils.getCurrentLocalTimeStamp());
+        requestParams.putString(REQUEST_TIMESTAMP, CMNotificationUtils.getCurrentLocalTimeStamp());
     }
 
     @Override

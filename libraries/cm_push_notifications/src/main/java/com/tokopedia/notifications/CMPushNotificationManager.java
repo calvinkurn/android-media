@@ -74,10 +74,10 @@ public class CMPushNotificationManager {
         try {
             if (null == extras) {
                 Log.e(TAG, "CMPushNotificationManager: No Intent extra available");
-            } else if (extras.containsKey(CMConstant.FCM_EXTRA_CONFIRMATION_KEY)) {
+            } else if (extras.containsKey(CMConstant.PayloadKeys.SOURCE)) {
                 String confirmationValue =
-                        extras.get(CMConstant.FCM_EXTRA_CONFIRMATION_KEY);
-                return confirmationValue.equals(CMConstant.FCM_EXTRA_CONFIRMATION_VALUE);
+                        extras.get(CMConstant.PayloadKeys.SOURCE);
+                return confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE);
             }
         } catch (Exception e) {
             Log.e(TAG, "CMPushNotificationManager: isFromMoEngagePlatform ", e);
@@ -115,82 +115,3 @@ public class CMPushNotificationManager {
     }
 
 }
-
-/* private void notifyGeneral(BaseNotificationModel baseNotificationModel,
-                               int notificationId, NotificationManagerCompat notificationManagerCompat) {
-        Notification generalNotif = new GeneralNotificationFactory(mContext)
-                .createNotification(baseNotificationModel, notificationId);
-
-        notificationManagerCompat.notify(notificationId, generalNotif);
-
-    }*/
-
-/*
-private JSONObject getCustomValues(Bundle extras) {
-        String values = extras.getString(CMConstant.NOTIFICATION_CUSTOM_VALUES);
-        if (TextUtils.isEmpty(values)) {
-            return null;
-        }
-        try {
-            return new JSONObject(values);
-        } catch (Exception e) {
-            Log.e("getCustomValues", e.getMessage());
-        }
-        return null;
-    }
-
-    private List<ActionButton> getActionButtons(Bundle extras) {
-        String actions = extras.getString(CMConstant.NOTIFICATION_ACTION_BUTTONS);
-        if (TextUtils.isEmpty(actions)) {
-            return null;
-        }
-        try {
-            Type listType = new TypeToken<ArrayList<ActionButton>>() {
-            }.getType();
-            List<ActionButton> actionButtonList = new Gson().fromJson(actions, listType);
-            return actionButtonList;
-        } catch (Exception e) {
-            Log.e("getActions", e.getMessage());
-        }
-        return null;
-    }
-
-*/
-
-/* private BaseNotificationModel convertToBaseModel(Bundle data) {
-        BaseNotificationModel model = new BaseNotificationModel();
-        model.setApplink(data.getString("applinks", ApplinkConst.HOME));
-        model.setTitle(data.getString("title", ""));
-        model.setDesc(data.getString("desc", ""));
-        model.setMessage(data.getString("message", ""));
-        model.setType(data.getString("type", ""));
-        model.setCustomValues(getCustomValues(data));
-        model.setActionButton(getActionButtons(data));
-        return model;
-    }*/
-
-
-    /*private void generateNotification(Bundle bundle, NotificationManagerCompat notificationManagerCompat) {
-        String notificationType = getNotificationType(bundle);
-        BaseNotificationModel model = convertToBaseModel(bundle);
-
-        if (CMConstant.NotificationType.GENERAL.equals(notificationType)) {
-            notifyGeneral(model, CMConstant.NotificationId.GENERAL, notificationManagerCompat);
-        } else if (CMConstant.NotificationType.BIG_IMAGE.equals(notificationType)) {
-
-        }
-    }*/
-
-    /* private String getNotificationType(Bundle extras) {
-        try {
-            if (null == extras) {
-                Log.e(LOG, "CMPushNotificationManager: No Intent extra available");
-            } else if (extras.containsKey(CMConstant.EXTRA_NOTIFICATION_TYPE)) {
-                return extras.getString(CMConstant.EXTRA_NOTIFICATION_TYPE);
-            }
-        } catch (Exception e) {
-            Log.e(LOG, "CMPushNotificationManager: ", e);
-        }
-        return CMConstant.EXTRA_NOTIFICATION_TYPE;
-    }
-*/

@@ -12,7 +12,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
 public class GeneralNotification extends BaseNotification {
 
 
-    public GeneralNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    GeneralNotification(Context context, BaseNotificationModel baseNotificationModel) {
         super(context, baseNotificationModel);
     }
 
@@ -22,7 +22,7 @@ public class GeneralNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink(), 100));
+        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink()));
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId()));
         builder.setAutoCancel(true);
         if (!baseNotificationModel.getDetailMessage().isEmpty())

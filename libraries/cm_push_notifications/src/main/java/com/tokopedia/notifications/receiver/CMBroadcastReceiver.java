@@ -21,14 +21,15 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             switch (action) {
                 case CMConstant.ReceiverAction.ACTION_BUTTON:
                     String appLinks = intent.getStringExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK);
-                    Intent appLinkIntent = RouteManager.getIntent(context, appLinks);
+                    Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
                     context.startActivity(appLinkIntent);
-                    NotificationManagerCompat.from(context).cancel(notificationId);
+                    NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT:
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS:
+                    //Notification Dismiss Event
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
             }

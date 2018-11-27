@@ -1,10 +1,16 @@
 package com.tokopedia.notifications.model;
 
+import com.google.gson.annotations.SerializedName;
+import com.tokopedia.notifications.common.CMConstant;
+
 /**
  * Created by Ashwani Tyagi on 22/10/18.
  */
 public class ActionButton {
+    @SerializedName(CMConstant.PayloadKeys.TEXT)
     private String text;
+
+    @SerializedName(CMConstant.PayloadKeys.APP_LINK)
     private String appLink;
 
     public String getText() {

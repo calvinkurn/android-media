@@ -17,8 +17,11 @@ public class BaseNotificationModel {
     private String icon;
     private String soundFileName;
 
+    private String tribeKey;
+
+    private Media media;
+
     private String appLink;
-    private String bigImageURL;
     private List<ActionButton> actionButton = new ArrayList<>();
     private JSONObject customValues;
     private String type;
@@ -91,14 +94,6 @@ public class BaseNotificationModel {
         this.type = type;
     }
 
-    public String getBigImageURL() {
-        return bigImageURL;
-    }
-
-    public void setBigImageURL(String bigImageURL) {
-        this.bigImageURL = bigImageURL;
-    }
-
     public List<PersistentButton> getPersistentButtonList() {
         return persistentButtonList;
     }
@@ -129,5 +124,21 @@ public class BaseNotificationModel {
 
     public void setChannelName(String channelName) {
         this.channelName = channelName;
+    }
+
+    public String getTribeKey() {
+        return tribeKey;
+    }
+
+    public void setTribeKey(String tribeKey) {
+        this.tribeKey = tribeKey;
+    }
+
+    public Media getMedia() {
+        return media;
+    }
+
+    public void setMedia(Media media) {
+        this.media = media;
     }
 }

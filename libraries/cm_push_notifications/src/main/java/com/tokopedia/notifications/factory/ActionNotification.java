@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ActionNotification extends BaseNotification {
 
-    public ActionNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    ActionNotification(Context context, BaseNotificationModel baseNotificationModel) {
         super(context, baseNotificationModel);
     }
 
@@ -25,7 +25,7 @@ public class ActionNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink(), 100));
+        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink()));
         builder.setAutoCancel(true);
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId()));
         addActionButton(baseNotificationModel.getActionButton(), builder);

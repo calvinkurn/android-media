@@ -14,7 +14,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
  */
 public class ImageNotification extends BaseNotification {
 
-    public ImageNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    ImageNotification(Context context, BaseNotificationModel baseNotificationModel) {
         super(context, baseNotificationModel);
     }
 
@@ -24,7 +24,7 @@ public class ImageNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink(), 100));
+        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink()));
         builder.setAutoCancel(true);
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId()));
         setBigPictureNotification(builder, baseNotificationModel);
@@ -32,7 +32,7 @@ public class ImageNotification extends BaseNotification {
     }
 
     private void setBigPictureNotification(NotificationCompat.Builder builder, BaseNotificationModel baseNotificationModel) {
-        Bitmap bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getBigImageURL());
+        Bitmap bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getMedia().getMediumQuality());
         if (null != bitmap) {
             builder.setLargeIcon(bitmap);
             NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle()
@@ -42,6 +42,8 @@ public class ImageNotification extends BaseNotification {
             if (!TextUtils.isEmpty(baseNotificationModel.getMessage()))
                 bigPictureStyle.setSummaryText(baseNotificationModel.getMessage());
             builder.setStyle(bigPictureStyle);
+        }else {
+            //TODO use fallbackUrl
         }
     }
 
