@@ -109,7 +109,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
                     setPersonalInfoViewVisibility(false);
                     setPromotionalInfoViewVisibility(false);
                 }
-                setPersonalInfoViewVisibility(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+//                setPersonalInfoViewVisibility(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
                 setResult(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() ? RESULT_CODE_CHAT_SETTINGS_DISABLED
                         : RESULT_CODE_CHAT_SETTINGS_ENABLED);
             }
@@ -126,7 +126,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
                 } else if (!chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked()) {
                     setPromotionalInfoViewVisibility(false);
                 }
-                setPromotionalInfoViewVisibility(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
+//                setPromotionalInfoViewVisibility(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
             }
         }
     }
