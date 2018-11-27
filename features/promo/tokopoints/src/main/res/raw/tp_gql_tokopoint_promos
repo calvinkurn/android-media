@@ -31,6 +31,7 @@ query CatalogCouponListing($categoryID: Int, $pointRange: Int, $sortID: Int, $pa
       pointsSlashStr
       discountPercentage
       discountPercentageStr
+      isShowTukarButton
     }
   }
 

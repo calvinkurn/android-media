@@ -333,7 +333,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             return false;
         }
         BankAccountViewModel bankAccountViewModel = bankAdapter.getSelectedBank();
-        return (!TextUtils.isEmpty(bankAccountViewModel.getBankName()));
+        return bankAccountViewModel != null
+                && (!TextUtils.isEmpty(bankAccountViewModel.getBankName()));
     }
 
 

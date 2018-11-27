@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 import com.tokopedia.topads.sdk.domain.model.Data;
 

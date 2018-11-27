@@ -357,18 +357,18 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.setDesc(
                 MethodChecker.fromHtml(getString(
                         R.string.flight_cancellation_dialog_non_refundable_description)));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.checkIfFlightCancellable(departureTime, invoiceId, item);
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Lanjut");
+        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.checkIfFlightCancellable(departureTime, invoiceId, item);
                 dialog.dismiss();
             }
         });
@@ -381,18 +381,18 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
                 MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.checkIfFlightCancellable(departureTime, invoiceId, item);
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Lanjut");
+        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.checkIfFlightCancellable(departureTime, invoiceId, item);
                 dialog.dismiss();
             }
         });

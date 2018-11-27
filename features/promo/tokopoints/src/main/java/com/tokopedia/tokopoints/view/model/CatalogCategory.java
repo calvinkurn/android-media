@@ -36,6 +36,7 @@ public class CatalogCategory implements Parcelable {
     @SerializedName("isHideSubCategory")
     private boolean isHideSubCategory;
 
+    @SerializedName("subCategory")
     List<CatalogSubCategory> subCategory;
 
     public CatalogCategory() {
