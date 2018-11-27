@@ -197,8 +197,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             hideLoading();
             String error = String.format("%s (%s)", getContext().getString(R.string
                     .default_request_error_unknown), errorCode);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
-                    ());
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
 
