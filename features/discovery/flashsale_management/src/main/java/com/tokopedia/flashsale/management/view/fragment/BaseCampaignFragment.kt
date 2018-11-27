@@ -103,22 +103,26 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     protected fun showSearchView(show: Boolean) {
         @Px var topPadding = 0
         @Px var bottomPadding = 0
-        if (show) {
-            topPadding = tempTopPaddingRecycleView
-            bottomPadding = tempBottomPaddingRecycleView
-        }
-        recycler_view.setPadding(0, topPadding, 0, bottomPadding)
-        if (app_bar_layout != null) {
-            val seacrhViewParams = searchInputView.layoutParams as AppBarLayout.LayoutParams
-            seacrhViewParams.scrollFlags = if (show) scrollFlags else 0
-            searchInputView.layoutParams = seacrhViewParams
+        try {
+            if (show) {
+                topPadding = tempTopPaddingRecycleView
+                bottomPadding = tempBottomPaddingRecycleView
+            }
+            recycler_view.setPadding(0, topPadding, 0, bottomPadding)
+            if (app_bar_layout != null) {
+                val seacrhViewParams = searchInputView.layoutParams as AppBarLayout.LayoutParams
+                seacrhViewParams.scrollFlags = if (show) scrollFlags else 0
+                searchInputView.layoutParams = seacrhViewParams
 
-            val appBarLayoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-            appBarLayoutParams.behavior = if (show) appBarBehaviour else null
-            app_bar_layout.layoutParams = appBarLayoutParams
-        }
-        if (searchInputView != null) {
-            searchInputView.visibility = if (show) View.VISIBLE else View.GONE
+                val appBarLayoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+                appBarLayoutParams.behavior = if (show) appBarBehaviour else null
+                app_bar_layout.layoutParams = appBarLayoutParams
+            }
+            if (searchInputView != null) {
+                searchInputView.visibility = if (show) View.VISIBLE else View.GONE
+            }
+        } catch (e:Exception) {
+
         }
     }
 
