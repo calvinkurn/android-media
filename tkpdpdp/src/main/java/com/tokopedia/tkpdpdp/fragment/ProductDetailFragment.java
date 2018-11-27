@@ -2631,13 +2631,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     public void routeToReviewGallery(){
         if (getActivity() != null) {
-            RouteManager.route(
-                    getActivity(),
-                    ApplinkConst.PRODUCT_IMAGE_REVIEW
-                            .replace(PRODUCT_ID, String.valueOf(
-                                    productData.getInfo().getProductId()
-                            ))
-            );
+            ImageReviewGalleryActivity.moveTo(getActivity(),
+                    productData.getInfo().getProductId());
         }
     }
 
