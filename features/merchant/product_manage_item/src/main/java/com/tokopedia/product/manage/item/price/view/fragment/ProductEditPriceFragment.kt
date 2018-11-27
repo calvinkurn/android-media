@@ -262,8 +262,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun showDialogGoToGM(){
         val builder = AlertDialog.Builder(context!!,
                 R.style.AppCompatAlertDialogStyle)
-        builder.setTitle(R.string.add_product_title_alert_dialog_dollar)
-        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video, getString(R.string.product_add_label_alert_dialog_dollar)))
+        val gm = getString(GMConstant.getGMTitleResource(context))
+        builder.setTitle(getString(R.string.add_product_title_alert_dialog_dollar_dynamic, gm))
+        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video,
+                getString(R.string.product_add_label_alert_dialog_dollar, gm)))
         builder.setCancelable(true)
         builder.setPositiveButton(R.string.change) { dialog, _ ->
             dialog.cancel()
