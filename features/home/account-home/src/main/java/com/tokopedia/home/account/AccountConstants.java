@@ -19,6 +19,7 @@ public class AccountConstants {
 
     public static class Analytics {
         public static final String CLICK_HOME_PAGE = "clickHomePage";
+        public static final String CLICK_ACCOUNT = "clickAccount";
         public static final String AKUN_SAYA = "akun saya";
         public static final String CLICK = "click";
         public static final String PROFILE = "profile";
@@ -78,6 +79,7 @@ public class AccountConstants {
         public static final String SCREEN_NAME_ACCOUNT = "/account";
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
+        public static final String CLICK_KYC_SETTING = "click on dokument data diri";
         public static final String EVENT_SALDO_OVO = "clickSaldo";
     }
 

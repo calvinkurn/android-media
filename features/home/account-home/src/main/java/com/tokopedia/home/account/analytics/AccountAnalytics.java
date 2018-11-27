@@ -130,6 +130,18 @@ public class AccountAnalytics {
         );
     }
 
+    public void eventClickKycSetting() {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                AccountConstants.Analytics.CLICK_ACCOUNT,
+                String.format("%s %s", ACCOUNT, SETTING),
+                AccountConstants.Analytics.CLICK_KYC_SETTING,
+                ""
+        );
+    }
+
     public void eventClickActivationOvoMyAccount() {
         analyticTracker.sendEventTracking(
                 AccountConstants.Analytics.EVENT_SALDO_OVO,

@@ -69,7 +69,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account_setting, container, false);
         personalDataMenu = view.findViewById(R.id.label_view_identity);
         addressMenu = view.findViewById(R.id.label_view_address);
@@ -145,8 +146,11 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_ADDRESS_ID));
         passwordMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
-        kycMenu.setOnClickListener(view1 ->
-                onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
+        kycMenu.setOnClickListener((view1) -> {
+            accountAnalytics.eventClickKycSetting();
+            onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID);
+        });
+
     }
 
     @Override
@@ -167,7 +171,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     accountAnalytics.eventClickAccountSetting(PASSWORD);
                     if (userSession.isHasPassword()) {
-                        intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
+                        intent = RouteManager.getIntent(getActivity(), ApplinkConst
+                                .CHANGE_PASSWORD);
                         getActivity().startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                     } else {
                         intentToAddPassword();
