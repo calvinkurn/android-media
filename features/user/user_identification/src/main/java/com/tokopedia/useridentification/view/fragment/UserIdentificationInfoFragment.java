@@ -134,8 +134,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
                 showStatusNotVerified();
                 break;
             default:
-                onErrorGetShopVerificationStatus(String.format("%s (%s)", getString(R.string
-                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN));
+                onErrorGetShopVerificationStatus(new Throwable(String.format("%s (%s)", getString(R.string
+                        .default_request_error_unknown), KYCConstant.ERROR_STATUS_UNKNOWN)));
                 break;
         }
     }
