@@ -326,4 +326,11 @@ public class GroupChatAnalytics {
         );
     }
 
+    public void eventActionViewOfficialPartner(String label) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                String.format("%s%s", EVENT_ACTION_VIEW_COMPONENT, COMPONENT_PARTNER),
+                label
+        );
+    }
 }

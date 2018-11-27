@@ -145,6 +145,12 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                         GroupChatAnalytics.ATTRIBUTE_PARTNER_LOGO));
     }
 
+    @Override
+    public void onPartnerViewed(String partnerName) {
+        analytics.eventActionViewOfficialPartner(
+                String.format("%s - %s", channelInfoViewModel.getChannelId(), partnerName));
+    }
+
     private void initView(View view) {
         KeyboardHandler.DropKeyboard(getContext(), getView());
         profile = view.findViewById(R.id.prof_pict);
