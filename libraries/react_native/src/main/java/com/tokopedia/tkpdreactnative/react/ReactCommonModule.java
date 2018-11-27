@@ -43,6 +43,11 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getYoutubeApiKey(Promise promise){
+        promise.resolve(ReactConst.YOUTUBE_API_KEY);
+    }
+
+    @ReactMethod
     public void downloadImageToLocalPath(String downloadImageUrl, String description, String websiteUrl) {
         ArrayList<String> shareImageUrlList = new ArrayList<>();
         shareImageUrlList.add(downloadImageUrl);

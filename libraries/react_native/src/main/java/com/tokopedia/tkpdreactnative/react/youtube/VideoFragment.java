@@ -18,13 +18,4 @@ public class VideoFragment extends YouTubePlayerFragment {
         fragment.setYoutubeView(youTubeView);
         return fragment;
     }
-
-    @Override
-    public void onResume() {
-        if (mYouTubeView != null) {
-            mYouTubeView.onVideoFragmentResume();
-        }
-
-        super.onResume();
-    }
 }

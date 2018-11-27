@@ -3,9 +3,8 @@ package com.tokopedia.recentview.view.listener;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public interface RecentView {
     interface View extends CustomerView {
         void onWishlistClicked(int adapterPosition, Integer productId, boolean wishlist);
 
-        void onGoToProductDetail(String productId);
+        void onGoToProductDetail(String productId, String productname, String  productPrice, String productImage);
 
         void showLoading();
 

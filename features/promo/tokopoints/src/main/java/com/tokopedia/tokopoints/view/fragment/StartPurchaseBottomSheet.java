@@ -98,7 +98,7 @@ public class StartPurchaseBottomSheet extends BottomSheets {
 
     @Override
     protected String title() {
-        return mLobDetails.getTitle();
+        return mLobDetails!=null ? mLobDetails.getTitle() : "";
     }
 
     public void setData(LobDetails lobDetails) {

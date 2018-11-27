@@ -53,8 +53,10 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
-        parentPresenter = parentView.getPresenter();
-        userSession = parentView.getUserSession();
+        if (parentView != null) {
+            parentPresenter = parentView.getPresenter();
+            userSession = parentView.getUserSession();
+        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

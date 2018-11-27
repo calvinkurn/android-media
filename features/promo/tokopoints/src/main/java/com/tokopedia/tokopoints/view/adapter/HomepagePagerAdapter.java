@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -44,12 +45,13 @@ public class HomepagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container, container, false);
         ViewFlipper containerInner = view.findViewById(R.id.container);
-
         if (position == 0) {
             if (mCatalogs != null && !mCatalogs.isEmpty()) {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
-                recyclerView.addItemDecoration(new SpacesItemDecoration(recyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_14)));
                 recyclerView.setAdapter(mCatalogsAdapter);
             } else {
                 containerInner.setDisplayedChild(1);
@@ -78,8 +80,13 @@ public class HomepagePagerAdapter extends PagerAdapter {
             } else {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
-                recyclerView.addItemDecoration(new SpacesItemDecoration(recyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_16),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_16)));
                 recyclerView.setAdapter(mCouponsAdapter);
+
+                LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) view.findViewById(R.id.view_dummy).getLayoutParams();     //margin for bottom view
+                params.height=container.getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg);
             }
 
             view.findViewById(R.id.text_link_first).setOnClickListener(v -> {

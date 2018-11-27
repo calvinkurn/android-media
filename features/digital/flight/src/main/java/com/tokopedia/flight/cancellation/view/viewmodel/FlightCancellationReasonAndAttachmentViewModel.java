@@ -13,26 +13,31 @@ public class FlightCancellationReasonAndAttachmentViewModel implements Parcelabl
 
     private List<FlightCancellationAttachmentViewModel> attachments;
     private String reason;
+    private String reasonId;
     private long estimateRefund;
     private String estimateFmt;
+    private boolean showEstimateRefund;
 
     public FlightCancellationReasonAndAttachmentViewModel() {
     }
 
-
     protected FlightCancellationReasonAndAttachmentViewModel(Parcel in) {
         attachments = in.createTypedArrayList(FlightCancellationAttachmentViewModel.CREATOR);
         reason = in.readString();
+        reasonId = in.readString();
         estimateRefund = in.readLong();
         estimateFmt = in.readString();
+        showEstimateRefund = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(attachments);
         dest.writeString(reason);
+        dest.writeString(reasonId);
         dest.writeLong(estimateRefund);
         dest.writeString(estimateFmt);
+        dest.writeByte((byte) (showEstimateRefund ? 1 : 0));
     }
 
     @Override
@@ -82,5 +87,21 @@ public class FlightCancellationReasonAndAttachmentViewModel implements Parcelabl
 
     public void setEstimateFmt(String estimateFmt) {
         this.estimateFmt = estimateFmt;
+    }
+
+    public boolean isShowEstimateRefund() {
+        return showEstimateRefund;
+    }
+
+    public void setShowEstimateRefund(boolean showEstimateRefund) {
+        this.showEstimateRefund = showEstimateRefund;
+    }
+
+    public String getReasonId() {
+        return reasonId;
+    }
+
+    public void setReasonId(String reasonId) {
+        this.reasonId = reasonId;
     }
 }

@@ -71,8 +71,8 @@ public class RxWebSocketUtil {
                     .doOnUnsubscribe(new Action0() {
                         @Override
                         public void call() {
-                            observableMap.remove(url);
-                            webSocketMap.remove(url);
+                            observableMap.clear();
+                            webSocketMap.clear();
                             if (showLog) {
                                 Log.d(logTag, "unsubscribe");
                             }
