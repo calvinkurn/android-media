@@ -15,7 +15,6 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 /**
  * Created by sandeepgoyal on 02/04/18.
@@ -40,7 +39,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         if (!isNative()) {
-            String url = getIntent().getStringExtra(ContactUsConstant.PARAM_URL);
+            String url = getIntent().getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL);
             if (url != null && url.length() > 0) {
                 return SimpleWebViewWithFilePickerFragment.createInstance(url);
             } else {

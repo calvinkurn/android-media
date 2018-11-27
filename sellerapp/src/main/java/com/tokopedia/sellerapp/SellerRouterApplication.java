@@ -1264,7 +1264,7 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(activity, ContactUsActivity.class);
         intent.putExtra(InboxRouter.PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
-        intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
+        intent.putExtra(ContactUsActivity.EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
     }
 
@@ -1426,10 +1426,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
         Intent intent = new Intent(context, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs(
+        intent.putExtra(ContactUsConstant.EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(
                 TextUtils.isEmpty(url) ? TkpdBaseURL.BASE_CONTACT_US : url, context
         ));
-        intent.putExtra(ContactUsConstant.IS_CHAT_BOT, isFromChatBot);
+        intent.putExtra(ContactUsConstant.EXTRAS_IS_CHAT_BOT, isFromChatBot);
         return intent;
     }
 

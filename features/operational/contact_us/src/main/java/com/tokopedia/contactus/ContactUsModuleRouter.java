@@ -12,6 +12,8 @@ import okhttp3.Interceptor;
  */
 
 public interface ContactUsModuleRouter {
+    String getContactUsBaseURL();
+
     Intent getChatBotIntent(Context context, String messageId);
 
     Interceptor getChuckInterceptor();

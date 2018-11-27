@@ -21,7 +21,7 @@ public abstract class TkpdWebViewClient extends WebViewClient {
     public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
         super.onReceivedSslError(view, handler, error);
         final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-        builder.setMessage(R.string.notification_error_ssl_cert_invalid);
+        builder.setMessage(R.string.cs_notification_error_ssl_cert_invalid);
         builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
