@@ -643,6 +643,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onNext(DataVoucher dataVoucher) {
                 getView().renderCheckPromoShipmentDataSuccess(voucherCouponMapper.convertPromoCodeCartShipmentData(dataVoucher));
                 if(TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getMessage().getState()) == TickerCheckoutView.State.FAILED) {
+                    getView().showToastFailedTickerPromo(dataVoucher.getMessage().getText());
                     getView().cancelAllCourierPromo();
                 }
             }

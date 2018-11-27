@@ -109,6 +109,8 @@ public interface ShipmentContract {
         void setCourierPromoApplied(int itemPosition);
 
         void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
+
+        void showToastFailedTickerPromo(String text);
     }
 
     interface AnalyticsActionListener {

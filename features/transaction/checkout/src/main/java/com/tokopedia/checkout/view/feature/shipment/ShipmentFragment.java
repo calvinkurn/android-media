@@ -648,6 +648,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void showToastFailedTickerPromo(String text) {
+        showToastError(text);
+        //scroll to ticker section
+        rvShipment.scrollToPosition(0);
+    }
+
+    @Override
     public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
         View view = getView();
         if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
