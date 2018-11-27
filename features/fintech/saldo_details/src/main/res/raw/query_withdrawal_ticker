@@ -1,0 +1,6 @@
+query {
+  withdrawalTicker() {
+      Ticker
+      __typename
+      }
+  }

@@ -64,6 +64,10 @@ public interface SaldoDetailContract {
         void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 
         void hideSaldoPrioritasFragment();
+
+        void showTickerMessage(String withdrawalTicker);
+
+        void hideTickerMessage();
     }
 
     interface Presenter extends CustomerPresenter<SaldoDetailContract.View> {
@@ -74,6 +78,8 @@ public interface SaldoDetailContract {
         void setCache();
 
         void getSaldoBalance();
+
+        void getTickerWithdrawalMessage();
 
         void getMerchantSaldoDetails();
 

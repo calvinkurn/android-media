@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -65,6 +66,10 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     SaldoDepositAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     Snackbar snackbar;
+    RelativeLayout tickerMessageRL;
+    TextView tickeRMessageTV;
+    ImageView tickerMessageCloseButton;
+
     private Context context;
     private TextView checkBalanceStatus;
 
@@ -141,6 +146,9 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         amountBeingReviewed = view.findViewById(R.id.amount_review);
         checkBalanceStatus = view.findViewById(R.id.check_balance);
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
+        tickerMessageRL = view.findViewById(R.id.ticker_message_layout);
+        tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
+        tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
 
         snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_SHORT);
     }
@@ -177,6 +185,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
             }
         });
+
+        tickerMessageCloseButton.setOnClickListener(v -> tickerMessageRL.setVisibility(View.GONE));
         startDateLayout.setOnClickListener(onStartDateClicked());
         endDateLayout.setOnClickListener(onEndDateClicked());
         recyclerView.addOnScrollListener(onScroll());
@@ -279,6 +289,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         saldoDetailsPresenter.setFirstDateParameter();
         saldoDetailsPresenter.setCache();
         saldoDetailsPresenter.getSaldoBalance();
+        saldoDetailsPresenter.getTickerWithdrawalMessage();
     }
 
     private boolean restoreStateFromArguments() {
@@ -390,6 +401,17 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @Override
     public void hideSaldoPrioritasFragment() {
         saldoFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showTickerMessage(String withdrawalTicker) {
+        tickerMessageRL.setVisibility(View.VISIBLE);
+        tickeRMessageTV.setText(withdrawalTicker);
+    }
+
+    @Override
+    public void hideTickerMessage() {
+        tickerMessageRL.setVisibility(View.GONE);
     }
 
     @Override

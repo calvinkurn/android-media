@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -12,7 +13,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -23,11 +23,13 @@ import com.tokopedia.saldodetails.response.model.GqlDepositSummaryResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlHoldSaldoBalanceResponse;
 import com.tokopedia.saldodetails.response.model.GqlSaldoBalanceResponse;
+import com.tokopedia.saldodetails.response.model.GqlWithdrawalTickerResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase;
 import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
 import com.tokopedia.saldodetails.usecase.GetSaldoBalanceUseCase;
+import com.tokopedia.saldodetails.usecase.GetTickerWithdrawalMessageUseCase;
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
@@ -68,6 +70,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     GetDepositSummaryUseCase getDepositSummaryUseCase;
     @Inject
     GetSaldoBalanceUseCase getSaldoBalanceUseCase;
+    @Inject
+    GetTickerWithdrawalMessageUseCase getTickerWithdrawalMessageUseCase;
 
     @Inject
     public SaldoDetailsPresenter(@ApplicationContext Context context,
@@ -84,6 +88,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             setMerchantSaldoStatusUseCase.unsubscribe();
             getDepositSummaryUseCase.unsubscribe();
             getSaldoBalanceUseCase.unsubscribe();
+            getTickerWithdrawalMessageUseCase.unsubscribe();
         } catch (NullPointerException e) {
 
         }
@@ -136,10 +141,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void onSearchClicked() {
-
         paramStartDate = getView().getStartDate();
         paramEndDate = getView().getEndDate();
-
         getSummaryDeposit();
     }
 
@@ -231,6 +234,37 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             }
         });
 
+    }
+
+    @Override
+    public void getTickerWithdrawalMessage() {
+        getTickerWithdrawalMessageUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().hideTickerMessage();
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                if (graphqlResponse != null) {
+                    GqlWithdrawalTickerResponse gqlWithdrawalTickerResponse =
+                            graphqlResponse.getData(GqlWithdrawalTickerResponse.class);
+                    if (gqlWithdrawalTickerResponse != null &&
+                            !TextUtils.isEmpty(gqlWithdrawalTickerResponse.getWithdrawalTicker().getTickerMessage())) {
+                        getView().showTickerMessage(gqlWithdrawalTickerResponse.getWithdrawalTicker().getTickerMessage());
+                    } else {
+                        getView().hideTickerMessage();
+                    }
+                }
+            }
+        });
     }
 
 
@@ -388,9 +422,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             getView().getAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
         if (paging.CheckNextPage()) {
-            getView().getAdapter().showLoading();
+            showLoading();
         } else {
-            getView().getAdapter().hideLoading();
+            hideLoading();
         }
     }
 
@@ -431,8 +465,9 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         }
     }
 
-    private void hideLoading(){
-        if(isViewAttached()) {
+    private void hideLoading() {
+        if (isViewAttached()) {
+            getView().getAdapter().hideLoading();
             getView().finishLoading();
         }
     }
