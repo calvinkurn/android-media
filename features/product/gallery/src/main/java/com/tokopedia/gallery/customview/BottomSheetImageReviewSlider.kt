@@ -30,7 +30,7 @@ import java.util.ArrayList
 class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
 
     private var bottomSheetBehavior: UserLockBottomSheetBehavior<*>? = null
-    private var rootView: View? = null
+    private var containerView: View? = null
     private var backButton: View? = null
     private var bottomSheetLayout: View? = null
     private var recyclerView: RecyclerView? = null
@@ -65,9 +65,9 @@ class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
     }
 
     private fun bindView() {
-        rootView = View.inflate(context, R.layout.review_image_slider, this)
-        recyclerView = rootView!!.findViewById(R.id.review_image_slider_recycler_view)
-        backButton = rootView!!.findViewById(R.id.backButton)
+        containerView = View.inflate(context, R.layout.review_image_slider, this)
+        recyclerView = containerView!!.findViewById(R.id.review_image_slider_recycler_view)
+        backButton = containerView!!.findViewById(R.id.backButton)
         bottomSheetLayout = this
     }
 
