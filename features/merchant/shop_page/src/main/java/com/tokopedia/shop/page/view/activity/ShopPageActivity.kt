@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
@@ -59,6 +60,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopInfo: ShopInfo? = null
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStopped = false
 
     @Inject
     lateinit var presenter: ShopPagePresenter
@@ -92,6 +95,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_FEED = 1
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
+        const val SHOP_TRACE = "shop_trace"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val VIEW_CONTENT = 1
@@ -147,6 +151,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(this)
         initInjector()
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
         shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter)
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
@@ -294,7 +299,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
+    private fun stopPerformanceMonitor(){
+        if (!isTraceStopped){
+            performanceMonitoring?.run {
+                stopTrace()
+                isTraceStopped = true
+            }
+
+        }
+    }
+
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
+        stopPerformanceMonitor()
         setViewState(VIEW_CONTENT)
         shopInfo?.run {
             this@ShopPageActivity.shopInfo = this
@@ -356,6 +372,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
+        stopPerformanceMonitor()
         setViewState(VIEW_ERROR)
         errorTextView.text = ErrorHandler.getErrorMessage(this, e)
         errorButton.setOnClickListener { getShopInfo() }
