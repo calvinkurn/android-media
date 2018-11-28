@@ -186,8 +186,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (getContext() != null) {
             hideLoading();
             String error = ErrorHandler.getErrorMessage(getContext(), errorMessage);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
-                    ());
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
 
