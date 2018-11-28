@@ -6,6 +6,7 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -89,6 +90,8 @@ public interface FlightRepository {
     Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
 
     Observable<List<Passenger>> getCancelablePassenger(String invoiceId);
+
+    Observable<List<Reason>> getCancellationReasons();
 
     Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
 

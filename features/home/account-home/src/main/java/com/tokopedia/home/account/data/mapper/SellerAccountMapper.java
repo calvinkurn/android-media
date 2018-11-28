@@ -18,8 +18,12 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.navigation_common.model.NotificationResolutionModel;
+import com.tokopedia.navigation_common.model.NotificationSellerOrderModel;
+import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +50,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
     @Override
     public SellerViewModel call(GraphqlResponse graphqlResponse) {
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
-        SellerViewModel sellerViewModel = new SellerViewModel();
+        SellerViewModel sellerViewModel;
         if (accountModel.getShopInfo() != null
                 && accountModel.getShopInfo().getInfo() != null
                 && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
@@ -61,21 +65,18 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private static SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
+    private SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
-        ShopCardViewModel shopCard = new ShopCardViewModel();
-        shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
-        shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
-        shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
-        shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
-        shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
-        shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
-        if(accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
-            shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
+        TickerViewModel tickerViewModel = parseTickerSeller(context, accountModel);
+        if (tickerViewModel != null && !tickerViewModel.getListMessage().isEmpty()) {
+            items.add(tickerViewModel);
         }
-        items.add(shopCard);
+
+        if(accountModel.getShopInfo() != null && accountModel.getShopInfo().getInfo() != null) {
+            items.add(getShopInfoMenu(accountModel));
+        }
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
         menuGrid.setTitle(context.getString(R.string.title_menu_sales));
@@ -83,65 +84,22 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuGrid.setApplinkUrl(ApplinkConst.SELLER_HISTORY);
         menuGrid.setTitleTrack(PENJUAL);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_sales));
-        List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
 
-        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_new_order,
-                context.getString(R.string.label_menu_new_order),
-                ApplinkConst.SELLER_NEW_ORDER,
-                accountModel.getNotifications().getSellerOrder().getNewOrder(),
-                PENJUAL,
-                context.getString(R.string.title_menu_sales)
-        );
-        menuGridItems.add(gridItem);
 
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_ready_to_ship,
-                context.getString(R.string.label_menu_ready_to_ship),
-                ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP,
-                accountModel.getNotifications().getSellerOrder().getReadyToShip(),
-                PENJUAL,
-                context.getString(R.string.title_menu_sales)
-        );
-        menuGridItems.add(gridItem);
-
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_shipped,
-                context.getString(R.string.label_menu_shipped),
-                ApplinkConst.SELLER_PURCHASE_SHIPPED,
-                accountModel.getNotifications().getSellerOrder().getShipped(),
-                PENJUAL,
-                context.getString(R.string.title_menu_sales)
-        );
-        menuGridItems.add(gridItem);
-
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_delivered,
-                context.getString(R.string.label_menu_arrive_at_destination),
-                ApplinkConst.SELLER_PURCHASE_DELIVERED,
-                accountModel.getNotifications().getSellerOrder().getArriveAtDestination(),
-                PENJUAL,
-                context.getString(R.string.title_menu_sales)
-        );
-        menuGridItems.add(gridItem);
-        menuGrid.setItems(menuGridItems);
+        menuGrid.setItems(getSellerOrderMenu(
+                accountModel.getNotifications() != null && accountModel.getNotifications().getSellerOrder() != null,
+                accountModel
+        ));
         items.add(menuGrid);
 
-        MenuListViewModel menuList = new MenuListViewModel();
-        menuList.setMenu(context.getString(R.string.title_menu_seller_complain));
-        menuList.setMenuDescription(context.getString(R.string.label_menu_seller_complain));
-        menuList.setCount(accountModel.getNotifications().getResolution().getSeller());
-        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
-        menuList.setTitleTrack(PENJUAL);
-        menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
-        items.add(menuList);
+        items.add(getSellerResolutionMenu(accountModel));
 
         MenuTitleViewModel menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_product));
         items.add(menuTitle);
 
         items.add(new AddProductViewModel());
 
-        menuList = new MenuListViewModel();
+        MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_product_list));
         menuList.setMenuDescription(context.getString(R.string.label_menu_product_list));
         menuList.setApplink(ApplinkConst.PRODUCT_MANAGE);
@@ -221,7 +179,40 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private SellerViewModel getEmptySellerModel(){
+    private TickerViewModel parseTickerSeller(Context context, AccountModel accountModel) {
+        TickerViewModel sellerTickerModel = new TickerViewModel(new ArrayList<>());
+
+        if (accountModel.getKycStatusPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
+            sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
+        }
+
+        return sellerTickerModel;
+
+    }
+
+    private void setKycToModel(ShopCardViewModel shopCard, AccountModel accountModel) {
+        if (shopCard != null && accountModel != null && accountModel.getKycStatusPojo() != null) {
+
+            if (accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
+                    && accountModel.getKycStatusPojo()
+                    .getKycStatusDetailPojo().getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS) {
+                shopCard.setVerificationStatus(accountModel.getKycStatusPojo()
+                        .getKycStatusDetailPojo().getStatus());
+                shopCard.setVerificationStatusName(accountModel.getKycStatusPojo()
+                        .getKycStatusDetailPojo().getStatusName());
+            } else {
+                shopCard.setVerificationStatus(KYCConstant.STATUS_ERROR);
+                shopCard.setVerificationStatusName("");
+            }
+        }
+    }
+
+    private SellerViewModel getEmptySellerModel() {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
@@ -229,5 +220,84 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         sellerViewModel.setItems(items);
 
         return sellerViewModel;
+    }
+
+    private ShopCardViewModel getShopInfoMenu(AccountModel accountModel) {
+        ShopCardViewModel shopCard = new ShopCardViewModel();
+        shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
+        shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
+        shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
+        shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
+        shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+
+        if(accountModel.getDeposit() != null) {
+            shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
+        }
+
+        if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
+            shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
+        }
+
+        return shopCard;
+    }
+
+    private List<MenuGridItemViewModel> getSellerOrderMenu(Boolean isNotNull, AccountModel accountModel) {
+        List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
+        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_new_order,
+                context.getString(R.string.label_menu_new_order),
+                ApplinkConst.SELLER_NEW_ORDER,
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getNewOrder() : 0,
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_ready_to_ship,
+                context.getString(R.string.label_menu_ready_to_ship),
+                ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP,
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getReadyToShip() : 0,
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_shipped,
+                context.getString(R.string.label_menu_shipped),
+                ApplinkConst.SELLER_PURCHASE_SHIPPED,
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getShipped() : 0,
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_delivered,
+                context.getString(R.string.label_menu_arrive_at_destination),
+                ApplinkConst.SELLER_PURCHASE_DELIVERED,
+                isNotNull ? accountModel.getNotifications().getSellerOrder().getArriveAtDestination() : 0,
+                PENJUAL,
+                context.getString(R.string.title_menu_sales)
+        );
+        menuGridItems.add(gridItem);
+
+        return menuGridItems;
+    }
+
+    private ParcelableViewModel getSellerResolutionMenu(AccountModel accountModel) {
+        MenuListViewModel menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.title_menu_seller_complain));
+        menuList.setMenuDescription(context.getString(R.string.label_menu_seller_complain));
+        if(accountModel.getNotifications() != null
+                && accountModel.getNotifications().getResolution() != null) {
+            menuList.setCount(accountModel.getNotifications().getResolution().getSeller());
+        }
+        menuList.setApplink(ApplinkConst.RESCENTER_SELLER);
+        menuList.setTitleTrack(PENJUAL);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_sales));
+
+        return menuList;
     }
 }

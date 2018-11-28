@@ -14,6 +14,7 @@ import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataS
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -263,6 +264,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
         return flightCancellationCloudDataSource.getCancelablePassenger(invoiceId);
+    }
+
+    @Override
+    public Observable<List<Reason>> getCancellationReasons() {
+        return flightCancellationCloudDataSource.getCancellationReasons();
     }
 
     @Override

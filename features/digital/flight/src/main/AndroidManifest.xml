@@ -140,6 +140,10 @@
             android:label="@string/flight_cancellation_list_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
+        <activity android:name=".cancellation.view.activity.FlightCancellationChooseReasonActivity"
+            android:label="@string/flight_cancellation_reason_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightInsuranceWebviewActivity"
             android:label="@string/flight_insurance_webview_toolbar_title"
@@ -158,7 +162,6 @@
             android:name=".airport.service.GetAirportListJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>
