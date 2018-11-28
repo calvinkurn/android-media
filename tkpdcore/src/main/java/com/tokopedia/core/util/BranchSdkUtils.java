@@ -439,6 +439,6 @@ public class BranchSdkUtils {
 
     public static Boolean isAndroidIosUrlActivated() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
-        return remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB);
+        return remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB, true);
     }
 }
