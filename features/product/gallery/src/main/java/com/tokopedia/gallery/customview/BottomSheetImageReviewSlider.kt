@@ -102,7 +102,7 @@ class BottomSheetImageReviewSlider : FrameLayout, ImageReviewSliderView {
     }
 
     private fun initListener() {
-        bottomSheetBehavior = UserLockBottomSheetBehavior.from(bottomSheetLayout!!) as UserLockBottomSheetBehavior<*>
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout!!) as UserLockBottomSheetBehavior<*>
         bottomSheetBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
 
         backButton!!.setOnClickListener { callback!!.onButtonBackPressed() }
