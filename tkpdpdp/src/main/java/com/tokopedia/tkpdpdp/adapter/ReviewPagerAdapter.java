@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.Data;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.tkpdpdp.R;
@@ -74,7 +77,7 @@ public class ReviewPagerAdapter extends PagerAdapter{
         TextView tv_review_time = ((TextView) view.findViewById(R.id.text_review_time));
         TextView tv_text_review = ((TextView) view.findViewById(R.id.text_review));
         ImageView image_rating_review = ((ImageView) view.findViewById(R.id.image_rating_review_pdp));
-        RecyclerView rv_image = (RecyclerView) view.findViewById(R.id.rv_image);
+        GridView grid_image = (GridView) view.findViewById(R.id.grid_image);
 
         tv_reviewer_name.setText(review.getUser().getFullName());
         tv_review_time.setText(review.getReviewCreateTime().getDateTimeFmt1());
@@ -89,7 +92,7 @@ public class ReviewPagerAdapter extends PagerAdapter{
         });
 
         if (review.getReviewImageAttachment().size() > 0){
-            rv_image.setVisibility(View.VISIBLE);
+            grid_image.setVisibility(View.VISIBLE);
             tv_text_review.setLines(2);
 
             ItemAdapter adapter = new ItemAdapter(
@@ -97,9 +100,8 @@ public class ReviewPagerAdapter extends PagerAdapter{
                     String.valueOf(review.getReviewId())
             );
             adapter.setData(review.getReviewImageAttachment());
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3);
-            rv_image.setLayoutManager(gridLayoutManager);
-            rv_image.setAdapter(adapter);
+
+            grid_image.setAdapter(adapter);
         }
 
         container.addView(view);
@@ -132,7 +134,7 @@ public class ReviewPagerAdapter extends PagerAdapter{
         }
     }
 
-    private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+    private class ItemAdapter extends BaseAdapter {
         private List<ReviewImageAttachment> data;
         private String productId;
         private String reviewId;
@@ -150,46 +152,52 @@ public class ReviewPagerAdapter extends PagerAdapter{
         }
 
         @Override
-        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView;
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_image_review_item, parent, false);
-            return new ItemViewHolder(itemView);
-        }
-        @Override
-        public void onBindViewHolder(ItemViewHolder holder, final int position) {
-            ReviewImageAttachment reviewImageAttachment = data.get(position);
-            holder.bind(reviewImageAttachment);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onMostHelpfulImageClicked(data, position);
-                    ProductPageTracking.eventClickReviewOnMostHelpfulReview(
-                            context,
-                            productId,
-                            reviewId
-                    );
-
-                    onMostHelpfulClick();
-                }
-            });
-        }
-        @Override
-        public int getItemCount() {
+        public int getCount() {
             if(data == null) return 0;
             else if (data.size() > 3) return 3;
             else return data.size();
         }
 
-        public class ItemViewHolder extends RecyclerView.ViewHolder {
-            ImageView reviewImage;
-            public ItemViewHolder(View itemView) {
-                super(itemView);
-                reviewImage = itemView.findViewById(R.id.review_image);
-            }
-            public void bind(final ReviewImageAttachment item) {
+        @Override
+        public Object getItem(int position){
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position){
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            ReviewImageAttachment item = data.get(position);
+
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View gridView;
+
+            if (view == null) {
+                gridView = inflater.inflate(R.layout.layout_image_review_item_most_helpful
+                        ,null);
+                ImageView reviewImage = gridView.findViewById(R.id.review_image);
                 ImageHandler.loadImageAndCache(reviewImage, item.getUriThumbnail());
+                reviewImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                      listener.onMostHelpfulImageClicked(data, position);
+                        ProductPageTracking.eventClickReviewOnMostHelpfulReview(
+                                context,
+                                productId,
+                                reviewId
+                        );
+
+                        onMostHelpfulClick();
+                    }
+                });
+            } else {
+                gridView = (View) view;
             }
+
+            return gridView;
         }
     }
 }

@@ -75,7 +75,6 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         reviewStar = (RatingBar) itemView.findViewById(R.id.product_rating);
         adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
         adapter.setCanUpload(false);
-        adapter.setListener(onImageClicked());
         reviewAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         reviewAttachment.setAdapter(adapter);
@@ -95,6 +94,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
 
     @Override
     public void bind(final ReviewProductModelContent element) {
+        adapter.setListener(onImageClicked(element));
+
         reviewerName.setText(getReviewerNameText(element));
         reviewerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,7 +196,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         return list;
     }
 
-    private ImageUploadAdapter.ProductImageListener onImageClicked() {
+    private ImageUploadAdapter.ProductImageListener onImageClicked(ReviewProductModelContent element) {
         return new ImageUploadAdapter.ProductImageListener() {
             @Override
             public View.OnClickListener onUploadClicked(int position) {
@@ -212,7 +213,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        viewListener.goToPreviewImage(position, adapter.getList());
+                        viewListener.goToPreviewImage(position, adapter.getList(), element);
                     }
                 };
             }
@@ -339,7 +340,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     public interface ListenerReviewHolder {
         void onGoToProfile(String reviewerId, int adapterPosition);
 
-        void goToPreviewImage(int position, ArrayList<ImageUpload> list);
+        void goToPreviewImage(int position, ArrayList<ImageUpload> list, ReviewProductModelContent element);
 
         void onGoToShopInfo(String shopId);
 

@@ -3219,6 +3219,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void eventImageClickOnReview(Context context,
+                                             String productId,
+                                             String reviewId) {
+        ProductPageTracking.eventClickImageOnReviewList(
+                context,
+                productId,
+                reviewId
+        );
+    }
+
+    @Override
     public Intent getShopTalkIntent(Context context, String shopId) {
         return ShopTalkActivity.Companion.createIntent(context, shopId);
     }

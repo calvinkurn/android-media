@@ -243,7 +243,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
     }
 
     @Override
-    public void goToPreviewImage(int position, ArrayList<ImageUpload> list) {
+    public void goToPreviewImage(int position, ArrayList<ImageUpload> list, ReviewProductModelContent element) {
         if (MainApplication.getAppContext() instanceof PdpRouter) {
             ArrayList<String> listLocation = new ArrayList<>();
             ArrayList<String> listDesc = new ArrayList<>();
@@ -257,6 +257,12 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
                     getActivity(),
                     listLocation,
                     position
+            );
+
+            ((PdpRouter) MainApplication.getAppContext()).eventImageClickOnReview(
+                    getActivity(),
+                    element.getProductId(),
+                    element.getReviewId()
             );
         }
     }
