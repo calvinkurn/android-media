@@ -40,7 +40,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     public void onDealsCheckout() {
         getView().setCheckoutParameter(buildCheckoutData(getView().getCartInfoData(), userSession.getAccessToken()));
         renderBaseCart(getView().getCartInfoData());
-        getView().renderCategory(getView().getCartInfoData().getAttributes().getCategoryName());
+        getView().renderCategoryInfo(getView().getCartInfoData().getAttributes().getCategoryName());
         if (getView().getCartInfoData().getCrossSellingConfig() != null) {
             getView().updateToolbarTitle(getView().getCartInfoData().getCrossSellingConfig().getHeaderTitle());
             getView().updateCheckoutButtonText(getView().getCartInfoData().getCrossSellingConfig().getCheckoutButtonText());
@@ -112,7 +112,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         }
         getView().addSelectedDeal(viewModel);
         getView().renderCartDealListView(viewModel);
-        getView().renderCategory(
+        getView().renderCategoryInfo(
                 String.format("%s & %d Deals", getView().getCartInfoData().getAttributes().getCategoryName(), getView().getSelectedDeals().size())
         );
         long discountPlain = getView().getCheckoutDiscountPricePlain();
@@ -173,11 +173,11 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().hideDealsContainerView();
         }
         if (getView().getSelectedDeals().size() > 0) {
-            getView().renderCategory(
+            getView().renderCategoryInfo(
                     String.format("%s & %d Deals", getView().getCartInfoData().getAttributes().getCategoryName(), getView().getSelectedDeals().size())
             );
         } else {
-            getView().renderCategory(getView().getCartInfoData().getAttributes().getCategoryName());
+            getView().renderCategoryInfo(getView().getCartInfoData().getAttributes().getCategoryName());
         }
 
         long discountPlain = getView().getCheckoutDiscountPricePlain();

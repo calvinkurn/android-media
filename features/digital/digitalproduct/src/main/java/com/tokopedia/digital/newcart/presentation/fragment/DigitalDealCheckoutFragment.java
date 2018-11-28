@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
@@ -185,27 +184,27 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void renderCategory(String categoryName) {
+    public void renderCategoryInfo(String categoryName) {
         categoryNameTextView.setText(categoryName);
     }
 
     @Override
-    public void hideContent() {
+    public void hideCartView() {
         interactionListener.hideCartPage();
     }
 
     @Override
-    public void showLoading() {
+    public void showFullPageLoading() {
         interactionListener.showFullpageLoading();
     }
 
     @Override
-    public void showContent() {
+    public void showCartView() {
         interactionListener.showCartPage();
     }
 
     @Override
-    public void hideLoading() {
+    public void hideFullPageLoading() {
         interactionListener.hideFullpageLoading();
     }
 
@@ -242,7 +241,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-//        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_10), 0 , 0);
         containerLayout.setLayoutParams(
                 layoutParams
         );
@@ -300,8 +298,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                 int measureWithInterpolate = (int) (currentHeight - (currentHeight * interpolatedTime));
                 int height = targetHeight;
                 interactionListener.hideDim(1 - interpolatedTime);
-                CommonUtils.dumper("inter " + interpolatedTime);
-                CommonUtils.dumper("height " + height);
                 if ((int) interpolatedTime != 1) {
                     if (measureWithInterpolate > targetHeight) {
                         height = measureWithInterpolate;
@@ -309,8 +305,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                     containerLayout.getLayoutParams().height = height;
                     containerLayout.requestLayout();
                 } else {
-                    CommonUtils.dumper("inter2 " + interpolatedTime);
-                    CommonUtils.dumper("height2 " + height);
                     if (containerScroll.getVisibility() != View.GONE) {
                         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -493,8 +487,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void setHachikoCoupon(String title, String message, String voucherCode) {
-        super.setHachikoCoupon(title, message, voucherCode);
+    public void renderHachikoCoupon(String title, String message, String voucherCode) {
+        super.renderHachikoCoupon(title, message, voucherCode);
         if (!isCartDetailViewVisible()) {
             containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -502,8 +496,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void setHachikoVoucher(String voucherCode, String message) {
-        super.setHachikoVoucher(voucherCode, message);
+    public void renderHachikoVoucher(String voucherCode, String message) {
+        super.renderHachikoVoucher(voucherCode, message);
         if (!isCartDetailViewVisible()) {
             containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));

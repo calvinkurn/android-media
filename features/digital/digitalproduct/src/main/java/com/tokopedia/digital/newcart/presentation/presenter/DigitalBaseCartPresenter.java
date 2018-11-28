@@ -91,8 +91,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onViewCreated() {
-        getView().hideContent();
-        getView().showLoading();
+        getView().hideCartView();
+        getView().showFullPageLoading();
         RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                 getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
         digitalAddToCartUseCase.execute(requestParams, getSubscriberAddToCart());
@@ -164,8 +164,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
-                    getView().showContent();
-                    getView().hideLoading();
+                    getView().showCartView();
+                    getView().hideFullPageLoading();
                     getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
                 } else {
                     renderCart(cartDigitalInfoData);
@@ -184,8 +184,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                     getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
                     break;
                 default:
-                    getView().showContent();
-                    getView().hideLoading();
+                    getView().showCartView();
+                    getView().hideFullPageLoading();
                     renderBaseCart(cartDigitalInfoData);
                     break;
             }
@@ -206,11 +206,11 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
         if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
-            getView().showHachikoCart();
+            getView().renderHachikoCart();
             if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
-                getView().setHachikoPromoAndCouponLabel();
+                getView().renderHachikoPromoAndCouponLabel();
             } else {
-                getView().setHachikoPromoLabelOnly();
+                getView().renderHachikoPromoLabelOnly();
             }
         } else {
             getView().hideHachikoCart();
@@ -221,7 +221,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 cartDigitalInfoData.getAttributes().getOperatorName()
         );
 
-        getView().renderCategory(cartDigitalInfoData.getAttributes().getCategoryName());
+        getView().renderCategoryInfo(cartDigitalInfoData.getAttributes().getCategoryName());
         getView().renderDetailMainInfo(cartDigitalInfoData.getMainInfo());
         getView().renderAdditionalInfo(new ArrayList<>(cartDigitalInfoData.getAdditionalInfos()));
 
@@ -254,8 +254,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private void branchAutoApplyCouponIfAvailable() {
         String savedCoupon = digitalModuleRouter.getBranchAutoApply(getView().getActivity());
         if (savedCoupon != null && savedCoupon.length() > 0) {
-            getView().hideContent();
-            getView().showLoading();
+            getView().hideCartView();
+            getView().showFullPageLoading();
             Map<String, String> param = new HashMap<>();
             param.put("voucher_code", savedCoupon);
             param.put("category_id", getView().getCartPassData().getCategoryId());
@@ -282,15 +282,15 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().showContent();
-                    getView().hideLoading();
+                    getView().showCartView();
+                    getView().hideFullPageLoading();
                 }
             }
 
             @Override
             public void onNext(VoucherDigital voucherDigital) {
-                getView().hideLoading();
-                getView().showContent();
+                getView().hideFullPageLoading();
+                getView().showCartView();
                 renderCouponAndVoucher(voucherDigital);
             }
         };
@@ -309,14 +309,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().showContent();
-                    getView().hideLoading();
+                    getView().showCartView();
+                    getView().hideFullPageLoading();
                 }
             }
 
             @Override
             public void onNext(CheckoutDigitalData checkoutDigitalData) {
-                getView().hideLoading();
+                getView().hideFullPageLoading();
                 getView().renderToTopPay(checkoutDigitalData);
             }
         };
@@ -325,7 +325,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private void renderDataInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
         if (userInputPriceDigital != null) {
             getView().getCheckoutDataParameter().transactionAmount(0);
-            getView().renderInputPrice(total, userInputPriceDigital);
+            getView().renderInputPriceView(total, userInputPriceDigital);
         }
     }
 
@@ -338,7 +338,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     private void renderVoucherInfoData(VoucherDigital voucherDigital) {
-        getView().setHachikoVoucher(
+        getView().renderHachikoVoucher(
                 voucherDigital.getAttributeVoucher().getVoucherCode(),
                 voucherDigital.getAttributeVoucher().getMessage());
         renderIfHasDiscount(voucherDigital);
@@ -377,7 +377,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     private void renderCouponInfoData(VoucherDigital voucherDigital) {
-        getView().setHachikoCoupon(
+        getView().renderHachikoCoupon(
                 voucherDigital.getAttributeVoucher().getTitle(),
                 voucherDigital.getAttributeVoucher().getMessage(),
                 voucherDigital.getAttributeVoucher().getVoucherCode()
@@ -464,8 +464,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
             return;
         }
-        getView().hideContent();
-        getView().showLoading();
+        getView().hideCartView();
+        getView().showFullPageLoading();
         RequestParams requestParams = digitalCheckoutUseCase.createRequestParams(getRequestBodyCheckout(checkoutData));
         digitalCheckoutUseCase.execute(
                 requestParams,
@@ -537,8 +537,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     public void processGetCartDataAfterCheckout(String categoryId) {
         Map<String, String> param = new HashMap<>();
         param.put("category_id", categoryId);
-        getView().showLoading();
-        getView().hideContent();
+        getView().showFullPageLoading();
+        getView().hideCartView();
         cartDigitalInteractor.getCartInfoData(
                 getView().getGeneratedAuthParamNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 getSubscriberCartInfoAfterCheckout()
@@ -584,8 +584,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
-                getView().showContent();
-                getView().hideLoading();
+                getView().showCartView();
+                getView().hideFullPageLoading();
                 cartDigitalInfoData.setForceRenderCart(true);
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
@@ -672,7 +672,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             @Override
             public void onNext(InstantCheckoutData instantCheckoutData) {
-                getView().hideContent();
+                getView().hideCartView();
                 getView().renderToInstantCheckoutPage(instantCheckoutData);
             }
         };

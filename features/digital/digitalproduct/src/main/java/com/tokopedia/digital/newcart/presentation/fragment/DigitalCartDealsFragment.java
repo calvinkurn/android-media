@@ -59,6 +59,9 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private static final String EXTRA_CART_DATA = "EXTRA_CART_DATA";
     private static final String TAG_DIGITAL_CHECKOUT = "digital_deals_checkout_fragment";
 
+    private static final long DEFAULT_MAX_DIM = 200;
+    private static final long DEFAULT_DELAY_ONBOARD = 800;
+
     private ProgressBar progressBar;
     private TabLayout dealTabLayout;
     private ViewPager dealViewPager;
@@ -104,6 +107,8 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
     @Inject
     DigitalCartDealsPresenter presenter;
@@ -163,7 +168,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void showGetCategoriesLoading() {
+    public void renderGetCategoriesLoading() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -173,7 +178,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void showGetCategoriesError(String message) {
+    public void renderGetCategoriesError(String message) {
         NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
     }
 
@@ -207,7 +212,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void showErrorInRedSnackbar(int resId) {
+    public void renderErrorInRedSnackbar(int resId) {
         NetworkErrorHelper.showRedSnackbar(getView(), getString(resId));
     }
 
@@ -259,48 +264,52 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void showOnboard() {
+    public void renderOnboarding() {
         ShowCaseDialog showCaseDialog = createShowCaseDialog();
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
-                ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
-                if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
-                    ShowCaseObject priceShowCase = new ShowCaseObject(
-                            checkoutFragment.getView(), getString(R.string.digital_cart_deals_showcase_product_detail),
-                            getString(R.string.digital_cart_deals_showcase_product_detail_detail),
-                            ShowCaseContentPosition.TOP);
-                    showCaseObjectList.add(priceShowCase);
-                }
-
-                ShowCaseObject dealShowCase = new ShowCaseObject(
-                        dealTabLayout, getString(R.string.digital_cart_deals_showcase_special),
-                        getString(R.string.digital_cart_deals_showcase_special_detail),
-                        ShowCaseContentPosition.BOTTOM
-                );
-
-                showCaseObjectList.add(dealShowCase);
-                if (getActivity().getFragmentManager() != null)
-                    getActivity().getFragmentManager().executePendingTransactions();
-                showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
-                    @Override
-                    public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                        if (previousStep == 0) {
-                            notifyCheckoutPageToStartAnimation();
-                        }
-                        return false;
-                    }
-                });
-                showCaseDialog.show(
-                        getActivity(),
-                        DigitalCartDealsFragment.class.getName(),
-                        showCaseObjectList
-                );
+                buildAndShowShowCase(showCaseDialog);
             }
-        }, 800);
+        }, DEFAULT_DELAY_ONBOARD);
 
+    }
+
+    private void buildAndShowShowCase(ShowCaseDialog showCaseDialog) {
+        Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
+        ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
+        if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
+            ShowCaseObject priceShowCase = new ShowCaseObject(
+                    checkoutFragment.getView(), getString(R.string.digital_cart_deals_showcase_product_detail),
+                    getString(R.string.digital_cart_deals_showcase_product_detail_detail),
+                    ShowCaseContentPosition.TOP);
+            showCaseObjectList.add(priceShowCase);
+        }
+
+        ShowCaseObject dealShowCase = new ShowCaseObject(
+                dealTabLayout, getString(R.string.digital_cart_deals_showcase_special),
+                getString(R.string.digital_cart_deals_showcase_special_detail),
+                ShowCaseContentPosition.BOTTOM
+        );
+
+        showCaseObjectList.add(dealShowCase);
+        if (getActivity().getFragmentManager() != null)
+            getActivity().getFragmentManager().executePendingTransactions();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                if (previousStep == 0) {
+                    notifyCheckoutPageToStartAnimation();
+                }
+                return false;
+            }
+        });
+        showCaseDialog.show(
+                getActivity(),
+                DigitalCartDealsFragment.class.getName(),
+                showCaseObjectList
+        );
     }
 
     private ShowCaseDialog createShowCaseDialog() {
@@ -330,7 +339,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
-    public void showCheckoutView(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData) {
+    public void renderCheckoutView(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData) {
         checkoutContainer.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             checkoutContainer.setElevation(60);
@@ -392,12 +401,12 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     public void showDim(float procentage, int height) {
         checkoutDim.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         checkoutDim.setVisibility(View.VISIBLE);
-        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (200 * procentage)));
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (DEFAULT_MAX_DIM * procentage)));
     }
 
     @Override
     public void hideDim(float procentage) {
-        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (200 * procentage)));
+        checkoutDim.setBackgroundColor(ColorUtils.setAlphaComponent(Color.WHITE, (int) (DEFAULT_MAX_DIM * procentage)));
         if (procentage == 0.0) {
             checkoutDim.setVisibility(View.GONE);
         }

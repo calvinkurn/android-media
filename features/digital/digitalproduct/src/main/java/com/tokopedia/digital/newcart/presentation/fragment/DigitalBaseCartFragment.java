@@ -75,28 +75,23 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected abstract void setupView(View view);
 
     @Override
-    public void setToolbarTitle(int resId) {
-
-    }
-
-    @Override
     public CartDigitalInfoData getCartInfoData() {
         return cartDigitalInfoData;
     }
 
     @Override
-    public void showHachikoCart() {
+    public void renderHachikoCart() {
         checkoutHolderView.setVoucherActionListener(this);
         checkoutHolderView.showHachikoCart();
     }
 
     @Override
-    public void setHachikoPromoAndCouponLabel() {
+    public void renderHachikoPromoAndCouponLabel() {
         checkoutHolderView.setHachikoPromoAndCouponLabel();
     }
 
     @Override
-    public void setHachikoPromoLabelOnly() {
+    public void renderHachikoPromoLabelOnly() {
         checkoutHolderView.setHachikoPromoLabelOnly();
     }
 
@@ -106,7 +101,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void setHachikoCoupon(String title, String message, String voucherCode) {
+    public void renderHachikoCoupon(String title, String message, String voucherCode) {
         checkoutHolderView.setHachikoCoupon(title, message, voucherCode);
     }
 
@@ -116,7 +111,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void setHachikoVoucher(String voucherCode, String message) {
+    public void renderHachikoVoucher(String voucherCode, String message) {
         checkoutHolderView.setVoucher(voucherCode, message);
     }
 
@@ -137,7 +132,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void renderInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
+    public void renderInputPriceView(String total, UserInputPriceDigital userInputPriceDigital) {
         inputPriceHolderView.setActionListener(this);
         inputPriceContainer.setVisibility(View.VISIBLE);
         inputPriceHolderView.setInputPriceInfo(total, userInputPriceDigital.getMinPaymentPlain(),

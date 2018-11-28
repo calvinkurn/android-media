@@ -21,33 +21,31 @@ import java.util.Map;
 public interface DigitalBaseContract {
     interface View extends CustomerView{
 
-        void setToolbarTitle(@StringRes int resId);
-
         CartDigitalInfoData getCartInfoData();
 
-        void showHachikoCart();
+        void renderHachikoCart();
 
-        void setHachikoPromoAndCouponLabel();
+        void renderHachikoPromoAndCouponLabel();
 
-        void setHachikoPromoLabelOnly();
+        void renderHachikoPromoLabelOnly();
 
         void hideHachikoCart();
 
-        void setHachikoCoupon(String title, String message, String voucherCode);
+        void renderHachikoCoupon(String title, String message, String voucherCode);
 
         void enableVoucherDiscount(long discountAmountPlain);
 
-        void setHachikoVoucher(String voucherCode, String message);
+        void renderHachikoVoucher(String voucherCode, String message);
 
         void renderDetailMainInfo(List<CartItemDigital> mainInfo);
 
         void renderAdditionalInfo(List<CartAdditionalInfo> additionalInfos);
 
-        void renderCategory(String categoryName);
+        void renderCategoryInfo(String categoryName);
 
         CheckoutDataParameter.Builder getCheckoutDataParameter();
 
-        void renderInputPrice(String total, UserInputPriceDigital userInputPriceDigital);
+        void renderInputPriceView(String total, UserInputPriceDigital userInputPriceDigital);
 
         void renderCheckoutView(long pricePlain);
 
@@ -55,15 +53,17 @@ public interface DigitalBaseContract {
 
         DigitalCheckoutPassData getCartPassData();
 
-        void hideContent();
+        void hideCartView();
 
-        void showLoading();
+        void showFullPageLoading();
 
-        Map<String,String> getGeneratedAuthParamNetwork(String userId, String deviceId, Map<String, String> param);
+        Map<String,String> getGeneratedAuthParamNetwork(String userId,
+                                                        String deviceId,
+                                                        Map<String, String> param);
 
-        void showContent();
+        void showCartView();
 
-        void hideLoading();
+        void hideFullPageLoading();
 
         void navigateToCouponActiveAndSelected(String categoryId);
 
@@ -103,7 +103,8 @@ public interface DigitalBaseContract {
 
         String getString(@StringRes int resId);
 
-        void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData);
+        void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData,
+                              DigitalCheckoutPassData cartPassData);
 
         void setCheckoutParameter(CheckoutDataParameter.Builder builder);
     }
@@ -116,7 +117,11 @@ public interface DigitalBaseContract {
 
         void onReceiveVoucherCode(String code, String message, long discount, int isCoupon);
 
-        void onReceiveCoupon(String couponTitle, String couponMessage, String couponCode, long couponDiscountAmount, int isCoupon);
+        void onReceiveCoupon(String couponTitle,
+                             String couponMessage,
+                             String couponCode,
+                             long couponDiscountAmount,
+                             int isCoupon);
 
         void onClearVoucher();
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
@@ -18,6 +19,7 @@ import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsListContract;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
+import com.tokopedia.digital.newcart.presentation.fragment.adapter.viewHolder.model.DigitalDealEmptyViewModel;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealListListener;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsListPresenter;
 
@@ -128,7 +130,8 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
                 false,
                 false,
                 false,
-                false));
+                false)
+        );
     }
 
     public void setInteractionListener(InteractionListener interactionListener) {
@@ -144,5 +147,10 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     public void onDestroyView() {
         presenter.detachView();
         super.onDestroyView();
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        return new DigitalDealEmptyViewModel();
     }
 }

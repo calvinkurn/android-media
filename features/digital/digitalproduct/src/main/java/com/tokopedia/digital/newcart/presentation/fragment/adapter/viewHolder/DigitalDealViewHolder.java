@@ -24,6 +24,7 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
     private AppCompatTextView slashedPriceTextView;
     private AppCompatTextView priceTextView;
     private AppCompatImageView closeImageView;
+    private AppCompatImageView checkImageView;
     private AppCompatButton buyButton;
     private LinearLayout infoContainer;
 
@@ -46,6 +47,7 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
         slashedPriceTextView = (AppCompatTextView) view.findViewById(R.id.tv_slashed_price);
         priceTextView = (AppCompatTextView) view.findViewById(R.id.tv_price);
         closeImageView = (AppCompatImageView) view.findViewById(R.id.iv_close);
+        checkImageView = (AppCompatImageView) view.findViewById(R.id.iv_check);
         buyButton = (AppCompatButton) view.findViewById(R.id.btn_buy);
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +91,25 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
         ImageHandler.loadImageRounded(itemView.getContext(), dealImageView, element.getImageUrl(), 5.0f);
         brandTextView.setText(element.getBrandName());
         titleTextView.setText(element.getTitle());
+
+        renderPriceLabel(element);
+
+        renderCloseButton();
+
+        if (element.isSelected() || insideCheckoutPage) {
+            if (element.isSelected() && !insideCheckoutPage) {
+                checkImageView.setVisibility(View.VISIBLE);
+            } else {
+                checkImageView.setVisibility(View.GONE);
+            }
+            buyButton.setVisibility(View.GONE);
+        } else {
+            checkImageView.setVisibility(View.GONE);
+            buyButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void renderPriceLabel(DealProductViewModel element) {
         if (element.getSalesPriceNumeric() > 0) {
             priceTextView.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) element.getSalesPriceNumeric()));
             if (element.getBeforePrice() > 0) {
@@ -106,18 +127,13 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
             priceTextView.setText(getString(R.string.digital_cart_deal_free_label));
             slashedPriceTextView.setVisibility(View.GONE);
         }
+    }
 
+    private void renderCloseButton() {
         if (insideCheckoutPage) {
             closeImageView.setVisibility(View.VISIBLE);
         } else {
             closeImageView.setVisibility(View.GONE);
         }
-
-        if (element.isSelected() || insideCheckoutPage) {
-            buyButton.setVisibility(View.GONE);
-        } else {
-            buyButton.setVisibility(View.VISIBLE);
-        }
-
     }
 }

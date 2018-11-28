@@ -90,27 +90,27 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     }
 
     @Override
-    public void renderCategory(String categoryName) {
+    public void renderCategoryInfo(String categoryName) {
         categoryTextView.setText(categoryName);
     }
 
     @Override
-    public void hideContent() {
+    public void hideCartView() {
         containerLayout.setVisibility(View.GONE);
     }
 
     @Override
-    public void showLoading() {
+    public void showFullPageLoading() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void showContent() {
+    public void showCartView() {
         containerLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideLoading() {
+    public void hideFullPageLoading() {
         progressBar.setVisibility(View.GONE);
     }
 

@@ -23,7 +23,7 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
 
     @Override
     public void onViewCreated() {
-        getView().showGetCategoriesLoading();
+        getView().renderGetCategoriesLoading();
         getView().hideDealsPage();
         digitalDealsGetCategoriesUseCase.execute(
                 digitalDealsGetCategoriesUseCase.createRequestParam(
@@ -39,7 +39,7 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (isViewAttached()) {
-                            getView().showGetCategoriesError(e.getMessage());
+                            getView().renderGetCategoriesError(e.getMessage());
                             getView().hideGetCategoriesLoading();
                         }
                     }
@@ -48,11 +48,11 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
                     public void onNext(List<DealCategoryViewModel> dealCategoryViewModels) {
                         getView().hideGetCategoriesLoading();
                         getView().showDealsPage();
-                        getView().showCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
+                        getView().renderCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
                         getView().renderDealsTab(dealCategoryViewModels);
 
                         if (!getView().isOnboardAlreadyShown()) {
-                            getView().showOnboard();
+                            getView().renderOnboarding();
                         }
                     }
                 });
@@ -62,7 +62,7 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
     @Override
     public void onSelectDealProduct(DealProductViewModel viewModel, int currentFragmentPosition) {
         if (getView().getSelectedDeals().size() >= 5) {
-            getView().showErrorInRedSnackbar(R.string.digital_deals_maximum_error_message);
+            getView().renderErrorInRedSnackbar(R.string.digital_deals_maximum_error_message);
         } else {
             viewModel.setSelected(true);
             getView().getSelectedDeals().add(viewModel);

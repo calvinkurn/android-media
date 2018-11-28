@@ -16,11 +16,11 @@ public interface DigitalCartDealsContract {
 
     interface View extends CustomerView{
 
-        void showGetCategoriesLoading();
+        void renderGetCategoriesLoading();
 
         void hideDealsPage();
 
-        void showGetCategoriesError(String message);
+        void renderGetCategoriesError(String message);
 
         void hideGetCategoriesLoading();
 
@@ -30,7 +30,7 @@ public interface DigitalCartDealsContract {
 
         List<DealProductViewModel> getSelectedDeals();
 
-        void showErrorInRedSnackbar(@StringRes int resId);
+        void renderErrorInRedSnackbar(@StringRes int resId);
 
         void notifySelectedDeal();
 
@@ -38,7 +38,7 @@ public interface DigitalCartDealsContract {
 
         CartDigitalInfoData getCartInfoData();
 
-        void showCheckoutView(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData);
+        void renderCheckoutView(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData);
 
         void notifySelectedDealsInCheckout(DealProductViewModel viewModel);
 
@@ -50,7 +50,7 @@ public interface DigitalCartDealsContract {
 
         boolean isOnboardAlreadyShown();
 
-        void showOnboard();
+        void renderOnboarding();
 
         void notifyCheckoutPageToStartAnimation();
     }

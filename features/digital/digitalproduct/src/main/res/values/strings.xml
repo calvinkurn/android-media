@@ -158,4 +158,6 @@
     <string name="digital_cart_deals_showcase_product_detail_detail">Cek kembali detail produk sebelum pembayaran.</string>
     <string name="digital_cart_deals_showcase_special">Penawaran Spesial</string>
     <string name="digital_cart_deals_showcase_special_detail">Tambahkan voucher spesial dan bayar sekaligus bersama produk sebelumnya.</string>
+    <string name="digital_deal_empty_label">Oops! Hasil tidak ditemukan.</string>
+    <string name="digital_deal_empty_detail_label">Cari deals di kategori lainnya.</string>
 </resources>
