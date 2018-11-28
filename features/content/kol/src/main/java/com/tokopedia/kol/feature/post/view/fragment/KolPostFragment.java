@@ -477,6 +477,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     private Dialog createDeleteDialog(int rowNumber, int id) {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.kol_delete_post));
+        dialog.setDesc(getString(R.string.kol_delete_post_desc));
         dialog.setBtnOk(getString(R.string.kol_title_delete));
         dialog.setBtnCancel(getString(R.string.kol_title_cancel));
         dialog.setOnOkClickListener(v -> {
