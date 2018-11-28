@@ -18,13 +18,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.CartConstant;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
@@ -122,7 +122,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
 
-    private Trace trace;
+    private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
 
     @Inject
@@ -174,7 +174,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shipmentPresenter.attachView(this);
-        trace = TrackingUtils.startTrace(SHIPMENT_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(SHIPMENT_TRACE);
     }
 
     @Override
@@ -448,8 +448,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp) {
-        if (trace != null && !isTraceStopped) {
-            trace.stop();
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
             isTraceStopped = true;
         }
 
@@ -1490,7 +1490,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
-            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, null, null, cartItemPosition);
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+            List<ShopShipment> shopShipments = shipmentCartItemModel.getShopShipmentList();
+            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, shipmentCartItemModel, shopShipments, cartItemPosition);
         } else {
             if (recommendedCourier.isUsePinPoint()
                     && (recipientAddressModel.getLatitude() == null ||

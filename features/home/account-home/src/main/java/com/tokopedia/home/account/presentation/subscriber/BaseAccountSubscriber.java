@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.subscriber;
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 
 import java.net.SocketTimeoutException;
@@ -28,7 +29,7 @@ public abstract class BaseAccountSubscriber<T> extends Subscriber<T> {
                 || e instanceof SocketTimeoutException) {
             view.showErroNoConnection();
         } else {
-            view.showError(e.getLocalizedMessage());
+            view.showError(e);
         }
     }
 }

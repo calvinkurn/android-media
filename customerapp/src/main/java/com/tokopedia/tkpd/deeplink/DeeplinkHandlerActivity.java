@@ -115,6 +115,8 @@ import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
+import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -169,7 +171,8 @@ import io.branch.referral.BranchError;
         ProductManageApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
-        PhoneVerificationApplinkModule.class
+        PhoneVerificationApplinkModule.class,
+        UserIdentificationApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -225,7 +228,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new ProductManageApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
-                    new PhoneVerificationApplinkModuleLoader()
+                    new PhoneVerificationApplinkModuleLoader(),
+                    new UserIdentificationApplinkModuleLoader()
             );
         }
 
