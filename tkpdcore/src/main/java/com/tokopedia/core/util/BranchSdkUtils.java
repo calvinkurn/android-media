@@ -56,6 +56,7 @@ public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "$android_url";
     private static final String BRANCH_IOS_DESKTOP_URL_KEY = "$ios_url";
     private static final String ProductCategory = "ProductCategory";
+    private static final String FIREBASE_KEY_INCLUDEMOBILEWEB = "includemobileweb";
 
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -146,7 +147,7 @@ public class BranchSdkUtils {
         if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
         }
-        if (!(ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
+        if (isAndroidIosUrlActivated() && !(ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
                 ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType()) ||
                 ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType()))) {
             linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
@@ -434,5 +435,10 @@ public class BranchSdkUtils {
 
     public interface GenerateShareContents {
         void onCreateShareContents(String shareContents, String shareUri, String branchUrl);
+    }
+
+    public static Boolean isAndroidIosUrlActivated() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        return remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB);
     }
 }
