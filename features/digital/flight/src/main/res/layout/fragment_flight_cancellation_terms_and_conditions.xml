@@ -59,7 +59,7 @@
                 android:layout_gravity="top"
                 android:theme="@style/checkBoxStyle" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_description"
                 style="@style/TextView.Micro"
                 android:layout_width="0dp"
@@ -67,7 +67,7 @@
                 android:layout_weight="1"
                 android:textColor="@color/font_black_secondary_54"
                 app:autoSizeMaxTextSize="@dimen/sp_12"
-                app:autoSizeMinTextSize="@dimen/sp_8"
+                app:autoSizeMinTextSize="@dimen/sp_10"
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeText="uniform"
                 tools:text="@string/flight_cancellation_review_description" />
