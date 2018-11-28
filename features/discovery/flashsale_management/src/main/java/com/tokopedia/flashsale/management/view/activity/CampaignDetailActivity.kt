@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -15,6 +17,7 @@ import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.di.DaggerCampaignComponent
+import com.tokopedia.flashsale.management.tracking.FlashSaleTracking
 import com.tokopedia.flashsale.management.view.adapter.CampaignDetailFragmentPagerAdapter
 import com.tokopedia.flashsale.management.view.presenter.CampaignInfoPresenter
 import kotlinx.android.synthetic.main.activity_campaign_detail.*
@@ -26,6 +29,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     private var campaignUrl: String = ""
     private var campaignId: Long = -1
     private var campaignType: String? = null
+    private var flashSaleTracking: FlashSaleTracking? = null
     @Inject lateinit var presenter: CampaignInfoPresenter
 
     val titles by lazy {
@@ -35,6 +39,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+        flashSaleTracking = FlashSaleTracking(application as AbstractionRouter)
         loadSellerStatus()
     }
 
@@ -81,6 +86,24 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
         campaignType = intent.getStringExtra(EXTRA_PARAM_CAMPAIGN_TYPE)
         super.setupLayout(savedInstanceState)
         indicator.tabMode = TabLayout.MODE_SCROLLABLE
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageSelected(position: Int) {
+                // position 0 is always Info Fragment
+                if (position == 0) {
+                    flashSaleTracking?.clickTabInfo(campaignId.toString())
+                } else {
+                    flashSaleTracking?.clickTabProduct(campaignId.toString())
+                }
+            }
+
+            override fun onPageScrolled(arg0: Int, arg1: Float, arg2: Int) {
+
+            }
+
+            override fun onPageScrollStateChanged(arg0: Int) {
+
+            }
+        })
         pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(indicator))
         indicator.setupWithViewPager(pager)
     }

@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
+import com.tokopedia.flashsale.management.tracking.FlashSaleTracking
 import com.tokopedia.flashsale.management.view.activity.CampaignDetailActivity
 import com.tokopedia.flashsale.management.view.adapter.CampaignInfoAdapterTypeFactory
 import com.tokopedia.flashsale.management.view.presenter.CampaignDetailInfoPresenter
@@ -19,8 +21,10 @@ import javax.inject.Inject
 
 class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInfoAdapterTypeFactory>() {
     lateinit var campaignUrl: String
+    lateinit var campaignId: String
     lateinit var sellerStatus: SellerStatus
     lateinit var campaignType: String
+    var flashSaleTracking: FlashSaleTracking? = null
 
     @Inject
     lateinit var presenter: CampaignDetailInfoPresenter
@@ -28,6 +32,7 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
     override fun getAdapterTypeFactory() = CampaignInfoAdapterTypeFactory(sellerStatus){
         activity?.let {
             if (it is CampaignDetailActivity){
+                flashSaleTracking?.clickInfoToProduct(campaignId)
                 it.moveToTabProduct()
             }
         }
@@ -53,11 +58,13 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
             GraphqlClient.init(it)
         }
         arguments?.let {
+            campaignId = it.getLong(EXTRA_PARAM_CAMPAIGN_ID).toString()
             campaignUrl = it.getString(EXTRA_PARAM_CAMPAIGN_URL, "") ?: ""
             campaignType = it.getString(EXTRA_PARAM_CAMPAIGN_TYPE, "") ?: ""
             sellerStatus = it.getParcelable(EXTRA_PARAM_SELLER_STATUS) ?: SellerStatus()
         }
         super.onCreate(savedInstanceState)
+        flashSaleTracking = FlashSaleTracking(activity?.application as AbstractionRouter)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,13 +86,15 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
     private fun onErroGetCampaignInfo(throwable: Throwable){}
 
     companion object {
+        private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
         private const val EXTRA_PARAM_CAMPAIGN_URL = "campaign_url"
         private const val EXTRA_PARAM_CAMPAIGN_TYPE = "campaign_type"
         private const val EXTRA_PARAM_SELLER_STATUS = "seller_status"
 
-        fun createInstance(campaignUrl: String, sellerStatus: SellerStatus,
+        fun createInstance(campaignId: Long,campaignUrl: String, sellerStatus: SellerStatus,
                            campaignType: String?) = FlashSaleInfoFragment().apply {
             arguments = Bundle().apply {
+                putLong(EXTRA_PARAM_CAMPAIGN_ID, campaignId)
                 putString(EXTRA_PARAM_CAMPAIGN_URL, campaignUrl)
                 putParcelable(EXTRA_PARAM_SELLER_STATUS, sellerStatus)
                 putString(EXTRA_PARAM_CAMPAIGN_TYPE, campaignType)

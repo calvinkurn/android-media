@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
-import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
 import com.tokopedia.flashsale.management.ekstension.gone
 import com.tokopedia.flashsale.management.ekstension.visible
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory

@@ -19,6 +19,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -42,6 +43,7 @@ import com.tokopedia.flashsale.management.product.data.FlashSaleSubmissionProduc
 import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
 import com.tokopedia.flashsale.management.product.data.GetMojitoPostProduct
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
+import com.tokopedia.flashsale.management.tracking.FlashSaleTracking
 import com.tokopedia.flashsale.management.view.activity.CampaignActivity
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
@@ -62,6 +64,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
+    lateinit var flashSaleTracking: FlashSaleTracking
 
     var needLoadData = true
 
@@ -82,6 +85,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         if (savedInstanceState != null) {
             filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
         }
+        flashSaleTracking = FlashSaleTracking(activity?.application as AbstractionRouter)
         super.onCreate(savedInstanceState)
         flashSaleSubmitLabelAdapter = FlashSaleSubmitLabelAdapter(filterIndex, 0, this)
         context?.let {
@@ -198,6 +202,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun onClickToUpdateSubmission() {
         showProgressDialog()
+        flashSaleTracking.clickProductUpdateCampaign(campaignId.toString())
         presenter.submitSubmission(campaignId,
                 onSuccess = {
                     hideProgressDialog()
@@ -216,6 +221,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun onClickFlashSaleList() {
+        flashSaleTracking.clickProductCampaignList(campaignId.toString())
+
         val campaignActivityIntent = Intent(context, CampaignActivity::class.java)
         campaignActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         this.activity?.finish()
@@ -246,6 +253,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
+                    flashSaleTracking.clickProductTnc(campaignId.toString())
                     val intent = FlashSaleTncActivity.createIntent(context!!, flashSaleTncContent.tnc)
                     startActivity(intent)
                 }
@@ -434,6 +442,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onStatusSelected(position: Int) {
         loadInitContent()
+        flashSaleTracking.clickProductQuickFilter(campaignId.toString(), getFilterId().toString())
     }
 
     override fun onStatusCleared() {
@@ -441,6 +450,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun onSearchSubmitted(text: String?) {
+        if (!text.isNullOrEmpty()) {
+            flashSaleTracking.clickProductSearch(campaignId.toString(), text!!);
+        }
         loadInitContent()
     }
 
