@@ -265,7 +265,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
             imageView = itemView.findViewById(R.id.review_image_slider_item_image_view);
             date = itemView.findViewById(R.id.review_image_slider_date);
             name = itemView.findViewById(R.id.review_image_slider_name);
-            prefix = itemView.findViewById(R.id.review_image_slider_by_prefix);
+            prefix = itemView.findViewById(R.id.review_image_slider_by_prefix_view);
             rating = itemView.findViewById(R.id.review_image_slider_rating);
         }
 
