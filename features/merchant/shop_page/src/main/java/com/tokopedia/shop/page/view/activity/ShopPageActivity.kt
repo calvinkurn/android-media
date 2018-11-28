@@ -299,10 +299,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun stopPerformanceMonitor(){
-        performanceMonitoring?.run {
-            stopTrace()
-            isTraceStopped = true
-        }
+        performanceMonitoring?.stopTrace()
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo?) {
