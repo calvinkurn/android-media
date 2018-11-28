@@ -20,8 +20,8 @@ import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 /**
  * @author by milhamj on 9/20/18.
  */
-class ProfileTypeFactoryImpl(val viewListener : ProfileEmptyContract.View,
-                             val kolPostViewListener : KolPostListener.View.ViewHolder?)
+class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.View,
+                             private val kolPostViewListener : KolPostListener.View.ViewHolder?)
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
@@ -55,6 +55,7 @@ class ProfileTypeFactoryImpl(val viewListener : ProfileEmptyContract.View,
     override fun setType(type: KolPostViewHolder.Type?) {
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when(type) {
             ProfileHeaderViewHolder.LAYOUT ->
@@ -65,8 +66,7 @@ class ProfileTypeFactoryImpl(val viewListener : ProfileEmptyContract.View,
                     KolPostViewHolder(parent,
                             kolPostViewListener,
                             KolPostViewHolder.Type.PROFILE
-                    )
-                            as AbstractViewHolder<Visitable<*>>
+                    ) as AbstractViewHolder<Visitable<*>>
             KolPostYoutubeViewHolder.LAYOUT ->
                 KolPostYoutubeViewHolder(parent,
                         kolPostViewListener,

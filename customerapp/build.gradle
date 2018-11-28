@@ -103,8 +103,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 306001101;
-        defaultVersionName = "3.6";
+        defaultVersionCode = 307001101;
+        defaultVersionName = "3.7";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -345,10 +345,15 @@ dependencies {
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.promoCheckout)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
+    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -420,7 +425,6 @@ dependencies {
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    implementation rootProject.ext.miscDependencies.sendBird
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.reactNative

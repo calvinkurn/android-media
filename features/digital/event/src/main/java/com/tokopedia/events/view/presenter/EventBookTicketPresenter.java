@@ -321,16 +321,20 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
 
     private void generateLocationDateModels() {
         locationDateModels = new ArrayList<>();
-        List<SchedulesViewModel> schedulesViewModelList = dataModel.getSchedulesViewModels();
-        if (schedulesViewModelList != null && !schedulesViewModelList.isEmpty()) {
-            for (SchedulesViewModel viewModel : schedulesViewModelList) {
-                LocationDateModel model = new LocationDateModel();
-                model.setmLocation(viewModel.getCityName());
-                if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-                    model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
-                else
-                    model.setDate("");
-                locationDateModels.add(model);
+
+        List<SchedulesViewModel> schedulesViewModelList = new ArrayList<>();
+        if (dataModel != null) {
+            schedulesViewModelList = dataModel.getSchedulesViewModels();
+            if (schedulesViewModelList != null && !schedulesViewModelList.isEmpty()) {
+                for (SchedulesViewModel viewModel : schedulesViewModelList) {
+                    LocationDateModel model = new LocationDateModel();
+                    model.setmLocation(viewModel.getCityName());
+                    if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+                        model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
+                    else
+                        model.setDate("");
+                    locationDateModels.add(model);
+                }
             }
         }
     }

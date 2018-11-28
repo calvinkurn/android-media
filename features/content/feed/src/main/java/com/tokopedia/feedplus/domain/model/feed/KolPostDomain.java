@@ -91,16 +91,19 @@ public class KolPostDomain {
 
     private final boolean isShowLike;
 
+    private final boolean reportable;
+
     @Nullable
     private final String cardType;
 
 
-    public KolPostDomain(int id, String imageUrl, String videoUrl, String youtubeUrl, String type, String description, int commentCount,
-                         int likeCount, boolean isLiked, boolean isFollowed, String createTime,
-                         String productPrice, String contentLink, String contentUrl,
-                         String userName, String userPhoto, String tagsType, String caption,
-                         int itemId, String label, String headerTitle, String userUrl, int userId,
-                         boolean isShowComment, boolean isShowLike, String cardType) {
+    public KolPostDomain(int id, String imageUrl, String videoUrl, String youtubeUrl, String type,
+                         String description, int commentCount, int likeCount, boolean isLiked,
+                         boolean isFollowed, String createTime, String productPrice,
+                         String contentLink, String contentUrl, String userName, String userPhoto,
+                         String tagsType, String caption, int itemId, String label,
+                         String headerTitle, String userUrl, int userId, boolean isShowComment,
+                         boolean isShowLike, boolean reportable, String cardType) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.videoUrl = videoUrl;
@@ -126,6 +129,7 @@ public class KolPostDomain {
         this.userId = userId;
         this.isShowComment = isShowComment;
         this.isShowLike = isShowLike;
+        this.reportable = reportable;
         this.cardType = cardType;
     }
 
@@ -243,6 +247,10 @@ public class KolPostDomain {
 
     public boolean isShowLike() {
         return isShowLike;
+    }
+
+    public boolean isReportable() {
+        return reportable;
     }
 
     @Nullable

@@ -2,6 +2,7 @@
 include "features:common:nps"
 
 include "features:content:affiliate"
+//include "features:content:affiliate_no_op"
 include "features:content:affiliate_common"
 include "features:content:feed"
 include "features:content:explore"
@@ -82,9 +83,9 @@ include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 
 include "features:user:groupchat"
-include "features:user:otp"
 include "features:user:topchat"
 include "features:user:changepassword"
+include "features:user:changephonenumber"
 include "features:user:settingbank"
 include "features:user:bankdb"
 include "features:user:talk"
@@ -94,6 +95,13 @@ include "features:user:vote"
 include "features:user:logout"
 include "features:user:attachproduct"
 include "features:user:updateinactivephone"
+include "features:user:loginphone"
+include "features:user:loginregister"
+include "features:user:phoneverification"
+include "features:user:sessioncommon"
+include "features:user:user_identification"
+//include "features:user:user_identification_no_op"
+include "features:user:user_identification_common"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'

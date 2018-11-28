@@ -29,10 +29,12 @@ public class GetCartListSubscriber extends Subscriber<CartListData> {
 
     @Override
     public void onError(Throwable e) {
-        presenter.setLoadApiStatus(EmptyCartApi.CART_LIST, true);
         e.printStackTrace();
         if (view != null) {
-            view.stopTrace();
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.CART_LIST, true);
+                view.stopTrace();
+            }
             view.hideLoading();
             view.showErrorToast(ErrorHandler.getErrorMessage(view.getContext(), e));
         }
@@ -40,9 +42,11 @@ public class GetCartListSubscriber extends Subscriber<CartListData> {
 
     @Override
     public void onNext(CartListData cartListData) {
-        presenter.setLoadApiStatus(EmptyCartApi.CART_LIST, true);
         if (view != null) {
-            view.stopTrace();
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.CART_LIST, true);
+                view.stopTrace();
+            }
             view.hideLoading();
             if (!cartListData.getShopGroupDataList().isEmpty()) {
                 view.navigateToCartFragment(cartListData);

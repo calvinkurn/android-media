@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -787,14 +786,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
-                        @Override
-                        public void onDismiss() {
+                    if (getApplicationContext() instanceof DigitalModuleRouter) {
+                        ((DigitalModuleRouter)getApplicationContext()).
+                                showAdvancedAppRatingDialog(getActivity(), dialog -> {
                             getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
                             closeView();
-                        }
-                    });
-
+                        });
+                    }
                     presenter.onPaymentSuccess(passData.getCategoryId());
 
                     break;

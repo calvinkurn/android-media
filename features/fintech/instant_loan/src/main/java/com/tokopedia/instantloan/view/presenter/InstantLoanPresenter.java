@@ -71,7 +71,9 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                if (isViewAttached()) {
+                    getView().onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                }
             }
 
             @Override
@@ -112,7 +114,9 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().onErrorPhoneDataUploaded(ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                    if (isViewAttached()) {
+                        getView().onErrorPhoneDataUploaded(ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                    }
                 }
 
                 @Override

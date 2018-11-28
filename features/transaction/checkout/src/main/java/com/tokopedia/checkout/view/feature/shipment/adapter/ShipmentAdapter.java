@@ -343,6 +343,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) {
                     return true;
                 }
+
+                for(CartItemModel item : shipmentCartItemModel.getCartItemModels()) {
+                    if (item.isProtectionOptIn()) return true;
+                }
             }
         }
         return false;
@@ -552,12 +556,21 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                             int position) {
+                                             CourierItemData recommendedCourier, int position) {
+        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+            shippingCourierViewModel.setSelected(false);
+        }
         Object currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
             ShipmentCartItemModel cartItemModel = (ShipmentCartItemModel) currentShipmentData;
             if (cartItemModel.getSelectedShipmentDetailData() != null &&
                     cartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+                    if (shippingCourierViewModel.getProductData().getShipperProductId() == recommendedCourier.getShipperProductId()) {
+                        shippingCourierViewModel.setSelected(true);
+                        break;
+                    }
+                }
                 cartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierViewModels);
             }
         }
@@ -588,6 +601,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double additionalFee = 0;
         double totalItemPrice = 0;
         int totalItem = 0;
+        double totalPurchaseProtectionPrice = 0;
+        int totalPurchaseProtectionItem = 0;
         double shippingFee = 0;
         double insuranceFee = 0;
         for (Object shipmentData : shipmentDataList) {
@@ -598,6 +613,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 for (CartItemModel cartItemModel : cartItemModels) {
                     totalWeight += (cartItemModel.getWeight() * cartItemModel.getQuantity());
                     totalItem += cartItemModel.getQuantity();
+
+                    if(cartItemModel.isProtectionOptIn()) {
+                        totalPurchaseProtectionItem += cartItemModel.getQuantity();
+                        totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
+                    }
+
                     totalItemPrice += (cartItemModel.getPrice() * cartItemModel.getQuantity());
                 }
 
@@ -615,13 +636,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + additionalFee - shipmentCostModel.getPromoPrice();
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee - shipmentCostModel.getPromoPrice();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);
         shipmentCostModel.setTotalItem(totalItem);
         shipmentCostModel.setShippingFee(shippingFee);
         shipmentCostModel.setInsuranceFee(insuranceFee);
+        shipmentCostModel.setTotalPurchaseProtectionItem(totalPurchaseProtectionItem);
+        shipmentCostModel.setPurchaseProtectionFee(totalPurchaseProtectionPrice);
         if (shipmentDonationModel.isChecked()) {
             shipmentCostModel.setDonation(shipmentDonationModel.getDonation().getNominal());
         } else {

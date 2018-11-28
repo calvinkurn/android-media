@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
@@ -97,6 +98,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
 
+        private const val PAGE_LIMIT = 2
+
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
                 .apply { putExtra(SHOP_ID, shopId) }
@@ -142,6 +145,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        GraphqlClient.init(this)
         initInjector()
         shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter)
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
@@ -161,6 +165,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
+        viewPager.offscreenPageLimit = PAGE_LIMIT
 
         tabLayout.setupWithViewPager(viewPager)
         tabItemFeed = LayoutInflater
@@ -450,7 +455,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickFollowUnfollowShop(isFavourite,
                     CustomDimensionShopPage.create(shopInfo))
         }
-        shopInfo?.info?.isShopOfficial?.let { ( application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, isFavourite) }
+        shopInfo?.info?.isShopOfficial?.let { (application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, isFavourite) }
         shopId?.run { presenter.toggleFavouriteShop(this) }
 
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.otp.common.network;
 
 
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 
@@ -18,9 +18,9 @@ public class AccountsAuthorizationInterceptor implements Interceptor {
 
     private static final String KEY_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization";
     private static final String BEARER = "Bearer";
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
-    public AccountsAuthorizationInterceptor(UserSession userSession) {
+    public AccountsAuthorizationInterceptor(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 
