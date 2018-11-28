@@ -672,9 +672,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromo(PromoCodeCartShipmentData.DataVoucher dataVoucher) {
-        if (dataVoucher != null && TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState())  == TickerCheckoutView.State.ACTIVE) {
-            shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
-            shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+        if (dataVoucher != null ) {
+            if(TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState())  == TickerCheckoutView.State.ACTIVE) {
+                shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
+                shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+            }
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 Object itemAdapter = shipmentDataList.get(i);
                 if (itemAdapter instanceof CartPromoSuggestion) {
