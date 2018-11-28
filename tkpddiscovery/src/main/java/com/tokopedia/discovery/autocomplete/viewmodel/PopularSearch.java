@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.autocomplete.viewmodel;
 
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.search.view.adapter.factory.SearchTypeFactory;
 
 import java.util.List;

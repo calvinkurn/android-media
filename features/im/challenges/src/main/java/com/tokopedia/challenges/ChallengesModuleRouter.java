@@ -20,8 +20,6 @@ public interface ChallengesModuleRouter {
 
     Intent getGalleryVideoImageIntent(Context activity);
 
-    String getResultSelectionPath(Intent data);
-
     void onShowRationale(Context context, PermissionRequest request, String permission);
 
     void onPermissionDenied(Context context, String permission);
@@ -39,5 +37,7 @@ public interface ChallengesModuleRouter {
     String getStringRemoteConfig(String key);
 
     void sendMoengageEvents(String eventName, Map<String, Object> values);
+
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
 }

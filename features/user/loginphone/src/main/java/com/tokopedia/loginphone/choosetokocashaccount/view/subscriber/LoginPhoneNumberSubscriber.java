@@ -35,6 +35,8 @@ public class LoginPhoneNumberSubscriber extends LoginCommonSubscriber<LoginTokoC
             router.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage
                     (ErrorHandlerSession.ErrorCode
                             .UNSUPPORTED_FLOW, view.getContext()));
+            router.logUnknownError(new Throwable("Login Result is not success"));
+
         }
 
     }

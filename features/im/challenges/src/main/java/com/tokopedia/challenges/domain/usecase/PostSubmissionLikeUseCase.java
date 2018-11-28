@@ -25,16 +25,11 @@ import javax.inject.Inject;
 public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseCase {
 
 
-    private RequestParams requestParams;
     public static final String IS_LIKED = "IS_LIKED";
 
     @Inject
     public PostSubmissionLikeUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
-    }
-
-    public void setRequestParams(RequestParams requestParams) {
-        this.requestParams = requestParams;
     }
 
     @Override

@@ -183,6 +183,7 @@ public class ReviewPagerAdapter extends PagerAdapter{
                 reviewImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                      listener.onMostHelpfulImageClicked(data, position);
                         ProductPageTracking.eventClickReviewOnMostHelpfulReview(
                                 context,
                                 productId,
