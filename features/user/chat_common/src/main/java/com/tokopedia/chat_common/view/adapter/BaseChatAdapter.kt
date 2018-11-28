@@ -1,0 +1,227 @@
+package com.tokopedia.chat_common
+
+import android.content.Context
+import android.text.format.DateFormat
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.TypingChatModel
+import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.ImageAnnouncementViewHolder
+import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
+import java.util.*
+
+/**
+ * @author by nisie on 23/11/18.
+ */
+open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
+                           listChat: ArrayList<Visitable<*>>) :
+        BaseAdapter<BaseChatTypeFactoryImpl>(adapterTypeFactory, listChat) {
+
+    var typingModel = TypingChatModel()
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
+        if (visitables[position] is BaseChatViewModel) {
+            if (enableShowDate()) showDateBaseChat(holder.itemView.context, holder.adapterPosition)
+            if (enableShowTime()) showTimeBaseChat(holder.adapterPosition)
+        }
+
+        if (visitables[position] is SendableViewModel) {
+            showRoleBaseChat(holder.adapterPosition)
+        }
+        super.onBindViewHolder(holder, position)
+    }
+
+    override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewRecycled(holder)
+        if (holder is ImageUploadViewHolder) {
+            (holder as ImageUploadViewHolder).onViewRecycled()
+        } else if (holder is ImageAnnouncementViewHolder) {
+            (holder as ImageAnnouncementViewHolder).onViewRecycled()
+        }
+//
+//        if (holder is ImageDualAnnouncementViewHolder) {
+//            (holder as ImageDualAnnouncementViewHolder).onViewRecycled()
+//        } else if (holder is ProductAttachmentViewHolder) {
+//            (holder as ProductAttachmentViewHolder).onViewRecycled()
+//        } else if (holder is AttachedInvoiceSentViewHolder) {
+//            (holder as AttachedInvoiceSentViewHolder).onViewRecycled()
+//        }
+    }
+
+    fun setList(list: List<Visitable<*>>) {
+        this.visitables.clear()
+        this.visitables.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun addList(newItems: List<Visitable<*>>) {
+        val positionStart = this.visitables.size
+        this.visitables.addAll(newItems)
+        notifyItemRangeInserted(positionStart, newItems.size)
+        notifyItemRangeChanged(positionStart - 10, 10)
+    }
+
+    fun getList(): List<Visitable<*>> {
+        return visitables
+    }
+
+    fun showTyping() {
+        this.visitables.add(0, typingModel)
+        notifyItemInserted(0)
+    }
+
+    fun removeTyping(){
+        this.visitables.remove(typingModel)
+        notifyItemRemoved(0)
+
+    }
+
+    fun isTyping(): Boolean {
+        return visitables.contains(typingModel)
+    }
+
+    private fun showDateBaseChat(context: Context?, position: Int) {
+        context?.run {
+            if (position != visitables.size - 1) {
+                try {
+                    val now = visitables[position] as BaseChatViewModel
+                    val myTime = java.lang.Long.parseLong(now.replyTime)
+                    var prevTime: Long = 0
+
+                    if (visitables[position + 1] != null
+                            && visitables[position + 1] is BaseChatViewModel) {
+                        val prev = visitables[position + 1] as BaseChatViewModel
+                        prevTime = java.lang.Long.parseLong(prev.replyTime)
+                    }
+
+                    (visitables[position] as BaseChatViewModel)
+                            .isShowDate = !compareTime(context, myTime, prevTime)
+                } catch (e: NumberFormatException) {
+                    (visitables[position] as BaseChatViewModel).isShowDate = false
+                } catch (e: ClassCastException) {
+                    (visitables[position] as BaseChatViewModel).isShowDate = false
+                }
+
+            } else {
+                try {
+                    (visitables[position] as BaseChatViewModel).isShowDate = true
+                } catch (e: ClassCastException) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+    }
+
+
+    private fun showTimeBaseChat(position: Int) {
+        if (position != 0) {
+            try {
+
+                val now: BaseChatViewModel = visitables[position] as BaseChatViewModel
+                var next: BaseChatViewModel = visitables[position - 1] as BaseChatViewModel
+                val myTime = java.lang.Long.parseLong(now.replyTime)
+                var nextItemTime: Long = 0
+
+                if (visitables[position - 1] != null
+                        && visitables[position - 1] is BaseChatViewModel) {
+                    next = visitables[position - 1] as BaseChatViewModel
+                    nextItemTime = java.lang.Long.parseLong(next.replyTime)
+                }
+
+                (visitables[position] as BaseChatViewModel)
+                        .isShowTime = !(compareHour(nextItemTime, myTime)
+                        && compareSender(now, next))
+
+            } catch (e: NumberFormatException) {
+                (visitables[position] as BaseChatViewModel).isShowTime = true
+            } catch (e: ClassCastException) {
+                (visitables[position] as BaseChatViewModel).isShowTime = true
+            }
+
+        } else {
+            try {
+                (visitables[position] as BaseChatViewModel).isShowTime = true
+            } catch (e: ClassCastException) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+
+    private fun showRoleBaseChat(position: Int) {
+        if (position != visitables.size - 1) {
+            try {
+                val now = visitables[position] as SendableViewModel
+                if (!now.isSender) {
+                    now.isShowRole = false
+                    return
+                }
+
+                var prev: SendableViewModel? = null
+                val myTime = java.lang.Long.parseLong(now.replyTime)
+                var prevTime: Long = 0
+
+                if (visitables[position + 1] != null && visitables[position + 1] is SendableViewModel) {
+                    prev = visitables.get(position + 1) as SendableViewModel
+                    if (prev.replyTime != null) {
+                        prevTime = (prev!!.replyTime)!!.toLong()
+                    }
+                }
+
+                (visitables.get(position) as SendableViewModel).isShowRole = !(prev != null
+                        && compareSender(now, prev)
+                        && compareHour(myTime, prevTime))
+            } catch (e: NumberFormatException) {
+                (visitables.get(position) as SendableViewModel).isShowRole = false
+            } catch (e: ClassCastException) {
+                (visitables.get(position) as SendableViewModel).isShowRole = false
+            }
+
+        } else {
+            try {
+                (visitables.get(position) as SendableViewModel).isShowRole = true
+            } catch (e: ClassCastException) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+
+    private fun compareHour(calCurrent: Long, calBefore: Long): Boolean {
+        val MILIS: Long = 1000
+        val SECONDS: Long = 60
+        val MINUTES = MILIS * SECONDS
+        return calCurrent / MINUTES == calBefore / MINUTES
+    }
+
+    private fun compareSender(current: BaseChatViewModel?, compare: BaseChatViewModel?): Boolean {
+        if (current == null || compare == null) return false
+
+        val currentIsSender: Boolean
+        val compareIsSender: Boolean
+        if (current is SendableViewModel && compare is SendableViewModel) {
+            currentIsSender = current.isSender
+            compareIsSender = compare.isSender
+            if (!currentIsSender) return currentIsSender == compareIsSender
+        }
+
+        return current.fromRole == compare.fromRole
+    }
+
+    private fun compareTime(context: Context, calCurrent: Long, calBefore: Long): Boolean {
+        return DateFormat.getLongDateFormat(context).format(Date(calCurrent)) == DateFormat.getLongDateFormat(context).format(Date(calBefore))
+    }
+
+    protected fun enableShowDate(): Boolean {
+        return true
+    }
+
+    protected fun enableShowTime(): Boolean {
+        return true
+    }
+}

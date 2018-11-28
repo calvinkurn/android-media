@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_time_ticker_size">30sp</dimen>
+    <dimen name="indicator_icon_size">50dp</dimen>
+
+    <!-- Topchat -->
+    <dimen name="max_width_chat_bubble">270dp</dimen>
+    <dimen name="max_height_chat_bubble">270dp</dimen>
+    <dimen name="margin_selected_rating">19dp</dimen>
+    <dimen name="rating_icon_size">28dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="invoice_thumbnail_size">60dp</dimen>
+    <dimen name="invoice_height">216dp</dimen>
+    <dimen name="invoice_status_min_width">120dp</dimen>
+    <dimen name="invoice_item_carousel_width">298dp</dimen>
+    <dimen name="item_carousel_next_invoice_width">68dp</dimen>
+    <dimen name="item_carousel_next_arrow_size">49dp</dimen>
+    <dimen name="avatar_thumb_size">34dp</dimen>
+    <dimen name="online_status_text_size">11sp</dimen>
+    <dimen name="online_status_text_line_spacing">9sp</dimen>
+    <dimen name="chat_person_tag_text_size">9sp</dimen>
+    <dimen name="attached_image_corner_radius">12dp</dimen>
+    <dimen name="chat_width">270dp</dimen>
+
+</resources>

@@ -53,7 +53,7 @@ include "features:transaction:transactiondata"
 
 include "features:user:attachproduct"
 include "features:user:bankdb"
-include "features:user:chatcommon"
+include "features:user:chat_common"
 include "features:user:chatbot"
 include "features:user:changepassword"
 include "features:user:changephonenumber"

@@ -205,6 +205,8 @@ ext {
             bankdb                      : ":features:user:bankdb",
             changepassword              : ":features:user:changepassword",
             changePhoneNumber           : ":features:user:changephonenumber",
+            chatbot                     : ":features:user:chatbot",
+            chatcommon                  : ":features:user:chat_common",
             groupchat                   : ":features:user:groupchat",
             logout                      : ":features:user:logout",
             loginphone                  : ":features:user:loginphone",
