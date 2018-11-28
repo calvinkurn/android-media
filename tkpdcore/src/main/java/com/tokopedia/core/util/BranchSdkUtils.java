@@ -56,7 +56,7 @@ public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "$android_url";
     private static final String BRANCH_IOS_DESKTOP_URL_KEY = "$ios_url";
     private static final String ProductCategory = "ProductCategory";
-    private static final String FIREBASE_KEY_INCLUDEMOBILEWEB = "includemobileweb";
+    private static final String FIREBASE_KEY_INCLUDEMOBILEWEB = "app_branch_include_mobileweb";
 
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
