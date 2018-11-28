@@ -24,7 +24,6 @@ class MyCampaignFragment : BaseCampaignFragment(){
 
     private val campaignStatusListAdapter: CampaignStatusListAdapter by lazy { CampaignStatusListAdapter{
         selectedStatusIds = it
-        loadInitialData()
     }}
 
     override fun loadData(page: Int) {
@@ -45,6 +44,8 @@ class MyCampaignFragment : BaseCampaignFragment(){
         chips.adapter = campaignStatusListAdapter
 
         showFilterInput()
+
+        loadInitialData()
 
         presenter.getCampaignLabel(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_label),
                 this::onSuccessGetCampaignLabel,this::onErrorGetCampaignLabel)
