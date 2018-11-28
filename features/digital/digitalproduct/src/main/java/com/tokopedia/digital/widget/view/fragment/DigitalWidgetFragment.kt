@@ -85,6 +85,8 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     }
 
     override fun initInjector() {
+        cacheHandler = LocalCacheHandler(activity, TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED)
+
         val digitalEndpointService = DigitalEndpointService()
         val digitalGqlApiService = DigitalGqlApiService()
 
