@@ -73,6 +73,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     var submittedCount: Int = 0
 
     var statusLabel: String = ""
+    var statusName: String = ""
 
     var flashSaleSubmitLabelAdapter: FlashSaleSubmitLabelAdapter? = null
 
@@ -269,6 +270,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             tvTnc.text = spannable
 
             statusLabel = flashSaleTncContent.statusInfo.label
+            statusName = flashSaleTncContent.statusInfo.name
             loadInitContent()
             renderUILabel()
         }
@@ -297,6 +299,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                     campaignSlug,
                     (page - 1) * PER_PAGE, PER_PAGE,
                     searchInputView.searchText,
+                    statusName,
                     onSuccess = {
                         onSuccessGetPostList(it)
                     },
