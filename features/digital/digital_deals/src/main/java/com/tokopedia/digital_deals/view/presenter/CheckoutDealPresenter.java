@@ -144,8 +144,13 @@ public class CheckoutDealPresenter
                             .getAsJsonObject().addProperty("name",
                             String.format(getView().getActivity().getResources().getString(R.string.text_available_locations), outlets.size()));
                 } else if (outlets.get(0) != null)
-                    jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
-                            .getAsJsonObject().addProperty("name", outlets.get(0).getDistrict());
+                    if (!TextUtils.isEmpty(outlets.get(0).getDistrict()))
+                        jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                                .getAsJsonObject().addProperty("name", outlets.get(0).getDistrict());
+                    else
+                        jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                                .getAsJsonObject().addProperty("name", "");
+
             } else {
                 jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                         .getAsJsonObject().addProperty("name", "");
