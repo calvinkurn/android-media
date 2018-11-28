@@ -278,7 +278,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     public void onErrorDeletePost(String message, int rowNumber, int id) {
-        showError(message, () -> presenter.deletePost(rowNumber, id));
+        showError(message, v -> presenter.deletePost(rowNumber, id));
     }
 
     @Override
@@ -439,10 +439,11 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void showError(String message, NetworkErrorHelper.RetryClickedListener action) {
-        NetworkErrorHelper
-                .createSnackbarRedWithAction(getActivity(), message, action)
-                .showRetrySnackbar();
+    private void showError(String message, View.OnClickListener action) {
+        ToasterError
+                .make(getView(), message, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again, action)
+                .show();
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
@@ -478,7 +479,10 @@ public class KolPostFragment extends BaseDaggerFragment implements
         dialog.setTitle(getString(R.string.kol_delete_post));
         dialog.setBtnOk(getString(R.string.kol_title_delete));
         dialog.setBtnCancel(getString(R.string.kol_title_cancel));
-        dialog.setOnOkClickListener(v -> presenter.deletePost(rowNumber, id));
+        dialog.setOnOkClickListener(v -> {
+            presenter.deletePost(rowNumber, id);
+            dialog.dismiss();
+        });
         dialog.setOnCancelClickListener(v -> dialog.dismiss());
         return dialog;
     }
