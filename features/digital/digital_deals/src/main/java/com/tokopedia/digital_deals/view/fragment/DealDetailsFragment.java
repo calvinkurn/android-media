@@ -18,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -111,6 +113,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView tvOff;
     private TextView tvRecommendedDeals;
     private ImageView ivBrandLogo;
+    private NestedScrollView svDetails;
     private TextView buyDealNow;
     private Menu mMenu;
     private ConstraintLayout clHeader;
@@ -192,6 +195,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         cardView = view.findViewById(R.id.cv_checkout);
+        svDetails = view.findViewById(R.id.nestedScroll);
         setCardViewElevation();
         progBar = view.findViewById(R.id.prog_bar);
         clRedeemInstuctns = view.findViewById(R.id.cl_redeem_instructions);
@@ -617,6 +621,13 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void hideCheckoutView() {
         cardView.setVisibility(View.GONE);
+        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(
+                CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                CoordinatorLayout.LayoutParams.MATCH_PARENT
+        );
+        layoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+        svDetails.setLayoutParams(layoutParams);
+        svDetails.setClipToPadding(true);
     }
 
     @Override
