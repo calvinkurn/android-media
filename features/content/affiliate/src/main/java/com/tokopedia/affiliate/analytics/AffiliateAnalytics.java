@@ -187,38 +187,38 @@ public class AffiliateAnalytics {
         );
     }
 
-    public void onLihatContohButtonClicked() {
+    public void onLihatContohButtonClicked(String productId) {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_LIHAT_CONTOH,
-                        ""
+                        productId
                 )
         );
     }
 
-    public void onTambahGambarButtonClicked() {
+    public void onTambahGambarButtonClicked(String productId) {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_TAMBAH_GAMBAR,
-                        ""
+                        productId
                 )
         );
     }
 
-    public void onSelesaiCreateButtonClicked() {
+    public void onSelesaiCreateButtonClicked(String productId) {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_SELESAI,
-                        ""
+                        productId
                 )
         );
     }
