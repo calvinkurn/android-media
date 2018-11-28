@@ -70,6 +70,8 @@ import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
+import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModule;
+import com.tokopedia.payment.setting.applink.PaymentSettingApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
@@ -172,7 +174,8 @@ import io.branch.referral.BranchError;
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        MybillsApplinkModule.class
+        MybillsApplinkModule.class,
+        PaymentSettingApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -229,7 +232,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
-                    new MybillsApplinkModuleLoader()
+                    new MybillsApplinkModuleLoader(),
+                    new PaymentSettingApplinkModuleLoader()
             );
         }
 
