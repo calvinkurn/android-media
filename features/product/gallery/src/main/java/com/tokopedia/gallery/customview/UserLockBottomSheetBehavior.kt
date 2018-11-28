@@ -21,15 +21,15 @@ class UserLockBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
         return false
     }
 
-    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout?, child: V?, directTargetChild: View?, target: View?, nestedScrollAxes: Int): Boolean {
+    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, nestedScrollAxes: Int): Boolean {
         return false
     }
 
-    override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout?, child: V, target: View, dx: Int, dy: Int, consumed: IntArray) {}
+    override fun onNestedPreScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View, dx: Int, dy: Int, consumed: IntArray) {}
 
-    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout?, child: V, target: View?) {}
+    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, target: View) {}
 
-    override fun onNestedPreFling(coordinatorLayout: CoordinatorLayout?, child: V?, target: View?, velocityX: Float, velocityY: Float): Boolean {
+    override fun onNestedPreFling(coordinatorLayout: CoordinatorLayout, child: V, target: View, velocityX: Float, velocityY: Float): Boolean {
         return false
     }
 }

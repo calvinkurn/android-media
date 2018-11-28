@@ -8,7 +8,6 @@ import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.gallery.viewmodel.ImageReviewListModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -17,14 +16,13 @@ import java.util.ArrayList
 import java.util.HashMap
 
 import rx.Observable
-import rx.functions.Func1
 
-class GetImageReviewUseCase(private val context: Context,
+class GetImageReviewUseCase(private val context: Context?,
                             private val graphqlUseCase: GraphqlUseCase) : UseCase<ImageReviewListModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<ImageReviewListModel> {
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context?.resources,
                 R.raw.gql_image_review), ImageReviewGqlResponse::class.java, requestParams.parameters)
 
         graphqlUseCase.clearRequest()
