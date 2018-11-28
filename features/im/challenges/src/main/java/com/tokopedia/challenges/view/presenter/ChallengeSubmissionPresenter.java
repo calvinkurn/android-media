@@ -175,7 +175,6 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
             }
 
             @Override
