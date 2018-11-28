@@ -27,13 +27,11 @@ ext {
     tkpdAffiliateVersion = '2.22'
     tkpdAffiliateCommonVersion = '2.22'
     tkpdLoyaltyVersion = '2.22'
-    tkpdLoyaltyVersion = '2.22'
     tkpdMerchantVoucherVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdNotifCenterVersion = '2.22'
     tkpdPaymentVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
-    tkpdPhoneVerificationVersion = '2.22'
     tkpdPhoneVerificationVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdProfileVersion = '2.22'
@@ -129,8 +127,8 @@ ext {
             interestPick                : ":features:content:interest_pick",
             kol                         : ":features:content:kol",
             kolCommon                   : ":features:content:kol_common",
-            affiliate                   : ":features:content:affiliate",
-//            affiliate                   : ":features:content:affiliate_no_op",
+//            affiliate                   : ":features:content:affiliate",
+            affiliate                   : ":features:content:affiliate_no_op",
             affiliateCommon             : ":features:content:affiliate_common",
             profile                     : ":features:content:profile",
 
@@ -140,7 +138,7 @@ ext {
             event                  : ":features:digital:event",
             flight                 : ":features:digital:flight",
             flightDbFlow           : ":features:digital:flight_dbflow",
-//            flight_no_op                : ":features:digital:flight_no_op",
+//            flight               : ":features:digital:flight_no_op",
             train                  : ":features:digital:train",
 
             home                   : ":features:discovery:home",
@@ -176,12 +174,12 @@ ext {
             reputation             : ":features:merchant:reputation",
             reputationCommon       : ":features:merchant:reputation_common",
             shopCommon             : ":features:merchant:shop_common",
-            shopOpen               : ":features:merchant:shop_open",
-//            shopOpen                    : ":features:merchant:shop_open_no_op",
-            shopPage               : ":features:merchant:shop_page",
-//            shopPage                    : ":features:merchant:shop_page_no_op",
-            shopSettings           : ":features:merchant:shop_settings",
-//            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
+//            shopOpen               : ":features:merchant:shop_open",
+            shopOpen                    : ":features:merchant:shop_open_no_op",
+//            shopPage               : ":features:merchant:shop_page",
+            shopPage                    : ":features:merchant:shop_page_no_op",
+//            shopSettings           : ":features:merchant:shop_settings",
+            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
 
             contactUs              : ":features:operational:contact_us",
 
@@ -205,8 +203,8 @@ ext {
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
-            changepassword              : ":features:user:changepassword",
-//            changepassword              : ":features:user:changepassword_no_op",
+//            changepassword              : ":features:user:changepassword",
+            changepassword              : ":features:user:changepassword_no_op",
             changePhoneNumber           : ":features:user:changephonenumber",
             groupchat                   : ":features:user:groupchat",
             logout                      : ":features:user:logout",
