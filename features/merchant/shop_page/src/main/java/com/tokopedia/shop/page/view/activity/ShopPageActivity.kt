@@ -61,7 +61,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
     private var performanceMonitoring: PerformanceMonitoring? = null
-    private var isTraceStopped = false
 
     @Inject
     lateinit var presenter: ShopPagePresenter
@@ -300,12 +299,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun stopPerformanceMonitor(){
-        if (!isTraceStopped){
-            performanceMonitoring?.run {
-                stopTrace()
-                isTraceStopped = true
-            }
-
+        performanceMonitoring?.run {
+            stopTrace()
+            isTraceStopped = true
         }
     }
 
