@@ -140,6 +140,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (hasFeed(feedDomain)) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
             viewListener.setFirstCursor(feedDomain.getListFeed().get(0).getCursor());
+            viewListener.setLastCursorOnFirstPage(getLastProductCursor(feedDomain.getListFeed()));
         }
 
         if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
@@ -148,6 +149,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
         if (feedDomain.getInterestWhitelist()) {
             viewListener.showInterestPick();
+        }
+    }
+
+    private String getLastProductCursor(List<DataFeedDomain> productList) {
+        try {
+            return productList.get(productList.size() - 1).getCursor();
+        } catch (Exception e) {
+            return "";
         }
     }
 
@@ -547,8 +556,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
         List<String> imageList = new ArrayList<>();
         imageList.add(kolPostDomain.getImageUrl());
-
-        return new KolPostViewModel(
+        KolPostViewModel model = new KolPostViewModel(
                 kolPostDomain.getUserId(),
                 kolPostDomain.getCardType(),
                 kolPostDomain.getHeaderTitle(),
@@ -575,6 +583,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 !TextUtils.isEmpty(kolPostDomain.getContentLink()) ? kolPostDomain.getContentLink()
                         : kolPostDomain.getContentUrl()
         );
+        model.setReportable(kolPostDomain.isReportable());
+
+        return model;
     }
 
     private KolPostYoutubeViewModel convertToKolYoutubeViewModel(DataFeedDomain domain) {

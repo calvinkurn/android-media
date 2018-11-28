@@ -19,11 +19,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
@@ -102,7 +102,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private WishlistAdapter wishlistAdapter;
     private RecentViewAdapter recentViewAdapter;
 
-    private Trace trace;
+    private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
 
     @Inject
@@ -137,7 +137,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trace = TrackingUtils.startTrace(EMPTY_CART_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(EMPTY_CART_TRACE);
     }
 
     @Override
@@ -281,10 +281,15 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void stopTrace() {
-        if (trace != null && !isTraceStopped && presenter.hasLoadAllApi()) {
-            trace.stop();
+        if (!isTraceStopped && presenter.hasLoadAllApi()) {
+            performanceMonitoring.stopTrace();
             isTraceStopped = true;
         }
+    }
+
+    @Override
+    public boolean isTraceStopped() {
+        return isTraceStopped;
     }
 
     private double getItemWidth() {
@@ -558,8 +563,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onTopAdsLoaded(List<Item> list) {
-        presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
-        stopTrace();
+        if (!isTraceStopped) {
+            presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
+            stopTrace();
+        }
         presenter.setRecommendationList(list);
         cartPageAnalytics.enhancedEcommerceProductViewRecommendationOnEmptyCart(
                 presenter.generateEmptyCartAnalyticViewProductRecommendationDataLayer());
@@ -569,8 +576,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-        presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
-        stopTrace();
+        if (!isTraceStopped) {
+            presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
+            stopTrace();
+        }
         cvRecommendation.setVisibility(View.GONE);
         tvRecommendationSeeAllBottom.setVisibility(View.GONE);
     }

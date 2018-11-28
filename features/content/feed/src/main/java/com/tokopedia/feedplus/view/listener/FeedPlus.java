@@ -79,6 +79,8 @@ public interface FeedPlus {
 
         void setFirstCursor(String firstCursor);
 
+        void setLastCursorOnFirstPage(String lastCursor);
+
         void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 
         void onGoToProductDetailFromProductUpload(

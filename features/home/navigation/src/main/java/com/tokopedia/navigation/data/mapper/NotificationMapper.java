@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.util.IntegerUtil;
+import com.tokopedia.navigation_common.model.FeedModel;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
@@ -27,12 +28,14 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
     }
 
     public static Notification notificationMapper(NotificationsModel entity,
-                                                  NotifcenterUnread unread) {
+                                                  NotifcenterUnread unread,
+                                                  FeedModel feedModel) {
         Notification data = new Notification();
         try {
             data.setTotalCart(IntegerUtil.tryParseInt(entity.getTotalCart()));
             data.setTotalInbox(totalInbox(entity));
             data.setTotalNotif(totalNotif(entity, unread));
+            data.setHaveNewFeed(feedModel.getNewFeeds());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

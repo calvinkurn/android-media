@@ -154,7 +154,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         //Adding request for main query
         Map<String, Object> variablesMain = new HashMap<>();
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, pageNumber);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.HOMEPAGE_PAGE_SIZE);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);

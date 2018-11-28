@@ -20,6 +20,10 @@ public class Feed {
   @Expose
   private String cursor;
 
+  @SerializedName("allow_report")
+  @Expose
+  private boolean allowReport;
+
   @SerializedName("source")
   @Expose
   private FeedSource source;
@@ -32,59 +36,67 @@ public class Feed {
   @Expose
   private FeedMeta meta;
 
+  public String getId() {
+    return id;
+  }
+
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getCreateTime() {
+    return createTime;
   }
 
   public void setCreateTime(String createTime) {
     this.createTime = createTime;
   }
 
+  public String getType() {
+    return type;
+  }
+
   public void setType(String type) {
     this.type = type;
+  }
+
+  public String getCursor() {
+    return cursor;
   }
 
   public void setCursor(String cursor) {
     this.cursor = cursor;
   }
 
+  public boolean isAllowReport() {
+    return allowReport;
+  }
+
+  public void setAllowReport(boolean allowReport) {
+    this.allowReport = allowReport;
+  }
+
+  public FeedSource getSource() {
+    return source;
+  }
+
   public void setSource(FeedSource source) {
     this.source = source;
+  }
+
+  public FeedContent getContent() {
+    return content;
   }
 
   public void setContent(FeedContent content) {
     this.content = content;
   }
 
-  public void setMeta(FeedMeta meta) {
-    this.meta = meta;
-  }
-
-  public String getId() {
-    return this.id;
-  }
-
-  public String getCreateTime() {
-    return this.createTime;
-  }
-
-  public String getType() {
-    return this.type;
-  }
-
-  public String getCursor() {
-    return this.cursor;
-  }
-
-  public FeedSource getSource() {
-    return this.source;
-  }
-
-  public FeedContent getContent() {
-    return this.content;
-  }
-
   public FeedMeta getMeta() {
     return meta;
+  }
+
+  public void setMeta(FeedMeta meta) {
+    this.meta = meta;
   }
 }

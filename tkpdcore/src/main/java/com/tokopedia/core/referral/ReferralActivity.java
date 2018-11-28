@@ -10,9 +10,7 @@ import android.text.TextUtils;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
@@ -21,8 +19,6 @@ import com.tokopedia.core.referral.fragment.FragmentReferral;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-
-import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 
 /**
  * Created by ashwanityagi on 18/09/17.
@@ -61,11 +57,6 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
-        if (getIntent() != null &&
-                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            UnifyTracking.eventReferralLongClick();
-        }
-
     }
 
     @Override
