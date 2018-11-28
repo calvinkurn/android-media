@@ -128,19 +128,19 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
             mShakeEnabler.removeMessages(MESSAGE_ENABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);
         }*/
-       if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
-           mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
-           mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
-           return;
-       }
+        if(mShakeEnabler.hasMessages(MESSAGE_SHAKE_END)) {
+            mShakeEnabler.removeMessages(MESSAGE_SHAKE_END);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
+            return;
+        }
 
-       if (isShakeShakeEnable && isShakeShakeEnable()) {
+        if (isShakeShakeEnable && isShakeShakeEnable()) {
            /* mShakeEnabler.sendEmptyMessage(MESSAGE_DISABLE_SHAKE);
             mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_ENABLE_SHAKE,SHAKE_SHAKE_WAIT_FOR_SECOND);*/
-           mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
-           mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_END,SHAKE_SHAKE_END_TIME_MS);
+            mShakeEnabler.sendEmptyMessageDelayed(MESSAGE_SHAKE_SHAKE_CONTINUE_LONG,SHAKE_SHAKE_CONTINUE_LONG_TIME_SECOND);
 
-       }
+        }
     }
 
     public void startShake(boolean isLongShake) {
