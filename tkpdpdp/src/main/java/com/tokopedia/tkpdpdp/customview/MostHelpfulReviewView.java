@@ -65,7 +65,6 @@ public class MostHelpfulReviewView extends BaseView<ProductDetailData, ProductDe
         vpImage = (ViewPager) findViewById(R.id.view_pager_review);
         textAllReview = (TextView) findViewById(R.id.text_all_reviews);
         circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator_picture);
-
     }
 
     @Override

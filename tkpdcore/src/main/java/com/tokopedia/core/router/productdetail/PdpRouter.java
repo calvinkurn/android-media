@@ -67,4 +67,8 @@ public interface PdpRouter {
     void eventClickFilterReviewByImage(Context context,
                                        String filterName,
                                        String productId);
+
+    void eventImageClickOnReview(Context context,
+                                 String productId,
+                                 String reviewId);
 }
