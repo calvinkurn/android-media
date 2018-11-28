@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply from: 'buildconfig/dependencies/dependencies.gradle'
 apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
-apply from: 'buildconfig/dependencies/dependency-features.gradle'
-//apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
+//apply from: 'buildconfig/dependencies/dependency-features.gradle'
+apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
 
 
 buildscript {
