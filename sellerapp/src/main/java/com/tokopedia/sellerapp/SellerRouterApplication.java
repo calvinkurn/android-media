@@ -25,7 +25,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -1461,11 +1460,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getSettingBankIntent(Context context) {
         return SettingBankActivity.Companion.createIntent(context);
-    }
-
-    @Override
-    public Intent getChangePasswordIntent(Context context) {
-        return ChangePasswordActivity.Companion.createIntent(context);
     }
 
     @Override

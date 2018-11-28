@@ -10,6 +10,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
@@ -174,8 +176,7 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
-                                    .getChangePasswordIntent(getActivity());
+                            intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
                             startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();
@@ -222,8 +223,7 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
-                                    .getChangePasswordIntent(getActivity());
+                            intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
                             startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
                             intentToAddPassword();

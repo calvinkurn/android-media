@@ -27,11 +27,13 @@ ext {
     tkpdAffiliateVersion = '2.22'
     tkpdAffiliateCommonVersion = '2.22'
     tkpdLoyaltyVersion = '2.22'
+    tkpdLoyaltyVersion = '2.22'
     tkpdMerchantVoucherVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdNotifCenterVersion = '2.22'
     tkpdPaymentVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
+    tkpdPhoneVerificationVersion = '2.22'
     tkpdPhoneVerificationVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdProfileVersion = '2.22'
@@ -204,6 +206,7 @@ ext {
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
             changepassword              : ":features:user:changepassword",
+//            changepassword              : ":features:user:changepassword_no_op",
             changePhoneNumber           : ":features:user:changephonenumber",
             groupchat                   : ":features:user:groupchat",
             logout                      : ":features:user:logout",
