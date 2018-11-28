@@ -202,6 +202,7 @@ ext {
             topAdsSourceTagging     : ":features:top_ads:top_ads_management_sourcetagging",
 
             checkout                : ":features:transaction:checkout",
+            expressCheckout         : ":features:transaction:express_checkout",
             transactiondata         : ":features:transaction:transactiondata",
             transactionanalytics    : ":features:transaction:transactionanalytics",
 
