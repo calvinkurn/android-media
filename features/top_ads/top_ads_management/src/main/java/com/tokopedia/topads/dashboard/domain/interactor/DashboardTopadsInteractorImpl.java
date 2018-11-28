@@ -8,17 +8,13 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
-import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.Product;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
-import com.tokopedia.topads.dashboard.data.model.data.Summary;
-import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.request.SearchProductRequest;
@@ -58,21 +54,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void getDashboardSummary(final StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener) {
-        Observable<Response<DataResponse<DataStatistic>>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
-        compositeSubscription.add(statisticApiObservable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Response<DataResponse<DataStatistic>>, Observable<Summary>>() {
-                    @Override
-                    public Observable<Summary> call(Response<DataResponse<DataStatistic>> statisticResponse) {
-                        return Observable.just(statisticResponse.body().getData().getSummary());
-                    }
-                }).subscribe(new SubscribeOnNext<Summary>(listener), new SubscribeOnError(listener)));
-    }
-
-    @Override
     public DataDeposit getDeposit(String shopId) {
         return null;
     }
@@ -109,38 +90,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
                     }
                 })
                 .subscribe(new SubscribeOnNext<ShopModel>(listener), new SubscribeOnError(listener)));
-    }
-
-    @Override
-    public void getTotalAd(ShopRequest shopRequest, ListenerInteractor<TotalAd> listener) {
-        Observable<Response<DataResponse<TotalAd>>> depositObservable = topAdsManagementService.getApi().getDashboardTotalAd(shopRequest.getParams());
-        compositeSubscription.add(depositObservable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Response<DataResponse<TotalAd>>, Observable<TotalAd>>() {
-                    @Override
-                    public Observable<TotalAd> call(Response<DataResponse<TotalAd>> totalAdResponse) {
-                        return Observable.just(totalAdResponse.body().getData());
-                    }
-                })
-                .subscribe(new SubscribeOnNext<TotalAd>(listener), new SubscribeOnError(listener)));
-    }
-
-    @Override
-    public void getCreditList(ListenerInteractor<List<DataCredit>> listener) {
-        Observable<Response<DataResponse<List<DataCredit>>>> depositObservable = topAdsManagementService.getApi().getDashboardCredit();
-        compositeSubscription.add(depositObservable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Response<DataResponse<List<DataCredit>>>, Observable<List<DataCredit>>>() {
-                    @Override
-                    public Observable<List<DataCredit>> call(Response<DataResponse<List<DataCredit>>> response) {
-                        return Observable.just(response.body().getData());
-                    }
-                })
-                .subscribe(new SubscribeOnNext<List<DataCredit>>(listener), new SubscribeOnError(listener)));
     }
 
     @Override

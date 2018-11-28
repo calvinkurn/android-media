@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -207,8 +208,10 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
+import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
@@ -255,7 +258,7 @@ public abstract class SellerRouterApplication extends MainApplication
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
         com.tokopedia.tkpdpdp.ProductDetailRouter,
-        MerchantVoucherModuleRouter, LoginRegisterRouter {
+        MerchantVoucherModuleRouter, LoginRegisterRouter, TopAdsDashboardRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1735,8 +1738,101 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
+    @NonNull
     @Override
-    public Fragment getFavoritedShopFragment(String userId) {
+    public Fragment getFavoritedShopFragment(@NonNull String userId) {
         return PeopleFavoritedShopFragment.createInstance(userId);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsDetailShopIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsDetailShopIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsKeywordListIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsKeywordListIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsAddingPromoOptionIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsProductAdListIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsProductAdListIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsGroupAdListIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsGroupAdListIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsGroupNewPromoIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsGroupNewPromoIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsKeywordNewChooseGroupIntent(@NonNull Context context, boolean isPositive, String groupId) {
+        return TopAdsManagementInternalRouter.getTopAdsKeywordNewChooseGroupIntent(context, isPositive, groupId);
+    }
+
+    @Override
+    public void eventTopAdsProductClickProductDashboard() {
+        UnifyTracking.eventTopAdsProductClickKeywordDashboard();
+    }
+
+    @Override
+    public void eventTopAdsProductClickGroupDashboard() {
+        UnifyTracking.eventTopAdsProductClickGroupDashboard();
+    }
+
+    @Override
+    public void eventTopAdsProductAddBalance() {
+        UnifyTracking.eventTopAdsProductAddBalance();
+    }
+
+    @Override
+    public void eventTopAdsShopChooseDateCustom() {
+        UnifyTracking.eventTopAdsShopChooseDateCustom();
+    }
+
+    @Override
+    public void eventTopAdsShopDatePeriod(@NonNull String label) {
+        UnifyTracking.eventTopAdsShopDatePeriod(label);
+    }
+
+    @Override
+    public void eventTopAdsProductStatisticBar(@NonNull String label) {
+        UnifyTracking.eventTopAdsProductStatisticBar(label);
+    }
+
+    @Override
+    public void eventTopAdsShopStatisticBar(@NonNull String label) {
+        UnifyTracking.eventTopAdsShopStatisticBar(label);
+    }
+
+    @Override
+    public void eventTopAdsProductClickKeywordDashboard() {
+        UnifyTracking.eventTopAdsProductClickKeywordDashboard();
+    }
+
+    @Override
+    public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
+
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+
     }
 }

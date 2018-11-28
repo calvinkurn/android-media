@@ -20,19 +20,16 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
-import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditProductMainPageActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductViewPresenterImpl;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -174,8 +171,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
                 public void onClick(View view) {
                     bottomSheetView.dismiss();
 
-                    Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
-                    TopAdsDetailProductFragment.this.startActivity(intent);
+                    // TODO ROUTER
+                    /*Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+                    TopAdsDetailProductFragment.this.startActivity(intent);*/
 
                     isDismissToTopUp = true;
                 }

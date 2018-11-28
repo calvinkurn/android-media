@@ -19,11 +19,11 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
-import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -51,8 +51,9 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                             .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                             .putExtras(extras);
                 } else {
-                    return TopAdsDashboardActivity.getCallingIntent(context)
-                            .putExtras(extras);
+                    // TODO USE ROUTER
+                    return null /*TopAdsDashboardActivity.getCallingIntent(context)
+                            .putExtras(extras)*/;
                 }
             } else {
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -123,8 +124,9 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
             if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
-                Intent intent = new Intent(this, TopAdsDashboardActivity.class);
-                this.startActivity(intent);
+                // TODO USE ROUTER
+                /*Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+                this.startActivity(intent);*/
                 this.finish();
             }
         } else {

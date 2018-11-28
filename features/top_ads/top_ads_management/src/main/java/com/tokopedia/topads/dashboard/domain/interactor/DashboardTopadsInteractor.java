@@ -4,12 +4,9 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAdBulkAction;
-import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.Product;
-import com.tokopedia.topads.dashboard.data.model.data.Summary;
-import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.request.SearchProductRequest;
@@ -27,17 +24,11 @@ import java.util.List;
 @Deprecated
 public interface DashboardTopadsInteractor {
 
-    void getDashboardSummary(StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener);
-
     void getDeposit(ShopRequest shopRequest, final ListenerInteractor<DataDeposit> listener);
 
     DataDeposit getDeposit(String shopId);
 
     void getShopInfo(ShopRequest shopRequest, final ListenerInteractor<ShopModel> listener);
-
-    void getTotalAd(ShopRequest shopRequest, final ListenerInteractor<TotalAd> listener);
-
-    void getCreditList(final ListenerInteractor<List<DataCredit>> listener);
 
     void searchProduct(SearchProductRequest searchProductRequest, final ListenerInteractor<List<Product>> listener);
 

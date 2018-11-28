@@ -48,8 +48,9 @@ public class TopAdsCheckProductPromoActivity extends BaseSimpleActivity implemen
                                     uri.build().getQueryParameter(PARAM_SOURCE))
                             .putExtras(extras);
                 } else {
-                    return TopAdsDashboardActivity.getCallingIntent(context)
-                            .putExtras(extras);
+                    // TODO USE ROUTER
+                    return null /*TopAdsDashboardActivity.getCallingIntent(context)
+                            .putExtras(extras)*/;
                 }
             } else {
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();

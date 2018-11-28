@@ -21,7 +21,6 @@ import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
@@ -164,8 +163,9 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
                 public void onClick(View view) {
                     bottomSheetView.dismiss();
 
-                    Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
-                    TopAdsDetailGroupFragment.this.startActivity(intent);
+                    // TODO ROUTER
+                    /*Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+                    TopAdsDetailGroupFragment.this.startActivity(intent);*/
 
                     isDismissToTopUp = true;
                 }
