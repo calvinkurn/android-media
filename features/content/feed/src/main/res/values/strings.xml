@@ -18,7 +18,7 @@
     <string name="wholesale">Grosir</string>
     <string name="action_share">Bagikan</string>
     <string name="action_buy">Beli</string>
-    <string name="learn_more">Pelajari Selengkapnya</string>
+    <string name="learn_more">Pelajari Selengkapnya</string>o
     <string name="promote_info_text">Promosi oleh TopAds yang muncul berdasarkan minat Anda.
     </string>
     <string name="copy_promo_success">Kode promo berhasil disalin.</string>
@@ -36,7 +36,7 @@
     <string name="see_all_promo">Lihat Semua\nPromo</string>
     <string name="return_to_feed">Kembali ke Feed</string>
     <string name="recent_view">Terakhir Dilihat</string>
-    <string name="you_have_new_feed">Feed baru</string>
+    <string name="you_have_new_feed">Post Terbaru</string>
     <string name="share_gplus">Google+</string>
     <string name="share_fb">Facebook</string>
     <string name="share_twitter">Twitter</string>
