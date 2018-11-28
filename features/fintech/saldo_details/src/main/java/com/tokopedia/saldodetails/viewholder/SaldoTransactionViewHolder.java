@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.viewholder;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +8,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.response.model.DepositHistoryList;
@@ -61,13 +61,13 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
         note.setText(element.getNote());
         heading.setText(element.getTransactionClass());
         ImageHandler.LoadImage(imageView, element.getImageURL());
-        if (Float.parseFloat(String.valueOf(element.getAmount())) > 0) {
+        if (element.getAmount() > 0) {
             listener.setTextColor(nominal, R.color.tkpd_light_green);
             if (context != null) {
                 nominal.setTextColor(context.getResources().getColor(R.color.tkpd_light_green));
                 nominal.setText(String.format(
                         context.getResources().getString(R.string.sp_positive_saldo_balance),
-                        String.valueOf(element.getAmount())));
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(element.getAmount(), false)));
             } else {
                 nominal.setText(String.valueOf(element.getAmount()));
             }
@@ -78,7 +78,7 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
                 nominal.setTextColor(context.getResources().getColor(R.color.tkpd_prod_price));
                 nominal.setText(String.format(
                         context.getResources().getString(R.string.sp_negative_saldo_balance),
-                        String.valueOf(element.getAmount()).replace("-", "")));
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(Math.abs(element.getAmount()), false)));
             } else {
                 nominal.setText(String.valueOf(element.getAmount()));
             }

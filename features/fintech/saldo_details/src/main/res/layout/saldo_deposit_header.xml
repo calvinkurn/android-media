@@ -15,6 +15,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        android:visibility="gone"
         android:background="@drawable/sp_bg_rounded_corners_light_green">
 
         <TextView
