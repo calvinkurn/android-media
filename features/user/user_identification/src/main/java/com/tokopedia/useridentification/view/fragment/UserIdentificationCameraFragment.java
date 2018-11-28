@@ -277,6 +277,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private void onSuccessImageTakenFromCamera(File cameraResultFile) {
         if (cameraResultFile.exists()) {
             ImageHandler.loadImageFromFile(getContext(), imagePreview, cameraResultFile);
+            imagePath = cameraResultFile.getAbsolutePath();
             showImagePreview();
         } else {
             Toast.makeText(getContext(), "Terjadi kesalahan, silahkan coba lagi", Toast
