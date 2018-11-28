@@ -186,14 +186,13 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     fun eventClickBagikanProfile(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
-        val label = if (isOwner) "" else profileId
         analyticTracker.sendEventTracking(
                 getDefaultData(
                         screen,
                         Event.EVENT_CLICK_PROFILE,
                         category,
                         Action.CLICK_BAGIKAN_PROFILE,
-                        label
+                        profileId
                 )
         )
     }
