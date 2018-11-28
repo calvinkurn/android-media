@@ -48,9 +48,6 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
     }
 
     private void initWebSocket(final Subscriber<? super WebSocketInfo> subscriber, String accessToken) {
-        if(webSocket == null) {
-            return;
-        }
         webSocket = client.newWebSocket(getRequest(url, accessToken), new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
