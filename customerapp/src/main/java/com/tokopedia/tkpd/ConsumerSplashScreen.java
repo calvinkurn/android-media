@@ -16,6 +16,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.firebase.perf.metrics.Trace;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -35,8 +36,8 @@ public class ConsumerSplashScreen extends SplashScreen {
     private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
 
-    private Trace warmTrace;
-    private Trace splashTrace;
+    private PerformanceMonitoring warmTrace;
+    private PerformanceMonitoring splashTrace;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,23 +61,19 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void startWarmStart() {
-        warmTrace = TrackingUtils.startTrace(WARM_TRACE);
-    }
-
-    private void startSplashTrace() {
-        splashTrace = TrackingUtils.startTrace(SPLASH_TRACE);
+        warmTrace = PerformanceMonitoring.start(WARM_TRACE);
     }
 
     private void finishWarmStart() {
-        if (warmTrace != null) {
-            warmTrace.stop();
-        }
+        warmTrace.stopTrace();
+    }
+
+    private void startSplashTrace() {
+        splashTrace = PerformanceMonitoring.start(SPLASH_TRACE);
     }
 
     private void finishSplashTrace() {
-        if (splashTrace != null) {
-            splashTrace.stop();
-        }
+        splashTrace.stopTrace();
     }
 
     private void renderDynamicImage() {
