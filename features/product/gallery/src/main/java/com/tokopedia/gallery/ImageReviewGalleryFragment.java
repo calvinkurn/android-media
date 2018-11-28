@@ -51,6 +51,9 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
 
     private void setupBottomSheet() {
         activity.getBottomSheetImageReviewSlider().setup(this);
+        if (activity.isImageListPreloaded()) {
+            activity.getBottomSheetImageReviewSlider().displayImage(activity.getDefaultPosition());
+        }
     }
 
     @Override
@@ -64,7 +67,6 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
         if (activity.isImageListPreloaded()) {
             ArrayList<String> imageUrlList = activity.getImageUrlList();
             handleItemResult(convertToImageReviewItemList(imageUrlList), false);
-            activity.getBottomSheetImageReviewSlider().displayImage(activity.getDefaultPosition());
             return;
         }
 
