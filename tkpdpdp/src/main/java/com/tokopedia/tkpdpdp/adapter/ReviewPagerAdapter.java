@@ -189,8 +189,6 @@ public class ReviewPagerAdapter extends PagerAdapter{
                                 productId,
                                 reviewId
                         );
-
-                        onMostHelpfulClick();
                     }
                 });
             } else {
