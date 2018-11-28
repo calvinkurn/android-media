@@ -20,7 +20,7 @@
     <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/view_pager_review"
         android:layout_width="@dimen/dp_340"
-        android:layout_height="@dimen/dp_250"
+        android:layout_height="@dimen/dp_240"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
