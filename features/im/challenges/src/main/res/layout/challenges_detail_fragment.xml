@@ -93,6 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     tools:text="Show me the Slice!" />
 
@@ -101,6 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_below="@+id/tv_title"
                     tools:text="#challenge" />
@@ -119,6 +121,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
                         tools:text="Due date: 30th July 2018" />
 
@@ -129,8 +133,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginEnd="@dimen/dp_16"
                         android:background="@drawable/bg_round_solid_green_radius_huge"
                         android:gravity="center_vertical"
                         android:paddingBottom="@dimen/dp_6"
@@ -428,6 +434,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/grey_200"
@@ -482,6 +490,8 @@
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@color/grey_200"
                     android:layout_below="@+id/cl_how_buzzpoints" />

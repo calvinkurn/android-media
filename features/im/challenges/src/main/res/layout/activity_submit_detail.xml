@@ -87,10 +87,12 @@
                     android:layout_height="@dimen/dp_50"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:visibility="gone"
                     app:backgroundTint="@color/white"
                     android:layout_alignBottom="@+id/challenge_img_layout"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     app:srcCompat="@drawable/ic_wishlist_unchecked"
                     tools:ignore="VectorDrawableCompat" />
 
@@ -100,6 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
                     android:layout_below="@+id/challenge_img_layout" />
 
                 <TextView
@@ -117,9 +120,11 @@
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_16"
                     android:src="@drawable/ic_buzz_points"
                    android:layout_alignParentLeft="true"
+                   android:layout_alignParentStart="true"
                     android:layout_below="@+id/challenge_title" />
 
                 <TextView
@@ -149,6 +154,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginStart="@dimen/dp_10"
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_toRightOf="@+id/likes_img"
                     android:layout_below="@+id/challenge_title"
@@ -162,6 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_12"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_6"
                     android:paddingLeft="@dimen/dp_10"
@@ -210,6 +217,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/ch_description"
                     android:textColor="@color/black"
@@ -224,6 +233,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_below="@+id/detail_title" />
 
@@ -233,6 +244,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:text="@string/ch_participate_in"
                     android:textColor="@color/black"
@@ -247,6 +260,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:textColor="@color/tkpd_main_green"
