@@ -4,6 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.challenges.domain.usecase.GetMySubmissionsListUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
@@ -57,6 +58,8 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                 if(!isViewAttached()) return;
                 isLoading = false;
                 getView().removeProgressBarView();
+                getView().showErrorNetwork(
+                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
                 e.printStackTrace();
             }
 
