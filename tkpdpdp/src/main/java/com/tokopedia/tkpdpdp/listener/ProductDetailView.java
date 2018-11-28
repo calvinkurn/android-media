@@ -13,6 +13,7 @@ import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -368,4 +369,6 @@ public interface ProductDetailView extends ViewListener {
     boolean isFromExploreAffiliate();
 
     void onImageFromBuyerClick(int viewType, String reviewId);
+
+    void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position);
 }

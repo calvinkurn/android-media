@@ -142,7 +142,7 @@ public class ChatRoomContract {
 
         boolean isChatBot();
 
-        void onQuickReplyClicked(QuickReplyViewModel quickReply);
+        void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply);
 
         void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable
                 modelToBeRemoved);
@@ -221,5 +221,7 @@ public class ChatRoomContract {
         void getFollowStatus(String shopId);
 
         void doFollowUnfollowToggle(String shopId);
+
+        void sendQuickReply(String messageId, QuickReplyViewModel quickReply, String startTime);
     }
 }

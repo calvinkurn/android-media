@@ -21,12 +21,6 @@
                 android:id="@+id/recycler_view_promos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/tp_margin_xsmall"
-                android:layout_marginLeft="@dimen/tp_margin_xsmall"
-                android:layout_marginTop="@dimen/tp_margin_xsmall"
-                android:layout_marginEnd="@dimen/tp_margin_xsmall"
-                android:layout_marginRight="@dimen/tp_margin_xsmall"
-                android:layout_marginBottom="@dimen/tp_margin_xsmall"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                 tools:listitem="@layout/tp_item_coupon" />
@@ -36,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/tp_margin_medium"
-                android:layout_marginTop="@dimen/tp_margin_small"
+                android:layout_marginTop="@dimen/dp_14"
                 android:layout_marginRight="@dimen/tp_margin_medium"
                 android:background="@drawable/bg_tp_gray_outline"
                 android:gravity="center"
@@ -46,6 +40,7 @@
                 android:textSize="@dimen/sp_13" />
 
             <View
+                android:id="@+id/view_dummy"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/tp_margin_bottom_membership_and_egg"
                 android:visibility="invisible" />

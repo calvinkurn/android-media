@@ -39,15 +39,28 @@ import java.util.List;
 public class ImageReviewGalleryActivity extends BaseSimpleActivity {
 
     private static final String EXTRA_PRODUCT_ID = "product_id";
+    private static final String EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST";
+    private static final String EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION";
 
     private BottomSheetImageReviewSlider bottomSheetImageReviewSlider;
     private int productId;
+    private int defaultPosition;
+    private ArrayList<String> imageUrlList;
 
     public static void moveTo(Activity activity, int productId) {
         if (activity != null) {
             Intent intent = new Intent(activity, ImageReviewGalleryActivity.class);
             intent.putExtra(EXTRA_PRODUCT_ID, productId);
             activity.startActivity(intent);
+        }
+    }
+
+    public static void moveTo(Context context, ArrayList<String> imageUrlList, int defaultPosition) {
+        if (context != null) {
+            Intent intent = new Intent(context, ImageReviewGalleryActivity.class);
+            intent.putStringArrayListExtra(EXTRA_IMAGE_URL_LIST, imageUrlList);
+            intent.putExtra(EXTRA_DEFAULT_POSITION, defaultPosition);
+            context.startActivity(intent);
         }
     }
 
@@ -68,6 +81,8 @@ public class ImageReviewGalleryActivity extends BaseSimpleActivity {
 
     private void getDataFromIntent() {
         productId = getIntent().getIntExtra(EXTRA_PRODUCT_ID, 0);
+        defaultPosition = getIntent().getIntExtra(EXTRA_DEFAULT_POSITION, 0);
+        imageUrlList = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URL_LIST);
     }
 
     private void bindView() {
@@ -82,9 +97,21 @@ public class ImageReviewGalleryActivity extends BaseSimpleActivity {
         return productId;
     }
 
+    public int getDefaultPosition() {
+        return defaultPosition;
+    }
+
+    public ArrayList<String> getImageUrlList() {
+        return imageUrlList;
+    }
+
+    public boolean isImageListPreloaded() {
+        return imageUrlList != null && !imageUrlList.isEmpty();
+    }
+
     @Override
     public void onBackPressed() {
-        if (!bottomSheetImageReviewSlider.onBackPressed()) {
+        if (isImageListPreloaded() || !bottomSheetImageReviewSlider.onBackPressed()) {
             super.onBackPressed();
         }
     }
