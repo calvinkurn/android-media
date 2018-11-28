@@ -265,6 +265,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             presenter.processGetCategoryAndBannerData(
                     categoryId, operatorId, productId, clientNumber);
         } else {
+            setMenuVisibility(false);
             presenter.getCategoryData(
                     categoryId, operatorId, productId, clientNumber
             );
@@ -885,12 +886,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                             showToastMessage(message);
                         }
                     }
-                } else if (resultCode == IDigitalModuleRouter.ON_BACK_PRESSED) {
-                    if (isFromWidget) {
-                        presenter.processGetHelpUrlData(categoryId);
-                        presenter.processGetCategoryAndBannerData(
-                                categoryId, operatorId, productId, clientNumber);
-                    }
+                }
+                if (isFromWidget) {
+                    presenter.processGetHelpUrlData(categoryId);
+                    presenter.processGetCategoryAndBannerData(
+                            categoryId, operatorId, productId, clientNumber);
+                    setMenuVisibility(true);
                 }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:

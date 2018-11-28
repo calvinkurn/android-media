@@ -24,6 +24,7 @@ import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
 import com.tokopedia.digital.widget.view.presenter.DigitalChannelContract
 import com.tokopedia.digital.widget.view.presenter.DigitalChannelPresenter
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 /**
  * Created by Rizky on 15/11/18.
@@ -42,6 +43,8 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
     private lateinit var text_error_message: TextView
     private lateinit var text_see_more: TextView
     private lateinit var button_try_again: Button
+
+    private val DIGITAL_CHANNEL_RECOMMENDATION = "mainapp_digital_channel_recommendation"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootview = inflater.inflate(R.layout.fragment_digital_channel, container, false)
@@ -79,7 +82,17 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        digitalChannelPresenter.getRecommendationList(5)
+        val remoteConfig = FirebaseRemoteConfigImpl(activity)
+
+        if (isDigitalChannelRecommendationEnabled(remoteConfig)) {
+            digitalChannelPresenter.getRecommendationList(5)
+        } else {
+            fetchCategoryList()
+        }
+    }
+
+    private fun isDigitalChannelRecommendationEnabled(remoteConfig: FirebaseRemoteConfigImpl): Boolean {
+        return remoteConfig.getBoolean(DIGITAL_CHANNEL_RECOMMENDATION, false)
     }
 
     override fun initInjector() {

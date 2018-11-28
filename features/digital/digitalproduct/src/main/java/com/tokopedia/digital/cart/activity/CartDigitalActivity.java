@@ -157,13 +157,6 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     }
 
     @Override
-    public void onBackPressed() {
-        setResult(IDigitalModuleRouter.ON_BACK_PRESSED);
-
-        super.onBackPressed();
-    }
-
-    @Override
     protected boolean isLightToolbarThemes() {
         return true;
     }
