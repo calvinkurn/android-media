@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -418,6 +419,11 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                             sessionHandler.getTokenType(getView().getContext())
                                     + " " +
                                     sessionHandler.getAuthAccessToken())
+                    .header("x-app-version",String.valueOf(GlobalConfig.VERSION_CODE))
+                    .header("x-device", "android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-version","android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-name", GlobalConfig.getPackageApplicationName())
+
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
