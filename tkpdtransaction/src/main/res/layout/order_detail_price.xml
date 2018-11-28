@@ -131,6 +131,36 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_protection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_10">
+
+        <TextView
+            android:id="@+id/protection_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_70"
+            tools:text="Biaya Proteksi Gadget (3 barang)"/>
+
+        <TextView
+            android:id="@+id/protection_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="@color/label_text_color"
+            tools:text="Rp 80.000" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

@@ -2,6 +2,7 @@ package com.tokopedia.shop.open.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -22,6 +23,8 @@ import com.tokopedia.shop.open.data.source.cloud.api.OpenShopApi;
 import com.tokopedia.seller.logistic.data.repository.DistrictLogisticDataRepositoryImpl;
 import com.tokopedia.seller.logistic.data.source.LogisticDataSource;
 import com.tokopedia.seller.logistic.domain.DistrictLogisticDataRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -77,9 +80,16 @@ public class ShopOpenDomainModule {
 
     @ShopOpenDomainScope
     @Provides
-    public ShopOpenTracking provideTrackingOpenShop(@ApplicationContext Context context){
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @ShopOpenDomainScope
+    @Provides
+    public ShopOpenTracking provideTrackingOpenShop(@ApplicationContext Context context,
+                                                    UserSessionInterface userSessionInterface){
         if(context instanceof SellerModuleRouter) {
-            return new ShopOpenTracking((SellerModuleRouter)context);
+            return new ShopOpenTracking((SellerModuleRouter)context, userSessionInterface);
         }else{
             return null;
         }

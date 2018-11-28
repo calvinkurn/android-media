@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.domain.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel;
 
 /**
