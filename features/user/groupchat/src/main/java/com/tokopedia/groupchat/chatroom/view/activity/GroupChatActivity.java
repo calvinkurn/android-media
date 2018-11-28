@@ -1230,7 +1230,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                             list);
 
                     analytics.eventClickBanner(String.format("%s - %s"
-                            , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsName()));
+                            , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsId()));
 
                     openSponsor(generateAttributeApplink(
                             viewModel.getChannelInfoViewModel().getAdsLink(),
