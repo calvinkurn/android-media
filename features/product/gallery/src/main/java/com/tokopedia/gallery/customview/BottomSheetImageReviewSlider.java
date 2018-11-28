@@ -257,7 +257,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
         private ImageView imageView;
         private TextView date;
         private TextView name;
-        private TextView prefix;
+        private View reviewContainer;
         private ImageView rating;
 
         public ImageSliderViewHolder(View itemView) {
@@ -265,7 +265,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
             imageView = itemView.findViewById(R.id.review_image_slider_item_image_view);
             date = itemView.findViewById(R.id.review_image_slider_date);
             name = itemView.findViewById(R.id.review_image_slider_name);
-            prefix = itemView.findViewById(R.id.review_image_slider_by_prefix_view);
+            reviewContainer = itemView.findViewById(R.id.review_image_slider_container);
             rating = itemView.findViewById(R.id.review_image_slider_rating);
         }
 
@@ -274,11 +274,9 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
 
             if (!TextUtils.isEmpty(item.getReviewerName())) {
                 name.setText(item.getReviewerName());
-                name.setVisibility(VISIBLE);
-                prefix.setVisibility(VISIBLE);
+                reviewContainer.setVisibility(VISIBLE);
             } else {
-                name.setVisibility(GONE);
-                prefix.setVisibility(GONE);
+                reviewContainer.setVisibility(GONE);
             }
 
             if (!TextUtils.isEmpty(item.getFormattedDate())) {
