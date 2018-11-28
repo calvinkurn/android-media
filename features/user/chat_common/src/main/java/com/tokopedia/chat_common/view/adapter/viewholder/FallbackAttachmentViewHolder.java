@@ -1,26 +1,30 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
-import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
-import com.tokopedia.topchat.common.util.ChatLinkHandlerMovementMethod;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.chat_common.data.FallbackAttachmentViewModel;
+import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
 
 /**
  * @author by nisie on 5/9/18.
  */
 public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAttachmentViewModel> {
 
-    public static final int LAYOUT = R.layout.layout_fallback_attachment;
+    @LayoutRes
+    ////    public static final int LAYOUT = R.layout.layout_fallback_attachment;
+    public static final int LAYOUT = 3;
+    private final ChatLinkHandlerListener listener;
 
     private TextView message;
 
-    public FallbackAttachmentViewHolder(View itemView, ChatRoomContract.View viewListener) {
-        super(itemView, viewListener);
-        message = (TextView) itemView.findViewById(R.id.message);
+    public FallbackAttachmentViewHolder(View itemView, ChatLinkHandlerListener listener) {
+        super(itemView);
+        this.listener = listener;
+//        message = (TextView) itemView.findViewById(R.id.message);
     }
 
     @Override
@@ -37,6 +41,6 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
     }
 
     private void setClickableUrl() {
-        message.setMovementMethod(new ChatLinkHandlerMovementMethod(viewListener));
+        message.setMovementMethod(new ChatLinkHandlerMovementMethod(listener));
     }
 }
