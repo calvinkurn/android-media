@@ -6,7 +6,6 @@
             android:name=".presentation.activity.ReactNativeDeveloperOptionsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme"
-            android:theme=""
             android:label="@string/react_native_logger_title" />
     </application>
 
