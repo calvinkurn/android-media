@@ -287,6 +287,10 @@ public class TickerView extends BaseCustomView {
         imageViewActionClose.setVisibility(isShowCloseButton? VISIBLE : GONE);
     }
 
+    public void setOnActionCloseListener(OnClickListener listener){
+        imageViewActionClose.setOnClickListener(listener);
+    }
+
     public void setHighLightColor(int highLightColor) {
         GradientDrawable gradientDrawable;
         try {
@@ -460,6 +464,10 @@ public class TickerView extends BaseCustomView {
 
     public void hideCloseButton() {
         imageViewActionClose.setVisibility(GONE);
+    }
+
+    public boolean contains(String message){
+        return listMessage!= null && !listMessage.isEmpty() && listMessage.contains(message);
     }
 
 }

@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyListPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.AttachmentInvoice;
@@ -123,7 +122,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData, ChatRoomVie
                 item.getAttachment().getId(),
                 item.getAttachment().getType(),
                 item.getReplyTime(),
-                convertQuickItemChatList(item.getAttachment().getQuickReplies())
+                convertQuickItemChatList(item.getAttachment().getAttributes().getQuickReplies())
         );
         list.add(quickReplyListViewModel);
     }
@@ -312,12 +311,14 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData, ChatRoomVie
         }
     }
 
-    private List<QuickReplyViewModel> convertQuickItemChatList(QuickReplyListPojo pojoList) {
+    private List<QuickReplyViewModel> convertQuickItemChatList(List<QuickReplyPojo> pojoList) {
 
         List<QuickReplyViewModel> list = new ArrayList<>();
         if (pojoList != null) {
-            for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {
-                QuickReplyViewModel model = new QuickReplyViewModel(pojo.getMessage());
+            for (QuickReplyPojo pojo : pojoList) {
+                QuickReplyViewModel model = new QuickReplyViewModel(pojo.getText(),
+                        pojo.getValue(),
+                        pojo.getAction());
                 list.add(model);
             }
         }
