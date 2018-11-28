@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -256,6 +257,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
         private ImageView imageView;
         private TextView date;
         private TextView name;
+        private TextView prefix;
         private ImageView rating;
 
         public ImageSliderViewHolder(View itemView) {
@@ -263,14 +265,35 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
             imageView = itemView.findViewById(R.id.review_image_slider_item_image_view);
             date = itemView.findViewById(R.id.review_image_slider_date);
             name = itemView.findViewById(R.id.review_image_slider_name);
+            prefix = itemView.findViewById(R.id.review_image_slider_by_prefix);
             rating = itemView.findViewById(R.id.review_image_slider_rating);
         }
 
         public void bind(ImageReviewItem item) {
             ImageHandler.LoadImage(imageView, item.getImageUrlLarge());
-            name.setText(item.getReviewerName());
-            date.setText(item.getFormattedDate());
-            rating.setImageResource(RatingView.getRatingDrawable(item.getRating()));
+
+            if (!TextUtils.isEmpty(item.getReviewerName())) {
+                name.setText(item.getReviewerName());
+                name.setVisibility(VISIBLE);
+                prefix.setVisibility(VISIBLE);
+            } else {
+                name.setVisibility(GONE);
+                prefix.setVisibility(GONE);
+            }
+
+            if (!TextUtils.isEmpty(item.getFormattedDate())) {
+                date.setText(item.getFormattedDate());
+                date.setVisibility(VISIBLE);
+            } else {
+                date.setVisibility(GONE);
+            }
+
+            if (item.getRating() != ImageReviewItem.NO_RATING_DATA) {
+                rating.setImageResource(RatingView.getRatingDrawable(item.getRating()));
+                rating.setVisibility(VISIBLE);
+            } else {
+                rating.setVisibility(GONE);
+            }
         }
     }
 
