@@ -1208,8 +1208,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getAdsImageUrl(),
                     R.drawable.loading_page);
-            analytics.eventViewBanner(String.format("%s - %s"
-                    , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsName()));
 
             sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1252,6 +1250,12 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getVideoId())) {
             sponsorLayout.setVisibility(View.GONE);
         }
+
+        if (sponsorLayout.getVisibility() == View.VISIBLE) {
+            analytics.eventViewBanner(String.format("%s - %s"
+                    , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsName()));
+        }
+
     }
 
     private void openSponsor(String adsLink) {
