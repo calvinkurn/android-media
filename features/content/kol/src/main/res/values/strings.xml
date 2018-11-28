@@ -12,6 +12,9 @@
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
     <string name="explore_more_button">Explore More</string>
+    <string name="kol_error_delete">Terjadi kesalahan saat menghapus post.</string>
+    <string name="kol_delete_post">Hapus Post</string>
+    <string name="kol_post_deleted">Post berhasil dihapus</string>
 
     <!--Kol Comment-->
     <string name="title_comment_kol">Comments</string>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -17,9 +18,15 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
@@ -36,6 +43,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 
 /**
  * @author by milhamj on 19/02/18.
@@ -192,7 +201,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
     protected void initInjector() {
         if (getActivity() != null && getActivity().getApplication() != null) {
             DaggerKolProfileComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                    .kolComponent(KolComponentInstance.getKolComponent(getActivity()
+                            .getApplication()))
                     .kolProfileModule(new KolProfileModule())
                     .build()
                     .inject(this);
@@ -254,6 +264,21 @@ public class KolPostFragment extends BaseDaggerFragment implements
             KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(0);
             adapter.showExplore(kolPostViewModel.getName());
         }
+    }
+
+    @Override
+    public void onSuccessDeletePost(int rowNumber) {
+        adapter.removeItem(rowNumber);
+        ToasterNormal.make(getView(), getString(R.string.kol_post_deleted), BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_ok, v -> {
+
+                })
+                .show();
+    }
+
+    @Override
+    public void onErrorDeletePost(String message, int rowNumber, int id) {
+        showError(message, () -> presenter.deletePost(rowNumber, id));
     }
 
     @Override
@@ -336,7 +361,22 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
+        if (getContext() != null) {
+            Menus menus = createBottomMenu(getContext(), element,
+                    new PostMenuListener() {
+                        @Override
+                        public void onDeleteClicked() {
+                            createDeleteDialog(rowNumber, element.getContentId()).show();
+                        }
 
+                        @Override
+                        public void onReportClick() {
+
+                        }
+                    }
+            );
+            menus.show();
+        }
     }
 
     @Override
@@ -399,6 +439,12 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
     }
 
+    private void showError(String message, NetworkErrorHelper.RetryClickedListener action) {
+        NetworkErrorHelper
+                .createSnackbarRedWithAction(getActivity(), message, action)
+                .showRetrySnackbar();
+    }
+
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
         if (rowNumber != -1 &&
                 adapter.getList().get(rowNumber) != null &&
@@ -425,5 +471,15 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     public void setResultIntent(Intent resultIntent) {
         this.resultIntent = resultIntent;
+    }
+
+    private Dialog createDeleteDialog(int rowNumber, int id) {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.kol_delete_post));
+        dialog.setBtnOk(getString(R.string.kol_title_delete));
+        dialog.setBtnCancel(getString(R.string.kol_title_cancel));
+        dialog.setOnOkClickListener(v -> presenter.deletePost(rowNumber, id));
+        dialog.setOnCancelClickListener(v -> dialog.dismiss());
+        return dialog;
     }
 }
