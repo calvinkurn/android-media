@@ -100,13 +100,5 @@ class ImageReviewGalleryActivity : BaseSimpleActivity() {
                 context.startActivity(intent)
             }
         }
-
-        @DeepLink(ApplinkConst.PRODUCT_IMAGE_REVIEW)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, ImageReviewGalleryActivity::class.java)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
     }
 }
