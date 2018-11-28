@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
+import com.tokopedia.kol.feature.post.view.viewmodel.DynamicPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
@@ -25,6 +26,8 @@ public interface KolPostTypeFactory {
     int type(ExploreViewModel exploreViewModel);
 
     int type(EntryPointViewModel entryPointViewModel);
+
+    int type(DynamicPostViewModel dynamicPostViewModel);
 
     void setType(KolPostViewHolder.Type type);
 

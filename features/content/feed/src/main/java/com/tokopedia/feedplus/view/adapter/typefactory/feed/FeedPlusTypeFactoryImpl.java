@@ -42,11 +42,13 @@ import com.tokopedia.feedplus.view.viewmodel.promo.PromotedProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.promo.PromotedShopViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.DynamicPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.DynamicPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
@@ -144,6 +146,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(EntryPointViewModel entryPointViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + EntryPointViewModel.class.getSimpleName());
+    }
+
+    @Override
+    public int type(DynamicPostViewModel dynamicPostViewModel) {
+        return DynamicPostViewHolder.LAYOUT;
     }
 
     @Override
