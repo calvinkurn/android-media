@@ -521,4 +521,10 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     public void onItemClicked(DepositHistoryList depositHistoryList) {
 
     }
+
+    @Override
+    public void onDestroy() {
+        saldoDetailsPresenter.detachView();
+        super.onDestroy();
+    }
 }

@@ -1,6 +1,5 @@
-query {
-  withdrawalTicker() {
+query withdrawalTicker{
+  withdrawalTicker {
       Ticker
-      __typename
       }
   }

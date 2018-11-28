@@ -71,8 +71,6 @@ public interface SaldoDetailContract {
     }
 
     interface Presenter extends CustomerPresenter<SaldoDetailContract.View> {
-        void onDestroyView();
-
         void setFirstDateParameter();
 
         void setCache();

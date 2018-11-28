@@ -3,7 +3,6 @@ package com.tokopedia.saldodetails.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -54,7 +53,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
     private static final long MAX_DAYS_DIFFERENCE = 31;
-    private SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
     private static final java.lang.String DATE_FORMAT_VIEW = "dd/MM/yyyy";
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private String paramStartDate;
@@ -72,18 +70,18 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     GetSaldoBalanceUseCase getSaldoBalanceUseCase;
     @Inject
     GetTickerWithdrawalMessageUseCase getTickerWithdrawalMessageUseCase;
+    @Inject
+    SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
 
     @Inject
-    public SaldoDetailsPresenter(@ApplicationContext Context context,
-                                 @NonNull SetMerchantSaldoStatus setMerchantSaldoStatus) {
-        this.setMerchantSaldoStatusUseCase = setMerchantSaldoStatus;
+    public SaldoDetailsPresenter(@ApplicationContext Context context) {
         depositCacheInteractor = new DepositCacheInteractorImpl(context);
         this.paging = new PagingHandler();
     }
 
-
     @Override
-    public void onDestroyView() {
+    public void detachView() {
+        super.detachView();
         try {
             setMerchantSaldoStatusUseCase.unsubscribe();
             getDepositSummaryUseCase.unsubscribe();

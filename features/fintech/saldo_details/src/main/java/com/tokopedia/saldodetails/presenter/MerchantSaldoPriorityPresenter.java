@@ -1,7 +1,5 @@
 package com.tokopedia.saldodetails.presenter;
 
-import android.support.annotation.NonNull;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -16,11 +14,11 @@ import rx.Subscriber;
 public class MerchantSaldoPriorityPresenter extends BaseDaggerPresenter<MerchantSaldoPriorityContract.View>
         implements MerchantSaldoPriorityContract.Presenter {
 
-    private SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
+    @Inject
+    SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
 
     @Inject
-    public MerchantSaldoPriorityPresenter(@NonNull SetMerchantSaldoStatus setMerchantSaldoStatus) {
-        this.setMerchantSaldoStatusUseCase = setMerchantSaldoStatus;
+    public MerchantSaldoPriorityPresenter() {
     }
 
 
