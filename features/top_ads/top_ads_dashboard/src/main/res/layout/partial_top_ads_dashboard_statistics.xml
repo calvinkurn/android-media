@@ -26,7 +26,7 @@
             style="@style/LabelLayout.TopAdsLabelView"
             android:layout_height="@dimen/dp_64"
             app:lv_content_color="@color/tkpd_main_green"
-            app:lv_image="@drawable/ic_top_ads_kalender"
+            app:lv_image="@drawable/ic_top_ads_dashboard_kalender"
             app:lv_title="@string/label_date_period"
             app:lv_content_max_width_percentage="0.4"/>
 
