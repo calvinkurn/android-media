@@ -19,8 +19,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gallery.GalleryView;
-import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.R;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 
@@ -114,7 +112,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
         backButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeView();
+                callback.onButtonBackPressed();
             }
         });
     }
@@ -175,6 +173,7 @@ public class BottomSheetImageReviewSlider extends FrameLayout implements ImageRe
     public interface Callback {
         void onRequestLoadMore(int page);
         boolean isAllowLoadMore();
+        void onButtonBackPressed();
     }
 
     private static class SliderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

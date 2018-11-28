@@ -256,7 +256,6 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
             ((PdpRouter) MainApplication.getAppContext()).openImagePreview(
                     getActivity(),
                     listLocation,
-                    listDesc,
                     position
             );
         }

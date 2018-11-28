@@ -45,6 +45,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
@@ -2637,6 +2638,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
 
         routeToReviewGallery();
+    }
+
+    @Override
+    public void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position) {
+        ArrayList<String> imageUrlList = new ArrayList<>();
+        for (ReviewImageAttachment reviewImageAttachment : data) {
+            imageUrlList.add(reviewImageAttachment.getUriLarge());
+        }
+        ImageReviewGalleryActivity.moveTo(getActivity(), imageUrlList, position);
     }
 
     public void routeToReviewGallery(){

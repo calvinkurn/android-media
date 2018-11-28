@@ -41,6 +41,8 @@ public interface PdpRouter {
     void openImagePreview(Context context, ArrayList<String> images, ArrayList<String>
             imageDesc, int position);
 
+    void openImagePreview(Context context, ArrayList<String> images, int position);
+
     void openImagePreviewFromChat(Context context, ArrayList<String> images,
                                   ArrayList<String> imageDesc, String title, String date);
 

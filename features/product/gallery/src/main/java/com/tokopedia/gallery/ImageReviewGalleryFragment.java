@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +19,13 @@ import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem, TypeFactory> implements BottomSheetImageReviewSlider.Callback, GalleryView {
 
     private ReviewGalleryPresenter presenter;
-    private ImageReviewGalleryActivity imageReviewGalleryActivity;
+    private ImageReviewGalleryActivity activity;
 
     public static Fragment createInstance() {
         return new ImageReviewGalleryFragment();
@@ -35,7 +34,7 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        imageReviewGalleryActivity = (ImageReviewGalleryActivity) getActivity();
+        activity = (ImageReviewGalleryActivity) getActivity();
     }
 
     @Nullable
@@ -51,7 +50,7 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
     }
 
     private void setupBottomSheet() {
-        imageReviewGalleryActivity.getBottomSheetImageReviewSlider().setup(this);
+        activity.getBottomSheetImageReviewSlider().setup(this);
     }
 
     @Override
@@ -61,8 +60,27 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
 
     @Override
     public void loadData(int page) {
-        imageReviewGalleryActivity.getBottomSheetImageReviewSlider().onLoadingData();
-        presenter.loadData(imageReviewGalleryActivity.getProductId(), page);
+
+        if (activity.isImageListPreloaded()) {
+            ArrayList<String> imageUrlList = activity.getImageUrlList();
+            handleItemResult(convertToImageReviewItemList(imageUrlList), false);
+            activity.getBottomSheetImageReviewSlider().displayImage(activity.getDefaultPosition());
+            return;
+        }
+
+        activity.getBottomSheetImageReviewSlider().onLoadingData();
+        presenter.loadData(activity.getProductId(), page);
+    }
+
+    private List<ImageReviewItem> convertToImageReviewItemList(ArrayList<String> imageUrlList) {
+        List<ImageReviewItem> imageReviewItemList = new ArrayList<>();
+        for (String s : imageUrlList) {
+            ImageReviewItem imageReviewItem = new ImageReviewItem();
+            imageReviewItem.setImageUrlThumbnail(s);
+            imageReviewItem.setImageUrlLarge(s);
+            imageReviewItemList.add(imageReviewItem);
+        }
+        return imageReviewItemList;
     }
 
     @Override
@@ -89,26 +107,31 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
 
     @Override
     public void onGalleryItemClicked(int position) {
-        imageReviewGalleryActivity.getBottomSheetImageReviewSlider().displayImage(position);
+        activity.getBottomSheetImageReviewSlider().displayImage(position);
         ImageReviewGalleryTracking.eventClickReviewGalleryItem(getActivity(),
-                Integer.toString(imageReviewGalleryActivity.getProductId()));
+                Integer.toString(activity.getProductId()));
     }
 
     @Override
     public void handleItemResult(List<ImageReviewItem> imageReviewItemList, boolean isHasNextPage) {
         renderList(imageReviewItemList, isHasNextPage);
-        imageReviewGalleryActivity.getBottomSheetImageReviewSlider().onLoadDataSuccess(imageReviewItemList, isHasNextPage);
+        activity.getBottomSheetImageReviewSlider().onLoadDataSuccess(imageReviewItemList, isHasNextPage);
     }
 
     @Override
     public void handleErrorResult(Throwable e) {
         showGetListError(e);
-        imageReviewGalleryActivity.getBottomSheetImageReviewSlider().onLoadDataFailed();
+        activity.getBottomSheetImageReviewSlider().onLoadDataFailed();
     }
 
     @Override
     public boolean isAllowLoadMore() {
         return !getAdapter().isLoading();
+    }
+
+    @Override
+    public void onButtonBackPressed() {
+        activity.onBackPressed();
     }
 
     @Override
@@ -118,7 +141,7 @@ public class ImageReviewGalleryFragment extends BaseListFragment<ImageReviewItem
 
     @Override
     protected void loadInitialData() {
-        imageReviewGalleryActivity.getBottomSheetImageReviewSlider().resetState();
+        activity.getBottomSheetImageReviewSlider().resetState();
         super.loadInitialData();
     }
 }
