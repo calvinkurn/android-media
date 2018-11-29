@@ -2,7 +2,9 @@ package com.tokopedia.common.travel.presentation.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.constant.TravelPlatformType;
+import com.tokopedia.common.travel.presentation.model.TravelTrip;
+import com.tokopedia.usecase.RequestParams;
 
 /**
  * Created by nabillasabbaha on 25/06/18.
@@ -21,17 +23,29 @@ public interface TravelPassengerUpdateContract {
 
         String getIdentityNumber();
 
+        String getBirthdate();
+
         void showMessageErrorInSnackBar(int resId);
 
-        void navigateToBookingPassenger(TravelPassenger trainPassengerViewModel);
+        void showMessageErrorInSnackBar(Throwable throwable);
+
+        void navigateToPassengerList();
 
         int getSpinnerPosition();
+
+        RequestParams getRequestParamAddPassenger();
+
+        RequestParams getRequestParamEditPassenger();
+
+        int getTravelPlatformType();
 
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void submitDataPassenger(TravelPassenger trainPassengerViewModel);
+        void submitAddPassengerData();
+
+        void submitEditPassengerData();
 
         void onDestroyView();
     }

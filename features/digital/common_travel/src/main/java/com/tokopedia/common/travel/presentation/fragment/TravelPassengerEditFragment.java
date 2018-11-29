@@ -1,5 +1,7 @@
 package com.tokopedia.common.travel.presentation.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,21 +12,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.di.CommonTravelComponent;
+import com.tokopedia.common.travel.domain.DeleteTravelPassengerUseCase;
+import com.tokopedia.common.travel.presentation.activity.TravelPassengerEditActivity;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerUpdateActivity;
 import com.tokopedia.common.travel.presentation.adapter.TravelPassengerEditAdapter;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerEditContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.presentation.model.TravelTrip;
 import com.tokopedia.common.travel.presentation.presenter.TravelPassengerEditPresenter;
 import com.tokopedia.common.travel.utils.CommonTravelUtils;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -35,15 +42,22 @@ import javax.inject.Inject;
  */
 public class TravelPassengerEditFragment extends BaseDaggerFragment implements TravelPassengerEditContract.View {
 
+    private static final int EDIT_PASSENGER_REQUEST_CODE = 177;
+
     private RecyclerView recyclerViewPassenger;
     private ProgressBar progressBar;
     private TravelPassengerEditAdapter adapter;
+    private TravelTrip travelTrip;
+    private Dialog dialog;
 
     @Inject
     TravelPassengerEditPresenter presenter;
 
-    public static Fragment newInstance() {
+    public static Fragment newInstance(TravelTrip travelTrip) {
         Fragment fragment = new TravelPassengerEditFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TravelPassengerEditActivity.TRAVEL_TRIP, travelTrip);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -60,8 +74,10 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter.getPassengerList();
+        travelTrip = getArguments().getParcelable(TravelPassengerEditActivity.TRAVEL_TRIP);
+
         renderPassengerList();
+        presenter.getPassengerList();
     }
 
     private void renderPassengerList() {
@@ -72,7 +88,9 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
         adapter.setListener(new TravelPassengerEditAdapter.ActionListener() {
             @Override
             public void onEditPassenger(TravelPassenger travelPassenger) {
-                startActivity(TravelPassengerUpdateActivity.callingIntent(getActivity(), travelPassenger, TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE));
+                travelTrip.setTravelPassengerBooking(travelPassenger);
+                startActivityForResult(TravelPassengerUpdateActivity.callingIntent(getActivity(), travelTrip,
+                        TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE), EDIT_PASSENGER_REQUEST_CODE);
             }
 
             @Override
@@ -99,12 +117,18 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
 
     @Override
     public void showMessageErrorInSnackBar(int resId) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
+        ToasterError.showClose(getActivity(), getString(resId));
     }
 
     @Override
     public void showMessageErrorInSnackBar(String message) {
-        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        ToasterError.showClose(getActivity(), message);
+    }
+
+    @Override
+    public void showMessageErrorInSnackBar(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        ToasterError.showClose(getActivity(), message);
     }
 
     @Override
@@ -132,8 +156,19 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
         if (progressBar != null) progressBar.setVisibility(View.GONE);
     }
 
+    @Override
+    public int getTravelPlatformType() {
+        return travelTrip.getTravelPlatformType();
+    }
+
+    @Override
+    public void successDeletePassenger() {
+        showSuccessSnackbar(getString(R.string.snackbar_message_success_delete));
+        presenter.getPassengerList();
+    }
+
     private void showDeleteDialog(String id, int travelId) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.dialog_delete_passenger_title));
         dialog.setDesc(getString(R.string.dialog_delete_passenger_question));
         dialog.setBtnOk(getString(R.string.dialog_delete_passenger_btn_delete));
@@ -141,7 +176,7 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSuccessSnackbar(getString(R.string.snackbar_message_success_delete));
+                presenter.deletePassenger(id, travelId);
                 dialog.dismiss();
             }
         });
@@ -152,5 +187,16 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EDIT_PASSENGER_REQUEST_CODE) {
+                NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(R.string.success_edit_passenger_msg));
+            }
+            presenter.getPassengerList();
+        }
     }
 }

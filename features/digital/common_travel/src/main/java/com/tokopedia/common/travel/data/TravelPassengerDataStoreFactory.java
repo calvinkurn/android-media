@@ -80,6 +80,10 @@ public class TravelPassengerDataStoreFactory {
                 });
     }
 
+    public Observable<Boolean> deletePassenger(String idPassenger) {
+        return dbDataStore.deleteData(idPassenger);
+    }
+
     public Observable<Boolean> updatePassenger(String idPassenger, boolean isSelected) {
         return dbDataStore.updateSelectedData(idPassenger, isSelected);
     }

@@ -1,6 +1,8 @@
 package com.tokopedia.common.travel.presentation.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.di.CommonTravelComponent;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerListActivity;
@@ -23,6 +26,7 @@ import com.tokopedia.common.travel.presentation.activity.TravelPassengerUpdateAc
 import com.tokopedia.common.travel.presentation.adapter.TravelPassengerListAdapter;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerListContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.presentation.model.TravelTrip;
 import com.tokopedia.common.travel.presentation.presenter.TravelPassengerListPresenter;
 import com.tokopedia.common.travel.utils.CommonTravelUtils;
 import com.tokopedia.design.base.BaseToaster;
@@ -39,6 +43,9 @@ import javax.inject.Inject;
 public class TravelPassengerListFragment extends BaseDaggerFragment
         implements TravelPassengerListContract.View {
 
+    private static final int ADD_PASSENGER_REQUEST_CODE = 175;
+    private static final int EDIT_PASSENGER_REQUEST_CODE = 176;
+
     private LinearLayout addNewPassengerLayout;
     private RecyclerView passengerListRecyclerView;
     private TravelPassengerListAdapter adapter;
@@ -47,6 +54,7 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     private ProgressBar progressBar;
     private LinearLayout layoutPassngerList;
     private boolean resetPassengerListSelected;
+    private TravelTrip travelTrip;
 
     @Inject
     TravelPassengerListPresenter presenter;
@@ -64,10 +72,11 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
         return null;
     }
 
-    public static Fragment newInstance(TravelPassenger travelPassenger, boolean resetPassengerListSelected) {
+    public static Fragment newInstance(TravelTrip travelTrip,
+                                       boolean resetPassengerListSelected) {
         Fragment fragment = new TravelPassengerListFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(TravelPassengerListActivity.PASSENGER_DATA, travelPassenger);
+        bundle.putParcelable(TravelPassengerListActivity.TRAVEL_TRIP, travelTrip);
         bundle.putBoolean(TravelPassengerListActivity.RESET_PASSENGER_LIST_SELECTED, resetPassengerListSelected);
         fragment.setArguments(bundle);
         return fragment;
@@ -91,20 +100,20 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
         getDataFromBundle();
         initRecyclerView();
         setActionListener();
-        presenter.getPassengerList(resetPassengerListSelected);
     }
 
     private void getDataFromBundle() {
-        passengerBooking = getArguments().getParcelable(TravelPassengerListActivity.PASSENGER_DATA);
+        travelTrip = getArguments().getParcelable(TravelPassengerListActivity.TRAVEL_TRIP);
         resetPassengerListSelected = getArguments().getBoolean(TravelPassengerListActivity.RESET_PASSENGER_LIST_SELECTED);
+        passengerBooking = travelTrip.getTravelPassengerBooking();
     }
 
     private void setActionListener() {
         addNewPassengerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(TravelPassengerUpdateActivity.callingIntent(getActivity(),
-                        new TravelPassenger(), TravelPassengerUpdateActivity.ADD_PASSENGER_TYPE));
+                startActivityForResult(TravelPassengerUpdateActivity.callingIntent(getActivity(),
+                        travelTrip, TravelPassengerUpdateActivity.ADD_PASSENGER_TYPE), ADD_PASSENGER_REQUEST_CODE);
             }
         });
     }
@@ -138,8 +147,9 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
                 .setAction(getActivity().getString(R.string.action_snackbar_error_edit), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(TravelPassengerUpdateActivity.callingIntent(getActivity(), travelPassenger,
-                                TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE));
+                        travelTrip.setTravelPassengerBooking(travelPassenger);
+                        startActivityForResult(TravelPassengerUpdateActivity.callingIntent(getActivity(), travelTrip,
+                                TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE), EDIT_PASSENGER_REQUEST_CODE);
                     }
                 }).show();
     }
@@ -186,6 +196,25 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     @Override
     public void failedUpdatePassengerDb() {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.getPassengerList(resetPassengerListSelected);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == ADD_PASSENGER_REQUEST_CODE) {
+                NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(R.string.success_add_passenger_msg));
+            } else if (requestCode == EDIT_PASSENGER_REQUEST_CODE) {
+                NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(R.string.success_edit_passenger_msg));
+            }
+            resetPassengerListSelected = false;
+        }
     }
 
     @Override

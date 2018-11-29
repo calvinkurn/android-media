@@ -1,0 +1,8 @@
+mutation travelUpdatePassenger($input: TravelPassengerGeneric!, $instanceType: TravelType!) {
+  travelUpdatePassenger(
+    input: $input
+    instanceType: $instanceType
+  ) {
+    travelId
+  }
+}

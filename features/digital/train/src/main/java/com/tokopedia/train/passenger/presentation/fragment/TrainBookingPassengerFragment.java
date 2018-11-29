@@ -19,8 +19,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.constant.TravelPlatformType;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerListActivity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.presentation.model.TravelTrip;
 import com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
@@ -232,7 +234,12 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 travelPassenger.setIdPassenger(trainPassengerViewModel.getIdPassenger());
                 travelPassenger.setPaxType(trainPassengerViewModel.getPaxType());
                 travelPassenger.setIdLocal(trainPassengerViewModel.getIdLocal());
-                startActivityForResult(TravelPassengerListActivity.callingIntent(getActivity(), travelPassenger, resetPassengerListSelected), PASSENGER_LIST_REQUEST_CODE);
+                travelPassenger.setTitle(trainPassengerViewModel.getSalutationId());
+                TravelTrip travelTrip = new TravelTrip();
+                travelTrip.setTravelPlatformType(TravelPlatformType.TRAIN);
+                travelTrip.setTravelPassengerBooking(travelPassenger);
+                startActivityForResult(TravelPassengerListActivity.callingIntent(getActivity(),
+                        travelTrip, resetPassengerListSelected), PASSENGER_LIST_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());

@@ -14,27 +14,32 @@ import android.view.MenuItem;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.common.travel.R;
+import com.tokopedia.common.travel.constant.TravelPlatformType;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerListFragment;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.presentation.model.TravelTrip;
 
 public class TravelPassengerListActivity extends BaseSimpleActivity implements TravelPassengerListFragment.ActionListener {
 
     public static final String PASSENGER_DATA = "passenger_data";
+    public static final String TRAVEL_TRIP = "travel_trip";
     public static final String RESET_PASSENGER_LIST_SELECTED = "reset_passenger_list";
-    private TravelPassenger travelPassenger;
+    private TravelTrip travelTrip;
 
-    public static Intent callingIntent(Context context, TravelPassenger trainPassengerViewModel, boolean resetPassengerListSelected) {
+    public static Intent callingIntent(Context context,
+                                       TravelTrip travelTrip,
+                                       boolean resetPassengerListSelected) {
         Intent intent = new Intent(context, TravelPassengerListActivity.class);
-        intent.putExtra(PASSENGER_DATA, trainPassengerViewModel);
+        intent.putExtra(TRAVEL_TRIP, travelTrip);
         intent.putExtra(RESET_PASSENGER_LIST_SELECTED, resetPassengerListSelected);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        travelPassenger = getIntent().getParcelableExtra(PASSENGER_DATA);
+        travelTrip = (TravelTrip) getIntent().getParcelableExtra(TRAVEL_TRIP);
         boolean resetPassengerList = getIntent().getBooleanExtra(RESET_PASSENGER_LIST_SELECTED, false);
-        return TravelPassengerListFragment.newInstance(travelPassenger, resetPassengerList);
+        return TravelPassengerListFragment.newInstance(travelTrip, resetPassengerList);
     }
 
     @Override
@@ -71,7 +76,7 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_passenger_list_edit) {
             supportInvalidateOptionsMenu();
-            startActivity(TravelPassengerEditActivity.callingIntent(getApplicationContext()));
+            startActivity(TravelPassengerEditActivity.callingIntent(getApplicationContext(), travelTrip));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

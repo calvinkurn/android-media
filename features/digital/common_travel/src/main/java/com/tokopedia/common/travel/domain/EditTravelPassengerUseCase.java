@@ -6,8 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.R;
-import com.tokopedia.common.travel.data.TravelPassengerDataStoreFactory;
-import com.tokopedia.common.travel.data.entity.ResponseTravelDeletePassenger;
+import com.tokopedia.common.travel.data.entity.ResponseTravelEditPassenger;
 import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -23,39 +22,31 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by nabillasabbaha on 13/11/18.
+ * Created by nabillasabbaha on 23/11/18.
  */
-public class DeleteTravelPassengerUseCase extends BaseTravelPassengerUseCase<Boolean> {
+public class EditTravelPassengerUseCase extends BaseTravelPassengerUseCase<TravelPassenger> {
 
     private GraphqlUseCase graphqlUseCase;
     private Context context;
-    private TravelPassengerDataStoreFactory travelPassengerDataStoreFactory;
-    private String idPassengerSelected;
 
     @Inject
-    public DeleteTravelPassengerUseCase(GraphqlUseCase graphqlUseCase,
-                                        @ApplicationContext Context context,
-                                        TravelPassengerDataStoreFactory travelPassengerDataStoreFactory) {
+    public EditTravelPassengerUseCase(GraphqlUseCase graphqlUseCase,
+                                      @ApplicationContext Context context) {
         this.graphqlUseCase = graphqlUseCase;
         this.context = context;
-        this.travelPassengerDataStoreFactory = travelPassengerDataStoreFactory;
-    }
-
-    public void setIdPassengerSelected(String idPassengerSelected) {
-        this.idPassengerSelected = idPassengerSelected;
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<TravelPassenger> createObservable(RequestParams requestParams) {
         return Observable.just(requestParams)
                 .flatMap(new Func1<RequestParams, Observable<GraphqlResponse>>() {
                     @Override
                     public Observable<GraphqlResponse> call(RequestParams requestParams) {
-                        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_travel_delete_passenger);
+                        String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_travel_edit_passenger);
                         Map<String, Object> variableGql = requestParams.getParameters();
 
                         if (!TextUtils.isEmpty(query)) {
-                            GraphqlRequest request = new GraphqlRequest(query, ResponseTravelDeletePassenger.class,
+                            GraphqlRequest request = new GraphqlRequest(query, ResponseTravelEditPassenger.class,
                                     variableGql);
                             graphqlUseCase.clearRequest();
                             graphqlUseCase.addRequest(request);
@@ -65,30 +56,26 @@ public class DeleteTravelPassengerUseCase extends BaseTravelPassengerUseCase<Boo
                         return Observable.error(new Exception("Query and/or variable are empty."));
                     }
                 })
-                .map(new Func1<GraphqlResponse, ResponseTravelDeletePassenger>() {
+                .map(new Func1<GraphqlResponse, ResponseTravelEditPassenger>() {
                     @Override
-                    public ResponseTravelDeletePassenger call(GraphqlResponse graphqlResponse) {
-                        return graphqlResponse.getData(ResponseTravelDeletePassenger.class);
+                    public ResponseTravelEditPassenger call(GraphqlResponse graphqlResponse) {
+                        return graphqlResponse.getData(ResponseTravelEditPassenger.class);
                     }
                 })
-                .map(new Func1<ResponseTravelDeletePassenger, TravelPassengerEntity>() {
+                .map(new Func1<ResponseTravelEditPassenger, TravelPassengerEntity>() {
                     @Override
-                    public TravelPassengerEntity call(ResponseTravelDeletePassenger responseTravelDeletePassenger) {
-                        return responseTravelDeletePassenger.getTravelPassengerEntity();
+                    public TravelPassengerEntity call(ResponseTravelEditPassenger responseTravelEditPassenger) {
+                        return responseTravelEditPassenger.getTravelPassengerEntity();
                     }
                 })
                 .map(new Func1<TravelPassengerEntity, TravelPassenger>() {
                     @Override
                     public TravelPassenger call(TravelPassengerEntity travelPassengerEntity) {
                         TravelPassenger travelPassenger = new TravelPassenger();
+                        travelPassenger.setId(travelPassengerEntity.getId());
                         travelPassenger.setTravelId(travelPassengerEntity.getTravelId());
+                        travelPassenger.setName(travelPassengerEntity.getName());
                         return travelPassenger;
-                    }
-                })
-                .flatMap(new Func1<TravelPassenger, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(TravelPassenger travelPassenger) {
-                        return travelPassengerDataStoreFactory.deletePassenger(idPassengerSelected);
                     }
                 });
     }

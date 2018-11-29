@@ -3,14 +3,15 @@
 
     <string name="travel_passenger_error_salutation">Sapaan harus dipilih</string>
     <string name="travel_passenger_error_first_name">Nama Depan harus diisi</string>
-    <string name="travel_passenger_error_last_name">Nama Depan harus diisi</string>
+    <string name="travel_passenger_error_last_name">Nama Belakang harus diisi</string>
     <string name="travel_passenger_error_identity_number">Nomor Identitas harus diisi</string>
     <string name="travel_passenger_error_identity_number_min">Nomor Identitas minimal 5 huruf</string>
     <string name="travel_passenger_error_identity_number_max">Nomor Identitas maksimal 20 huruf</string>
     <string name="travel_passenger_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
     <string name="travel_passenger_contact_name_max">Nama kontak maksimal 60 huruf</string>
+    <string name="travel_passenger_birthdate_empty">Tanggal Lahir tidak boleh kosong</string>
     <string name="travel_passenger_contact_name_containt_alphabet">Nama penumpang hanya boleh alphabet</string>
-    <string name="travel_passenger_error_identity_alphanumeric">Nomor ID harus alphanumeric</string>
+    <string name="travel_passenger_error_identity_alphanumeric">Nomor Identitas harus alphanumeric</string>
     <string name="travel_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 15 digit</string>
     <string name="travel_passenger_choose_salutation">Sapaan</string>
     <string name="travel_buyer_first_name">Nama Depan (sesuai KTP/SIM/Passport)</string>
@@ -49,4 +50,8 @@
     <string name="title_list_passenger_page">Dafttar Penumpang</string>
     <string name="error_msg_pick_passenger_data_not_valid">Data penumpang belum lengkap.</string>
     <string name="action_snackbar_error_edit">Edit</string>
+    <string name="success_add_passenger_msg">Data penumpang berhasil ditambahkan.</string>
+    <string name="success_edit_passenger_msg">Data penumpang berhasil diubah.</string>
+    <string name="success_delete_passenger_msg">Data penumpang berhasil dihapus.</string>
+
 </resources>

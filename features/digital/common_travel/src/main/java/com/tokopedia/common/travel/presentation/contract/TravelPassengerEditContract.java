@@ -3,6 +3,7 @@ package com.tokopedia.common.travel.presentation.contract;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface TravelPassengerEditContract {
 
         void showMessageErrorInSnackBar(String message);
 
+        void showMessageErrorInSnackBar(Throwable throwable);
+
         void showSuccessSnackbar(String message);
 
         void navigateToBookingPassenger(TravelPassenger trainPassengerViewModel);
@@ -25,10 +28,17 @@ public interface TravelPassengerEditContract {
         void showProgressBar();
 
         void hideProgressBar();
+
+        int getTravelPlatformType();
+
+        void successDeletePassenger();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getPassengerList();
+
+        void deletePassenger(String id, int travelId);
 
         void onDestroyView();
     }

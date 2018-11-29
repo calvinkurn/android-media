@@ -7,20 +7,24 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerEditFragment;
+import com.tokopedia.common.travel.presentation.model.TravelTrip;
 
 /**
  * Created by nabillasabbaha on 13/11/18.
  */
 public class TravelPassengerEditActivity extends BaseSimpleActivity {
 
-    public static Intent callingIntent(Context context) {
+    public static final String TRAVEL_TRIP = "travel_trip";
+
+    public static Intent callingIntent(Context context, TravelTrip travelTrip) {
         Intent intent = new Intent(context, TravelPassengerEditActivity.class);
+        intent.putExtra(TRAVEL_TRIP, travelTrip);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return TravelPassengerEditFragment.newInstance();
+        return TravelPassengerEditFragment.newInstance(getIntent().getParcelableExtra(TRAVEL_TRIP));
     }
 
     @Override

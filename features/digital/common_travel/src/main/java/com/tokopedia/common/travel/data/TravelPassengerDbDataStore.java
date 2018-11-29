@@ -4,6 +4,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
@@ -135,6 +136,20 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
                     result.setSelected(isSelected);
                     result.save();
                 }
+                subscriber.onNext(true);
+            }
+        });
+    }
+
+    public Observable<Boolean> deleteData(String idPassenger) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                ConditionGroup conditions = ConditionGroup.clause();
+                conditions.and(TravelPassengerDb_Table.idPassenger.eq(idPassenger));
+
+                SQLite.delete(TravelPassengerDb.class).where(conditions).async().execute();
+
                 subscriber.onNext(true);
             }
         });

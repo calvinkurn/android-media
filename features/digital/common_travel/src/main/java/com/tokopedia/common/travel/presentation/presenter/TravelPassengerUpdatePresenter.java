@@ -1,16 +1,18 @@
 package com.tokopedia.common.travel.presentation.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common.travel.R;
-import com.tokopedia.common.travel.domain.GetTravelPassengersUseCase;
+import com.tokopedia.common.travel.domain.AddTravelPassengerUseCase;
+import com.tokopedia.common.travel.domain.EditTravelPassengerUseCase;
+import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerUpdateContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
-import com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nabillasabbaha on 26/06/18.
@@ -23,30 +25,89 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
     private static final int MAX_IDENTITY_NUMBER = 20;
     private static final int MIN_IDENTITY_NUMBER = 5;
 
-    private GetTravelPassengersUseCase getTravelPassengersUseCase;
+    private AddTravelPassengerUseCase addTravelPassengerUseCase;
+    private EditTravelPassengerUseCase editTravelPassengerUseCase;
+    private CompositeSubscription compositeSubscription;
+    private TravelProvider travelProvider;
 
     @Inject
-    public TravelPassengerUpdatePresenter(GetTravelPassengersUseCase getTravelPassengersUseCase) {
-        this.getTravelPassengersUseCase = getTravelPassengersUseCase;
+    public TravelPassengerUpdatePresenter(AddTravelPassengerUseCase addTravelPassengerUseCase,
+                                          EditTravelPassengerUseCase editTravelPassengerUseCase,
+                                          TravelProvider travelProvider) {
+        this.addTravelPassengerUseCase = addTravelPassengerUseCase;
+        this.editTravelPassengerUseCase = editTravelPassengerUseCase;
+        this.travelProvider = travelProvider;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
-    public void submitDataPassenger(TravelPassenger trainPassengerViewModel) {
+    public void submitAddPassengerData() {
         if (isAllDataValid()) {
-            trainPassengerViewModel.setSalutationTitle(getView().getSalutationTitle());
-            trainPassengerViewModel.setTitle(getSalutationId());
-            trainPassengerViewModel.setName(getView().getFirstName());
-            trainPassengerViewModel.setIdNumber(getView().getIdentityNumber());
-            getView().navigateToBookingPassenger(trainPassengerViewModel);
+            compositeSubscription.add(
+                    addTravelPassengerUseCase.createObservable(
+                            addTravelPassengerUseCase.create(getView().getRequestParamAddPassenger(),
+                                    getView().getTravelPlatformType()))
+                            .subscribeOn(travelProvider.computation())
+                            .unsubscribeOn(travelProvider.computation())
+                            .observeOn(travelProvider.computation())
+                            .subscribe(new Subscriber<TravelPassenger>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    if (isViewAttached())
+                                        getView().showMessageErrorInSnackBar(e);
+                                }
+
+                                @Override
+                                public void onNext(TravelPassenger travelPassenger) {
+                                    getView().navigateToPassengerList();
+                                }
+                            })
+            );
+        }
+    }
+
+    @Override
+    public void submitEditPassengerData() {
+        if (isAllDataValid()) {
+            compositeSubscription.add(
+                    editTravelPassengerUseCase.createObservable(
+                            editTravelPassengerUseCase.create(getView().getRequestParamEditPassenger(),
+                                    getView().getTravelPlatformType()))
+                            .subscribeOn(travelProvider.computation())
+                            .unsubscribeOn(travelProvider.computation())
+                            .observeOn(travelProvider.computation())
+                            .subscribe(new Subscriber<TravelPassenger>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    if (isViewAttached())
+                                        getView().showMessageErrorInSnackBar(e);
+                                }
+
+                                @Override
+                                public void onNext(TravelPassenger travelPassenger) {
+                                    getView().navigateToPassengerList();
+                                }
+                            })
+            );
         }
     }
 
     private boolean isAllDataValid() {
         boolean allDataValid = true;
-        if (TextUtils.isEmpty(getView().getSalutationTitle())) {
+        if (getView().getSalutationTitle() == null || getView().getSalutationTitle().length() == 0) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_salutation);
-        } else if (TextUtils.isEmpty(getView().getFirstName())) {
+        } else if (getView().getFirstName() == null || getView().getFirstName().length() == 0) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_first_name);
         } else if (getView().getFirstName().length() > MAX_CONTACT_NAME) {
@@ -55,7 +116,7 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
         } else if (!getView().getFirstName().matches(PASSENGER_NAME_REGEX)) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
-        } else if (TextUtils.isEmpty(getView().getLastName())) {
+        } else if (getView().getLastName() == null || getView().getLastName().length() == 0) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_last_name);
         } else if (getView().getLastName().length() > MAX_CONTACT_NAME) {
@@ -64,16 +125,24 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
         } else if (!getView().getLastName().matches(PASSENGER_NAME_REGEX)) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
-        } else if (TextUtils.isEmpty(getView().getIdentityNumber())) {
+        } else if (getView().getPaxType() == TravelBookingPassenger.INFANT &&
+                (getView().getBirthdate() == null || getView().getBirthdate().length() == 0)) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_birthdate_empty);
+        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
+                (getView().getIdentityNumber() == null || getView().getIdentityNumber().length() == 0)) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number);
-        } else if (getView().getIdentityNumber().length() < MIN_IDENTITY_NUMBER && getView().getPaxType() == TravelBookingPassenger.ADULT) {
+        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
+                getView().getIdentityNumber().length() < MIN_IDENTITY_NUMBER) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_min);
-        } else if (getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER && getView().getPaxType() == TravelBookingPassenger.ADULT) {
+        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
+                getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_max);
-        } else if (!getView().getIdentityNumber().matches(PASSENGER_ID_NUMBER_REGEX) && getView().getPaxType() == TravelBookingPassenger.ADULT) {
+        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
+                !getView().getIdentityNumber().matches(PASSENGER_ID_NUMBER_REGEX)) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_alphanumeric);
         }
@@ -81,26 +150,13 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
         return allDataValid;
     }
 
-    private int getSalutationId() {
-        switch (getView().getSpinnerPosition()) {
-            case 0:
-                return TravelPassengerTitle.TUAN;
-            case 1:
-                if (getView().getPaxType() == TravelBookingPassenger.INFANT) {
-                    return TravelPassengerTitle.NONA;
-                } else {
-                    return TravelPassengerTitle.NYONYA;
-                }
-            case 2:
-                return TravelPassengerTitle.NONA;
-            default:
-                return 0;
-        }
-    }
-
     @Override
     public void onDestroyView() {
         detachView();
-        getTravelPassengersUseCase.unsubscribe();
+        addTravelPassengerUseCase.unsubscribe();
+
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
     }
 }
