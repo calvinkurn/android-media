@@ -67,7 +67,7 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    TopAdsGqlUseCase topAdsUseCase(@ApplicationContext Context context){
+    TopAdsGqlUseCase topAdsUseCase(Context context){
         return new TopAdsGqlUseCase(context);
     }
 
