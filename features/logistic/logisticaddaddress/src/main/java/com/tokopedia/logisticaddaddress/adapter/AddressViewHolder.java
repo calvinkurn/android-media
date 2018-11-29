@@ -97,11 +97,6 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
             noLocationLabel.setVisibility(View.INVISIBLE);
         }
 
-//        if (position == list.size() - 1) {
-//            bottomView.setVisibility(View.VISIBLE);
-//        } else {
-//            bottomView.setVisibility(View.GONE);
-//        }
     }
 
     private void setTitle(AddressViewModel viewModel) {
