@@ -22,4 +22,6 @@ object TopAdsDashboardConstant {
     const val EXTRA_SELECTED_OPTION = "selected_option"
 
     const val EXTRA_IS_ENOUGH_DEPOSIT = "EXTRA_IS_ENOUGH_DEPOSIT"
+
+    const val EXTRA_LABEL = "label"
 }

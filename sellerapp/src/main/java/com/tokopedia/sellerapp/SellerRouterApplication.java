@@ -1328,7 +1328,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void gotoTopAdsDashboard(Context context) {
-        context.startActivity(TopAdsDashboardActivity.getCallingIntent(context));
+        context.startActivity(TopAdsDashboardActivity.Companion.getCallingIntent(context));
     }
 
     @Override
@@ -1824,6 +1824,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void eventTopAdsProductClickKeywordDashboard() {
         UnifyTracking.eventTopAdsProductClickKeywordDashboard();
+    }
+
+    @Override
+    public void eventOpenTopadsPushNotification(@NonNull String label) {
+        UnifyTracking.eventOpenTopadsPushNotification(label);
     }
 
     @Override

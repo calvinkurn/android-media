@@ -32,4 +32,8 @@ class TopAdsDashboardTracking(private val router: TopAdsDashboardRouter){
     fun eventTopAdsShopStatisticBar(label: String){
         router.eventTopAdsShopStatisticBar(label)
     }
+
+    fun eventOpenTopadsPushNotification(label: String){
+        router.eventOpenTopadsPushNotification(label)
+    }
 }
