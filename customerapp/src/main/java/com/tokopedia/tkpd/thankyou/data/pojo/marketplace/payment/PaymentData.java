@@ -25,7 +25,8 @@ public class PaymentData {
     @SerializedName("payment_amount")
     @Expose
     private float paymentAmount;
-
+    @SerializedName("coupon")
+    @Expose
     private String coupon;
 
     public int getPaymentId() {
