@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingBottom="@dimen/dp_12">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:background="@color/white"
         android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_12">
+        android:paddingBottom="@dimen/dp_8">
 
         <TextView
             android:id="@+id/home_channel_title"
