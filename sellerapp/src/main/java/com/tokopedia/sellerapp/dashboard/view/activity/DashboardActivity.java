@@ -123,10 +123,10 @@ public class DashboardActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public void onSuccessGetFlashsaleSellerStatus(Boolean isEligible) {
+    public void onSuccessGetFlashsaleSellerStatus(Boolean isVisible) {
         SellerDrawerAdapter sellerDrawerAdapter = ((SellerDrawerAdapter) drawerHelper.getAdapter());
-        if (isEligible != sellerDrawerAdapter.isFlashSaleVisible()) {
-            sellerDrawerAdapter.setFlashSaleVisible(isEligible);
+        if (isVisible != sellerDrawerAdapter.isFlashSaleVisible()) {
+            sellerDrawerAdapter.setFlashSaleVisible(isVisible);
             drawerHelper.getRecyclerView().post(new Runnable() {
                 @Override
                 public void run() {

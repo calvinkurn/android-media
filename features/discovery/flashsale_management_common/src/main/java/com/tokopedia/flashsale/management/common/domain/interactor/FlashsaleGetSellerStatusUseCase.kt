@@ -44,7 +44,7 @@ class FlashsaleGetSellerStatusUseCase(val graphqlUseCase: GraphqlUseCase): UseCa
                 val response = graphqlResponse.getData<SellerStatus.Response>(SellerStatus.Response::class.java).getMojitoSellerStatus.sellerStatus
                 Observable.just(response)
             }
-        }.map { true }//.map { it.isVisible } //for testing set always true
+        }.map { it.isVisible }
     }
 
     companion object {
