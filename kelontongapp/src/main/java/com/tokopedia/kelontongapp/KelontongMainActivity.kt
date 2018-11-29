@@ -100,6 +100,10 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
             }
         })
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
+
         webView.webChromeClient = webViewChromeClient
         webView.webViewClient = webviewClient
         webView.settings.allowFileAccess = true
