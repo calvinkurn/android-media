@@ -174,6 +174,7 @@ public class Purchase {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
             Purchase.put("currencyCode", currency);
+            Purchase.put("coupon", coupon);
         }catch (Exception e) {
             e.printStackTrace();
         }
