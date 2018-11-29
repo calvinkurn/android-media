@@ -3,21 +3,19 @@ package com.tokopedia.iris
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.iris.data.TrackingRepository
-import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.SendDataWorker
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import org.json.JSONObject
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
  * @author okasurya on 10/2/18.
  */
-class IrisAnalytics(val context: Context) : Iris {
-    private val trackingRepository: TrackingRepository = TrackingRepository.getInstance(context)
+class IrisAnalytics(context: Context) : Iris {
+    private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
 
     override fun setService(config: Configuration) {

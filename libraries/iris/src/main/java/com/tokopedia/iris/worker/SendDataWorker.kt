@@ -8,37 +8,38 @@ import com.tokopedia.iris.MAX_ROW
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
+import retrofit2.Response
 import rx.schedulers.Schedulers
 
 /**
  * @author okasurya on 10/18/18.
  */
-class SendDataWorker(val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class SendDataWorker(private val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
         Log.d("Oka Worker", "doWork()")
         val maxRow = inputData.getInt(MAX_ROW, 0)
 
-        val trackingRepository: TrackingRepository = TrackingRepository.getInstance(applicationContext)
+        val trackingRepository = TrackingRepository(applicationContext)
 
         val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
 
-        var listener = Result.FAILURE
         if (trackings.isNotEmpty()) {
 
             val request: String = TrackingMapper(context).transform(trackings)
 
             Log.d("Oka Worker", "doWork() Hit Server $request")
 
-            trackingRepository.apiService.apiInterface.sendMultiEvent(request)
+            val response: Response<String> = trackingRepository.apiService.apiInterface.sendMultiEvent(request)
                     .subscribeOn(Schedulers.io())
-                    .subscribe {
-                        if (it.isSuccessful) {
-                            trackingRepository.delete(trackings)
-                            listener = Result.SUCCESS
-                        }
-                    }
+                    .toBlocking()
+                    .last()
+
+            if (response.isSuccessful) {
+                trackingRepository.delete(trackings)
+                return Result.SUCCESS
+            }
         }
-        return listener
+        return Result.FAILURE
     }
 }
