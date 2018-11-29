@@ -43,7 +43,8 @@ public class TopAdsGqlUseCase extends UseCase<TopAdsModel> {
         return graphqlUseCase.getExecuteObservable(requestParams).map(new Func1<GraphqlResponse, TopAdsModel>() {
             @Override
             public TopAdsModel call(GraphqlResponse graphqlResponse) {
-                return graphqlResponse.getData(TopAdsGqlResponse.class);
+                TopAdsGqlResponse response = graphqlResponse.getData(TopAdsGqlResponse.class);
+                return response.getAdsModel();
             }
         });
     }
