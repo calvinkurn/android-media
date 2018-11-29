@@ -109,6 +109,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
+    private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -841,7 +842,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromCourierPinpoint(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data.getExtras() != null) {
-            LocationPass locationPass = data.getExtras().getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+            LocationPass locationPass = data.getExtras().getParcelable(EXTRA_EXISTING_LOCATION);
             if (locationPass != null) {
                 int index = shipmentAdapter.getLastChooseCourierItemPosition();
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(index);

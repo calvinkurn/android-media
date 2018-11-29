@@ -49,8 +49,8 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivity;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -1044,9 +1044,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
-        Intent intent = GeolocationActivity.createInstanceIntent(fragment.getActivity(), locationPass);
-        fragment.startActivityForResult(intent, requestCode);
+    public Intent navigateToGeoLocationActivityRequest(Context context, LocationPass locationPass) {
+        return GeolocationActivity.createInstance(context, locationPass, false);
     }
 
     @Override

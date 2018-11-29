@@ -273,6 +273,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.logisticuploadawb)
+    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticgeolocation)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.topchat)
