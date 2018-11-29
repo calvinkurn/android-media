@@ -19,8 +19,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -186,7 +188,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void showLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof CustomerView) {
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
             ((BaseAccountView) currentFragment).showLoading();
         }
     }
@@ -194,7 +196,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void hideLoading() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof CustomerView) {
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
             ((BaseAccountView) currentFragment).hideLoading();
         }
     }
@@ -202,8 +204,16 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void showError(String message) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof CustomerView) {
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
             ((BaseAccountView) currentFragment).showError(message);
+        }
+    }
+
+    @Override
+    public void showError(Throwable e) {
+        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+        if (currentFragment != null && currentFragment instanceof BaseAccountView) {
+            ((BaseAccountView) currentFragment).showError(e);
         }
     }
 

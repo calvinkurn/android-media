@@ -30,16 +30,23 @@ public class LoginThirdPartySubscriber extends LoginCommonSubscriber<LoginEmailD
     public void onNext(LoginEmailDomain loginEmailDomain) {
         super.onNext(loginEmailDomain);
 
-        if (loginEmailDomain.getInfo().getName().contains(CHARACTER_NOT_ALLOWED)) {
-            view.onGoToAddName();
-        } else if (loginEmailDomain.getLoginResult() != null
-                && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
-            view.setSmartLock();
-            view.onSuccessLoginSosmed(loginMethodName);
-        } else {
-            view.dismissLoadingLogin();
-            view.onErrorLoginSosmed(loginMethodName, ErrorHandlerSession.getDefaultErrorCodeMessage
-                    (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
+        if (!isGoToSecurityQuestion(loginEmailDomain.getLoginResult())
+                && !isGoToCreatePassword(loginEmailDomain)
+                && !isGoToPhoneVerification(loginEmailDomain)) {
+
+            if (loginEmailDomain.getInfo().getName().contains(CHARACTER_NOT_ALLOWED)) {
+                view.onGoToAddName();
+            } else if (loginEmailDomain.getLoginResult() != null
+                    && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
+                view.setSmartLock();
+                view.onSuccessLoginSosmed(loginMethodName);
+            } else {
+                view.dismissLoadingLogin();
+                view.onErrorLoginSosmed(loginMethodName, ErrorHandlerSession.getDefaultErrorCodeMessage
+                        (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
+                router.logUnknownError(new Throwable("Login Result is null"));
+            }
+
         }
     }
 

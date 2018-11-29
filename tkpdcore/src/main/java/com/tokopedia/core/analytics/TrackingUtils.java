@@ -652,10 +652,6 @@ public class TrackingUtils extends TrackingConfig {
         return getAFEngine().getAdsIdDirect();
     }
 
-    public static Trace startTrace(String traceName) {
-        return getFPMEngine(traceName).startTrace();
-    }
-
     public static void eventClickHotlistProductFeatured(Hotlist hotlist) {
         getGTMEngine().eventClickHotlistProductFeatured(hotlist);
     }

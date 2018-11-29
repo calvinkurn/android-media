@@ -14,19 +14,19 @@ public class MakeLoginPojo {
     private int shopIsGold;
     @SerializedName("msisdn_is_verified")
     @Expose
-    private String msisdnIsVerified;
+    private String msisdnIsVerified = "";
     @SerializedName("shop_id")
     @Expose
     private int shopId;
     @SerializedName("shop_name")
     @Expose
-    private String shopName;
+    private String shopName = "";
     @SerializedName("full_name")
     @Expose
-    private String fullName;
+    private String fullName = "";
     @SerializedName("is_login")
     @Expose
-    private String isLogin;
+    private String isLogin = "";
     @SerializedName("shop_has_terms")
     @Expose
     private int shopHasTerms;
@@ -44,13 +44,13 @@ public class MakeLoginPojo {
     private int msisdnShowDialog;
     @SerializedName("shop_avatar")
     @Expose
-    private String shopAvatar;
+    private String shopAvatar = "";
     @SerializedName("user_image")
     @Expose
-    private String userImage;
+    private String userImage = "";
     @SerializedName("security")
     @Expose
-    private SecurityPojo securityPojo;
+    private SecurityPojo securityPojo = new SecurityPojo();
 
     public int getShopIsGold() {
         return shopIsGold;
