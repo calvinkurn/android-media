@@ -26,6 +26,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,8 +140,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holderView.bindViewHolder(data);
         } else if (getItemViewType(position) == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
             final CartTopAdsViewHolder holderView = (CartTopAdsViewHolder) holder;
-            final XcartParam data = (XcartParam) cartDataList.get(position);
-            holderView.renderTopAds(userSession, data);
+            final TopAdsModel data = (TopAdsModel) cartDataList.get(position);
+            holderView.renderTopAds(data);
         }
     }
 
@@ -514,21 +515,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void mappingTopAdsModel(List<ShopGroupData> shopGroupDataList) {
-        XcartParam model = new XcartParam();
-        try {
-            for (int i = 0; i < shopGroupDataList.size(); i++) {
-                for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {
-                    CartItemData data = shopGroupDataList.get(i).getCartItemDataList().get(j).getCartItemData();
-                    XcartParam.Products p = new XcartParam.Products();
-                    p.setProductId(Integer.parseInt(data.getOriginData().getProductId()));
-                    p.setSourceShopId(Integer.parseInt(data.getOriginData().getShopId()));
-                    model.getProducts().add(p);
-                }
-            }
-        } catch (Exception e){
-        }
-        cartDataList.add(model);
+    public void mappingTopAdsModel(TopAdsModel adsModel) {
+        cartDataList.add(adsModel);
     }
 
     public interface ActionListener extends CartAdapterActionListener {

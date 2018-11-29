@@ -20,6 +20,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
@@ -28,12 +29,11 @@ import java.util.List;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 
-public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements TopAdsListener, TopAdsItemClickListener {
+public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements TopAdsItemClickListener {
 
     public static final int TYPE_VIEW_CART_TOPADS = R.layout.layout_cart_topads;
 
     private TopAdsCarouselView topAdsCarouselView;
-    private boolean loaded;
     private Context context;
 
     public CartTopAdsViewHolder(View itemView) {
@@ -43,25 +43,9 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     }
 
-    public void renderTopAds(UserSession userSession, XcartParam model) {
-        if (loaded)
-            return;
-        TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, "cart");
-        params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
-        params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(5));
-        params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(model));
-
-        Config config = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(userSession.getUserId())
-                .topAdsParams(params)
-                .build();
-
+    public void renderTopAds(TopAdsModel adsModel) {
         topAdsCarouselView.setAdsItemClickListener(this);
-        topAdsCarouselView.setAdsListener(this);
-        topAdsCarouselView.setConfig(config);
-        topAdsCarouselView.loadTopAds();
+        topAdsCarouselView.setData(adsModel);
     }
 
     @Override
@@ -87,15 +71,4 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     @Override
     public void onAddWishList(int position, Data data) { }
 
-    @Override
-    public void onTopAdsLoaded(List<Item> list) {
-        topAdsCarouselView.setVisibility(View.VISIBLE);
-        loaded = true;
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsCarouselView.setVisibility(View.GONE);
-        loaded = false;
-    }
 }

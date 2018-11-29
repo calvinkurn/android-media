@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -31,6 +32,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -85,6 +87,8 @@ public class CartListPresenter implements ICartListPresenter {
     public static final int ITEM_CHECKED_PARTIAL_SHOP = 3;
     public static final int ITEM_CHECKED_PARTIAL_ITEM = 4;
     public static final int ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5;
+    public static final String CART_SRC = "cart";
+    public static final String ITEM_REQUEST = "5";
 
     private final ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
@@ -102,6 +106,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final TopAdsGqlUseCase topAdsUseCase;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
+    private final UserSession userSession;
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
 
     @Inject
@@ -117,7 +122,9 @@ public class CartListPresenter implements ICartListPresenter {
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                              AddWishListUseCase addWishListUseCase,
                              RemoveWishListUseCase removeWishListUseCase,
-                             UpdateAndReloadCartUseCase updateAndReloadCartUseCase) {
+                             UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
+                             TopAdsGqlUseCase topAdsUseCase,
+                             UserSession userSession) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -131,7 +138,8 @@ public class CartListPresenter implements ICartListPresenter {
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
-        this.topAdsUseCase = new TopAdsGqlUseCase(view.getActivity());
+        this.topAdsUseCase = topAdsUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -193,7 +201,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    private static String generateTopAdsParam(CartListData cartListData) {
+    private String generateTopAdsParam(CartListData cartListData) {
         XcartParam model = new XcartParam();
         List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
         for (int i = 0; i < shopGroupDataList.size(); i++) {
@@ -207,12 +215,12 @@ public class CartListPresenter implements ICartListPresenter {
         }
         Map<String, String> adsParam = new HashMap<>();
         adsParam.put(TopAdsParams.KEY_PAGE, "1");
-        adsParam.put(TopAdsParams.KEY_ITEM, "5");
+        adsParam.put(TopAdsParams.KEY_ITEM, ITEM_REQUEST);
         adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
         adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
         adsParam.put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(model));
-        adsParam.put(TopAdsParams.KEY_USER_ID, "3589675");
-        adsParam.put(TopAdsParams.KEY_SRC, "cart");
+        adsParam.put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+        adsParam.put(TopAdsParams.KEY_SRC, CART_SRC);
         List<String> paramList = new ArrayList<>();
         for (Map.Entry<String, String> entry : adsParam.entrySet()) {
             paramList.add(entry.getKey() + "=" + entry.getValue().replace(" ", "+"));
