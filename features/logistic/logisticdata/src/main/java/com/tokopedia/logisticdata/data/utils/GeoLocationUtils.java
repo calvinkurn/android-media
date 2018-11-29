@@ -3,7 +3,6 @@ package com.tokopedia.logisticdata.data.utils;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -69,14 +68,6 @@ public class GeoLocationUtils {
                                 if (j == 0) {
                                     Address address = listAddresses.get(0);
                                     responseAddress = address.getThoroughfare();
-                                    Log.d(TAG, "reverseGeoCode: 1." + address.getAddressLine(0));
-                                    Log.d(TAG, "reverseGeoCode: 2." + address.getLocality());
-                                    Log.d(TAG, "reverseGeoCode: 3." + address.getSubLocality());
-                                    Log.d(TAG, "reverseGeoCode: 4." + address.getAdminArea());
-                                    Log.d(TAG, "reverseGeoCode: 5." + address.getSubAdminArea());
-                                    Log.d(TAG, "reverseGeoCode: 6." + address.getPremises());
-                                    Log.d(TAG, "reverseGeoCode: 7." + address.getThoroughfare());
-                                    Log.d(TAG, "reverseGeoCode: 8." + address.getSubThoroughfare());
                                 } else {
                                     if (responseAddress.equals(DEFAULT_STREET_NAME)) {
                                         responseAddress = listAddresses.get(0).getAddressLine(j);
@@ -111,14 +102,6 @@ public class GeoLocationUtils {
                 if (j == 0) {
                     Address address = listAddress.get(0);
                     reseponseAddress = address.getThoroughfare();
-                    Log.d(TAG, "reverseGeoCode: 1." + address.getAddressLine(0));
-                    Log.d(TAG, "reverseGeoCode: 2." + address.getLocality());
-                    Log.d(TAG, "reverseGeoCode: 3." + address.getSubLocality());
-                    Log.d(TAG, "reverseGeoCode: 4." + address.getAdminArea());
-                    Log.d(TAG, "reverseGeoCode: 5." + address.getSubAdminArea());
-                    Log.d(TAG, "reverseGeoCode: 6." + address.getPremises());
-                    Log.d(TAG, "reverseGeoCode: 7." + address.getThoroughfare());
-                    Log.d(TAG, "reverseGeoCode: 8." + address.getSubThoroughfare());
                 } else {
                     if (reseponseAddress == null || reseponseAddress.equals("Unnamed Rd")) {
                         reseponseAddress = listAddress.get(0).getAddressLine(j);
