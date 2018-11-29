@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/dp_4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/tv_profile_address_name"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:lineSpacingExtra="6sp"
+            tools:text="Rumah (Tokopedia Tower Lt. 45, Jl…)" />
+
+        <ImageView
+            android:id="@+id/img_profile_payment_method"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_27"
+            android:layout_below="@+id/tv_profile_address_name"
+            tools:src="@color/blue_nob" />
+
+        <TextView
+            android:id="@+id/tv_profile_payment_detail"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_27"
+            android:layout_below="@+id/tv_profile_address_name"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_toEndOf="@+id/img_profile_payment_method"
+            android:layout_toRightOf="@+id/img_profile_payment_method"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="6sp"
+            tools:text="BCA a/n Raisa … ****2917" />
+
+        <ImageButton
+            android:id="@+id/img_bt_profile_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/transparent"
+            android:scaleX=".66"
+            android:scaleY=".66"
+            android:src="@drawable/ic_edit" />
+
+        <View
+            android:id="@+id/v_profile_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@+id/img_profile_payment_method"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_6"
+            android:background="@drawable/bg_line_separator" />
+
+        <LinearLayout
+            android:id="@+id/ll_profile_duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/v_profile_separator"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_profile_shipping_duration"
+                style="@style/TextSmallNormalBlack70"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:lineSpacingExtra="4sp"
+                tools:text="Durasi 1 hari" />
+
+            <ImageButton
+                android:id="@+id/img_bt_profile_show_more_shipping_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_keyboard_arrow_down_grey_24dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_profile_courier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_profile_duration"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_profile_shipping_courier"
+                style="@style/TextSmallNormalBlack70"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:lineSpacingExtra="4sp"
+                tools:text="JNE Express" />
+
+            <ImageButton
+                android:id="@+id/img_bt_profile_show_more_shipping_courier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_keyboard_arrow_down_grey_24dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

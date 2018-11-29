@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_14"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/et_remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-4dp"
+        android:layout_marginRight="-4dp"
+        android:fontFamily="sans-serif"
+        android:imeOptions="actionDone"
+        android:maxLines="3"
+        android:overScrollMode="always"
+        android:paddingBottom="@dimen/dp_16"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:textColor="@color/black_70"
+        android:textColorHighlight="@color/tkpd_main_green"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:backgroundTint="@color/tkpd_main_green"
+        tools:ignore="TextFields"
+        tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
+
+    <TextView
+        android:id="@+id/tv_error_form_remark_validation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/et_remark"
+        android:fontFamily="sans-serif"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingStart="@dimen/dp_4"
+        android:textColor="@color/text_error_red"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        android:visibility="gone"
+        tools:ignore="RtlSymmetry,SmallSp"
+        tools:text="Maksimal 2 broh"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_note_char_counter"
+        style="@style/TextSmallNormalBlack38"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/et_remark"
+        android:layout_gravity="end"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="0sp"
+        android:visibility="gone"
+        tools:text="60/140"
+        tools:visibility="visible" />
+
+</RelativeLayout>
