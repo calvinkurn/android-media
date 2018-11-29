@@ -134,9 +134,7 @@ public class GeoLocationUtils {
     }
 
     public static String reverseGeoCode(Context context, String latitude, String longitude) {
-        if (latitude == null || longitude == null) {
-            return "";
-        } else if (latitude.isEmpty() || longitude.isEmpty()) {
+        if (latitude == null || longitude == null || latitude.isEmpty() || longitude.isEmpty()) {
             return "";
         } else {
             return reverseGeoCode(context, Double.parseDouble(latitude), Double.parseDouble(longitude));
