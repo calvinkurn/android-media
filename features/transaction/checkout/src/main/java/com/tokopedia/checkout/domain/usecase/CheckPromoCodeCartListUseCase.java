@@ -58,7 +58,8 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
             return cartRepository.updateCartData(paramUpdateCart)
                     .flatMap(updateCartDataResponse -> checkPromoCodeUseCase.createObservable(checkPromoCodeUseCase.createRequestParams(
                             paramCheckPromo.get(PARAM_PROMO_CODE), false,
-                            paramCheckPromo.get(PARAM_PROMO_SUGGESTED).equals(PARAM_VALUE_SUGGESTED),
+                            (paramCheckPromo.get(PARAM_PROMO_SUGGESTED) != null &&
+                                    paramCheckPromo.get(PARAM_PROMO_SUGGESTED).equals(PARAM_VALUE_SUGGESTED)),
                             paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT) != null &&
                                     Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                             .map(
@@ -67,7 +68,8 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
         else
             return checkPromoCodeUseCase.createObservable(checkPromoCodeUseCase.createRequestParams(
                     paramCheckPromo.get(PARAM_PROMO_CODE), false,
-                    paramCheckPromo.get(PARAM_PROMO_SUGGESTED).equals(PARAM_VALUE_SUGGESTED),
+                    (paramCheckPromo.get(PARAM_PROMO_SUGGESTED) != null &&
+                            paramCheckPromo.get(PARAM_PROMO_SUGGESTED).equals(PARAM_VALUE_SUGGESTED)),
                     paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT) != null &&
                             Boolean.parseBoolean(paramCheckPromo.get(PARAM_ONE_CLICK_SHIPMENT))))
                     .map(

@@ -812,8 +812,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("promo_code", promoCode);
-        param.put("lang", "id");
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG, CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
