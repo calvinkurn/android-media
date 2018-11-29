@@ -90,10 +90,14 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
                 view?.textMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
             }
-            if(TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage) && TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsageLabel)){
-                view?.containerMinTrans?.visibility = View.GONE
+            if(TextUtils.isEmpty(promoCheckoutDetailModel?.minimumUsage) && TextUtils.isEmpty(promoCheckoutDetailModel?.minimumUsageLabel)){
+                view?.titleMinTrans?.visibility = View.GONE
+                view?.textMinTrans?.visibility = View.GONE
+                view?.imageMinTrans?.visibility = View.GONE
             }else{
-                view?.containerMinTrans?.visibility = View.VISIBLE
+                view?.titleMinTrans?.visibility = View.VISIBLE
+                view?.textMinTrans?.visibility = View.VISIBLE
+                view?.imageMinTrans?.visibility = View.VISIBLE
             }
             textTitlePromo.text = it.title
             if ((it.usage?.activeCountDown ?: 0 > 0 &&
@@ -113,7 +117,8 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     private fun setTimerUsage(countDown: Long) {
         view?.timerUsage?.cancel()
         view?.timerUsage?.visibility = View.VISIBLE
-        view?.containerUsageDate?.visibility = View.GONE
+        view?.titlePeriod?.visibility = View.GONE
+        view?.textPeriod?.visibility = View.GONE
         view?.timerUsage?.expiredTimer = countDown
         view?.timerUsage?.start()
     }

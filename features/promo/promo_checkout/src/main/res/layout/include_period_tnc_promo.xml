@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:showIn="@layout/item_list_promo_checkout">
 
-    <RelativeLayout
-        android:layout_width="0dp"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="@dimen/dp_16">
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_12">
 
-        <ImageView
+        <TextView
+            android:id="@+id/titlePeriod"
+            style="@style/TextView.Micro10.BlackSecondary"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:text="@string/promo_title_period"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/imagePeriod"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imagePeriod"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/textPeriod"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/titlePeriod"
             android:src="@drawable/ic_period_promo_green" />
 
         <com.tokopedia.promocheckout.widget.TimerCheckoutWidget
@@ -25,58 +39,61 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/imagePeriod"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textPeriod"
+            app:layout_constraintLeft_toLeftOf="@+id/textPeriod"
+            app:layout_constraintRight_toRightOf="@+id/textPeriod"
+            app:layout_constraintTop_toTopOf="@+id/textPeriod"/>
 
-        <LinearLayout
-            android:id="@+id/containerUsageDate"
+        <TextView
+            android:id="@+id/textPeriod"
+            style="@style/TextView.Small.Bold"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:layout_constraintStart_toEndOf="@+id/imagePeriod"
+            app:layout_constraintTop_toBottomOf="@+id/titlePeriod"
+            tools:text="16 Aug 2019" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageMinTrans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/imagePeriod"
-            android:orientation="vertical">
+            android:layout_marginStart="110dp"
+            android:layout_marginLeft="110dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textPeriod"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/titlePeriod"
+            android:src="@drawable/ic_voucher_promo_green"  />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageMinTrans"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/titlePeriod"
+                android:id="@+id/titleMinTrans"
                 style="@style/TextView.Micro10.BlackSecondary"
-                android:text="@string/promo_title_period" />
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:visibility="visible"
+                tools:text="tanpa minimum transaksi" />
 
             <TextView
-                android:id="@+id/textPeriod"
+                android:id="@+id/textMinTrans"
                 style="@style/TextView.Small.Bold"
-                tools:text="16 Agu 2018" />
+                android:textColor="@color/black_70"
+                android:visibility="visible"
+                tools:text="Rp 3000000" />
         </LinearLayout>
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/containerMinTrans"
-        android:layout_gravity="center"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingBottom="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16">
 
-        <ImageView
-            android:id="@+id/imageMinTrans"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_5"
-            android:src="@drawable/ic_voucher_promo_green" />
-
-        <TextView
-            android:id="@+id/titleMinTrans"
-            style="@style/TextView.Micro10.BlackSecondary"
-            android:layout_toRightOf="@+id/imageMinTrans"
-            android:text="@string/promo_label_min_transaction" />
-
-        <TextView
-            android:id="@+id/textMinTrans"
-            style="@style/TextView.Small.Bold"
-            android:layout_below="@+id/titleMinTrans"
-            android:layout_toRightOf="@+id/imageMinTrans"
-            tools:text="Rp. 100.000" />
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 </merge>

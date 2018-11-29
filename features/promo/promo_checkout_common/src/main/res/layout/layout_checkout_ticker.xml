@@ -25,14 +25,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:drawableLeft="@drawable/ic_kupon"
+                android:drawableLeft="@drawable/ic_coupon_green_promo_checkout"
                 android:drawablePadding="@dimen/dp_8"
-                android:drawableStart="@drawable/ic_kupon"
+                android:drawableStart="@drawable/ic_coupon_green_promo_checkout"
                 android:gravity="center"
                 android:text="@string/use_promo_code_or_coupon"
                 android:textStyle="bold"
                 android:textColor="@color/tkpd_main_green"
-                app:drawableLeftCompat="@drawable/ic_kupon"
+                app:drawableLeftCompat="@drawable/ic_coupon_green_promo_checkout"
                 tools:text="Gunakan Kode Promo atau Kupon" />
 
         </FrameLayout>
