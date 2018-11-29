@@ -85,10 +85,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
-        } else if (applink.equals(AccountConstants.Navigation.MITRA_TOPPERS)
-                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getMitraToppersActivityIntent
-                    (getContext()));
         }
 
         return false;

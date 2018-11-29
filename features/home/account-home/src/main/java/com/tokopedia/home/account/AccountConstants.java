@@ -14,7 +14,6 @@ public class AccountConstants {
         public static final String TRAIN_ORDER_LIST = "train_order_list";
         public static final String TOPADS = "topads";
         public static final String FEATURED_PRODUCT = "featured_product";
-        public static final String MITRA_TOPPERS = "mitra-toppers";
     }
 
     public static class Analytics {
