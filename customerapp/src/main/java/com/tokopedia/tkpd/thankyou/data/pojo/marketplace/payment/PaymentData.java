@@ -27,7 +27,7 @@ public class PaymentData {
     private float paymentAmount;
     @SerializedName("voucher")
     @Expose
-    private List<Voucher> vouchers = null;
+    private List<Voucher> vouchers;
 
     public int getPaymentId() {
         return paymentId;
