@@ -25,9 +25,9 @@ public class PaymentData {
     @SerializedName("payment_amount")
     @Expose
     private float paymentAmount;
-    @SerializedName("coupon")
+    @SerializedName("voucher")
     @Expose
-    private String coupon;
+    private List<Voucher> vouchers = null;
 
     public int getPaymentId() {
         return paymentId;
@@ -61,19 +61,19 @@ public class PaymentData {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getCoupon() {
-        return coupon;
-    }
-
-    public void setCoupon(String coupon) {
-        this.coupon = coupon;
-    }
-
     public float getPaymentAmount() {
         return paymentAmount;
     }
 
     public void setPaymentAmount(float paymentAmount) {
         this.paymentAmount = paymentAmount;
+    }
+
+    public List<Voucher> getVouchers() {
+        return vouchers;
+    }
+
+    public void setVouchers(List<Voucher> vouchers) {
+        this.vouchers = vouchers;
     }
 }
