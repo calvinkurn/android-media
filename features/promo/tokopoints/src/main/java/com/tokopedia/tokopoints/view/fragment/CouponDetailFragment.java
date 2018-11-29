@@ -387,6 +387,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             btnAction2.setText(R.string.tp_label_use);
             btnAction2.setEnabled(true);
             progressBar.setVisibility(View.GONE);
+            btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
             mSubscriptionCouponTimer.unsubscribe();
             return;
         }
@@ -411,6 +412,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         btnAction2.setText(R.string.tp_label_refresh_repeat);
         btnAction2.setEnabled(true);
         progressBar.setVisibility(View.GONE);
+        btnAction2.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.white));
         mSubscriptionCouponTimer.unsubscribe();
     }
 
@@ -496,6 +498,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             } else {
                 if (getArguments() != null && getArguments().getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
                     btnAction2.setEnabled(false);
+                    btnAction2.setTextColor(getResources().getColor(R.color.black_12));
                     progressBar.setVisibility(View.VISIBLE);
                     btnAction2.setText("");
                     mPresenter.reFetchRealCode(getArguments().getString(CommonConstant.EXTRA_COUPON_CODE));
@@ -508,10 +511,12 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             mCouponRealCode = data.getRealCode();
             btnAction2.setText(R.string.tp_label_use);
             btnAction2.setEnabled(true);
+            btnAction2.setTextColor(getResources().getColor(R.color.white));
             progressBar.setVisibility(View.GONE);
         } else {
             //check for real_code and start rxjava-timer
             btnAction2.setEnabled(false);
+            btnAction2.setTextColor(getResources().getColor(R.color.black_12));
             progressBar.setVisibility(View.VISIBLE);
 
             mSubscriptionCouponTimer = Observable.interval(CommonConstant.COUPON_RE_FETCH_DELAY_S, CommonConstant.COUPON_RE_FETCH_DELAY_S, TimeUnit.SECONDS)
@@ -663,6 +668,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         } else {
             if (item.getUsage().getActiveCountDown() > 0) {
                 btnContinue.setEnabled(false);
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.black_12));
                 if (item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                     mTimer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
                         @Override
@@ -684,6 +690,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             } else {
                 btnContinue.setText(item.getUsage().getUsageStr());
                 btnContinue.setEnabled(true);
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.white));
             }
         }
     }

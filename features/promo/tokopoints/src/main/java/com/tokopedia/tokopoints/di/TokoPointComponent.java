@@ -33,5 +33,5 @@ public interface TokoPointComponent {
 
     void inject(MyCouponListingActivity activity);
 
-    void inject(CouponDetailFragment activity);
+    void inject(CouponDetailFragment fragment);
 }
