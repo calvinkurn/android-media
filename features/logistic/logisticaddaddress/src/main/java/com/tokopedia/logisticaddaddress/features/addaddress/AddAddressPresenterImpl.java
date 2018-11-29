@@ -91,8 +91,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     @Override
     public void onRegencySelected(int pos) {
         mView.resetSubDistrict();
-        if (pos != 0) {
-        }
     }
 
     @Override
