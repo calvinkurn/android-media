@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
@@ -16,6 +17,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
+import com.tokopedia.feedplus.data.pojo.TopAd;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
@@ -39,8 +42,10 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
@@ -71,6 +76,9 @@ public class WishListImpl implements WishList {
     public static final String PAGE_NO = "page";
     public static final String ITEM_COUNT = "count";
     public static final String QUERY = "query";
+    public static final int TOPADS_INDEX = 4;
+    public static final String TOPADS_ITEM = "5";
+    public static final String TOPADS_SRC = "wishlist";
     WishListView wishListView;
 
     List<RecyclerViewItem> data = new ArrayList<>();
@@ -91,7 +99,7 @@ public class WishListImpl implements WishList {
     RequestParams params = RequestParams.create();
 
     RemoveWishListUseCase removeWishListUseCase;
-
+    UserSession userSession;
     Context context;
 
     public WishListImpl(Context context, WishListView wishListView) {
@@ -104,7 +112,7 @@ public class WishListImpl implements WishList {
         mojitoAuthService = new MojitoAuthService();
         removeWishListUseCase = new RemoveWishListUseCase(context);
         this.context = context;
-
+        userSession = new UserSession(context);
     }
 
     private com.tokopedia.core.base.common.service.MojitoService initNewMojitoService() {
@@ -247,7 +255,7 @@ public class WishListImpl implements WishList {
         variables.put(QUERY, params.getString(QUERY, ""));
         variables.put(PAGE_NO, params.getInt(PAGE_NO, 0));
         variables.put(ITEM_COUNT, 10);
-        variables.put("params", "page=1&item=5&device=android&ep=product&user_id=7977957&src=wishlist");
+        variables.put(TopAdsParams.KEY_PARAMS, UrlParamHelper.generateUrlParamString(getTopAdsParameterMap()));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_search_wishlist),
@@ -271,6 +279,18 @@ public class WishListImpl implements WishList {
 
     }
 
+    @NonNull
+    private Map<String, String> getTopAdsParameterMap() {
+        Map<String, String> adsParam = new HashMap<>();
+        adsParam.put(TopAdsParams.KEY_PAGE, String.valueOf(mPaging.getPage()));
+        adsParam.put(TopAdsParams.KEY_ITEM, TOPADS_ITEM);
+        adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
+        adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
+        adsParam.put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+        adsParam.put(TopAdsParams.KEY_SRC, TOPADS_SRC);
+        return adsParam;
+    }
+
 
     private void getWishListData(Context context, Subscriber subscriber) {
 
@@ -278,7 +298,7 @@ public class WishListImpl implements WishList {
 
         variables.put(PAGE_NO, mPaging.getPage());
         variables.put(ITEM_COUNT, 10);
-        variables.put("params", "page=1&item=5&device=android&ep=product&user_id=7977957&src=wishlist");
+        variables.put(TopAdsParams.KEY_PARAMS, UrlParamHelper.generateUrlParamString(getTopAdsParameterMap()));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
@@ -557,7 +577,9 @@ public class WishListImpl implements WishList {
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(product);
         }
-        products.add(4, new TopAdsWishlistItem(adsModel));
+        if (products.size() == TOPADS_INDEX) {
+            products.add(TOPADS_INDEX, new TopAdsWishlistItem(adsModel));
+        }
         return products;
     }
 
