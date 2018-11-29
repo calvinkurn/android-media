@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -105,9 +106,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void initView(View view) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
+    }
 
+    @Override
+    public void initView(View view) {
         pbLoading = view.findViewById(R.id.pb_loading);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         llContent = view.findViewById(R.id.ll_content);
