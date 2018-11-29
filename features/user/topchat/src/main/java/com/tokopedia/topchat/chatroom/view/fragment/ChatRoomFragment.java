@@ -1690,10 +1690,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 } else if(itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
                     Intent intent = new Intent(getContext(), ChatRoomSettingsActivity.class);
                     intent.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID));
-                    intent.putExtra("ChatResponseModel", chatSettingsResponse);
-                    intent.putExtra("isChatEnabled", isChatEnabled);
-                    intent.putExtra("chatRole", role);
-                    intent.putExtra("senderName", senderName);
+                    intent.putExtra(InboxChatConstant.CHATRESPONSEMODEL, chatSettingsResponse);
+                    intent.putExtra(InboxChatConstant.CHAT_ENABLED, isChatEnabled);
+                    intent.putExtra(InboxChatConstant.CHAT_ROLE, role);
+                    intent.putExtra(InboxChatConstant.SENDER_NAME, senderName);
                     chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
                     startActivityForResult(intent, REQUEST_CODE_CHAT_SETTINGS);
                 }

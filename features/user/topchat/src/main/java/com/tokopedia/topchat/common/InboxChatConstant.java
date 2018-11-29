@@ -17,4 +17,8 @@ public interface InboxChatConstant {
     String ADMIN_TAG = "Administrator";
     String OFFICIAL_TAG = "Official";
     String SELLER_TAG = "Penjual";
+    String CHATRESPONSEMODEL = "ChatResponseModel";
+    String CHAT_ROLE = "chatRole";
+    String SENDER_NAME = "senderName";
+    String CHAT_ENABLED = "isChatEnabled";
 }
