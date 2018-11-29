@@ -79,7 +79,10 @@ public class AccountConstants {
         public static final String SCREEN_NAME_ACCOUNT = "/account";
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
-        public static final String CLICK_KYC_SETTING = "click on dokument data diri";
+        public static final String CLICK_KYC_SETTING = "click on dokumen data diri";
+        public static final String CLICK_KYC_EXPIRED = "click on verifikasi ulang";
+        public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
+        public static final String CLICK_KYC_PENDING = "click on lihat status";
         public static final String EVENT_SALDO_OVO = "clickSaldo";
     }
 
