@@ -32,4 +32,6 @@ interface TopAdsDashboardRouter {
     fun eventTopAdsProductStatisticBar(label: String)
     fun eventTopAdsShopStatisticBar(label: String)
     fun eventOpenTopadsPushNotification(label: String)
+
+    fun openTopAdsDashboardApplink(context: Context)
 }

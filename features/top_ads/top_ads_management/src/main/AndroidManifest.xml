@@ -85,10 +85,6 @@
             android:label="@string/title_activity_top_ads_list"
             android:theme="@style/Theme.Tokopedia3" />
         <activity
-            android:name=".keyword.view.activity.TopAdsOldKeywordListActivity"
-            android:label="@string/title_top_ads_keyword"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".keyword.view.activity.TopAdsKeywordCurrentListActivity"
             android:label="@string/title_top_ads_keyword"
             android:screenOrientation="portrait"
@@ -132,12 +128,6 @@
             android:name=".keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity"
             android:label="@string/top_ads_keyword_title_keyword_edit_keyword"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".keyword.view.activity.TopAdsKeywordOldNewChooseGroupActivity"
-            android:exported="true"
-            android:label="@string/top_ads_title_keyword_add_keyword"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
             android:exported="true"

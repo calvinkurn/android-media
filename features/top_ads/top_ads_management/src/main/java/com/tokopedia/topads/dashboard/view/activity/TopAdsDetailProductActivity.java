@@ -19,6 +19,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
@@ -51,9 +52,8 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
                             .putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, true)
                             .putExtras(extras);
                 } else {
-                    // TODO USE ROUTER
-                    return null /*TopAdsDashboardActivity.getCallingIntent(context)
-                            .putExtras(extras)*/;
+                    return ((TopAdsManagementRouter)context.getApplicationContext()).getTopAdsDashboardIntent(context)
+                            .putExtras(extras);
                 }
             } else {
                 Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -124,9 +124,8 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
             if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
-                // TODO USE ROUTER
-                /*Intent intent = new Intent(this, TopAdsDashboardActivity.class);
-                this.startActivity(intent);*/
+                Intent intent = ((TopAdsManagementRouter)getApplication()).getTopAdsDashboardIntent(this);
+                this.startActivity(intent);
                 this.finish();
             }
         } else {

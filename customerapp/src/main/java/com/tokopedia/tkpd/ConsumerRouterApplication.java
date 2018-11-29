@@ -368,6 +368,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeMode
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
+import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
@@ -500,6 +501,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
         LoginPhoneNumberRouter,
+        TopAdsDashboardRouter,
         NpsRouter {
 
     private static final String EXTRA = "extra";
@@ -3239,5 +3241,98 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
         SimpleAppRatingDialog.show(activity);
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsDetailShopIntent(@NonNull Context context) {
+        return new Intent();
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsKeywordListIntent(@NonNull Context context) {
+        return new Intent();
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
+        return new Intent();
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsProductAdListIntent(@NonNull Context context) {
+        return new Intent();
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsGroupAdListIntent(@NonNull Context context) {
+        return new Intent();
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsGroupNewPromoIntent(@NonNull Context context) {
+        return new Intent();
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsKeywordNewChooseGroupIntent(@NonNull Context context, boolean isPositive, String groupId) {
+        return new Intent();
+    }
+
+    @Override
+    public void eventTopAdsProductClickKeywordDashboard() {}
+
+    @Override
+    public void eventTopAdsProductClickProductDashboard() {}
+
+    @Override
+    public void eventTopAdsProductClickGroupDashboard() {}
+
+    @Override
+    public void eventTopAdsProductAddBalance() {
+        UnifyTracking.eventTopAdsProductAddBalance();
+    }
+
+    @Override
+    public void eventTopAdsShopChooseDateCustom() {
+        UnifyTracking.eventTopAdsShopChooseDateCustom();
+    }
+
+    @Override
+    public void eventTopAdsShopDatePeriod(@NonNull String label) {
+        UnifyTracking.eventTopAdsShopDatePeriod(label);
+    }
+
+    @Override
+    public void eventTopAdsProductStatisticBar(@NonNull String label) {
+        UnifyTracking.eventTopAdsProductStatisticBar(label);
+    }
+
+    @Override
+    public void eventTopAdsShopStatisticBar(@NonNull String label) {
+        UnifyTracking.eventTopAdsShopStatisticBar(label);
+    }
+
+    @Override
+    public void eventOpenTopadsPushNotification(@NonNull String label) {
+        UnifyTracking.eventOpenTopadsPushNotification(label);
+    }
+
+    @Override
+    public void openTopAdsDashboardApplink(@NonNull Context context) {
+        Intent topadsIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(CustomerAppConstants.TOP_SELLER_APPLICATION_PACKAGE);
+
+        if (topadsIntent != null) {
+            goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD);
+        } else {
+            goToCreateMerchantRedirect(context);
+        }
     }
 }

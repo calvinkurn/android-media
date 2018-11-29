@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.ScrollView
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -174,7 +175,12 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         initStatisticComponent()
         initEmptyStateView()
         button_topads_add_promo.button.setOnClickListener {
-            activity?.let { startActivityForResult(router?.getTopAdsAddingPromoOptionIntent(it), REQUEST_CODE_AD_OPTION) }}
+            activity?.let {
+                if (GlobalConfig.isSellerApp()) {
+                    startActivityForResult(router?.getTopAdsAddingPromoOptionIntent(it), REQUEST_CODE_AD_OPTION)
+                } else {
+                    router?.openTopAdsDashboardApplink(it)
+                }}}
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
         setHasOptionsMenu(true)
@@ -276,40 +282,57 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun onStoreClicked() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP)
         activity?.let {
-            val intent = router?.getTopAdsDetailShopIntent(it)?.apply {
-                putExtra(TopAdsDashboardConstant.EXTRA_IS_ENOUGH_DEPOSIT, true)
+            if (GlobalConfig.isSellerApp()){
+                val intent = router?.getTopAdsDetailShopIntent(it)?.apply {
+                    putExtra(TopAdsDashboardConstant.EXTRA_IS_ENOUGH_DEPOSIT, true)
+                }
+                startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
+            } else {
+                router?.openTopAdsDashboardApplink(it)
             }
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
         }
     }
 
     private fun onSummaryKeywordClicked() {
         tracker?.eventTopAdsProductClickKeywordDashboard()
         activity?.let {
-            val intent = router?.getTopAdsKeywordListIntent(it)?.apply {
-                if (totalGroupAd >= 0) {
-                    putExtra(TopAdsDashboardConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd)
+            if (GlobalConfig.isSellerApp()) {
+                val intent = router?.getTopAdsKeywordListIntent(it)?.apply {
+                    if (totalGroupAd >= 0) {
+                        putExtra(TopAdsDashboardConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd)
+                    }
                 }
+                startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
+            } else {
+                router?.openTopAdsDashboardApplink(it)
             }
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
         }
 
     }
 
     private fun onSummaryProductClicked() {
         tracker?.eventTopAdsProductClickProductDashboard()
-        activity?.let { startActivityForResult(router?.getTopAdsProductAdListIntent(it), REQUEST_CODE_AD_STATUS) }
+        activity?.let {
+            if (GlobalConfig.isSellerApp()) {
+                startActivityForResult(router?.getTopAdsProductAdListIntent(it), REQUEST_CODE_AD_STATUS)
+            } else {
+                router?.openTopAdsDashboardApplink(it)
+            }}
     }
 
     private fun onSummaryGroupClicked() {
         tracker?.eventTopAdsProductClickGroupDashboard()
         activity?.let {
-            val intent = router?.getTopAdsGroupAdListIntent(it)?.apply {
-                if (totalProductAd >= 0) {
-                    putExtra(TopAdsDashboardConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd)
+            if (GlobalConfig.isSellerApp()) {
+                val intent = router?.getTopAdsGroupAdListIntent(it)?.apply {
+                    if (totalProductAd >= 0) {
+                        putExtra(TopAdsDashboardConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd)
+                    }
                 }
+                startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
+            } else {
+                router?.openTopAdsDashboardApplink(it)
             }
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
         }
     }
 
@@ -439,14 +462,22 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
 
     private fun gotoCreateProductAd() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_DASHBOARD_PRODUCT)
-        activity?.let { startActivityForResult(router?.getTopAdsGroupNewPromoIntent(it), REQUEST_CODE_ADD_PRODUCT) }
+        activity?.let {
+            if (GlobalConfig.isSellerApp()) {
+                startActivityForResult(router?.getTopAdsGroupNewPromoIntent(it), REQUEST_CODE_ADD_PRODUCT)
+            } else {
+                router?.openTopAdsDashboardApplink(it)
+            }}
     }
 
     private fun gotoCreateKeyword() {
         topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE)
         if (activity == null || router == null) return
-        startActivityForResult(router!!.getTopAdsKeywordNewChooseGroupIntent(activity!!, true, null),
+        if (GlobalConfig.isSellerApp())
+            startActivityForResult(router!!.getTopAdsKeywordNewChooseGroupIntent(activity!!, true, null),
                 REQUEST_CODE_ADD_KEYWORD)
+        else
+            router!!.openTopAdsDashboardApplink(activity!!)
     }
 
     private fun handlingResultDateSelection(data: Intent) {

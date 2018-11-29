@@ -16,6 +16,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -163,9 +164,9 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
                 public void onClick(View view) {
                     bottomSheetView.dismiss();
 
-                    // TODO ROUTER
-                    /*Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
-                    TopAdsDetailGroupFragment.this.startActivity(intent);*/
+                    Intent intent = ((TopAdsManagementRouter)getActivity().getApplication())
+                            .getTopAdsAddCreditIntent(getActivity());
+                    TopAdsDetailGroupFragment.this.startActivity(intent);
 
                     isDismissToTopUp = true;
                 }

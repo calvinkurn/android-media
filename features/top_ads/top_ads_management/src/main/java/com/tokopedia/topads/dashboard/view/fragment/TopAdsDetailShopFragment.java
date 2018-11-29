@@ -15,6 +15,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
@@ -77,9 +78,10 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
                         @Override
                         public void onClick(View view) {
                             bottomSheetView.dismiss();
-                            // TODO ROUTER
-                            /*Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
-                            TopAdsDetailShopFragment.this.startActivity(intent);*/
+
+                            Intent intent = ((TopAdsManagementRouter)getActivity().getApplication())
+                                    .getTopAdsAddCreditIntent(getActivity());
+                            TopAdsDetailShopFragment.this.startActivity(intent);
                         }
                     });
 
