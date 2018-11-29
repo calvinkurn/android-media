@@ -771,7 +771,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void openImagePreview(Context context, ArrayList<String> images,
                                  int position) {
-        ImageReviewGalleryActivity.moveTo(context, images, position);
+        ImageReviewGalleryActivity.Companion.moveTo(context, images, position);
     }
 
     @Override

@@ -92,7 +92,7 @@ class ImageReviewGalleryActivity : BaseSimpleActivity() {
             }
         }
 
-        fun moveTo(context: Context?, imageUrlList: ArrayList<String>, defaultPosition: Int) {
+        fun moveTo(context: Context?, imageUrlList: ArrayList<String>, defaultPosition: Int?) {
             if (context != null) {
                 val intent = Intent(context, ImageReviewGalleryActivity::class.java)
                 intent.putStringArrayListExtra(EXTRA_IMAGE_URL_LIST, imageUrlList)

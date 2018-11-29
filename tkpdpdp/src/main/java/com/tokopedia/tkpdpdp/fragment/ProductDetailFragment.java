@@ -2646,12 +2646,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         for (ReviewImageAttachment reviewImageAttachment : data) {
             imageUrlList.add(reviewImageAttachment.getUriLarge());
         }
-        ImageReviewGalleryActivity.moveTo(getActivity(), imageUrlList, position);
+        ImageReviewGalleryActivity.Companion.moveTo(getActivity(), imageUrlList, position);
     }
 
     public void routeToReviewGallery(){
         if (getActivity() != null) {
-            ImageReviewGalleryActivity.moveTo(getActivity(),
+            ImageReviewGalleryActivity.Companion.moveTo(getActivity(),
                     productData.getInfo().getProductId());
         }
     }
