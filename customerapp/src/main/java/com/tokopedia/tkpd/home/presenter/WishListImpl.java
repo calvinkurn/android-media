@@ -557,7 +557,7 @@ public class WishListImpl implements WishList {
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(product);
         }
-        products.add(5, new TopAdsWishlistItem(adsModel));
+        products.add(4, new TopAdsWishlistItem(adsModel));
         return products;
     }
 
