@@ -62,6 +62,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -118,8 +119,6 @@ import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.GmSubscribeModuleRouter;
-import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipActivity;
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -361,13 +360,13 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToMerchantRedirect(Context context) {
-        Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
+        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goToGmSubscribeMembershipRedirect(Context context) {
-        Intent intent = GmMembershipActivity.createIntent(context);
+        Intent intent = GMSubscribeInternalRouter.getGMMembershipIntent(context);
         context.startActivity(intent);
     }
 
