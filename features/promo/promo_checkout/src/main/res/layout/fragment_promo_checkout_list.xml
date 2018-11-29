@@ -62,8 +62,10 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:background="@drawable/green_button_rounded"
-                        android:paddingTop="@dimen/dp_7"
-                        android:paddingBottom="@dimen/dp_7"
+                        android:paddingTop="@dimen/dp_8"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_16"
                         android:text="@string/promo_label_button_use" />
 
                 </RelativeLayout>
@@ -95,7 +97,9 @@
 
             <TextView
                 style="@style/TextView.Micro.BlackSecondary"
-                android:padding="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
                 android:text="@string/promo_label_my_coupon" />
 
         </LinearLayout>

@@ -12,8 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_4"
         app:cardCornerRadius="@dimen/dp_4"
-        app:cardElevation="@dimen/dp_3"
-        android:visibility="gone">
+        app:cardElevation="@dimen/dp_3">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -31,6 +30,7 @@
                 android:drawableStart="@drawable/ic_kupon"
                 android:gravity="center"
                 android:text="@string/use_promo_code_or_coupon"
+                android:textStyle="bold"
                 android:textColor="@color/tkpd_main_green"
                 app:drawableLeftCompat="@drawable/ic_kupon"
                 tools:text="Gunakan Kode Promo atau Kupon" />
@@ -59,7 +59,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_centerVertical="true"
                 android:background="@drawable/half_circle_green"
-                android:paddingRight="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_6"
                 android:paddingTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_10"
                 android:src="@drawable/ic_check_black" />

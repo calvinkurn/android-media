@@ -90,6 +90,11 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
                 view?.textMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
             }
+            if(TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage) && TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsageLabel)){
+                view?.containerMinTrans?.visibility = View.GONE
+            }else{
+                view?.containerMinTrans?.visibility = View.VISIBLE
+            }
             textTitlePromo.text = it.title
             if ((it.usage?.activeCountDown ?: 0 > 0 &&
                             it.usage?.activeCountDown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {

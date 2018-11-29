@@ -23,6 +23,11 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
             view?.textMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.text = element?.minimumUsage
         }
+        if(TextUtils.isEmpty(element?.minimumUsage) && TextUtils.isEmpty(element?.minimumUsageLabel)){
+            view?.containerMinTrans?.visibility = View.GONE
+        }else{
+            view?.containerMinTrans?.visibility = View.VISIBLE
+        }
         if ((element?.usage?.activeCountdown ?: 0 > 0 &&
                         element?.usage?.activeCountdown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
             view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener{

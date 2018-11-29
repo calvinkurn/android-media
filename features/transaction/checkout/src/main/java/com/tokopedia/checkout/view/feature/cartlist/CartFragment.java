@@ -562,7 +562,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartPromoTrackingImpression(PromoData promoData, int position) {
-        trackingPromoCheckoutUtil.cartImpressionTicker(promoData.getPromoCode());
+        trackingPromoCheckoutUtil.cartImpressionTicker(promoData.getPromoCodeSafe());
     }
 
     @Override
@@ -627,7 +627,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onClickDetailPromo(PromoData data, int position) {
-        trackingPromoCheckoutUtil.cartClickTicker(data.getPromoCode());
+        trackingPromoCheckoutUtil.cartClickTicker(data.getPromoCodeSafe());
         dPresenter.processUpdateCartDataPromo(getSelectedCartDataList(), data, GO_TO_DETAIL);
     }
 
@@ -1209,10 +1209,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void goToDetail(PromoData promoData) {
         if(promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCode(),
+            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCodeSafe(),
                     cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }else{
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoData.getPromoCode(),
+            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoData.getPromoCodeSafe(),
                     cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }

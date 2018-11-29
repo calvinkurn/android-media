@@ -47,11 +47,15 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/containerMinTrans"
         android:layout_gravity="center"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="@dimen/dp_16">
+        android:paddingBottom="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16">
 
         <ImageView
             android:id="@+id/imageMinTrans"
