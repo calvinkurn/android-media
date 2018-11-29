@@ -19,7 +19,7 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_TNC) private val gqlRawString
         setTypeClass(FlashSaleTncGQL::class.java)
         setGraphqlQuery(gqlRawString)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).apply {
-            setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+            setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
             setSessionIncluded(true)
         }.build())
     }

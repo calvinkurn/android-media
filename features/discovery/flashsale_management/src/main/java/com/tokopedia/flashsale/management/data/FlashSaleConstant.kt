@@ -10,15 +10,15 @@ object FlashSaleConstant {
     const val KEY_STATUS_ACTIVE = "aktif"
     const val KEY_STATUS_ENDED = "berakhir"
 
-    const val KEY_STATUS_IN_REVIEW_EN = "inreview"
-    const val KEY_STATUS_READY_EN = "ready"
-    const val KEY_STATUS_ON_GOING_EN = "ongoing"
-    const val KEY_STATUS_FINISHED_EN = "finished"
-    const val KEY_STATUS_REVIEW_CANCELLED_EN = "reviewcancelled"
-    const val KEY_STATUS_READY_CANCELLED_EN = "readycancelled"
-    const val KEY_STATUS_ONGOING_CANCELLED_EN = "ongoingcancelled"
-    const val KEY_STATUS_READY_LOCKED_EN = "readylocked"
-    const val KEY_STATUS_READY_LOCKED_CANCELLED_EN = "readylockcancelled"
+    const val KEY_STATUS_IN_REVIEW_EN = 5
+    const val KEY_STATUS_READY_EN = 6
+    const val KEY_STATUS_ON_GOING_EN = 7
+    const val KEY_STATUS_FINISHED_EN = 8
+    const val KEY_STATUS_REVIEW_CANCELLED_EN = 11
+    const val KEY_STATUS_READY_CANCELLED_EN = 12
+    const val KEY_STATUS_ONGOING_CANCELLED_EN = 13
+    const val KEY_STATUS_READY_LOCKED_EN = 14
+    const val KEY_STATUS_READY_LOCKED_CANCELLED_EN = 15
 
     const val PARAM_ALL = "all"
     const val PARAM_OFFSET = "offset"

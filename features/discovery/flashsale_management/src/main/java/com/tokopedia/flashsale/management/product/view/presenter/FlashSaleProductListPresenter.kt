@@ -51,7 +51,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
     }
 
     fun getPostProductList(campaignId: Int, campaignSlug: String, start: Int, rows: Int, q: String,
-                           statusName:String,
+                           statusId:Int,
                            onSuccess: (GetMojitoPostProduct) -> Unit, onError: (Throwable) -> Unit) {
         getProductListJob.cancel()
         getProductListJob = Job()
@@ -62,7 +62,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
         }
         GlobalScope.launch(Dispatchers.Main + getProductListJob + handler) {
             val shopId = userSession.shopId.toInt()
-            getPostFlashSaleProductUseCase.setParams(campaignId, start, rows, q, shopId.toString(), statusName)
+            getPostFlashSaleProductUseCase.setParams(campaignId, start, rows, q, shopId.toString(), statusId)
             val flashSaleProductJob = GlobalScope.async(Dispatchers.Default + handler) {
                 getPostFlashSaleProductUseCase.executeOnBackground()
             }

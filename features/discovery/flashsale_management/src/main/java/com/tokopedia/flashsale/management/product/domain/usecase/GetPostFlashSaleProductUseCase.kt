@@ -27,16 +27,15 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_POST_PRODUCT_LIST) private va
     }
 
     fun setParams(campaignId: Int, start: Int, rows: Int, query: String, shopId: String,
-                  statusName: String) {
+                  statusId: Int) {
         val map = mutableMapOf<String, Any?>(FlashSaleConstant.PARAM_CID to campaignId,
                 FlashSaleConstant.PARAM_SOURCE to SOURCE_SELLERDASHBOARD,
                 FlashSaleConstant.PARAM_START to start,
                 FlashSaleConstant.PARAM_ROWS to rows,
                 FlashSaleConstant.PARAM_SHOP_ID to shopId,
                 FlashSaleConstant.PARAM_SS to FlashSaleConstant.SYSTEM_STATUS_ACCEPTED)
-        if (statusName.isNotEmpty()) {
-            val statusNameTrim = statusName.replace(" ", "").toLowerCase()
-            val massAdminStatus = when (statusNameTrim) {
+        if (statusId > 0) {
+            val massAdminStatus = when (statusId) {
                 FlashSaleConstant.KEY_STATUS_READY_CANCELLED_EN ->
                     ADMIN_STATUS_NAKAMA_ACCEPTED.toString() // 1
                 FlashSaleConstant.KEY_STATUS_ON_GOING_EN,
