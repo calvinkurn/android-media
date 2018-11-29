@@ -790,8 +790,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public boolean hasAppliedPromoCode() {
         for (Object itemAdapter : shipmentDataList) {
             if (itemAdapter instanceof PromoData) {
-                return ((PromoData) itemAdapter).getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER() ||
-                        ((PromoData) itemAdapter).getTypePromo() == PromoData.CREATOR.getTYPE_COUPON();
+                return ((PromoData) itemAdapter).getState() != TickerCheckoutView.State.EMPTY;
             }
         }
         return false;

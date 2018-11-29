@@ -243,6 +243,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
+        rvShipment.addItemDecoration(new CartItemDecoration());
 
         tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,9 +317,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.clearData();
         rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvShipment.setAdapter(shipmentAdapter);
-        if (isInitialRender) {
-            rvShipment.addItemDecoration(new CartItemDecoration());
-        }
         shipmentAdapter.addPromoVoucherData(promoData);
         if (promoData != null) {
             cartPromoSuggestion.setVisible(false);
@@ -792,6 +790,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
+        if(shipmentAdapter.hasAppliedPromoCode()) {
+            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
+        }
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
         shipmentAdapter.updateSelectedAddress(selectedAddress);
         courierBottomsheet = null;

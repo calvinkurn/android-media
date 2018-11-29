@@ -752,6 +752,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
         param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG, CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
         param.put(CheckPromoCodeCartListUseCase.PARAM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_SUGGESTED, CheckPromoCodeCartListUseCase.PARAM_VALUE_SUGGESTED);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
