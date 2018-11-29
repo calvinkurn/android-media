@@ -184,7 +184,7 @@ public class CartListPresenter implements ICartListPresenter {
                         adsParam.putString(TopAdsParams.KEY_USER_ID, "3589675");
                         adsParam.putString(TopAdsParams.KEY_SRC, "cart");
 
-                        return Observable.zip(Observable.just(cartListData), topAdsUseCase.createObservable(requestParams), new Func2<CartListData, TopAdsModel, CartListData>() {
+                        return Observable.zip(Observable.just(cartListData), topAdsUseCase.createObservable(adsParam), new Func2<CartListData, TopAdsModel, CartListData>() {
                             @Override
                             public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
                                 return cartListData;
