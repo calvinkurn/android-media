@@ -248,10 +248,10 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }
 
-    public static void sendMoEngageOpenFeedEvent(int feedSize) {
+    public static void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FEED_EMPTY, feedSize == 0);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FEED_EMPTY, isEmptyFeed);
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_FEED);
     }
 
@@ -650,10 +650,6 @@ public class TrackingUtils extends TrackingConfig {
 
     public static String getAdsId() {
         return getAFEngine().getAdsIdDirect();
-    }
-
-    public static Trace startTrace(String traceName) {
-        return getFPMEngine(traceName).startTrace();
     }
 
     public static void eventClickHotlistProductFeatured(Hotlist hotlist) {

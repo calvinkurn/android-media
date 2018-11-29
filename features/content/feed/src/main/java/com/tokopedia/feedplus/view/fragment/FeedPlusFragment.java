@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
@@ -117,6 +118,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+    private static final String FEED_TRACE = "feed_trace";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -131,6 +133,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
+    private PerformanceMonitoring performanceMonitoring;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private String firstCursor = "";
     private int loginIdInt;
@@ -170,7 +173,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (getActivity() != null) GraphqlClient.init(getActivity());
-        ((FeedModuleRouter) getActivity().getApplicationContext()).startTrace("feed_trace");
+        performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE);
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
             firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
@@ -825,7 +828,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 && getActivity() != null && presenter != null) {
             if (!isLoadedOnce) {
                 presenter.fetchFirstPage();
-                ((FeedModuleRouter) getActivity().getApplicationContext()).stopTrace("feed_trace");
+                performanceMonitoring.stopTrace();
 
                 presenter.checkNewFeed(firstCursor);
 
@@ -1362,6 +1365,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         analytics.eventTrackingEnhancedEcommerce(
                 FeedEnhancedTracking.getClickTracking(list, loginIdInt));
+    }
+
+    @Override
+    public void sendMoEngageOpenFeedEvent() {
+        feedModuleRouter.sendMoEngageOpenFeedEvent(hasFeed());
     }
 
     @Override

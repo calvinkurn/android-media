@@ -193,8 +193,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (getContext() != null) {
             hideLoading();
             String error = ErrorHandler.getErrorMessage(getContext(), errorMessage);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
-                    ());
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
 
@@ -204,8 +203,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             hideLoading();
             String error = String.format("%s (%s)", getContext().getString(R.string
                     .default_request_error_unknown), errorCode);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
-                    ());
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
 
@@ -263,7 +261,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteManager.route(getContext(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
         };
     }

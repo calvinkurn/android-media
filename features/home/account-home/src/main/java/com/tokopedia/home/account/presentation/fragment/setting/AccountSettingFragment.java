@@ -183,7 +183,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     startActivity(router.getManageAddressIntent(getActivity()));
                     break;
                 case SettingConstant.SETTING_ACCOUNT_KYC_ID:
-                    goToKyc();
+                    onKycMenuClicked();
                     break;
                 default:
                     break;
@@ -205,6 +205,16 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     ((AccountHomeRouter) getActivity().getApplicationContext())
                             .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
 
+        }
+    }
+
+
+    private void onKycMenuClicked() {
+        if (userSession.hasShop()) {
+            goToKyc();
+        } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
+                    getIntentCreateShop(getContext()));
         }
     }
 

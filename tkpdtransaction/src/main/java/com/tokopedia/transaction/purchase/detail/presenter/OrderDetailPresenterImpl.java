@@ -423,7 +423,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showSnackbar(e.getMessage());
+                mainView.showSnackbarWithCloseButton(e.getMessage());
             }
 
             @Override
