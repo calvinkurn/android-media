@@ -125,8 +125,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
 
-    private void setExistingLocationState(boolean b) {
-        isUseExistingLocation = b;
+    private void setExistingLocationState(boolean state) {
+        isUseExistingLocation = state;
     }
 
     private void checkLocationSettings() {
