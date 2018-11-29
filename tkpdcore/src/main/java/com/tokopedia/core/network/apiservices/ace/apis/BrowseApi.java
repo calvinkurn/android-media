@@ -29,7 +29,7 @@ import rx.Observable;
 public interface BrowseApi {
 
     String DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android";
-    String DEFAULT_VALUE_OF_PARAMETER_ROWS = "12";
+    String DEFAULT_VALUE_OF_PARAMETER_ROWS = "8";
     String DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE = "200";
     String DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE = "true";
     String DEFAULT_VALUE_OF_PARAMETER_SORT = "23";
