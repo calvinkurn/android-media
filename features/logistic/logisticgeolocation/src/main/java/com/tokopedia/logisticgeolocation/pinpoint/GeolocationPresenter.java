@@ -32,19 +32,17 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
-import com.tokopedia.logisticgeolocation.util.LocationCache;
 import com.tokopedia.logisticgeolocation.R;
 import com.tokopedia.logisticgeolocation.data.RetrofitInteractor;
 import com.tokopedia.logisticgeolocation.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticgeolocation.di.ActivityContext;
 import com.tokopedia.logisticgeolocation.di.GeolocationScope;
+import com.tokopedia.logisticgeolocation.util.LocationCache;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
-
-import com.tokopedia.logisticgeolocation.domain.LocationPassMapper;
 
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.
@@ -352,9 +350,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         final String placeID = item.getPlaceId();
         final CharSequence primaryText = item.getMainText();
 
-        Log.d(TAG, "AutoComplete item selected: " + primaryText);
-
-        //TODO summon service di sini
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("placeid", placeID);
         retrofitInteractor.generateLatLng(
