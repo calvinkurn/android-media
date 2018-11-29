@@ -244,7 +244,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         containerLayout.setLayoutParams(
                 layoutParams
         );
-        if (selectedDeals.size() == 0) {
+        if (selectedDeals.size() == 0 && checkoutHolderView.getVoucherCode().length() == 0) {
             containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             targetHeight = containerLayout.getMeasuredHeight();
             containerLayout.getLayoutParams().height = currentHeight;
@@ -310,7 +310,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_10), 0 , 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(R.dimen.dp_8), 0 , 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );

@@ -68,7 +68,6 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         return userSession.getUserId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
-    @DeepLink({DigitalApplinkConstant.DIGITAL_CART})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return DigitalCartActivity.newInstance(context, extras)

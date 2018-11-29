@@ -11,6 +11,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
@@ -21,7 +22,13 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.applink.DigitalApplinkConstant;
+import com.tokopedia.digital.cart.di.DigitalCartComponentInstance;
 import com.tokopedia.digital.cart.presentation.fragment.CartDigitalFragment;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
+
+import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
@@ -35,6 +42,8 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     public static final int PARAM_NATIVE = 2;
     private DigitalCheckoutPassData passData;
 
+    @Inject
+    DigitalRouter digitalRouter;
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, CartDigitalActivity.class)
@@ -80,7 +89,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
-    @DeepLink({Constants.Applinks.DIGITAL_CART})
+    @DeepLink({DigitalApplinkConstant.DIGITAL_CART})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -114,6 +123,8 @@ public class CartDigitalActivity extends BasePresenterActivity implements
 
     @Override
     protected void initialPresenter() {
+        DigitalCartComponentInstance.getDigitalCartComponent(getApplication())
+                .inject(this);
     }
 
     @Override
@@ -129,9 +140,19 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     @Override
     protected void setViewListener() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof CartDigitalFragment))
+
+        if (digitalRouter.getBooleanRemoteConfig(DigitalRouter.MULTICHECKOUT_CART_REMOTE_CONFIG, true)) {
+            Intent newCartIntent = DigitalCartActivity.newInstance(this, passData);
+            newCartIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(newCartIntent);
+            finish();
+        } else if (!(fragment instanceof CartDigitalFragment)) {
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    CartDigitalFragment.newInstance(passData, getIntent().getIntExtra(EXTRA_PASS_EXTRA_FROM, PARAM_NATIVE))).commit();
+                    CartDigitalFragment.newInstance(
+                            passData,
+                            getIntent().getIntExtra(EXTRA_PASS_EXTRA_FROM, PARAM_NATIVE))
+            ).commit();
+        }
     }
 
     @Override

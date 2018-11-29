@@ -5,7 +5,7 @@ package com.tokopedia.common_digital.common.constant;
  */
 public class DigitalUrl {
 
-    public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String DIGITAL_API_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
 
     public static final String VERSION = "v1.4/";
     public static final String HMAC_KEY = "web_service_v4";
