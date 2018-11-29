@@ -423,7 +423,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                     .header("x-device", "android-" + GlobalConfig.VERSION_NAME)
                     .header("x-tkpd-app-version","android-" + GlobalConfig.VERSION_NAME)
                     .header("x-tkpd-app-name", GlobalConfig.getPackageApplicationName())
-
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
