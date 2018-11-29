@@ -27,12 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:scaleType="fitCenter" />
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -170,35 +165,35 @@
                 </android.support.constraint.ConstraintLayout>
             </LinearLayout>
 
-                <android.support.design.widget.AppBarLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
 
-                    <com.tokopedia.design.component.Tabs
-                        android:id="@+id/tab_layout_info"
+                <com.tokopedia.design.component.Tabs
+                    android:id="@+id/tab_layout_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tabIndicatorColor="@color/tkpd_main_green"
+                    app:tabMode="scrollable"
+                    app:tabSelectedTextColor="@color/tkpd_main_green"
+                    app:tabTextAppearance="@style/TokoPointsTabs"
+                    app:tabTextColor="@color/black_38">
+
+                    <android.support.design.widget.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tabIndicatorColor="@color/tkpd_main_green"
-                        app:tabMode="scrollable"
-                        app:tabSelectedTextColor="@color/tkpd_main_green"
-                        app:tabTextAppearance="@style/TokoPointsTabs"
-                        app:tabTextColor="@color/black_38">
+                        android:text="@string/tp_label_tnc" />
 
-                        <android.support.design.widget.TabItem
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/tp_label_tnc" />
+                    <android.support.design.widget.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tp_label_how_to_use" />
 
-                        <android.support.design.widget.TabItem
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/tp_label_how_to_use" />
-
-                    </com.tokopedia.design.component.Tabs>
-                </android.support.design.widget.AppBarLayout>
+                </com.tokopedia.design.component.Tabs>
+            </android.support.design.widget.AppBarLayout>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager_info"
