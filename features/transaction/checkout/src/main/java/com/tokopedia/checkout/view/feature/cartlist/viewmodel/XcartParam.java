@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartTopAdsModel {
+public class XcartParam {
     @SerializedName("products")
     private List<Products> products;
 
-    public CartTopAdsModel() {
+    public XcartParam() {
         products = new ArrayList<>();
     }
 

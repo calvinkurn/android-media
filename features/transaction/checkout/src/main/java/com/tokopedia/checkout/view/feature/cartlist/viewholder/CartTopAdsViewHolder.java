@@ -9,7 +9,7 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTopAdsModel;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -25,8 +25,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 
@@ -45,7 +43,7 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     }
 
-    public void renderTopAds(UserSession userSession, CartTopAdsModel model) {
+    public void renderTopAds(UserSession userSession, XcartParam model) {
         if (loaded)
             return;
         TopAdsParams params = new TopAdsParams();

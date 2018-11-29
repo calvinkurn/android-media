@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
@@ -26,11 +27,10 @@ import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.topads.sdk.domain.model.TopAdsGqlResponse;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -177,7 +177,7 @@ public class CartListPresenter implements ICartListPresenter {
                     @Override
                     public Observable<CartListData> call(CartListData cartListData) {
                         RequestParams adsParam = RequestParams.create();
-                        adsParam.putString("params", generateTopAdsParam());
+                        adsParam.putString("params", generateTopAdsParam(cartListData));
                         return Observable.zip(Observable.just(cartListData), topAdsUseCase.createObservable(adsParam), new Func2<CartListData, TopAdsModel, CartListData>() {
                             @Override
                             public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
@@ -193,12 +193,24 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    private static String generateTopAdsParam(){
+    private static String generateTopAdsParam(CartListData cartListData) {
+        XcartParam model = new XcartParam();
+        List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
+        for (int i = 0; i < shopGroupDataList.size(); i++) {
+            for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {
+                CartItemData data = shopGroupDataList.get(i).getCartItemDataList().get(j).getCartItemData();
+                XcartParam.Products p = new XcartParam.Products();
+                p.setProductId(Integer.parseInt(data.getOriginData().getProductId()));
+                p.setSourceShopId(Integer.parseInt(data.getOriginData().getShopId()));
+                model.getProducts().add(p);
+            }
+        }
         Map<String, String> adsParam = new HashMap<>();
         adsParam.put(TopAdsParams.KEY_PAGE, "1");
         adsParam.put(TopAdsParams.KEY_ITEM, "5");
         adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
         adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
+        adsParam.put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(model));
         adsParam.put(TopAdsParams.KEY_USER_ID, "3589675");
         adsParam.put(TopAdsParams.KEY_SRC, "cart");
         List<String> paramList = new ArrayList<>();

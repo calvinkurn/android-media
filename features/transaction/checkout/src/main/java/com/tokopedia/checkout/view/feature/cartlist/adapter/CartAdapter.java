@@ -23,7 +23,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorVi
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTopAdsViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTopAdsModel;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
@@ -77,7 +77,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR;
         } else if (cartDataList.get(position) instanceof ShipmentSellerCashbackModel) {
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
-        } else if (cartDataList.get(position) instanceof CartTopAdsModel) {
+        } else if (cartDataList.get(position) instanceof XcartParam) {
             return CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS;
         } else {
             return super.getItemViewType(position);
@@ -139,7 +139,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holderView.bindViewHolder(data);
         } else if (getItemViewType(position) == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
             final CartTopAdsViewHolder holderView = (CartTopAdsViewHolder) holder;
-            final CartTopAdsModel data = (CartTopAdsModel) cartDataList.get(position);
+            final XcartParam data = (XcartParam) cartDataList.get(position);
             holderView.renderTopAds(userSession, data);
         }
     }
@@ -515,12 +515,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void mappingTopAdsModel(List<ShopGroupData> shopGroupDataList) {
-        CartTopAdsModel model = new CartTopAdsModel();
+        XcartParam model = new XcartParam();
         try {
             for (int i = 0; i < shopGroupDataList.size(); i++) {
                 for (int j = 0; j < shopGroupDataList.get(i).getCartItemDataList().size(); j++) {
                     CartItemData data = shopGroupDataList.get(i).getCartItemDataList().get(j).getCartItemData();
-                    CartTopAdsModel.Products p = new CartTopAdsModel.Products();
+                    XcartParam.Products p = new XcartParam.Products();
                     p.setProductId(Integer.parseInt(data.getOriginData().getProductId()));
                     p.setSourceShopId(Integer.parseInt(data.getOriginData().getShopId()));
                     model.getProducts().add(p);
