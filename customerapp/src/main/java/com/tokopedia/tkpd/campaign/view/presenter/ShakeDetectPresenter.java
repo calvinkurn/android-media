@@ -61,7 +61,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
     public static final String SHAKE_SHAKE_ERROR = "Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
 
-    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
+    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 15;
     Subscription subscription = null;
 
     @Inject
@@ -152,6 +152,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                 @Override
                 public void onNext(final CampaignResponseEntity s) {
+                    if(!s.isEnable()) {
+                        CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
+                        return;
+                    }
                     if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
                             s.getUrl() != null && s.getUrl().isEmpty()) {
                         CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
