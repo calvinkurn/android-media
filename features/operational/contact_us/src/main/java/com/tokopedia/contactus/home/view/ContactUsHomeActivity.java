@@ -43,7 +43,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
             if (url != null && url.length() > 0) {
                 return SimpleWebViewWithFilePickerFragment.createInstance(url);
             } else {
-                return SimpleWebViewWithFilePickerFragment.createInstance(ContactUsConstant.CONTACT_US_BASE);
+                return SimpleWebViewWithFilePickerFragment.createInstance(((ContactUsModuleRouter) getApplication()).getContactUsBaseURL());
             }
         } else {
             return ContactUsHomeFragment.newInstance();
