@@ -3,15 +3,14 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -87,8 +86,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         mView.resetRegency();
         mView.hideSubDistrict();
         mView.resetSubDistrict();
-        if (pos != 0) {
-        }
     }
 
     @Override
