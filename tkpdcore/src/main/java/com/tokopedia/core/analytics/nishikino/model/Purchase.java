@@ -39,6 +39,7 @@ public class Purchase {
     private String eventCategory;
     private String eventLabel;
     private String shopType;
+    private String coupon;
 
     public String getItemPrice() {
         return itemPrice;
@@ -194,4 +195,11 @@ public class Purchase {
     }
 
 
+    public String getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(String coupon) {
+        this.coupon = coupon;
+    }
 }
