@@ -676,6 +676,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getState())  == TickerCheckoutView.State.ACTIVE) {
                 shipmentCostModel.setPromoPrice(dataVoucher.getVoucherAmount());
                 shipmentCostModel.setPromoMessage(dataVoucher.getVoucherPromoDesc());
+            }else{
+                shipmentCostModel.setPromoPrice(0);
+                shipmentCostModel.setPromoMessage(null);
             }
             for (int i = 0; i < shipmentDataList.size(); i++) {
                 Object itemAdapter = shipmentDataList.get(i);
