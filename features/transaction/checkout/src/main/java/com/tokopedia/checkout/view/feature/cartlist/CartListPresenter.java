@@ -28,6 +28,10 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.topads.sdk.domain.model.TopAdsGqlResponse;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -57,8 +61,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -92,6 +99,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
+    private final TopAdsGqlUseCase topAdsUseCase;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
@@ -123,6 +131,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
+        this.topAdsUseCase = new TopAdsGqlUseCase(view.getActivity());
     }
 
     @Override
@@ -157,7 +166,32 @@ public class CartListPresenter implements ICartListPresenter {
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
+//        compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .unsubscribeOn(Schedulers.io())
+//                .subscribe(getSubscriberInitialCartListData(initialLoad))
+//        );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
+                .flatMap(new Func1<CartListData, Observable<CartListData>>() {
+                    @Override
+                    public Observable<CartListData> call(CartListData cartListData) {
+                        RequestParams adsParam = RequestParams.create();
+                        adsParam.putString(TopAdsParams.KEY_PAGE, "1");
+                        adsParam.putString(TopAdsParams.KEY_ITEM, "5");
+                        adsParam.putString(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
+                        adsParam.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
+                        adsParam.putString(TopAdsParams.KEY_USER_ID, "3589675");
+                        adsParam.putString(TopAdsParams.KEY_SRC, "cart");
+
+                        return Observable.zip(Observable.just(cartListData), topAdsUseCase.createObservable(requestParams), new Func2<CartListData, TopAdsModel, CartListData>() {
+                            @Override
+                            public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
+                                return cartListData;
+                            }
+                        });
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -946,8 +980,8 @@ public class CartListPresenter implements ICartListPresenter {
         );
         enhancedECommerceProductCartMapData.setDimension38(
                 TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
-                ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                : cartItemData.getOriginData().getTrackerAttribution()
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : cartItemData.getOriginData().getTrackerAttribution()
         );
         enhancedECommerceProductCartMapData.setListName(
                 TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())

@@ -577,7 +577,7 @@ public class WishListImpl implements WishList {
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(product);
         }
-        if (products.size() == TOPADS_INDEX) {
+        if (products.size() >= TOPADS_INDEX) {
             products.add(TOPADS_INDEX, new TopAdsWishlistItem(adsModel));
         }
         return products;
