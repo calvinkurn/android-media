@@ -420,8 +420,6 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FR
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
-//import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
-//import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressActivity;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -1915,10 +1913,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setPrice(price)
                 .setImageUri(imageSource)
                 .build();
-
-//        Intent intent = new Intent(context, AddToCartActivity.class);
-//        intent.putExtra(EXTRA_PRODUCT_CART, pass);
-
 
         Intent intent = new Intent(context, CartActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
