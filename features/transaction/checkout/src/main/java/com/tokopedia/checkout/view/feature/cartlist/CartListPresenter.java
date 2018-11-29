@@ -177,13 +177,7 @@ public class CartListPresenter implements ICartListPresenter {
                     @Override
                     public Observable<CartListData> call(CartListData cartListData) {
                         RequestParams adsParam = RequestParams.create();
-                        adsParam.putString(TopAdsParams.KEY_PAGE, "1");
-                        adsParam.putString(TopAdsParams.KEY_ITEM, "5");
-                        adsParam.putString(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
-                        adsParam.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
-                        adsParam.putString(TopAdsParams.KEY_USER_ID, "3589675");
-                        adsParam.putString(TopAdsParams.KEY_SRC, "cart");
-
+                        adsParam.putString("params", generateTopAdsParam());
                         return Observable.zip(Observable.just(cartListData), topAdsUseCase.createObservable(adsParam), new Func2<CartListData, TopAdsModel, CartListData>() {
                             @Override
                             public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
@@ -197,6 +191,21 @@ public class CartListPresenter implements ICartListPresenter {
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(getSubscriberInitialCartListData(initialLoad))
         );
+    }
+
+    private static String generateTopAdsParam(){
+        Map<String, String> adsParam = new HashMap<>();
+        adsParam.put(TopAdsParams.KEY_PAGE, "1");
+        adsParam.put(TopAdsParams.KEY_ITEM, "5");
+        adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
+        adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
+        adsParam.put(TopAdsParams.KEY_USER_ID, "3589675");
+        adsParam.put(TopAdsParams.KEY_SRC, "cart");
+        List<String> paramList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : adsParam.entrySet()) {
+            paramList.add(entry.getKey() + "=" + entry.getValue().replace(" ", "+"));
+        }
+        return TextUtils.join("&", paramList);
     }
 
     @SuppressWarnings("deprecation")
