@@ -38,8 +38,7 @@ public class CreditCardListRepository implements ICreditCardRepository {
     }
 
     @Override
-    public Observable<CreditCardModel> getCreditCardList(JsonObject requestBody
-    ) {
+    public Observable<CreditCardModel> getCreditCardList(JsonObject requestBody) {
         return service.getApi().getListCreditCard(requestBody).map(
                 new Func1<Response<String>, CreditCardModel>() {
                     @Override
@@ -52,9 +51,7 @@ public class CreditCardListRepository implements ICreditCardRepository {
     }
 
     @Override
-    public Observable<CreditCardSuccessDeleteModel> deleteCreditCard(
-            JsonObject requestBody
-    ) {
+    public Observable<CreditCardSuccessDeleteModel> deleteCreditCard(JsonObject requestBody) {
         return service.getApi().deleteCreditCard(requestBody).map(new Func1<Response<String>,
                 CreditCardSuccessDeleteModel>() {
             @Override
