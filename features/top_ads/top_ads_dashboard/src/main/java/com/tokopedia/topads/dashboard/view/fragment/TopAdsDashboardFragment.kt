@@ -71,6 +71,7 @@ import javax.inject.Inject
  */
 
 class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
+    internal var isShowAutoAddPromo = false
 
     val shopInfoLayout: View?
         get() = view_group_deposit
@@ -179,7 +180,11 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 if (GlobalConfig.isSellerApp()) {
                     startActivityForResult(router?.getTopAdsAddingPromoOptionIntent(it), REQUEST_CODE_AD_OPTION)
                 } else {
-                    router?.openTopAdsDashboardApplink(it)
+                    if (isShowAutoAddPromo){
+                        startActivity(TopAdsWebViewActivity.createIntent(it, TopAdsDashboardConstant.URL_ONECLICKPROMO))
+                    } else {
+                        router?.openTopAdsDashboardApplink(it)
+                    }
                 }}}
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
@@ -594,6 +599,14 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         } else {
             topads_dashboard_empty.visibility = View.VISIBLE
             topads_dashboard_content.visibility = View.GONE
+
+            if (GlobalConfig.isCustomerApp()){
+                isShowAutoAddPromo = true
+                button_topads_add_promo.setText(getString(R.string.label_auto_add_promo))
+            } else {
+                isShowAutoAddPromo = false
+                button_topads_add_promo.setText(getString(R.string.label_add_promo))
+            }
         }
     }
 
