@@ -74,6 +74,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         review = (TextView) itemView.findViewById(R.id.review);
         reviewStar = (RatingBar) itemView.findViewById(R.id.product_rating);
         adapter = ImageUploadAdapter.createAdapter(itemView.getContext());
+        adapter.setReviewImage(true);
         adapter.setCanUpload(false);
         reviewAttachment.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));

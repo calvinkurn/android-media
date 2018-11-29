@@ -186,12 +186,12 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
         customViewQuickFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
-                if(typeFilter.equals(getString(R.string.review_label_all))){
+                if(typeFilter.equals(getString(R.string.review_label_with_photo))){
                     if (getActivity().getApplicationContext() instanceof PdpRouter) {
                         PdpRouter pdpRouter = (PdpRouter) getActivity().getApplicationContext();
                         pdpRouter.eventClickFilterReviewByImage(
                                 getContext(),
-                                getString(R.string.review_label_all),
+                                getString(R.string.review_label_with_photo),
                                 productId
                                 );
                     }
