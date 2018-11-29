@@ -112,7 +112,6 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun getRecyclerView(view: View?): RecyclerView {
         val recyclerView = super.getRecyclerView(view)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val itemAnimator = recyclerView.itemAnimator
         if (itemAnimator is SimpleItemAnimator) {
             itemAnimator.supportsChangeAnimations = false
