@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
+import android.widget.Toast;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.common.CMConstant;
@@ -31,6 +32,15 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                 case CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS:
                     //Notification Dismiss Event
                     NotificationManagerCompat.from(context).cancel(notificationId);
+                    break;
+                case CMConstant.ReceiverAction.ACTION_ON_COPY_COUPON_CODE:
+                    //Notification copy coupon code Event
+                    String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
+                    Toast.makeText(context, "Coupon code copied " + coupon, 300).show();
+                    appLinks = intent.getStringExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK);
+                    appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+                    context.startActivity(appLinkIntent);
+                    NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
                     break;
             }
         }

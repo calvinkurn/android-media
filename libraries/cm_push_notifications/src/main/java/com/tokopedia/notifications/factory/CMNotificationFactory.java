@@ -42,6 +42,8 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.DELETE_NOTIFICATION:
                 cancelNotification(context, baseNotificationModel.getNotificationId());
                 return null;
+            case CMConstant.NotificationType.COUPON_CODE_NOTIFICATION:
+                return (new CouponCodeNotification(context.getApplicationContext(), baseNotificationModel));
         }
         return null;
     }
