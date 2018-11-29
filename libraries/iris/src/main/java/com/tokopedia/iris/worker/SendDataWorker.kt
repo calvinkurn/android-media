@@ -9,7 +9,6 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import retrofit2.Response
-import rx.schedulers.Schedulers
 
 /**
  * @author okasurya on 10/18/18.
@@ -31,7 +30,6 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
             Log.d("Oka Worker", "doWork() Hit Server $request")
 
             val response: Response<String> = trackingRepository.apiService.apiInterface.sendMultiEvent(request)
-                    .subscribeOn(Schedulers.io())
                     .toBlocking()
                     .last()
 
