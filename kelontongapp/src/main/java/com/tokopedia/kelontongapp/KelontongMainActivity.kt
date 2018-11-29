@@ -100,14 +100,10 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
             }
         })
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WebView.setWebContentsDebuggingEnabled(true)
-        }
-
         webView.webChromeClient = webViewChromeClient
         webView.webViewClient = webviewClient
         webView.settings.allowFileAccess = true
-        webView.settings.pluginState = WebSettings.PluginState.ON;
+        webView.settings.pluginState = WebSettings.PluginState.ON
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.settings.mixedContentMode = 0
@@ -130,7 +126,6 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
         val fcmToken = Preference.getFcmToken(this)
         val cookieGcmId = "$GCM_ID=$fcmToken"
-        val cookieGrosir = "grosir=true"
         val cookieAfId = "$AF_ID=${AppsFlyerLib.getInstance().getAppsFlyerUID(this)}"
 
         val cookieManager: CookieManager = CookieManager.getInstance()
