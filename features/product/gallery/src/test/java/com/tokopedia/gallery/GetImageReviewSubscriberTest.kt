@@ -24,7 +24,7 @@ class GetImageReviewSubscriberTest {
     @Throws(Exception::class)
     fun setUp() {
         galleryView = Mockito.mock(GalleryView::class.java)
-        getImageReviewSubscriber = GetImageReviewSubscriber(galleryView)
+        getImageReviewSubscriber = GetImageReviewSubscriber(galleryView!!)
     }
 
     @Test

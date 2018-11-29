@@ -29,7 +29,7 @@ class ReviewGalleryPresenterTest {
     fun setUp() {
         getImageReviewUseCase = Mockito.mock(GetImageReviewUseCase::class.java)
         galleryView = Mockito.mock(GalleryView::class.java)
-        reviewGalleryPresenter = ReviewGalleryPresenterImpl(getImageReviewUseCase, galleryView)
+        reviewGalleryPresenter = ReviewGalleryPresenterImpl(getImageReviewUseCase!!, galleryView!!)
     }
 
     @Test
