@@ -190,9 +190,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private void checkImageReview(int productId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putInt(GetImageReviewUseCase.KEY_PRODUCT_ID, productId);
-        requestParams.putInt(GetImageReviewUseCase.KEY_PAGE, FIRST_PAGE);
-        requestParams.putInt(GetImageReviewUseCase.KEY_TOTAL, TOTAL_IMAGE_FOR_PDP);
+        requestParams.putInt(GetImageReviewUseCase.Companion.getKEY_PRODUCT_ID(), productId);
+        requestParams.putInt(GetImageReviewUseCase.Companion.getKEY_PAGE(), FIRST_PAGE);
+        requestParams.putInt(GetImageReviewUseCase.Companion.getKEY_TOTAL(), TOTAL_IMAGE_FOR_PDP);
 
         getImageReviewUseCase.execute(requestParams,
                 new ImageReviewSubscriber(viewListener));
