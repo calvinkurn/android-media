@@ -131,11 +131,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             mTimer = null;
         }
 
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = null;
-        }
-
         if (mSubscriptionCatalogTimer != null && !mSubscriptionCatalogTimer.isUnsubscribed()) {
             mSubscriptionCatalogTimer.unsubscribe();
         }
