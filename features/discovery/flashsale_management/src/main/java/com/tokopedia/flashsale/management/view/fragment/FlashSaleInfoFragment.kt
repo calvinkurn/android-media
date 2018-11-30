@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
+import com.tokopedia.flashsale.management.ekstension.gone
+import com.tokopedia.flashsale.management.ekstension.visible
 import com.tokopedia.flashsale.management.tracking.FlashSaleTracking
 import com.tokopedia.flashsale.management.view.activity.CampaignDetailActivity
 import com.tokopedia.flashsale.management.view.adapter.CampaignInfoAdapterTypeFactory
@@ -17,6 +19,7 @@ import com.tokopedia.flashsale.management.view.presenter.CampaignDetailInfoPrese
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoViewModel
 import com.tokopedia.graphql.data.GraphqlClient
+import kotlinx.android.synthetic.main.fragment_flash_sale_info.*
 import javax.inject.Inject
 
 class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInfoAdapterTypeFactory>() {
@@ -69,6 +72,17 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_flash_sale_info, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (::sellerStatus.isInitialized && sellerStatus.tickerMessage.isNotBlank()) {
+            ticker_view.setListMessage(arrayListOf(sellerStatus.tickerMessage))
+            ticker_view.buildView()
+            ticker_view.visible()
+        } else {
+            ticker_view.gone()
+        }
     }
 
     override fun onDestroyView() {
