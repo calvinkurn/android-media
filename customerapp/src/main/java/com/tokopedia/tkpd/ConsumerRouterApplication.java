@@ -1870,9 +1870,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     @Override
                     public TokopointHomeDrawerData call(TokoPointDrawerData tokoPointDrawerData) {
                         UserTier userTier = new UserTier(
+                                tokoPointDrawerData.getUserTier().getTierNameDesc(),
                                 tokoPointDrawerData.getUserTier().getTierImageUrl(),
-                                tokoPointDrawerData.getUserTier().getRewardPointsStr(),
-                                tokoPointDrawerData.getUserTier().getTierNameDesc()
+                                tokoPointDrawerData.getUserTier().getRewardPointsStr()
                         );
 
                         return new TokopointHomeDrawerData(

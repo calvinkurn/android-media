@@ -53,7 +53,8 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private View focusedFaceView;
     private View focusedKtpView;
     private View shutterButton;
-    private ImageButton switchCamera;
+    private View loading;
+    private View switchCamera;
     private ImageView imagePreview;
     private View buttonLayout;
     private View reCaptureButton;
@@ -121,6 +122,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         buttonLayout = view.findViewById(R.id.button_layout);
         reCaptureButton = view.findViewById(R.id.recapture_button);
         nextButton = view.findViewById(R.id.next_button);
+        loading = view.findViewById(R.id.progress_bar);
     }
 
     @Override
@@ -171,7 +173,9 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().setResult(Activity.RESULT_CANCELED);
+                if (getActivity() != null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                }
                 getActivity().finish();
             }
         });
@@ -179,17 +183,18 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isFileSizeQualified(imagePath)) {
-                    Intent intent = new Intent();
-                    intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                } else {
-                    getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
+                if (getActivity() != null) {
+                    if (isFileSizeQualified(imagePath)) {
+                        Intent intent = new Intent();
+                        intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+                    } else {
+                        getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
+                    }
                 }
                 getActivity().finish();
             }
         });
-
         populateViewByViewMode(viewMode);
         showCameraView();
     }
@@ -232,6 +237,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     @NeedsPermission(Manifest.permission.CAMERA)
     public void capturePicture() {
+        hideCameraButtonAndShowLoading();
         cameraView.capturePicture();
     }
 
@@ -284,6 +290,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         shutterButton.setVisibility(View.VISIBLE);
         switchCamera.setVisibility(View.VISIBLE);
         startCamera();
+        loading.setVisibility(View.GONE);
         imagePreview.setVisibility(View.GONE);
         buttonLayout.setVisibility(View.GONE);
     }
@@ -292,9 +299,18 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         cameraView.setVisibility(View.GONE);
         shutterButton.setVisibility(View.GONE);
         switchCamera.setVisibility(View.GONE);
+        loading.setVisibility(View.GONE);
         destroyCamera();
         imagePreview.setVisibility(View.VISIBLE);
         buttonLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCameraButtonAndShowLoading() {
+        shutterButton.setVisibility(View.GONE);
+        switchCamera.setVisibility(View.GONE);
+        imagePreview.setVisibility(View.GONE);
+        buttonLayout.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
     }
 
     private void toggleCamera() {

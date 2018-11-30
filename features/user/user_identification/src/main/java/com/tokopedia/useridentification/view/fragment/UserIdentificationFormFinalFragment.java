@@ -204,7 +204,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                RouteManager.route(getContext(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
 
             @Override
