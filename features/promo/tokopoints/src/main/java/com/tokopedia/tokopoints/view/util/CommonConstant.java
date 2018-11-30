@@ -6,7 +6,7 @@ public interface CommonConstant {
     String PREF_TOKOPOINTS = "pref_tokopoints";
     String PREF_KEY_ON_BOARDED = "pref_key_on_boarded";
     String ARGS_CATEGORY_ID = "category_id";
-    String ARGS_SUB_CATEGORY_ID = "category_id";
+    String ARGS_SUB_CATEGORY_ID = "sub_category_id";
     String ARGS_SLUG_CATEGORY = "slug_category";
     String ARGS_SLUG_SUB_CATEGORY = "slug_sub_category";
     String ARGS_SORT_TYPE = "sort_type";
