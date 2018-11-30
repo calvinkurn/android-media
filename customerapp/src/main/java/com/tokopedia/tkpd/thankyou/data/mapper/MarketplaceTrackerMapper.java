@@ -139,7 +139,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private String getCouponCode(PaymentData paymentDatas) {
         String TAG = MarketplaceTrackerMapper.class.getSimpleName();
-        Log.d(TAG, "Vouchers " + paymentDatas.getVouchers())
+        Log.d(TAG, "Vouchers " + paymentDatas.getVouchers());
 
         if (paymentDatas.getVouchers() != null){
             return paymentDatas.getVouchers().get(1).getVoucherCode();
