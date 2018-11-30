@@ -49,3 +49,4 @@ public class AccountHomeUrl {
     public static String BASE_MOBILE_URL = TkpdBaseURL.MOBILE_DOMAIN;
     public final static String URL_TOKOPEDIA_CORNER = BASE_MOBILE_URL + "tokopedia-corner";
     public final static String APPLINK_TOKOPEDIA_CORNER = String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TOKOPEDIA_CORNER);
+}
