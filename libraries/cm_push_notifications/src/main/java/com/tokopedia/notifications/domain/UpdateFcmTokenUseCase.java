@@ -1,5 +1,6 @@
 package com.tokopedia.notifications.domain;
 
+import com.google.gson.Gson;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
@@ -19,11 +20,11 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
 
     private static final String USER_ID = "userid";
     private static final String SOURCE = "source";
-    private static final String FCM_TOKEN = "fcm_token";
+    private static final String FCM_TOKEN = "token";
     private static final String APP_ID = "appId";
     private static final String SDK_VERSION = "sdkVersion";
     private static final String APP_VERSION = "appVersion";
-    private static final String REQUEST_TIMESTAMP = "requesttimestamp";
+    private static final String REQUEST_TIMESTAMP = "requestTimeStamp";
 
     private static final String SOURCE_ANDROID = "ANDROID";
 
@@ -33,17 +34,18 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
     }
 
     public void createRequestParams(String userId, String token, int sdkVersion, String appId ,int appVersion) {
-        requestParams.putString(USER_ID, userId);
+        if(userId!= null && userId.length()> 0)
+        requestParams.putInt(USER_ID, Integer.parseInt(userId));
        // requestParams.putString("authtoken", accessToken);
         requestParams.putString(SOURCE, SOURCE_ANDROID);
         requestParams.putString(FCM_TOKEN, token);
         requestParams.putString(APP_ID, appId);
        // requestParams.putString("identifier", gAdsId);
-        requestParams.putInt(SDK_VERSION, sdkVersion);
-        requestParams.putInt(APP_VERSION, appVersion);
+        requestParams.putString(SDK_VERSION, String.valueOf(sdkVersion));
+        requestParams.putString(APP_VERSION, String.valueOf(appVersion));
        // requestParams.putString("state", appId);
 
-        requestParams.putString(REQUEST_TIMESTAMP, CMNotificationUtils.getCurrentLocalTimeStamp());
+        requestParams.putLong(REQUEST_TIMESTAMP, CMNotificationUtils.getCurrentLocalTimeStamp());
     }
 
     @Override
@@ -51,7 +53,7 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         RestRequest restRequest1 = new RestRequest.Builder(CMNotificationUrls.CM_TOKEN_UPDATE, String.class)
-                .setBody(requestParams.getParameters())
+                .setBody(new Gson().toJson(requestParams.getParameters()))
                 .setRequestType(RequestType.POST)
                 .build();
         tempRequest.add(restRequest1);

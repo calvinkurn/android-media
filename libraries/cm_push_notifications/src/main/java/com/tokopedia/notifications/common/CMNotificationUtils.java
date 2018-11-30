@@ -89,8 +89,8 @@ public class CMNotificationUtils {
         cacheHandler.saveStringValue(context, CMConstant.GADSID_CACHE_KEY, gAdsId);
     }
 
-    public static String getCurrentLocalTimeStamp() {
-        return String.valueOf(System.currentTimeMillis());
+    public static long getCurrentLocalTimeStamp() {
+        return System.currentTimeMillis();
     }
 
     public static int getSdkVersion() {
