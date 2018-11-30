@@ -1,6 +1,9 @@
 package com.tokopedia.notifications.receiver;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
@@ -30,20 +33,26 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS:
-                    //Notification Dismiss Event
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_COPY_COUPON_CODE:
                     //Notification copy coupon code Event
                     String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
-                    Toast.makeText(context, "Coupon code copied " + coupon, 300).show();
                     appLinks = intent.getStringExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK);
                     appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
                     context.startActivity(appLinkIntent);
+                    copyToClipboard(context, coupon);
                     NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
                     break;
             }
         }
+    }
+
+    private void copyToClipboard(Context context, String contents) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Activity.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Tokopedia", contents);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(context, "Coupon code copied " + contents, Toast.LENGTH_LONG).show();
     }
 
 }
