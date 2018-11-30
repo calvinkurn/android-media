@@ -21,6 +21,7 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.home.explore.di.ExploreComponent;
+import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
