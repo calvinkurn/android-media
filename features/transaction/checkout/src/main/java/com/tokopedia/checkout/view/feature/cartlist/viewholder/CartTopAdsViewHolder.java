@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -40,7 +41,6 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
         super(itemView);
         this.context = itemView.getContext();
         topAdsCarouselView = itemView.findViewById(R.id.topads);
-
     }
 
     public void renderTopAds(TopAdsModel adsModel) {

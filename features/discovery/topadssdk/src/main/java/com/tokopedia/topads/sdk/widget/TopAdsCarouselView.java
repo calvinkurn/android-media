@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.topads.sdk.R;
@@ -28,6 +29,7 @@ import com.tokopedia.topads.sdk.utils.GridSpaceItemDecoration;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
+import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheetDynamicChannel;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ import java.util.List;
  * Created by errysuprayogi on 7/20/18.
  */
 
-public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAdsClickListener {
+public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAdsClickListener, View.OnClickListener {
 
     private static final String TAG = TopAdsCarouselView.class.getSimpleName();
     private TopAdsPresenter presenter;
@@ -47,6 +49,8 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private TopAdsItemClickListener adsItemClickListener;
     private TopAdsItemImpressionListener adsItemImpressionListener;
     private LinearLayoutManager layoutManager;
+    private ImageView btnCta;
+    private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
 
     public TopAdsCarouselView(Context context) {
         super(context);
@@ -72,12 +76,22 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         adapter.setItemClickListener(this);
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
                 false);
+        btnCta = findViewById(R.id.info_cta);
+        btnCta.setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_5)));
+        infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.info_cta){
+            infoBottomSheet.show();
+        }
     }
 
     public void setConfig(Config config) {
