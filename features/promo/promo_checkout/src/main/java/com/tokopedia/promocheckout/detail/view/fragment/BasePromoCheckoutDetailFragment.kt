@@ -71,10 +71,10 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     protected fun validateViewLoading() {
         if (isLoadingFinished) {
             mainView.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
+            progressBarLoading.visibility = View.GONE
         } else {
             mainView.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
+            progressBarLoading.visibility = View.VISIBLE
         }
     }
 
