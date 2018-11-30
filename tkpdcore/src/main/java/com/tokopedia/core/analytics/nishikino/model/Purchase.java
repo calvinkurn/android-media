@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
+
 /**
  * Created by ricoharisin on 9/29/15.
  */
@@ -18,7 +20,6 @@ public class Purchase {
     public static final String USER_ID = "userId";
     public static final String PURCHASE = "purchase";
     public static final String DEFAULT_CURRENCY_VALUE = "IDR";
-    private static final String COUPON = "coupon";
 
     public static final String ID = "id";
 
@@ -159,9 +160,8 @@ public class Purchase {
     }
 
     public void addProduct(Map<String, Object> Product, String coupon) {
-        Product.put(COUPON, coupon);
+        Product.put(KEY_COUPON, coupon);
         ListProduct.add(Product);
-
     }
 
     public List<Object> getListProduct(){
@@ -177,7 +177,7 @@ public class Purchase {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
             Purchase.put("currencyCode", currency);
-            Purchase.put(COUPON, coupon);
+            Purchase.put(KEY_COUPON, coupon);
         }catch (Exception e) {
             e.printStackTrace();
         }
