@@ -194,9 +194,11 @@ ext {
             paymentManagementSystem : ":features:payment:pms",
             withdraw                : ":features:payment:withdraw",
 
-            gamification            : ":features:promo:gamification",
-            merchantVoucher         : ":features:promo:merchant_voucher",
-            tokopoints              : ":features:promo:tokopoints",
+            gallery                : ":features:product:gallery",
+
+            gamification           : ":features:promo:gamification",
+            merchantVoucher        : ":features:promo:merchant_voucher",
+            tokopoints             : ":features:promo:tokopoints",
 
             topAdsFreeClaim         : ":features:top_ads:top_ads_free_claim",
             topAdsManagement        : ":features:top_ads:top_ads_management",

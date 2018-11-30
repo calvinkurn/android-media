@@ -67,5 +67,9 @@ public interface ReputationRepository {
 
     Observable<DataResponseReviewStarCount> getReviewStarCount(String productId);
 
-    Observable<DataResponseReviewProduct> getReviewProductList(String productId, String page, String perPage, String rating);
+    Observable<DataResponseReviewProduct> getReviewProductList(String productId,
+                                                               String page,
+                                                               String perPage,
+                                                               String rating,
+                                                               String withAttachment);
 }
