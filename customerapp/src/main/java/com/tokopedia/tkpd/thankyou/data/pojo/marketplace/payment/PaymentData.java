@@ -27,7 +27,7 @@ public class PaymentData {
     private float paymentAmount;
     @SerializedName("voucher")
     @Expose
-    private List<Voucher> voucher;
+    private Voucher voucher;
 
     public int getPaymentId() {
         return paymentId;
@@ -69,12 +69,11 @@ public class PaymentData {
         this.paymentAmount = paymentAmount;
     }
 
-
-    public List<Voucher> getVoucher() {
+    public Voucher getVoucher() {
         return voucher;
     }
 
-    public void setVoucher(List<Voucher> voucher) {
+    public void setVoucher(Voucher voucher) {
         this.voucher = voucher;
     }
 }
