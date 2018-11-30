@@ -186,7 +186,9 @@ public class CartListPresenter implements ICartListPresenter {
                     public Observable<CartListData> call(CartListData cartListData) {
                         RequestParams adsParam = RequestParams.create();
                         adsParam.putString("params", generateTopAdsParam(cartListData));
-                        return Observable.zip(Observable.just(cartListData), topAdsUseCase.createObservable(adsParam), new Func2<CartListData, TopAdsModel, CartListData>() {
+                        return Observable.zip(Observable.just(cartListData),
+                                topAdsUseCase.createObservable(adsParam),
+                                new Func2<CartListData, TopAdsModel, CartListData>() {
                             @Override
                             public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
                                 cartListData.setAdsModel(adsModel);
