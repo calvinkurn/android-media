@@ -32,7 +32,7 @@ public class ImpressedImageView extends AppCompatImageView {
     public static final int BOTTOM_MARGIN = 80;
     private ProductImage image;
     private ViewHintListener hintListener;
-    private float radius = 5.0f;
+    private float radius = 8.0f;
     private Path path;
     private RectF rect;
 

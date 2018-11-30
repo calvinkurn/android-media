@@ -78,7 +78,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR;
         } else if (cartDataList.get(position) instanceof ShipmentSellerCashbackModel) {
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
-        } else if (cartDataList.get(position) instanceof XcartParam) {
+        } else if (cartDataList.get(position) instanceof TopAdsModel) {
             return CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS;
         } else {
             return super.getItemViewType(position);
