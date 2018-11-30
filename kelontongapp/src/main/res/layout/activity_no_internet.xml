@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    android:background="@android:color/white"
     android:orientation="vertical"
     android:padding="@dimen/default_padding">
 
@@ -21,9 +20,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:padding="@dimen/default_padding"
-        android:text="Tidak ada koneksi internet. pastikan data seluler Wifi atau Seluler Anda diaktifkan, dan coba lagi."
-        android:textColor="@color/textColorPrimary"/>
+        android:text="@string/msg_system_error"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/default_padding"
+        android:text="@string/msg_no_internet_connection"/>
 
     <Button
         android:id="@+id/btn_retry"
@@ -33,6 +40,7 @@
         android:background="@drawable/bg_button_green"
         android:foreground="?attr/selectableItemBackground"
         android:textAllCaps="false"
-        android:text="Coba Lagi" />
+        android:textColor="@android:color/white"
+        android:text="@string/btn_try_again" />
 
 </LinearLayout>

@@ -71,7 +71,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     private fun noInternetConnection() {
         setContentView(R.layout.activity_no_internet)
         val btnTryAgain = findViewById<Button>(R.id.btn_retry)
-        btnTryAgain.setOnClickListener { v -> loadWebViewPage() }
+        btnTryAgain.setOnClickListener { loadWebViewPage() }
     }
 
     private fun initializeWebview() {
