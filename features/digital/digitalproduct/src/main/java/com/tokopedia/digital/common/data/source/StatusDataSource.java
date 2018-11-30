@@ -3,6 +3,7 @@ package com.tokopedia.digital.common.data.source;
 import android.support.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -25,14 +26,14 @@ public class StatusDataSource {
     private final static String KEY_CATEGORY_LIST = "RECHARGE_CATEGORY_LIST";
 
     private DigitalEndpointService digitalEndpointService;
-    private GlobalCacheManager globalCacheManager;
+    private CacheManager cacheManager;
     private StatusMapper statusMapper;
 
     public StatusDataSource(DigitalEndpointService digitalEndpointService,
-                            GlobalCacheManager globalCacheManager,
+                            CacheManager globalCacheManager,
                             StatusMapper statusMapper) {
         this.digitalEndpointService = digitalEndpointService;
-        this.globalCacheManager = globalCacheManager;
+        this.cacheManager = globalCacheManager;
         this.statusMapper = statusMapper;
     }
 
@@ -42,12 +43,12 @@ public class StatusDataSource {
                 .map(new Func1<StatusEntity, StatusEntity>() {
                     @Override
                     public StatusEntity call(StatusEntity status) {
-                        String currentStatusString = globalCacheManager.getValueString(KEY_STATUS_CURRENT);
+                        String currentStatusString = cacheManager.get(KEY_STATUS_CURRENT);
                         String statusString = CacheUtil.convertModelToString(status,
                                 new TypeToken<StatusEntity>() {
                                 }.getType());
                         if (currentStatusString != null && !currentStatusString.equals(statusString)) {
-                            globalCacheManager.delete(KEY_CATEGORY_LIST);
+                            cacheManager.delete(KEY_CATEGORY_LIST);
 
                             saveStatusToCache(statusString);
                         } else if (currentStatusString == null) {
@@ -60,9 +61,11 @@ public class StatusDataSource {
     }
 
     private void saveStatusToCache(String statusString) {
-        globalCacheManager.setKey(KEY_STATUS_CURRENT);
-        globalCacheManager.setValue(statusString);
-        globalCacheManager.store();
+        cacheManager.save(
+                KEY_STATUS_CURRENT,
+                statusString,
+                0
+        );
     }
 
     @NonNull

@@ -168,7 +168,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         super.onActivityCreated(savedInstanceState);
 
         if (isFromAppShortcut()) {
-            UnifyTracking.eventBayarLongClick();
+            UnifyTracking.eventBillShortcut();
         }
     }
 

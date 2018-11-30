@@ -29,7 +29,7 @@ public class FlightCancellationAttachmentButtonViewHolder extends AbstractViewHo
             @Override
             public void onClick(View view) {
                 if (FlightCancellationAttachmentButtonViewHolder.this.interactionListener != null) {
-                    FlightCancellationAttachmentButtonViewHolder.this.interactionListener.onUploadAttachmentButtonClicked();
+                    FlightCancellationAttachmentButtonViewHolder.this.interactionListener.onUploadAttachmentButtonClicked(getAdapterPosition());
                 }
             }
         });

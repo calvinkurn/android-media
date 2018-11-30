@@ -43,6 +43,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -321,7 +322,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;
     private com.tokopedia.abstraction.common.utils.LocalCacheHandler localCacheHandler;
-    private Trace trace;
+    private PerformanceMonitoring performanceMonitoring;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -385,7 +386,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        trace = TrackingUtils.startTrace(PDP_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(PDP_TRACE);
         initInjector();
         super.onCreate(savedInstanceState);
         MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
@@ -645,9 +646,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
 
-                    if(isFromExploreAffiliate()){
-                        ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
-                                getUserId());
+                    if (isFromExploreAffiliate()) {
+                        String productId = productData.getInfo() != null ?
+                                String.valueOf(productData.getInfo().getProductId()) :
+                                "";
+                        ProductPageTracking.eventClickWishlistOnAffiliate(
+                                getActivity(),
+                                getUserId(),
+                                productId
+                        );
                     }
                 }
             }
@@ -1040,14 +1047,25 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
+    public void onByMeClicked(AffiliateInfoViewModel affiliate, boolean isRegularPdp) {
         if (getActivity() != null) {
-            ProductPageTracking.eventClickAffiliate(
-                    getActivityContext(),
-                    getUserId(),
-                    productData.getShopInfo().getShopId(),
-                    String.valueOf(affiliate.getProductId())
-            );
+            if (isRegularPdp) {
+                String shopId = productData.getShopInfo() != null ?
+                        productData.getShopInfo().getShopId() :
+                        "";
+                ProductPageTracking.eventClickAffiliateRegularPdp(
+                        getActivityContext(),
+                        getUserId(),
+                        shopId,
+                        String.valueOf(affiliate.getProductId())
+                );
+            } else {
+                ProductPageTracking.eventClickAffiliate(
+                        getActivityContext(),
+                        getUserId(),
+                        String.valueOf(affiliate.getProductId())
+                );
+            }
             if (userSession.isLoggedIn()) {
                 RouteManager.route(
                         getActivity(),
@@ -1397,8 +1415,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void hideProgressLoading() {
-        if (trace != null)
-            trace.stop();
+        performanceMonitoring.stopTrace();
     }
 
     @Override

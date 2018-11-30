@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
@@ -65,6 +65,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
         adapter.setData(rowModelList);
         if (!isImpressed()) {
             HomePageTracking.eventEnhancedImpressionFavoriteCategory(
+                    context,
                 element.getHomePageEnhanceDataLayer()
             );
             setImpressed(true);
@@ -108,6 +109,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
                 @Override
                 public void onClick(View view) {
                     HomePageTracking.eventEnhancedClickFavoriteCategory(
+                            context,
                             rowModel.getHomePageEnhanceDataLayer(
                                     position + 1,
                                     "/explore beli - p1 - Kategori Favorit Anda"

@@ -17,6 +17,8 @@ public interface DigitalModuleRouter {
 
     Intent getLoginIntent(Context activity);
 
+    Intent instanceIntentDigitalCategoryList();
+
     void showAdvancedAppRatingDialog(Activity activity,
                                      DialogInterface.OnDismissListener dismissListener);
 

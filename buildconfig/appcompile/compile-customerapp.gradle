@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:developer_options"
 
 include "features:content:affiliate"
 //include "features:content:affiliate_no_op"
@@ -97,6 +98,9 @@ include "features:user:loginphone"
 include "features:user:loginregister"
 include "features:user:phoneverification"
 include "features:user:sessioncommon"
+include "features:user:user_identification"
+//include "features:user:user_identification_no_op"
+include "features:user:user_identification_common"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'
