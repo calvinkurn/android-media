@@ -107,7 +107,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCoupon(couponCode);
 
         for (Product product : getProductList(orderData)) {
-            purchase.addProduct(product.getProduct());
+            purchase.addProduct(product.getProduct(), couponCode);
         }
 
         return purchase;

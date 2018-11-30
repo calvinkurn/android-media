@@ -18,6 +18,7 @@ public class Purchase {
     public static final String USER_ID = "userId";
     public static final String PURCHASE = "purchase";
     public static final String DEFAULT_CURRENCY_VALUE = "IDR";
+    private static final String COUPON = "coupon";
 
     public static final String ID = "id";
 
@@ -157,8 +158,10 @@ public class Purchase {
         this.paymentStatus = paymentStatus;
     }
 
-    public void addProduct(Map<String, Object> Product) {
+    public void addProduct(Map<String, Object> Product, String coupon) {
+        Product.put(COUPON, coupon);
         ListProduct.add(Product);
+
     }
 
     public List<Object> getListProduct(){
@@ -174,7 +177,7 @@ public class Purchase {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
             Purchase.put("currencyCode", currency);
-            Purchase.put("coupon", coupon);
+            Purchase.put(COUPON, coupon);
         }catch (Exception e) {
             e.printStackTrace();
         }
