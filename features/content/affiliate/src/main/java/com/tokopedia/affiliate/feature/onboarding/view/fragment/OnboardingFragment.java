@@ -88,6 +88,12 @@ public class OnboardingFragment extends BaseDaggerFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(OnboardingActivity.PARAM_IS_FINISH, isOnboardingFinish);

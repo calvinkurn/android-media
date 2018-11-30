@@ -94,6 +94,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVar(savedInstanceState);
