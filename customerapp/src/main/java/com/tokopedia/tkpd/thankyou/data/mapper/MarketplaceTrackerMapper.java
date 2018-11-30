@@ -142,7 +142,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         Log.d(TAG, "Vouchers " + paymentDatas.getVoucher());
 
         if (paymentDatas.getVoucher() != null){
-            return paymentDatas.getVoucher().get(1).getVoucherCode();
+            return paymentDatas.getVoucher().getVoucherCode();
         }
 
         return "";
