@@ -34,6 +34,7 @@ public interface CommonConstant {
     int COUPON_RE_FETCH_DELAY_S = 5;
     long COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S = 86400;
     int UI_SETTLING_DELAY_MS = 250;
+    int UI_SETTLING_DELAY_MS2 = 500;
     String ARGS_POINTS_AVAILABILITY = "points_availability";
 
     interface CouponRedemptionCode {

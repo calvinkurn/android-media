@@ -147,7 +147,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     public void populateDetail(CouponValueEntity data) {
-        mContainerMain.postDelayed(() -> setCouponToUi(data), CommonConstant.UI_SETTLING_DELAY_MS);
+        mContainerMain.postDelayed(() -> setCouponToUi(data), CommonConstant.UI_SETTLING_DELAY_MS2);
     }
 
     @Override
