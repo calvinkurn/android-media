@@ -58,23 +58,24 @@
 
                     <com.tokopedia.gm.resource.GMImageView
                         android:id="@+id/iv_gold_shop"
-                        android:layout_width="@dimen/dp_30"
-                        android:layout_height="@dimen/dp_30"
+                        android:layout_width="@dimen/dp_14"
+                        android:layout_height="@dimen/dp_14"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@id/iv_official"
-                        android:layout_width="@dimen/dp_30"
-                        android:layout_height="@dimen/dp_30"
+                        android:layout_width="@dimen/dp_14"
+                        android:layout_height="@dimen/dp_14"
                         app:srcCompat="@drawable/ic_badge_official"
                         android:visibility="gone"
+                        tools:visibility="visible"
                         tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@id/iv_lucky"
-                        android:layout_width="@dimen/dp_30"
-                        android:layout_height="@dimen/dp_30"
+                        android:layout_width="@dimen/dp_14"
+                        android:layout_height="@dimen/dp_14"
                         android:padding="@dimen/dp_3"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
