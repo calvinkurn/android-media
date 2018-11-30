@@ -174,12 +174,6 @@ public class CartListPresenter implements ICartListPresenter {
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
-//        compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .unsubscribeOn(Schedulers.io())
-//                .subscribe(getSubscriberInitialCartListData(initialLoad))
-//        );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
                 .flatMap(new Func1<CartListData, Observable<CartListData>>() {
                     @Override
@@ -189,12 +183,12 @@ public class CartListPresenter implements ICartListPresenter {
                         return Observable.zip(Observable.just(cartListData),
                                 topAdsUseCase.createObservable(adsParam),
                                 new Func2<CartListData, TopAdsModel, CartListData>() {
-                            @Override
-                            public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
-                                cartListData.setAdsModel(adsModel);
-                                return cartListData;
-                            }
-                        });
+                                    @Override
+                                    public CartListData call(CartListData cartListData, TopAdsModel adsModel) {
+                                        cartListData.setAdsModel(adsModel);
+                                        return cartListData;
+                                    }
+                                });
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -293,13 +287,28 @@ public class CartListPresenter implements ICartListPresenter {
         requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
                 view.getGeneratedAuthParamNetwork(paramGetList));
 
-        compositeSubscription.add(
-                deleteCartGetCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem))
-        );
+        compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
+                .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
+                    @Override
+                    public Observable<DeleteAndRefreshCartListData> call(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
+                        RequestParams adsParam = RequestParams.create();
+                        adsParam.putString("params", generateTopAdsParam(cartListData));
+                        return Observable.zip(Observable.just(deleteAndRefreshCartListData),
+                                topAdsUseCase.createObservable(adsParam),
+                                new Func2<DeleteAndRefreshCartListData, TopAdsModel, DeleteAndRefreshCartListData>() {
+                                    @Override
+                                    public DeleteAndRefreshCartListData call(DeleteAndRefreshCartListData deleteAndRefreshCartListData,
+                                                                             TopAdsModel adsModel) {
+                                        deleteAndRefreshCartListData.getCartListData().setAdsModel(adsModel);
+                                        return deleteAndRefreshCartListData;
+                                    }
+                                });
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem)));
     }
 
     @Override
