@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/rl_bottom_action_container">
 
-        <android.support.v7.widget.RecyclerView
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/rv_product_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

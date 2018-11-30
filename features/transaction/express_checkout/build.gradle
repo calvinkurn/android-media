@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
 
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.transactiondata)
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
@@ -27,3 +28,5 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
