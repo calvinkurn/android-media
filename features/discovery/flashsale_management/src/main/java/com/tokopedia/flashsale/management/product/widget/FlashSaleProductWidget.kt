@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleAdminStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.product.data.*
@@ -39,6 +40,13 @@ class FlashSaleProductWidget @JvmOverloads constructor(
         } finally {
             styledAttributes.recycle()
         }
+    }
+
+    fun shouldShowStatisticPostSubmission(item: FlashSaleProductItem?): Boolean {
+        return item is FlashSalePostProductItem &&
+                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.IN_REVIEW &&
+                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.READY &&
+                item.getCampaignAdminStatusId() == FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED
     }
 
     fun setData(item: FlashSaleProductItem?) {
@@ -78,17 +86,16 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                         tvStatus.visibility = View.VISIBLE
                     }
                 }
-            } else { // item is postsubmission. If still in review or ready, show the status.
+            } else { // item is postsubmission.
                 ivCheckMark.visibility = View.GONE
-                if (item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.IN_REVIEW ||
-                        item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.READY) {
+                if (shouldShowStatisticPostSubmission(item)) {
+                    tvStatus.visibility = View.GONE
+                } else {
                     tvStatus.text = item.getCampaignAdminStatusId().getAdminStatusString(context)
                     val statusColor = item.getCampaignAdminStatusId().getAdminStatusColor()
                     tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
                     tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
                     tvStatus.visibility = View.VISIBLE
-                } else {
-                    tvStatus.visibility = View.GONE
                 }
             }
             tvProductName.text = item.getProductName()
@@ -106,12 +113,14 @@ class FlashSaleProductWidget @JvmOverloads constructor(
             } else {
                 tvFinalPrice.text = KMNumbers.formatRupiahString(item.getProductPrice().toLong())
             }
-            // if product is in Submission, text will be Stock xx
-            // if item is postsubmission, but still in review, or ready, also will show stock xx
-            if (item is FlashSaleSubmissionProductItem ||
-                    (item is FlashSalePostProductItem &&
-                            (item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.IN_REVIEW ||
-                                    item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.READY))) {
+
+            // if post submission after in review, and after ready, and it is accepted, show Sold x of x
+            if (shouldShowStatisticPostSubmission(item)) {
+                tvStock.text = context.getString(R.string.label_sold_x_from_x,
+                        item.getOriginalCustomStock() - item.getCustomStock(),
+                        item.getOriginalCustomStock())
+                tvStock.visibility = View.VISIBLE
+            } else { // else show Stock xx
                 if (hideDetail || item.getCustomStock() <= 0) {
                     tvStock.visibility = View.GONE
                 } else {
@@ -119,11 +128,6 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                     tvStock.text = stockText
                     tvStock.visibility = View.VISIBLE
                 }
-            } else { // product is post submission (after in review and after ready), text will be Sold x from x
-                tvStock.text = context.getString(R.string.label_sold_x_from_x,
-                        item.getOriginalCustomStock() - item.getCustomStock(),
-                        item.getOriginalCustomStock())
-                tvStock.visibility = View.VISIBLE
             }
             visibility = View.VISIBLE
         }
