@@ -19,18 +19,17 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
         view?.titleMinTrans?.text = element?.minimumUsageLabel
         if(TextUtils.isEmpty(element?.minimumUsage)) {
             view?.textMinTrans?.visibility = View.GONE
-        }else{
+            if(TextUtils.isEmpty(element?.minimumUsageLabel)){
+                view?.titleMinTrans?.visibility = View.GONE
+                view?.imageMinTrans?.visibility = View.GONE
+            }else{
+                view?.titleMinTrans?.visibility = View.VISIBLE
+                view?.imageMinTrans?.visibility = View.VISIBLE
+            }
+        } else {
+            view?.imageMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.text = element?.minimumUsage
-        }
-        if(TextUtils.isEmpty(element?.minimumUsage) && TextUtils.isEmpty(element?.minimumUsageLabel)){
-            view?.titleMinTrans?.visibility = View.GONE
-            view?.textMinTrans?.visibility = View.GONE
-            view?.imageMinTrans?.visibility = View.GONE
-        }else{
-            view?.titleMinTrans?.visibility = View.VISIBLE
-            view?.textMinTrans?.visibility = View.VISIBLE
-            view?.imageMinTrans?.visibility = View.VISIBLE
         }
         if ((element?.usage?.activeCountdown ?: 0 > 0 &&
                         element?.usage?.activeCountdown ?: 0 < TimerCheckoutWidget.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {

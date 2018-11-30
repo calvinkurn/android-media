@@ -86,18 +86,17 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
             view?.titleMinTrans?.text = promoCheckoutDetailModel.minimumUsageLabel
             if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage)) {
                 view?.textMinTrans?.visibility = View.GONE
+                if(TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsageLabel)){
+                    view?.titleMinTrans?.visibility = View.GONE
+                    view?.imageMinTrans?.visibility = View.GONE
+                }else{
+                    view?.titleMinTrans?.visibility = View.VISIBLE
+                    view?.imageMinTrans?.visibility = View.VISIBLE
+                }
             } else {
+                view?.imageMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
-            }
-            if(TextUtils.isEmpty(promoCheckoutDetailModel?.minimumUsage) && TextUtils.isEmpty(promoCheckoutDetailModel?.minimumUsageLabel)){
-                view?.titleMinTrans?.visibility = View.GONE
-                view?.textMinTrans?.visibility = View.GONE
-                view?.imageMinTrans?.visibility = View.GONE
-            }else{
-                view?.titleMinTrans?.visibility = View.VISIBLE
-                view?.textMinTrans?.visibility = View.VISIBLE
-                view?.imageMinTrans?.visibility = View.VISIBLE
             }
             textTitlePromo.text = it.title
             if ((it.usage?.activeCountDown ?: 0 > 0 &&
