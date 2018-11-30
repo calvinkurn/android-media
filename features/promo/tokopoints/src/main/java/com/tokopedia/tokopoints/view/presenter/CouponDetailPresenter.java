@@ -70,7 +70,7 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
 
             @Override
             public void onNext(GraphqlResponse response) {
-                int validateResponseCode;
+                int validateResponseCode = -1;
                 String message;
                 String title;
                 ValidateCouponBaseEntity validateCoupon = response.getData(ValidateCouponBaseEntity.class);
@@ -83,7 +83,14 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
                     String[] errorsMessage = response.getError(ValidateCouponBaseEntity.class).get(0).getMessage().split("\\|");
                     title = errorsMessage[0];
                     message = errorsMessage[1];
-                    validateResponseCode = Integer.parseInt(errorsMessage[2]);
+
+                    if (errorsMessage.length == 2) {
+                        try {
+                            validateResponseCode = Integer.parseInt(errorsMessage[2]);
+                        } catch (NumberFormatException e) {
+                            //Just to avoid NFE
+                        }
+                    }
                 }
 
                 getView().showValidationMessageDialog(item, title, message, validateResponseCode);
