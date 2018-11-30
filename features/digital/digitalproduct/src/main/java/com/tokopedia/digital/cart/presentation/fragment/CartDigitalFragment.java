@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -55,8 +54,6 @@ import com.tokopedia.digital.cart.presentation.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presentation.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -776,14 +773,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
-                        @Override
-                        public void onDismiss() {
+                    if (getApplicationContext() instanceof DigitalModuleRouter) {
+                        ((DigitalModuleRouter)getApplicationContext()).
+                                showAdvancedAppRatingDialog(getActivity(), dialog -> {
                             getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
                             closeView();
-                        }
-                    });
-
+                        });
+                    }
                     presenter.onPaymentSuccess(passData.getCategoryId());
 
                     break;

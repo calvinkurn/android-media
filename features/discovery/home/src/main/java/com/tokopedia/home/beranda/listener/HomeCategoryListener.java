@@ -40,4 +40,10 @@ public interface HomeCategoryListener {
     void onSixGridItemClicked(String actionLink, String trackingAttribution);
 
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
+
+    void onServerTimeReceived(long serverTimeUnix);
+
+    long getServerTimeOffset();
+  
+    boolean isHomeFragment();
 }

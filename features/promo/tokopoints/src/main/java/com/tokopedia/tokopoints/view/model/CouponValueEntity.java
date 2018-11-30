@@ -68,8 +68,11 @@ public class CouponValueEntity extends BaseItem {
     @SerializedName(value = "howToUse", alternate = {"how_to_use"})
     private String howToUse;
 
-    @SerializedName(value = "minimumUsage", alternate = {"minimum_usage"})
+    @SerializedName(value = "minimum_usage", alternate = {"minimumUsage"})
     private String minimumUsage;
+
+    @SerializedName(value = "minimum_usage_label", alternate = {"minimumUsageLabel"})
+    private String minimumUsageLabel;
 
     @SerializedName("overview")
     private String overview;
@@ -251,6 +254,14 @@ public class CouponValueEntity extends BaseItem {
         this.realCode = realCode;
     }
 
+    public String getMinimumUsageLabel() {
+        return minimumUsageLabel;
+    }
+
+    public void setMinimumUsageLabel(String minimumUsageLabel) {
+        this.minimumUsageLabel = minimumUsageLabel;
+    }
+
     @Override
     public String toString() {
         return "CouponValueEntity{" +
@@ -271,6 +282,7 @@ public class CouponValueEntity extends BaseItem {
                 ", usage=" + usage +
                 ", howToUse='" + howToUse + '\'' +
                 ", minimumUsage='" + minimumUsage + '\'' +
+                ", minimumUsageLabel='" + minimumUsageLabel + '\'' +
                 ", overview='" + overview + '\'' +
                 ", realCode='" + realCode + '\'' +
                 ", tnc='" + tnc + '\'' +

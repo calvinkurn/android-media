@@ -25,102 +25,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity
-            android:name=".register.view.activity.RegisterEmailActivity"
-            android:label="@string/title_activity_register_2"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
-        <activity
-            android:name=".activation.view.activity.ActivationActivity"
-            android:label="@string/title_activity_activation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-        <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity"
-            android:label="@string/title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity"
-            android:label="@string/title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity"
-            android:label="@string/title_activity_change_phone_number"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".activation.view.activity.ChangeEmailActivity"
-            android:label="@string/button_change_email"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity
-            android:name="com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
             android:label="@string/profile_completion_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".login.loginphonenumber.view.activity.LoginPhoneNumberActivity"
-            android:label="@string/login"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysVisible"/>
-
-        <activity
-            android:name=".login.loginphonenumber.view.activity.ChooseTokocashAccountActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
-        <activity
-            android:name=".login.loginphonenumber.view.activity.NotConnectedTokocashActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
-        <activity
-            android:name=".login.loginemail.view.activity.LoginActivity"
-            android:label="@string/login"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-        <activity
             android:name=".register.view.activity.SmartLockActivity"
             android:theme="@style/AppTheme.Dialog"/>
-        <activity
-            android:name=".google.GoogleSignInActivity"
-            android:theme="@style/AppTheme.Dialog"/>
-
-        <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
-        </activity>
-
-        <activity
-            android:name=".register.view.activity.RegisterInitialActivity"
-            android:label="@string/title_register"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"/>
 
         <activity
             android:name=".register.view.activity.CreatePasswordActivity"
             android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".register.registerphonenumber.view.activity.RegisterPhoneNumberActivity"
-            android:label="@string/register_with_phone_number"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-
-        <activity
-            android:name=".register.registerphonenumber.view.activity.WelcomePageActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".addchangeemail.view.activity.AddEmailActivity"
@@ -162,26 +78,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 
-        <activity
-            android:name=".login.loginemail.view.activity.ForbiddenActivity"
-            android:label="@string/title_activity_forbidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-
-        <activity
-            android:name=".login.loginemail.view.activity.ServiceActivity"
-            android:label="@string/title_activity_service"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-
-        <activity
-            android:name=".inactivephonenumber.ChangeInactivePhoneNumberWebView"
-            android:label="@string/title_change_inactive_phone_number"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->

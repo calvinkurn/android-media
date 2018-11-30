@@ -2,6 +2,7 @@ package com.tokopedia.digital.common.router;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -15,6 +16,9 @@ public interface DigitalModuleRouter {
     Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
 
     Intent getLoginIntent(Context activity);
+
+    void showAdvancedAppRatingDialog(Activity activity,
+                                     DialogInterface.OnDismissListener dismissListener);
 
     String getBranchAutoApply(Activity activity);
 

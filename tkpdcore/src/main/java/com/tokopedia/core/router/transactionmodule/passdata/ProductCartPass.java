@@ -27,6 +27,7 @@ public class ProductCartPass implements Parcelable {
     private int orderQuantity;
     private boolean skipToCart;
     private String sourceAtc;
+    private boolean isBigPromo;
 
     public ProductCartPass() {
     }
@@ -151,6 +152,14 @@ public class ProductCartPass implements Parcelable {
         this.listName = listName;
     }
 
+    public boolean isBigPromo() {
+        return isBigPromo;
+    }
+
+    public void setBigPromo(boolean bigPromo) {
+        isBigPromo = bigPromo;
+    }
+
     protected ProductCartPass(Parcel in) {
         productId = in.readString();
         productName = in.readString();
@@ -169,6 +178,7 @@ public class ProductCartPass implements Parcelable {
         listName = in.readString();
         orderQuantity = in.readInt();
         sourceAtc = in.readString();
+        isBigPromo = in.readByte() == 1;
     }
 
 
@@ -196,6 +206,7 @@ public class ProductCartPass implements Parcelable {
         dest.writeString(listName);
         dest.writeInt(orderQuantity);
         dest.writeString(sourceAtc);
+        dest.writeByte(isBigPromo ? (byte) 1 : (byte) 0);
     }
 
     @SuppressWarnings("unused")
@@ -255,6 +266,7 @@ public class ProductCartPass implements Parcelable {
         private int orderQuantity;
         private boolean isSkipToCart;
         private String sourceAtc;
+        private boolean isBigPromo;
 
         private Builder() {
         }
@@ -353,6 +365,11 @@ public class ProductCartPass implements Parcelable {
             return this;
         }
 
+        public Builder setBigPromo(boolean isBigPromo) {
+            this.isBigPromo = isBigPromo;
+            return this;
+        }
+
         public Builder but() {
             return aProductCartPass()
                     .setProductId(productId)
@@ -371,7 +388,8 @@ public class ProductCartPass implements Parcelable {
                     .setHomeAttribution(homeAttribution)
                     .setListName(listName)
                     .setOrderQuantity(orderQuantity)
-                    .setSkipToCart(isSkipToCart);
+                    .setSkipToCart(isSkipToCart)
+                    .setBigPromo(isBigPromo);
 
         }
 
@@ -395,6 +413,7 @@ public class ProductCartPass implements Parcelable {
             productCartPass.setOrderQuantity(orderQuantity);
             productCartPass.setSkipToCart(isSkipToCart);
             productCartPass.setSourceAtc(sourceAtc);
+            productCartPass.setBigPromo(isBigPromo);
             return productCartPass;
         }
     }

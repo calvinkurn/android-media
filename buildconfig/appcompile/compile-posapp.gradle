@@ -56,6 +56,8 @@ include "features:user:logout"
 include "features:user:updateinactivephone"
 include "features:user:changephonenumber"
 include "features:user:phoneverification"
+include "features:user:loginregister"
+include "features:user:sessioncommon"
 
 include 'tkpdcore'
 include 'tkpdinbox'

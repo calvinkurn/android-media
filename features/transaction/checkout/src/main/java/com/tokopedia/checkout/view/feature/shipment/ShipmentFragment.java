@@ -99,8 +99,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
     private static final String SHIPMENT_TRACE = "shipment_trace";
 
-    public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
-    public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
     public static final String ARG_AUTO_APPLY_PROMO_CODE_APPLIED = "ARG_AUTO_APPLY_PROMO_CODE_APPLIED";
     public static final String ARG_IS_FROM_PDP = "ARG_IS_FROM_PDP";
@@ -142,14 +140,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
-    public static ShipmentFragment newInstance(PromoCodeAppliedData promoCodeAppliedData,
-                                               CartPromoSuggestion cartPromoSuggestionData,
-                                               String defaultSelectedTabPromo,
+    public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
                                                boolean isFromPdp) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
-        bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
         bundle.putString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, defaultSelectedTabPromo);
         bundle.putBoolean(ARG_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
         bundle.putBoolean(ARG_IS_FROM_PDP, isFromPdp);
@@ -222,14 +216,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        initializePresenterData(arguments);
-    }
 
-    private void initializePresenterData(Bundle arguments) {
-        PromoCodeAppliedData promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
-        shipmentPresenter.setPromoCodeAppliedData(promoCodeAppliedData);
-        shipmentPresenter.setCartPromoSuggestion(arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
-        shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
     }
 
     @Override
@@ -464,9 +451,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             isTraceStopped = true;
         }
 
-        if (getArguments() != null) {
-            initializePresenterData(getArguments());
-        }
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
         CartPromoSuggestion cartPromoSuggestion = shipmentPresenter.getCartPromoSuggestion();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
@@ -515,9 +499,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderDataChanged() {
-        if (getArguments() != null) {
-            initializePresenterData(getArguments());
-        }
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
         CartPromoSuggestion cartPromoSuggestion = shipmentPresenter.getCartPromoSuggestion();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
@@ -1507,7 +1488,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
-            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, null, null, cartItemPosition);
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+            List<ShopShipment> shopShipments = shipmentCartItemModel.getShopShipmentList();
+            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, shipmentCartItemModel, shopShipments, cartItemPosition);
         } else {
             if (recommendedCourier.isUsePinPoint()
                     && (recipientAddressModel.getLatitude() == null ||

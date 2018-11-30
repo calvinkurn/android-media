@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Tabs;
+import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
@@ -25,9 +26,7 @@ import com.tokopedia.tokopoints.view.contract.CouponActivityContract;
 import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
 import com.tokopedia.tokopoints.view.model.CouponFilterItem;
 import com.tokopedia.tokopoints.view.presenter.CouponActivityPresenter;
-import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -78,7 +77,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         return tokoPointComponent;
     }
 
-    @DeepLink(ApplinkConst.COUPON_LISTING)
+    @DeepLink({ApplinkConstant.COUPON_LISTING, ApplinkConstant.COUPON_LISTING2})
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, MyCouponListingActivity.class);
     }
@@ -148,13 +147,10 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
             }
         });
 
-        mPagerFilter.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int[] ids = getSelectedCategoryId(data);
-                mPagerFilter.setCurrentItem(ids[1]);
-                loadFirstTab(ids[0]);
-            }
+        mPagerFilter.postDelayed(() -> {
+            int[] ids = getSelectedCategoryId(data);
+            mPagerFilter.setCurrentItem(ids[1]);
+            loadFirstTab(ids[0]);
         }, TAB_SETUP_DELAY_MS);
     }
 

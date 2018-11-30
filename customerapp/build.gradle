@@ -48,6 +48,10 @@ def allowProguard() {
     return project.hasProperty('tkpdBuildType')
 }
 
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
+}
+
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -99,8 +103,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 306001101;
-        defaultVersionName = "3.6";
+        defaultVersionCode = 307001101;
+        defaultVersionName = "3.7";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -158,9 +162,9 @@ android {
             ext.enableHansel=false
         }
         release {
-//            if (!isProduction() && !isAlpha() && !allowDistribution()) {
+            if (devMode()) {
                 signingConfig signingConfigs.debug
-//            }
+            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -341,8 +345,10 @@ dependencies {
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.commonDigital)
-
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
 
@@ -416,7 +422,6 @@ dependencies {
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    implementation rootProject.ext.miscDependencies.sendBird
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.reactNative

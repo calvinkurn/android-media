@@ -38,7 +38,6 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation project(rootProject.ext.features.nps)
 
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.design)
