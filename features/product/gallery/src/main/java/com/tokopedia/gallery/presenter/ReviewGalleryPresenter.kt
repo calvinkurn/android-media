@@ -8,6 +8,6 @@ interface ReviewGalleryPresenter {
     fun loadData(productId: Int, page: Int)
 
     companion object {
-        val DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE = 15
+        val DEFAULT_IMAGE_REVIEW_ROW_PER_PAGE = 21
     }
 }
