@@ -27,6 +27,7 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
                 view?.imageMinTrans?.visibility = View.VISIBLE
             }
         } else {
+            view?.titleMinTrans?.visibility = View.VISIBLE
             view?.imageMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.text = element?.minimumUsage
