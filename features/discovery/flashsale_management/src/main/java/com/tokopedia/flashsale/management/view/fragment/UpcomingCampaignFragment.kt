@@ -5,7 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
+import com.tokopedia.flashsale.management.data.FlashSaleConstant
+import com.tokopedia.flashsale.management.view.activity.FlashsaleWebViewActivity
 
 class UpcomingCampaignFragment : BaseCampaignFragment(){
 
@@ -31,6 +32,17 @@ class UpcomingCampaignFragment : BaseCampaignFragment(){
                 title = getString(R.string.fm_campaign_list_upcoming_empty_title)
                 description = getString(R.string.fm_campaign_list_upcoming_empty_content)
                 iconRes = R.drawable.ic_empty_box
+                callback = object : BaseEmptyViewHolder.Callback{
+                    override fun onEmptyContentItemTextClicked() {
+                        activity?.let {
+                            startActivity(FlashsaleWebViewActivity.createIntent(it, FlashSaleConstant.FLASHSALE_ABOUT_URL))
+                        }
+                    }
+
+                    override fun onEmptyButtonClicked() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+                }
             }
         } else {
             EmptyModel().apply {
