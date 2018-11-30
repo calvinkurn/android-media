@@ -22,18 +22,18 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -267,13 +267,13 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
-                        @Override
-                        public void onDismiss() {
-                            getActivity().setResult(DigitalRouter.PAYMENT_SUCCESS);
-                            getActivity().finish();
-                        }
-                    });
+                    if (getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
+                        ((DigitalModuleRouter)getActivity().getApplicationContext()).
+                                showAdvancedAppRatingDialog(getActivity(), dialog -> {
+                                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                                    closeView();
+                                });
+                    }
 
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
 
