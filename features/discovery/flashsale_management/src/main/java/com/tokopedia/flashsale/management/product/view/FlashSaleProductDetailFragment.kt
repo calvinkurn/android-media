@@ -168,22 +168,18 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
             if (flashSaleProductItem.campaign.criteria.discountPercentageMin > 0) {
                 if (flashSaleProductItem.campaign.criteria.discountPercentageMax <= 0) {
                     tilDiscount.setHelper(context!!.getString(R.string.price_discount_above_x,
-                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
-                                    true)))
+                            Math.round(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble()).toString()))
                 } else {
                     tilDiscount.setHelper(context!!.getString(R.string.price_discount_between_x_and_x,
-                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
-                                    true),
-                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
-                                    true)))
+                            Math.round(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble()).toString(),
+                            Math.round(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble()).toString()))
                 }
             } else {
                 if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
                     tilDiscount.setHelper(null)
                 } else {
                     tilDiscount.setHelper(context!!.getString(R.string.price_discount_below_x,
-                            KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
-                                    true)))
+                            Math.round(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble()).toString()))
                 }
             }
         } else {
@@ -194,14 +190,15 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     private fun calculateDiscount() {
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
         val discount: Double = if (canSubmit) {
-            val productPrice = flashSaleProductItem.getProductPrice()
+            var productPrice = flashSaleProductItem.getCampOriginalPrice()
+            if (productPrice == 0) {productPrice = flashSaleProductItem.getProductPrice() }
             (productPrice - getFinalPrice()) * 100 / productPrice
         } else {
             flashSaleProductItem.getDiscountPercentage().toDouble()
         }
         if (discount > 0 && discount < 100) {
             etDiscount.setText(getString(R.string.flash_sale_x_percent,
-                    KMNumbers.formatDouble2PCheckRound(discount, true)))
+                    Math.round(discount).toString()))
         } else {
             etDiscount.setText(getString(R.string.flash_sale_no_discount))
         }

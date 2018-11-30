@@ -19,8 +19,11 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -31,11 +34,16 @@ import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
 import com.tokopedia.flashsale.management.data.FlashSaleConstant.KEY_STATUS_REGISTRATION
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
+import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleSubmitLabelAdapter
-import com.tokopedia.flashsale.management.product.data.*
+import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
+import com.tokopedia.flashsale.management.product.data.FlashSaleSubmissionProductData
+import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
+import com.tokopedia.flashsale.management.product.data.GetMojitoPostProduct
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
+import com.tokopedia.flashsale.management.tracking.FlashSaleTracking
 import com.tokopedia.flashsale.management.view.activity.CampaignActivity
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
@@ -56,6 +64,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
+    lateinit var flashSaleTracking: FlashSaleTracking
 
     var needLoadData = true
 
@@ -64,6 +73,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     var submittedCount: Int = 0
 
     var statusLabel: String = ""
+    var statusId: Int = 0
 
     var flashSaleSubmitLabelAdapter: FlashSaleSubmitLabelAdapter? = null
 
@@ -76,11 +86,20 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         if (savedInstanceState != null) {
             filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
         }
+        flashSaleTracking = FlashSaleTracking(activity?.application as AbstractionRouter)
         super.onCreate(savedInstanceState)
-        flashSaleSubmitLabelAdapter = FlashSaleSubmitLabelAdapter(filterIndex, 0, 0, this)
+        flashSaleSubmitLabelAdapter = FlashSaleSubmitLabelAdapter(filterIndex, 0, this)
         context?.let {
             GraphqlClient.init(it)
         }
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<FlashSaleProductItem, FlashSaleProductAdapterTypeFactory> {
+        val adapter =  super.createAdapterInstance()
+        adapter.errorNetworkModel = ErrorNetworkModel().apply {
+            iconDrawableRes = R.drawable.ic_error_cloud_green
+        }
+        return adapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,7 +112,6 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun getRecyclerView(view: View?): RecyclerView {
         val recyclerView = super.getRecyclerView(view)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val itemAnimator = recyclerView.itemAnimator
         if (itemAnimator is SimpleItemAnimator) {
             itemAnimator.supportsChangeAnimations = false
@@ -119,7 +137,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun loadInitialData() {
-        hideSearchInputView()
+        searchInputView.isEnabled = false
         recyclerViewLabel.visibility = View.GONE
         vgBottom.visibility = View.GONE
         loadSellerStatus()
@@ -184,6 +202,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun onClickToUpdateSubmission() {
         showProgressDialog()
+        flashSaleTracking.clickProductUpdateCampaign(campaignId.toString())
         presenter.submitSubmission(campaignId,
                 onSuccess = {
                     hideProgressDialog()
@@ -202,6 +221,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun onClickFlashSaleList() {
+        flashSaleTracking.clickProductCampaignList(campaignId.toString())
+
         val campaignActivityIntent = Intent(context, CampaignActivity::class.java)
         campaignActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         this.activity?.finish()
@@ -232,6 +253,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
+                    flashSaleTracking.clickProductTnc(campaignId.toString())
                     val intent = FlashSaleTncActivity.createIntent(context!!, flashSaleTncContent.tnc)
                     startActivity(intent)
                 }
@@ -247,15 +269,16 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             tvTnc.text = spannable
 
             statusLabel = flashSaleTncContent.statusInfo.label
+            statusId = flashSaleTncContent.statusId
             loadInitContent()
             renderUILabel()
         }
     }
 
+    // status = submission ==> getEligibleProductList
+    // status = other ==> getPost
+    // when status is loaded, page will always from start
     override fun loadData(page: Int) {
-        // status = submission ==> getEligibleProductList
-        // status = other ==> getPost
-        // when status is loaded, page will always from start
         if (KEY_STATUS_REGISTRATION.equals(statusLabel, true)) {
             // in submission
             presenter.getEligibleProductList(campaignId,
@@ -275,6 +298,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                     campaignSlug,
                     (page - 1) * PER_PAGE, PER_PAGE,
                     searchInputView.searchText,
+                    statusId,
                     onSuccess = {
                         onSuccessGetPostList(it)
                     },
@@ -298,8 +322,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             emptyModel.title = getString(R.string.no_eligible_product_in_this_flash_sale)
             emptyModel.content = getString(R.string.no_worry_you_can_join_next_flash_sale)
         } else {
-            //TODO wording empty for filter or search text
-            emptyModel.title = ""
+            emptyModel.title = getString(R.string.no_not_submitted_product_in_this_flash_sale)
             emptyModel.content = ""
         }
         return emptyModel
@@ -307,6 +330,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun onSuccessGetEligibleList(flashSaleSubmissionProductData: FlashSaleSubmissionProductData) {
         super.renderList(flashSaleSubmissionProductData.flashSaleSubmissionProduct, hasNextPage(flashSaleSubmissionProductData.flashSaleSubmissionProduct))
+        searchInputView.isEnabled = true
         if (TextUtils.isEmpty(searchInputView.searchText) &&
                 flashSaleSubmissionProductData.flashSaleSubmissionProduct.isEmpty() &&
                 currentPage <= 1 &&
@@ -345,7 +369,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             needLoadAllPage = false
         }
         if (needLoadCurrentPage) {
-            //TODO currently load all data again
+            //currently load all data again
             loadInitialData()
             needLoadCurrentPage = false
         }
@@ -356,7 +380,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun renderUILabel() {
         if (needShowChip()) {
-            flashSaleSubmitLabelAdapter?.setData(submittedCount, pendingCount)
+            flashSaleSubmitLabelAdapter?.setData(submittedCount)
             recyclerViewLabel.visibility = View.VISIBLE
         } else {
             hideChipLabel()
@@ -406,9 +430,12 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onItemClicked(item: FlashSaleProductItem) {
         context?.let {
+            val hasDisableMessage = item.getMessage().isNotEmpty() &&
+                    item.getProductStatus() != FlashSaleProductStatusTypeDef.SUBMITTED
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
                     item, allowEditProducts && item.isEligible()
-                    && statusLabel.equals(KEY_STATUS_REGISTRATION, false))
+                    && KEY_STATUS_REGISTRATION.equals(statusLabel, true) &&
+                    !hasDisableMessage)
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }
@@ -417,6 +444,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onStatusSelected(position: Int) {
         loadInitContent()
+        flashSaleTracking.clickProductQuickFilter(campaignId.toString(), getFilterId().toString())
     }
 
     override fun onStatusCleared() {
@@ -424,6 +452,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun onSearchSubmitted(text: String?) {
+        if (!text.isNullOrEmpty()) {
+            flashSaleTracking.clickProductSearch(campaignId.toString(), text!!);
+        }
         loadInitContent()
     }
 

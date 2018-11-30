@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
-import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
 import com.tokopedia.flashsale.management.ekstension.gone
 import com.tokopedia.flashsale.management.ekstension.visible
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
@@ -24,7 +23,6 @@ class MyCampaignFragment : BaseCampaignFragment(){
 
     private val campaignStatusListAdapter: CampaignStatusListAdapter by lazy { CampaignStatusListAdapter{
         selectedStatusIds = it
-        loadInitialData()
     }}
 
     override fun loadData(page: Int) {
@@ -45,6 +43,8 @@ class MyCampaignFragment : BaseCampaignFragment(){
         chips.adapter = campaignStatusListAdapter
 
         showFilterInput()
+
+        loadInitialData()
 
         presenter.getCampaignLabel(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_label),
                 this::onSuccessGetCampaignLabel,this::onErrorGetCampaignLabel)

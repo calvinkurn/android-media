@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.item_campaign_status.view.*
 
 class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
                                   var submittedCount: Int = 0,
-                                  var pendingCount: Int = 0,
                                   val onSellerStatusListAdapterListener: OnSellerStatusListAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface OnSellerStatusListAdapterListener {
@@ -21,6 +20,9 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
     companion object {
         const val TYPE_SUBMIT = 0;
         const val TYPE_NOT_SUBMIT = 1;
+
+        // will change to 1 in next release, api has bug.
+        const val HAS_NOT_SUBMITTED_COUNT = 0;
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -29,22 +31,16 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
                     if (submittedCount > 0) {
                         " ($submittedCount)"
                     } else ""
-            TYPE_NOT_SUBMIT -> holder.itemView.context.getString(R.string.flash_sale_not_registered) +
-                    if (pendingCount > 0) {
-                        " ($pendingCount)"
-                    } else ""
+            TYPE_NOT_SUBMIT -> holder.itemView.context.getString(R.string.flash_sale_not_registered)
             else -> ""
         }
         holder.itemView.text.isSelected = selectedIndex.equals(position)
     }
 
     override fun getItemCount(): Int {
+        // if it has at least 1 submit count, it will show "Terdaftar" and "Belum Terdaftar"
         return (if (submittedCount > 0) {
-            1
-        } else {
-            0
-        }) + (if (pendingCount > 0) {
-            1
+            1 + HAS_NOT_SUBMITTED_COUNT
         } else {
             0
         })
@@ -65,9 +61,8 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
         return CampaignStatusViewHolder(itemLayoutView)
     }
 
-    fun setData(submittedCount: Int, pendingCount: Int) {
+    fun setData(submittedCount: Int) {
         this.submittedCount = submittedCount
-        this.pendingCount = pendingCount
         notifyDataSetChanged()
     }
 

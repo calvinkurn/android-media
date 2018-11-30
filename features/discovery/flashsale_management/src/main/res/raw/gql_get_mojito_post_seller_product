@@ -1,11 +1,13 @@
-query getMojitoEligibleSellerProduct($cid: Int!, $source: String!,
+query getMojitoPostProductList($cid: Int!, $source: String!,
                       $rows: Int,
                       $start: Int,
                       $shop_id: String,
-                      $q: String){
+                      $q: String,
+                      $ss: Int,
+                      $mas: String){
    getMojitoPostProductList(
      params:{cid:$cid, source:$source,
-       shop_id:$shop_id, rows:$rows, start:$start, q:$q}
+       shop_id:$shop_id, rows:$rows, start:$start, q:$q, ss:$ss, mas:$mas}
    ){
    header {
      total_data
@@ -22,13 +24,9 @@ query getMojitoEligibleSellerProduct($cid: Int!, $source: String!,
            original_price
            discount_percentage
            discounted_price
-           original_price
            custom_stock
            original_custom_stock
            stock_sold_percentage
-           product_map_status
-           status_id
-           admin_status
            max_order
          }
        }

@@ -10,11 +10,23 @@ object FlashSaleConstant {
     const val KEY_STATUS_ACTIVE = "aktif"
     const val KEY_STATUS_ENDED = "berakhir"
 
+    const val KEY_STATUS_IN_REVIEW_EN = 5
+    const val KEY_STATUS_READY_EN = 6
+    const val KEY_STATUS_ON_GOING_EN = 7
+    const val KEY_STATUS_FINISHED_EN = 8
+    const val KEY_STATUS_REVIEW_CANCELLED_EN = 11
+    const val KEY_STATUS_READY_CANCELLED_EN = 12
+    const val KEY_STATUS_ONGOING_CANCELLED_EN = 13
+    const val KEY_STATUS_READY_LOCKED_EN = 14
+    const val KEY_STATUS_READY_LOCKED_CANCELLED_EN = 15
+
     const val PARAM_ALL = "all"
     const val PARAM_OFFSET = "offset"
     const val PARAM_SOURCE = "source"
     const val PARAM_START = "start"
     const val PARAM_ROWS = "rows"
+    const val PARAM_SS = "ss" // system status
+    const val PARAM_MAS = "mas" // mass admin status
     const val PARAM_SLUG = "slug"
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_CAMPAIGN_TYPE = "campaignType"
@@ -30,9 +42,22 @@ object FlashSaleConstant {
     const val PARAM_FILTER = "filter"
     const val PARAM_STATUS = "status"
 
+    //DO NOT CHANGE System Status value. It is from API
+    const val SYSTEM_STATUS_ACCEPTED = 1
+    // currently below system value is not used
+    /*const val SYSTEM_STATUS_REJECTED = 2
+    const val SYSTEM_STATUS_RESERVED = 3
+    const val SYSTEM_STATUS_SUBMIT_CANCELLED = 4
+    const val SYSTEM_STATUS_SELLER_REJECTED = 5*/
+
+    //DO NOT CHANGE Admin Status value. It is from API
+    const val ADMIN_STATUS_NOT_REVIEWED = 0
+    const val ADMIN_STATUS_NAKAMA_ACCEPTED = 1
+    const val ADMIN_STATUS_NAKAMA_REJECTED = 2
+    // const val ADMIN_STATUS_SYSTEM_TAKEOUT = 3 // not used currently
+    const val ADMIN_STATUS_NAKAMA_TAKEOUT = 4
+
     const val SOURCE_SELLERDASHBOARD = "sellerdashboard"
-
-
 
     const val NAMED_REQUEST_SUBMISSION_PRODUCT_LIST = "request_product_list"
     const val NAMED_REQUEST_POST_PRODUCT_LIST = "request_post_product_list"

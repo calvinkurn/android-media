@@ -26,6 +26,9 @@ data class FlashSaleTncContent(
         @SerializedName("tnc")
         @Expose val tnc: String,
 
+        @SerializedName("status_id")
+        @Expose val statusId: Int,
+
         @SerializedName("status_info")
         @Expose val statusInfo: StatusInfo
 )

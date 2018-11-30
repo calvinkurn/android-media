@@ -73,6 +73,8 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
+import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
@@ -235,15 +237,43 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
-        ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
-        MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
-        ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
-        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
-        KolRouter, PaymentSettingRouter, TalkRouter,
-        BroadcastMessageRouter, MerchantVoucherModuleRouter {
+        implements TkpdCoreRouter,
+        SellerModuleRouter,
+        PdpRouter,
+        GMModuleRouter,
+        TopAdsModuleRouter,
+        IPaymentModuleRouter,
+        IDigitalModuleRouter,
+        TkpdInboxRouter,
+        TransactionRouter,
+        ReputationRouter,
+        LogisticRouter,
+        SessionRouter,
+        ProfileModuleRouter,
+        MitraToppersRouter,
+        AbstractionRouter,
+        DigitalModuleRouter,
+        ShopModuleRouter,
+        ApplinkRouter,
+        OtpModuleRouter,
+        ImageUploaderRouter,
+        ILogisticUploadAwbRouter,
+        NetworkRouter,
+        TopChatRouter,
+        ProductEditModuleRouter,
+        TopAdsWebViewRouter,
+        ContactUsModuleRouter,
+        BankRouter,
+        ChangePasswordRouter,
+        WithdrawRouter,
+        ShopSettingRouter,
+        GmSubscribeModuleRouter,
+        KolRouter,
+        PaymentSettingRouter,
+        TalkRouter,
+        BroadcastMessageRouter,
+        MerchantVoucherModuleRouter,
+        FlashSaleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1581,6 +1611,12 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public ApplinkDelegate applinkDelegate() {
         return null;
+    }
+
+    @Override
+    public @NonNull
+    Intent getFlashSaleDashboardIntent(@NonNull Context context) {
+        return FlashSaleInternalRouter.getFlashSaleDashboardActivity(context);
     }
 
     @Override
