@@ -256,9 +256,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
+    public void onByMeClicked(AffiliateInfoViewModel affiliate, boolean isRegularPdp) {
 
     }
+
 
     @Override
     public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {

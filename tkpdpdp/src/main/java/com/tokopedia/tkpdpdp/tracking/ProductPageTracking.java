@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by nakama on 4/2/18.
@@ -441,7 +439,7 @@ public class ProductPageTracking {
         }
     }
 
-    public static void eventClickAffiliate(Context context,
+    public static void eventClickAffiliateRegularPdp(Context context,
                                            String userId,
                                            String shopId,
                                            String productId) {
@@ -452,15 +450,33 @@ public class ProductPageTracking {
         eventTracking.put("event", CLICK_PDP);
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE);
         eventTracking.put("eventAction", CLICK_BY_ME);
-        eventTracking.put("eventLabel",
-                String.format(LABEL_CLICK_BY_ME, shopId, productId));
+        eventTracking.put("eventLabel", String.format(LABEL_CLICK_BY_ME, shopId, productId));
         eventTracking.put(USER_ID, userId);
 
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(eventTracking);
     }
 
-    public static void eventClickWishlistOnAffiliate(Context context, String userId) {
+    public static void eventClickAffiliate(Context context,
+                                           String userId,
+                                           String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", EVENT_CLICK_AFFILIATE);
+        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
+        eventTracking.put("eventAction", ACTION_CLICK_TAMBAH_BY_ME);
+        eventTracking.put("eventLabel", productId);
+        eventTracking.put(USER_ID, userId);
+
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(eventTracking);
+    }
+
+    public static void eventClickWishlistOnAffiliate(Context context,
+                                                     String userId,
+                                                     String productId) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
@@ -468,7 +484,7 @@ public class ProductPageTracking {
         eventTracking.put("event", EVENT_CLICK_AFFILIATE);
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
         eventTracking.put("eventAction", ACTION_CLICK_WISHLIST);
-        eventTracking.put("eventLabel", EMPTY_LABEL);
+        eventTracking.put("eventLabel", productId);
         eventTracking.put(USER_ID, userId);
 
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();

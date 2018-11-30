@@ -646,9 +646,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
 
-                    if(isFromExploreAffiliate()){
-                        ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
-                                getUserId());
+                    if (isFromExploreAffiliate()) {
+                        String productId = productData.getInfo() != null ?
+                                String.valueOf(productData.getInfo().getProductId()) :
+                                "";
+                        ProductPageTracking.eventClickWishlistOnAffiliate(
+                                getActivity(),
+                                getUserId(),
+                                productId
+                        );
                     }
                 }
             }
@@ -1041,14 +1047,25 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
+    public void onByMeClicked(AffiliateInfoViewModel affiliate, boolean isRegularPdp) {
         if (getActivity() != null) {
-            ProductPageTracking.eventClickAffiliate(
-                    getActivityContext(),
-                    getUserId(),
-                    productData.getShopInfo().getShopId(),
-                    String.valueOf(affiliate.getProductId())
-            );
+            if (isRegularPdp) {
+                String shopId = productData.getShopInfo() != null ?
+                        productData.getShopInfo().getShopId() :
+                        "";
+                ProductPageTracking.eventClickAffiliateRegularPdp(
+                        getActivityContext(),
+                        getUserId(),
+                        shopId,
+                        String.valueOf(affiliate.getProductId())
+                );
+            } else {
+                ProductPageTracking.eventClickAffiliate(
+                        getActivityContext(),
+                        getUserId(),
+                        String.valueOf(affiliate.getProductId())
+                );
+            }
             if (userSession.isLoggedIn()) {
                 RouteManager.route(
                         getActivity(),
