@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +20,9 @@ import android.widget.Toast;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -60,6 +63,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private View reCaptureButton;
     private View nextButton;
     private String imagePath;
+    private Size mCaptureNativeSize;
 
     private int viewMode;
 
@@ -247,9 +251,23 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void saveToFile(byte[] imageByte) {
-        File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-                .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-        onSuccessImageTakenFromCamera(cameraResultFile);
+        mCaptureNativeSize = cameraView.getPictureSize();
+        try {
+            //rotate the bitmap using the library
+            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize
+                    .getHeight(), new CameraUtils.BitmapCallback() {
+                @Override
+                public void onBitmapReady(Bitmap bitmap) {
+                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
+                            .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                    onSuccessImageTakenFromCamera(cameraResultFile);
+                }
+            });
+        } catch (Throwable error) {
+            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
+                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+            onSuccessImageTakenFromCamera(cameraResultFile);
+        }
     }
 
     private void saveToFileWithCheck(byte[] imageByte) {

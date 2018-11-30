@@ -7,8 +7,6 @@ import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 
 public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
@@ -22,7 +20,7 @@ public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
     @Override
     public Observable<VerifyMyCartResponse> createObservable(RequestParams requestParams) {
         JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
-        boolean flag = requestParams.getBoolean(Utils.Constants.ISSEATINGEVENT, false);
+        boolean flag = requestParams.getBoolean(Utils.Constants.BOOK, false);
         return omsRepository.verifyCard(requestBody, flag);
     }
 }

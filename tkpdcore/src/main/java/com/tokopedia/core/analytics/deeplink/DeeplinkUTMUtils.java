@@ -114,7 +114,7 @@ public class DeeplinkUTMUtils {
             // App was referred via a deep link
             if (uri1.getScheme().equals("http") || uri1.getScheme().equals("https")) {
                 // App was opened from a browser
-                String host = uri.getHost();
+                String host = uri1.getHost();
 
                 if(isValidCampaignUrl(uri1)){
 
@@ -179,7 +179,7 @@ public class DeeplinkUTMUtils {
 
                 }
 
-            } else if (uri.getScheme().equals("android-app")) {
+            } else if (uri != null && uri.getScheme() != null && uri.getScheme().equals("android-app")) {
                 // App was opened from another app
 
                 AndroidAppUri appUri = AndroidAppUri.newAndroidAppUri(uri);
