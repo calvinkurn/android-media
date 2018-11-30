@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
-import android.util.Log;
 
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
