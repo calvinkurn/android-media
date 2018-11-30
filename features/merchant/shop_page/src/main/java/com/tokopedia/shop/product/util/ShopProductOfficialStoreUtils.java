@@ -35,11 +35,6 @@ public class ShopProductOfficialStoreUtils {
     private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
 
     public static boolean proceedUrl(Activity activity, String url, String shopId, boolean login, String fcmTokenId, String uid) {
-        //TODO milhamj delete
-        if (activity == null) {
-            return false;
-        }
-        
         Uri uri = Uri.parse(url);
         if (uri.getScheme().equals(TOKOPEDIA_HOST)) {
             processUriTokopedia(activity, shopId, uri);
