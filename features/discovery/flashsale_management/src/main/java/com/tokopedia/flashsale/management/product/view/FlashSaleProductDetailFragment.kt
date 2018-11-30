@@ -101,7 +101,12 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
                     onBtnRequestProductClicked()
                 }
             }
+            btnRequestProduct.isEnabled = true
+        } else {
+            btnRequestProduct.isEnabled = false
+        }
 
+        if (flashSaleProductItem is FlashSaleSubmissionProductItem) {
             btnContainer.visibility = View.VISIBLE
         } else {
             btnContainer.visibility = View.GONE
