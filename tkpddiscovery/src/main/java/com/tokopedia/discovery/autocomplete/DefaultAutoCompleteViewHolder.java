@@ -5,12 +5,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
@@ -43,12 +44,19 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
     public void bind(DefaultAutoCompleteViewModel element) {
         adapter.clearData();
         for (SearchData searchData : element.getList()) {
-            List<Visitable> list;
             switch (searchData.getId()) {
                 case SearchData.AUTOCOMPLETE_RECENT_SEARCH:
                     adapter.addAll(
                             insertTitleWithDeleteAll(
                                     prepareRecentSearch(searchData, element.getSearchTerm()),
+                                    searchData.getName()
+                            )
+                    );
+                    continue;
+                case SearchData.AUTOCOMPLETE_RECENT_VIEW:
+                    adapter.addAll(
+                            insertTitle(
+                                    prepareRecentViewSearch(searchData, element.getSearchTerm()),
                                     searchData.getName()
                             )
                     );
@@ -102,6 +110,29 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
         }
         popularSearch.setList(childList);
         list.add(popularSearch);
+        return list;
+    }
+
+    private List<Visitable> prepareRecentViewSearch(SearchData searchData, String searchTerm) {
+        List<Visitable> list = new ArrayList<>();
+        RecentViewSearch recentViewSearch = new RecentViewSearch();
+        List<BaseItemAutoCompleteSearch> childList = new ArrayList<>();
+        for (SearchItem item : searchData.getItems()) {
+            BaseItemAutoCompleteSearch model = new BaseItemAutoCompleteSearch();
+            model.setEventId(searchData.getId());
+            model.setEventName(searchData.getName());
+            model.setApplink(item.getApplink());
+            model.setRecom(item.getRecom());
+            model.setUrl(item.getUrl());
+            model.setKeyword(item.getKeyword());
+            model.setSearchTerm(searchTerm);
+            model.setImageUrl(item.getImageURI());
+            model.setProductId(item.getProductId());
+            model.setProductPrice(item.getPrice());
+            childList.add(model);
+        }
+        recentViewSearch.setList(childList);
+        list.add(recentViewSearch);
         return list;
     }
 

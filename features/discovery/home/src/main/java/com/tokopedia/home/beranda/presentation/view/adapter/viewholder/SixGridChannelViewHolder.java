@@ -11,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.design.countdown.CountDownView;
+import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -35,6 +36,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     @LayoutRes
     public static final int LAYOUT = R.layout.home_six_grid_channel;
     private static final String TAG = SixGridChannelViewHolder.class.getSimpleName();
+    private final Context context;
     private View channelTitleContainer;
     private TextView channelTitle;
     private TextView seeAllButton;
@@ -50,9 +52,10 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                                     CountDownView.CountDownListener countDownListener) {
         super(itemView);
         this.listener = listener;
+        this.context = itemView.getContext();
         this.countDownListener = countDownListener;
         findViews(itemView);
-        itemAdapter = new ItemAdapter(listener, getAdapterPosition());
+        itemAdapter = new ItemAdapter(context, listener, getAdapterPosition());
         recyclerView.setAdapter(itemAdapter);
     }
 
@@ -96,8 +99,11 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                 @Override
                 public void onClick(View view) {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
-                    HomeTrackingUtils.homeDiscoveryWidgetViewAll(DynamicLinkHelper.getActionLink(channel.getHeader()));
-                    HomePageTracking.eventClickSeeAllLegoBannerChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                    HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
+                            DynamicLinkHelper.getActionLink(channel.getHeader()));
+                    HomePageTracking.eventClickSeeAllLegoBannerChannel(
+                            context,
+                            DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
             });
             itemAdapter.setChannel(channel, getAdapterPosition());
@@ -121,15 +127,17 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
 
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
+        private final Context context;
         private DynamicHomeChannel.Grid[] list;
         DynamicHomeChannel.Channels channel;
         private final HomeCategoryListener listener;
         private int parentPosition = 0;
 
-        public ItemAdapter(HomeCategoryListener listener, int position) {
+        public ItemAdapter(Context context, HomeCategoryListener listener, int position) {
             this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
             parentPosition = 0;
+            this.context = context;
         }
 
         public void setChannel(DynamicHomeChannel.Channels channel, int position) {
@@ -155,11 +163,16 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                         @Override
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                    holder.getContext(),
                                     channel.getEnhanceClickLegoBannerHomePage(grid, position + 1)
                             );
                             listener.onSixGridItemClicked(getAvailableLink(grid.getApplink(), grid.getUrl()),
                                     channel.getHomeAttribution(position + 1, grid.getAttribution()));
-                            HomeTrackingUtils.homeDiscoveryWidgetClick(parentPosition + 1, grid, getAvailableLink(grid.getApplink(), grid.getUrl()), channel.getType());
+                            HomeTrackingUtils.homeDiscoveryWidgetClick(context,
+                                    parentPosition + 1, grid,
+                                    getAvailableLink(grid.getApplink(),
+                                            grid.getUrl()),
+                                    channel.getType());
                         }
                     });
                 }

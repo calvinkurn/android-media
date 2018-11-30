@@ -222,7 +222,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mPagerSortType.postDelayed(() -> refreshTab(0, 0), CommonConstant.TAB_SETUP_DELAY_MS);
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
-                && (filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
+                && (filters.getCategories().get(0).isHideSubCategory() || filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
             mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
@@ -285,9 +285,26 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                     (int) getResources().getDimension(R.dimen.tp_margin_medium),
                     (int) getResources().getDimension(R.dimen.tp_margin_regular));
 
-            //by default load data for first tab
-            mPagerSortType.postDelayed(() -> refreshTab(filters.getCategories().get(0).getId(),
-                    filters.getCategories().get(0).getSubCategory().get(0).getId()), CommonConstant.TAB_SETUP_DELAY_MS);
+            mPagerSortType.postDelayed(() -> {
+                int selectedTabIndex = getSelectedCategoryIndex(filters.getCategories().get(0).getSubCategory());
+                if (selectedTabIndex == 0) { // Special handling for zeroth index
+                    refreshTab(filters.getCategories().get(0).getId(),
+                            filters.getCategories().get(0).getSubCategory().get(0).getId());
+
+                    try {
+                        if (filters.getCategories().get(0).getSubCategory().get(0).getTimeRemainingSeconds() > 0) {
+                            startFlashTimer(filters.getCategories().get(0).getSubCategory().get(0));
+                            mContainerFlashTimer.setVisibility(View.VISIBLE);
+                        } else {
+                            mContainerFlashTimer.setVisibility(View.GONE);
+                        }
+                    } catch (Exception e){
+
+                    }
+                } else {
+                    mPagerSortType.setCurrentItem(selectedTabIndex, false);
+                }
+            }, CommonConstant.TAB_SETUP_DELAY_MS);
         }
     }
 
@@ -542,5 +559,17 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         }
 
         return false;
+    }
+
+    private int getSelectedCategoryIndex(List<CatalogSubCategory> data) {
+        int counter = 0;
+        for (CatalogSubCategory item : data) {
+            if (item.isSelected()) {
+                break;
+            }
+            counter++;
+        }
+
+        return counter;
     }
 }

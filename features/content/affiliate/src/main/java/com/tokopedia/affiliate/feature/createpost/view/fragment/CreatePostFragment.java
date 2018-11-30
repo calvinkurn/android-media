@@ -286,7 +286,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private void initView() {
         doneBtn.setOnClickListener(view -> {
-            affiliateAnalytics.onSelesaiCreateButtonClicked();
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.getProductId());
             if (!viewModel.isEdit()) {
                 submitPost();
             } else {
@@ -294,11 +294,11 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             }
         });
         addImageBtn.setOnClickListener(view -> {
+            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.getProductId());
             if (shouldShowExample()) {
                 goToImageExample(true);
                 createPostPreference.setFirstTime(getUserSession().getUserId());
             } else {
-                affiliateAnalytics.onTambahGambarButtonClicked();
                 goToImagePicker();
             }
         });
@@ -339,7 +339,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
         seeExample.setOnClickListener(v -> {
-            affiliateAnalytics.onLihatContohButtonClicked();
+            affiliateAnalytics.onLihatContohButtonClicked(viewModel.getProductId());
             goToImageExample(false);
         });
     }
