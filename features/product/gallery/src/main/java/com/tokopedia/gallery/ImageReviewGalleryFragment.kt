@@ -67,10 +67,10 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
 
     private fun convertToImageReviewItemList(imageUrlList: ArrayList<String>): List<ImageReviewItem> {
         val imageReviewItemList = ArrayList<ImageReviewItem>()
-        for (s in imageUrlList) {
+        for (imageUrl in imageUrlList) {
             val imageReviewItem = ImageReviewItem()
-            imageReviewItem.imageUrlThumbnail = s
-            imageReviewItem.imageUrlLarge = s
+            imageReviewItem.imageUrlThumbnail = imageUrl
+            imageReviewItem.imageUrlLarge = imageUrl
             imageReviewItemList.add(imageReviewItem)
         }
         return imageReviewItemList

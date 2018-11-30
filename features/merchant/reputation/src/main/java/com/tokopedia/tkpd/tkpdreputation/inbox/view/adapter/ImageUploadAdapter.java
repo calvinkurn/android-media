@@ -64,12 +64,8 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         return new ImageUploadAdapter(context);
     }
 
-    public void setReviewImage(boolean b){
-        if (b){
-            isReviewImage = true;
-        } else{
-            isReviewImage = false;
-        }
+    public void setReviewImage(boolean isReviewImage){
+        this.isReviewImage = isReviewImage;
     }
 
     @Override
@@ -80,9 +76,9 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
                 viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.listview_image_review_item, viewGroup, false));
                 break;
-                default:
-                    viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                            .inflate(R.layout.listview_image_upload_review, viewGroup, false));
+            default:
+                viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.listview_image_upload_review, viewGroup, false));
         }
         return viewHolder;
     }
