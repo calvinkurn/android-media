@@ -35,6 +35,8 @@ public class PersistentNotification extends BaseNotification {
         builder.setContentIntent(getMainContentIntent());
         builder.setAutoCancel(false);
         builder.setOngoing(true);
+        if(baseNotificationModel.getPersistentButtonList() == null || baseNotificationModel.getPersistentButtonList().size() == 0)
+            return null;
         RemoteViews remoteViews = getPersistentRemoteView();
         builder.setCustomContentView(remoteViews);
         builder.setCustomBigContentView(remoteViews);

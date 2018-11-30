@@ -12,7 +12,6 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
  */
 public class CouponCodeNotification extends BaseNotification {
 
-
     CouponCodeNotification(Context context, BaseNotificationModel baseNotificationModel) {
         super(context, baseNotificationModel);
     }

@@ -28,8 +28,11 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                     Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
                     context.startActivity(appLinkIntent);
                     NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
+                    Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                    context.sendBroadcast(it);
                     break;
                 case CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT:
+                    context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS:

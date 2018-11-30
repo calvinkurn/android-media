@@ -29,12 +29,14 @@ public class CMJobIntentService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Bundle bundle = intent.getBundleExtra(CMConstant.EXTRA_NOTIFICATION_BUNDLE);
-        if (null != bundle) {
-            BaseNotification baseNotification = CMNotificationFactory.getNotification(this.getApplicationContext(), bundle);
-            if (null != baseNotification)
-                postNotification(baseNotification);
-        }
+        try {
+            Bundle bundle = intent.getBundleExtra(CMConstant.EXTRA_NOTIFICATION_BUNDLE);
+            if (null != bundle) {
+                BaseNotification baseNotification = CMNotificationFactory.getNotification(this.getApplicationContext(), bundle);
+                if (null != baseNotification)
+                    postNotification(baseNotification);
+            }
+        }catch (Exception e){}
     }
 
     private void postNotification(BaseNotification baseNotification) {

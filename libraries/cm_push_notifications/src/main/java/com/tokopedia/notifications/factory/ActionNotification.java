@@ -28,6 +28,8 @@ public class ActionNotification extends BaseNotification {
         builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink()));
         builder.setAutoCancel(true);
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId()));
+        if(baseNotificationModel.getActionButton() == null || baseNotificationModel.getActionButton().size() == 0)
+            return null;
         addActionButton(baseNotificationModel.getActionButton(), builder);
         return builder.build();
     }

@@ -90,8 +90,8 @@ public abstract class BaseNotification {
             }
             channel.setVibrationPattern(getVibratePattern());
             channel.setShowBadge(true);
-            notificationManager.createNotificationChannel(channel);
             channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
+            notificationManager.createNotificationChannel(channel);
         } else {
             createDefaultChannel();
         }
@@ -110,10 +110,10 @@ public abstract class BaseNotification {
         channel.setSound(getRingtoneUri(), att);
         channel.setShowBadge(true);
         channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
-        notificationManager.createNotificationChannel(channel);
-        channel.setVibrationPattern(getVibratePattern());
-        createChannelGroup();
         channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
+        channel.setVibrationPattern(getVibratePattern());
+        notificationManager.createNotificationChannel(channel);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
