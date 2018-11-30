@@ -2,14 +2,15 @@ package com.tokopedia.discovery.search.view.adapter.factory;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.AutoCompleteViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.CategoryViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.DigitalViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.InCategoryViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.PopularViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.RecentViewHolder;
+import com.tokopedia.discovery.autocomplete.adapter.RecentViewViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.ShopViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.TitleViewHolder;
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
@@ -18,6 +19,7 @@ import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -83,6 +85,11 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
     }
 
     @Override
+    public int type(RecentViewSearch viewModel) {
+        return RecentViewViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if(type == DigitalViewHolder.LAYOUT) {
@@ -101,6 +108,8 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
             viewHolder = new PopularViewHolder(parent, clickListener);
         } else if(type == RecentViewHolder.LAYOUT) {
             viewHolder = new RecentViewHolder(parent, clickListener);
+        } else if(type == RecentViewViewHolder.LAYOUT) {
+            viewHolder = new RecentViewViewHolder(parent, clickListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

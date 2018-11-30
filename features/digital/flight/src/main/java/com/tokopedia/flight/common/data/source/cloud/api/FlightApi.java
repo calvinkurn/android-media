@@ -7,7 +7,6 @@ import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
-import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
@@ -25,8 +24,8 @@ import com.tokopedia.flight.review.domain.verifybooking.model.response.DataRespo
 import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
-import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse;
 import com.tokopedia.flight.searchV2.data.api.combined.request.FlightSearchCombinedRequestData;
+import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +117,7 @@ public interface FlightApi {
                                                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader);
 
     @GET(FlightUrl.FLIGHT_CANCELLATION_PASSENGER)
-    Observable<Response<DataResponse<CancelPassengerEntity>>> getCancellablePassenger(@Query("invoice_id") String invoiceId);
+    Observable<Response<String>> getCancellablePassenger(@Query("invoice_id") String invoiceId);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CANCELLATION_ESTIMATE_REFUND)

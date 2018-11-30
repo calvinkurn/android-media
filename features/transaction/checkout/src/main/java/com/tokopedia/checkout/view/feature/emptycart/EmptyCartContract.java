@@ -52,6 +52,8 @@ public interface EmptyCartContract {
 
         void stopTrace();
 
+        boolean isTraceStopped();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

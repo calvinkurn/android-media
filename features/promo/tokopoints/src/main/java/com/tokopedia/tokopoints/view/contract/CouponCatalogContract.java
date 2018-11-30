@@ -74,5 +74,7 @@ public interface CouponCatalogContract {
         void fetchLatestStatus(List<Integer> catalogsIds);
 
         void swipeMyCoupon(String partnerCode, String pin);
+
+        void startSendGift(int id, String title, String pointStr);
     }
 }
