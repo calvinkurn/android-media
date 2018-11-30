@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.product.data.*
 import kotlinx.android.synthetic.main.widget_flash_sale_product_widget.view.*
@@ -77,9 +78,18 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                         tvStatus.visibility = View.VISIBLE
                     }
                 }
-            } else {
+            } else { // item is postsubmission. If still in review or ready, show the status.
                 ivCheckMark.visibility = View.GONE
-                tvStatus.visibility = View.GONE
+                if (item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.IN_REVIEW ||
+                        item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.READY) {
+                    tvStatus.text = item.getCampaignAdminStatusId().getAdminStatusString(context)
+                    val statusColor = item.getCampaignAdminStatusId().getAdminStatusColor()
+                    tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
+                    tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
+                    tvStatus.visibility = View.VISIBLE
+                } else {
+                    tvStatus.visibility = View.GONE
+                }
             }
             tvProductName.text = item.getProductName()
             if (hideDetail || item.getDiscountPercentage() <= 0) {
@@ -97,7 +107,11 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 tvFinalPrice.text = KMNumbers.formatRupiahString(item.getProductPrice().toLong())
             }
             // if product is in Submission, text will be Stock xx
-            if (item is FlashSaleSubmissionProductItem) {
+            // if item is postsubmission, but still in review, or ready, also will show stock xx
+            if (item is FlashSaleSubmissionProductItem ||
+                    (item is FlashSalePostProductItem &&
+                            (item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.IN_REVIEW ||
+                                    item.getProductStatus() == FlashSaleCampaignStatusIdTypeDef.READY))) {
                 if (hideDetail || item.getCustomStock() <= 0) {
                     tvStock.visibility = View.GONE
                 } else {
@@ -105,7 +119,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                     tvStock.text = stockText
                     tvStock.visibility = View.VISIBLE
                 }
-            } else { // product is post submission, text will be Sold x from x
+            } else { // product is post submission (after in review and after ready), text will be Sold x from x
                 tvStock.text = context.getString(R.string.label_sold_x_from_x,
                         item.getOriginalCustomStock() - item.getCustomStock(),
                         item.getOriginalCustomStock())

@@ -4,10 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
-import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 
 /**
  * Created by hendry on 25/10/18.
@@ -72,13 +71,15 @@ data class FlashSalePostProductItem(
     override fun getProductDepartmentName() = departmentName
     override fun getCampOriginalPrice() = StringUtils.convertToNumeric(campaign.originalPrice, false).toInt()
     override fun getDiscountPercentage() = campaign.discountedPercentage
-    override fun getDiscountedPrice() = StringUtils.convertToNumeric(campaign.discountedPrice,false).toInt()
+    override fun getDiscountedPrice() = StringUtils.convertToNumeric(campaign.discountedPrice, false).toInt()
     override fun getCustomStock() = campaign.customStock
     override fun getOriginalCustomStock() = campaign.originalCustomStock
     override fun getStockSoldPercentage() = 0
     override fun isEligible() = false //no operation edit is needed for post submission
     override fun getMessage() = ""
     override fun getProductStatus() = FlashSaleProductStatusTypeDef.NOTHING
+    override fun getCampaignStatusId() = FlashSaleCampaignStatusIdTypeDef.ON_GOING
+    override fun getCampaignAdminStatusId() = campaign.adminStatus
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
@@ -125,7 +126,13 @@ data class FlashSalePostProductItemCampaign(
         @Expose val originalCustomStock: Int = 0,
 
         @SerializedName("stock_sold_percentage")
-        @Expose val stockSoldPercentage: Int = 0
+        @Expose val stockSoldPercentage: Int = 0,
+
+        @SerializedName("status_id")
+        @Expose val statusId: Int = 0,
+
+        @SerializedName("admin_status")
+        @Expose val adminStatus: Int = 0
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -133,6 +140,8 @@ data class FlashSalePostProductItemCampaign(
             parcel.readString(),
             parcel.readFloat(),
             parcel.readString(),
+            parcel.readInt(),
+            parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt()) {
@@ -146,6 +155,8 @@ data class FlashSalePostProductItemCampaign(
         parcel.writeInt(customStock)
         parcel.writeInt(originalCustomStock)
         parcel.writeInt(stockSoldPercentage)
+        parcel.writeInt(statusId)
+        parcel.writeInt(adminStatus)
     }
 
     override fun describeContents(): Int {

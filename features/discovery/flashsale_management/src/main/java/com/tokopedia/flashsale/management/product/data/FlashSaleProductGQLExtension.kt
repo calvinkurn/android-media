@@ -2,6 +2,7 @@ package com.tokopedia.flashsale.management.product.data
 
 import android.content.Context
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleAdminStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductActionTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef.NOTHING
@@ -20,6 +21,17 @@ fun Int.getProductStatusString(context: Context): String {
         FlashSaleProductStatusTypeDef.RESERVE -> context.getString(R.string.flash_sale_reserve)
         FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> context.getString(R.string.flash_sale_canceled)
         FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> ""
+        else -> ""
+    }
+}
+
+fun Int.getAdminStatusString(context: Context): String {
+    return when (this) {
+        FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED ->  context.getString(R.string.flash_sale_waiting)
+        FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED -> context.getString(R.string.flash_sale_accepted)
+        FlashSaleAdminStatusIdTypeDef.NAKAMA_REJECTED,
+        FlashSaleAdminStatusIdTypeDef.SYSTEM_TAKEOUT,
+        FlashSaleAdminStatusIdTypeDef.NAKAMA_TAKEOUT -> context.getString(R.string.flash_sale_rejected)
         else -> ""
     }
 }
@@ -56,6 +68,17 @@ fun FlashSaleProductItemCampaign.getProductStatusColor(): StatusColor {
         FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> StatusColor(R.color.white, R.drawable.rect_gray_rounded_left)
         FlashSaleProductStatusTypeDef.SUBMITTED,
         FlashSaleProductStatusTypeDef.RESERVE -> StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
+        else -> StatusColor(0, 0)
+    }
+}
+
+fun Int.getAdminStatusColor(): StatusColor {
+    return when (this) {
+        FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED,
+        FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED -> StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
+        FlashSaleAdminStatusIdTypeDef.NAKAMA_REJECTED,
+        FlashSaleAdminStatusIdTypeDef.SYSTEM_TAKEOUT,
+        FlashSaleAdminStatusIdTypeDef.NAKAMA_TAKEOUT -> StatusColor(R.color.white, R.drawable.rect_gray_rounded_left)
         else -> StatusColor(0, 0)
     }
 }

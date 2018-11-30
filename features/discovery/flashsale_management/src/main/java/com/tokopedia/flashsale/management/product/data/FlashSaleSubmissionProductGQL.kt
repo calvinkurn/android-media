@@ -4,6 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.flashsale.management.data.FlashSaleAdminStatusIdTypeDef
+import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 
 /**
@@ -94,6 +96,8 @@ data class FlashSaleSubmissionProductItem(
     override fun isEligible() = campaign.isEligible
     override fun getMessage() = campaign.message
     override fun getProductStatus() = campaign.productStatus
+    override fun getCampaignStatusId() = FlashSaleCampaignStatusIdTypeDef.IN_SUBMISSION
+    override fun getCampaignAdminStatusId() = FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED
 }
 
 data class FlashSaleProductItemCampaign(
@@ -127,7 +131,6 @@ data class FlashSaleProductItemCampaign(
         @SerializedName("criteria")
         @Expose val criteria: FlashSaleProductItemCampaignCriteria = FlashSaleProductItemCampaignCriteria()
 ) : Parcelable {
-
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readInt(),

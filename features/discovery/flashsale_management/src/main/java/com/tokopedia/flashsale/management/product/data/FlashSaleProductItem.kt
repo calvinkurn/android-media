@@ -24,6 +24,8 @@ abstract class FlashSaleProductItem : Visitable<FlashSaleProductAdapterTypeFacto
     abstract fun isEligible(): Boolean
     abstract fun getMessage(): String
     abstract fun getProductStatus(): Int
+    abstract fun getCampaignStatusId(): Int
+    abstract fun getCampaignAdminStatusId(): Int
 
     override fun type(typeFactory: FlashSaleProductAdapterTypeFactory) = typeFactory.type(this)
 }
