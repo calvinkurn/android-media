@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -190,13 +192,21 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
                     PdpRouter pdpRouter = (PdpRouter) getActivity().getApplicationContext();
                     pdpRouter.eventClickFilterReview(
                             getContext(),
-                            typeFilter,
+                            addSuffixIfNeeded(typeFilter),
                             productId
                             );
                 }
                 loadInitialData();
             }
         });
+    }
+
+    private String addSuffixIfNeeded(String typeFilter) {
+        if (!TextUtils.isEmpty(typeFilter) && TextUtils.isDigitsOnly(typeFilter)) {
+            return typeFilter + " star(s)";
+        } else {
+            return typeFilter;
+        }
     }
 
     @Override
