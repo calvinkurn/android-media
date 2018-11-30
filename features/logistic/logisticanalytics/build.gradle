@@ -23,5 +23,8 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
