@@ -321,7 +321,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    navigateToAboutGM()
+                    navigateToGMHome()
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -351,6 +351,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                     toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
             tvManageGmSubscribe.visibility = View.VISIBLE
             vgMembershipContainer.setOnClickListener { navigateToAboutGM() }
+        }
+    }
+
+    private fun navigateToGMHome() {
+        activity?.run {
+            val router = application as? ShopSettingRouter
+            router?.goToGMSubscribe(this)
         }
     }
 

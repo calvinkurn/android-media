@@ -883,7 +883,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToGMSubscribe(Activity activity) {
-        Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
+        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(activity);
         activity.startActivity(intent);
     }
 
