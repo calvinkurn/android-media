@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
@@ -75,6 +76,7 @@ public class OnboardingFragment extends BaseDaggerFragment {
         super.onViewCreated(view, savedInstanceState);
         initVar(savedInstanceState);
         initView();
+        affiliateAnalytics.onImpressionOnboard();
         if (!userSession.isLoggedIn()) {
             startActivityForResult(
                     RouteManager.getIntent(
@@ -94,7 +96,7 @@ public class OnboardingFragment extends BaseDaggerFragment {
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA;
     }
 
     @Override

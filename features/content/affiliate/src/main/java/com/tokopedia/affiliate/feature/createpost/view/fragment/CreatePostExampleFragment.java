@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity;
 import com.tokopedia.design.component.ButtonCompat;
 
@@ -41,7 +42,7 @@ public class CreatePostExampleFragment extends BaseDaggerFragment {
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AffiliateEventTracking.Screen.BYME_CREATE_POST;
     }
 
     @Override

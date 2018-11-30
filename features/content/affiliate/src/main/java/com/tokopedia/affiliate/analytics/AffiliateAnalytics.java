@@ -282,4 +282,16 @@ public class AffiliateAnalytics {
                 )
         );
     }
+
+    public void onImpressionOnboard() {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_ONBOARD,
+                        AffiliateEventTracking.Action.IMPRESSION_ONBOARD,
+                        ""
+                )
+        );
+    }
 }

@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
@@ -139,7 +140,7 @@ public class RecommendProductFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AffiliateEventTracking.Screen.BYME_ADD_RECOMMENDATION;
     }
 
     private void initVar() {
