@@ -66,9 +66,9 @@ public interface PdpRouter {
 
     Intent getProductTalk(Context context, String productId);
 
-    void eventClickFilterReviewByImage(Context context,
-                                       String filterName,
-                                       String productId);
+    void eventClickFilterReview(Context context,
+                                String filterName,
+                                String productId);
 
     void eventImageClickOnReview(Context context,
                                  String productId,

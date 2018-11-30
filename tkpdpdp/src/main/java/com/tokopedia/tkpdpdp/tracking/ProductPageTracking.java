@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by nakama on 4/2/18.
@@ -78,7 +76,7 @@ public class ProductPageTracking {
     public static final String EVENT_ACTION_CLICK_REVIEW_ON_SEE_ALL_IMAGE = "click - lihat semua review gallery";
     public static final String EVENT_ACTION_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW = "click - review gallery on most helpful review";
     public static final String EVENT_LABEL_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW = "product_id: %s - review:id : %s";
-    public static final String EVENT_ACTION_CLICK_FILTER_REVIEW_BY_IMAGE = "click - filter review by %s";
+    public static final String EVENT_ACTION_CLICK_FILTER_REVIEW_BY = "click - filter review by %s";
     public static final String EVENT_ACTION_CLICK_IMAGE_ON_REVIEW_LIST = "click - review gallery on review list";
     public static final String EVENT_LABEL_CLICK_IMAGE_ON_REVIEW_LIST = "product_id: %s - review_id : %s";
 
@@ -537,9 +535,9 @@ public class ProductPageTracking {
         );
     }
 
-    public static void eventClickFilterReviewByImage(Context context,
-                                                     String filterName,
-                                                     String productId) {
+    public static void eventClickFilterReview(Context context,
+                                              String filterName,
+                                              String productId) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
@@ -549,8 +547,8 @@ public class ProductPageTracking {
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 String.format(
-                        EVENT_ACTION_CLICK_FILTER_REVIEW_BY_IMAGE,
-                        filterName
+                        EVENT_ACTION_CLICK_FILTER_REVIEW_BY,
+                        filterName.toLowerCase()
                 ),
                 productId
         );
