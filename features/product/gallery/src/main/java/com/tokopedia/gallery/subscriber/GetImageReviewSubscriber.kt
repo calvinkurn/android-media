@@ -6,7 +6,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewListModel
 
 import rx.Subscriber
 
-class GetImageReviewSubscriber(val galleryView: GalleryView) : Subscriber<ImageReviewListModel>() {
+open class GetImageReviewSubscriber(val galleryView: GalleryView) : Subscriber<ImageReviewListModel>() {
 
     override fun onCompleted() {
 

@@ -1,11 +1,19 @@
 package com.tokopedia.gallery
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import com.tokopedia.gallery.subscriber.GetImageReviewSubscriber
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.gallery.viewmodel.ImageReviewListModel
+import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.given
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 
 import org.junit.Before
 import org.junit.Test
+import org.junit.platform.runner.JUnitPlatform
+import org.junit.runner.RunWith
 import org.mockito.Mockito
 
 import java.util.ArrayList
@@ -15,21 +23,13 @@ import java.util.ArrayList
  *
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
-class GetImageReviewSubscriberTest {
+@RunWith(JUnitPlatform::class)
+class GetImageReviewSubscriberTest : Spek ({
 
-    private var getImageReviewSubscriber: GetImageReviewSubscriber? = null
-    private var galleryView: GalleryView? = null
+    given("getting response from server") {
+        val galleryView: GalleryView = mock()
+        val getImageReviewSubscriber = GetImageReviewSubscriber(galleryView)
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        galleryView = Mockito.mock(GalleryView::class.java)
-        getImageReviewSubscriber = GetImageReviewSubscriber(galleryView!!)
-    }
-
-    @Test
-    fun onNext_validResult_handleItemResult() {
-        //given
         val imageReviewItem1 = ImageReviewItem()
         val imageReviewItem2 = ImageReviewItem()
 
@@ -40,22 +40,22 @@ class GetImageReviewSubscriberTest {
         val isHasNextPage = true
         val imageReviewListModel = ImageReviewListModel(imageReviewItems, isHasNextPage)
 
-        //when
-        getImageReviewSubscriber!!.onNext(imageReviewListModel)
-
-        //then
-        Mockito.verify<GalleryView>(galleryView).handleItemResult(imageReviewItems, isHasNextPage)
-    }
-
-    @Test
-    fun onError_handleErrorResult() {
-        //given
         val e = Throwable()
 
-        //when
-        getImageReviewSubscriber!!.onError(e)
+        on("success response from server") {
+            getImageReviewSubscriber.onNext(imageReviewListModel)
 
-        //then
-        Mockito.verify<GalleryView>(galleryView).handleErrorResult(e)
+            it("handle item result") {
+                verify(galleryView).handleItemResult(imageReviewItems, isHasNextPage)
+            }
+        }
+
+        on("error from server") {
+            getImageReviewSubscriber.onError(e)
+
+            it("handle error result") {
+                verify(galleryView).handleErrorResult(e)
+            }
+        }
     }
-}
+})

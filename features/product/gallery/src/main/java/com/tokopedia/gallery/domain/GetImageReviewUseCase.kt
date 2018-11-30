@@ -17,7 +17,7 @@ import java.util.HashMap
 
 import rx.Observable
 
-class GetImageReviewUseCase(private val context: Context?,
+open class GetImageReviewUseCase(private val context: Context?,
                             private val graphqlUseCase: GraphqlUseCase) : UseCase<ImageReviewListModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<ImageReviewListModel> {
