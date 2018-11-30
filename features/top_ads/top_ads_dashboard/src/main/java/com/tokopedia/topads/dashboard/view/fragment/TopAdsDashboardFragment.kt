@@ -571,7 +571,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     override fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
         snackbarRetry?.hideRetrySnackbar()
         this.dataStatistic = dataStatistic
-        if (dataStatistic != null) {
+        if (this.dataStatistic != null) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment

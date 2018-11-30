@@ -63,7 +63,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onBackPressed() {
         if (isTaskRoot) {
-            if (intent.extras.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false)) {
+            if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
                 val homeIntent = (application as TopAdsDashboardRouter).getHomeIntent(this)
                 startActivity(homeIntent)
                 finish()
