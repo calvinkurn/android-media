@@ -162,16 +162,10 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     public void setPersonalInfoViewVisibility(boolean isVisible) {
         if (!isVisible) {
             chatPersonalSwitch.setChecked(true);
-            if (chatRole.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
-                chatPromotionalcardView.setAlpha(0.0f);
-            }
             chatPersonalInfoView.setVisibility(View.GONE);
         } else {
             chatPersonalSwitch.setChecked(false);
             chatPersonalInfoView.setVisibility(View.VISIBLE);
-            if (chatRole.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
-                chatPromotionalcardView.setAlpha(0.2f);
-            }
             if (!TextUtils.isEmpty(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())) {
                 SpannableString str = getInformationText(String.format(getString(R.string.chat_personal_blocked_validity), senderName, getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
                 chatPersonalInfoText.setText(str);
