@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">checkout</string>
     <string name="title_activity_shipment_detail">Kurir Pengiriman</string>
     <string name="label_shipment_type_format">(%s)</string>
@@ -220,5 +220,6 @@
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
+    <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
 
 </resources>

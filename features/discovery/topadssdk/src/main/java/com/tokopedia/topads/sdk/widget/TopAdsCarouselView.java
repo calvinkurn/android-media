@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
@@ -50,6 +51,8 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private TopAdsItemImpressionListener adsItemImpressionListener;
     private LinearLayoutManager layoutManager;
     private ImageView btnCta;
+    private TypedArray styledAttributes;
+    private TextView title;
     private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
 
     public TopAdsCarouselView(Context context) {
@@ -71,6 +74,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
+        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsCarouselView, defStyle, 0);
         inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
@@ -78,6 +82,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
                 false);
         btnCta = findViewById(R.id.info_cta);
         btnCta.setOnClickListener(this);
+        title = findViewById(R.id.title);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
@@ -85,6 +90,9 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_5)));
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
+        String presetTitle = styledAttributes.getString(R.styleable.TopAdsCarouselView_ads_title);
+        if(presetTitle!=null)
+            title.setText(presetTitle);
     }
 
     @Override
