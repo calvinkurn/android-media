@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.features.core)
