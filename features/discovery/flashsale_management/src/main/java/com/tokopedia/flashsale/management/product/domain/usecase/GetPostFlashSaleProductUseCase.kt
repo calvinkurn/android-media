@@ -1,11 +1,9 @@
 package com.tokopedia.flashsale.management.product.domain.usecase
 
 import android.text.TextUtils
+import com.tokopedia.flashsale.management.data.FlashSaleAdminStatusIdTypeDef
+import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.ADMIN_STATUS_NAKAMA_ACCEPTED
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.ADMIN_STATUS_NAKAMA_REJECTED
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.ADMIN_STATUS_NAKAMA_TAKEOUT
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.ADMIN_STATUS_NOT_REVIEWED
 import com.tokopedia.flashsale.management.data.FlashSaleConstant.SOURCE_SELLERDASHBOARD
 import com.tokopedia.flashsale.management.product.data.FlashSalePostProductGQL
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -36,21 +34,21 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_POST_PRODUCT_LIST) private va
                 FlashSaleConstant.PARAM_SS to FlashSaleConstant.SYSTEM_STATUS_ACCEPTED)
         if (statusId > 0) {
             val massAdminStatus = when (statusId) {
-                FlashSaleConstant.KEY_STATUS_READY_CANCELLED_EN ->
-                    ADMIN_STATUS_NAKAMA_ACCEPTED.toString() // 1
-                FlashSaleConstant.KEY_STATUS_ON_GOING_EN,
-                FlashSaleConstant.KEY_STATUS_FINISHED_EN,
-                FlashSaleConstant.KEY_STATUS_ONGOING_CANCELLED_EN ->
-                    joinComma(ADMIN_STATUS_NAKAMA_ACCEPTED.toString(),  // 1,4
-                            ADMIN_STATUS_NAKAMA_TAKEOUT.toString())
-                FlashSaleConstant.KEY_STATUS_IN_REVIEW_EN,
-                FlashSaleConstant.KEY_STATUS_READY_EN,
-                FlashSaleConstant.KEY_STATUS_REVIEW_CANCELLED_EN,
-                FlashSaleConstant.KEY_STATUS_READY_LOCKED_EN,
-                FlashSaleConstant.KEY_STATUS_READY_LOCKED_CANCELLED_EN ->
-                    joinComma(ADMIN_STATUS_NOT_REVIEWED.toString(),
-                            ADMIN_STATUS_NAKAMA_ACCEPTED.toString(),  // 0,1,2
-                            ADMIN_STATUS_NAKAMA_REJECTED.toString())
+                FlashSaleCampaignStatusIdTypeDef.READY_CANCELLED ->
+                    FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED.toString() // 1
+                FlashSaleCampaignStatusIdTypeDef.ON_GOING,
+                FlashSaleCampaignStatusIdTypeDef.FINISHED,
+                FlashSaleCampaignStatusIdTypeDef.ONGOING_CANCELLED ->
+                    joinComma(FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED.toString(),  // 1,4
+                            FlashSaleAdminStatusIdTypeDef.NAKAMA_TAKEOUT.toString())
+                FlashSaleCampaignStatusIdTypeDef.IN_REVIEW,
+                FlashSaleCampaignStatusIdTypeDef.READY,
+                FlashSaleCampaignStatusIdTypeDef.REVIEW_CANCELLED,
+                FlashSaleCampaignStatusIdTypeDef.READY_LOCKED,
+                FlashSaleCampaignStatusIdTypeDef.READY_LOCKED_CANCELLED ->
+                    joinComma(FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED.toString(),
+                            FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED.toString(),  // 0,1,2
+                            FlashSaleAdminStatusIdTypeDef.NAKAMA_REJECTED.toString())
                 else -> ""
             }
             if (massAdminStatus.isNotEmpty()) {

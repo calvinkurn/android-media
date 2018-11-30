@@ -85,8 +85,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:paddingRight="@dimen/dp_16"
                 android:layout_gravity="center_vertical"
                 android:text="@string/with_click_button_you_agree_with_tnc" />

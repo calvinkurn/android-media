@@ -23,7 +23,7 @@ public class SellerDashboardDrawerPresenter {
 
     private SellerDashboardView listener;
     public interface SellerDashboardView {
-        void onSuccessGetFlashsaleSellerStatus(Boolean isEligible);
+        void onSuccessGetFlashsaleSellerStatus(Boolean isVisible);
         void onSuccessGetShopInfo(ShopModel shopModel);
         Context getContext();
     }
@@ -52,8 +52,8 @@ public class SellerDashboardDrawerPresenter {
                 e.printStackTrace(); }
 
             @Override
-            public void onNext(Boolean isEligible) {
-                listener.onSuccessGetFlashsaleSellerStatus(isEligible);
+            public void onNext(Boolean isVisible) {
+                listener.onSuccessGetFlashsaleSellerStatus(isVisible);
             }
         });
     }

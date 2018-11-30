@@ -10,6 +10,8 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleAdminStatusIdTypeDef
+import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.product.data.*
 import kotlinx.android.synthetic.main.widget_flash_sale_product_widget.view.*
@@ -38,6 +40,13 @@ class FlashSaleProductWidget @JvmOverloads constructor(
         } finally {
             styledAttributes.recycle()
         }
+    }
+
+    fun shouldShowStatisticPostSubmission(item: FlashSaleProductItem?): Boolean {
+        return item is FlashSalePostProductItem &&
+                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.IN_REVIEW &&
+                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.READY &&
+                item.getCampaignAdminStatusId() == FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED
     }
 
     fun setData(item: FlashSaleProductItem?) {
@@ -77,9 +86,17 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                         tvStatus.visibility = View.VISIBLE
                     }
                 }
-            } else {
+            } else { // item is postsubmission.
                 ivCheckMark.visibility = View.GONE
-                tvStatus.visibility = View.GONE
+                if (shouldShowStatisticPostSubmission(item)) {
+                    tvStatus.visibility = View.GONE
+                } else {
+                    tvStatus.text = item.getCampaignAdminStatusId().getAdminStatusString(context)
+                    val statusColor = item.getCampaignAdminStatusId().getAdminStatusColor()
+                    tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
+                    tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
+                    tvStatus.visibility = View.VISIBLE
+                }
             }
             tvProductName.text = item.getProductName()
             if (hideDetail || item.getDiscountPercentage() <= 0) {
@@ -96,8 +113,14 @@ class FlashSaleProductWidget @JvmOverloads constructor(
             } else {
                 tvFinalPrice.text = KMNumbers.formatRupiahString(item.getProductPrice().toLong())
             }
-            // if product is in Submission, text will be Stock xx
-            if (item is FlashSaleSubmissionProductItem) {
+
+            // if post submission after in review, and after ready, and it is accepted, show Sold x of x
+            if (shouldShowStatisticPostSubmission(item)) {
+                tvStock.text = context.getString(R.string.label_sold_x_from_x,
+                        item.getOriginalCustomStock() - item.getCustomStock(),
+                        item.getOriginalCustomStock())
+                tvStock.visibility = View.VISIBLE
+            } else { // else show Stock xx
                 if (hideDetail || item.getCustomStock() <= 0) {
                     tvStock.visibility = View.GONE
                 } else {
@@ -105,11 +128,6 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                     tvStock.text = stockText
                     tvStock.visibility = View.VISIBLE
                 }
-            } else { // product is post submission, text will be Sold x from x
-                tvStock.text = context.getString(R.string.label_sold_x_from_x,
-                        item.getOriginalCustomStock() - item.getCustomStock(),
-                        item.getOriginalCustomStock())
-                tvStock.visibility = View.VISIBLE
             }
             visibility = View.VISIBLE
         }

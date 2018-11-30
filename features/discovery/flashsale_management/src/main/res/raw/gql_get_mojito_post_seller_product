@@ -27,6 +27,8 @@ query getMojitoPostProductList($cid: Int!, $source: String!,
            custom_stock
            original_custom_stock
            stock_sold_percentage
+           status_id
+           admin_status
            max_order
          }
        }
