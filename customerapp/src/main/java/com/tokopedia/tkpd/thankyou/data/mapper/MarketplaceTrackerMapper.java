@@ -110,14 +110,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCoupon(couponCode);
 
         for (Product product : getProductList(orderData)) {
-            purchase.addProduct(getProductList(product.getProduct(), couponCode));
+            purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
         }
 
         return purchase;
     }
 
 
-    private Map<String, Object> getProductList(Map<String, Object> product, String coupon){
+    private Map<String, Object> addCouponToProduct(Map<String, Object> product, String coupon){
         product.put(KEY_COUPON, coupon);
         return product;
     }
@@ -147,7 +147,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
 
     private String getCouponCode(PaymentData paymentDatas) {
-        String TAG = MarketplaceTrackerMapper.class.getSimpleName();
         if (paymentDatas.getVoucher() != null){
             return paymentDatas.getVoucher().getVoucherCode();
         }
