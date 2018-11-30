@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
+import android.util.Log;
+
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
@@ -136,8 +138,11 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
 
     private String getCouponCode(PaymentData paymentDatas) {
-        if (paymentDatas.getCoupon() != null){
-            return paymentDatas.getCoupon();
+        String TAG = MarketplaceTrackerMapper.class.getSimpleName();
+        Log.d(TAG, "Vouchers " + paymentDatas.getVouchers())
+
+        if (paymentDatas.getVouchers() != null){
+            return paymentDatas.getVouchers().get(1).getVoucherCode();
         }
 
         return "";
