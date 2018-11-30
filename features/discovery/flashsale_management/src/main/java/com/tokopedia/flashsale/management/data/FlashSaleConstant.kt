@@ -72,6 +72,8 @@ object FlashSaleConstant {
     const val NAMED_REQUEST_CAMPAIGN = "request_campaign"
     const val NAMED_REQUEST_SELLER_STATUS = "request_seller_status"
 
+    const val FLASHSALE_ABOUT_URL = "https://www.tokopedia.com/flash-sale/about/"
+
     val statusColorList = mapOf(
             KEY_STATUS_REGISTRATION to Pair(R.color.status_red, R.color.red_50),
             KEY_STATUS_CANCELLED to Pair(R.color.status_red, R.color.red_50),
