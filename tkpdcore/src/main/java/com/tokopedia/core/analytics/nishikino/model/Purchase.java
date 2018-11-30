@@ -159,8 +159,7 @@ public class Purchase {
         this.paymentStatus = paymentStatus;
     }
 
-    public void addProduct(Map<String, Object> Product, String coupon) {
-        Product.put(KEY_COUPON, coupon);
+    public void addProduct(Map<String, Object> Product) {
         ListProduct.add(Product);
     }
 

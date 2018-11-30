@@ -19,9 +19,12 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.functions.Func1;
+
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
 
 /**
  * Created by okasurya on 12/7/17.
@@ -107,10 +110,16 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCoupon(couponCode);
 
         for (Product product : getProductList(orderData)) {
-            purchase.addProduct(product.getProduct(), couponCode);
+            purchase.addProduct(getProductList(product.getProduct(), couponCode));
         }
 
         return purchase;
+    }
+
+
+    private Map<String, Object> getProductList(Map<String, Object> product, String coupon){
+        product.put(KEY_COUPON, coupon);
+        return product;
     }
 
     private String checkShopTypeForMarketplace(String s){
