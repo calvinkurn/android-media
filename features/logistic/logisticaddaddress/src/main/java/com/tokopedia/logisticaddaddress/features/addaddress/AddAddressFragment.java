@@ -81,17 +81,13 @@ public class AddAddressFragment extends BaseDaggerFragment
         implements AddAddressFragmentView, ITransactionAnalyticsAddAddress {
 
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
-
+    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 418;
     private static final String ADDRESS = "district_recommendation_address";
-
     private static final double MONAS_LATITUDE = -6.175794;
     private static final double MONAS_LONGITUDE = 106.826457;
-
     private static final int ADDRESS_MAX_CHARACTER = 175;
     private static final int ADDRESS_MIN_CHARACTER = 20;
-    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
-
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
     private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
@@ -109,12 +105,10 @@ public class AddAddressFragment extends BaseDaggerFragment
     private EditText passwordEditText;
     private TextView saveButton;
     private TextView addressLabel;
-
     private TextInputLayout districtLayout;
     private EditText districtEditText;
     private TextInputLayout zipCodeLayout;
     private AutoCompleteTextView zipCodeTextView;
-
     private TextInputLayout postCodeLayout;
     private EditText postCodeEditText;
     private LinearLayout addressSpinerLayout;
@@ -128,48 +122,32 @@ public class AddAddressFragment extends BaseDaggerFragment
     private ProgressBar progressDistrict;
     private Spinner spinnerSubDistrict;
     private TextView subDistrictError;
-
-    private List<String> zipCodes;
-    private Token token;
-
-    private Destination address;
+    private ProgressBar mProgressBar;
 
     ProvinceAdapter provinceAdapter;
     RegencyAdapter regencyAdapter;
     SubDistrictAdapter subDistrictAdapter;
 
+    private List<String> zipCodes;
+    private Token token;
+    private Destination address;
+
     List<Province> mProvinces;
     List<City> mCities;
     List<District> mDistricts;
 
-    ProgressBar mProgressBar;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject
-    AddAddressPresenter mPresenter;
+    @Inject AddAddressPresenter mPresenter;
+    @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
 
-    @Inject
-    @LogisticUserSessionQualifier
-    UserSessionInterface userSession;
-
-    public static AddAddressFragment createInstance(Bundle extras) {
+    public static AddAddressFragment newInstance(Bundle extras) {
+        Bundle bundle = new Bundle(extras);
         AddAddressFragment fragment = new AddAddressFragment();
-        Bundle bundle = new Bundle();
-        bundle.putAll(extras);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    protected void initInjector() {
-        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
-        DaggerAddressComponent.builder()
-                .baseAppComponent(appComponent)
-                .addressModule(new AddressModule())
-                .build().inject(this);
     }
 
     @Override
@@ -178,13 +156,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
-    }
-
-    private void setupArguments(Bundle arguments) {
-        this.token = arguments.getParcelable(KERO_TOKEN);
-        this.address = arguments.getParcelable(EDIT_PARAM);
-        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
-        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
     }
 
     @Nullable
@@ -279,6 +250,15 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
+    protected void initInjector() {
+        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+        DaggerAddressComponent.builder()
+                .baseAppComponent(appComponent)
+                .addressModule(new AddressModule())
+                .build().inject(this);
+    }
+
+    @Override
     public void setPinpointAddress(String address) {
         locationEditText.setText(address);
     }
@@ -309,12 +289,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         intent.putExtra(EXTRA_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
-    }
-
-    public void setError(TextInputLayout wrapper, String errorMessage) {
-        wrapper.setError(errorMessage);
-        if (errorMessage == null) wrapper.setErrorEnabled(false);
-        wrapper.requestFocus();
     }
 
     @Override
@@ -749,6 +723,26 @@ public class AddAddressFragment extends BaseDaggerFragment
         return ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_USER;
     }
 
+    public void setError(TextInputLayout wrapper, String errorMessage) {
+        wrapper.setError(errorMessage);
+        if (errorMessage == null) wrapper.setErrorEnabled(false);
+        wrapper.requestFocus();
+    }
+
+    public void initializeZipCodes() {
+        zipCodeTextView.setText("");
+        String header = getResources().getString(R.string.hint_type_postal_code);
+        if (!zipCodes.contains(header)) zipCodes.add(0, header);
+
+        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
+                getContext(),
+                R.layout.item_autocomplete_text_double_row,
+                R.id.item,
+                zipCodes);
+
+        zipCodeTextView.setAdapter(zipCodeAdapter);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     protected void setViewListener() {
         zipCodeLayout.setOnTouchListener(onZipCodeTouch());
@@ -859,20 +853,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         });
     }
 
-    public void initializeZipCodes() {
-        zipCodeTextView.setText("");
-        String header = getResources().getString(R.string.hint_type_postal_code);
-        if (!zipCodes.contains(header)) zipCodes.add(0, header);
-
-        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
-                getContext(),
-                R.layout.item_autocomplete_text_double_row,
-                R.id.item,
-                zipCodes);
-
-        zipCodeTextView.setAdapter(zipCodeAdapter);
-    }
-
     protected void initView(View view) {
         receiverNameLayout = view.findViewById(R.id.receiver_name_layout);
         receiverNameEditText = view.findViewById(R.id.receiver_name);
@@ -926,6 +906,30 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
         selectLayout();
+    }
+
+    protected void initialVar() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
+        }
+        if (isEdit() && address != null) {
+            receiverNameEditText.setText(address.getReceiverName());
+            addressTypeEditText.setText(address.getAddressName());
+            addressEditText.setText(address.getAddressStreet());
+            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
+                    address.getProvinceName(),
+                    address.getCityName(),
+                    address.getDistrictName()
+            )));
+
+            zipCodeTextView.setText(address.getPostalCode());
+            postCodeEditText.setText(address.getPostalCode());
+            receiverPhoneEditText.setText(address.getReceiverPhone());
+            requestPinpointAddress(address);
+        } else if (address == null) {
+            address = new Destination();
+        }
     }
 
     private void setTextWatcher() {
@@ -1133,28 +1137,11 @@ public class AddAddressFragment extends BaseDaggerFragment
         }
     }
 
-    protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-        }
-        if (isEdit() && address != null) {
-            receiverNameEditText.setText(address.getReceiverName());
-            addressTypeEditText.setText(address.getAddressName());
-            addressEditText.setText(address.getAddressStreet());
-            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
-                    address.getProvinceName(),
-                    address.getCityName(),
-                    address.getDistrictName()
-            )));
-
-            zipCodeTextView.setText(address.getPostalCode());
-            postCodeEditText.setText(address.getPostalCode());
-            receiverPhoneEditText.setText(address.getReceiverPhone());
-            requestPinpointAddress(address);
-        } else if (address == null) {
-            address = new Destination();
-        }
+    private void setupArguments(Bundle arguments) {
+        this.token = arguments.getParcelable(KERO_TOKEN);
+        this.address = arguments.getParcelable(EDIT_PARAM);
+        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
+        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {
