@@ -49,23 +49,23 @@ import java.util.List;
  * 4. showGetListError(Throwable) to show the error. (generally this after onError get Data)
  *
  * HOW TO CUSTOMIZE
- * 1 CHANGE DEFAULT VIEW
+ * 1 change [[DEFAULT VIEW]]
  *   As default, the view for this fragment are vertical recyclerview.
  *   If we need to change the view, override onCreateView() function and supply the view we want.
  *    -> You also need to override getRecyclerView(View view) and getSwipeRefreshLayout(View view)
  *       if the view's is different with the default view's id.
- * 2.ADD/REMOVE SWIPE REFRESH
+ * 2.Add/remove [[SWIPE REFRESH]]
  *   override hasInitialSwipeRefresh() to true/false
- * 3.LOAD INITIAL DATA CALL POINT
+ * 3.[[LOAD INITIAL DATA CALL POINT]]
  *   default will call loadInitialData() in onViewCreated
  *   override callInitialLoadAutomatically() to false, then call loadInitialData() in place you want
- * 4.ENABLE/DISABLE LOADMORE
+ * 4.enable/disable [[LOADMORE]]
  *   override isLoadMoreEnabledByDefault to true/false
  *   or
  *   call enableLoadMore or disableLoadMore programmatically.
- * 5.CHANGE RECYCLERVIEW LAYOUT_MANAGER TO HORIZONTAL/VERTICAL/GRID
+ * 5.change recyclerview's [[LAYOUT_MANAGER]] to horizontal/vertical/grid
  *   override getRecyclerViewLayoutManager()
- * 6.CUSTOMIZE DEFAULT ICON ERROR FROM NETWORK
+ * 6.Customize Error icon [[ERROR]] From Network
  *   override fun createAdapterInstance(): BaseListAdapter<{Model}, {AdapterFactory}> {
  *       val adapter =  super.createAdapterInstance()
  *       adapter.errorNetworkModel = ErrorNetworkModel().apply {
@@ -73,9 +73,9 @@ import java.util.List;
  *       }
  *       return adapter
  *   }
- * 6.CUSTOMIZE EMPTY STATE (CAN FROM SEARCH, OR DATA EMPTY)
+ * 7.Customize [[EMPTY STATE]]
  *   override getEmptyDataViewModel()
- * 7.CUSTOMIZE LOADING STATE FOR ADAPTER
+ * 8.Customize [[LOADING STATE]]
  *   override getLoadingModel()
  */
 public abstract class BaseListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
