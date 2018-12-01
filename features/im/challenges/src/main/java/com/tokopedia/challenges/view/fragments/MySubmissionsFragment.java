@@ -40,7 +40,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private Boolean isFirst = true;
     private LinearLayoutManager layoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private final static String SCREEN_NAME = "challenges/submission";
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
     @Override
@@ -83,7 +82,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         if (isFirst) {
             isFirst = false;
         }
-        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         return view;
     }
 
