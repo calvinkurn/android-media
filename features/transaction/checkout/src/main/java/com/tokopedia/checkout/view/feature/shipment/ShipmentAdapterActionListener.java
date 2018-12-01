@@ -67,12 +67,25 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                                   int position);
 
     void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                 RecipientAddressModel recipientAddressModel, int position);
+                                 RecipientAddressModel recipientAddressModel,
+                                 ShipmentCartItemModel shipmentCartItemModel,
+                                 List<ShopShipment> shopShipmentList, int position);
 
     void hideSoftKeyboard();
 
     void onLoadShippingState(int shipperId, int spId, int itemPosition,
-                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList,
+                             ShipmentDetailData shipmentDetailData,
+                             ShipmentCartItemModel shipmentCartItemModel,
+                             List<ShopShipment> shopShipmentList,
                              boolean isCourierRecommendation);
 
+    void onCourierPromoCanceled(String shipperName);
+
+    boolean isToogleYearEndPromoOn();
+
+    void onPurchaseProtectionLogicError();
+
+    void onPurchaseProtectionChangeListener(int position);
+
+    void navigateToProtectionMore(String url);
 }

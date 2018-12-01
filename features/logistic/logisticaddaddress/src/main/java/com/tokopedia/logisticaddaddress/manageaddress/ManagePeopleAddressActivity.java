@@ -8,20 +8,15 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
-
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 
-import butterknife.BindView;
-
 public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeopleAddressPresenter>
         implements MPAddressActivityListener, ManagePeopleAddressReceiver.Receiver {
 
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private Uri uriData;
@@ -55,6 +50,7 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
 
     @Override
     protected void initView() {
+        fab = findViewById(R.id.fab);
         presenter.initFragment(uriData, bundleData);
     }
 

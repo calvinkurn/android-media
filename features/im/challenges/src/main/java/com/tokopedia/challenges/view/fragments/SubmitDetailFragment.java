@@ -1,22 +1,14 @@
 package com.tokopedia.challenges.view.fragments;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.AlignmentSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,11 +22,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
@@ -198,18 +190,20 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult, false);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
-                    submissionResult.getCollection().getTitle());
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_POST_PAGE,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE);
         });
 
         likeBtn.setOnClickListener(v -> {
             presenter.likeBtnClick(submissionResult);
-            String action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
+
             if (submissionResult.getMe() != null) {
                 setLikes(!submissionResult.getMe().isLiked());
-                action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
             }
-            if (submissionResult.getCollection() != null) {
+
+            if (submissionResult.getCollection() != null && submissionResult.getMe() != null) {
+                String action = submissionResult.getMe().isLiked() ? ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE :
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
                         ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
                         action, submissionResult.getCollection().getTitle());
@@ -429,11 +423,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     @Override
-    public void setlikeInvisiblity() {
-        likeBtn.setVisibility(View.GONE);
-    }
-
-    @Override
     public void setResubmitInvisible() {
         btnSubmit.setVisibility(View.GONE);
     }
@@ -480,5 +469,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
         dialog.setOnCancelClickListener(v -> dialog.dismiss());
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onDestroy();
+        super.onDestroyView();
     }
 }

@@ -201,6 +201,10 @@ public class FlightFilterModel implements Parcelable, Cloneable {
                 (this.refundableTypeList != null && this.refundableTypeList.size() > 0));
     }
 
+    public void setHasFilter(boolean hasFilter) {
+        this.isHasFilter = hasFilter;
+    }
+
     public boolean isSpecialPrice() {
         return isSpecialPrice;
     }

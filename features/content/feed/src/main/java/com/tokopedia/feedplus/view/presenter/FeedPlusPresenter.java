@@ -4,16 +4,13 @@ import android.support.annotation.RestrictTo;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
+import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
@@ -24,6 +21,8 @@ import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
@@ -43,7 +42,8 @@ public class FeedPlusPresenter
     private final UserSession userSession;
     private final GetFeedsUseCase getFeedsUseCase;
     private final GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
-    private final FavoriteShopUseCase doFavoriteShopUseCase;
+    private final ToggleFavouriteShopUseCase doFavoriteShopUseCase;
+    private final FeedAnalytics analytics;
     private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
@@ -57,12 +57,13 @@ public class FeedPlusPresenter
     FeedPlusPresenter(UserSession userSession,
                       GetFeedsUseCase getFeedsUseCase,
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
-                      FavoriteShopUseCase favoriteShopUseCase,
+                      ToggleFavouriteShopUseCase favoriteShopUseCase,
                       GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
                       LikeKolPostUseCase likeKolPostUseCase,
                       FollowKolPostGqlUseCase followKolPostGqlUseCase,
                       SendVoteUseCase sendVoteUseCase,
-                      GetWhitelistUseCase whitelistUseCase) {
+                      GetWhitelistUseCase whitelistUseCase,
+                      FeedAnalytics analytics) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
         this.getFeedsUseCase = getFeedsUseCase;
@@ -73,6 +74,7 @@ public class FeedPlusPresenter
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.getWhitelistUseCase = whitelistUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
+        this.analytics = analytics;
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -114,7 +116,7 @@ public class FeedPlusPresenter
         if (userSession != null && userSession.isLoggedIn()) {
             getFirstPageFeedsUseCase.execute(
                     getFirstPageFeedsUseCase.getRefreshParam(userSession),
-                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
+                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
         } else {
             viewListener.onUserNotLogin();
         }
@@ -131,24 +133,21 @@ public class FeedPlusPresenter
                         pagingHandler.getPage(),
                         userSession,
                         currentCursor),
-                new GetFeedsSubscriber(viewListener, pagingHandler.getPage()));
+                new GetFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
     }
 
     public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
-        RequestParams params = RequestParams.create();
-        TKPDMapParam<String, Object> mapParam = new TKPDMapParam<>();
+        String PARAM_SHOP_DOMAIN = "shop_domain";
+        String PARAM_SRC = "src";
+        String PARAM_AD_KEY = "ad_key";
+        String DEFAULT_VALUE_SRC = "fav_shop";
+        RequestParams params = ToggleFavouriteShopUseCase.createRequestParam
+                (promotedShopViewModel.getShop().getId());
 
-        AuthUtil.generateParamsNetwork2(viewListener.getActivity(),
-                mapParam,
-                userSession.getDeviceId(),
-                userSession.getUserId());
-
-        mapParam.put(FavoriteShopUseCase.PARAM_SHOP_ID, promotedShopViewModel.getShop().getId());
-        mapParam.put(FavoriteShopUseCase.PARAM_SHOP_DOMAIN, promotedShopViewModel.getShop().getDomain());
-        mapParam.put(FavoriteShopUseCase.PARAM_SRC, FavoriteShopUseCase.DEFAULT_VALUE_SRC);
-        mapParam.put(FavoriteShopUseCase.PARAM_AD_KEY, promotedShopViewModel.getAdRefKey());
-
-        params.putAll(mapParam);
+        params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.getShop()
+                .getDomain());
+        params.putString(PARAM_SRC, DEFAULT_VALUE_SRC);
+        params.putString(PARAM_AD_KEY, promotedShopViewModel.getAdRefKey());
 
         doFavoriteShopUseCase.execute(params, new Subscriber<Boolean>() {
             @Override
@@ -205,7 +204,7 @@ public class FeedPlusPresenter
         if (userSession != null && userSession.isLoggedIn()) {
             getFirstPageFeedsCloudUseCase.execute(
                     getFirstPageFeedsCloudUseCase.getRefreshParam(userSession),
-                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage()));
+                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
         } else {
             viewListener.onUserNotLogin();
         }
@@ -267,7 +266,7 @@ public class FeedPlusPresenter
     @Override
     public void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel) {
         sendVoteUseCase.execute(
-                SendVoteUseCase.createParams(pollId, optionViewModel.getOptionId()),
+                SendVoteUseCase.createParamsV1(pollId, optionViewModel.getOptionId()),
                 new SendVoteSubscriber(rowNumber, optionViewModel, getView())
         );
     }

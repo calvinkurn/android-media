@@ -16,8 +16,6 @@ import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyCartActionFieldData;
 import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyCartClickData;
 import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyCartData;
@@ -46,6 +44,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         implements EmptyCartContract.Presenter {
 
     private static final int LIST_SIZE = 2;
+    private static final int EMPTY_CART_API_COUNT = 3;
 
     private final GetCartListUseCase getCartListUseCase;
     private final GetWishlistUseCase getWishlistUseCase;
@@ -56,6 +55,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     private List<WishlistViewModel> wishlistViewModels = new ArrayList<>();
     private List<RecentViewViewModel> recentViewViewModels = new ArrayList<>();
     private List<Product> recommendationViewModels = new ArrayList<>();
+    private Map<Integer, Boolean> loadApiStatusMap = new HashMap<>();
 
     @Inject
     public EmptyCartPresenter(GetCartListUseCase getCartListUseCase,
@@ -70,6 +70,11 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.compositeSubscription = compositeSubscription;
+    }
+
+    @Override
+    public void setLoadApiStatus(@EmptyCartApi int key, boolean status) {
+        loadApiStatusMap.put(key, status);
     }
 
     @Override
@@ -92,7 +97,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(new GetCartListSubscriber(getView()))
+                .subscribe(new GetCartListSubscriber(getView(), this))
         );
     }
 
@@ -212,7 +217,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         EnhancedECommerceEmptyCartProductData enhancedECommerceEmptyCartProductData =
                 new EnhancedECommerceEmptyCartProductData();
         enhancedECommerceEmptyCartProductData.setBrand(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceEmptyCartProductData.setCategory(product.getCategory().getId());
+        enhancedECommerceEmptyCartProductData.setCategory(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceEmptyCartProductData.setPosition(String.valueOf(index));
         enhancedECommerceEmptyCartProductData.setPrice(String.valueOf(product.getPriceFormat()
                 .replace("Rp", "")
@@ -316,5 +321,17 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         enhancedECommerceEmptyCart.setImpressionData(productsData);
 
         return enhancedECommerceEmptyCart.getData();
+    }
+
+    @Override
+    public boolean hasLoadAllApi() {
+        int loadedApi = 0;
+        for (Map.Entry<Integer, Boolean> entry : loadApiStatusMap.entrySet()) {
+            if (entry.getValue()) {
+                loadedApi++;
+            }
+        }
+
+        return loadedApi == EMPTY_CART_API_COUNT;
     }
 }

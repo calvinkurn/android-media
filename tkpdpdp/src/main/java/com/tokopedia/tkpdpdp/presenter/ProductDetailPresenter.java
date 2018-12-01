@@ -126,4 +126,8 @@ public interface ProductDetailPresenter {
     void initTopAdsSourceTaggingUseCase(Context context);
 
     void saveSource(String source);
+
+    void requestAffiliateProductData(ProductDetailData productDetailData);
+
+    void getPromoWidget(final @NonNull Context context, @NonNull ProductDetailData productDetailData);
 }

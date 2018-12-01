@@ -32,14 +32,10 @@ public class ChallengesGaAnalyticsTracker {
     public static String EVENT_ACTION_LIKE = "like";
     public static String EVENT_ACTION_UNLIKE = "unlike";
     public static String EVENT_ACTION_SHARE = "share";
-
     public static String EVENT_TNC = "tnc";
     public static String EVENT_SUBMIT = "submit";
     public static String EVENT_CANCEL = "cancel";
-
-
     private AnalyticTracker tracker;
-
 
     @Inject
     public ChallengesGaAnalyticsTracker(@ApplicationContext Context context) {

@@ -48,17 +48,14 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public TextView productPrice;
     public TextView shopLocation;
     public ImpressedImageView productImage;
-    private ImageLoader imageLoader;
     private int clickPosition;
 
 
-    public ProductCarouselListViewHolder(View itemView, ImageLoader imageLoader,
-                                         LocalAdsClickListener itemClickListener, int clickPositio,
+    public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener, int clickPosition,
                                          TopAdsItemImpressionListener impressionListener) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
-        this.imageLoader = imageLoader;
         this.clickPosition = clickPosition;
         this.impressionListener = impressionListener;
         context = itemView.getContext();
@@ -78,6 +75,12 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
 
     private void bindProduct(final Product product) {
         productImage.setImage(product.getImage());
+        productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -91,10 +94,10 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public void onClick(View v) {
         if (itemClickListener != null) {
             if(v.getId() == R.id.container) {
-                itemClickListener.onProductItemClicked(clickPosition, data);
+                itemClickListener.onProductItemClicked((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
             }
             if(v.getId() == R.id.wishlist_button_container){
-                itemClickListener.onAddWishLish(clickPosition, data);
+                itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
                 data.getProduct().setWishlist(!data.getProduct().isWishlist());
             }
         }

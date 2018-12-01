@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory;
@@ -20,7 +18,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -31,18 +28,14 @@ import java.util.List;
 public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
-    private List<Visitable> listDummy;
     private GroupChatTypeFactory typeFactory;
-    private EmptyModel emptyModel;
     private LoadingMoreModel loadingModel;
     private boolean canLoadMore;
     private long mLastCursor = 0;
 
-    public GroupChatAdapter(GroupChatTypeFactory typeFactory) {
-        this.list = new ArrayList<>();
-        this.listDummy = new ArrayList<>();
+    public GroupChatAdapter(GroupChatTypeFactory typeFactory, List<Visitable> list) {
+        this.list = list;
         this.typeFactory = typeFactory;
-        this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingMoreModel();
         this.canLoadMore = true;
         this.mLastCursor = 0;
@@ -99,8 +92,8 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.size();
     }
 
-    public static GroupChatAdapter createInstance(GroupChatTypeFactory groupChatTypeFactory) {
-        return new GroupChatAdapter(groupChatTypeFactory);
+    public static GroupChatAdapter createInstance(GroupChatTypeFactory groupChatTypeFactory, List<Visitable> list) {
+        return new GroupChatAdapter(groupChatTypeFactory, list);
     }
 
     public void setList(List<Visitable> listChat) {
@@ -254,5 +247,9 @@ public class GroupChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         if(holder instanceof BaseChatViewHolder){
             ((BaseChatViewHolder)holder).onViewRecycled();
         }
+    }
+
+    public List<Visitable> getList() {
+        return list;
     }
 }

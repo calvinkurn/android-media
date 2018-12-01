@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.model.db.Province;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class ProvinceAdapter extends ArrayAdapter {
     }
 
     public static ProvinceAdapter createInstance(Context context) {
-        return new ProvinceAdapter(context, R.layout.spinner_item);
+        return new ProvinceAdapter(context, R.layout.logistic_spinner_item);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ProvinceAdapter extends ArrayAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.spinner_item, null);
+            convertView = inflater.inflate(R.layout.logistic_spinner_item, null);
 
             holder.provinceName = (TextView) convertView.findViewById(android.R.id.text1);
             convertView.setTag(holder);

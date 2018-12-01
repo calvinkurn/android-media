@@ -329,7 +329,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             loading.setVisibility(View.VISIBLE);
             getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
+            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element
+                        , ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getGroupChatToken());
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
@@ -350,6 +351,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         title.setText(R.string.has_voted);
         channelInfoDialog.setContentView(view);
         channelInfoDialog.show();
+        loading.setVisibility(View.GONE);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
@@ -362,6 +365,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 channelInfoDialog.show();
             }
         }, 500);
+        loading.setVisibility(View.GONE);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override

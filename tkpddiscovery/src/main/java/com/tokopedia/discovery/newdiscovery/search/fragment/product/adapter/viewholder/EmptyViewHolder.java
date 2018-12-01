@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.base.EmptyStateClickListener;
+import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 
 /**
  * @author by errysuprayogi on 10/30/17.
@@ -21,9 +21,9 @@ public class EmptyViewHolder extends AbstractViewHolder<EmptyModel> implements V
 
     private TextView txtEmptyContent;
     private Button emptyButtonItemButton;
-    private final EmptyStateClickListener clickListener;
+    private final EmptyStateListener clickListener;
 
-    public EmptyViewHolder(View itemView, EmptyStateClickListener clickListener) {
+    public EmptyViewHolder(View itemView, EmptyStateListener clickListener) {
         super(itemView);
         this.clickListener = clickListener;
         txtEmptyContent = (TextView) itemView.findViewById(R.id.text_view_empty_content_text);

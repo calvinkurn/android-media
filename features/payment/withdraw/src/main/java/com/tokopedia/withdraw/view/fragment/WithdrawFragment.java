@@ -333,7 +333,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             return false;
         }
         BankAccountViewModel bankAccountViewModel = bankAdapter.getSelectedBank();
-        return bankAccountViewModel != null;
+        return bankAccountViewModel != null
+                && (!TextUtils.isEmpty(bankAccountViewModel.getBankName()));
     }
 
 
@@ -477,7 +478,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     model.setBankAccountNumber(parcelable.getAccountNumber());
                     bankAdapter.addItem(model);
                     bankAdapter.changeItemSelected(listBank.size()-2);
-
+                    itemSelected();
                     snackBarInfo.setText(R.string.success_add_bank);
                     snackBarInfo.show();
                 }

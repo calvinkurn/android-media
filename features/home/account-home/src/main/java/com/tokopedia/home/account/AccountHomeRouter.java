@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
@@ -42,7 +43,7 @@ public interface AccountHomeRouter {
 
     void goToManageCreditCard(Context context);
 
-    void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity);
+    void goToTokoCash(String applinkUrl, Activity activity);
 
     void goToSaldo(Context context);
 
@@ -71,4 +72,6 @@ public interface AccountHomeRouter {
     boolean isEnableInterestPick();
   
     Intent getMitraToppersActivityIntent(Context context);
+
+    Intent getAddPasswordIntent(Context context);
 }

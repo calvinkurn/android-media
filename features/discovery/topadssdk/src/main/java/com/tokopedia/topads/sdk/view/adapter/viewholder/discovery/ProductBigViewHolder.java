@@ -19,6 +19,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
@@ -42,7 +43,7 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     public TextView productName;
     public TextView productPrice;
     public TextView shopLocation;
-    public ImageView productImage;
+    public ImpressedImageView productImage;
     private ImageLoader imageLoader;
     private ImageView rating;
     private TextView newLabelTxt;
@@ -66,7 +67,7 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
         this.clickPosition = clickPosition;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
         shopLocation = (TextView) itemView.findViewById(R.id.location);
@@ -79,6 +80,7 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
         wishlistBtnContainer = itemView.findViewById(R.id.wishlist_button_container);
         wishlistBtnContainer.setVisibility(enableWishlist ? View.VISIBLE : View.GONE);
         wishlistBtnContainer.setOnClickListener(this);
+
     }
 
     @Override
@@ -110,7 +112,7 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     }
 
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product, productImage, clickPosition);
+        productImage.setImage(product.getImage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -165,10 +167,10 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     public void onClick(View v) {
         if (itemClickListener != null) {
             if (v.getId() == R.id.container) {
-                itemClickListener.onProductItemClicked(clickPosition, data);
+                itemClickListener.onProductItemClicked((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
             }
             if (v.getId() == R.id.wishlist_button_container) {
-                itemClickListener.onAddWishLish(clickPosition, data);
+                itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
                 data.getProduct().setWishlist(!data.getProduct().isWishlist());
                 renderWishlistButton(data.getProduct().isWishlist());
             }

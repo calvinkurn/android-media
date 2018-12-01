@@ -5,21 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<GeneralReactNativeFragment> {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    private static final String CATEGORY = "Category";
+    private static final String KEY_CATEGORY = "key_category";
 
-    @DeepLink({Constants.Applinks.OFFICIAL_STORES})
+    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORES_CATEGORY})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
         return ReactNativeOfficialStoreActivity.createApplinkCallingIntent(
                 context,
                 ReactConst.Screen.OFFICIAL_STORE,
                 context.getString(com.tokopedia.tkpd.R.string.react_native_banner_official_title),
                 bundle
+
         );
     }
 
@@ -30,6 +33,12 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Gene
         Intent intent = new Intent(context, ReactNativeOfficialStoreActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, pageTitle);
+
+        if (extras.getString(KEY_CATEGORY) != null &&
+                !extras.getString(KEY_CATEGORY).isEmpty()){
+            extras.putString(CATEGORY, extras.getString(KEY_CATEGORY));
+        }
+
         intent.putExtras(extras);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;

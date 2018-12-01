@@ -34,12 +34,12 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.di.FlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
@@ -54,6 +54,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.ArrayList;
@@ -365,7 +366,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 anyLoadToCloud = true;
                 FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                         flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
-                        date, adult, child, infant, classID, flightAirportCombineModel.getAirlines());
+                        date, adult, child, infant, classID, flightAirportCombineModel.getAirlines(),
+                        FlightRequestUtil.getLocalIpAddress());
                 flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel,
                         isReturning(), false, flightFilterModel, selectedSortOption);
             }
@@ -440,12 +442,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                flightSearchPresenter.getFlightStatistic(isReturning());
-                FlightSearchFragment.this.addToolbarElevation();
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
-                        isReturning(),
-                        flightFilterModel),
-                        REQUEST_CODE_SEARCH_FILTER);
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);
@@ -626,7 +622,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     int classID = flightSearchPassDataViewModel.getFlightClass().getId();
                     FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                             flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
-                            date, adult, child, infant, classID, flightAirportCombineModel.getAirlines());
+                            date, adult, child, infant, classID, flightAirportCombineModel.getAirlines(),
+                            FlightRequestUtil.getLocalIpAddress());
                     flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel, isReturning(), flightMetaDataDB.getRefreshTime());
                 }
 

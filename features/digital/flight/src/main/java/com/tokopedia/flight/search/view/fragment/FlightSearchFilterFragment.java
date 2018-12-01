@@ -21,11 +21,11 @@ import com.tokopedia.flight.common.view.FlightRadioLabelView;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 import com.tokopedia.flight.search.view.textwatcher.DurationTextWatcher;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import java.util.ArrayList;
 import java.util.List;

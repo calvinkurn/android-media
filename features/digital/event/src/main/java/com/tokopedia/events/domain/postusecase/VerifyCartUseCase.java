@@ -1,19 +1,11 @@
 package com.tokopedia.events.domain.postusecase;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.EventRepository;
-import com.tokopedia.events.domain.model.request.cart.CartItems;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -25,7 +17,6 @@ public class VerifyCartUseCase extends UseCase<VerifyCartResponse> {
 
     private final EventRepository eventRepository;
 
-    @Inject
     public VerifyCartUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
@@ -33,7 +24,7 @@ public class VerifyCartUseCase extends UseCase<VerifyCartResponse> {
     @Override
     public Observable<VerifyCartResponse> createObservable(RequestParams requestParams) {
         JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
-        boolean flag = requestParams.getBoolean(Utils.Constants.ISSEATINGEVENT, false);
+        boolean flag = requestParams.getBoolean(Utils.Constants.BOOK, false);
         return eventRepository.verifyCard(requestBody, flag);
     }
 }

@@ -13,17 +13,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created on 5/23/16.
@@ -38,38 +34,29 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     public class MPAddressViewHolder extends RecyclerView.ViewHolder
             implements OnMapReadyCallback {
 
-        @BindView(R2.id.address_name)
-        TextView addressName;
-
-        @BindView(R2.id.address_detail)
-        TextView addressDetail;
-
-        @BindView(R2.id.mapview)
-        MapView mapView;
-
-        @BindView(R2.id.action_edit)
-        View editBtn;
-
-        @BindView(R2.id.action_delete)
-        View deleteBtn;
-
-        @BindView(R2.id.action_default)
-        View defaultBtn;
-
-        @BindView(R2.id.layout)
-        View layoutMap;
-
-        @BindView(R2.id.label_no_location)
-        View noLocationLabel;
-
-        @BindView(R2.id.view_bottom)
-        View bottomView;
-
-        GoogleMap googleMap;
+        private TextView addressName;
+        private TextView addressDetail;
+        private MapView mapView;
+        private View editBtn;
+        private View deleteBtn;
+        private View defaultBtn;
+        private View layoutMap;
+        private View noLocationLabel;
+        private View bottomView;
+        private GoogleMap googleMap;
 
         public MPAddressViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            addressName = itemView.findViewById(R.id.address_name);
+            addressDetail = itemView.findViewById(R.id.address_detail);
+            mapView = itemView.findViewById(R.id.mapview);
+            editBtn = itemView.findViewById(R.id.action_edit);
+            deleteBtn = itemView.findViewById(R.id.action_delete);
+            defaultBtn = itemView.findViewById(R.id.action_default);
+            layoutMap = itemView.findViewById(R.id.layout);
+            noLocationLabel = itemView.findViewById(R.id.label_no_location);
+            bottomView = itemView.findViewById(R.id.view_bottom);
+
             if (mapView != null) {
                 mapView.onCreate(null);
                 mapView.onResume();
@@ -94,7 +81,7 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case VIEW_ADDRESS_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                View view = inflater.inflate(R.layout.listview_manage_people_address2, parent, false);
+                View view = inflater.inflate(R.layout.logistic_item_manage_people_address, parent, false);
                 return new MPAddressViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);

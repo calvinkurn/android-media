@@ -107,7 +107,7 @@ public interface FlightDetailOrderContract {
 
         void actionCancelOrderButtonClicked();
 
-        void onHelpButtonClicked();
+        void onHelpButtonClicked(String contactUsUrl);
 
         void actionReorderButtonClicked();
 

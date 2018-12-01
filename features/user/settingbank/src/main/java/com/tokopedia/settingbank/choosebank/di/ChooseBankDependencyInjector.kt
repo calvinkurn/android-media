@@ -18,6 +18,7 @@ import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListDBUseCase
 import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListWSUseCase
 import com.tokopedia.settingbank.choosebank.view.presenter.ChooseBankPresenter
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -33,7 +34,7 @@ class ChooseBankDependencyInjector {
 
         fun inject(context: Context): ChooseBankPresenter {
 
-            val session = UserSession(context)
+            val session : UserSessionInterface = UserSession(context)
 
             val gson: Gson = GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")

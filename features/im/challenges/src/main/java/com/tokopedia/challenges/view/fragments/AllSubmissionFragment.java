@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.contractor.AllSubmissionContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.AllSubmissionPresenter;
@@ -53,6 +54,8 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     private int currentFilter;
     private boolean isPastChallenge;
     private String challengeId;
+    @Inject
+    public ChallengesGaAnalyticsTracker analytics;
 
     public static Fragment createInstance(Bundle extras) {
         AllSubmissionFragment categoryFragment = new AllSubmissionFragment();
@@ -211,6 +214,9 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
                 ((SubmissionItemAdapter) recyclerview.getAdapter()).notifyDataSetChanged();
                 mPresenter.onDestroy();
                 mPresenter.loadMoreItems(true);
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSION_PAGE,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, getActivity().getResources().getString(R.string.ch_most_recent));
             }
 
         } else if (v.getId() == R.id.tv_buzz_points) {
@@ -224,6 +230,9 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
                 ((SubmissionItemAdapter) recyclerview.getAdapter()).notifyDataSetChanged();
                 mPresenter.onDestroy();
                 mPresenter.loadMoreItems(true);
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSION_PAGE,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, getActivity().getResources().getString(R.string.ch_buzz_points));
             }
         }
     }

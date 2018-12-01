@@ -52,4 +52,12 @@ public class DateFormatUtils {
         DateFormat dateFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
         return dateFormat.format(instance.getTime());
     }
+
+    public static String getFormattedDateSeconds(int timeInSeconds, String format) {
+        return getFormattedDate(timeInSeconds * 1000L, format);
+    }
+
+    public static String getFormattedDate(String unixTimeStringInSeconds, String format) {
+        return getFormattedDateSeconds(Integer.parseInt(unixTimeStringInSeconds), format);
+    }
 }

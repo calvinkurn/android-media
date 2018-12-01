@@ -15,6 +15,7 @@ import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.design.utils.TabUtil;
 
 /**
@@ -77,6 +78,9 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
                         ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         String.valueOf(adapter.getPageTitle(position)));
+                if (position == 1) {
+                    ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(ChallengesHomeActivity.this, "My Submissions");
+                }
             }
 
             @Override

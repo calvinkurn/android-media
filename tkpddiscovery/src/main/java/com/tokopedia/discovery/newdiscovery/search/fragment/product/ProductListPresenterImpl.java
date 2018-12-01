@@ -29,6 +29,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.To
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -119,16 +120,20 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorAddWishList(e.getMessage(), productItem.getProductID());
-                getView().notifyAdapter();
+                if (isViewAttached()) {
+                    getView().onErrorAddWishList(e.getMessage(), productItem.getProductID());
+                    getView().notifyAdapter();
+                }
             }
 
             @Override
             public void onNext(Boolean result) {
-                if(result){
-                    getView().onSuccessAddWishlist(productItem.getProductID());
-                } else {
-                    getView().notifyAdapter();
+                if (isViewAttached()){
+                    if (result) {
+                        getView().onSuccessAddWishlist(productItem.getProductID());
+                    } else {
+                        getView().notifyAdapter();
+                    }
                 }
             }
         };
@@ -176,13 +181,16 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
         enrichWithFilterAndSortParams(requestParams);
+        enrichWithRelatedSearchParam(requestParams, true);
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
         Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
-                getView().incrementStart();
+                if (isViewAttached()) {
+                    getView().incrementStart();
+                }
             }
 
             @Override
@@ -231,19 +239,24 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, true);
         enrichWithFilterAndSortParams(requestParams);
         enrichWithForceSearchParam(requestParams, isForceSearch);
+        enrichWithRelatedSearchParam(requestParams, true);
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
         Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
-                getView().showRefreshLayout();
-                getView().incrementStart();
+                if (isViewAttached()) {
+                    getView().showRefreshLayout();
+                    getView().incrementStart();
+                }
             }
 
             @Override
             public void onCompleted() {
-                getView().hideRefreshLayout();
+                if (isViewAttached()) {
+                    getView().hideRefreshLayout();
+                }
             }
 
             @Override
@@ -281,6 +294,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
                         }
                         list.addAll(productViewModel.getProductList());
+                        if (productViewModel.getRelatedSearchModel() != null) {
+                            list.add(productViewModel.getRelatedSearchModel());
+                        }
                         getView().removeLoading();
                         getView().setProductList(list);
                         getView().addLoading();
@@ -318,6 +334,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         requestParams.putBoolean(BrowseApi.REFINED, isForceSearch);
     }
 
+    private void enrichWithRelatedSearchParam(RequestParams requestParams, boolean relatedSearchEnabled) {
+        requestParams.putBoolean(BrowseApi.RELATED, relatedSearchEnabled);
+    }
+
     @Override
     public void detachView() {
         super.detachView();
@@ -327,5 +347,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
         getDynamicFilterV4UseCase.unsubscribe();
+        graphqlUseCase.unsubscribe();
     }
 }

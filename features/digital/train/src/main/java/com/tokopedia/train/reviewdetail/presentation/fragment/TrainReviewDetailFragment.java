@@ -155,7 +155,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         progressBar = rootview.findViewById(R.id.train_review_progress_bar);
 
         voucherCartHachikoView.setActionListener(this);
-        voucherCartHachikoView.setPromoLabelOnly();
+        voucherCartHachikoView.setPromoAndCouponLabel();
 
         ArrayList<String> messages = new ArrayList<>();
         messages.add("Cek kembali detail pesanan Anda sebelum lanjut ke halaman pembayaran");
@@ -383,7 +383,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
     @Override
     public void onClickUseVoucher() {
-        Intent intent = trainRouter.getIntentOfLoyaltyActivityWithoutCoupon(
+        Intent intent = trainRouter.getIntentOfLoyaltyActivityWithCoupon(
                 getActivity(), HACHIKO_TRAIN_KEY, trainSoftbook.getReservationId(), trainSoftbook.getReservationCode());
         startActivityForResult(intent, REQUEST_CODE_LOYALTY);
     }
@@ -441,6 +441,19 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
                         if (voucherDiscountAmount > 0) {
                             viewTrainReviewDetailPriceSection.showNewPriceAfterDiscount(voucherDiscountAmount);
+                        }
+                    }
+                } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        appliedVoucherCode = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE);
+                        String couponMessage = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE);
+                        long couponDiscount = bundle.getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
+                        String coupontitle = bundle.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_TITLE);
+                        long couponCashback = bundle.getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CASHBACK_AMOUNT);
+                        voucherCartHachikoView.setCoupon(coupontitle, couponMessage, appliedVoucherCode);
+                        if (couponDiscount > 0) {
+                            viewTrainReviewDetailPriceSection.showNewPriceAfterDiscount(couponDiscount);
                         }
                     }
                 }

@@ -24,12 +24,15 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
 import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
+import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 
 import java.util.List;
 
@@ -56,11 +59,15 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     private static final String WARNING = "warning";
     private static final String DANGER = "danger";
 
-    GqlMerchantSaldoDetailsResponse.Details sellerDetails;
+    GqlDetailsResponse sellerDetails;
     private Context context;
 
     @Inject
+    SaldoDetailsAnalytics saldoDetailsAnalytics;
+
+    @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
+    private boolean originalSwitchState;
 
     @Nullable
     @Override
@@ -107,9 +114,11 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     private void initListeners() {
 
-        spEnableSwitchCompat.setOnClickListener(view -> {
+        spEnableSwitchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            boolean isChecked = spEnableSwitchCompat.isChecked();
+            if (originalSwitchState == isChecked) {
+                return;
+            }
 
             final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
             dialog.getTitleTextView().setTextColor(getResources().getColor(R.color.black_70));
@@ -143,8 +152,8 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             dialog.show();
             dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_38));
             dialog.getBtnOk().setTextColor(getResources().getColor(R.color.tkpd_main_green));
-
         });
+
         if (sellerDetails.isBoxShowPopup()) {
             spKYCStatusLayout.setOnClickListener(v -> {
                 UserStatusInfoBottomSheet userStatusInfoBottomSheet =
@@ -162,8 +171,9 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
         if (sellerDetails.isShowToggle()) {
             spEnableSwitchCompat.setVisibility(View.VISIBLE);
-            spEnableSwitchCompat.setChecked(sellerDetails.isIsEnabled());
+            spEnableSwitchCompat.setChecked(sellerDetails.isEnabled());
             spEnableSwitchCompat.setClickable(true);
+            originalSwitchState = sellerDetails.isEnabled();
         } else {
             spEnableSwitchCompat.setVisibility(View.GONE);
         }
@@ -229,7 +239,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         } else if (boxType.equalsIgnoreCase(DEFAULT)) {
 
             spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_green));
-            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corners_green));
+            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.sp_bg_rounded_corners_green));
         } else if (boxType.equalsIgnoreCase(WARNING)) {
             spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_yellow));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_warning));
@@ -239,10 +249,13 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void populateAnchorListData(List<GqlMerchantSaldoDetailsResponse.AnchorList> anchorList) {
+    private void populateAnchorListData(List<GqlAnchorListResponse> anchorList) {
         LayoutInflater layoutInflater = getLayoutInflater();
         spActionListLinearLayout.removeAllViews();
 
+        if (anchorList == null) {
+            return;
+        }
         int list_size = anchorList.size();
         for (int i = list_size - 1; i >= 0; i--) {
             View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
@@ -258,18 +271,25 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             }
 
             int finalI = i;
-            anchorLabel.setOnClickListener(v -> RouteManager.route(context, String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW,
-                    anchorList.get(finalI).getUrl())));
+            anchorLabel.setOnClickListener(v -> {
+                saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.getText().toString());
+                RouteManager.route(context, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW,
+                        anchorList.get(finalI).getUrl()));
+            });
 
             spActionListLinearLayout.addView(view);
         }
     }
 
-    private void populateInfolistData(List<GqlMerchantSaldoDetailsResponse.InfoList> infoList) {
+    private void populateInfolistData(List<GqlInfoListResponse> infoList) {
         LayoutInflater layoutInflater = getLayoutInflater();
         spDetailListLinearLayout.removeAllViews();
-        for (GqlMerchantSaldoDetailsResponse.InfoList infoList1 : infoList) {
+
+        if (infoList == null) {
+            return;
+        }
+        for (GqlInfoListResponse infoList1 : infoList) {
 
             View view = layoutInflater.inflate(R.layout.layout_info_list, null);
             TextView infoLabel = view.findViewById(R.id.info_label_text_view);
@@ -323,7 +343,8 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onSaldoStatusUpdateSuccess() {
+    public void onSaldoStatusUpdateSuccess(boolean newState) {
+        originalSwitchState = newState;
         NetworkErrorHelper.showGreenSnackbarShort(getActivity(),
                 getResources().getString(R.string.saldo_status_updated_success));
     }

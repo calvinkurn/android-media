@@ -40,7 +40,7 @@ import javax.inject.Inject;
 public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
 
 
-    private int MAX_QUANTITY = 8;
+    private int MAX_QUANTITY = 1;
     private int CURRENT_QUANTITY = 1;
 
     private TextView tvContinue;
@@ -271,6 +271,12 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     @Override
     public int getRequestCode() {
         return LOGIN_REQUEST_CODE;
+    }
+
+    @Override
+    public void showFailureMessage(String error) {
+        Utils.getSingletonInstance().showSnackBarDeals(error
+                , getContext(), mainContent, false);
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GridProductItemViewHolder;
@@ -14,11 +14,13 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.view
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ImageEmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ListProductItemViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.RelatedSearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 
@@ -28,10 +30,10 @@ import com.tokopedia.topads.sdk.base.Config;
 
 public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
 
-    private final ItemClickListener itemClickListener;
+    private final ProductListener itemClickListener;
     private final Config topAdsConfig;
 
-    public ImageProductListTypeFactoryImpl(ItemClickListener itemClickListener, Config config) {
+    public ImageProductListTypeFactoryImpl(ProductListener itemClickListener, Config config) {
         this.itemClickListener = itemClickListener;
         this.topAdsConfig = config;
     }
@@ -74,6 +76,11 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
     }
 
     @Override
+    public int type(RelatedSearchModel relatedSearchModel) {
+        return RelatedSearchViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
         if (type == ListProductItemViewHolder.LAYOUT) {
@@ -88,6 +95,8 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
             viewHolder = new GuidedSearchViewHolder(view, itemClickListener);
         } else if (type == TopAdsViewHolder.LAYOUT) {
             viewHolder = new TopAdsViewHolder(view, itemClickListener);
+        } else if (type == RelatedSearchViewHolder.LAYOUT) {
+            viewHolder = new RelatedSearchViewHolder(view, itemClickListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

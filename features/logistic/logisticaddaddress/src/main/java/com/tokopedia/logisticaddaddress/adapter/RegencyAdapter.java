@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.model.db.City;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class RegencyAdapter extends ArrayAdapter {
     }
 
     public static RegencyAdapter createInstance(Context context) {
-        return new RegencyAdapter(context, R.layout.spinner_item);
+        return new RegencyAdapter(context, R.layout.logistic_spinner_item);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class RegencyAdapter extends ArrayAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.spinner_item, null);
+            convertView = inflater.inflate(R.layout.logistic_spinner_item, null);
 
             holder.regencyName = (TextView) convertView.findViewById(android.R.id.text1);
             convertView.setTag(holder);

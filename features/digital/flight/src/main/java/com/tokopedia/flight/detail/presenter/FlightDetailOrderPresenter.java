@@ -102,8 +102,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     @Override
-    public void onHelpButtonClicked() {
-        getView().navigateToWebview(FlightUrl.CONTACT_US);
+    public void onHelpButtonClicked(String contactUsUrl) {
+        getView().navigateToWebview(contactUsUrl);
     }
 
     @Override

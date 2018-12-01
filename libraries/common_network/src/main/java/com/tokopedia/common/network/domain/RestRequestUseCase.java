@@ -25,7 +25,7 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return ObservableFactory.create(buildRequest());
+        return ObservableFactory.create(buildRequest(requestParams));
     }
 
     /**
@@ -81,6 +81,6 @@ public abstract class RestRequestUseCase extends UseCase<Map<Type, RestResponse>
      *
      * @return List of RestRequest object which may or may not contain above parameter
      */
-    protected abstract List<RestRequest> buildRequest();
+    protected abstract List<RestRequest> buildRequest(RequestParams requestParams);
 
 }

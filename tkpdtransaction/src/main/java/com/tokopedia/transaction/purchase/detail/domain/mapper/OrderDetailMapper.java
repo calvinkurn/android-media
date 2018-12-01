@@ -6,6 +6,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
+import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.CourierResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.Shipment;
@@ -110,6 +111,8 @@ public class OrderDetailMapper {
         viewData.setInsurancePrice(responseData.getSummary().getInsurancePrice());
         viewData.setProductPrice(responseData.getSummary().getItemsPrice());
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());
+        viewData.setTotalProtectionItem(responseData.getSummary().getTotalProtectionItem());
+        viewData.setTotalProtectionFee(responseData.getSummary().getTotalProtectionFee());
 
         if (responseData.getDetail().getInsurance() != null) {
             viewData.setShowInsuranceNotification(
@@ -200,6 +203,15 @@ public class OrderDetailMapper {
                 + QUERY_INVOICE_URL_UPLOAD_AWB
                 + viewData.getInvoiceNumber()
         );
+
+        if (responseData.getDetail().getShipment().getInfo() != null &&
+                responseData.getDetail().getShipment().getInfo().getOnlineBooking() != null) {
+            OnlineBooking bookingCode = responseData.getDetail().getShipment().getInfo().getOnlineBooking();
+            viewData.setBookingCode(bookingCode.getBookingCode());
+            viewData.setBarcodeType(bookingCode.getBarcodeType());
+            viewData.setBookingCodeMessage(bookingCode.getMessage());
+        }
+
         return viewData;
     }
 

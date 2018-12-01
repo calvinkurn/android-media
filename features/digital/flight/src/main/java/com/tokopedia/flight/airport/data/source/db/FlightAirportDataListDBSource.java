@@ -11,9 +11,9 @@ import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCity;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportDetail;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB_Table;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB_Table;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,30 +113,23 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
         final String id = FlightAirportDataListSource.getIDFromMap(params);
         if (TextUtils.isEmpty(id)) {
             final ConditionGroup conditions = buildQuery(params);
-            return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
-                @Override
-                public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
-
-                    List<OrderBy> orderBies = new ArrayList<OrderBy>();
-                    orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.country_name).ascending());
-                    orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.city_name).ascending());
-                    orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.airport_id).ascending());
-                    List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
-                            .where(conditions)
-                            .orderByAll(orderBies)
-                            .queryList();
-                    subscriber.onNext(flightAirportDBList);
-                }
+            return Observable.unsafeCreate(subscriber -> {
+                List<OrderBy> orderBies = new ArrayList<OrderBy>();
+                orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.country_name).ascending());
+                orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.city_name).ascending());
+                orderBies.add(OrderBy.fromProperty(FlightAirportDB_Table.airport_id).ascending());
+                List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
+                        .where(conditions)
+                        .orderByAll(orderBies)
+                        .queryList();
+                subscriber.onNext(flightAirportDBList);
             });
         } else {
-            return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
-                @Override
-                public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
-                    List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
-                            .where(FlightAirportDB_Table.airport_id.like(id))
-                            .queryList();
-                    subscriber.onNext(flightAirportDBList);
-                }
+            return Observable.unsafeCreate(subscriber -> {
+                List<FlightAirportDB> flightAirportDBList = new Select().from(FlightAirportDB.class)
+                        .where(FlightAirportDB_Table.airport_id.like(id))
+                        .queryList();
+                subscriber.onNext(flightAirportDBList);
             });
         }
     }
@@ -268,25 +261,18 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                     }
                 })
                 .toList()
-                .flatMap(new Func1<List<Boolean>, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(List<Boolean> booleen) {
-                        return Observable.just(new Select(Method.count()).from(FlightAirportDB.class).hasData());
-                    }
-                });
+                .flatMap((Func1<List<Boolean>, Observable<Boolean>>) booleen ->
+                        Observable.just(new Select(Method.count()).from(FlightAirportDB.class).hasData()));
     }
 
     public Observable<List<FlightAirportDB>> getPhoneCodeList(final String query) {
         final String queryLike = "%" + query + "%";
-        return Observable.unsafeCreate(new Observable.OnSubscribe<List<FlightAirportDB>>() {
-            @Override
-            public void call(Subscriber<? super List<FlightAirportDB>> subscriber) {
-                List<FlightAirportDB> flightAirportDBList = new Select()
-                        .from(FlightAirportDB.class)
-                        .where(FlightAirportDB_Table.country_name.like(queryLike))
-                        .queryList();
-                subscriber.onNext(flightAirportDBList);
-            }
+        return Observable.unsafeCreate(subscriber -> {
+            List<FlightAirportDB> flightAirportDBList = new Select()
+                    .from(FlightAirportDB.class)
+                    .where(FlightAirportDB_Table.country_name.like(queryLike))
+                    .queryList();
+            subscriber.onNext(flightAirportDBList);
         });
     }
 
@@ -305,15 +291,25 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
 
     public Observable<FlightAirportDB> getAirport(String airportCode) {
         final String queryLike = "%" + airportCode + "%";
-        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {
-            @Override
-            public void call(Subscriber<? super FlightAirportDB> subscriber) {
-                FlightAirportDB flightAirportDBList = new Select()
-                        .from(FlightAirportDB.class)
-                        .where(FlightAirportDB_Table.airport_id.like(queryLike))
-                        .querySingle();
-                subscriber.onNext(flightAirportDBList);
+        return Observable.unsafeCreate(subscriber -> {
+            FlightAirportDB flightAirportDBList = new Select()
+                    .from(FlightAirportDB.class)
+                    .where(FlightAirportDB_Table.airport_id.like(queryLike))
+                    .querySingle();
+            if (flightAirportDBList == null) {
+                flightAirportDBList = new FlightAirportDB();
+                flightAirportDBList.setAirportId(airportCode);
+                flightAirportDBList.setAirportIds("");
+                flightAirportDBList.setAirportName("");
+                flightAirportDBList.setAliases("");
+                flightAirportDBList.setCityCode("");
+                flightAirportDBList.setCityId("");
+                flightAirportDBList.setCityName("");
+                flightAirportDBList.setCountryId("");
+                flightAirportDBList.setCountryName("");
+                flightAirportDBList.setPhoneCode(0);
             }
+            subscriber.onNext(flightAirportDBList);
         });
     }
 
