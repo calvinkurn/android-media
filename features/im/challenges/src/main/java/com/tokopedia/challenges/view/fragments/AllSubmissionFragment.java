@@ -1,7 +1,6 @@
 package com.tokopedia.challenges.view.fragments;
 
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -14,26 +13,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.contractor.AllSubmissionContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.AllSubmissionPresenter;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
+import com.tokopedia.challenges.view.utils.Utils;
 
 import java.util.List;
-
-import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
-import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
-import com.tokopedia.challenges.view.utils.Utils;
 
 import javax.inject.Inject;
 
