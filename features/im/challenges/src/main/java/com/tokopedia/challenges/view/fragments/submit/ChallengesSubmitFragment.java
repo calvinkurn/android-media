@@ -86,6 +86,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private String channelDesc;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
+    private final static String SCREEN_NAME = "challenges/submit_challenge";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -369,7 +370,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

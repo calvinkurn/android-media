@@ -48,7 +48,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private boolean isFirst = true;
     private boolean isFirstPastChallengeItem;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    private final static String SCREEN_NAME = "challenges";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,7 +119,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

@@ -50,6 +50,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     private Result challengeItem;
     private boolean isChallenge;
     private boolean showHeading;
+    private final static String SCREEN_NAME = "challenges/share";
 
     private static ShareBottomSheet newInstance(Object item, boolean showHeading) {
         ShareBottomSheet fragment = new ShareBottomSheet();
@@ -102,6 +103,9 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         return view;
     }
 
+    public static String getScreenName() {
+        return SCREEN_NAME;
+    }
 
     public void initView(View view) {
         challengesComponent = ((ChallengesBaseActivity) getActivity()).getComponent();

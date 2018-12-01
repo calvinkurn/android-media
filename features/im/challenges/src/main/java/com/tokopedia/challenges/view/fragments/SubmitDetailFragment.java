@@ -91,6 +91,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private ScrollView scrollView;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
+    private final static String SCREEN_NAME = "challenges/submission_detail";
+
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -341,7 +343,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     public void setLikes(boolean isLiked) {

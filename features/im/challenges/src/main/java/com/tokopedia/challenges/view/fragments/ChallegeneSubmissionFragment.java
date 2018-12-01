@@ -116,6 +116,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private boolean isWinnerList = false;
     private View bottomMarginView;
     private TextView submitPhoto;
+    private final static String SCREEN_NAME = "challenges/challenge_detail";
 
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
@@ -138,7 +139,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         isWinnerList = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, false);
         setHasOptionsMenu(true);
     }
-
 
     @Override
     public void onStart() {
@@ -266,7 +266,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

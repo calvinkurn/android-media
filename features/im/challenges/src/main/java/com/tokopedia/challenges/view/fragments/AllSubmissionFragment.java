@@ -56,6 +56,8 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     private String challengeId;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
+    private final static String SCREEN_NAME = "challenges/submission_listing";
+
 
     public static Fragment createInstance(Bundle extras) {
         AllSubmissionFragment categoryFragment = new AllSubmissionFragment();
@@ -90,6 +92,8 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
 
             return view;
     }
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -127,7 +131,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

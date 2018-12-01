@@ -25,6 +25,7 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
     public final static String TEXT = "TEXT";
     private String toolBarTitle;
     private String text;
+    private final static String SCREEN_NAME = "challenges/tnc";
 
 
     public static Fragment createInstance(Bundle bundle) {
@@ -64,7 +65,7 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
 

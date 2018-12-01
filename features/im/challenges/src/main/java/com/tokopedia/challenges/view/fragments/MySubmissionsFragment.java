@@ -40,7 +40,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private Boolean isFirst = true;
     private LinearLayoutManager layoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    private final static String SCREEN_NAME = "challenges/submission";
 
     @Override
     protected void initInjector() {
@@ -183,7 +183,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     private EmptyStateViewHelper.RetryClickedListener getMySubmissionsRetryListener() {

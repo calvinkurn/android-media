@@ -32,6 +32,7 @@ import java.io.File;
 public class ShareInstagramBottomSheet extends BottomSheets {
 
     private static final String PACKAGENAME_INSTAGRAM = "com.instagram.android";
+    private final static String SCREEN_NAME = "challenges/share";
 
     private Result challengeItem;
     private SubmissionResult submissionResult;
@@ -85,6 +86,10 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         });
         btnCancel.setOnClickListener(v -> dismiss());
 
+    }
+
+    public static String getScreenName() {
+        return SCREEN_NAME;
     }
 
     @Override
