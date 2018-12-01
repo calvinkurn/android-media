@@ -164,6 +164,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
                 }
             });
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
+
         return view;
     }
 
@@ -335,7 +337,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return null;
     }
 
     public void setLikes(boolean isLiked) {

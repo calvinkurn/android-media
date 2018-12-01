@@ -15,6 +15,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.MySubmissionsListAdapter;
 import com.tokopedia.challenges.view.adapter.MySubmissionsViewHolder;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
@@ -40,7 +41,8 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private LinearLayoutManager layoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private final static String SCREEN_NAME = "challenges/submission";
-
+    @Inject
+    public ChallengesGaAnalyticsTracker analytics;
     @Override
     protected void initInjector() {
         getComponent(ChallengesComponent.class).inject(this);
@@ -81,6 +83,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         if (isFirst) {
             isFirst = false;
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         return view;
     }
 
@@ -182,7 +185,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return null;
     }
 
     private EmptyStateViewHelper.RetryClickedListener getMySubmissionsRetryListener() {

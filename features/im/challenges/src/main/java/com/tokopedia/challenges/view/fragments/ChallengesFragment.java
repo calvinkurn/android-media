@@ -112,13 +112,14 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         if (isFirst) {
             isFirst = false;
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         return view;
     }
 
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return null;
     }
 
     @Override

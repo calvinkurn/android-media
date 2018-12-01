@@ -249,6 +249,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 }
             });
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         return view;
     }
 
@@ -266,7 +267,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return null;
     }
 
     @Override

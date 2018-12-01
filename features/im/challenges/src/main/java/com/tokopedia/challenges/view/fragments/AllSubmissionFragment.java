@@ -84,10 +84,9 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE || ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE) {
             ChallengesCacheHandler.setChallengeAllSubmissionssListCache();//to avoid duplicacy from onstart
         }
-
-            return view;
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+        return view;
     }
-
 
 
     @Override
@@ -126,7 +125,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return null;
     }
 
     @Override
