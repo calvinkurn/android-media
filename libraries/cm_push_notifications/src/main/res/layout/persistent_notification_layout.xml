@@ -44,7 +44,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lin_container_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -75,7 +74,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lin_container_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -106,7 +104,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lin_container_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

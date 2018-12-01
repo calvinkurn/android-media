@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.domain.UpdateFcmTokenUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -39,7 +40,7 @@ public class CMUserHandler {
         mContext = context;
     }
 
-    public void updateToken(String token){
+    public void updateToken(String token) {
         Completable.fromAction(() -> sendFcmTokenToServer(token))
                 .subscribeOn(Schedulers.io()).subscribe();
     }
@@ -47,7 +48,6 @@ public class CMUserHandler {
     public void sendFcmTokenToServer(String token) {
 
         String userId = getUserId();
-        String accessToken = ((CMRouter) mContext).getAccessToken();
         String gAdId = getGoogleAdId();
 
         if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
@@ -55,14 +55,14 @@ public class CMUserHandler {
                 CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, getGoogleAdId())) {
 
             updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
-            updateFcmTokenUseCase.createRequestParams(
+            RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
                     userId,
                     token,
                     CMNotificationUtils.getSdkVersion(),
                     CMNotificationUtils.getUniqueAppId(mContext),
                     CMNotificationUtils.getCurrentAppVersion(mContext));
 
-            updateFcmTokenUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
                 @Override
                 public void onCompleted() {
                     Log.e(TAG, "onCompleted: sendFcmTokenToServer ");

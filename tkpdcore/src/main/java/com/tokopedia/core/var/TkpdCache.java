@@ -54,6 +54,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
     public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
     public static final String REFERRAL = "REFERRAL";
+    public static final String ADVERTISINGID = "ADVERTISINGID";
     public static final String ANDROID_ID = "ANDROID_ID";
     public static final String PRODUCT_DETAIL = "PRODUCT_DETAIL_PAGE";
 

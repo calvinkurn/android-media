@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class UpdateFcmTokenUseCase extends RestRequestUseCase {
 
-    private RequestParams requestParams = RequestParams.create();
 
     private static final String USER_ID = "userid";
     private static final String SOURCE = "source";
@@ -29,27 +28,25 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
     private static final String SOURCE_ANDROID = "ANDROID";
 
 
-
     public UpdateFcmTokenUseCase() {
     }
 
-    public void createRequestParams(String userId, String token, int sdkVersion, String appId ,int appVersion) {
-        if(userId!= null && userId.length()> 0)
-        requestParams.putInt(USER_ID, Integer.parseInt(userId));
-       // requestParams.putString("authtoken", accessToken);
+    public RequestParams createRequestParams(String userId, String token, int sdkVersion, String appId, int appVersion) {
+        RequestParams requestParams = RequestParams.create();
+
+        if (userId != null && userId.length() > 0)
+            requestParams.putInt(USER_ID, Integer.parseInt(userId));
         requestParams.putString(SOURCE, SOURCE_ANDROID);
         requestParams.putString(FCM_TOKEN, token);
         requestParams.putString(APP_ID, appId);
-       // requestParams.putString("identifier", gAdsId);
         requestParams.putString(SDK_VERSION, String.valueOf(sdkVersion));
         requestParams.putString(APP_VERSION, String.valueOf(appVersion));
-       // requestParams.putString("state", appId);
-
         requestParams.putLong(REQUEST_TIMESTAMP, CMNotificationUtils.getCurrentLocalTimeStamp());
+        return requestParams;
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         RestRequest restRequest1 = new RestRequest.Builder(CMNotificationUrls.CM_TOKEN_UPDATE, String.class)
@@ -60,6 +57,4 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
 
         return tempRequest;
     }
-
-
 }

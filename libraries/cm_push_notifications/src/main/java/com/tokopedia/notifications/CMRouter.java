@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
  */
 public interface CMRouter {
     String getUserId();
-    String getAccessToken();
 
     AnalyticTracker getAnalyticTracker();
 }
