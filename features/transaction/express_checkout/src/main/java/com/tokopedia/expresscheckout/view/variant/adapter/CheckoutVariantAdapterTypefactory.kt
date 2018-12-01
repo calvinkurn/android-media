@@ -1,6 +1,10 @@
 package com.tokopedia.expresscheckout.view.variant.adapter
 
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.expresscheckout.view.variant.viewholder.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 /**
@@ -10,27 +14,40 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 class CheckoutVariantAdapterTypefactory : BaseAdapterTypeFactory(), CheckoutVariantTypeFactory {
 
     override fun type(viewModel: CheckoutVariantNoteViewModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CheckoutVariantNoteViewHolder.LAYOUT
     }
 
     override fun type(viewModel: CheckoutVariantProductViewModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CheckoutVariantProductViewHolder.LAYOUT
     }
 
     override fun type(viewModel: CheckoutVariantProfileViewModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CheckoutVariantProfileViewHolder.LAYOUT
     }
 
     override fun type(viewModel: CheckoutVariantQuantityViewModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CheckoutVariantQuantityViewHolder.LAYOUT
     }
 
     override fun type(viewModel: CheckoutVariantSummaryViewModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CheckoutVariantSummaryViewHolder.LAYOUT
     }
 
     override fun type(viewModel: CheckoutVariantTypeVariantViewModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CheckoutVariantTypeVariantViewHolder.LAYOUT
+    }
+
+    override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
+        return when (viewType) {
+            CheckoutVariantNoteViewHolder.LAYOUT -> CheckoutVariantNoteViewHolder(view)
+            CheckoutVariantProductViewHolder.LAYOUT -> CheckoutVariantProductViewHolder(view)
+            CheckoutVariantProfileViewHolder.LAYOUT -> CheckoutVariantProfileViewHolder(view)
+            CheckoutVariantQuantityViewHolder.LAYOUT -> CheckoutVariantQuantityViewHolder(view)
+            CheckoutVariantSummaryViewHolder.LAYOUT -> CheckoutVariantSummaryViewHolder(view)
+            CheckoutVariantTypeVariantViewHolder.LAYOUT -> CheckoutVariantTypeVariantViewHolder(view)
+            else -> super.createViewHolder(view, viewType)
+        }
+
     }
 
 }

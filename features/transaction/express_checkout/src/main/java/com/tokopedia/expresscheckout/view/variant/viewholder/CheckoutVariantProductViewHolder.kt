@@ -16,7 +16,9 @@ class CheckoutVariantProductViewHolder(val view: View) : AbstractViewHolder<Chec
     }
 
     override fun bind(element: CheckoutVariantProductViewModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (element != null) {
+
+        }
     }
 
 }

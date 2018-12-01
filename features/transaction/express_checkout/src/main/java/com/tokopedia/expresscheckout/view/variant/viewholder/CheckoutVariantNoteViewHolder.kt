@@ -9,7 +9,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantNoteV
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantNoteViewHolder(val v: View) : AbstractViewHolder<CheckoutVariantNoteViewModel>(v) {
+class CheckoutVariantNoteViewHolder(val view: View) : AbstractViewHolder<CheckoutVariantNoteViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_note_detail_product_page

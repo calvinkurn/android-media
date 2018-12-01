@@ -21,7 +21,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypefactory {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return CheckoutVariantAdapterTypefactory();
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
