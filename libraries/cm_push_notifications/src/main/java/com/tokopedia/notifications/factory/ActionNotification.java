@@ -28,7 +28,7 @@ public class ActionNotification extends BaseNotification {
         builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink()));
         builder.setAutoCancel(true);
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId()));
-        if(baseNotificationModel.getActionButton() == null || baseNotificationModel.getActionButton().size() == 0)
+        if (baseNotificationModel.getActionButton() == null || baseNotificationModel.getActionButton().size() == 0)
             return null;
         addActionButton(baseNotificationModel.getActionButton(), builder);
         return builder.build();
@@ -40,7 +40,7 @@ public class ActionNotification extends BaseNotification {
 
         for (ActionButton actionButton : actionButtonList) {
             builder.addAction(R.drawable.qc_launcher,
-                    actionButton.getText(), getButtonPendingIntent(actionButton));
+                    actionButton.getText(), getButtonPendingIntent(actionButton, 500));
         }
     }
 

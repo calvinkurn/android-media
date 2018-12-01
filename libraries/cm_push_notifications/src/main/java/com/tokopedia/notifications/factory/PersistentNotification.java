@@ -35,7 +35,7 @@ public class PersistentNotification extends BaseNotification {
         builder.setContentIntent(getMainContentIntent());
         builder.setAutoCancel(false);
         builder.setOngoing(true);
-        if(baseNotificationModel.getPersistentButtonList() == null || baseNotificationModel.getPersistentButtonList().size() == 0)
+        if (baseNotificationModel.getPersistentButtonList() == null || baseNotificationModel.getPersistentButtonList().size() == 0)
             return null;
         RemoteViews remoteViews = getPersistentRemoteView();
         builder.setCustomContentView(remoteViews);
@@ -58,14 +58,14 @@ public class PersistentNotification extends BaseNotification {
             persistentButton = persistentButtonList.get(0);
             remoteView.setTextViewText(R.id.title1, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon1, getBitmap(persistentButton.getIcon()));
-            remoteView.setOnClickPendingIntent(R.id.lin_container_1, createPendingIntent(persistentButton.getAppLink()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_1, getPersistentClickPendingIntent(persistentButton, 101));
         }
         if (listSize > 1) {
             remoteView.setViewVisibility(R.id.lin_container_2, View.VISIBLE);
             persistentButton = persistentButtonList.get(1);
             remoteView.setTextViewText(R.id.title2, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon2, getBitmap(persistentButton.getIcon()));
-            remoteView.setOnClickPendingIntent(R.id.lin_container_2, createPendingIntent(persistentButton.getAppLink()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_2, getPersistentClickPendingIntent(persistentButton, 102));
         }
         if (listSize > 2) {
             remoteView.setViewVisibility(R.id.lin_container_3, View.VISIBLE);
@@ -73,24 +73,26 @@ public class PersistentNotification extends BaseNotification {
             remoteView.setTextViewText(R.id.title3, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon3, getBitmap(persistentButton.getIcon()));
 
-            remoteView.setOnClickPendingIntent(R.id.lin_container_3, createPendingIntent(persistentButton.getAppLink()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_3, getPersistentClickPendingIntent(persistentButton, 103));
         }
         if (listSize > 3) {
             remoteView.setViewVisibility(R.id.lin_container_4, View.VISIBLE);
             persistentButton = persistentButtonList.get(3);
             remoteView.setTextViewText(R.id.title4, persistentButton.getText());
             remoteView.setImageViewBitmap(R.id.image_icon4, getBitmap(persistentButton.getIcon()));
-            remoteView.setOnClickPendingIntent(R.id.lin_container_4, createPendingIntent(persistentButton.getAppLink()));
+            remoteView.setOnClickPendingIntent(R.id.lin_container_4, getPersistentClickPendingIntent(persistentButton, 104));
         }
 
-
-        remoteView.setOnClickPendingIntent(R.id.image_icon6, getMainContentIntent());
+        persistentButton = new PersistentButton();
+        persistentButton.setAppLink(baseNotificationModel.getAppLink());
+        persistentButton.setAppLogo(true);
+        remoteView.setOnClickPendingIntent(R.id.image_icon6, getPersistentClickPendingIntent(persistentButton, 105));
 
 
         return remoteView;
     }
 
-    private PendingIntent getMainContentIntent(){
+    private PendingIntent getMainContentIntent() {
         return createPendingIntent(baseNotificationModel.getAppLink());
     }
 
@@ -101,16 +103,39 @@ public class PersistentNotification extends BaseNotification {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(
                     context,
-                    0, intent,
+                    100, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
             return PendingIntent.getBroadcast(
                     context,
-                    baseNotificationModel.getNotificationId(),
+                    100,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         }
+    }
+
+    private PendingIntent getPersistentClickPendingIntent(PersistentButton persistentButton, int requestCode) {
+        PendingIntent resultPendingIntent;
+        Intent intent = new Intent(context, CMBroadcastReceiver.class);
+        intent.setAction(CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK);
+        intent.putExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA, persistentButton);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
+        return resultPendingIntent;
     }
 }

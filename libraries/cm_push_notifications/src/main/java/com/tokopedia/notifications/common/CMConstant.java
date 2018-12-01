@@ -77,8 +77,10 @@ public interface CMConstant {
         String CUSTOM_VALUE = "customvalues";
     }
 
-    interface ActionButtonExtra {
+    interface ReceiverExtraData {
         String ACTION_BUTTON_APP_LINK = "action_button_app_link";
+        String PERSISTENT_BUTTON_DATA = "persistent_data";
+
     }
 
     interface NotificationGroup {
@@ -94,6 +96,8 @@ public interface CMConstant {
         String ACTION_CANCEL_PERSISTENT = "com.tokopedia.notification.ACTION_CANCEL_PERSISTENT";
         String ACTION_ON_NOTIFICATION_DISMISS = "com.tokopedia.notification.ACTION_ON_NOTIFICATION_DISMISS";
         String ACTION_ON_COPY_COUPON_CODE = "com.tokopedia.notification.ACTION_ON_COPY_COUPON_CODE";
+        String ACTION_PERSISTENT_CLICK = "com.tokopedia.notification.ACTION_PERSISTENT_CLICK";
+
     }
 
     interface CouponCodeExtra {

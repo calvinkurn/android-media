@@ -11,11 +11,17 @@ import android.widget.Toast;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMEvents;
+import com.tokopedia.notifications.common.CmEventPost;
+import com.tokopedia.notifications.common.CMScreenEventMap;
+import com.tokopedia.notifications.model.PersistentButton;
 
 /**
  * @author lalit.singh
  */
 public class CMBroadcastReceiver extends BroadcastReceiver {
+
+    private static final String TAG = CMBroadcastReceiver.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -24,14 +30,20 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         if (null != action) {
             switch (action) {
                 case CMConstant.ReceiverAction.ACTION_BUTTON:
-                    String appLinks = intent.getStringExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK);
+                    String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
                     Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
                     context.startActivity(appLinkIntent);
                     NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
                     Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
                     context.sendBroadcast(it);
                     break;
+                case CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK:
+                    handlePersistentClick(context, intent);
+                    context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+                    break;
                 case CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT:
+                    CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                            CMEvents.PersistentEvent.EVENT_ACTION_CANCELED, CMEvents.PersistentEvent.EVENT_LABEL);
                     context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
@@ -39,15 +51,32 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_COPY_COUPON_CODE:
-                    //Notification copy coupon code Event
                     String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
-                    appLinks = intent.getStringExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK);
+                    appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
                     appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
                     context.startActivity(appLinkIntent);
                     copyToClipboard(context, coupon);
                     NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
                     break;
             }
+        }
+    }
+
+    private void handlePersistentClick(Context context, Intent intent) {
+        if (intent.hasExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)) {
+            PersistentButton persistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA);
+            if (persistentButton.isAppLogo()) {
+                CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                        CMEvents.PersistentEvent.EVENT_ACTION_LOGO_CLICK,
+                        CMScreenEventMap.getScreenNameByApplink(persistentButton.getAppLink()));
+            } else {
+                CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                        persistentButton.getText(),
+                        CMScreenEventMap.getScreenNameByApplink(persistentButton.getAppLink()));
+            }
+
+            Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), persistentButton.getAppLink());
+            context.startActivity(appLinkIntent);
         }
     }
 

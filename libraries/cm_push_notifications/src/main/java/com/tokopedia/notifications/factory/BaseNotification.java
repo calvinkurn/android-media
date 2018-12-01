@@ -13,7 +13,6 @@ import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 
@@ -173,23 +172,23 @@ public abstract class BaseNotification {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
     }
 
-    protected PendingIntent getButtonPendingIntent(ActionButton actionButton) {
+    protected PendingIntent getButtonPendingIntent(ActionButton actionButton, int requestCode) {
         PendingIntent resultPendingIntent;
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
         intent.setAction(CMConstant.ReceiverAction.ACTION_BUTTON);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
-        intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, actionButton.getAppLink());
+        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, actionButton.getAppLink());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,
-                    0,
+                    requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,
-                    baseNotificationModel.getNotificationId(),
+                    requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
@@ -247,7 +246,7 @@ public abstract class BaseNotification {
         intent.setAction(CMConstant.ReceiverAction.ACTION_ON_COPY_COUPON_CODE);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
         intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, couponCode);
-        intent.putExtra(CMConstant.ActionButtonExtra.ACTION_BUTTON_APP_LINK, appLinks);
+        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, appLinks);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,

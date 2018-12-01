@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMEvents;
+import com.tokopedia.notifications.common.CmEventPost;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.model.Media;
@@ -38,6 +40,8 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.BIG_IMAGE:
                 return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
             case CMConstant.NotificationType.PERSISTENT:
+                CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                        CMEvents.PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, CMEvents.PersistentEvent.EVENT_LABEL);
                 return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
             case CMConstant.NotificationType.DELETE_NOTIFICATION:
                 cancelNotification(context, baseNotificationModel.getNotificationId());
