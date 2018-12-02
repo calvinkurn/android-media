@@ -23,10 +23,10 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:adjustViewBounds="true"
                     android:id="@+id/img_banner_coupon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
                     android:scaleType="fitCenter" />
 
                 <TextView
@@ -195,10 +195,10 @@
                 </com.tokopedia.design.component.Tabs>
             </android.support.design.widget.AppBarLayout>
 
-            <android.support.v4.view.ViewPager
+            <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
                 android:id="@+id/view_pager_info"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </LinearLayout>
