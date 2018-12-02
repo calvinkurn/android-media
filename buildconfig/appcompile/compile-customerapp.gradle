@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:developer_options"
 
 include "features:content:affiliate"
 //include "features:content:affiliate_no_op"
@@ -67,6 +68,8 @@ include "features:payment:payment"
 include "features:payment:pms"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
+
+include "features:product:gallery"
 
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"

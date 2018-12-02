@@ -5,8 +5,7 @@
     <string name="kyc_intro_button">Lanjut</string>
     
     <string name="kyc_pending_title">Menunggu Verifikasi</string>
-    <string name="kyc_pending_text">Kami akan memverifikasi dokumen Anda dalam 1x24 jam pada hari
-        kerja.\n\nHasil verifikasi akan dikirim melalui Email dan Chat Tokopedia.</string>
+    <string name="kyc_pending_text">Kami akan memverifikasi dokumen Anda dalam 1x24 jam.\n\nHasil verifikasi akan dikirim melalui Email dan Chat Tokopedia.</string>
     
     <string name="kyc_failed_title">Gagal Verifikasi</string>
     <string name="kyc_failed_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.\n\nSilakan unggah ulang dokumen Anda. Pastikan foto tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
