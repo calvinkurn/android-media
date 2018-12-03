@@ -24,7 +24,7 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
@@ -111,7 +111,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.nps.NpsRouter;
@@ -985,7 +985,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setPromoPushPreference(Boolean newValue) {
-        TrackingUtils.setMoEngagePushPreference(newValue);
+        TrackingUtils.setMoEngagePushPreference(this, newValue);
     }
 
     @Override
@@ -1143,12 +1143,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventTracking(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(eventTracking);
+        UnifyTracking.sendGTMEvent(this, eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
 
     public void sendScreenName(String screenName) {
-        ScreenTracking.screen(screenName);
+        ScreenTracking.screen(this, screenName);
     }
 
     @Override
@@ -1622,13 +1622,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
-                UnifyTracking.eventClearEnhanceEcommerce();
-                UnifyTracking.sendGTMEvent(events);
+                UnifyTracking.eventClearEnhanceEcommerce(ConsumerRouterApplication.this);
+                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, events);
             }
 
             @Override
             public void sendEventTracking(String event, String category, String action, String label) {
-                UnifyTracking.sendGTMEvent(new EventTracking(
+                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
                         event,
                         category,
                         action,
@@ -1645,7 +1645,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                TrackingUtils.eventTrackingEnhancedEcommerce(trackingData);
+                TrackingUtils.eventTrackingEnhancedEcommerce(ConsumerRouterApplication.this, trackingData);
             }
         };
     }
@@ -1810,12 +1810,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventTracking(String event, String category, String action, String label) {
-        UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+        UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(event, category, action, label).getEvent());
     }
 
     @Override
     public void sendMoEngageOpenShopEventTracking(String screenName) {
-        TrackingUtils.sendMoEngageCreateShopEvent(screenName);
+        TrackingUtils.sendMoEngageCreateShopEvent(ConsumerRouterApplication.this, screenName);
     }
 
     @Override
@@ -2211,7 +2211,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
-            UnifyTracking.eventShopSendChat();
+            UnifyTracking.eventShopSendChat(context);
             Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
             context.startActivity(intent);
         } else {
@@ -2319,7 +2319,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void logInvalidGrant(Response response) {
-        AnalyticsLog.logInvalidGrant(response.request().url().toString());
+        AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
 
     }
 
@@ -2504,7 +2504,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     productId, shopId, source));
         } else {
             goToCreateMerchantRedirect(context);
-            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
+            UnifyTracking.eventTopAdsSwitcher(this, AppEventTracking.Category.SWITCHER);
         }
     }
 
@@ -2517,7 +2517,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendAnalyticsFirstTime() {
-        TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
+        TrackingUtils.activityBasedAFEvent(this, HomeRouter.IDENTIFIER_HOME_ACTIVITY);
     }
 
     @Override
@@ -2722,7 +2722,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToEditShop(Context context) {
         Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
-        UnifyTracking.eventManageShopInfo();
+        UnifyTracking.eventManageShopInfo(context);
 
         context.startActivity(intent);
     }
@@ -2857,34 +2857,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToShopEditor(Context context) {
-        UnifyTracking.eventManageShopInfo();
+        UnifyTracking.eventManageShopInfo(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goToManageShopShipping(Context context) {
-        UnifyTracking.eventManageShopShipping();
+        UnifyTracking.eventManageShopShipping(context);
         context.startActivity(new Intent(context, EditShippingActivity.class));
     }
 
     @Override
     public void goToManageShopEtalase(Context context) {
-        UnifyTracking.eventManageShopEtalase();
+        UnifyTracking.eventManageShopEtalase(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goTotManageShopNotes(Context context) {
-        UnifyTracking.eventManageShopNotes();
+        UnifyTracking.eventManageShopNotes(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goToManageShopLocation(Context context) {
-        UnifyTracking.eventManageShopLocation();
+        UnifyTracking.eventManageShopLocation(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
         context.startActivity(intent);
     }
@@ -2916,8 +2916,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToSaldo(Context context) {
         Intent intent = new Intent(context, DepositActivity.class);
         context.startActivity(intent);
-        UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DEPOSIT);
-        AnalyticsEventTrackingHelper.homepageSaldoClick(DepositActivity.class.getName());
+        UnifyTracking.eventDrawerClick(context, AppEventTracking.EventLabel.DEPOSIT);
+        AnalyticsEventTrackingHelper.homepageSaldoClick(context, DepositActivity.class.getName());
     }
 
     public Intent getInboxChatIntent(Context context) {
@@ -3010,7 +3010,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new GlobalCacheManager().deleteAll();
         Router.clearEtalase(activity);
         DbManagerImpl.getInstance().removeAllEtalase();
-        TrackingUtils.eventMoEngageLogoutUser();
+        TrackingUtils.eventMoEngageLogoutUser(activity);
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
         notif.dismissAllActivedNotifications();
@@ -3107,7 +3107,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
-            TrackingUtils.eventMoEngageLogoutUser();
+            TrackingUtils.eventMoEngageLogoutUser(this);
             SessionHandler.clearUserData(activity);
             NotificationModHandler notif = new NotificationModHandler(activity);
             notif.dismissAllActivedNotifications();
@@ -3167,7 +3167,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendMoengageEvents(String eventName, Map<String, Object> values) {
-        TrackingUtils.sendMoEngageEvents(eventName, values);
+        TrackingUtils.sendMoEngageEvents(this, eventName, values);
     }
 
     @Override
@@ -3216,7 +3216,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getAppsFlyerID() {
-        return TrackingUtils.getAfUniqueId();
+        return TrackingUtils.getAfUniqueId(this);
     }
 
     @Override
@@ -3225,7 +3225,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
-        UnifyTracking.sendAFCompleteRegistrationEvent(userId, methodName);
+        UnifyTracking.sendAFCompleteRegistrationEvent(this, userId, methodName);
     }
 
     public void onAppsFlyerInit() {

@@ -259,7 +259,7 @@ public class ProductPageTracking {
         values.put(AFInAppEventParameterName.DESCRIPTION, productName);
         values.put(Jordan.AF_KEY_CATEGORY_NAME, category);
 
-        PaymentTracking.atcAF(values);
+        PaymentTracking.atcAF(MainApplication.getAppContext(), values);
     }
 
     public static void eventTopAdsClicked(Context context, int position, Product product) {

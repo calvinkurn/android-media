@@ -107,7 +107,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     public void startBannerSlide(TouchViewPager viewPager) {
         this.mTouchViewPager = viewPager;
         currentPage = viewPager.getCurrentItem();
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
+        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
                 " - " + currentPage);
         carousel.getItems().get(currentPage).setTrack(true);
         try {
@@ -146,7 +146,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     public void onBannerSlide(int page) {
         currentPage = page;
         if (!carousel.getItems().get(currentPage).isTrack()) {
-            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
+            eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_PROMO_IMPRESSION, carousel.getItems().get(currentPage).getTitle() +
                     " - " + currentPage);
             carousel.getItems().get(currentPage).setTrack(true);
         }

@@ -162,9 +162,9 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (devMode()) {
+//            if (devMode()) {
                 signingConfig signingConfigs.debug
-            }
+//            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -273,6 +273,7 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(":libraries:core_legacy")
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)

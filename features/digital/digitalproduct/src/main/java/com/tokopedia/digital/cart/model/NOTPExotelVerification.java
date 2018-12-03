@@ -18,7 +18,7 @@ import com.exotel.verification.contracts.VerificationSuccess;
 import com.exotel.verification.exceptions.InvalidConfigException;
 import com.exotel.verification.exceptions.PermissionNotGrantedException;
 import com.exotel.verification.exceptions.VerificationAlreadyInProgressException;
-import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.digital.analytics.NOTPTracking;
 import com.tokopedia.digital.utils.DeviceUtil;
@@ -62,7 +62,7 @@ public class NOTPExotelVerification {
        * */
 
        if(istruecallerInstalled(context)) {
-           AnalyticsLog.printNOTPLog("NOTP_Verification True Caller Installed ");
+           AnalyticsLog.printNOTPLog(context, "NOTP_Verification True Caller Installed ");
        }
         if(istruecallerInstalled(context) || !isNumberExistInPhone((Activity) context,phoneNo)) {
             verificationListener.onVerificationFail();
@@ -83,11 +83,11 @@ public class NOTPExotelVerification {
         }
         ExotelVerification eVerification = null;
         try {
-            AnalyticsLog.printNOTPLog("NOTP Verification IntializationStart ");
+            AnalyticsLog.printNOTPLog(context, "NOTP Verification IntializationStart ");
 
             eVerification = new ExotelVerification(config);
 
-            AnalyticsLog.printNOTPLog("NOTP Verification IntializationComplete ");
+            AnalyticsLog.printNOTPLog(context, "NOTP Verification IntializationComplete ");
 
         } catch (PermissionNotGrantedException e) {
             e.printStackTrace();
@@ -103,19 +103,19 @@ public class NOTPExotelVerification {
 
             public void onVerificationSuccess(VerificationSuccess
                                                       verificationSuccess) {
-                AnalyticsLog.printNOTPLog("NOTP verification Success ");
+                AnalyticsLog.printNOTPLog(context, "NOTP verification Success ");
                 verificationListener.onVerificationSuccess();
             }
 
             public void onVerificationFailed(VerificationFailed
                                                      verificationFailed) {
-                AnalyticsLog.printNOTPLog("NOTP verification Fail ");
+                AnalyticsLog.printNOTPLog(context, "NOTP verification Fail ");
                 verificationlistener.onVerificationFail();
             }
         }
 
         try {
-            AnalyticsLog.printNOTPLog("NOTP Verification startVerification ");
+            AnalyticsLog.printNOTPLog(context, "NOTP Verification startVerification ");
             eVerification.startVerification(new VerifyListener(), phoneNo,WAIT_SECONDS);
         } catch (VerificationAlreadyInProgressException e) {
             e.printStackTrace();
@@ -161,10 +161,10 @@ public class NOTPExotelVerification {
             }
         }
         if(result) {
-            AnalyticsLog.printNOTPLog("NOTP Verification  Number Exist in Phone"+ (isPhoneMatch?" Match  "+ number:"Empty "));
+            AnalyticsLog.printNOTPLog(context, "NOTP Verification  Number Exist in Phone"+ (isPhoneMatch?" Match  "+ number:"Empty "));
             NOTPTracking.eventNOTPConfiguration(false,false,true);
         }else {
-            AnalyticsLog.printNOTPLog("NOTP Verification  Number not match");
+            AnalyticsLog.printNOTPLog(context, "NOTP Verification  Number not match");
 
         }
 

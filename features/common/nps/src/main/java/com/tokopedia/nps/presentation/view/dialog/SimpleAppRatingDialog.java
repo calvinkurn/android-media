@@ -49,12 +49,12 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
                 .setPositiveButton(R.string.app_rating_button_rate, (dialog, which) -> {
                     openPlayStore(activity);
                     saveVersionCodeForState();
-                    npsAnalytics.eventClickAppRating(CLICK_APP_RATING);
+                    npsAnalytics.eventClickAppRating(activity, CLICK_APP_RATING);
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.app_rating_button_later, (dialog, which) -> {
                     hideDialog();
-                    npsAnalytics.eventCancelAppRating(CANCEL_APP_RATING);
+                    npsAnalytics.eventCancelAppRating(activity, CANCEL_APP_RATING);
                     dialog.dismiss();
                 })
                 .setCancelable(false)
@@ -74,7 +74,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected void onShowDialog() {
-        npsAnalytics.eventAppRatingImpression(this.getClass().getSimpleName());
+        npsAnalytics.eventAppRatingImpression(activity, this.getClass().getSimpleName());
     }
 
     private void hideDialog() {

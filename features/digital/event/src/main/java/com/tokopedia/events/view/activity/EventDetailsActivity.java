@@ -302,7 +302,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
+        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
     }
 
     @Override
@@ -338,12 +338,12 @@ public class EventDetailsActivity extends EventBaseActivity implements
         if (tvExpandableDescription.isExpanded()) {
             seemorebutton.setText(R.string.expand);
             ivArrowSeating.animate().rotation(0f);
-            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
+            eventsAnalytics.eventDigitalEventTracking(this, "deskripsi - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
         } else {
             seemorebutton.setText(R.string.collapse);
             ivArrowSeating.animate().rotation(180f);
-            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
+            eventsAnalytics.eventDigitalEventTracking(this, "deskripsi - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableDescription.toggle();
@@ -354,13 +354,13 @@ public class EventDetailsActivity extends EventBaseActivity implements
         if (tvExpandableTermsNCondition.isExpanded()) {
             seemorebuttonTnC.setText(R.string.expand);
             ivArrowSeatingTnC.animate().rotation(0f);
-            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
+            eventsAnalytics.eventDigitalEventTracking(this, "syarat dan ketentuan - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
 
         } else {
             seemorebuttonTnC.setText(R.string.collapse);
             ivArrowSeatingTnC.animate().rotation(180f);
-            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
+            eventsAnalytics.eventDigitalEventTracking(this, "syarat dan ketentuan - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableTermsNCondition.toggle();
@@ -374,7 +374,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

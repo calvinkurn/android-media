@@ -2,7 +2,8 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.util.Log;
 
-import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -111,7 +112,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private void logInvalidGrant(Response response) {
-        AnalyticsLog.logInvalidGrant(response.request().url().toString());
+        AnalyticsLog.logInvalidGrant(MainApplication.getAppContext(),
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                response.request().url().toString());
     }
 
 

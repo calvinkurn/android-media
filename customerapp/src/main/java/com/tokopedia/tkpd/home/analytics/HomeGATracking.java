@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.home.analytics;
 
+import android.content.Context;
+
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
@@ -14,16 +16,16 @@ public class HomeGATracking extends UnifyTracking {
     private static final String ACTION_VIEW_BNANNER_BUTTON = "banner_view";
 
 
-    public static void eventYoutubeVideoImpression() {
-        sendGTMEvent(new EventTracking(EVENT_VIDEO_VIEW,
+    public static void eventYoutubeVideoImpression(Context context) {
+        sendGTMEvent(context, new EventTracking(EVENT_VIDEO_VIEW,
                 CATEGORY_VIDEO_PUSH,
                 ACTION_VIDEO_NOTIFICATION_PAGE,
                 "-")
                 .getEvent());
     }
 
-    public static void eventClickCTAButton() {
-        sendGTMEvent(new EventTracking(EVENT_VIDEO_GENERAL_EVENT,
+    public static void eventClickCTAButton(Context context) {
+        sendGTMEvent(context, new EventTracking(EVENT_VIDEO_GENERAL_EVENT,
                 CATEGORY_VIDEO_PUSH,
                 ACTION_CLICK_CTA_BUTTON,
                 "-")

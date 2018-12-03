@@ -389,8 +389,12 @@ public class DeepLinkChecker {
     }
 
     private static boolean isExcludedUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(
+                MainApplication.getAppContext(),
+                AppEventTracking.GTM.EXCLUDED_URL))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(
+                    MainApplication.getAppContext(),
+                    AppEventTracking.GTM.EXCLUDED_URL).split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().endsWith(excludedString)) {
                     return true;
@@ -401,8 +405,11 @@ public class DeepLinkChecker {
     }
 
     private static boolean isExcludedHostUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST).split(","));
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                AppEventTracking.GTM.EXCLUDED_HOST))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(
+                    MainApplication.getAppContext(),
+                    AppEventTracking.GTM.EXCLUDED_HOST).split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().startsWith(excludedString)) {
                     return true;

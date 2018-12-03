@@ -130,7 +130,7 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

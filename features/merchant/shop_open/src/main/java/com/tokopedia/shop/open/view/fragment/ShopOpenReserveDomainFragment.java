@@ -142,7 +142,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         super.onActivityCreated(savedInstanceState);
         trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
         if (isFromAppShortCut())
-            trackingOpenShop.eventSellShortcut();
+            trackingOpenShop.eventSellShortcut(getActivity());
     }
 
     @Override

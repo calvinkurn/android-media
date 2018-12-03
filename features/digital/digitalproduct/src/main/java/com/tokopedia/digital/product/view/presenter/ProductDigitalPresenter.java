@@ -291,7 +291,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 renderCheckPulsa();
                 view.showMessageAlert(activity.getString(R.string.error_message_ussd_msg_not_parsed),
                         activity.getString(R.string.message_ussd_title));
-                UnifyTracking.eventUssdAttempt(activity.getString(R.string.status_failed_label) + activity.getString(R.string.error_message_ussd_msg_not_parsed));
+                UnifyTracking.eventUssdAttempt(activity, activity.getString(R.string.status_failed_label) + activity.getString(R.string.error_message_ussd_msg_not_parsed));
             }
         } else {
             view.showAccessibilityAlertDialog();
