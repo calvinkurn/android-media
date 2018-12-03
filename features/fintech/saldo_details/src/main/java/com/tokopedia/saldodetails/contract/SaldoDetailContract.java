@@ -59,6 +59,8 @@ public interface SaldoDetailContract {
 
         void setBalance(String summaryUsableDepositIdr);
 
+        void setWithdrawButtonState(boolean state);
+
         void showHoldWarning(String warningText);
 
         void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);

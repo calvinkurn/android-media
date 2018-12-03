@@ -110,7 +110,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/bg_round_corner_solid_green"
+                    android:background="@drawable/sp_withdraw_button_selector"
                     android:gravity="center"
                     android:lineSpacingExtra="@dimen/sp_5"
                     android:padding="@dimen/dp_10"

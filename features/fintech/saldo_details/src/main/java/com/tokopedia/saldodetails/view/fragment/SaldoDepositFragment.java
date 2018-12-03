@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -366,6 +367,17 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
 
     @Override
+    public void setWithdrawButtonState(boolean state) {
+        if (!state) {
+            drawButton.setTextColor(getResources().getColor(R.color.black_26));
+        } else {
+            drawButton.setTextColor(Color.WHITE);
+        }
+        drawButton.setEnabled(state);
+        drawButton.setClickable(state);
+    }
+
+    @Override
     public SaldoDepositAdapter getAdapter() {
         return adapter;
     }
@@ -445,12 +457,11 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void setActionsEnabled(Boolean isEnabled) {
-        if (!isAdded() || startDateTV == null || endDateTV == null || drawButton == null) {
+        if (!isAdded() || startDateTV == null || endDateTV == null) {
             return;
         }
         startDateLayout.setEnabled(isEnabled);
         endDateLayout.setEnabled(isEnabled);
-        drawButton.setEnabled(isEnabled);
     }
 
     @Override

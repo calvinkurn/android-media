@@ -251,6 +251,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 depositCacheInteractor.setUsableSaldoBalanceCache(usableSaldoBalanceResponse);
 
                 getView().setBalance(usableSaldoBalanceResponse.getSaldo().getFormattedAmount());
+                getView().setWithdrawButtonState(usableSaldoBalanceResponse.getSaldo().getDeposit() != 0);
                 if ((holdSaldoBalanceResponse.getSaldo().getDeposit() > 0)) {
                     getView().showHoldWarning(holdSaldoBalanceResponse.getSaldo().getFormattedAmount());
                 } else {
@@ -345,6 +346,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     }
 
     private void onDepositSummaryFetched(GraphqlResponse graphqlResponse) {
+        getView().setActionsEnabled(true);
         if (graphqlResponse != null &&
                 graphqlResponse.getData(GqlDepositSummaryResponse.class) != null) {
 
@@ -354,7 +356,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             if (gqlDepositSummaryResponse != null &&
                     !gqlDepositSummaryResponse.getDepositActivityResponse().isHaveError()) {
 
-                getView().setActionsEnabled(true);
                 if (paging.getPage() == 1) {
                     getView().getAdapter().clearAllElements();
                 }
@@ -363,7 +364,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                         .isHaveNextPage());
                 setData(gqlDepositSummaryResponse);
             } else {
-                getView().setActionsEnabled(true);
                 if (gqlDepositSummaryResponse != null && gqlDepositSummaryResponse.
                         getDepositActivityResponse() != null) {
                     if (getView().getAdapter().getItemCount() == 0) {
@@ -377,7 +377,6 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
             }
 
         } else {
-            getView().setActionsEnabled(true);
             if (getView().getAdapter().getItemCount() == 0) {
                 getView().showEmptyState(getView().getString(R.string.sp_empty_state_error));
             } else {
