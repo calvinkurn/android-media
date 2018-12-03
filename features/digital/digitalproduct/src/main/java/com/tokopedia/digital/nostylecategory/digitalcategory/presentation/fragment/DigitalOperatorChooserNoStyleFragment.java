@@ -137,7 +137,6 @@ public class DigitalOperatorChooserNoStyleFragment extends BaseDaggerFragment
 
     @Override
     public void renderOperators(List<RenderProductModel> renderProductModels) {
-        //TODO: render operators here
         for (RenderProductModel renderProductModel : renderProductModels) {
             operatorList.add(renderProductModel.getOperator());
         }
@@ -169,9 +168,7 @@ public class DigitalOperatorChooserNoStyleFragment extends BaseDaggerFragment
         return new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-//                if (b) {
-//                    UnifyTracking.eventClickSearchBar(categoryName, categoryName);
-//                }
+
             }
         };
     }
