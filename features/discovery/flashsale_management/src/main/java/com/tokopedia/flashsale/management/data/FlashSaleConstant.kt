@@ -40,7 +40,7 @@ object FlashSaleConstant {
     const val SYSTEM_STATUS_SUBMIT_CANCELLED = 4
     const val SYSTEM_STATUS_SELLER_REJECTED = 5*/
 
-    const val SOURCE_SELLERDASHBOARD = "sellerdashboard"
+    const val SOURCE_SELLERAPP = "sellerapp"
 
     const val NAMED_REQUEST_SUBMISSION_PRODUCT_LIST = "request_product_list"
     const val NAMED_REQUEST_POST_PRODUCT_LIST = "request_post_product_list"

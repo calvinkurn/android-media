@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.flashsale.management.data.FlashSaleAdminStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.SOURCE_SELLERDASHBOARD
+import com.tokopedia.flashsale.management.data.FlashSaleConstant.SOURCE_SELLERAPP
 import com.tokopedia.flashsale.management.product.data.FlashSalePostProductGQL
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -27,7 +27,7 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_POST_PRODUCT_LIST) private va
     fun setParams(campaignId: Int, start: Int, rows: Int, query: String, shopId: String,
                   statusId: Int) {
         val map = mutableMapOf<String, Any?>(FlashSaleConstant.PARAM_CID to campaignId,
-                FlashSaleConstant.PARAM_SOURCE to SOURCE_SELLERDASHBOARD,
+                FlashSaleConstant.PARAM_SOURCE to SOURCE_SELLERAPP,
                 FlashSaleConstant.PARAM_START to start,
                 FlashSaleConstant.PARAM_ROWS to rows,
                 FlashSaleConstant.PARAM_SHOP_ID to shopId,
