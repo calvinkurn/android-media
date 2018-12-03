@@ -232,7 +232,7 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

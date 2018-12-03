@@ -185,7 +185,7 @@ public class EventSearchPresenter
                 showCards = false;
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
-                eventsAnalytics.eventDigitalEventTracking(mView.getActivity(),EventsGAConst.EVENT_SEARCH, searchText);
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
             }
             if (searchText.length() == 0) {
                 mView.setTopEvents(mTopEvents);
@@ -200,7 +200,7 @@ public class EventSearchPresenter
         showCards = true;
         getEventsListBySearch(searchText);
         searchTag = searchText;
-        eventsAnalytics.eventDigitalEventTracking(mView.getActivity(),EventsGAConst.EVENT_SEARCH, searchText);
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
     }
 
     @Override
@@ -216,7 +216,7 @@ public class EventSearchPresenter
 
     @Override
     public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
-        eventsAnalytics.eventDigitalEventTracking(mView.getActivity(),EventsGAConst.EVENT_SEARCH_CLICK, searchTag + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK, searchTag + " - " +
                 searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());

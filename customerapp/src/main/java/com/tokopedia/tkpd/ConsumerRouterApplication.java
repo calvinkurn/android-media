@@ -2433,7 +2433,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendAnalyticsGroupChat(String url, String error) {
         if(remoteConfig.getBoolean("groupchat_analytics", false)){
-            AnalyticsLog.logGroupChatWebSocketError(url, error);
+            AnalyticsLog.logGroupChatWebSocketError(getAppContext(), url, error);
         }
     }
 
@@ -3241,13 +3241,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
     @Override
     public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
-        TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
+        TrackingUtils.sendMoEngageFavoriteEvent(getAppContext(), shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
     }
 
     @Override
     public void setTrackingUserId(String userId, Context applicationContext) {
         onAppsFlyerInit();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(getAppContext(), getTkpdCoreRouter().legacySessionHandler().getGTMLoginID());
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
         BranchSdkUtils.sendIdentityEvent(userId);
@@ -3259,7 +3259,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                           String phoneNumber, boolean isGoldMerchant,
                                           String shopName, String shopId, boolean hasShop,
                                           String loginMethod) {
-        TrackingUtils.setMoEUserAttributesLogin(
+        TrackingUtils.setMoEUserAttributesLogin(getAppContext(),
                 userId,
                 name,
                 email,
@@ -3274,17 +3274,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void eventMoRegistrationStart(String label) {
-        UnifyTracking.eventMoRegistrationStart(label);
+        UnifyTracking.eventMoRegistrationStart(getAppContext(), label);
     }
 
     @Override
     public void eventMoRegister(String name, String phone) {
-        UnifyTracking.eventMoRegister(name, phone);
+        UnifyTracking.eventMoRegister(getAppContext(), name, phone);
     }
 
     @Override
     public void sendBranchRegisterEvent(String email, String phone) {
-        BranchSdkUtils.sendRegisterEvent(email, phone);
+        BranchSdkUtils.sendRegisterEvent(getAppContext(), email, phone);
     }
 
     /**

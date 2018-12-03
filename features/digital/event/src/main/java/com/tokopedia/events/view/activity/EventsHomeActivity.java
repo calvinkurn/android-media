@@ -429,7 +429,7 @@ public class EventsHomeActivity extends EventBaseActivity
             @Override
             public void onPageSelected(int newPosition) {
 
-                eventsAnalytics.eventDigitalEventTracking(EventsHomeActivity.this, EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(newPosition) + "-"
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(newPosition) + "-"
                         + String.valueOf(newPosition));
 
                 IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(newPosition);
@@ -456,7 +456,7 @@ public class EventsHomeActivity extends EventBaseActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking(EventsHomeActivity.this,EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

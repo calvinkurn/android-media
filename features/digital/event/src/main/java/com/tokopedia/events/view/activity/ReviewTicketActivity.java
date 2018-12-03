@@ -347,8 +347,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             tvEmailID.clearFocus();
             mainContent.requestFocus();
         }
-        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_CHANGE_EMAIL, "");
-        eventReviewTicketPresenter.updateEmail(this, tvEmailID.getText().toString());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
+        eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
     }
 
     @OnClick(R2.id.update_number)
@@ -378,8 +378,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             tvTelephone.clearFocus();
             mainContent.requestFocus();
         }
-        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_CHANGE_NUMBER, "");
-        eventReviewTicketPresenter.updateNumber(this, tvTelephone.getText().toString());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
+        eventReviewTicketPresenter.updateNumber(tvTelephone.getText().toString());
     }
 
     @OnClick(R2.id.batal)
@@ -412,18 +412,18 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(PAYMENT_SUCCESS);
-                    eventsAnalytics.eventDigitalEventTracking( getActivity(), EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
+                    eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    eventsAnalytics.eventDigitalEventTracking( getActivity() ,EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
+                    eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    eventsAnalytics.eventDigitalEventTracking( getActivity(), EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
+                    eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;
                 default:
                     break;
@@ -465,7 +465,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
                 RouteManager.route(this, url);
                 LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
                 manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
-                eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                 this.finish();
             }
         }
@@ -516,7 +516,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking(this, EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

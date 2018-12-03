@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.app.MainApplication;
 
 public class HomeGATracking extends UnifyTracking {
 
@@ -33,7 +34,7 @@ public class HomeGATracking extends UnifyTracking {
     }
 
     public static void eventClickVideoBannerImpression(String label) {
-        sendGTMEvent(new EventTracking(EVENT_VIDEO_VIEW,
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(EVENT_VIDEO_VIEW,
                 CATEGORY_VIDEO_PUSH,
                 ACTION_VIEW_BNANNER_BUTTON,
                 label)
@@ -41,7 +42,7 @@ public class HomeGATracking extends UnifyTracking {
     }
 
     public static void eventClickVideoBannerClick(String label) {
-        sendGTMEvent(new EventTracking(EVENT_VIDEO_GENERAL_EVENT,
+        sendGTMEvent(MainApplication.getAppContext(), new EventTracking(EVENT_VIDEO_GENERAL_EVENT,
                 CATEGORY_VIDEO_PUSH,
                 ACTION_CLICK_BNANNER_BUTTON,
                 label)

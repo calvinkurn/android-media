@@ -163,7 +163,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             context.startActivity(detailsIntent);
-            eventsAnalytics.eventDigitalEventTracking(context, EventsGAConst.EVENT_PRODUCT_CLICK,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + getAdapterPosition());
         }
@@ -184,7 +184,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 item.setLiked(false);
                 itemRemoved(getAdapterPosition());
             }
-            eventsAnalytics.eventDigitalEventTracking(context, EventsGAConst.EVENT_LIKE,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
                     title
                             + " - " + String.valueOf(getAdapterPosition())
                             + " - " + like);
@@ -197,7 +197,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 ((EventsHomeActivity) context).eventHomePresenter.shareEvent(categoryItems.get(getAdapterPosition()));
             else
                 ((EventFavouriteActivity) context).eventFavouritePresenter.shareEvent(categoryItems.get(getAdapterPosition()));
-            eventsAnalytics.eventDigitalEventTracking(context, EventsGAConst.EVENT_SHARE,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition()));
         }
@@ -247,7 +247,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         if (!holder.isShown() && isTrackingEnabled) {
             holder.setShown(true);
             categoryItems.get(holder.getIndex()).setTrack(true);
-            eventsAnalytics.eventDigitalEventTracking(context, EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
         }
     }
