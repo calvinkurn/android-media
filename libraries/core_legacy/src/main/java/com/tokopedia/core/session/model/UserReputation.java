@@ -142,7 +142,7 @@ public class UserReputation implements Parcelable {
         this.positivePercentage = in.readString();
     }
 
-    public static final Parcelable.Creator<UserReputation> CREATOR = new Parcelable.Creator<UserReputation>() {
+    public static final Creator<UserReputation> CREATOR = new Creator<UserReputation>() {
         @Override
         public UserReputation createFromParcel(Parcel source) {
             return new UserReputation(source);

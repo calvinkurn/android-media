@@ -107,7 +107,7 @@ public class FacebookModel implements Parcelable {
         this.email = in.readString();
     }
 
-    public static final Parcelable.Creator<FacebookModel> CREATOR = new Parcelable.Creator<FacebookModel>() {
+    public static final Creator<FacebookModel> CREATOR = new Creator<FacebookModel>() {
         @Override
         public FacebookModel createFromParcel(Parcel source) {
             return new FacebookModel(source);

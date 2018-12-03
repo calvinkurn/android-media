@@ -106,7 +106,7 @@ public class TokenModel implements Parcelable {
         this.scope = in.readString();
     }
 
-    public static final Parcelable.Creator<TokenModel> CREATOR = new Parcelable.Creator<TokenModel>() {
+    public static final Creator<TokenModel> CREATOR = new Creator<TokenModel>() {
         @Override
         public TokenModel createFromParcel(Parcel source) {
             return new TokenModel(source);

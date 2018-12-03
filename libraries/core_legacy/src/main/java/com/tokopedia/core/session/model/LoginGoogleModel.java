@@ -1,11 +1,10 @@
 package com.tokopedia.core.session.model;
 
-import org.parceler.Parcel;
+
 
 /**
  * Created by m.normansyah on 17/11/2015.
  */
-@Parcel
 public class LoginGoogleModel {
     String fullName;
     String googleId;

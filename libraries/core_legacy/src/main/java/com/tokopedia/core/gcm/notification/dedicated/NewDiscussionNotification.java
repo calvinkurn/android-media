@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
@@ -23,7 +22,6 @@ public class NewDiscussionNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
-        if(MainApplication.getAppContext() instanceof TkpdCoreRouter)
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
                 TkpdCoreRouter.getInboxTalkActivityIntent(mContext)
         );

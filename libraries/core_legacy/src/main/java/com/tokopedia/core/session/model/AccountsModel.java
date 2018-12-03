@@ -2,6 +2,7 @@ package com.tokopedia.core.session.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -354,7 +355,7 @@ public class AccountsModel implements Parcelable {
         this.userId = in.readInt();
     }
 
-    public static final Parcelable.Creator<AccountsModel> CREATOR = new Parcelable.Creator<AccountsModel>() {
+    public static final Creator<AccountsModel> CREATOR = new Creator<AccountsModel>() {
         @Override
         public AccountsModel createFromParcel(Parcel source) {
             return new AccountsModel(source);

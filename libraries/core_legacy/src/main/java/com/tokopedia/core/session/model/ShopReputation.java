@@ -140,7 +140,7 @@ public class ShopReputation implements Parcelable {
         this.minBadgeScore = in.readInt();
     }
 
-    public static final Parcelable.Creator<ShopReputation> CREATOR = new Parcelable.Creator<ShopReputation>() {
+    public static final Creator<ShopReputation> CREATOR = new Creator<ShopReputation>() {
         @Override
         public ShopReputation createFromParcel(Parcel source) {
             return new ShopReputation(source);

@@ -1,11 +1,9 @@
 package com.tokopedia.core.session.model;
 
-import org.parceler.Parcel;
 
 /**
  * Created by m.normansyah on 17/11/2015.
  */
-@Parcel
 public class LoginFacebookViewModel {
     String fullName;
     String gender;

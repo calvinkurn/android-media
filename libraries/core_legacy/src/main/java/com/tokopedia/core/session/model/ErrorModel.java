@@ -68,7 +68,7 @@ public class ErrorModel implements Parcelable{
         this.state = in.readString();
     }
 
-    public static final Parcelable.Creator<ErrorModel> CREATOR = new Parcelable.Creator<ErrorModel>() {
+    public static final Creator<ErrorModel> CREATOR = new Creator<ErrorModel>() {
         @Override
         public ErrorModel createFromParcel(Parcel source) {
             return new ErrorModel(source);

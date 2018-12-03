@@ -1,11 +1,10 @@
 package com.tokopedia.core.session.model;
 
-import org.parceler.Parcel;
 
 /**
  * Created by m.normansyah on 09/11/2015.
  */
-@Parcel
+
 public class SecurityQuestionViewModel {
     int security1;
     int security2;

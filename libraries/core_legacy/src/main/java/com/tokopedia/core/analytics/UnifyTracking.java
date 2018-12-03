@@ -1306,8 +1306,8 @@ public class UnifyTracking extends TrackingUtils {
         eventAppsFlyerContentView(context, afProdIds, keyword, prodIdArray);
     }
 
-    public static void eventPDPDetail(ProductDetail productDetail) {
-        getGTMEngine()
+    public static void eventPDPDetail(Context context, ProductDetail productDetail) {
+        getGTMEngine(context)
                 .eventDetail(productDetail);
     }
 
@@ -1329,7 +1329,7 @@ public class UnifyTracking extends TrackingUtils {
                 .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
     }
 
-    public static void sendAFCompleteRegistrationEvent(int userId,String methodName) {
+    public static void sendAFCompleteRegistrationEvent(Context context, int userId,String methodName) {
         Map<String, Object> eventVal = new HashMap<>();
         eventVal.put("custom_prop1", "registration");
         eventVal.put("os", "Android");
@@ -2559,8 +2559,8 @@ public class UnifyTracking extends TrackingUtils {
 
     // digital widget
 
-    public static void eventSelectOperatorOnWidget(String categoryItem, String operator) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectOperatorOnWidget(Context context, String categoryItem, String operator) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                 AppEventTracking.Action.SELECT_OPERATOR,
@@ -2655,8 +2655,8 @@ public class UnifyTracking extends TrackingUtils {
 
     // digital homepage
 
-    public static void eventClickProductOnDigitalHomepage(String category) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickProductOnDigitalHomepage(Context context, String category) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL,
                 AppEventTracking.Action.SELECT_CATEGORY,
@@ -2664,8 +2664,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventMyCouponClicked() {
-        sendGTMEvent(new EventTracking(
+    public static void eventMyCouponClicked(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
                 AppEventTracking.Action.CLICK_MY_COUPON,
@@ -2700,8 +2700,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventViewTokopointPopup() {
-        sendGTMEvent(new EventTracking(
+    public static void eventViewTokopointPopup(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKOPOINTS_POP_UP,
                 AppEventTracking.Action.TOKOPOINTS_POP_UP_IMPRESSION,
@@ -2986,8 +2986,8 @@ public class UnifyTracking extends TrackingUtils {
         return TextUtils.join("&", filterList);
     }
 
-    public static void eventBillShortcut() {
-        sendGTMEvent(new EventTracking(
+    public static void eventBillShortcut(Context context ) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_BILL,

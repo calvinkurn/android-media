@@ -28,9 +28,7 @@ import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
-import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import org.json.JSONArray;
 
@@ -249,7 +247,7 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_HOTLIST);
     }
 
-    public static void sendMoEngageClickMainCategoryIcon(String categoryName) {
+    public static void sendMoEngageClickMainCategoryIcon(Context context, String categoryName) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICK_MAIN_CATEGORY_ICON);
@@ -275,14 +273,14 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
-    public static void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
+    public static void sendMoEngageFavoriteEvent(Context context, String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, shopName);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, shopID);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, shopLocation);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_URL_SLUG, shopDomain);
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, isShopOfficaial);
-        getMoEngine().sendEvent(
+        getMoEngine(context).sendEvent(
                 builder.build(),
                 isFollowed ?
                         AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
@@ -290,10 +288,10 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
-    public static void sendMoEngageAddressEvent(String address) {
+    public static void sendMoEngageAddressEvent(Context context, String address) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.CITY, address);
-        getMoEngine().sendEvent(
+        getMoEngine(context).sendEvent(
                 builder.build(), AppEventTracking.MOENGAGE.ADDRESS_ADDED
         );
     }
@@ -320,7 +318,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageCategoryEvent(String categoryId, String categoryName, String subCategoryId, String subCategoryName, String productId, String productName) {
+    public static void sendMoEngageCategoryEvent(Context context, String categoryId, String categoryName, String subCategoryId, String subCategoryName, String productId, String productName) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
         builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, categoryId);
@@ -328,14 +326,14 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_GROUP_ID, productId);
         builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, subCategoryId);
         builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, subCategoryName);
-        getMoEngine().sendEvent(
+        getMoEngine(context).sendEvent(
                 builder.build(),
                 AppEventTracking.EventMoEngage.CAT_SCREEN_OPEN
         );
 
     }
 
-    public static void sendMoEngageRemoveProductFromCart(@NonNull Product product) {
+    public static void sendMoEngageRemoveProductFromCart(Context context, @NonNull Product product) {
         try {
             PayloadBuilder builder = new PayloadBuilder();
             builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
@@ -356,7 +354,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageClickDiskusi(@NonNull ProductDetailData data) {
+    public static void sendMoEngageClickDiskusi(Context context, @NonNull ProductDetailData data) {
         PayloadBuilder builder = new PayloadBuilder();
         if (data.getBreadcrumb().size() > 1) {
             builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, data.getBreadcrumb().get(1).getDepartmentName());
@@ -450,7 +448,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageSearchAttempt(String keyword, boolean isResultFound, HashMap<String, String> category) {
+    public static void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.KEYWORD, keyword);
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound);
@@ -458,13 +456,13 @@ public class TrackingUtils extends TrackingConfig {
             builder.putAttrJSONArray(AppEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
             builder.putAttrJSONArray(AppEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
         }
-        getMoEngine().sendEvent(
+        getMoEngine(context).sendEvent(
                 builder.build(),
                 AppEventTracking.EventMoEngage.SEARCH_ATTEMPT
         );
     }
 
-    public static void sendMoEngageReferralScreenOpen(String screenName) {
+    public static void sendMoEngageReferralScreenOpen(Context context, String screenName) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName);
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.REFERRAL_SCREEN_LAUNCHED);
@@ -589,8 +587,8 @@ public class TrackingUtils extends TrackingConfig {
         return getAFEngine(context).getAdsIdDirect();
     }
 
-    public static void eventClickHotlistProductFeatured(Hotlist hotlist) {
-        getGTMEngine().eventClickHotlistProductFeatured(hotlist);
+    public static void eventClickHotlistProductFeatured(Context context, Hotlist hotlist) {
+        getGTMEngine(context).eventClickHotlistProductFeatured(hotlist);
     }
 
     public static void eventImpressionHotlistProductFeatured(Context context, Hotlist hotlist) {

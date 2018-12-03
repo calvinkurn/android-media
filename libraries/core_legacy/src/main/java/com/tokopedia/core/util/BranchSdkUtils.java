@@ -9,21 +9,19 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.BaseAbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.Constants;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import org.json.JSONObject;
 
@@ -201,7 +199,7 @@ public class BranchSdkUtils {
             return true;
         } else {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
+            return remoteConfig.getBoolean(MAINAPP_ACTIVATE_BRANCH_LINKS, true);
         }
     }
 

@@ -71,7 +71,7 @@ public class ReputationBadge implements Parcelable {
         this.level = in.readInt();
     }
 
-    public static final Parcelable.Creator<ReputationBadge> CREATOR = new Parcelable.Creator<ReputationBadge>() {
+    public static final Creator<ReputationBadge> CREATOR = new Creator<ReputationBadge>() {
         @Override
         public ReputationBadge createFromParcel(Parcel source) {
             return new ReputationBadge(source);
