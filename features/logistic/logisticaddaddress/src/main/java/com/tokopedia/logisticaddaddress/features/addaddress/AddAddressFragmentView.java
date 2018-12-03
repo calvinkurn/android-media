@@ -30,8 +30,6 @@ public interface AddAddressFragmentView {
 
     void showErrorSnackbar(String errorMessage);
 
-    void setActionsEnabled(boolean actionsEnabled);
-
     String getPassword();
 
     boolean isValidAddress();
@@ -39,28 +37,6 @@ public interface AddAddressFragmentView {
     Destination getAddress();
 
     void setAddress(Destination address);
-
-    void setProvince(List<Province> provinces);
-
-    void resetRegency();
-
-    void hideSubDistrict();
-
-    void resetSubDistrict();
-
-    ProvinceAdapter getProvinceAdapter();
-
-    RegencyAdapter getRegencyAdapter();
-
-    void showLoadingRegency();
-
-    void setCity(List<City> cities);
-
-    void changeProvince(List<City> cities);
-
-    void showLoadingDistrict();
-
-    void setDistrict(List<District> districts);
 
     void errorSaveAddress();
 

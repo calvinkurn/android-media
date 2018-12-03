@@ -80,6 +80,7 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE;
 public class AddAddressFragment extends BaseDaggerFragment
         implements AddAddressFragmentView, ITransactionAnalyticsAddAddress {
 
+    public static final int ERROR_RESULT_CODE = 999;
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 418;
@@ -124,17 +125,9 @@ public class AddAddressFragment extends BaseDaggerFragment
     private TextView subDistrictError;
     private ProgressBar mProgressBar;
 
-    ProvinceAdapter provinceAdapter;
-    RegencyAdapter regencyAdapter;
-    SubDistrictAdapter subDistrictAdapter;
-
     private List<String> zipCodes;
     private Token token;
     private Destination address;
-
-    List<Province> mProvinces;
-    List<City> mCities;
-    List<District> mDistricts;
 
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     private String extraPlatformPage;
@@ -162,6 +155,11 @@ public class AddAddressFragment extends BaseDaggerFragment
             this.address = arguments.getParcelable(EDIT_PARAM);
             this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
             this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
+        }
+
+        if (token == null) {
+            getActivity().setResult(ERROR_RESULT_CODE);
+            getActivity().finish();
         }
     }
 
@@ -307,22 +305,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         } else {
             ToasterError.make(BaseToaster.getContentView(getActivity()),
                     message, BaseToaster.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void setActionsEnabled(boolean isEnabled) {
-        saveButton.setEnabled(isEnabled);
-        addressEditText.setEnabled(isEnabled);
-        receiverNameEditText.setEnabled(isEnabled);
-        addressTypeEditText.setEnabled(isEnabled);
-        receiverPhoneEditText.setEnabled(isEnabled);
-        if (isEnabled) {
-            chooseLocation.setOnClickListener(onChooseLocation());
-            locationEditText.setOnClickListener(onChooseLocation());
-        } else {
-            chooseLocation.setOnClickListener(null);
-            locationEditText.setOnClickListener(null);
         }
     }
 
@@ -478,102 +460,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void setAddress(Destination address) {
         this.address = address;
-    }
-
-    @Override
-    public void setProvince(List<Province> provinces) {
-        finishLoading();
-        provinceAdapter.setList(provinces);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (isEdit() && addressModel != null) {
-            spinnerProvince.setSelection(provinceAdapter.getPositionFromName(addressModel.getProvinceName()));
-//            mPresenter.getListCity(provinceAdapter.getList().get(spinnerProvince.getSelectedItemPosition() - 1));
-        }
-        this.mProvinces = new ArrayList<>(provinces);
-    }
-
-    @Override
-    public void resetRegency() {
-        regencyAdapter.clearData();
-        spinnerRegency.setSelection(0);
-    }
-
-    @Override
-    public void hideSubDistrict() {
-        spinnerSubDistrict.setVisibility(View.GONE);
-        districtTitle.setVisibility(View.GONE);
-        subDistrictError.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void resetSubDistrict() {
-        subDistrictAdapter.clearData();
-        spinnerSubDistrict.setSelection(0);
-    }
-
-    @Override
-    public ProvinceAdapter getProvinceAdapter() {
-        return provinceAdapter;
-    }
-
-    @Override
-    public RegencyAdapter getRegencyAdapter() {
-        return regencyAdapter;
-    }
-
-    @Override
-    public void showLoadingRegency() {
-        progressRegency.setVisibility(View.VISIBLE);
-        regencyTitle.setVisibility(View.GONE);
-        spinnerRegency.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setCity(List<City> cities) {
-        progressRegency.setVisibility(View.GONE);
-        regencyTitle.setVisibility(View.VISIBLE);
-        spinnerRegency.setVisibility(View.VISIBLE);
-        regencyAdapter.setList(cities);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (isEdit() && addressModel != null) {
-            spinnerRegency.setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
-//            mPresenter.getListDistrict(regencyAdapter.getList().get(spinnerRegency.getSelectedItemPosition() - 1));
-        }
-        this.mCities = new ArrayList<>(cities);
-    }
-
-    @Override
-    public void changeProvince(List<City> cities) {
-        progressRegency.setVisibility(View.GONE);
-        regencyTitle.setVisibility(View.VISIBLE);
-        spinnerRegency.setVisibility(View.VISIBLE);
-        regencyAdapter.setList(cities);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (addressModel != null)
-            spinnerRegency
-                    .setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
-        this.mCities = new ArrayList<>(cities);
-    }
-
-    @Override
-    public void showLoadingDistrict() {
-        progressDistrict.setVisibility(View.VISIBLE);
-        districtTitle.setVisibility(View.GONE);
-        spinnerSubDistrict.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setDistrict(List<District> districts) {
-        progressDistrict.setVisibility(View.GONE);
-        districtTitle.setVisibility(View.VISIBLE);
-        spinnerSubDistrict.setVisibility(View.VISIBLE);
-        subDistrictAdapter.setList(districts);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (isEdit() && addressModel != null) {
-            spinnerSubDistrict.setSelection(subDistrictAdapter.getPositionFromName(addressModel.getDistrictName()));
-            updateAddress();
-        }
-        this.mDistricts = new ArrayList<>(districts);
     }
 
     @Override
@@ -792,71 +678,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 mPresenter.saveAddress();
             }
         });
-
-        spinnerProvince.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                        if (pos != 0) {
-                            provinceError.setVisibility(View.GONE);
-
-                            List<Province> provinceList = provinceAdapter.getList();
-//                            Province province = provinceList.get(pos - 1);
-//                            address.setProvinceName(province.getProvinceName());
-//                            address.setProvinceId(province.getProvinceId());
-                        }
-
-                        if (isEdit()) mPresenter.onEditProvinceSelected(pos);
-                        else mPresenter.onProvinceSelected(pos);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                }
-        );
-
-        spinnerRegency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (pos != 0) {
-                    regencyError.setVisibility(View.GONE);
-
-                    List<City> cityList = regencyAdapter.getList();
-//                    City city = cityList.get(pos - 1);
-//                    address.setCityName(city.getCityName());
-//                    address.setCityId(city.getCityId());
-                    mPresenter.onRegencySelected(pos);
-                }
-
-                if (!isEdit()) mPresenter.onRegencySelected(pos);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerSubDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (pos != 0) {
-                    subDistrictError.setVisibility(View.GONE);
-
-                    List<District> districtList = subDistrictAdapter.getList();
-//                    District district = districtList.get(pos - 1);
-//                    address.setDistrictName(district.getDistrictName());
-//                    address.setDistrictId(district.getDistrictId());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
     }
 
     protected void initView(View view) {
@@ -902,13 +723,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
-
-        provinceAdapter = ProvinceAdapter.createInstance(getActivity());
-        spinnerProvince.setAdapter(provinceAdapter);
-        regencyAdapter = RegencyAdapter.createInstance(getActivity());
-        spinnerRegency.setAdapter(regencyAdapter);
-        subDistrictAdapter = SubDistrictAdapter.createInstance(getActivity());
-        spinnerSubDistrict.setAdapter(subDistrictAdapter);
 
         passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
     }

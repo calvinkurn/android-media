@@ -18,12 +18,6 @@ public interface AddAddressPresenter {
 
     void saveAddress();
 
-    void onProvinceSelected(int pos);
-
-    void onEditProvinceSelected(int pos);
-
-    void onRegencySelected(int pos);
-
     void requestReverseGeoCode(Context context, Destination destination);
 
 }

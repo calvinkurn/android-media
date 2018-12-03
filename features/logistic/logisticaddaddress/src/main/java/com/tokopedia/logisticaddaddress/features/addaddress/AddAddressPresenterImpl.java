@@ -69,25 +69,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     }
 
     @Override
-    public void onProvinceSelected(int pos) {
-        mView.resetRegency();
-        mView.hideSubDistrict();
-        mView.resetSubDistrict();
-    }
-
-    @Override
-    public void onEditProvinceSelected(int pos) {
-        mView.resetRegency();
-        mView.hideSubDistrict();
-        mView.resetSubDistrict();
-    }
-
-    @Override
-    public void onRegencySelected(int pos) {
-        mView.resetSubDistrict();
-    }
-
-    @Override
     public void requestReverseGeoCode(Context context, Destination destination) {
         GeoLocationUtils.getReverseGeoCodeParallel(context,
                 Double.parseDouble(destination.getLatitude()),
