@@ -2,7 +2,6 @@ package com.tokopedia.digital.newcart.presentation.fragment.adapter.viewHolder;
 
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.viewHolder.model.DigitalDealEmptyViewModel;

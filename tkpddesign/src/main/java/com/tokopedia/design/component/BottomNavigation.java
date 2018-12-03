@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
@@ -332,24 +331,6 @@ public class BottomNavigation extends BottomNavigationView {
     public int getMenuItemPosition(MenuItem item) {
         // get item id
         int itemId = item.getItemId();
-        // get meunu
-        Menu menu = getMenu();
-        int size = menu.size();
-        for (int i = 0; i < size; i++) {
-            if (menu.getItem(i).getItemId() == itemId) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * get menu item position in menu
-     *
-     * @param itemId
-     * @return position if success, -1 otherwise
-     */
-    public int getMenuItemPosition(@IdRes int itemId) {
         // get meunu
         Menu menu = getMenu();
         int size = menu.size();

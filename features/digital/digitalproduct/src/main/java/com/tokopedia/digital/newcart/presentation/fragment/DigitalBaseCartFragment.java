@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
@@ -23,6 +22,7 @@ import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParamet
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
@@ -310,7 +310,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        if (view != null) ToasterError.showClose(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 

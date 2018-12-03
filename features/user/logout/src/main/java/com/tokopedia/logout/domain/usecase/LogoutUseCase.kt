@@ -13,7 +13,7 @@ import java.util.*
 /**
  * @author by nisie on 5/30/18.
  */
-open class LogoutUseCase(private val api: LogoutApi,
+class LogoutUseCase(private val api: LogoutApi,
                     private val mapper: LogoutMapper,
                     private val userSession: UserSession) : UseCase<LogoutDomain>() {
 

@@ -1,9 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,9 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartDealsComponent;
@@ -179,7 +177,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void renderGetCategoriesError(String message) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
+        ToasterError.showClose(getActivity(), message);
     }
 
     @Override
@@ -213,7 +211,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void renderErrorInRedSnackbar(int resId) {
-        NetworkErrorHelper.showRedSnackbar(getView(), getString(resId));
+        ToasterError.showClose(getActivity(), getString(resId));
     }
 
     @Override

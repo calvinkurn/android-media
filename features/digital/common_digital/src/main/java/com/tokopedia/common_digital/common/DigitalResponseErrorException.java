@@ -9,8 +9,6 @@ import java.io.IOException;
  */
 public class DigitalResponseErrorException extends IOException {
 
-    private static final long serialVersionUID = -3848721958439593398L;
-
     private String messageError;
 
     public DigitalResponseErrorException() {

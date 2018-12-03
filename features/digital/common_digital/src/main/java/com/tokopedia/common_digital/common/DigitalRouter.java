@@ -22,7 +22,7 @@ public interface DigitalRouter {
 
     Interceptor getChuckInterceptor();
 
-    boolean isSupportedDelegateDeepLink(String url);
+    boolean isSupportApplink(String url);
 
     Intent getIntentDeepLinkHandlerActivity();
 

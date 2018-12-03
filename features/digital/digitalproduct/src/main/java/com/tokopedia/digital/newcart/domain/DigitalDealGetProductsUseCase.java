@@ -1,6 +1,5 @@
 package com.tokopedia.digital.newcart.domain;
 
-import com.tokopedia.digital.newcart.domain.DigitalDealsRepository;
 import com.tokopedia.digital.newcart.domain.model.DealProductsViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

@@ -154,7 +154,7 @@ public class InstantCheckoutActivity extends BaseSimpleActivity {
                 return true;
             } else {
                 if (digitalRouter != null
-                        && digitalRouter.isSupportedDelegateDeepLink(url)
+                        && digitalRouter.isSupportApplink(url)
                         && digitalRouter.getIntentDeepLinkHandlerActivity() != null) {
                     Intent intent = digitalRouter.getIntentDeepLinkHandlerActivity();
                     intent.setData(Uri.parse(url));

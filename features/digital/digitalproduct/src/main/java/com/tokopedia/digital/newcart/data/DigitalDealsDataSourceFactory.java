@@ -1,15 +1,12 @@
 package com.tokopedia.digital.newcart.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.digital.newcart.data.entity.DealCategoryEntity;
 import com.tokopedia.digital.newcart.data.entity.DealProductsResponse;
 
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 public class DigitalDealsDataSourceFactory {
     private DigitalDealsApi digitalDealsApi;
