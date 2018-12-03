@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingComponent;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingModule;
 import com.tokopedia.affiliate.feature.tracking.di.DaggerAffTrackingComponent;
@@ -28,6 +29,9 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     @Inject
     AffContract.Presenter presenter;
 
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +51,7 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
                     path.add(data.getPathSegments().get(i));
                 }
                 presenter.getTrackingUrl(affName, TextUtils.join("/", path));
+                affiliateAnalytics.onAfterClickTokopediMe(data.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();

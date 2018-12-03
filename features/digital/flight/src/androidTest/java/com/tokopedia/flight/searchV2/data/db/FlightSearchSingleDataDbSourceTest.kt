@@ -327,17 +327,17 @@ class FlightSearchSingleDataDbSourceTest {
     @Test
     fun getFilteredJourneys_sortByCheapestPrice_journeysSortedByCheapestPrice() {
         val flightJourneyTable1 = createFlightJourneyTable("1")
-        flightJourneyTable1.sortPrice = 1000000
+        flightJourneyTable1.sortPrice = "Rp 1.000.000"
         val routes = createRoutes("1")
         flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable1, routes))
 
         val flightJourneyTable2 = createFlightJourneyTable("2")
-        flightJourneyTable2.sortPrice = 1500000
+        flightJourneyTable2.sortPrice = "Rp 1.000.000"
         val routes2 = createRoutes("2")
         flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable2, routes2))
 
         val flightJourneyTable3 = createFlightJourneyTable("3")
-        flightJourneyTable3.sortPrice = 500000
+        flightJourneyTable3.sortPrice = "Rp 500.000"
         val routes3 = createRoutes("3")
         flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable3, routes3))
 

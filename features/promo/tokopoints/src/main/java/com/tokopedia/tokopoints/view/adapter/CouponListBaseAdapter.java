@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,8 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
     private int mCategoryId = 0;
 
     public class ViewHolder extends BaseAdapter.BaseVH {
-        TextView description, label, value, btnContinue;
-        ImageView imgBanner, imgLabel;
+        TextView label, value, tvMinTxnValue, tvMinTxnLabel;
+        ImageView imgBanner, imgLabel, ivMinTxn;
         public boolean isVisited = false;
         /*This section is exclusively for handling timer*/
         public CountDownTimer timer;
@@ -53,12 +54,13 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
         public ViewHolder(View view) {
             super(view);
-            description = view.findViewById(R.id.text_description);
             label = view.findViewById(R.id.text_time_label);
             value = view.findViewById(R.id.text_time_value);
-            btnContinue = view.findViewById(R.id.button_continue);
             imgBanner = view.findViewById(R.id.img_banner);
             imgLabel = view.findViewById(R.id.img_time);
+            ivMinTxn = view.findViewById(R.id.iv_rp);
+            tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
+            tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             progressTimer = view.findViewById(R.id.progress_timer);
         }
 
@@ -102,7 +104,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
                 Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
                 promoView.put("promoView", promotions);
 
-                AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.value.getContext(),
                         AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
                         AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
@@ -138,7 +140,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
     @Override
     protected BaseVH getItemViewHolder(ViewGroup parent, LayoutInflater inflater, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tp_item_coupon, parent, false);
+                .inflate(R.layout.tp_item_my_coupon, parent, false);
 
         return new CouponListBaseAdapter.ViewHolder(itemView);
     }
@@ -152,7 +154,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         //Adding request for main query
         Map<String, Object> variablesMain = new HashMap<>();
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, pageNumber);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.HOMEPAGE_PAGE_SIZE);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
@@ -190,46 +192,37 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
     }
 
     private void setData(ViewHolder holder, CouponValueEntity item) {
-        holder.description.setText(item.getTitle());
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
 
         if (item.getUsage() != null) {
-            holder.imgLabel.setImageResource(R.drawable.ic_tp_time);
             holder.label.setVisibility(View.VISIBLE);
             holder.value.setVisibility(View.VISIBLE);
             holder.imgLabel.setVisibility(View.VISIBLE);
             holder.value.setText(item.getUsage().getUsageStr());
             holder.label.setText(item.getUsage().getText());
-            if (item.getUsage().getBtnUsage() != null) {
-                holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
-
-                if (item.getUsage().getBtnUsage().getType().equalsIgnoreCase("invisible")) {
-                    holder.btnContinue.setVisibility(View.GONE);
-                } else {
-                    holder.btnContinue.setVisibility(View.VISIBLE);
-                }
-            } else {
-                holder.btnContinue.setVisibility(View.GONE);
-            }
         } else {
             holder.label.setVisibility(View.GONE);
             holder.value.setVisibility(View.GONE);
             holder.imgLabel.setVisibility(View.GONE);
         }
 
-        holder.btnContinue.setBackgroundResource(R.drawable.bg_button_green);
-        holder.value.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.medium_green));
-        holder.imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
+        if (TextUtils.isEmpty(item.getMinimumUsageLabel())) {
+            holder.tvMinTxnLabel.setVisibility(View.GONE);
+            holder.ivMinTxn.setVisibility(View.GONE);
+        } else {
+            holder.ivMinTxn.setVisibility(View.VISIBLE);
+            holder.tvMinTxnLabel.setVisibility(View.VISIBLE);
+            holder.tvMinTxnLabel.setText(item.getMinimumUsageLabel());
 
-        holder.btnContinue.setOnClickListener(v -> {
-            mPresenter.showRedeemCouponDialog(item.getCta(), item.getCode(), item.getTitle());
+        }
 
-            AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    item.getTitle());
-        });
+        if (TextUtils.isEmpty(item.getMinimumUsage())) {
+            holder.tvMinTxnValue.setVisibility(View.GONE);
+        } else {
+            holder.tvMinTxnValue.setVisibility(View.VISIBLE);
+            holder.tvMinTxnValue.setText(item.getMinimumUsage());
+        }
+
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
@@ -249,7 +242,6 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             holder.timer.cancel();
         }
 
-        holder.btnContinue.setEnabled(true);
         if (item.getUsage().getActiveCountDown() < 1) {
             if (item.getUsage().getExpiredCountDown() > 0
                     && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
@@ -262,7 +254,8 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
                         int seconds = (int) (l / 1000) % 60;
                         int minutes = (int) ((l / (1000 * 60)) % 60);
                         int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds))  ;
+                        holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
                         holder.progressTimer.setProgress((int) l / 1000);
                         holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
                                 holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
@@ -273,45 +266,16 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
                     @Override
                     public void onFinish() {
                         holder.value.setText("00 : 00 : 00");
-                        holder.btnContinue.setText("Expired");
-                        holder.btnContinue.setEnabled(false);
-                        holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
                     }
                 }.start();
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
-                holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
-                holder.btnContinue.setEnabled(true);
-                holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
                 holder.value.setPadding(0, 0, 0, 0);
+                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
             }
         } else {
-            if (item.getUsage().getActiveCountDown() > 0) {
-                holder.btnContinue.setEnabled(false);
-                if (item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                    holder.timer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
-                        @Override
-                        public void onTick(long l) {
-                            item.getUsage().setActiveCountDown(l / 1000);
-                            int seconds = (int) (l / 1000) % 60;
-                            int minutes = (int) ((l / (1000 * 60)) % 60);
-                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                            holder.btnContinue.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
-                            holder.btnContinue.setEnabled(true);
-                        }
-                    }.start();
-                }
-            } else {
-                holder.btnContinue.setText(item.getUsage().getUsageStr());
-                holder.btnContinue.setEnabled(true);
-                holder.progressTimer.setVisibility(View.GONE);
-                holder.value.setPadding(0, 0, 0, 0);
-            }
+            holder.progressTimer.setVisibility(View.GONE);
+            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
         }
     }
 }

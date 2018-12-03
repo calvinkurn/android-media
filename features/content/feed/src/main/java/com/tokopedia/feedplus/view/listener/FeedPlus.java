@@ -33,6 +33,8 @@ public interface FeedPlus {
 
         void eventTrackingEEGoToProduct(Integer shopId, String feedId, int totalProduct, int positionInFeed, String category);
 
+        void sendMoEngageOpenFeedEvent();
+
         interface Kol {
 
             UserSessionInterface getUserSession();
@@ -78,6 +80,8 @@ public interface FeedPlus {
         }
 
         void setFirstCursor(String firstCursor);
+
+        void setLastCursorOnFirstPage(String lastCursor);
 
         void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 

@@ -1,6 +1,5 @@
 package com.tokopedia.flight.searchV2.data.db.mapper
 
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.passenger.data.cloud.entity.PassengerListEntity
 import com.tokopedia.flight_dbflow.FlightPassengerDB
 
@@ -10,12 +9,8 @@ import com.tokopedia.flight_dbflow.FlightPassengerDB
 class FlightPassengerMapper {
 
     fun mapToFlightPassengerDb(passengerListEntity: PassengerListEntity) : FlightPassengerDB {
-        var birthdate = if (passengerListEntity.passengerAttribute.dob != null) {
-            FlightDateUtil.formatDate(
-                    FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                    FlightDateUtil.DEFAULT_FORMAT,
-                    passengerListEntity.passengerAttribute.dob
-            )
+        val birthdate = if (passengerListEntity.passengerAttribute.dob != null) {
+            passengerListEntity.passengerAttribute.dob
         } else ""
 
         val passportNo = if (passengerListEntity.passengerAttribute.passportNo != null) {
@@ -45,7 +40,6 @@ class FlightPassengerMapper {
                 passportCountry,
                 passportExpiry,
                 passportNo)
-
     }
 
 }

@@ -17,9 +17,6 @@ import com.tokopedia.network.SessionUrl;
 import com.tokopedia.network.service.AccountsBasicService;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.network.service.RegisterPhoneNumberApi;
-import com.tokopedia.otp.data.source.OtpSource;
-import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
-import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -29,23 +26,15 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
-import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
-import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
-import com.tokopedia.session.register.data.mapper.RegisterValidationMapper;
-import com.tokopedia.session.register.data.source.RegisterValidationSource;
-import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
-import com.tokopedia.session.register.registerphonenumber.data.mapper.CheckMsisdnMapper;
 import com.tokopedia.session.register.registerphonenumber.data.mapper.RegisterPhoneNumberMapper;
-import com.tokopedia.session.register.registerphonenumber.data.source.CheckMsisdnSource;
 import com.tokopedia.session.register.registerphonenumber.data.source.CloudRegisterPhoneNumberSource;
-import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMsisdnPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.view.util.AccountsAuthInterceptor;
@@ -164,15 +153,6 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    CloudDiscoverDataSource provideCloudDiscoverDataSource(GlobalCacheManager globalCacheManager,
-                                                           @Named(HMAC_SERVICE) AccountsService
-                                                                   accountsService,
-                                                           DiscoverMapper discoverMapper) {
-        return new CloudDiscoverDataSource(globalCacheManager, accountsService, discoverMapper);
-    }
-
-    @SessionScope
-    @Provides
     GetTokenDataSource provideGetTokenDataSource(AccountsBasicService
                                                          accountsService,
                                                  TokenMapper tokenMapper,
@@ -227,15 +207,6 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                               RequestOtpMapper requestOTPMapper,
-                               ValidateOtpMapper validateOTPMapper,
-                               SessionHandler sessionHandler) {
-        return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
     CreatePasswordDataSource provideCreatePasswordDataSource(@Named(BEARER_SERVICE) AccountsService
                                                                      accountsService,
                                                              CreatePasswordMapper createPasswordMapper) {
@@ -247,38 +218,6 @@ public class SessionModule {
     @Named(LOGIN_CACHE)
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, LOGIN_CACHE);
-    }
-
-    @SessionScope
-    @Provides
-    public GetFacebookCredentialUseCase provideGetFacebookCredentialUseCase(){
-        return provideOverridenGetFacebookCredentialUseCase();
-    }
-
-    public GetFacebookCredentialUseCase provideOverridenGetFacebookCredentialUseCase(){
-        return new GetFacebookCredentialUseCase();
-    }
-
-    @SessionScope
-    @Provides
-    CheckMsisdnMapper provideCheckMsisdnMapper() {
-        return new CheckMsisdnMapper();
-    }
-
-    @SessionScope
-    @Provides
-    CheckMsisdnSource provideCheckMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                               CheckMsisdnMapper checkMsisdnMapper) {
-        return new CheckMsisdnSource(accountsService, checkMsisdnMapper);
-    }
-
-    @SessionScope
-    @Provides
-    CheckMsisdnPhoneNumberUseCase provideCheckMsisdnPhoneNumberUseCase(ThreadExecutor threadExecutor,
-                                                                       PostExecutionThread postExecutionThread,
-                                                                       @ApplicationContext Context context,
-                                                                       CheckMsisdnSource checkMsisdnSource) {
-        return new CheckMsisdnPhoneNumberUseCase(threadExecutor, postExecutionThread, context, checkMsisdnSource);
     }
 
     @SessionScope
@@ -334,21 +273,8 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    UserSession provideUserSession(@ApplicationContext Context context){
+    UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
-    }
-
-    @SessionScope
-    @Provides
-    RegisterValidationSource provideRegisterValidationSource(AccountsService accountsService,
-                                                             RegisterValidationMapper registerValidationMapper){
-        return new RegisterValidationSource(accountsService, registerValidationMapper);
-    }
-
-    @SessionScope
-    @Provides
-    RegisterValidationMapper provideRegisterValidationMapper(){
-        return new RegisterValidationMapper();
     }
 
     @SessionScope

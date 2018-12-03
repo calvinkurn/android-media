@@ -29,19 +29,23 @@ public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
-        presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
         e.printStackTrace();
         if (view != null) {
-            view.stopTrace();
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
+                view.stopTrace();
+            }
             view.renderHasNoRecentView();
         }
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
-        presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
         if (view != null) {
-            view.stopTrace();
+            if (!view.isTraceStopped()) {
+                presenter.setLoadApiStatus(EmptyCartApi.LAST_SEEN, true);
+                view.stopTrace();
+            }
             if (graphqlResponse != null && graphqlResponse.getData(GqlRecentViewResponse.class) != null) {
                 GqlRecentViewResponse gqlRecentViewResponse = graphqlResponse.getData(GqlRecentViewResponse.class);
                 if (gqlRecentViewResponse != null && gqlRecentViewResponse.getGqlRecentView() != null &&

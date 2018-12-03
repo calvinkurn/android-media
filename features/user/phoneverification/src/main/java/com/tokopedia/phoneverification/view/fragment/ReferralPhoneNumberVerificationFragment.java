@@ -12,10 +12,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.phoneverification.R;
+import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
+import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
 import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.user.session.UserSession;
@@ -28,7 +32,7 @@ import static com.tokopedia.phoneverification.PhoneVerificationConst.URL_TOKOCAS
  * Created by ashwanityagi on 12/12/17.
  */
 
-public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment {
+public class ReferralPhoneNumberVerificationFragment extends BaseDaggerFragment {
 
     public interface ReferralPhoneNumberVerificationFragmentListener {
         void onSkipVerification();
@@ -36,6 +40,22 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
         void onClickVerification(String phoneNumber);
     }
 
+    @Override
+    protected void initInjector() {
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            BaseAppComponent baseAppComponent =
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+
+            PhoneVerificationComponent phoneVerificationComponent =
+                    DaggerPhoneVerificationComponent.
+                            builder().
+                            baseAppComponent(baseAppComponent).
+                            build();
+
+
+            phoneVerificationComponent.inject(this);
+        }
+    }
 
     EditText tvPhoneNumber;
     TextView btnActivation;

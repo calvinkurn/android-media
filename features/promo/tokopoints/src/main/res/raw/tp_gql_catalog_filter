@@ -1,19 +1,24 @@
-query Filter ($slug: String){
-  filter : tokopointsCatalogFilter (slug: $slug) {
+query Filter2($slugCategory: String, $slugSubCategory: String) {
+  filter: tokopointsCatalogFilterV2(slugCategory: $slugCategory, slugSubCategory: $slugSubCategory) {
     categories {
       id
       parentID
       name
+      slug
       timeRemainingSeconds
       imageID
       imageURL
       isSelected
-      index
-      subcategory {
+      isHideSubCategory
+      subCategory {
         id
         parentID
         name
-        categoryIndex
+        slug
+        timeRemainingSeconds
+        imageID
+        imageURL
+        isSelected
       }
     }
     pointRanges {
@@ -30,3 +35,4 @@ query Filter ($slug: String){
     }
   }
 }
+

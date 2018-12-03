@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
@@ -32,11 +34,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -50,9 +50,6 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private static final Integer USERNAME_MIN_LENGTH = 3;
     private static final Integer SHOW_SUGGESTION_LENGTH = 1;
     private static final String PARAM_USER_ID = "{user_id}";
-    //TODO milhamj change to real url
-    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia" +
-            ".com/bantuan/pembeli/";
 
     private View mainView;
     private ImageView avatar;
@@ -73,6 +70,9 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     public static UsernameInputFragment newInstance(@NonNull Bundle bundle) {
         UsernameInputFragment fragment = new UsernameInputFragment();
@@ -207,11 +207,17 @@ public class UsernameInputFragment extends BaseDaggerFragment
         suggestionRv.setAdapter(adapter);
         saveBtn.setOnClickListener(getSaveBtnOnClickListener());
         disableSaveBtn();
-        termsAndCondition.setOnClickListener(v ->
-                RouteManager.route(
-                        getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
-                )
+        termsAndCondition.setOnClickListener(v -> {
+                    affiliateAnalytics.onSKButtonClicked();
+                    RouteManager.route(
+                            getContext(),
+                            String.format(
+                                "%s?url=%s",
+                                ApplinkConst.WEBVIEW,
+                                AffiliateConstant.TERMS_AND_CONDITIONS_URL
+                        )
+                    );
+                }
         );
     }
 
@@ -260,6 +266,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener getSaveBtnOnClickListener() {
+        affiliateAnalytics.onSimpanButtonClicked();
         return view -> registerUsername();
     }
 
