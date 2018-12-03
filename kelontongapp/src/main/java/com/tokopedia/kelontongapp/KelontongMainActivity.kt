@@ -17,6 +17,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import com.appsflyer.AppsFlyerLib
 import com.tokopedia.kelontongapp.firebase.Preference
@@ -70,6 +71,15 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
     private fun noInternetConnection() {
         setContentView(R.layout.activity_no_internet)
+        findViewById<TextView>(R.id.tv_msg_medium).visibility = View.VISIBLE
+        val btnTryAgain = findViewById<Button>(R.id.btn_retry)
+        btnTryAgain.setOnClickListener { loadWebViewPage() }
+    }
+
+    open fun onReceivedErrorView() {
+        setContentView(R.layout.activity_no_internet)
+        findViewById<TextView>(R.id.tv_msg_medium).visibility = View.GONE
+        findViewById<TextView>(R.id.tv_msg_large).visibility = View.VISIBLE
         val btnTryAgain = findViewById<Button>(R.id.btn_retry)
         btnTryAgain.setOnClickListener { loadWebViewPage() }
     }

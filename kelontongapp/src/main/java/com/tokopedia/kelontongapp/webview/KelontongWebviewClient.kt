@@ -18,6 +18,7 @@ import android.Manifest.permission.CAMERA
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.SharedPreferences
+import android.webkit.WebResourceError
 import com.appsflyer.AppsFlyerLib
 import com.tokopedia.kelontongapp.*
 import org.json.JSONObject
@@ -53,6 +54,13 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
             view.loadUrl(uri.toString())
             Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
             true
+        }
+    }
+
+    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+        super.onReceivedError(view, request, error)
+        if (activity is KelontongMainActivity) {
+            activity.onReceivedErrorView()
         }
     }
 

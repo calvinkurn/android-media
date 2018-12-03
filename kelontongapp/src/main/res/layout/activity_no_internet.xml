@@ -17,19 +17,23 @@
         tools:ignore="ContentDescription" />
 
     <TextView
+        android:id="@+id/tv_msg_large"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:visibility="gone"
         android:padding="@dimen/default_padding"
         android:text="@string/msg_system_error"/>
 
     <TextView
+        android:id="@+id/tv_msg_medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/default_padding"
+        android:visibility="gone"
         android:text="@string/msg_no_internet_connection"/>
 
     <Button
