@@ -103,8 +103,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 306001101;
-        defaultVersionName = "3.6";
+        defaultVersionCode = 307001101;
+        defaultVersionName = "3.7";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -326,6 +326,7 @@ dependencies {
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.withdraw)
@@ -345,8 +346,14 @@ dependencies {
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
+    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
+    implementation project(rootProject.ext.features.gallery)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)

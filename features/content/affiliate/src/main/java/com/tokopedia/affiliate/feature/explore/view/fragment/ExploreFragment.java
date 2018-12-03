@@ -25,6 +25,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
@@ -41,17 +43,12 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -84,14 +81,18 @@ public class ExploreFragment
     private EmptyModel emptyResultModel;
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
+    private FrameLayout layoutEmpty;
 
     private boolean isCanDoAction;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     ExploreContract.Presenter presenter;
+
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     public static ExploreFragment getInstance(Bundle bundle) {
         ExploreFragment fragment = new ExploreFragment();
@@ -112,6 +113,7 @@ public class ExploreFragment
         ivBantuan = view.findViewById(R.id.action_bantuan);
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
+        layoutEmpty = view.findViewById(R.id.layout_empty);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -127,6 +129,7 @@ public class ExploreFragment
     }
 
     private void initView() {
+        layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
         autoCompleteLayout.setVisibility(View.GONE);
@@ -198,7 +201,7 @@ public class ExploreFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE;
     }
 
     @Override
@@ -247,7 +250,10 @@ public class ExploreFragment
             onSearchReset();
         } else {
             autoCompleteLayout.setVisibility(View.VISIBLE);
-            if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
+            if (!isFromAutoComplete && !exploreParams.isLoading()) {
+                affiliateAnalytics.onSearchSubmitted(text);
+                presenter.getAutoComplete(text);
+            }
         }
     }
 
@@ -259,6 +265,11 @@ public class ExploreFragment
         exploreParams.resetSearch();
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, true);
+    }
+
+    @Override
+    public AffiliateAnalytics getAffiliateAnalytics() {
+        return affiliateAnalytics;
     }
 
     @Override
@@ -279,6 +290,7 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
+        affiliateAnalytics.onByMeButtonClicked(model.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
@@ -296,6 +308,7 @@ public class ExploreFragment
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
+        affiliateAnalytics.onProductClicked(model.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
             RouteManager.route(
@@ -307,12 +320,16 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+        layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         if (itemList.size() == 0) {
             itemList = new ArrayList<>();
             itemList.add(emptyResultModel);
             exploreParams.disableLoadMore();
+            if (!TextUtils.isEmpty(exploreParams.getKeyword())) {
+                affiliateAnalytics.onSearchNotFound(exploreParams.getKeyword());
+            }
         } else {
             exploreParams.setCursorForLoadMore(cursor);
         }
@@ -324,12 +341,16 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
+        layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView(),
+                layoutEmpty,
                 error,
-                () -> presenter.getFirstData(exploreParams, false)
+                () -> {
+                    layoutEmpty.setVisibility(View.GONE);
+                    presenter.getFirstData(exploreParams, false);
+                }
         );
     }
 
@@ -401,6 +422,7 @@ public class ExploreFragment
     @Override
     public void onSuccessCheckQuotaButEmpty() {
         isCanDoAction = true;
+        affiliateAnalytics.onJatahRekomendasiHabisDialogShow();
         Dialog dialog = buildDialog();
         dialog.setOnOkClickListener(view -> {
             RouteManager.route(

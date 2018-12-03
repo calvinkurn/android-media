@@ -54,12 +54,12 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
         return intent;
     }
 
-    @DeepLink(ApplinkConstant.COUPON_DETAIL)
+    @DeepLink({ApplinkConstant.COUPON_DETAIL, ApplinkConstant.COUPON_DETAIL2})
     public static Intent getCouponDetail(Context context, Bundle extras) {
         return getCallingIntent(context, extras);
     }
 
-    @DeepLink(ApplinkConstant.CATALOG_DETAIL)
+    @DeepLink({ApplinkConstant.CATALOG_DETAIL, ApplinkConstant.CATALOG_DETAIL2})
     public static Intent getCatalogDetail(Context context, Bundle extras) {
         return getCallingIntent(context, extras);
     }

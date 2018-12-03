@@ -18,6 +18,8 @@ import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.analytics.debugger.GtmLogger;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -32,6 +34,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     public static final String IS_CHUCK_ENABLED = "is_enable";
     public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
+    public static final String RN_DEV_LOGGER = "rn_dev_logger";
     private static final String IP_GROUPCHAT = "ip_groupchat";
     private static final String LOG_GROUPCHAT = "log_groupchat";
     //developer test
@@ -40,6 +43,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private TextView resetOnBoarding;
     private TextView testOnBoarding;
     private TextView vForceCrash;
+    private TextView vDevOptionRN;
     private View vMaintenance;
     private AppCompatEditText remoteConfigKeyEditText;
     private AppCompatEditText remoteConfigValueEditText;
@@ -77,7 +81,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
     private void setupView() {
         vForceCrash = (TextView) findViewById(R.id.force_crash);
-
+        vDevOptionRN = findViewById(R.id.rn_dev_options);
         vMaintenance = findViewById(R.id.maintenance);
 
         vCustomIntent = (TextView) findViewById(R.id.custom_intent);
@@ -116,6 +120,18 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 throw new RuntimeException("HAHAHAHAH");
             }
         });
+
+        vDevOptionRN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(
+                        DeveloperOptions.this,
+                        ApplinkConst.SETTING_DEVELOPER_OPTIONS
+                        .replace("{type}", RN_DEV_LOGGER)
+                );
+            }
+        });
+
         resetOnBoarding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

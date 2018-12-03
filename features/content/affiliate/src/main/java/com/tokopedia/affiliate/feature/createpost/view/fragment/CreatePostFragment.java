@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Guide;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Medium;
@@ -47,10 +48,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private static final int REQUEST_IMAGE_PICKER = 1234;
     private static final int REQUEST_EXAMPLE = 13;
     private static final int REQUEST_LOGIN = 83;
+
     @Inject
     CreatePostContract.Presenter presenter;
     @Inject
     CreatePostPreference createPostPreference;
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
+
     private View mainView;
     private TextView title;
     private TextView seeExample;
@@ -233,6 +238,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             Toast.makeText(getActivity(), R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show();
             getActivity().finish();
+            affiliateAnalytics.onJatahRekomendasiHabisPdp();
         }
     }
 
@@ -280,6 +286,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private void initView() {
         doneBtn.setOnClickListener(view -> {
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.getProductId());
             if (!viewModel.isEdit()) {
                 submitPost();
             } else {
@@ -287,6 +294,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             }
         });
         addImageBtn.setOnClickListener(view -> {
+            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.getProductId());
             if (shouldShowExample()) {
                 goToImageExample(true);
                 createPostPreference.setFirstTime(getUserSession().getUserId());
@@ -330,7 +338,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         this.guide = guide;
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
-        seeExample.setOnClickListener(v -> goToImageExample(false));
+        seeExample.setOnClickListener(v -> {
+            affiliateAnalytics.onLihatContohButtonClicked(viewModel.getProductId());
+            goToImageExample(false);
+        });
     }
 
     private void setupViewPager() {

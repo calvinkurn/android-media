@@ -228,7 +228,8 @@ public class DeepLinkChecker {
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
-                && !isWalletOvo(linkSegment);
+                && !isWalletOvo(linkSegment)
+                && !isKycTerms(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -263,6 +264,10 @@ public class DeepLinkChecker {
 
     private static boolean isWalletOvo(List<String> linkSegment) {
         return (linkSegment.get(0).equals("ovo"));
+    }
+
+    private static boolean isKycTerms(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("terms")) && (linkSegment.get(1).equals("merchantkyc"));
     }
 
     public static String getQuery(String url, String q) {

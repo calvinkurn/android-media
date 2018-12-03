@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
@@ -64,6 +63,26 @@ public class ProductPageTracking {
     public static final String PROMO_CODE = "promo_code";
     public static final String ID = "id";
     public static final String POSITION = "position";
+
+    public static final String USER_ID = "user_id";
+
+    public static final String EVENT_CLICK_AFFILIATE = "clickAffiliate";
+    public static final String PRODUCT_DETAIL_PAGE_BY_ME = "product detail page tokopedia by.me";
+    public static final String ACTION_CLICK_TAMBAH_BY_ME = "click tambah ke by.me";
+    public static final String EMPTY_LABEL = "";
+    public static final String ACTION_CLICK_WISHLIST = "click wishlist";
+    public static final String EVENT_ACTION_CLICK_REVIEW_ON_BUYERS_IMAGE = "click - review gallery on foto dari pembeli";
+    public static final String EVENT_LABEL_CLICK_REVIEW_ON_BUYERS_IMAGE = "product_id: %s - review_id : %s";
+    public static final String EVENT_ACTION_CLICK_REVIEW_ON_SEE_ALL_IMAGE = "click - lihat semua review gallery";
+    public static final String EVENT_ACTION_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW = "click - review gallery on most helpful review";
+    public static final String EVENT_LABEL_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW = "product_id: %s - review:id : %s";
+    public static final String EVENT_ACTION_CLICK_FILTER_REVIEW_BY = "click - filter review by %s";
+    public static final String EVENT_ACTION_CLICK_IMAGE_ON_REVIEW_LIST = "click - review gallery on review list";
+    public static final String EVENT_LABEL_CLICK_IMAGE_ON_REVIEW_LIST = "product_id: %s - review_id : %s";
+
+    public static final String CLICK_BY_ME = "click - by.me";
+
+    public static final String LABEL_CLICK_BY_ME = "%s - %s";
 
     private static String joinDash(String... s) {
         return TextUtils.join(" - ", s);
@@ -426,5 +445,150 @@ public class ProductPageTracking {
         if (map != null) {
             tracker.sendEventTracking(map);
         }
+    }
+
+    public static void eventClickAffiliateRegularPdp(Context context,
+                                           String userId,
+                                           String shopId,
+                                           String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", CLICK_PDP);
+        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE);
+        eventTracking.put("eventAction", CLICK_BY_ME);
+        eventTracking.put("eventLabel", String.format(LABEL_CLICK_BY_ME, shopId, productId));
+        eventTracking.put(USER_ID, userId);
+
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(eventTracking);
+    }
+
+    public static void eventClickAffiliate(Context context,
+                                           String userId,
+                                           String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", EVENT_CLICK_AFFILIATE);
+        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
+        eventTracking.put("eventAction", ACTION_CLICK_TAMBAH_BY_ME);
+        eventTracking.put("eventLabel", productId);
+        eventTracking.put(USER_ID, userId);
+
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(eventTracking);
+    }
+
+    public static void eventClickWishlistOnAffiliate(Context context,
+                                                     String userId,
+                                                     String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", EVENT_CLICK_AFFILIATE);
+        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
+        eventTracking.put("eventAction", ACTION_CLICK_WISHLIST);
+        eventTracking.put("eventLabel", productId);
+        eventTracking.put(USER_ID, userId);
+
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(eventTracking);
+    }
+
+    public static void eventClickReviewOnBuyersImage(Context context,
+                                                     String productId,
+                                                     String reviewId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker =
+                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                EVENT_ACTION_CLICK_REVIEW_ON_BUYERS_IMAGE,
+                String.format(
+                        EVENT_LABEL_CLICK_REVIEW_ON_BUYERS_IMAGE,
+                        productId,
+                        reviewId
+                )
+        );
+    }
+
+    public static void eventClickReviewOnSeeAllImage(Context context, String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker =
+                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                EVENT_ACTION_CLICK_REVIEW_ON_SEE_ALL_IMAGE,
+                productId
+        );
+    }
+
+    public static void eventClickReviewOnMostHelpfulReview(Context context,
+                                                           String productId,
+                                                           String reviewId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker =
+                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                EVENT_ACTION_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW,
+                String.format(
+                        EVENT_LABEL_CLICK_REVIEW_ON_MOST_HELPFUL_REVIEW,
+                        productId,
+                        reviewId
+                )
+        );
+    }
+
+    public static void eventClickFilterReview(Context context,
+                                              String filterName,
+                                              String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker =
+                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                String.format(
+                        EVENT_ACTION_CLICK_FILTER_REVIEW_BY,
+                        filterName.toLowerCase()
+                ),
+                productId
+        );
+    }
+
+    public static void eventClickImageOnReviewList(Context context,
+                                                     String productId,
+                                                     String reviewId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker =
+                ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                EVENT_ACTION_CLICK_IMAGE_ON_REVIEW_LIST,
+                String.format(
+                        EVENT_LABEL_CLICK_IMAGE_ON_REVIEW_LIST,
+                        productId,
+                        reviewId
+                )
+        );
     }
 }

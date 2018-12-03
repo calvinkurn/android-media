@@ -185,22 +185,18 @@ public class OrderListFragment extends BaseDaggerFragment implements
         orderListComponent.inject(this);
     }
 
-
     protected void initialListener(Activity activity) {
     }
-
 
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
     }
-
 
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         emptyLayout = view.findViewById(R.id.empty_view);
     }
-
 
     protected void setViewListener() {
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
@@ -309,11 +305,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
         };
     }
 
-
     protected void initialVar() {
         orderListAdapter = new OrderListAdapter(getActivity(), this);
     }
-
 
     protected void setActionVar() {
         initialData();
@@ -324,7 +318,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 && (orderListAdapter == null || orderListAdapter.getItemCount() == 0)) {
             refreshHandler.startRefresh();
         }
-
     }
 
     @Override
@@ -379,7 +372,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void showEmptyData(int typeRequest) {
 
     }
-
 
     @Override
     public void startUri(String uri) {

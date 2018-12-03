@@ -46,6 +46,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
     private RoundedCornerImageView shopImage;
     private TextView shopTitle;
     private TextView shopSubtitle;
+    private RecyclerView productListRv;
     private FrameLayout favoriteButton;
     private TextView favoriteText;
     private FeedShopAdapter adapter;
@@ -73,9 +74,9 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
                 false);
         adapter = new FeedShopAdapter(onShopItemClicked());
 
-        RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(adapter);
+        productListRv = itemView.findViewById(R.id.product_list);
+        productListRv.setLayoutManager(gridLayoutManager);
+        productListRv.setAdapter(adapter);
 
         itemView.setOnClickListener(onShopItemClicked());
         header.setOnClickListener(onShopItemClicked());
@@ -84,23 +85,13 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
 
     public View.OnClickListener onShopItemClicked() {
         if (shopItemClickListener == null) {
-            shopItemClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onShopItemClicked(adapterPosition, data);
-                }
-            };
+            shopItemClickListener = v -> itemClickListener.onShopItemClicked(adapterPosition, data);
         }
         return shopItemClickListener;
     }
 
     private View.OnClickListener onAddFavorite() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemClickListener.onAddFavorite(adapterPosition, data);
-            }
-        };
+        return v -> itemClickListener.onAddFavorite(adapterPosition, data);
     }
 
     @Override
@@ -129,9 +120,9 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
                     context.getResources().getDimensionPixelOffset(R.dimen.feed_badge_size));
 
             if (shop.isGoldShopBadge()) {
-                setShopBadge(title, img, R.drawable.ic_gold);
+                setShopBadge(img, R.drawable.ic_gold);
             } else if (shop.isShop_is_official()) {
-                setShopBadge(title, img, R.drawable.ic_official);
+                setShopBadge(img, R.drawable.ic_official);
             } else {
                 shopTitle.setCompoundDrawables(null, null, img, null);
             }
@@ -141,7 +132,25 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         }
     }
 
-    private void setShopBadge(Spanned text, Drawable topadsBadge, int drawable) {
+    public void setAdapterPosition(int adapterPosition) {
+        this.adapterPosition = adapterPosition;
+    }
+
+    public void onViewRecycled() {
+        ImageLoader.clearImage(shopImage);
+
+        if (adapter == null || productListRv == null) {
+            return;
+        }
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            RecyclerView.ViewHolder holder = productListRv.findViewHolderForAdapterPosition(i);
+            if (holder instanceof FeedShopAdapter.ViewHolder) {
+                adapter.onViewRecycled((FeedShopAdapter.ViewHolder) holder);
+            }
+        }
+    }
+
+    private void setShopBadge(Drawable topadsBadge, int drawable) {
         Drawable shopBadge = context.getResources().getDrawable(drawable);
         shopBadge.setBounds(0, 0,
                 context.getResources().getDimensionPixelOffset(R.dimen.feed_badge_size),
@@ -172,7 +181,8 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         favoriteText.setCompoundDrawables(drawable, null, null, null);
         favoriteText.setText(text);
 
-        favoriteButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        favoriteButton.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 ViewTreeObserver viewTreeObserver = favoriteButton.getViewTreeObserver();
@@ -185,9 +195,5 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
 
     private void generateThumbnailImages(List<ImageProduct> imageProducts) {
         adapter.setList(imageProducts);
-    }
-
-    public void setAdapterPosition(int adapterPosition) {
-        this.adapterPosition = adapterPosition;
     }
 }
