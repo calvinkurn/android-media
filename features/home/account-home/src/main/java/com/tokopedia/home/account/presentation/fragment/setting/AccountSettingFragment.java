@@ -199,7 +199,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            accountAnalytics.eventClickAccountSetting(KYC);
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
             getActivity().startActivity(intent);
         }
@@ -223,6 +222,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
 
     private void onKycMenuClicked() {
+        accountAnalytics.eventClickKycSetting();
         if (userSession.hasShop()) {
             goToKyc();
         } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
