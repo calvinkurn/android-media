@@ -263,6 +263,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.transaction)
+    implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.profile)
