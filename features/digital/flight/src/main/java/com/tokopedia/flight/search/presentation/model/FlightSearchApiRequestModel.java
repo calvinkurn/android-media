@@ -18,10 +18,11 @@ public class FlightSearchApiRequestModel implements Parcelable{
     private int infant;
     private int classID;
     private List<String> airlines;
+    private String ipAddress;
 
     public FlightSearchApiRequestModel(String depAirport, String arrAirport,
                                        String date, int adult, int children, int infant, int classID,
-                                       List<String> airlines) {
+                                       List<String> airlines, String ipAddress) {
         this.depAirport = depAirport;
         this.arrAirport = arrAirport;
         this.date = date;
@@ -30,6 +31,7 @@ public class FlightSearchApiRequestModel implements Parcelable{
         this.infant = infant;
         this.classID = classID;
         this.airlines = airlines;
+        this.ipAddress = ipAddress;
     }
 
     protected FlightSearchApiRequestModel(Parcel in) {
@@ -41,6 +43,25 @@ public class FlightSearchApiRequestModel implements Parcelable{
         infant = in.readInt();
         classID = in.readInt();
         airlines = in.createStringArrayList();
+        ipAddress = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(depAirport);
+        dest.writeString(arrAirport);
+        dest.writeString(date);
+        dest.writeInt(adult);
+        dest.writeInt(children);
+        dest.writeInt(infant);
+        dest.writeInt(classID);
+        dest.writeStringList(airlines);
+        dest.writeString(ipAddress);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightSearchApiRequestModel> CREATOR = new Creator<FlightSearchApiRequestModel>() {
@@ -87,20 +108,7 @@ public class FlightSearchApiRequestModel implements Parcelable{
         return airlines;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(depAirport);
-        parcel.writeString(arrAirport);
-        parcel.writeString(date);
-        parcel.writeInt(adult);
-        parcel.writeInt(children);
-        parcel.writeInt(infant);
-        parcel.writeInt(classID);
-        parcel.writeStringList(airlines);
+    public String getIpAddress() {
+        return ipAddress;
     }
 }

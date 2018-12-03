@@ -136,7 +136,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         } else
             viewListener.onShowEmpty();
 
-
         if (hasFeed(feedDomain)) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
             viewListener.setFirstCursor(feedDomain.getListFeed().get(0).getCursor());
@@ -150,6 +149,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (feedDomain.getInterestWhitelist()) {
             viewListener.showInterestPick();
         }
+
+        viewListener.sendMoEngageOpenFeedEvent();
     }
 
     private String getLastProductCursor(List<DataFeedDomain> productList) {

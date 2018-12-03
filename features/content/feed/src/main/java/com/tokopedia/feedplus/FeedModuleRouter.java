@@ -49,4 +49,6 @@ public interface FeedModuleRouter {
                    String description);
 
     Intent getAddToCartIntent(Context context, String productId, String price, String imageSource);
+
+    void sendMoEngageOpenFeedEvent(boolean isEmptyFeed);
 }

@@ -8,6 +8,7 @@ import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
@@ -283,7 +284,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                 flightAirportCombineModel.getDepAirport(),
                 flightAirportCombineModel.getArrAirport(),
                 date, adult, child, infant, classID,
-                flightAirportCombineModel.getAirlines());
+                flightAirportCombineModel.getAirlines(),
+                FlightRequestUtil.getLocalIpAddress());
 
         flightSearchV2UseCase.execute(flightSearchV2UseCase.createRequestParams(
                 requestModel,
