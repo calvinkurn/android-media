@@ -137,7 +137,8 @@
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:layout_width="256dp"
-            android:layout_height="61dp" />
+            android:layout_height="61dp"
+            android:contentDescription="@string/barcode_image_content_description" />
 
     </android.support.v7.widget.CardView>
 

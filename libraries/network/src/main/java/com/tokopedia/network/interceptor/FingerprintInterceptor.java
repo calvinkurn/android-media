@@ -55,15 +55,8 @@ public class FingerprintInterceptor implements Interceptor {
         FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
         String json = fingerprintModel.getFingerprintHash();
         newRequest.addHeader(KEY_SESSION_ID, fingerprintModel.getRegistrarionId());
-        if (userSession.isLoggedIn()) {
-            newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
-            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + userSession.getUserId()));
-        } else {
-            newRequest.addHeader(KEY_USER_ID, "0");
-            newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + "0"));
-        }
-//        newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
-//        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + userSession.getUserId()));
+        newRequest.addHeader(KEY_USER_ID, userSession.getUserId());
+        newRequest.addHeader(KEY_FINGERPRINT_HASH, AuthUtil.md5(json + "+" + userSession.getUserId()));
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + userSession.getAccessToken());
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
         newRequest.addHeader(KEY_ADSID, fingerprintModel.getAdsId());
