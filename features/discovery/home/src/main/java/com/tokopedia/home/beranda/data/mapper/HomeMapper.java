@@ -93,7 +93,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - sprintSaleProduct - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
                                         channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
                                 );
                             } else {
