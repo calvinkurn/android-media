@@ -75,7 +75,6 @@ okbuck {
             customerapp: 10130000,
             sellerapp: 10130000,
             posapp: 16000000,
-            agenapp: 16000000,
     ]
     extraBuckOpts = [
             'customerappDebug': [
@@ -85,9 +84,6 @@ okbuck {
                     "android_binary": ["trim_resource_ids = True"] as Set
             ]
             ,'posappDebug': [
-                    "android_binary": ["trim_resource_ids = True"] as Set
-            ]
-            ,'agenappDebug': [
                     "android_binary": ["trim_resource_ids = True"] as Set
             ]
     ]
