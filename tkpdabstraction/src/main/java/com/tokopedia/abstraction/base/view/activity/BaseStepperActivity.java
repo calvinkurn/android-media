@@ -1,7 +1,6 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -53,8 +52,8 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt(CURRENT_POSITION_EXTRA, currentPosition);
     }
 
