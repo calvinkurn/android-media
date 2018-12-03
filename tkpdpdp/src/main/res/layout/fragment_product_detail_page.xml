@@ -186,6 +186,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
 
+            <com.tokopedia.tkpdpdp.customview.ImageFromBuyerView
+                android:id="@+id/view_image_from_buyer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:visibility="gone"
+                />
+
             <com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView
                 android:id="@+id/view_most_helpful"
                 android:layout_width="match_parent"
