@@ -87,7 +87,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             }
             setupClickListeners(channel);
 
-            if (isSprintSale(channel)) {
+            if (isSprintSale(channel) || isSprintSaleLego(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
                 countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
@@ -103,7 +103,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSprintSale(channel)) {
+                if (isSprintSale(channel) || isSprintSaleLego(channel)) {
                     HomePageTracking.eventClickSeeAllProductSprint();
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
@@ -115,7 +115,6 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private static boolean isSprintSale(DynamicHomeChannel.Channels channel) {
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())
-                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.equals(channel.getLayout())
                 || DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(channel.getLayout());
     }
 
