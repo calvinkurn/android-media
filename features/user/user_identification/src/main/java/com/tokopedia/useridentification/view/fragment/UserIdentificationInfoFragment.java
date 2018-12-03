@@ -22,6 +22,7 @@ import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
@@ -46,6 +47,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     private View mainView;
     private TextView button;
     private boolean isSourceSeller;
+    private UserIdentificationAnalytics analytics;
 
     @Inject
     UserIdentificationInfo.Presenter presenter;
@@ -75,6 +77,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (isSourceSeller) {
             goToFormActivity();
         }
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
     }
 
     @Override
@@ -149,7 +152,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setTextColor(getResources().getColor(R.color.white));
         button.setBackgroundResource(R.drawable.green_button_rounded);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(onGoToFormActivityButton());
+        button.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED));
+        analytics.eventViewOnKYCOnBoarding();
     }
 
     private void showStatusVerified() {
@@ -161,6 +165,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setBackgroundResource(R.drawable.white_button_rounded);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(onGoToTermsButton());
+        analytics.eventViewSuccessPage();
     }
 
     private void showStatusPending() {
@@ -168,6 +173,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setVisibility(View.GONE);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
+        analytics.eventViewPendingPage();
     }
 
     private void showStatusRejected() {
@@ -178,7 +184,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         button.setTextColor(getResources().getColor(R.color.white));
         button.setBackgroundResource(R.drawable.green_button_rounded);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(onGoToFormActivityButton());
+        button.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_REJECTED));
+        analytics.eventViewRejectedPage();
     }
 
     @Override
@@ -186,8 +193,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (getContext() != null) {
             hideLoading();
             String error = ErrorHandler.getErrorMessage(getContext(), errorMessage);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
-                    ());
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
 
@@ -197,8 +203,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             hideLoading();
             String error = String.format("%s (%s)", getContext().getString(R.string
                     .default_request_error_unknown), errorCode);
-            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, () -> presenter.getStatus
-                    ());
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
         }
     }
 
@@ -219,10 +224,20 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return this;
     }
 
-    private View.OnClickListener onGoToFormActivityButton() {
+    private View.OnClickListener onGoToFormActivityButton(int status) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                switch (status) {
+                    case KYCConstant.STATUS_NOT_VERIFIED:
+                        analytics.eventClickOnNextOnBoarding();
+                        break;
+                    case KYCConstant.STATUS_REJECTED:
+                        analytics.eventClickNextRejectedPage();
+                        break;
+                    default:
+                        break;
+                }
                 goToFormActivity();
             }
         };
@@ -246,7 +261,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteManager.route(getContext(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
         };
     }
