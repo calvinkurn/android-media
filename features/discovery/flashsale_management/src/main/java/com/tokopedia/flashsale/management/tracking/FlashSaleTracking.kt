@@ -36,7 +36,7 @@ class FlashSaleTracking(protected val router: AbstractionRouter) {
 
     fun sendFlashSaleEvent(action: String, label: String, shopId: String? = null) {
         val eventMap = createFlashSaleMap(action, label, shopId)
-        router.getAnalyticTracker().sendEventTracking(eventMap)
+        router.analyticTracker.sendEventTracking(eventMap)
     }
 
     fun createFlashSaleMap(action: String, label: String, shopId: String? = null): MutableMap<String, Any> {
