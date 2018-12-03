@@ -7,32 +7,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -61,6 +60,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.constant.ConstantKey;
+import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
@@ -75,7 +75,6 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
-import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -101,6 +100,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
 
+    public static final long ONE_SECOND = 1000l;
     @Inject
     HomePresenter presenter;
 
@@ -114,7 +114,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SwipeRefreshLayout refreshLayout;
     private HomeRecycleAdapter adapter;
     private RemoteConfig firebaseRemoteConfig;
-    private Trace trace;
+    private PerformanceMonitoring performanceMonitoring;
     private SnackbarRetry messageSnackbar;
     private String[] tabSectionTitle;
     private EndlessRecyclerViewScrollListener feedLoadMoreTriggerListener;
@@ -125,6 +125,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private RecyclerView.OnScrollListener onEggScrollListener;
 
     private MainToolbar mainToolbar;
+
+    private long serverTimeOffset = 0;
 
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
@@ -145,7 +147,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trace = TrackingUtils.startTrace(BERANDA_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
     }
 
     @Override
@@ -465,11 +467,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void actionAppLinkWalletHeader(String appLinkBalance, String redirectUrlBalance) {
+    public void actionAppLinkWalletHeader(String appLinkBalance) {
         if ((getActivity()).getApplication() instanceof IHomeRouter) {
             ((IHomeRouter) (getActivity()).getApplication())
                     .goToTokoCash(appLinkBalance,
-                            redirectUrlBalance,
                             getActivity());
         }
     }
@@ -495,14 +496,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     if (getActivity() != null) {
                         if ((getActivity()).getApplication() instanceof IHomeRouter) {
                             ((IHomeRouter) (getActivity()).getApplication())
-                                    .goToWalletFromHome(getActivity(), url);
+                                    .goToWallet(getActivity(), url);
                         }
                     }
                 } else {
                     if ((getActivity()).getApplication() instanceof IHomeRouter) {
                         ((IHomeRouter) (getActivity()).getApplication())
                                 .goToTokoCash(appLink,
-                                        "",
                                         getActivity());
                     }
                 }
@@ -640,14 +640,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void hideLoading() {
         refreshLayout.setRefreshing(false);
-        if (trace != null && !isTraceStopped) {
-            trace.stop();
+        if (performanceMonitoring != null && !isTraceStopped) {
+            performanceMonitoring.stopTrace();
             isTraceStopped = true;
         }
     }
 
     @Override
     public void setItems(List<Visitable> items) {
+        this.serverTimeOffset = 0;
+
         if (items.get(0) instanceof HeaderViewModel) {
             HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
             updateHeaderItem(dataHeader);
@@ -660,6 +662,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateListOnResume(List<Visitable> visitables) {
+        this.serverTimeOffset = 0;
+
         adapter.updateItems(visitables);
     }
 
@@ -1064,9 +1068,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onServerTimeReceived(long serverTimeUnix) {
+        if(serverTimeOffset == 0){
+            long serverTimemillis = serverTimeUnix * ONE_SECOND;
+            this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
+        }
+    }
+
+    @Override
+    public long getServerTimeOffset() {
+        return this.serverTimeOffset;
+    }
+
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         setUserVisibleHint(!hidden);
     }
-
 }

@@ -23,7 +23,6 @@ import android.view.MotionEvent;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
-import com.google.firebase.perf.metrics.Trace;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -34,6 +33,7 @@ import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.affiliate.AffiliateRouter;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -530,7 +530,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private CacheManager cacheManager;
     private UserSession userSession;
-    private Trace feedTrace;
 
     @Override
     public void onCreate() {
@@ -905,19 +904,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToWalletFromHome(Context context, String url) {
-        String seamlessUrl;
-        seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
-                context);
-
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletActivity.EXTRA_URL, seamlessUrl);
-        Intent intent = new Intent(context, WalletActivity.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
@@ -1194,11 +1180,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
-    }
-
-    @Override
-    public Intent getReferralIntent(Context context) {
-        return ReferralActivity.getCallingIntent(context);
     }
 
     @Override
@@ -1883,15 +1864,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome() {
         com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
         params.putString(GetTokopointUseCase.KEY_PARAM,
-                CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
+                GraphqlHelper.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
         return this.tokopointComponent.getTokopointUseCase().createObservable(params)
                 .map(new Func1<TokoPointDrawerData, TokopointHomeDrawerData>() {
                     @Override
                     public TokopointHomeDrawerData call(TokoPointDrawerData tokoPointDrawerData) {
                         UserTier userTier = new UserTier(
+                                tokoPointDrawerData.getUserTier().getTierNameDesc(),
                                 tokoPointDrawerData.getUserTier().getTierImageUrl(),
-                                tokoPointDrawerData.getUserTier().getRewardPointsStr(),
-                                tokoPointDrawerData.getUserTier().getTierNameDesc()
+                                tokoPointDrawerData.getUserTier().getRewardPointsStr()
                         );
 
                         return new TokopointHomeDrawerData(
@@ -2920,7 +2901,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToTokoCash(String appLinkBalance, String redirectUrl, Activity activity) {
+    public void goToTokoCash(String appLinkBalance, Activity activity) {
         WalletRouterUtil.navigateWallet(
                 activity.getApplication(),
                 activity,
@@ -3003,6 +2984,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
         return remoteConfig.getBoolean(key, defaultValue);
+    }
+
+    @Override
+    public void sendOpenHomeEvent() {
+        TrackingUtils.sendMoEngageOpenHomeEvent();
+    }
+
+    @Override
+    public void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
+        TrackingUtils.sendMoEngageOpenFeedEvent(isEmptyFeed);
     }
 
     @Override
@@ -3104,12 +3095,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logisticUploadRouterActionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
         actionNavigateByApplinksUrl(activity, applinks, bundle);
-    }
-
-    @Override
-    public String getResultSelectionPath(Intent data) {
-        MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-        return item.getRealPath();
     }
 
     public void onShowRationale(Context context, PermissionRequest request, String permission) {
@@ -3232,20 +3217,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
         return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
-    }
-
-    @Override
-    public void startTrace(String traceName) {
-        if (traceName.equals("feed_trace")) {
-            this.feedTrace = TrackingUtils.startTrace(traceName);
-        }
-    }
-
-    @Override
-    public void stopTrace(String traceName) {
-        if (traceName.equals("feed_trace") && feedTrace != null) {
-            feedTrace.stop();
-        }
     }
 
     @Override

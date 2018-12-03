@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewH
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SixGridChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsDynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
@@ -107,7 +108,9 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     @Override
     public int type(DynamicChannelViewModel dynamicChannelViewModel) {
         if (DynamicHomeChannel.Channels.LAYOUT_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())
-                || DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(dynamicChannelViewModel.getChannel().getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.equals(dynamicChannelViewModel.getChannel().getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_ORGANIC.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return DynamicChannelSprintViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_HERO.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return DynamicChannelHeroViewHolder.LAYOUT;
@@ -115,6 +118,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return SixGridChannelViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SprintSaleCarouselViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_TOPADS.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return TopAdsDynamicChannelViewHolder.LAYOUT;
         } else {
             return EmptyBlankViewHolder.LAYOUT;
         }
@@ -149,10 +154,12 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new DynamicChannelSprintViewHolder(view, listener, countDownListener);
         else if (type == TopAdsViewHolder.LAYOUT)
             viewHolder = new TopAdsViewHolder(view);
+        else if (type == TopAdsDynamicChannelViewHolder.LAYOUT)
+            viewHolder = new TopAdsDynamicChannelViewHolder(view, feedListener);
         else if (type == SprintSaleCarouselViewHolder.LAYOUT)
             viewHolder = new SprintSaleCarouselViewHolder(view, listener, countDownListener);
         else if (type == SixGridChannelViewHolder.LAYOUT)
-            viewHolder = new SixGridChannelViewHolder(view, listener);
+            viewHolder = new SixGridChannelViewHolder(view, listener, countDownListener);
         else if (type == EmptyBlankViewHolder.LAYOUT)
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)

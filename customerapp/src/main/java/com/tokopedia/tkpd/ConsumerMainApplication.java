@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
@@ -24,7 +23,6 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
-import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.analytics.Analytics;
@@ -44,13 +42,13 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.flight_dbflow.TkpdFlight;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
+import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
-import com.tokopedia.groupchat.common.data.SendbirdKey;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
@@ -97,6 +95,7 @@ import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
+import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.vote.data.VoteUrl;
 
 import java.io.ByteArrayInputStream;
@@ -154,7 +153,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         initCacheApi();
-        initSendbird();
         createCustomSoundNotificationChannel();
         Hansel.init(this);
         PushManager.getInstance().setMessageListener(new CustomPushListener());
@@ -188,10 +186,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             e.printStackTrace();
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
-    }
-
-    private void initSendbird() {
-        SendBird.init(SendbirdKey.APP_ID, this);
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -307,6 +301,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
         TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
+        KycUrl.BASE_URL = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
+        DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
     }
 
 
@@ -314,7 +310,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
         WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
-        SendbirdKey.APP_ID = ConsumerAppNetworkKeys.SENDBIRD_APP_ID;
 
     }
 

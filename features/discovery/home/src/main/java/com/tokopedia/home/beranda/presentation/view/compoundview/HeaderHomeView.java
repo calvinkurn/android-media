@@ -369,8 +369,7 @@ public class HeaderHomeView extends BaseCustomView {
                     HomePageTracking.eventTokoCashActivateClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton(),""
-                );
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton());
             }
         };
     }
@@ -407,8 +406,7 @@ public class HeaderHomeView extends BaseCustomView {
                     HomePageTracking.eventTokoCashCheckSaldoClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance(), ""
-                );
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance());
             }
         };
     }

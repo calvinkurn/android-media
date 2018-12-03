@@ -45,7 +45,6 @@ public class RecentViewFragment extends BaseDaggerFragment
 
     private RecyclerView recyclerView;
     private RecentViewDetailAdapter adapter;
-//    private TkpdProgressDialog progressDialog;
     private LinearLayoutManager layoutManager;
 
     @Inject
@@ -150,11 +149,7 @@ public class RecentViewFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-//        if (progressDialog == null)
-//            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-//
-//        if (getActivity() != null)
-//            progressDialog.showDialog();
+
     }
 
     @Override
@@ -264,7 +259,6 @@ public class RecentViewFragment extends BaseDaggerFragment
 
     @Override
     public void dismissLoadingProgress() {
-//        if (progressDialog != null && progressDialog.isProgress())
-//            progressDialog.dismiss();
+
     }
 }

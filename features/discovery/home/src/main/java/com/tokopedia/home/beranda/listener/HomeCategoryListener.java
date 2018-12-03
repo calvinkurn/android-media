@@ -21,7 +21,7 @@ public interface HomeCategoryListener {
 
     void openShop();
 
-    void actionAppLinkWalletHeader(String appLinkBalance, String redirectUrl);
+    void actionAppLinkWalletHeader(String appLinkBalance);
 
     void onRequestPendingCashBack();
 
@@ -42,6 +42,10 @@ public interface HomeCategoryListener {
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
 
     void onPromoAllClick();
+
+    void onServerTimeReceived(long serverTimeUnix);
+
+    long getServerTimeOffset();
 
     boolean isHomeFragment();
 }

@@ -242,6 +242,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
         } else if (getIntent().getExtras() != null) {
@@ -1046,14 +1047,15 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void updateVoteViewModel(VoteInfoViewModel voteInfoViewModel, String voteType) {
         if (viewModel != null
                 && viewModel.getChannelInfoViewModel() != null
-                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null) {
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel() != null
+                && viewModel.getChannelInfoViewModel().getVoteInfoViewModel().getListOption() !=
+                null) {
             if (voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FINISH
                     || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_FINISH
                     || voteType.equals(VoteAnnouncementViewModel.POLLING_UPDATE)) {
                 boolean isVoted = viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
                         .isVoted();
-                List<Visitable> tempListOption = new ArrayList<>();
-                tempListOption.addAll(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
+                List<Visitable> tempListOption = new ArrayList<>(viewModel.getChannelInfoViewModel().getVoteInfoViewModel()
                         .getListOption());
                 for (int i = 0; i < voteInfoViewModel.getListOption().size(); i++) {
                     if (voteInfoViewModel.getListOption().get(i) instanceof VoteViewModel) {
@@ -1963,7 +1965,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (currentFragmentIsChat()) {
             showPushNotif(model);
         } else {
-            if(viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+            if (viewModel != null && viewModel.getChannelInfoViewModel() != null) {
                 viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
             }
         }

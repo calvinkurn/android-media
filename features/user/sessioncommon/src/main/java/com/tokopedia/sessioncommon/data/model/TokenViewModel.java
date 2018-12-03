@@ -20,11 +20,11 @@ public class TokenViewModel {
 
     @SerializedName("access_token")
     @Expose
-    private String accessToken;
+    private String accessToken = "";
 
     @SerializedName("token_type")
     @Expose
-    private String tokenType;
+    private String tokenType = "";
 
     @SerializedName("expires_in")
     @Expose
@@ -32,11 +32,11 @@ public class TokenViewModel {
 
     @SerializedName("refresh_token")
     @Expose
-    private String refreshToken;
+    private String refreshToken = "";
 
     @SerializedName("scope")
     @Expose
-    private String scope;
+    private String scope = "";
 
     public String getAccessToken() {
         return accessToken;

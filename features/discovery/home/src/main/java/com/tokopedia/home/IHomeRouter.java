@@ -38,7 +38,7 @@ public interface IHomeRouter {
 
     void goToApplinkActivity(Context context, String applink);
 
-    void goToWalletFromHome(Context context, String url);
+    void goToWallet(Context context, String url);
 
     void goToProductDetail(Context context,
                            String productId,
@@ -48,7 +48,7 @@ public interface IHomeRouter {
 
     void goToProductDetail(Context context, String productUrl);
 
-    void goToTokoCash(String appLinkBalance, String redirectUrl, Activity activity);
+    void goToTokoCash(String appLinkBalance, Activity activity);
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 

@@ -43,7 +43,8 @@
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".searchV2.presentation.activity.FlightSearchV2FilterActivity"
+        <activity
+            android:name=".searchV2.presentation.activity.FlightSearchV2FilterActivity"
             android:label="@string/filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -154,9 +155,18 @@
             android:label="@string/flight_cancellation_list_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
+        <activity android:name=".cancellation.view.activity.FlightCancellationChooseReasonActivity"
+            android:label="@string/flight_cancellation_reason_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightInsuranceWebviewActivity"
             android:label="@string/flight_insurance_webview_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".detail.view.activity.FlightInvoiceActivity"
+            android:label="@string/flight_order_invoice_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
 
@@ -167,7 +177,6 @@
             android:name=".airport.service.GetAirportListJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>
