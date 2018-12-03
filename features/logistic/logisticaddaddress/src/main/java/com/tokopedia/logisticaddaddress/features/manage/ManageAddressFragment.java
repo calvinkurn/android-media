@@ -135,11 +135,10 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK) {
-            loadInitialData();
-        } else {
-            showErrorSnackbar(null);
+        if(requestCode == REQUEST_CODE_PARAM_CREATE || requestCode == REQUEST_CODE_PARAM_EDIT) {
+            if(resultCode == Activity.RESULT_OK) {
+                loadInitialData();
+            }
         }
     }
 
