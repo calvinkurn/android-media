@@ -173,6 +173,7 @@ public class MainParentActivity extends BaseActivity implements
             presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         createView(savedInstanceState);
+        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
     }
 
     @Override

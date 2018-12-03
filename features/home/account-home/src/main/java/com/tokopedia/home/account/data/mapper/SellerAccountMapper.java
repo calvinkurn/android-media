@@ -21,8 +21,6 @@ import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
-import com.tokopedia.navigation_common.model.NotificationResolutionModel;
-import com.tokopedia.navigation_common.model.NotificationSellerOrderModel;
 import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
@@ -243,6 +241,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
             shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
         }
+
+        setKycToModel(shopCard, accountModel);
 
         return shopCard;
     }

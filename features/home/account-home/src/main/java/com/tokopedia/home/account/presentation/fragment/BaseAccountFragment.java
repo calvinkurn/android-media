@@ -269,6 +269,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onKycLinkClicked(int verificationStatus) {
         if (getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter) {
+            accountAnalytics.eventClickKYCSellerAccountPage(verificationStatus);
             ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
             applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
         }

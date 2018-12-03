@@ -135,7 +135,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private String getTotalPurchaseProtectionItemLabel(Context context, int totalItem) {
-        return String.format(context.getString(R.string.label_item_count_summary_with_format), totalItem);
+        return String.format(context.getString(R.string.label_item_count_purchase_protection), totalItem);
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, double price) {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
 
 import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
@@ -33,5 +34,10 @@ public class CheckoutWebViewActivity extends BaseWebViewActivity {
     protected Fragment getNewFragment() {
         mUrl = getIntent().getStringExtra(EXTRA_URL);
         return BaseSessionWebViewFragment.newInstance(mUrl);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 }
