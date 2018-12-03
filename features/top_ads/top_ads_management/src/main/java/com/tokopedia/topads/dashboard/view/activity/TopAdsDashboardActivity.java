@@ -116,6 +116,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         if (intent != null && intent.hasExtra(Constants.EXTRA_FROM_PUSH)) {
             if (intent.getBooleanExtra(Constants.EXTRA_FROM_PUSH, false)) {
                 UnifyTracking.eventOpenTopadsPushNotification(
+                        this,
                         getIntent().getStringExtra(UnifyTracking.EXTRA_LABEL)
                 );
             }

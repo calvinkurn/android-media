@@ -38,7 +38,7 @@ public class AttachInvoiceModule {
                                      @InboxQualifier OkHttpRetryPolicy retryPolicy) {
 
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new FingerprintInterceptor(context))
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)

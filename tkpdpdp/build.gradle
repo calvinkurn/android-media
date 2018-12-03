@@ -103,6 +103,7 @@ dependencies {
     }
 
     implementation project(rootProject.ext.features.gallery)
+    implementation project(":libraries:core_legacy")
 }
 
 apply from: '../publish_local.gradle'

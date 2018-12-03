@@ -173,7 +173,7 @@ public class TopPayIntentService extends IntentService {
             params.put(checkoutData.getKeroKeyParams().get(i),
                     checkoutData.getKeroValueParams().get(i));
         }
-        params.put(GTMContainer.CLIENT_ID, TrackingUtils.getClientID());
+        params.put(GTMContainer.CLIENT_ID, TrackingUtils.getClientID(getApplication()));
 
         if (checkoutData.getVoucherCode() != null) {
             params.put("voucher_code", checkoutData.getVoucherCode());

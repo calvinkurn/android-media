@@ -411,7 +411,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void onSummaryKeywordClicked() {
-        UnifyTracking.eventTopAdsProductClickKeywordDashboard();
+        UnifyTracking.eventTopAdsProductClickKeywordDashboard(getActivity());
         Intent intent = new Intent(getActivity(), TopAdsKeywordAdListActivity.class);
         if (totalGroupAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, totalGroupAd);
@@ -420,13 +420,13 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void onSummaryProductClicked() {
-        UnifyTracking.eventTopAdsProductClickProductDashboard();
+        UnifyTracking.eventTopAdsProductClickProductDashboard(getActivity());
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     private void onSummaryGroupClicked() {
-        UnifyTracking.eventTopAdsProductClickGroupDashboard();
+        UnifyTracking.eventTopAdsProductClickGroupDashboard(getActivity());
         Intent intent = new Intent(getActivity(), TopAdsGroupAdListActivity.class);
         if (totalProductAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd);
@@ -527,7 +527,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     void goToAddCredit() {
-        UnifyTracking.eventTopAdsProductAddBalance();
+        UnifyTracking.eventTopAdsProductAddBalance(getActivity());
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
         startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT);
     }
@@ -604,23 +604,23 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void trackingDateTopAds(int lastSelection, int selectionType) {
         if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
-            UnifyTracking.eventTopAdsShopChooseDateCustom();
+            UnifyTracking.eventTopAdsShopChooseDateCustom(getActivity());
         }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
             switch (lastSelection){
                 case 0:
-                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    UnifyTracking.eventTopAdsShopDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
                     break;
                 case 1:
-                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    UnifyTracking.eventTopAdsShopDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
                     break;
                 case 2:
-                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    UnifyTracking.eventTopAdsShopDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
                     break;
                 case 3:
-                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    UnifyTracking.eventTopAdsShopDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
                     break;
                 case 4:
-                    UnifyTracking.eventTopAdsShopDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    UnifyTracking.eventTopAdsShopDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
                     break;
                 default:
                     break;
@@ -789,10 +789,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onCostSelected(){
         switch (selectedStatisticType){
             case TopAdsStatisticsType.PRODUCT_ADS:
-                UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CPC);
+                UnifyTracking.eventTopAdsProductStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CPC);
                 break;
             case TopAdsStatisticsType.SHOP_ADS:
-                UnifyTracking.eventTopAdsShopStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CPC);
+                UnifyTracking.eventTopAdsShopStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CPC);
                 break;
             default:
                 break;
@@ -802,10 +802,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onAverageConversionSelected(){
         switch (selectedStatisticType){
             case TopAdsStatisticsType.PRODUCT_ADS:
-                UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_AVERAGE_CONVERSION);
+                UnifyTracking.eventTopAdsProductStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_AVERAGE_CONVERSION);
                 break;
             case TopAdsStatisticsType.SHOP_ADS:
-                UnifyTracking.eventTopAdsShopStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_AVERAGE_CONVERSION);
+                UnifyTracking.eventTopAdsShopStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_AVERAGE_CONVERSION);
                 break;
             default:
                 break;
@@ -815,10 +815,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onConversionSelected(){
         switch (selectedStatisticType){
             case TopAdsStatisticsType.PRODUCT_ADS:
-                UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CONVERSION);
+                UnifyTracking.eventTopAdsProductStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CONVERSION);
                 break;
             case TopAdsStatisticsType.SHOP_ADS:
-                UnifyTracking.eventTopAdsShopStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CONVERSION);
+                UnifyTracking.eventTopAdsShopStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CONVERSION);
                 break;
             default:
                 break;
@@ -828,10 +828,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onCtrSelected(){
         switch (selectedStatisticType){
             case TopAdsStatisticsType.PRODUCT_ADS:
-                UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CTR);
+                UnifyTracking.eventTopAdsProductStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CTR);
                 break;
             case TopAdsStatisticsType.SHOP_ADS:
-                UnifyTracking.eventTopAdsShopStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CTR);
+                UnifyTracking.eventTopAdsShopStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CTR);
                 break;
             default:
                 break;
@@ -841,10 +841,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onClickSelected(){
         switch (selectedStatisticType){
             case TopAdsStatisticsType.PRODUCT_ADS:
-                UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CLICK);
+                UnifyTracking.eventTopAdsProductStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CLICK);
                 break;
             case TopAdsStatisticsType.SHOP_ADS:
-                UnifyTracking.eventTopAdsShopStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_CLICK);
+                UnifyTracking.eventTopAdsShopStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_CLICK);
                 break;
             default:
                 break;
@@ -854,10 +854,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void onImpressionSelected(){
         switch (selectedStatisticType){
             case TopAdsStatisticsType.PRODUCT_ADS:
-                UnifyTracking.eventTopAdsProductStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_IMPRESSION);
+                UnifyTracking.eventTopAdsProductStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_IMPRESSION);
                 break;
             case TopAdsStatisticsType.SHOP_ADS:
-                UnifyTracking.eventTopAdsShopStatisticBar(AppEventTracking.EventLabel.STATISTIC_OPTION_IMPRESSION);
+                UnifyTracking.eventTopAdsShopStatisticBar(getActivity(),AppEventTracking.EventLabel.STATISTIC_OPTION_IMPRESSION);
                 break;
             default:
                 break;

@@ -230,7 +230,7 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                 if(itemId != selectedCurrencyType){
                     if (!isGoldMerchant && itemId == CurrencyTypeDef.TYPE_USD) {
                         if (GlobalConfig.isSellerApp()) {
-                            UnifyTracking.eventSwitchRpToDollarAddProduct()
+                            UnifyTracking.eventSwitchRpToDollarAddProduct(activity)
                             showDialogGoToGM()
                         } else {
                             Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
@@ -362,12 +362,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun isDataValid(): Boolean{
         if(!isPriceValid()){
             spinnerCounterInputViewPrice.requestFocus()
-            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
+            UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
             return false
         }
         if(!isMinOrderValid()){
             editTextMinOrder.requestFocus()
-            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
+            UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
             return false
         }
         return true

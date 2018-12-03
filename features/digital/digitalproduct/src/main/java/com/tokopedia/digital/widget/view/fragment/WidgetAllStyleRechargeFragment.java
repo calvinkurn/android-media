@@ -193,7 +193,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
-        UnifyTracking.eventClickBuyOnWidget(categoryDataState.getName(), isInstantCheckoutChecked ? INSTANT : NO_INSTANT);
+        UnifyTracking.eventClickBuyOnWidget(getActivity(),categoryDataState.getName(), isInstantCheckoutChecked ? INSTANT : NO_INSTANT);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -258,7 +258,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
-        UnifyTracking.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
+        UnifyTracking.eventSelectNumberOnUserProfileWidget(getActivity(),categoryDataState.getName());
 
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
@@ -488,20 +488,20 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
-        UnifyTracking.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
+        UnifyTracking.eventSelectNumberOnUserProfileWidget(getActivity(),categoryDataState.getName());
 
         handleCallbackSearchNumber(orderClientNumber);
     }
 
     @Override
     public void onOperatorSelected(String categoryName, String operatorName) {
-        UnifyTracking.eventSelectOperatorOnWidget(categoryName,
+        UnifyTracking.eventSelectOperatorOnWidget(getActivity(),categoryName,
                 operatorName);
     }
 
     @Override
     public void onProductSelected(String categoryName, String productDesc) {
-        UnifyTracking.eventSelectProductOnWidget(categoryName,
+        UnifyTracking.eventSelectProductOnWidget(getActivity(),categoryName,
                 productDesc);
     }
 

@@ -178,7 +178,7 @@ public class TopAdsOldKeywordListFragment extends TopAdsAdListFragment<TopAdsOld
 
     @Override
     public void onCreateAd() {
-        UnifyTracking.eventTopAdsProductNewPromoKeywordPositif();
+        UnifyTracking.eventTopAdsProductNewPromoKeywordPositif(getActivity());
         topAdsKeywordListPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_KEYWORD_POSITIVE);
         TopAdsKeywordOldNewChooseGroupActivity.start(this, getActivity(), REQUEST_CODE_AD_ADD, isPositive());
     }

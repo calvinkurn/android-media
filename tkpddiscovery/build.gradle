@@ -28,6 +28,8 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(":libraries:core_legacy")
+
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.productDetail)

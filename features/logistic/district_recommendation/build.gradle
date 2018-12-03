@@ -63,6 +63,7 @@ dependencies {
     compile(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+    implementation project(":libraries:core_legacy")
 }
 
 apply from: '../../../publish_local.gradle'
