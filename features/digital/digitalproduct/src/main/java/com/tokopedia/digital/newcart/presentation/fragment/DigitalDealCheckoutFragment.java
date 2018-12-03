@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -416,9 +417,9 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void showPromoOnlyForTopUpAndBillMessage() {
-        NetworkErrorHelper.showGreenCloseSnackbar(
+        ToasterNormal.show(
                 getActivity(),
-                new SpannableString(MethodChecker.fromHtml(getString(R.string.digital_deal_promo_restriction_message))),
+                getString(R.string.digital_deal_promo_restriction_message),
                 getString(R.string.digital_deal_promo_restriction_action_label)
         );
     }

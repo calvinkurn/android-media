@@ -304,11 +304,11 @@ public abstract class MainApplication extends BaseMainApplication {
     }
 
     protected void initializeAnalytics() {
-//        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
-//        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-//        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
-//        TrackingUtils.setMoEngageExistingUser();
-//        TrackingUtils.enableDebugging(isDebug());
+        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
+        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
+        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
+        TrackingUtils.setMoEngageExistingUser();
+        TrackingUtils.enableDebugging(isDebug());
     }
 
     public void initCrashlytics() {
