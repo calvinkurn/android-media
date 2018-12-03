@@ -21,6 +21,8 @@ public class CatalogFilterPointRange {
     @SerializedName("text")
     private String text;
 
+    private boolean isSelected=false;
+
     public int getId() {
         return id;
     }
@@ -67,6 +69,14 @@ public class CatalogFilterPointRange {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     @Override

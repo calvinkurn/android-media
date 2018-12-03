@@ -137,7 +137,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_up);
+                    R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
             bottomViewMembership.setVisibility(View.VISIBLE);
         }
@@ -149,7 +149,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_large));
             Animation slideDown = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_down);
+                    R.anim.tp_bottom_down);
             bottomViewMembership.startAnimation(slideDown);
             bottomViewMembership.setVisibility(View.GONE);
         }

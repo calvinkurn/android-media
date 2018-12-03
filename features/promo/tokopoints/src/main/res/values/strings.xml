@@ -63,5 +63,6 @@
     <string name="tp_label_barcode">Barcode</string>
     <string name="tp_label_qrcode">QR Code</string>
     <string name="tp_label_see_point_saya">Points Saya</string>
+    <string name="filters_save">Simpan</string>
 
 </resources>
