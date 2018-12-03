@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -131,7 +132,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_flight_order_success, popup.getMenu());
         // TODO this comment will be use in next release iteration
-        /*popup.setOnMenuItemClickListener(new OnMenuPopupClicked() {
+        popup.setOnMenuItemClickListener(new OnMenuPopupClicked() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_cancel) {
@@ -140,7 +141,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
                 }
                 return super.onMenuItemClick(item);
             }
-        });*/
+        });
 
         popup.show();
     }
