@@ -57,7 +57,7 @@ public interface SaldoDetailContract {
 
         void showWithdrawalNoPassword();
 
-        void setBalance(String summaryUseableDepositIdr);
+        void setBalance(String summaryUsableDepositIdr);
 
         void showHoldWarning(String warningText);
 

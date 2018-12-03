@@ -26,8 +26,6 @@ public class SaldoDetailTransactionFactory extends BaseAdapterTypeFactory {
         AbstractViewHolder viewHolder;
         if (type == SaldoTransactionViewHolder.LAYOUT) {
             return new SaldoTransactionViewHolder(parent, listener);
-        } else if (type == EmptyViewHolder.LAYOUT) {
-            viewHolder = new EmptyViewHolder(parent);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }
@@ -36,10 +34,5 @@ public class SaldoDetailTransactionFactory extends BaseAdapterTypeFactory {
 
     public int type(DepositHistoryList vm) {
         return SaldoTransactionViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(EmptyModel viewModel) {
-        return EmptyViewHolder.LAYOUT;
     }
 }

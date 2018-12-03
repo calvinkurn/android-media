@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -66,7 +67,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     SaldoDepositAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     Snackbar snackbar;
-    RelativeLayout tickerMessageRL;
+    LinearLayout tickerMessageRL;
     TextView tickeRMessageTV;
     ImageView tickerMessageCloseButton;
 
@@ -359,8 +360,8 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     }
 
     @Override
-    public void setBalance(String summaryUseableDepositIdr) {
-        totalBalance.setText(summaryUseableDepositIdr);
+    public void setBalance(String summaryUsebleDepositIdr) {
+        totalBalance.setText(summaryUsebleDepositIdr);
     }
 
 

@@ -53,7 +53,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     private static final long SEC_TO_DAY_CONVERSION = 24 * 60 * 60 * 1000;
     private static final long MAX_DAYS_DIFFERENCE = 31;
-    private static final java.lang.String DATE_FORMAT_VIEW = "dd/MM/yyyy";
+    private static final java.lang.String DATE_FORMAT_VIEW = "dd MMM yyyy";
     public static final int REQUEST_WITHDRAW_CODE = 1;
     private String paramStartDate;
     private String paramEndDate;
@@ -146,24 +146,51 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void onEndDateClicked(SaldoDatePickerUtil datePicker) {
-        String date = getView().getEndDate();
+        String date = dateFormatter(getView().getEndDate());
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
         datePicker.DatePickerCalendar((year, month, day) -> {
-            getView().setEndDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
+            String selectedDate = getDate(year, month, day);
+            getView().setEndDate(selectedDate);
             new android.os.Handler().postDelayed(this::onSearchClicked, 500);
         });
 
     }
 
+    private String getDate(int year, int month, int day) {
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_VIEW);
+        Date date = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.MONTH, month - 1);
+        return dateFormat.format(cal.getTime());
+    }
+
     @Override
     public void onStartDateClicked(SaldoDatePickerUtil datePicker) {
-        String date = getView().getStartDate();
+        String date = dateFormatter(getView().getStartDate());
         datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date));
         datePicker.DatePickerCalendar((year, month, day) -> {
-            getView().setStartDate(checkNumber(day) + "/" + checkNumber(month) + "/" + checkNumber(year));
+            String selectedDate = getDate(year, month, day);
+            getView().setStartDate(selectedDate);
             new android.os.Handler().postDelayed(this::onSearchClicked, 500);
 
         });
+    }
+
+    private String dateFormatter(String date) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
+        SimpleDateFormat sdf_ws = new SimpleDateFormat("dd/MM/yyyy");
+        Date formattedStart = null;
+        try {
+            formattedStart = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return sdf_ws.format(formattedStart);
+
     }
 
     @Override
