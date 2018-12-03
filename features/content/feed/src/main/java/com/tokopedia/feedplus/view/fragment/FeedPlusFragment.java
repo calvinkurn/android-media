@@ -1369,7 +1369,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void sendMoEngageOpenFeedEvent() {
-        feedModuleRouter.sendMoEngageOpenFeedEvent(hasFeed());
+        feedModuleRouter.sendMoEngageOpenFeedEvent(!hasFeed());
     }
 
     @Override

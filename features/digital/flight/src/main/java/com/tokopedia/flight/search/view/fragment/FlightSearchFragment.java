@@ -31,6 +31,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
@@ -361,7 +362,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 anyLoadToCloud = true;
                 FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                         flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
-                        date, adult, child, infant, classID, flightAirportCombineModel.getAirlines());
+                        date, adult, child, infant, classID, flightAirportCombineModel.getAirlines(),
+                        FlightRequestUtil.getLocalIpAddress());
                 flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel,
                         isReturning(), false, flightFilterModel, selectedSortOption);
             }
@@ -602,7 +604,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     int classID = flightSearchPassDataViewModel.getFlightClass().getId();
                     FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                             flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
-                            date, adult, child, infant, classID, flightAirportCombineModel.getAirlines());
+                            date, adult, child, infant, classID, flightAirportCombineModel.getAirlines(),
+                            FlightRequestUtil.getLocalIpAddress());
                     flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel, isReturning(), flightMetaDataDB.getRefreshTime());
                 }
 
