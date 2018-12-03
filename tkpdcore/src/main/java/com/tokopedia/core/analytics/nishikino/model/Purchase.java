@@ -141,6 +141,10 @@ public class Purchase {
         ActionField.put(SHIPPING_KEY, shipping);
     }
 
+    public void setCouponCode(Object coupon) {
+        ActionField.put(KEY_COUPON, coupon);
+    }
+
     public Object getRevenue() {
        return ActionField.get(REVENUE_KEY);
     }
@@ -176,7 +180,7 @@ public class Purchase {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
             Purchase.put("currencyCode", currency);
-            Purchase.put(KEY_COUPON, coupon);
+//            Purchase.put(KEY_COUPON, coupon);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -187,6 +191,7 @@ public class Purchase {
         setAffiliation(null);
         setRevenue(null);
         setShipping(null);
+        setCouponCode(null);
         setTransactionID(null);
         setVoucherCode(null);
         ListProduct = null;

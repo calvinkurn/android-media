@@ -104,9 +104,10 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
-        purchase.setCoupon(couponCode);
+//        purchase.setCoupon(couponCode);
 
         for (Product product : getProductList(orderData)) {
             purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
