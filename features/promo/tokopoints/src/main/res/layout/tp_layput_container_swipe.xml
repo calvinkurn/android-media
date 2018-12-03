@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical">
 
     <com.tokopedia.tokopoints.view.customview.SwipeCardView
         android:id="@+id/card_swipe"
@@ -14,54 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/text_swipe_note"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/black_38"
-        android:textSize="@dimen/tp_text_size_xsmall"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_swipe" />
-
-    <TextView
-        android:id="@+id/btn_barcode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@null"
-        android:gravity="end"
-        android:text="@string/tp_label_barcode"
-        android:textColor="@color/medium_green"
-        android:textSize="@dimen/tp_text_size_xsmall"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_swipe" />
-
-    <View
-        android:id="@+id/view_code_separator"
-        android:layout_width="@dimen/dp_1"
-        android:layout_height="0dp"
-        android:layout_marginRight="@dimen/dp_10"
-        android:background="@color/white_two"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_barcode"
-        app:layout_constraintRight_toLeftOf="@+id/btn_barcode"
-        app:layout_constraintTop_toTopOf="@+id/btn_barcode" />
-
-    <TextView
-        android:id="@+id/btn_qrcode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_16"
-        android:gravity="end"
-        android:text="@string/tp_label_qrcode"
-        android:textColor="@color/medium_green"
-        android:textSize="@dimen/tp_text_size_xsmall"
-        android:visibility="gone"
-        app:layout_constraintRight_toLeftOf="@+id/view_code_separator"
-        app:layout_constraintTop_toBottomOf="@+id/card_swipe" />
+    <include layout="@layout/tp_layout_swipe_coupon_code" />
 
 </android.support.constraint.ConstraintLayout>

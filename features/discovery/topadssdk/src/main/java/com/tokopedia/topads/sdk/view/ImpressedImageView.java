@@ -65,13 +65,8 @@ public class ImpressedImageView extends AppCompatImageView {
         if (!view.isShown()) {
             return false;
         }
-        Rect screen = new Rect();
-        View container = getRootView().findViewById(R.id.list);
-        if (container == null) {
-            screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
-        } else {
-            container.getDrawingRect(screen);
-        }
+        Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
+
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         float X = location[0];

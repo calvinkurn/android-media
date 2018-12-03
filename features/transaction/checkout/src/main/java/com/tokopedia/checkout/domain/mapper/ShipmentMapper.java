@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipment;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipmentMapping;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
@@ -201,8 +202,12 @@ public class ShipmentMapper implements IShipmentMapper {
 
                                 AnalyticsProductCheckoutData analyticsProductCheckoutData = new AnalyticsProductCheckoutData();
                                 analyticsProductCheckoutData.setProductId(String.valueOf(product.getProductId()));
-                                analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
-                                analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
+
+                                if(product.getProductTrackerData() != null) {
+                                    analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
+                                    analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
+                                }
+
                                 analyticsProductCheckoutData.setProductCategory(product.getProductCategory());
                                 analyticsProductCheckoutData.setProductCategoryId(String.valueOf(product.getProductCatId()));
                                 analyticsProductCheckoutData.setProductName(product.getProductName());
@@ -250,6 +255,25 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                if (!mapperUtil.isEmpty(product.getPurchaseProtectionPlanData())) {
+                                    PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
+                                    com.tokopedia.transactiondata.entity.response.shippingaddressform.PurchaseProtectionPlanData pppDataMapping =
+                                            product.getPurchaseProtectionPlanData();
+
+                                    purchaseProtectionPlanData.setProtectionAvailable(pppDataMapping.getProtectionAvailable());
+                                    purchaseProtectionPlanData.setProtectionLinkText(pppDataMapping.getProtectionLinkText());
+                                    purchaseProtectionPlanData.setProtectionLinkUrl(pppDataMapping.getProtectionLinkUrl());
+                                    purchaseProtectionPlanData.setProtectionOptIn(pppDataMapping.getProtectionOptIn());
+                                    purchaseProtectionPlanData.setProtectionPrice(pppDataMapping.getProtectionPrice());
+                                    purchaseProtectionPlanData.setProtectionPricePerProduct(pppDataMapping.getProtectionPricePerProduct());
+                                    purchaseProtectionPlanData.setProtectionSubtitle(pppDataMapping.getProtectionSubtitle());
+                                    purchaseProtectionPlanData.setProtectionTitle(pppDataMapping.getProtectionTitle());
+                                    purchaseProtectionPlanData.setProtectionTypeId(pppDataMapping.getProtectionTypeId());
+
+                                    productResult.setPurchaseProtectionPlanData(purchaseProtectionPlanData);
+                                }
+
                                 if (!mapperUtil.isEmpty(product.getFreeReturns())) {
                                     productResult.setFreeReturnLogo(product.getFreeReturns().getFreeReturnsLogo());
                                 }

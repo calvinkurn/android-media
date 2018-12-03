@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -635,6 +636,12 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
                 position);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 int position) {
+
     }
 
     @Override
@@ -1699,6 +1706,16 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getFavoritedShopFragment(String userId) {
         return PeopleFavoritedShopFragment.createInstance(userId);
+    }
+
+    @Override
+    public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
+
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.tokopedia.flight.cancellation.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * @author by furqan on 23/03/18.
  */
@@ -15,6 +17,8 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
     private String titleString;
     private String firstName;
     private String lastName;
+    private String relationId;
+    private List<String> relations;
 
     public FlightCancellationPassengerViewModel() {
     }
@@ -26,6 +30,25 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
         titleString = in.readString();
         firstName = in.readString();
         lastName = in.readString();
+        relationId = in.readString();
+        relations = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(passengerId);
+        dest.writeInt(type);
+        dest.writeInt(title);
+        dest.writeString(titleString);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(relationId);
+        dest.writeStringList(relations);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightCancellationPassengerViewModel> CREATOR = new Creator<FlightCancellationPassengerViewModel>() {
@@ -88,19 +111,20 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
         this.lastName = lastName;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getRelationId() {
+        return relationId;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(passengerId);
-        dest.writeInt(type);
-        dest.writeInt(title);
-        dest.writeString(titleString);
-        dest.writeString(firstName);
-        dest.writeString(lastName);
+    public void setRelationId(String relationId) {
+        this.relationId = relationId;
+    }
+
+    public List<String> getRelations() {
+        return relations;
+    }
+
+    public void setRelations(List<String> relations) {
+        this.relations = relations;
     }
 
     @Override
@@ -108,7 +132,8 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
         boolean isEquals = false;
 
         if (obj != null && obj instanceof FlightCancellationPassengerViewModel) {
-            isEquals = this.getPassengerId().equals(((FlightCancellationPassengerViewModel)obj).getPassengerId()) &&
+            isEquals = this.getRelationId().equals(((FlightCancellationPassengerViewModel)obj).getRelationId()) &&
+                    this.getPassengerId().equals(((FlightCancellationPassengerViewModel)obj).getPassengerId()) &&
                     this.getFirstName().equals(((FlightCancellationPassengerViewModel)obj).getFirstName()) &&
                     this.getLastName().equals(((FlightCancellationPassengerViewModel)obj).getLastName());
         }

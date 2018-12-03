@@ -71,6 +71,7 @@ import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -158,6 +159,7 @@ public class OrderDetailActivity extends TActivity
         setInvoiceView(data);
         setBookingCode(data);
         setDescriptionView(data);
+        setProtectionView(data);
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
@@ -361,6 +363,22 @@ public class OrderDetailActivity extends TActivity
         insurancePrice.setText(data.getInsurancePrice());
         additionalFee.setText(data.getAdditionalFee());
         totalPayment.setText(data.getTotalPayment());
+    }
+
+    private void setProtectionView(OrderDetailData data) {
+        View protectionLayout = findViewById(R.id.layout_protection);
+        TextView protectionLabel = findViewById(R.id.protection_label);
+        TextView protectionFee = findViewById(R.id.protection_price);
+
+        if (data.getTotalProtectionItem() == 0 || data.getTotalProtectionFee() == null) {
+            protectionLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        String protectionLabelStr = String.format(Locale.US,
+                getString(R.string.protection_count_label), data.getTotalProtectionItem());
+        protectionLabel.setText(protectionLabelStr);
+        protectionFee.setText(data.getTotalProtectionFee());
     }
 
 
@@ -750,6 +768,11 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void showSnackbar(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void showSnackbarWithCloseButton(String errorMessage) {
+        NetworkErrorHelper.showCloseSnackbar(this, errorMessage);
     }
 
     @Override

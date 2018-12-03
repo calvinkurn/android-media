@@ -23,7 +23,7 @@ import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
+import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
@@ -154,7 +154,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         //Adding request for main query
         Map<String, Object> variablesMain = new HashMap<>();
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, pageNumber);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.HOMEPAGE_PAGE_SIZE);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
@@ -198,7 +198,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             holder.label.setVisibility(View.VISIBLE);
             holder.value.setVisibility(View.VISIBLE);
             holder.imgLabel.setVisibility(View.VISIBLE);
-            holder.value.setText(item.getUsage().getUsageStr());
+            holder.value.setText(item.getUsage().getUsageStr().trim());
             holder.label.setText(item.getUsage().getText());
         } else {
             holder.label.setVisibility(View.GONE);
@@ -226,7 +226,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
-            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+            holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
 
             //TODO need to add transectinal ga
             AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
