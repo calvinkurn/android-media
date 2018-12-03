@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.ValueCallback;
@@ -151,6 +152,37 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     @Override
     protected void setActionVar() {
 
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Uri[] results = null;
+            //Check if response is positive
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == ATTACH_FILE_REQUEST) {
+                    if (null == uploadMessageAfterLolipop) {
+                        return;
+                    }
+
+                    String dataString = intent.getDataString();
+                    if (dataString != null) {
+                        results = new Uri[]{Uri.parse(dataString)};
+
+                    }
+                }
+            }
+            uploadMessageAfterLolipop.onReceiveValue(results);
+            uploadMessageAfterLolipop = null;
+        } else {
+            if (requestCode == ATTACH_FILE_REQUEST) {
+                if (null == uploadMessageBeforeLolipop) return;
+                Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
+                uploadMessageBeforeLolipop.onReceiveValue(result);
+                uploadMessageBeforeLolipop = null;
+            }
+        }
     }
 
     private class MyWebViewClient extends WebChromeClient {
