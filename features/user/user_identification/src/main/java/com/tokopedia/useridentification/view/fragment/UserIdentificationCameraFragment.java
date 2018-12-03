@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +20,9 @@ import android.widget.Toast;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -53,12 +56,14 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private View focusedFaceView;
     private View focusedKtpView;
     private View shutterButton;
-    private ImageButton switchCamera;
+    private View loading;
+    private View switchCamera;
     private ImageView imagePreview;
     private View buttonLayout;
     private View reCaptureButton;
     private View nextButton;
     private String imagePath;
+    private Size mCaptureNativeSize;
 
     private int viewMode;
 
@@ -121,6 +126,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         buttonLayout = view.findViewById(R.id.button_layout);
         reCaptureButton = view.findViewById(R.id.recapture_button);
         nextButton = view.findViewById(R.id.next_button);
+        loading = view.findViewById(R.id.progress_bar);
     }
 
     @Override
@@ -171,7 +177,9 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().setResult(Activity.RESULT_CANCELED);
+                if (getActivity() != null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                }
                 getActivity().finish();
             }
         });
@@ -179,17 +187,18 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isFileSizeQualified(imagePath)) {
-                    Intent intent = new Intent();
-                    intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                } else {
-                    getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
+                if (getActivity() != null) {
+                    if (isFileSizeQualified(imagePath)) {
+                        Intent intent = new Intent();
+                        intent.putExtra(EXTRA_STRING_IMAGE_RESULT, imagePath);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+                    } else {
+                        getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
+                    }
                 }
                 getActivity().finish();
             }
         });
-
         populateViewByViewMode(viewMode);
         showCameraView();
     }
@@ -232,6 +241,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     @NeedsPermission(Manifest.permission.CAMERA)
     public void capturePicture() {
+        hideCameraButtonAndShowLoading();
         cameraView.capturePicture();
     }
 
@@ -241,9 +251,23 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void saveToFile(byte[] imageByte) {
-        File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
-                .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
-        onSuccessImageTakenFromCamera(cameraResultFile);
+        mCaptureNativeSize = cameraView.getPictureSize();
+        try {
+            //rotate the bitmap using the library
+            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize
+                    .getHeight(), new CameraUtils.BitmapCallback() {
+                @Override
+                public void onBitmapReady(Bitmap bitmap) {
+                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils
+                            .DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                    onSuccessImageTakenFromCamera(cameraResultFile);
+                }
+            });
+        } catch (Throwable error) {
+            File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef
+                    .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
+            onSuccessImageTakenFromCamera(cameraResultFile);
+        }
     }
 
     private void saveToFileWithCheck(byte[] imageByte) {
@@ -284,6 +308,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         shutterButton.setVisibility(View.VISIBLE);
         switchCamera.setVisibility(View.VISIBLE);
         startCamera();
+        loading.setVisibility(View.GONE);
         imagePreview.setVisibility(View.GONE);
         buttonLayout.setVisibility(View.GONE);
     }
@@ -292,9 +317,18 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         cameraView.setVisibility(View.GONE);
         shutterButton.setVisibility(View.GONE);
         switchCamera.setVisibility(View.GONE);
+        loading.setVisibility(View.GONE);
         destroyCamera();
         imagePreview.setVisibility(View.VISIBLE);
         buttonLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCameraButtonAndShowLoading() {
+        shutterButton.setVisibility(View.GONE);
+        switchCamera.setVisibility(View.GONE);
+        imagePreview.setVisibility(View.GONE);
+        buttonLayout.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
     }
 
     private void toggleCamera() {

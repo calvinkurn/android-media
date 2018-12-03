@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
@@ -19,6 +20,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
+import com.tokopedia.home.explore.di.ExploreComponent;
+import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
@@ -68,7 +71,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     protected void initInjector() {
-
+        if(getActivity() != null) {
+            ExploreComponent component = DaggerExploreComponent.builder().baseAppComponent(
+                    ((BaseMainApplication) getActivity().getApplication()
+            ).getBaseAppComponent()).build();
+            component.inject(this);
+        }
     }
 
     @Override

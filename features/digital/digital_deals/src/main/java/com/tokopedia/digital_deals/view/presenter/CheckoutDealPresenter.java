@@ -132,19 +132,33 @@ public class CheckoutDealPresenter
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(cart, JsonObject.class);
 
-        if (!(jsonObject.get("error_code")==null))
+        if (!(jsonObject.get("error_code") == null))
             return null;
         for (JsonElement jsonElement : jsonObject.get("cart_items").getAsJsonArray()) {
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                     .getAsJsonObject().addProperty("email", this.email);
-            if (dealDetail.getOutlets().size() > 1) {
+            List<Outlet> outlets = dealDetail.getOutlets();
+            if (outlets != null && outlets.size() != 0) {
+                if (outlets.size() > 1) {
+                    jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                            .getAsJsonObject().addProperty("name",
+                            String.format(getView().getActivity().getResources().getString(R.string.text_available_locations), outlets.size()));
+                } else if (outlets.get(0) != null)
+                    if (!TextUtils.isEmpty(outlets.get(0).getDistrict()))
+                        jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                                .getAsJsonObject().addProperty("name", outlets.get(0).getDistrict());
+                    else
+                        jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                                .getAsJsonObject().addProperty("name", "");
+
+            } else {
                 jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
-                        .getAsJsonObject().addProperty("name",
-                        String.format(getView().getActivity().getResources().getString(R.string.text_available_locations), dealDetail.getOutlets().size()));
-            } else if (dealDetail.getOutlets().get(0) != null)
-                jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
-                        .getAsJsonObject().addProperty("name", dealDetail.getOutlets().get(0).getDistrict());
-            jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", dealDetail.getBrand().getTitle());
+                        .getAsJsonObject().addProperty("name", "");
+            }
+            if (dealDetail.getBrand() != null && !TextUtils.isEmpty(dealDetail.getBrand().getTitle()))
+                jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", dealDetail.getBrand().getTitle());
+            else
+                jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", "");
         }
         jsonObject.addProperty("promocode", promocode);
         jsonObject.addProperty("order_title", dealDetail.getDisplayName());
