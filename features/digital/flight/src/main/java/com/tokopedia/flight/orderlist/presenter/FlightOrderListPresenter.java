@@ -212,7 +212,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
     @Override
     public void onCancelButtonClicked(FlightOrderSuccessViewModel flightOrderSuccessViewModel) {
-        List<FlightCancellationJourney> items = transformOrderToCancellation(flightOrderSuccessViewModel.getOrderJourney());
+        /*List<FlightCancellationJourney> items = transformOrderToCancellation(flightOrderSuccessViewModel.getOrderJourney());
 
         boolean isRefundable = false;
         for (FlightCancellationJourney item : items) {
@@ -223,7 +223,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             getView().showRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items, flightOrderSuccessViewModel.getOrderJourney().getDepartureTime());
         } else {
             getView().showNonRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items, flightOrderSuccessViewModel.getOrderJourney().getDepartureTime());
-        }
+        }*/
     }
 
     @Override
