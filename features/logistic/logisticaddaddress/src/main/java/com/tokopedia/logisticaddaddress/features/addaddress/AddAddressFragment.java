@@ -154,7 +154,11 @@ public class AddAddressFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            setupArguments(getArguments());
+            Bundle arguments = getArguments();
+            this.token = arguments.getParcelable(KERO_TOKEN);
+            this.address = arguments.getParcelable(EDIT_PARAM);
+            this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
+            this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
         }
     }
 
@@ -904,7 +908,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         spinnerSubDistrict.setAdapter(subDistrictAdapter);
 
         passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
-        selectLayout();
     }
 
     protected void initialVar() {
@@ -1019,21 +1022,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         };
     }
 
-    private void selectLayout() {
-        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
-        if (isDistrictRecommendation() && token != null) {
-            addressSpinerLayout.setVisibility(View.GONE);
-            postCodeLayout.setVisibility(View.GONE);
-            districtLayout.setVisibility(View.VISIBLE);
-            zipCodeLayout.setVisibility(View.VISIBLE);
-        } else {
-            addressSpinerLayout.setVisibility(View.VISIBLE);
-            postCodeLayout.setVisibility(View.VISIBLE);
-            districtLayout.setVisibility(View.GONE);
-            zipCodeLayout.setVisibility(View.GONE);
-        }
-    }
-
     private void updateAddress() {
         if (address == null) address = new Destination();
 
@@ -1134,13 +1122,6 @@ public class AddAddressFragment extends BaseDaggerFragment
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
             dialog.show();
         }
-    }
-
-    private void setupArguments(Bundle arguments) {
-        this.token = arguments.getParcelable(KERO_TOKEN);
-        this.address = arguments.getParcelable(EDIT_PARAM);
-        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
-        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {

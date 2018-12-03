@@ -123,8 +123,7 @@
                 android:id="@+id/postal_code_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Kode Pos"
-                android:visibility="gone">
+                android:hint="@string/logistic_zip_code_label">
 
                 <AutoCompleteTextView
                     android:id="@+id/autocomplete_postal_code"
@@ -235,16 +234,6 @@
                 android:textColor="#ff0000"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
-        </LinearLayout>
-
-        <!-- Kode Pos and Password (Password will be removed as it does not required anymore) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:background="@drawable/cards_ui_2"
-            android:orientation="vertical"
-            android:padding="@dimen/dp_10">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/post_code_layout"
@@ -260,6 +249,16 @@
                     android:inputType="number"
                     android:textSize="@dimen/sp_14" />
             </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Phone Number and Password (Password will be removed as it does not required anymore) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:background="@drawable/cards_ui_2"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_10">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/receiver_phone_layout"
