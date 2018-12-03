@@ -71,7 +71,7 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE;
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BaseDaggerFragment
-        implements AddAddressFragmentView, ITransactionAnalyticsAddAddress {
+        implements AddAddressContract.View, ITransactionAnalyticsAddAddress {
 
     public static final int ERROR_RESULT_CODE = 999;
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
@@ -126,7 +126,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject AddAddressPresenter mPresenter;
+    @Inject AddAddressContract.Presenter mPresenter;
     @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
 
     public static AddAddressFragment newInstance(Bundle extras) {

@@ -17,7 +17,7 @@ import javax.inject.Inject;
  * Created by nisie on 9/6/16.
  */
 @AddressScope
-public class AddAddressPresenterImpl implements AddAddressPresenter {
+public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
     private static final String PARAM_ADDRESS_ID = "address_id";
     private static final String PARAM_ADDRESS_TYPE = "address_name";
@@ -32,7 +32,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     private static final String PARAM_LONGITUDE = "longitude";
     private static final String PARAM_PASSWORD = "user_password";
 
-    private AddAddressFragmentView mView;
+    private AddAddressContract.View mView;
     private final AddressRepository networkInteractor;
     private UserSessionInterface userSession;
 
@@ -43,7 +43,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     }
 
     @Override
-    public void attachView(AddAddressFragmentView view) {
+    public void attachView(AddAddressContract.View view) {
         mView = view;
     }
 

@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.di;
 
 import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
-import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenter;
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.module.LogisticNetworkModule;
@@ -31,7 +31,7 @@ public class AddressModule {
 
     @Provides
     @AddressScope
-    AddAddressPresenter provideAddAddressPresenter(
+    AddAddressContract.Presenter provideAddAddressPresenter(
             @LogisticUserSessionQualifier UserSessionInterface userSessionInterface,
             AddressRepository addressRepository) {
         return new AddAddressPresenterImpl(userSessionInterface, addressRepository);
