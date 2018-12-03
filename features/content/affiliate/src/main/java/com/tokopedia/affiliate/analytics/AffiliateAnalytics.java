@@ -193,7 +193,7 @@ public class AffiliateAnalytics {
     }
 
     public void onLihatContohButtonClicked(String productId) {
-        getAnalyticTracker().getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -205,7 +205,7 @@ public class AffiliateAnalytics {
     }
 
     public void onTambahGambarButtonClicked(String productId) {
-        getAnalyticTracker().getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
@@ -217,7 +217,7 @@ public class AffiliateAnalytics {
     }
 
     public void onSelesaiCreateButtonClicked(String productId) {
-        getAnalyticTracker().getAnalyticTracker().sendEventTracking(
+        getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
