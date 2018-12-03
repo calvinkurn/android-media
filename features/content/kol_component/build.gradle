@@ -20,10 +20,10 @@ buildscript {
 }
 
 project.ext {
-    artifactId = 'affiliatecommon'
-    groupId = 'com.tokopedia.affiliatecommon'
-    versionName = "${tkpdAffiliateCommonVersion}"
-    artifactName ="affiliatecommon-release"
+    artifactId = 'kolcomponent'
+    groupId = 'com.tokopedia.kolcomponent'
+    versionName = "${tkpdKolComponentVersion}"
+    artifactName ="kolcomponent-release"
 }
 
 dependencies {

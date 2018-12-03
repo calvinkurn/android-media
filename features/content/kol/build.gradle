@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation project(rootProject.ext.features.affiliateCommon)
+    implementation project(rootProject.ext.features.kolComponent)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.miscDependencies.multiDex

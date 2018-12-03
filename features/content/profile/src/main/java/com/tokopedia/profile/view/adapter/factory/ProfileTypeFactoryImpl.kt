@@ -5,7 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.*
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.*
 import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
@@ -47,10 +50,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
 
     override fun type(entryPointViewModel: EntryPointViewModel?): Int {
         return 0
-    }
-
-    override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
-        return DynamicPostViewHolder.LAYOUT
     }
 
     override fun setType(type: KolPostViewHolder.Type?) {

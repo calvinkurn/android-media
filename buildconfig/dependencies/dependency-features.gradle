@@ -85,7 +85,7 @@ ext {
             inbox                       : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                         : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon                   : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
-            kolComponent                : "com.tokopedia.kolcommon:kolCommon:${tkpdKolComponentVersion}",
+            kolComponent                : "com.tokopedia.kolcomponent:kolComponent:${tkpdKolComponentVersion}",
             loginphone                  : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister               : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon               : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",

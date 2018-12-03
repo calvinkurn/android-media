@@ -1,7 +1,7 @@
-package com.tokopedia.kol.feature.post.view.viewmodel
+package com.tokopedia.kolcomponent.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
+import com.tokopedia.kolcomponent.view.adapter.DynamicPostTypeFactory
 
 /**
  * @author by milhamj on 28/11/18.
@@ -21,9 +21,9 @@ data class DynamicPostViewModel(
         var isLiked: Boolean = false,
         var contentList: MutableList<Any>
 
-) : Visitable<KolPostTypeFactory> {
+) : Visitable<DynamicPostTypeFactory> {
     
-    override fun type(typeFactory: KolPostTypeFactory?): Int {
+    override fun type(typeFactory: DynamicPostTypeFactory?): Int {
         return typeFactory!!.type(this)
     }
 }

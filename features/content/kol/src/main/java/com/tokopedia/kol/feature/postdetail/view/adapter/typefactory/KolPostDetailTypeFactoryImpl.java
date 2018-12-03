@@ -10,10 +10,8 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.DynamicPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.DynamicPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
@@ -84,11 +82,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(EntryPointViewModel entryPointViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + EntryPointViewModel.class.getSimpleName());
-    }
-
-    @Override
-    public int type(DynamicPostViewModel dynamicPostViewModel) {
-        return DynamicPostViewHolder.LAYOUT;
     }
 
     @Override

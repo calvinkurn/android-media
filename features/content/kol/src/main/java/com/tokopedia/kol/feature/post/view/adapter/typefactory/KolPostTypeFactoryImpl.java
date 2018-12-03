@@ -4,14 +4,12 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.DynamicPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EntryPointViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.DynamicPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
@@ -53,11 +51,6 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
     @Override
     public int type(EntryPointViewModel entryPointViewModel) {
         return EntryPointViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(DynamicPostViewModel dynamicPostViewModel) {
-        return DynamicPostViewHolder.LAYOUT;
     }
 
     @Override
