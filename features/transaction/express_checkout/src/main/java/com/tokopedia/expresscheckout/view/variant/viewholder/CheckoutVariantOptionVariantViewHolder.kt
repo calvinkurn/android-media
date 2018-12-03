@@ -7,6 +7,7 @@ import android.view.View
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.VariantChangeListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
+import kotlinx.android.synthetic.main.item_variant_option.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

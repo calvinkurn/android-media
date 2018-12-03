@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantNoteViewModel
+import kotlinx.android.synthetic.main.item_note_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

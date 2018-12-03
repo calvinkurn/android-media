@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantQuantityViewModel
+import kotlinx.android.synthetic.main.item_quantity_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

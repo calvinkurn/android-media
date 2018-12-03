@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantProfileViewModel
+import kotlinx.android.synthetic.main.item_profile_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.

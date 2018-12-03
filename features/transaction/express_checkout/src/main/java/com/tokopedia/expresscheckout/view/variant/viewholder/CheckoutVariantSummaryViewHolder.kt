@@ -6,6 +6,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantSummaryViewModel
+import kotlinx.android.synthetic.main.item_summary_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
