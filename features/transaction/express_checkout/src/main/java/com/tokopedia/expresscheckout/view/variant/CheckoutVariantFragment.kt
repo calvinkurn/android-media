@@ -14,17 +14,37 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  */
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypefactory>(),
-        CheckoutVariantContract.View {
+        CheckoutVariantContract.View, CheckoutVariantActionListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_detail_product_page, container)
     }
 
     override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypefactory {
-        return CheckoutVariantAdapterTypefactory();
+        return CheckoutVariantAdapterTypefactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onNeedToNotifySingleItem(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onNeedToNotifyAllItem() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickEditDuration() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickEditCourier() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickInsuranceInfo() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -51,4 +71,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun showNetworkError() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun onClickEditProfile() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 }

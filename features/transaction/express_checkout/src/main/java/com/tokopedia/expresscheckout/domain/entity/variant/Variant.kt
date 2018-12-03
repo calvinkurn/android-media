@@ -1,4 +1,4 @@
-package com.tokopedia.transactiondata.entity.response.expresscheckoutform.variant
+package com.tokopedia.expresscheckout.domain.entity.variant
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -27,6 +27,6 @@ data class Variant(
 
         @SerializedName("options")
         @Expose
-        val options: ArrayList<Options>
+        val options: ArrayList<Option>
 
 )

@@ -11,6 +11,7 @@ class ViewModelMapper : DataMapper {
 
     override fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantNoteViewModel {
         var checkoutVariantNoteViewModel = CheckoutVariantNoteViewModel()
+        checkoutVariantNoteViewModel.noteCharMax = 144
 
         return checkoutVariantNoteViewModel
     }
@@ -34,19 +35,19 @@ class ViewModelMapper : DataMapper {
     }
 
     override fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantSummaryViewModel {
-        var checkoutVariantSummaryViewModel = CheckoutVariantSummaryViewModel()
+        var checkoutVariantSummaryViewModel = CheckoutVariantSummaryViewModel(null)
 
         return checkoutVariantSummaryViewModel
     }
 
     override fun convertToTypeVariantViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantTypeVariantViewModel {
-        var checkoutVariantTypeVariantViewModel = CheckoutVariantTypeVariantViewModel()
+        var checkoutVariantTypeVariantViewModel = CheckoutVariantTypeVariantViewModel(null)
 
         return checkoutVariantTypeVariantViewModel
     }
 
     override fun convertToOptionVariantViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantOptionVariantViewModel {
-        var checkoutVariantOptionVariantViewModel = CheckoutVariantOptionVariantViewModel()
+        var checkoutVariantOptionVariantViewModel = CheckoutVariantOptionVariantViewModel(null)
 
         return checkoutVariantOptionVariantViewModel
     }

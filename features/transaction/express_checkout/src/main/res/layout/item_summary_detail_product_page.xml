@@ -99,6 +99,7 @@
             android:text="Asuransi" />
 
         <ImageButton
+            android:id="@+id/img_bt_insurance_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_purchase_summary_service_price_label"

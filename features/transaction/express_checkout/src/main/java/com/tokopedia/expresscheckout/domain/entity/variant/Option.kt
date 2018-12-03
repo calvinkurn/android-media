@@ -1,4 +1,4 @@
-package com.tokopedia.transactiondata.entity.response.expresscheckoutform.variant
+package com.tokopedia.expresscheckout.domain.entity.variant
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-data class Options(
+data class Option(
 
         @SerializedName("id")
         @Expose

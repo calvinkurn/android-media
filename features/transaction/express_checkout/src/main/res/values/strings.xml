@@ -1,1 +1,5 @@
-<resources></resources>
+<resources>
+
+    <string name="format_note_counter" formatted="false">%s / %s</string>
+
+</resources>

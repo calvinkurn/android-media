@@ -1,5 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.expresscheckout.R
@@ -16,7 +18,22 @@ class CheckoutVariantNoteViewHolder(val view: View) : AbstractViewHolder<Checkou
     }
 
     override fun bind(element: CheckoutVariantNoteViewModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (element != null) {
+            itemView.et_note.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(note: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    element.note = note.toString()
+                    itemView.tv_note_char_counter.text = String.format(
+                            itemView.context.getString(R.string.format_note_counter),
+                            element.note.length, element.noteCharMax)
+                }
+            })
+        }
     }
 
 }

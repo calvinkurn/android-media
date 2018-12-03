@@ -1,22 +1,61 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
+import android.os.Build
+import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.expresscheckout.R
+import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantProfileViewModel
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantProfileViewHolder(val view: View) : AbstractViewHolder<CheckoutVariantProfileViewModel>(view) {
+class CheckoutVariantProfileViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<CheckoutVariantProfileViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_profile_detail_product_page
     }
 
     override fun bind(element: CheckoutVariantProfileViewModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (element != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                itemView.tv_profile_address_name.text =
+                        Html.fromHtml("<b>${element.addressTitle}</b> ${element.addressDetail}",
+                                Html.FROM_HTML_MODE_LEGACY).toString()
+            } else {
+                itemView.tv_profile_address_name.text =
+                        Html.fromHtml("<b>${element.addressTitle}</b> ${element.addressDetail}").toString()
+            }
+
+            ImageHandler.loadImageRounded2(itemView.context, itemView.img_profile_payment_method, element.paymentOptionImageUrl)
+            itemView.tv_profile_payment_detail.text = element.paymentDetail
+            itemView.img_bt_profile_edit.setOnClickListener { listener.onClickEditProfile() }
+            itemView.img_bt_profile_show_more_shipping_duration.setOnClickListener { listener.onClickEditDuration() }
+            if (!element.isDurationError) {
+                itemView.tv_profile_shipping_duration_value.text = element.shippingDuration
+                itemView.tv_profile_shipping_duration_error.visibility = View.GONE
+                itemView.ll_profile_courier.visibility = View.VISIBLE
+                itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { listener.onClickEditCourier() }
+                itemView.tv_profile_shipping_courier.text = element.shippingCourier
+            } else {
+                itemView.ll_profile_courier.visibility = View.GONE
+                itemView.tv_profile_shipping_duration_error.visibility = View.VISIBLE
+                itemView.img_bt_profile_show_more_shipping_courier.setOnClickListener { }
+            }
+
+            if (element.isShowDefaultProfileCheckBox) {
+                itemView.v_profile_separator_bottom.visibility = View.VISIBLE
+                itemView.ll_profile_default_checkbox_container.visibility = View.VISIBLE
+                itemView.cb_profile_set_default.setOnCheckedChangeListener { buttonView, isChecked -> element.isDefaultProfileCheckboxChecked = isChecked }
+            } else {
+                itemView.v_profile_separator_bottom.visibility = View.GONE
+                itemView.ll_profile_default_checkbox_container.visibility = View.GONE
+                itemView.cb_profile_set_default.setOnClickListener {  }
+            }
+        }
     }
 
 }
