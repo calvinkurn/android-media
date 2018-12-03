@@ -18,19 +18,11 @@ public interface AddAddressPresenter {
 
     void saveAddress();
 
-    void getListProvince();
-
     void onProvinceSelected(int pos);
 
     void onEditProvinceSelected(int pos);
 
     void onRegencySelected(int pos);
-
-    void getListCity(Province province);
-
-    void provinceChanged(Province province);
-
-    void getListDistrict(City city);
 
     void requestReverseGeoCode(Context context, Destination destination);
 

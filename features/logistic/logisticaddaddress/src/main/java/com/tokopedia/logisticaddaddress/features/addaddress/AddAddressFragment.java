@@ -166,7 +166,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        if (!isDistrictRecommendation()) mPresenter.getListProvince();
         mPresenter.attachView(this);
         initView(view);
         initialVar();

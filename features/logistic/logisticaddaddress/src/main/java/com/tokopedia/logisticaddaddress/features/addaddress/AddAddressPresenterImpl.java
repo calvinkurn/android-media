@@ -69,12 +69,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     }
 
     @Override
-    public void getListProvince() {
-        mView.setActionsEnabled(false);
-        mView.showLoading();
-    }
-
-    @Override
     public void onProvinceSelected(int pos) {
         mView.resetRegency();
         mView.hideSubDistrict();
@@ -91,24 +85,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     @Override
     public void onRegencySelected(int pos) {
         mView.resetSubDistrict();
-    }
-
-    @Override
-    public void getListCity(Province province) {
-        mView.showLoadingRegency();
-        mView.setActionsEnabled(false);
-    }
-
-    @Override
-    public void provinceChanged(Province province) {
-        mView.showLoadingRegency();
-        mView.setActionsEnabled(false);
-    }
-
-    @Override
-    public void getListDistrict(City city) {
-        mView.showLoadingDistrict();
-        mView.setActionsEnabled(false);
     }
 
     @Override
