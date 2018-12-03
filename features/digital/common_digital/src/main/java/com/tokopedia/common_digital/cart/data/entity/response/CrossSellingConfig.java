@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class CrossSellingConfig {
-    @SerializedName("skipable")
+    @SerializedName("is_skipable")
     @Expose
     private boolean skipAble;
 

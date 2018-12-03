@@ -42,14 +42,9 @@ public class DigitalInstantCheckoutDataSource {
     @NonNull
     private Func1<Response<DataResponse<ResponseCheckoutData>>, InstantCheckoutData>
     getFuncResponseToCheckoutDigitalData() {
-        return new Func1<Response<DataResponse<ResponseCheckoutData>>, InstantCheckoutData>() {
-            @Override
-            public InstantCheckoutData call(Response<DataResponse<ResponseCheckoutData>> tkpdDigitalResponseResponse) {
-                return cartMapperData.transformInstantCheckoutData(
-                        tkpdDigitalResponseResponse.body().getData()
-                );
-            }
-        };
+        return tkpdDigitalResponseResponse -> cartMapperData.transformInstantCheckoutData(
+                tkpdDigitalResponseResponse.body().getData()
+        );
     }
 
 }

@@ -19,20 +19,10 @@ public class DigitalDealsDataSourceFactory {
     }
 
     public Observable<List<DealCategoryEntity>> getCategories(Map<String, Object> params) {
-        return digitalDealsApi.getCategories(params).map(new Func1<Response<DataResponse<List<DealCategoryEntity>>>, List<DealCategoryEntity>>() {
-            @Override
-            public List<DealCategoryEntity> call(Response<DataResponse<List<DealCategoryEntity>>> dataResponseResponse) {
-                return dataResponseResponse.body().getData();
-            }
-        });
+        return digitalDealsApi.getCategories(params).map(dataResponseResponse -> dataResponseResponse.body().getData());
     }
 
     public Observable<DealProductsResponse> getProducts(String url) {
-        return digitalDealsApi.getProducts(url).map(new Func1<Response<DataResponse<DealProductsResponse>>, DealProductsResponse>() {
-            @Override
-            public DealProductsResponse call(Response<DataResponse<DealProductsResponse>> dataResponseResponse) {
-                return dataResponseResponse.body().getData();
-            }
-        });
+        return digitalDealsApi.getProducts(url).map(dataResponseResponse -> dataResponseResponse.body().getData());
     }
 }

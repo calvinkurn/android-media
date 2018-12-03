@@ -39,13 +39,8 @@ public class DigitalAddToCartDataSource {
         requestBody.add("data", jsonElement);
         return digitalRestApi
                 .addToCart(requestBody, idemPotencyKeyHeader)
-                .map(new Func1<Response<DataResponse<ResponseCartData>>, CartDigitalInfoData>() {
-                    @Override
-                    public CartDigitalInfoData call(Response<DataResponse<ResponseCartData>> dataResponseResponse) {
-                        return cartMapperData.transformCartInfoData(
-                                dataResponseResponse.body().getData()
-                        );
-                    }
-                });
+                .map(dataResponseResponse -> cartMapperData.transformCartInfoData(
+                        dataResponseResponse.body().getData()
+                ));
     }
 }

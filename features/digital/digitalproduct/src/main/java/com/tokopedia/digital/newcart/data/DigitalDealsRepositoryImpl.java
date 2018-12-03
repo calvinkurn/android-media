@@ -31,22 +31,12 @@ public class DigitalDealsRepositoryImpl implements DigitalDealsRepository {
     @Override
     public Observable<List<DealCategoryViewModel>> getDealsCategory(Map<String, Object> params) {
         return dataSourceFactory.getCategories(params)
-                .map(new Func1<List<DealCategoryEntity>, List<DealCategoryViewModel>>() {
-                    @Override
-                    public List<DealCategoryViewModel> call(List<DealCategoryEntity> entities) {
-                        return mapper.transform(entities);
-                    }
-                });
+                .map(entities -> mapper.transform(entities));
     }
 
     @Override
     public Observable<DealProductsViewModel> getProducts(String url) {
         return dataSourceFactory.getProducts(url)
-                .map(new Func1<DealProductsResponse, DealProductsViewModel>() {
-                    @Override
-                    public DealProductsViewModel call(DealProductsResponse dealProductsResponse) {
-                        return productViewModelMapper.transformDealProduct(dealProductsResponse);
-                    }
-                });
+                .map(dealProductsResponse -> productViewModelMapper.transformDealProduct(dealProductsResponse));
     }
 }
