@@ -29,6 +29,7 @@ import com.tokopedia.core.util.TkpdWebViewClient;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.contactus.createticket.ContactUsConstant.PARAM_URL;
 
 /**
