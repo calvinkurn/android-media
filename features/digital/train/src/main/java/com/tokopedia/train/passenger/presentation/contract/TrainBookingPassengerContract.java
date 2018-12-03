@@ -12,6 +12,7 @@ import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewMo
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -89,7 +90,7 @@ public interface TrainBookingPassengerContract {
 
         void showNavigateToSearchDialog(String message);
 
-        String getDepartureDate();
+        Date getDepartureDate();
 
         void showUpperLowerBirthDate(String lowerBirthDate, String upperBirthDate);
     }

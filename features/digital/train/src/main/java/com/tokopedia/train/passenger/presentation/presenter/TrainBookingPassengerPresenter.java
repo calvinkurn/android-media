@@ -345,8 +345,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     @Override
     public void calculateUpperLowerBirthDate(int paxType) {
         Date dateLower = null, dateUpper = null;
-        Date departureDate = TravelDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                getView().getDepartureDate());
+        Date departureDate = getView().getDepartureDate();
         if (paxType == TravelBookingPassenger.INFANT) {
             dateLower = TravelDateUtil.addTimeToSpesificDate(departureDate, Calendar.DAY_OF_MONTH, -1);
             dateUpper =  TravelDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -3);

@@ -1,12 +1,14 @@
 package com.tokopedia.train.passenger.presentation.presenter;
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.data.interceptor.model.TrainError;
 import com.tokopedia.train.common.domain.TrainProvider;
 import com.tokopedia.train.common.domain.TrainTestScheduler;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainNetworkErrorConstant;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
@@ -28,6 +30,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -643,4 +646,28 @@ public class TrainBookingPassengerPresenterTest {
         }
     }
 
+    @Test
+    public void onCalculateUpperLowerBithDate_AdultPassenger_GetUpperLowerBirhtDate() {
+        //given
+        String lowerDate = "2015-12-03";
+        Date departureDate = TrainDateUtil.stringToDate("2018-12-04");
+        Mockito.when(view.getDepartureDate()).thenReturn(departureDate);
+        //when
+        presenter.calculateUpperLowerBirthDate(TrainBookingPassenger.ADULT);
+        //then
+        Mockito.verify(view).showUpperLowerBirthDate(lowerDate, "");
+    }
+
+    @Test
+    public void onCalculateUpperLowerBithDate_InfantPassenger_GetUpperLowerBirhtDate() {
+        //given
+        String lowerDate = "2018-12-03";
+        String upperDate = "2015-12-03";
+        Date departureDate = TrainDateUtil.stringToDate("2018-12-04");
+        Mockito.when(view.getDepartureDate()).thenReturn(departureDate);
+        //when
+        presenter.calculateUpperLowerBirthDate(TrainBookingPassenger.INFANT);
+        //then
+        Mockito.verify(view).showUpperLowerBirthDate(lowerDate, upperDate);
+    }
 }

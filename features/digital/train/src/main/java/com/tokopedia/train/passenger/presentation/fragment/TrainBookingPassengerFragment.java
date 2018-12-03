@@ -58,6 +58,7 @@ import com.tokopedia.train.seat.presentation.activity.TrainSeatActivity;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -554,9 +555,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public String getDepartureDate() {
-        return returnScheduleViewModel != null ? returnScheduleViewModel.getDepartureTimestamp() :
+    public Date getDepartureDate() {
+        String departureDate = returnScheduleViewModel != null ? returnScheduleViewModel.getDepartureTimestamp() :
                 departureScheduleViewModel.getDepartureTimestamp();
+        return TrainDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, departureDate);
     }
 
     @Override
