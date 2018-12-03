@@ -60,6 +60,9 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         return fragment;
     }
 
+    public ManageAddressFragment() {
+    }
+
     @Override
     public void loadData(int page) {
         mPresenter.getAddress(page, DEFAULT_SORT_ID, DEFAULT_QUERY_VALUE);

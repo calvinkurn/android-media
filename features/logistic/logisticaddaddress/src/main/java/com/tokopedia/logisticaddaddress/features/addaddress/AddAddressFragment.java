@@ -150,6 +150,9 @@ public class AddAddressFragment extends BaseDaggerFragment
         return fragment;
     }
 
+    public AddAddressFragment() {
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
