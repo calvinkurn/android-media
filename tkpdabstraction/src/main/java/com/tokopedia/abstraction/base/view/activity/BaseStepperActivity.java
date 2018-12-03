@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public abstract class BaseStepperActivity extends BaseToolbarActivity implements StepperListener {
     public static final String STEPPER_MODEL_EXTRA = "STEPPER_MODEL_EXTRA";
+    private static final String CURRENT_POSITION_EXTRA = "current_position";
 
     protected StepperModel stepperModel;
     private RoundCornerProgressBar progressStepper;
@@ -26,6 +28,9 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            currentPosition = savedInstanceState.getInt(CURRENT_POSITION_EXTRA);
+        }
         super.onCreate(savedInstanceState);
         progressStepper = (RoundCornerProgressBar) findViewById(R.id.stepper_progress);
         progressStepper.setMax(getListFragment().size());
@@ -45,6 +50,12 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
                     .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                     .commit();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt(CURRENT_POSITION_EXTRA, currentPosition);
     }
 
     @Override
