@@ -5,8 +5,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
-import com.tokopedia.logisticdata.data.entity.address.db.City;
-import com.tokopedia.logisticdata.data.entity.address.db.Province;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
 import com.tokopedia.network.utils.AuthUtil;
