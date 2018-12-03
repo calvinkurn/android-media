@@ -658,6 +658,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 int position) {
+
+    }
+
+    @Override
     public void openImagePreviewFromChat(Context context, ArrayList<String> images,
                                          ArrayList<String> imageDesc, String title, String date) {
         Intent intent = PreviewProductImageDetail.getCallingIntentChat(context, images, imageDesc,

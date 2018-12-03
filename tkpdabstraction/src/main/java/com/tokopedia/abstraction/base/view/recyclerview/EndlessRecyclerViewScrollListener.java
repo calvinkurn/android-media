@@ -82,8 +82,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     @Override
     public void onScrolled(RecyclerView view, int dx, int dy) {
         super.onScrolled(view, dx, dy);
-        // assume load more when going down
-        if (dy <= 0) {
+        // assume load more when going down or going right
+        if (dy <= 0 && dx <= 0) {
             return;
         }
         if (loading) {
@@ -123,8 +123,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
 
     public void loadMoreNextPage(){
         int totalItemCount = getLayoutManager().getItemCount();
-        onLoadMore(currentPage + 1, totalItemCount);
         loading = true;
+        onLoadMore(currentPage + 1, totalItemCount);
     }
 
     public void setHasNextPage(boolean hasNextPage) {
