@@ -704,6 +704,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         headerInfoView.setListener(this);
         priceSimulationView.setListener(this);
         descriptionView.setListener(this);
+
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

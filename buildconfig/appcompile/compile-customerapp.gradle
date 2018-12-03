@@ -69,6 +69,8 @@ include "features:payment:pms"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
 
+include "features:product:gallery"
+
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"
 include "features:promo:tokopoints"

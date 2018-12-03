@@ -62,9 +62,9 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<DynamicCh
     public void onProductItemClicked(int position, Product product) {
         listener.onGoToProductDetailFromInspiration(
                 product.getId(),
+                product.getImage().getM_ecs(),
                 product.getName(),
-                product.getPriceFormat(),
-                product.getImage().getM_ecs()
+                product.getPriceFormat()
         );
     }
 

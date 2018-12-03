@@ -33,6 +33,8 @@ public interface FeedPlus {
 
         void eventTrackingEEGoToProduct(Integer shopId, String feedId, int totalProduct, int positionInFeed, String category);
 
+        void sendMoEngageOpenFeedEvent();
+
         interface Kol {
 
             UserSessionInterface getUserSession();

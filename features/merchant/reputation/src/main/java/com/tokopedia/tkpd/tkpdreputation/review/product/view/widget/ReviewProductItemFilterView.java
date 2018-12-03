@@ -25,6 +25,7 @@ public class ReviewProductItemFilterView extends BaseCustomView {
     private int rating;
     private boolean isActive;
     private boolean isAll;
+    private boolean isWithPhoto;
 
     public ReviewProductItemFilterView(@NonNull Context context) {
         super(context);
@@ -48,6 +49,7 @@ public class ReviewProductItemFilterView extends BaseCustomView {
             rating = styledAttributes.getInt(R.styleable.ReviewProductItemFilterView_counter_rating, DEF_VALUE_EMPTY);
             isActive = styledAttributes.getBoolean(R.styleable.ReviewProductItemFilterView_isActive, false);
             isAll = styledAttributes.getBoolean(R.styleable.ReviewProductItemFilterView_isAll, false);
+            isWithPhoto = styledAttributes.getBoolean(R.styleable.ReviewProductItemFilterView_isWithPhoto, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -67,7 +69,9 @@ public class ReviewProductItemFilterView extends BaseCustomView {
         this.rating = rating;
         if(isAll){
             counterRating.setText(R.string.review_label_all);
-        }else {
+        } else if (isWithPhoto){
+            counterRating.setText(R.string.review_label_with_photo);
+        } else {
             counterRating.setText(String.valueOf(rating));
         }
     }
@@ -78,7 +82,7 @@ public class ReviewProductItemFilterView extends BaseCustomView {
 
     public void setActive(boolean active) {
         isActive = active;
-        if(isAll){
+        if(isAll || isWithPhoto){
             ratingBar.setVisibility(GONE);
         }else{
             ratingBar.setVisibility(VISIBLE);
@@ -92,6 +96,11 @@ public class ReviewProductItemFilterView extends BaseCustomView {
 
     public void setAll(boolean all) {
         this.isAll = all;
+        populateView();
+    }
+
+    public void setWithPhoto(boolean withPhoto) {
+        this.isWithPhoto = withPhoto;
         populateView();
     }
 
