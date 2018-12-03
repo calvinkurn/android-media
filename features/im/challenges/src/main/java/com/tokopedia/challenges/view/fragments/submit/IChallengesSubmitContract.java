@@ -65,5 +65,7 @@ public interface IChallengesSubmitContract {
         void onSelectedImageClick();
 
         void setSubmitButtonText();
+
+        void onDestroy();
     }
 }

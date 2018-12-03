@@ -53,6 +53,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
@@ -551,6 +552,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         } else {
 //            getView().getRefreshHandler().finishRefresh();
         }
+    }
+
+    public void sendQuickReply(String messageId, QuickReplyViewModel quickReplyViewModel, String
+            startTime) {
+        webSocketUseCase.execute(webSocketUseCase.getParamSendQuickReply(messageId,
+                quickReplyViewModel, startTime));
     }
 
     public void sendInvoiceAttachment(String messageId, InvoiceLinkPojo invoice, String startTime) {

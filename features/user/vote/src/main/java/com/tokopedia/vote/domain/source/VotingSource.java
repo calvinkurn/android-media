@@ -29,7 +29,11 @@ public class VotingSource {
     }
 
     public Observable<VoteStatisticDomainModel> sendVote(String pollId,
-                                                         HashMap<String, Object> parameters) {
+                                                         HashMap<String, Object> parameters,
+                                                         boolean useV1) {
+        if (useV1) {
+            return voteApi.sendVoteV1(pollId, parameters).map(votingMapper);
+        }
         return voteApi.sendVote(pollId, parameters).map(votingMapper);
     }
 }

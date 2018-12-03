@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,9 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
@@ -31,6 +32,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_hero_4_image;
     private static final String TAG = DynamicChannelHeroViewHolder.class.getSimpleName();
+    private final Context context;
     private TextView channelTitle;
     private ImageView channelHeroImage;
     private TextView seeAllButton;
@@ -43,6 +45,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     public DynamicChannelHeroViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
+        this.context = itemView.getContext();
         findViews(itemView);
         itemAdapter = new ItemAdapter(listener);
         recyclerView.setAdapter(itemAdapter);
@@ -84,6 +87,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                     @Override
                     public void onClick(View view) {
                         HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                context,
                                 element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                         );
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
@@ -119,14 +123,15 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             notifyDataSetChanged();
         }
 
+        @NonNull
         @Override
-        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_hero_product_item, parent, false);
             return new ItemViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(ItemViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull ItemViewHolder holder, final int position) {
             try {
                 final DynamicHomeChannel.Grid grid = list[position];
                 if (grid != null) {
@@ -137,6 +142,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         @Override
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                    holder.getContext(),
                                     channel.getEnhanceClickDynamicChannelHomePage(grid, position + 2)
                             );
                             listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),

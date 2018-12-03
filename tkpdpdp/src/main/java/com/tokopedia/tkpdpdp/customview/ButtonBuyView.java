@@ -340,7 +340,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         btnByMe.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onByMeClicked(affiliate);
+                listener.onByMeClicked(affiliate, true);
             }
         });
     }

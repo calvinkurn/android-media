@@ -16,6 +16,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopGridViewHo
 import com.tokopedia.topads.sdk.view.adapter.viewholder.discovery.ShopListViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
+import com.tokopedia.topads.sdk.view.adapter.viewholder.home.DynamicChannelViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
@@ -24,6 +25,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewMod
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 /**
  * @author by errysuprayogi on 3/29/17.
@@ -99,6 +101,11 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     }
 
     @Override
+    public int type(ProductDynamicChannelViewModel productDynamicChannelViewModel) {
+        return DynamicChannelViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
@@ -113,6 +120,8 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
             holder = new ShopListViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopFeedViewHolder.LAYOUT) {
             holder = new ShopFeedViewHolder(view, imageLoader, itemClickListener);
+        } else if (viewType == DynamicChannelViewHolder.LAYOUT) {
+            holder = new DynamicChannelViewHolder(view, itemClickListener);
         } else if (viewType == ProductFeedViewHolder.LAYOUT) {
             holder = new ProductFeedViewHolder(view, itemClickListener);
         } else if (viewType == ProductCarouselListViewHolder.LAYOUT) {
