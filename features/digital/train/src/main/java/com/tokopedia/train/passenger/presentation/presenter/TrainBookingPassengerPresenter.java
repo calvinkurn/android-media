@@ -1,11 +1,14 @@
 package com.tokopedia.train.passenger.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
+import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.data.interceptor.model.TrainError;
 import com.tokopedia.train.common.domain.TrainProvider;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainNetworkErrorConstant;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
@@ -18,6 +21,8 @@ import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -335,6 +340,24 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         }
 
         return trainPassengerViewModelList;
+    }
+
+    @Override
+    public void calculateUpperLowerBirthDate(int paxType) {
+        Date dateLower = null, dateUpper = null;
+        Date departureDate = TravelDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                getView().getDepartureDate());
+        if (paxType == TravelBookingPassenger.INFANT) {
+            dateLower = TravelDateUtil.addTimeToSpesificDate(departureDate, Calendar.DAY_OF_MONTH, -1);
+            dateUpper =  TravelDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -3);
+            dateUpper =  TravelDateUtil.addTimeToSpesificDate(dateUpper, Calendar.DAY_OF_MONTH, -1);
+        } else if (paxType == TravelBookingPassenger.ADULT) {
+            dateLower =  TravelDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -3);
+            dateLower =  TravelDateUtil.addTimeToSpesificDate(dateLower, Calendar.DAY_OF_MONTH, -1);
+        }
+        String lowerDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dateLower);
+        String upperDate = dateUpper != null ? TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dateUpper) : "";
+        getView().showUpperLowerBirthDate(lowerDate, upperDate);
     }
 
     private String formatPassengerHeader(String prefix, String postix) {

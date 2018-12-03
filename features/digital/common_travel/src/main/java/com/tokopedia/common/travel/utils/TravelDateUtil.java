@@ -3,6 +3,7 @@ package com.tokopedia.common.travel.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -30,4 +31,24 @@ public class TravelDateUtil {
         return  formatDate.format(input);
     }
 
+    public static Calendar getCurrentCalendar() {
+        return Calendar.getInstance();
+    }
+
+    public static Date addTimeToSpesificDate(Date date, int field, int value) {
+        Calendar now = getCurrentCalendar();
+        now.setTime(date);
+        now.add(field, value);
+        return now.getTime();
+    }
+
+    public static Date removeTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
 }

@@ -86,6 +86,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private LinearLayout containerLayout;
     private RelativeLayout progressBar;
     private boolean resetPassengerListSelected;
+    private TravelTrip travelTrip;
 
     private List<TrainPassengerRequest> trainPassengerRequestList;
     private TrainBuyerRequest trainBuyerRequest;
@@ -129,6 +130,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         progressBar = view.findViewById(R.id.progress_bar);
         trainBuyerRequest = new TrainBuyerRequest();
         trainPassengerRequestList = new ArrayList<>();
+        travelTrip = new TravelTrip();
         return view;
     }
 
@@ -235,7 +237,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 travelPassenger.setPaxType(trainPassengerViewModel.getPaxType());
                 travelPassenger.setIdLocal(trainPassengerViewModel.getIdLocal());
                 travelPassenger.setTitle(trainPassengerViewModel.getSalutationId());
-                TravelTrip travelTrip = new TravelTrip();
+                presenter.calculateUpperLowerBirthDate(trainPassengerViewModel.getPaxType());
                 travelTrip.setTravelPlatformType(TravelPlatformType.TRAIN);
                 travelTrip.setTravelPassengerBooking(travelPassenger);
                 startActivityForResult(TravelPassengerListActivity.callingIntent(getActivity(),
@@ -549,6 +551,18 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public String getDepartureDate() {
+        return returnScheduleViewModel != null ? returnScheduleViewModel.getDepartureTimestamp() :
+                departureScheduleViewModel.getDepartureTimestamp();
+    }
+
+    @Override
+    public void showUpperLowerBirthDate(String lowerBirthDate, String upperBirthDate) {
+        travelTrip.setLowerBirthDate(lowerBirthDate);
+        travelTrip.setUpperBirthDate(upperBirthDate);
     }
 
     @Override

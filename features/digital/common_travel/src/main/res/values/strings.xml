@@ -53,5 +53,7 @@
     <string name="success_add_passenger_msg">Data penumpang berhasil ditambahkan.</string>
     <string name="success_edit_passenger_msg">Data penumpang berhasil diubah.</string>
     <string name="success_delete_passenger_msg">Data penumpang berhasil dihapus.</string>
+    <string name="error_message_pick_infant_passenger">Umur penumpang bayi harus dibawah 3 tahun.</string>
+    <string name="error_message_pick_adult_passenger">Umur penumpang dewasa harus diatas 3 tahun.</string>
 
 </resources>

@@ -6,6 +6,8 @@ import com.tokopedia.common.travel.constant.TravelPlatformType;
 import com.tokopedia.common.travel.presentation.model.TravelTrip;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.Date;
+
 /**
  * Created by nabillasabbaha on 25/06/18.
  */
@@ -39,6 +41,12 @@ public interface TravelPassengerUpdateContract {
 
         int getTravelPlatformType();
 
+        void showBirthdateChange(Date dateSelected);
+
+        Date getUpperBirthDate();
+
+        Date getLowerBirthDate();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -46,6 +54,8 @@ public interface TravelPassengerUpdateContract {
         void submitAddPassengerData();
 
         void submitEditPassengerData();
+
+        void onChangeBirthdate(int year, int month, int dayOfMonth);
 
         void onDestroyView();
     }

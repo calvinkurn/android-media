@@ -90,12 +90,13 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
         birthDateEt = view.findViewById(R.id.et_birth_date);
         submitBtn = view.findViewById(R.id.button_submit);
 
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = TravelDateUtil.getCurrentCalendar();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
         typePage = getArguments().getInt(TravelPassengerUpdateActivity.TYPE_PASSENGER_PAGE, 0);
+        travelTrip = getArguments().getParcelable(TravelPassengerUpdateActivity.TRAVEL_TRIP);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,19 +118,10 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
                         getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        Calendar calendarNow = Calendar.getInstance();
-                        calendarNow.set(Calendar.YEAR, year);
-                        calendarNow.set(Calendar.MONTH, month);
-                        calendarNow.set(Calendar.DATE, dayOfMonth);
-                        Date dateSelected = calendarNow.getTime();
-                        birthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dateSelected);
-
-                        String dateString = TravelDateUtil.dateToString(DEFAULT_VIEW_FORMAT, dateSelected);
-                        birthDateEt.setText(dateString);
+                        presenter.onChangeBirthdate(year, month, dayOfMonth);
                     }
                 }, year, month, dayOfMonth);
                 DatePicker datePicker = datePickerDialog.getDatePicker();
-
                 calendar.add(Calendar.DATE, -1);
                 datePicker.setMaxDate(calendar.getTimeInMillis());
                 datePickerDialog.show();
@@ -140,10 +132,26 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
     }
 
     @Override
+    public Date getUpperBirthDate() {
+        return TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, travelTrip.getUpperBirthDate());
+    }
+
+    @Override
+    public Date getLowerBirthDate() {
+        return TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, travelTrip.getLowerBirthDate());
+    }
+
+    @Override
+    public void showBirthdateChange(Date dateSelected) {
+        birthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dateSelected);
+        String dateString = TravelDateUtil.dateToString(DEFAULT_VIEW_FORMAT, dateSelected);
+        birthDateEt.setText(dateString);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        travelTrip = getArguments().getParcelable(TravelPassengerUpdateActivity.TRAVEL_TRIP);
         if (travelTrip.getTravelPassengerBooking().getPaxType() == TravelBookingPassenger.ADULT) {
             renderSpinnerForAdult();
         } else if (travelTrip.getTravelPassengerBooking().getPaxType() == TravelBookingPassenger.INFANT) {
@@ -181,7 +189,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
             Date date = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                     trainPassengerViewModel.getBirthDate());
             birthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date);
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = TravelDateUtil.getCurrentCalendar();
             calendar.setTime(date);
             year = calendar.get(Calendar.YEAR);
             month = calendar.get(Calendar.MONTH);

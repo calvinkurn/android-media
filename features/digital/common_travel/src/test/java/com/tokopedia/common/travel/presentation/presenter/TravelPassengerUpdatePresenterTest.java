@@ -7,6 +7,7 @@ import com.tokopedia.common.travel.domain.EditTravelPassengerUseCase;
 import com.tokopedia.common.travel.domain.provider.TravelTestScheduler;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerUpdateContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
 import com.tokopedia.usecase.RequestParams;
 
@@ -18,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Date;
 
 import rx.Observable;
 
@@ -496,5 +499,72 @@ public class TravelPassengerUpdatePresenterTest {
         presenter.submitEditPassengerData();
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(exception);
+    }
+
+    @Test
+    public void onChangeBirthDate_PassengerInfantChooseWrongDate_ShowSnackbarError() {
+        //given
+        int dateSelected = 21;
+        int monthSelected = 10;
+        int yearSelected = 1995;
+        Date lowerBirthDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2018-10-02");
+        Date upperBirthDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2015-10-02");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.INFANT);
+        Mockito.when(view.getLowerBirthDate()).thenReturn(lowerBirthDate);
+        Mockito.when(view.getUpperBirthDate()).thenReturn(upperBirthDate);
+        //when
+        presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
+        //then
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_pick_infant_passenger);
+    }
+
+    @Test
+    public void onChangeBirthDate_PassengerInfantChooseRightDate_SelectedDate() {
+        //given
+        int dateSelected = 21;
+        int monthSelected = 10;
+        int yearSelected = 2015;
+        Date lowerBirthDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2018-10-02");
+        Date upperBirthDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2015-10-02");
+        Date dateFullSelected = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2015-11-21");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.INFANT);
+        Mockito.when(view.getLowerBirthDate()).thenReturn(lowerBirthDate);
+        Mockito.when(view.getUpperBirthDate()).thenReturn(upperBirthDate);
+        //when
+        presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
+        //then
+        Mockito.verify(view).showBirthdateChange(dateFullSelected);
+    }
+
+    @Test
+    public void onChangeBirthDate_PassengerAdultChooseWrongDate_ShowSnackbarError() {
+        //given
+        int dateSelected = 21;
+        int monthSelected = 10;
+        int yearSelected = 2015;
+        Date lowerBirthDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2015-10-02");
+        Date dateFullSelected = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2015-10-21");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
+        Mockito.when(view.getLowerBirthDate()).thenReturn(lowerBirthDate);
+        //when
+        presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
+        //then
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_pick_adult_passenger);
+    }
+
+    @Test
+    public void onChangeBirthDate_PassengerAdultChooseRightDate_SelectedDate() {
+        //given
+        int dateSelected = 21;
+        int monthSelected = 9;
+        int yearSelected = 1995;
+        Date lowerBirthDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "2015-10-02");
+        Date dateFullSelected = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, "1995-10-21");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
+        Mockito.when(view.getLowerBirthDate()).thenReturn(lowerBirthDate);
+        //when
+        presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
+        //then
+        Mockito.verify(view).showBirthdateChange(dateFullSelected);
     }
 }

@@ -88,6 +88,10 @@ public interface TrainBookingPassengerContract {
         void hideLoading();
 
         void showNavigateToSearchDialog(String message);
+
+        String getDepartureDate();
+
+        void showUpperLowerBirthDate(String lowerBirthDate, String upperBirthDate);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -105,5 +109,8 @@ public interface TrainBookingPassengerContract {
         void onChooseSeatButtonClicked();
 
         void onDestroyView();
+
+        void calculateUpperLowerBirthDate(int paxType);
+
     }
 }

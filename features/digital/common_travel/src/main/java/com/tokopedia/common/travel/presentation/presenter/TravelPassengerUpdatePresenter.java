@@ -7,7 +7,11 @@ import com.tokopedia.common.travel.domain.EditTravelPassengerUseCase;
 import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerUpdateContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -68,6 +72,31 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
                                 }
                             })
             );
+        }
+    }
+
+    @Override
+    public void onChangeBirthdate(int year, int month, int dayOfMonth) {
+        Calendar calendarNow = Calendar.getInstance();
+        calendarNow.set(Calendar.YEAR, year);
+        calendarNow.set(Calendar.MONTH, month);
+        calendarNow.set(Calendar.DATE, dayOfMonth);
+        Date dateSelected = calendarNow.getTime();
+        dateSelected = TravelDateUtil.removeTime(dateSelected);
+
+        if (getView().getPaxType() == TravelBookingPassenger.INFANT) {
+            if (dateSelected.before(getView().getUpperBirthDate()) ||
+                    dateSelected.after(getView().getLowerBirthDate())) {
+                getView().showMessageErrorInSnackBar(R.string.error_message_pick_infant_passenger);
+            } else {
+                getView().showBirthdateChange(dateSelected);
+            }
+        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT){
+            if (dateSelected.after(getView().getLowerBirthDate())) {
+                getView().showMessageErrorInSnackBar(R.string.error_message_pick_adult_passenger);
+            } else {
+                getView().showBirthdateChange(dateSelected);
+            }
         }
     }
 
