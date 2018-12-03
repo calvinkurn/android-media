@@ -16,6 +16,7 @@ class DataCreditViewHolder(val view: View,
     override fun bind(element: DataCredit) {
         itemView.radio_button.isChecked = listener.isPositionChecked(adapterPosition)
         itemView.radio_button.setText(element.productPrice)
+        itemView.radio_button.setOnClickListener { listener.select(adapterPosition) }
         itemView.setOnClickListener { listener.select(adapterPosition)}
 
     }
