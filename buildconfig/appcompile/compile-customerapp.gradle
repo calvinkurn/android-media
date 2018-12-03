@@ -8,6 +8,7 @@ include "features:content:feed"
 include "features:content:explore"
 include "features:content:kol"
 include "features:content:kol_common"
+include "features:content:kol_component"
 include "features:content:profile"
 include "features:content:interest_pick"
 

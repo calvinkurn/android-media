@@ -23,6 +23,7 @@ ext {
     tkpdInboxVersion = '2.22'
     tkpdInterestPickVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
+    tkpdKolComponentVersion = '2.22'
     tkpdKolVersion = '2.22'
     tkpdAffiliateVersion = '2.22'
     tkpdAffiliateCommonVersion = '2.22'
@@ -84,6 +85,7 @@ ext {
             inbox                       : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                         : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon                   : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
+            kolComponent                : "com.tokopedia.kolcommon:kolCommon:${tkpdKolComponentVersion}",
             loginphone                  : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister               : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon               : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
@@ -127,6 +129,7 @@ ext {
             interestPick                : ":features:content:interest_pick",
             kol                         : ":features:content:kol",
             kolCommon                   : ":features:content:kol_common",
+            kolComponent                : ":features:content:kol_component",
             affiliate                   : ":features:content:affiliate",
 //            affiliate                   : ":features:content:affiliate_no_op",
             affiliateCommon             : ":features:content:affiliate_common",
