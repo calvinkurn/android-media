@@ -179,7 +179,7 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void sendMoEngageOpenFeedEvent(Context context, boolean isEmptyFeed) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, outerUtils.getRouterFromContext(context).legacySessionHandler().isV4Login());
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login());
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FEED_EMPTY, isEmptyFeed);
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_FEED);
     }

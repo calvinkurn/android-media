@@ -2989,12 +2989,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendOpenHomeEvent() {
-        TrackingUtils.sendMoEngageOpenHomeEvent();
+        TrackingUtils.sendMoEngageOpenHomeEvent(getAppContext());
     }
 
     @Override
     public void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
-        TrackingUtils.sendMoEngageOpenFeedEvent(isEmptyFeed);
+        TrackingUtils.sendMoEngageOpenFeedEvent(getAppContext(), isEmptyFeed);
     }
 
     @Override

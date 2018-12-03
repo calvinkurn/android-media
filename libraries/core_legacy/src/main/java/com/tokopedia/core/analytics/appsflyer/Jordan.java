@@ -1,6 +1,8 @@
 package com.tokopedia.core.analytics.appsflyer;
 
+import android.app.Activity;
 import android.app.Application;
+import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -33,7 +35,15 @@ public class Jordan {
     private static boolean isAppsflyerCallbackHandled;
 
     private Jordan(Context ctx) {
-        context = ctx;
+        Application application = null;
+        if (ctx instanceof Activity) {
+            application = ((Activity) ctx).getApplication();
+        } else if (ctx instanceof Service) {
+            application = ((Service) ctx).getApplication();
+        } else if (ctx instanceof Application) {
+            application = (Application) ctx;
+        }
+        context = application;
     }
 
     public static Jordan init(Context context) {

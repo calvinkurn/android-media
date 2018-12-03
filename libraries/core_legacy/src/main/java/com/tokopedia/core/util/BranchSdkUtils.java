@@ -78,7 +78,7 @@ public class BranchSdkUtils {
                 ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl());
             } else {
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
-                LinkProperties linkProperties = createLinkProperties(RouterUtils.getRouterFromContext(activity).legacySessionHandler().getLoginName(), data, data.getSource(), activity);
+                LinkProperties linkProperties = createLinkProperties(activity, RouterUtils.getRouterFromContext(activity).legacySessionHandler().getLoginName(), data, data.getSource(), activity);
                 branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
                     @Override
                     public void onLinkCreate(String url, BranchError error) {
@@ -96,7 +96,7 @@ public class BranchSdkUtils {
         }
     }
 
-    private static LinkProperties createLinkProperties(String loginName, ShareData data, String channel, Activity activity) {
+    private static LinkProperties createLinkProperties(Context context, String loginName, ShareData data, String channel, Activity activity) {
         LinkProperties linkProperties = new LinkProperties();
 
 
@@ -149,7 +149,7 @@ public class BranchSdkUtils {
         if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
         }
-        if (isAndroidIosUrlActivated() && !(ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
+        if (isAndroidIosUrlActivated(context) && !(ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
                 ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType()) ||
                 ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType()))) {
             linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
@@ -458,8 +458,8 @@ public class BranchSdkUtils {
         void onCreateShareContents(String shareContents, String shareUri, String branchUrl);
     }
 
-    public static Boolean isAndroidIosUrlActivated() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+    public static Boolean isAndroidIosUrlActivated(Context context) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         return remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB, true);
     }
 }
