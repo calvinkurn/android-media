@@ -127,4 +127,5 @@
     <string name="hint_review_edittext">Tulis ulasan produk</string>
     <string name="review_min_character">Minimal 30 karakter</string>
     <string name="review_label_all">Semua</string>
+    <string name="review_label_with_photo">Dengan Foto</string>
 </resources>

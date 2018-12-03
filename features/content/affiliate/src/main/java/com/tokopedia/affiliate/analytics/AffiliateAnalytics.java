@@ -55,7 +55,7 @@ public class AffiliateAnalytics {
         mapEvent.put(PARAM_USER_ID, userSession.getUserId());
         return mapEvent;
     }
-    
+
     public AnalyticTracker getAnalyticTracker() {
         return abstractionRouter.getAnalyticTracker();
     }
@@ -192,38 +192,38 @@ public class AffiliateAnalytics {
         );
     }
 
-    public void onLihatContohButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+    public void onLihatContohButtonClicked(String productId) {
+        getAnalyticTracker().getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_LIHAT_CONTOH,
-                        ""
+                        productId
                 )
         );
     }
 
-    public void onTambahGambarButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+    public void onTambahGambarButtonClicked(String productId) {
+        getAnalyticTracker().getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_TAMBAH_GAMBAR,
-                        ""
+                        productId
                 )
         );
     }
 
-    public void onSelesaiCreateButtonClicked() {
-        getAnalyticTracker().sendEventTracking(
+    public void onSelesaiCreateButtonClicked(String productId) {
+        getAnalyticTracker().getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
                         AffiliateEventTracking.Screen.BYME_CREATE_POST,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_SELESAI,
-                        ""
+                        productId
                 )
         );
     }
