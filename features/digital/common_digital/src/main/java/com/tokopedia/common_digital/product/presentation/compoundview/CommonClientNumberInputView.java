@@ -248,10 +248,6 @@ public abstract class CommonClientNumberInputView extends LinearLayout {
 
         void onButtonContactPickerClicked();
 
-//        void onClientNumberInputValid(String tempClientNumber);
-
-//        void onClientNumberInputInvalid();
-
         void onClientNumberHasFocus(String clientNumber);
 
         void onClientNumberCleared();

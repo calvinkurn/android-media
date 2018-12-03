@@ -6,6 +6,8 @@ import android.util.Log;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.common_digital.common.data.api.exception.DigitalError;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
@@ -23,9 +25,11 @@ import okhttp3.Response;
 public class DigitalInterceptor extends com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor {
 
     private static final String TAG = DigitalInterceptor.class.getSimpleName();
+    private Context context;
 
     public DigitalInterceptor(Context context, AbstractionRouter abstractionRouter, com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
         super(context, abstractionRouter, userSession);
+        this.context = context;
     }
 
     @Override
@@ -41,30 +45,27 @@ public class DigitalInterceptor extends com.tokopedia.abstraction.common.network
                 throw new ResponseErrorException(digitalErrorResponse.getDigitalErrorMessageFormatted());
             } else if (digitalErrorResponse.getTypeOfError()
                     == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
-//                if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-//                        ServerErrorHandler.STATUS_UNDER_MAINTENANCE
-//                )) {
-//                    throw new ServerErrorMaintenanceException(
-//                            digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
-//                            response.code(), response.request().url().toString()
-//                    );
-//                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-//                        ServerErrorHandler.STATUS_REQUEST_DENIED
-//                )) {
-//                    throw new ServerErrorRequestDeniedException(
-//                            digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
-//                            response.code(), response.request().url().toString()
-//                    );
-//                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
-//                        ServerErrorHandler.STATUS_FORBIDDEN
-//                ) && MethodChecker.isTimezoneNotAutomatic()) {
-//                    throw new ServerErrorTimeZoneException(
-//                            digitalErrorResponse.getServerErrorMessageFormatted(), errorBody,
-//                            response.code(), response.request().url().toString()
-//                    );
-//                } else {
-//                    throw new HttpErrorException(response.code());
-//                }
+                if (digitalErrorResponse.getStatus().equalsIgnoreCase(
+                        DigitalError.STATUS_UNDER_MAINTENANCE
+                )) {
+                    throw new ResponseErrorException(
+                            digitalErrorResponse.getServerErrorMessageFormatted()
+                    );
+                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
+                        DigitalError.STATUS_REQUEST_DENIED
+                )) {
+                    throw new ResponseErrorException(
+                            digitalErrorResponse.getServerErrorMessageFormatted()
+                    );
+                } else if (digitalErrorResponse.getStatus().equalsIgnoreCase(
+                        DigitalError.STATUS_FORBIDDEN
+                ) && MethodChecker.isTimezoneNotAutomatic(context)) {
+                    throw new ResponseErrorException(
+                            digitalErrorResponse.getServerErrorMessageFormatted()
+                    );
+                } else {
+                    throw new HttpErrorException(response.code());
+                }
             } else {
                 throw new HttpErrorException(response.code());
             }

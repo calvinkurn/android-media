@@ -129,11 +129,11 @@ public class InstantCheckoutActivity extends BaseSimpleActivity {
 
         @SuppressWarnings("deprecation")
         public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-            //     Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
+
         }
 
         public boolean onConsoleMessage(ConsoleMessage cm) {
-            //    Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
+
             return true;
         }
     }
@@ -145,7 +145,6 @@ public class InstantCheckoutActivity extends BaseSimpleActivity {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //   Log.d(TAG, "redirect url instant instantCheckout = " + url);
             if ((!instantCheckoutData.getFailedCallbackUrl().isEmpty()
                     && url.contains(instantCheckoutData.getFailedCallbackUrl()))
                     || (!instantCheckoutData.getSuccessCallbackUrl().isEmpty()
