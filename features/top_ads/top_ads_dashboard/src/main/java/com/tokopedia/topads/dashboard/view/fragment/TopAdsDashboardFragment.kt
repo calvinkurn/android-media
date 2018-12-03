@@ -525,11 +525,15 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         snackbarRetry?.hideRetrySnackbar()
         val freeDeposit = dataDeposit.freeDeposit
         text_view_deposit_value.text = dataDeposit.amountFmt
-        if (freeDeposit.nominal > 0) {
-            ticker_view.addMessage(0, getString(R.string.top_ads_template_credit_bonus,
-                    freeDeposit.nominalFmt,
-                    freeDeposit.remainingDays.toString() + ""))
-            ticker_view.visibility = View.VISIBLE
+
+        if (freeDeposit.status in 1..2){
+            val valueFmt = if (freeDeposit.status == 2) freeDeposit.usageFmt else freeDeposit.nominalFmt
+            if (valueFmt.isNotBlank() && !valueFmt.trim().equals("0")) {
+                ticker_view.addMessage(0, getString(R.string.top_ads_template_credit_bonus,
+                        valueFmt,
+                        freeDeposit.remainingDays.toString() + ""))
+                ticker_view.visibility = View.VISIBLE
+            }
         }
     }
 
