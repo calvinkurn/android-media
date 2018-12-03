@@ -122,26 +122,13 @@ public class ProductDigitalMapper {
         if (entity == null) return operatorCategoryList;
 
         for (OperatorBannerEntity categoryDetailIncluded : entity.getOperators()) {
-//            Operator operatorCategory = new Operator();
-//            operatorCategory.setName(categoryDetailIncluded.getAttributes().getName());
             String name = categoryDetailIncluded.getAttributes().getName();
-//            operatorCategory.setDefaultProductId(
-//                    categoryDetailIncluded.getAttributes().getDefaultProductId()
-//            );
             int defaultProductId = categoryDetailIncluded.getAttributes().getDefaultProductId();
-//            operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
             String image = categoryDetailIncluded.getAttributes().getImage();
-//            operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssd());
             String ussdCode = categoryDetailIncluded.getAttributes().getUssd();
-//            operatorCategory.setLastorderUrl(
-//                    categoryDetailIncluded.getAttributes().getLastorderUrl()
-//            );
             String lastOrderUrl = categoryDetailIncluded.getAttributes().getLastorderUrl();
-//            operatorCategory.setOperatorId(categoryDetailIncluded.getId());
             String operatorId = categoryDetailIncluded.getId();
-//            operatorCategory.setPrefixList(categoryDetailIncluded.getAttributes().getPrefix());
             List<String> prefixList = categoryDetailIncluded.getAttributes().getPrefix();
-//            operatorCategory.setOperatorType(categoryDetailIncluded.getType());
             String operatorType = categoryDetailIncluded.getType();
             List<Product> products = new ArrayList<>();
             for (com.tokopedia.digital.common.data.entity.response.Product product
@@ -197,8 +184,6 @@ public class ProductDigitalMapper {
                 clientNumberOperator.setValidation(validationCategoryList);
                 clientNumberList.add(clientNumberOperator);
             }
-//            operatorCategory.setProductList(products);
-//            operatorCategory.setClientNumberList(clientNumberList);
 
             Rule rule = new Rule();
             rule.setMaximumLength(
@@ -219,7 +204,6 @@ public class ProductDigitalMapper {
             rule.setButtonText(
                     categoryDetailIncluded.getAttributes().getRule().getButtonText()
             );
-//            operatorCategory.setRule(rule);
 
             Operator operatorCategory = new OperatorBuilder()
                     .name(name)

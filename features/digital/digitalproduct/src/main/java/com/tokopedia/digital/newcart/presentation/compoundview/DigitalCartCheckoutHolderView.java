@@ -68,11 +68,6 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         });
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-    }
-
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
     }

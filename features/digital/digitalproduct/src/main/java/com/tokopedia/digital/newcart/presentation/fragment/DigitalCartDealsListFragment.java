@@ -60,10 +60,6 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
         super.onCreate(savedInstanceState);
     }
 
-    public DigitalCartDealsListFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void loadData(int page) {
         presenter.getProducts(nextUrl);

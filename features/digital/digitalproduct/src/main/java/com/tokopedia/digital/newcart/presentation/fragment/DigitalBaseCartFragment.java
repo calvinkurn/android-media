@@ -184,12 +184,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void trackingSuccessVoucher(String voucherName) {
-        // TODO : UnifyTracking.eventVoucherSuccess(voucherCode, "");
+
     }
 
     @Override
     public void trackingCancelledVoucher() {
-        // TODO : UnifyTracking.eventClickCancelVoucher("", "");
+
     }
 
 

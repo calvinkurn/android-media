@@ -49,10 +49,6 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     }
 
-    public DigitalCartDefaultFragment() {
-        // Required empty public constructor
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

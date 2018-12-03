@@ -115,9 +115,10 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void onBackPressed() {
-        if (getFragment() != null && getFragment() instanceof DigitalDealNatigationListener) {
-            if (!((DigitalDealNatigationListener) getFragment()).canGoBack()) {
-                ((DigitalDealNatigationListener) getFragment()).goBack();
+        Fragment fragment = getFragment();
+        if (fragment instanceof DigitalDealNatigationListener) {
+            if (!((DigitalDealNatigationListener) fragment).canGoBack()) {
+                ((DigitalDealNatigationListener) fragment).goBack();
             } else {
                 super.onBackPressed();
             }
