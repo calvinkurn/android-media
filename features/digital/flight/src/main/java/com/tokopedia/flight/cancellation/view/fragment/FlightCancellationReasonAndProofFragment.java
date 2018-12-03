@@ -28,6 +28,7 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachem
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
+import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationViewImageDialogFragment;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReasonAndProofPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
@@ -60,6 +61,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private ProgressBar progressBar;
     private RecyclerView rvAttachments;
     private AppCompatButton btnNext;
+
+    private FlightCancellationViewImageDialogFragment viewImageDialogFragment;
 
     private List<FlightCancellationAttachmentViewModel> attachments;
     private FlightCancellationAttachmentAdapter adapter;
@@ -123,6 +126,10 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         presenter.setNextButton();
 
         buildAttachmentReasonView();
+
+        if (viewImageDialogFragment == null) {
+            viewImageDialogFragment = new FlightCancellationViewImageDialogFragment();
+        }
     }
 
     @Override
@@ -329,6 +336,12 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void deleteAttachement(FlightCancellationAttachmentViewModel element) {
         adapter.removeAttachment(element);
+    }
+
+    @Override
+    public void viewImage(String filePath) {
+        viewImageDialogFragment.showImage(filePath);
+        viewImageDialogFragment.show(getFragmentManager(), "fragment_view_image");
     }
 
     @Override
