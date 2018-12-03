@@ -76,7 +76,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         btnTryAgain.setOnClickListener { loadWebViewPage() }
     }
 
-    open fun onReceivedErrorView() {
+    fun onReceivedErrorView() {
         setContentView(R.layout.activity_no_internet)
         findViewById<TextView>(R.id.tv_msg_medium).visibility = View.GONE
         findViewById<TextView>(R.id.tv_msg_large).visibility = View.VISIBLE
