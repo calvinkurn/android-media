@@ -38,9 +38,12 @@ public class ActionNotification extends BaseNotification {
         if (!baseNotificationModel.getDetailMessage().isEmpty())
             builder.setStyle(new NotificationCompat.BigTextStyle().bigText(baseNotificationModel.getDetailMessage()));
 
+        int count = 1;
         for (ActionButton actionButton : actionButtonList) {
             builder.addAction(R.drawable.qc_launcher,
-                    actionButton.getText(), getButtonPendingIntent(actionButton, 500));
+                    actionButton.getText(), getButtonPendingIntent(actionButton,
+                            baseNotificationModel.getNotificationId() + (count * 10)));
+            count++;
         }
     }
 
