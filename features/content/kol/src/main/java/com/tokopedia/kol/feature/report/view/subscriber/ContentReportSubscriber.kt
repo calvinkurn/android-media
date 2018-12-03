@@ -3,8 +3,8 @@ package com.tokopedia.kol.feature.report.view.subscriber
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.kol.R
-import com.tokopedia.kol.common.util.debugTrace
 import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import rx.Subscriber
 
 /**
