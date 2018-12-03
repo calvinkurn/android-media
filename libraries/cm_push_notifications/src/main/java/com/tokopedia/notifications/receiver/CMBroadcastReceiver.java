@@ -13,7 +13,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.CmEventPost;
-import com.tokopedia.notifications.common.CMScreenEventMap;
 import com.tokopedia.notifications.model.PersistentButton;
 
 /**
@@ -67,12 +66,10 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             PersistentButton persistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA);
             if (persistentButton.isAppLogo()) {
                 CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
-                        CMEvents.PersistentEvent.EVENT_ACTION_LOGO_CLICK,
-                        CMScreenEventMap.getScreenNameByApplink(persistentButton.getAppLink()));
+                        CMEvents.PersistentEvent.EVENT_ACTION_LOGO_CLICK,persistentButton.getAppLink());
             } else {
                 CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
-                        persistentButton.getText(),
-                        CMScreenEventMap.getScreenNameByApplink(persistentButton.getAppLink()));
+                        persistentButton.getText(),persistentButton.getAppLink());
             }
 
             Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), persistentButton.getAppLink());
