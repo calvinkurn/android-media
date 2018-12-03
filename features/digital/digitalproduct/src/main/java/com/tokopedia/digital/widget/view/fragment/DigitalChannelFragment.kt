@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.tkpd.library.ui.view.LinearLayoutManager
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.database.manager.GlobalCacheManager
@@ -15,6 +16,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService
 import com.tokopedia.digital.common.data.source.CategoryListDataSource
 import com.tokopedia.digital.common.data.source.StatusDataSource
+import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
 import com.tokopedia.digital.widget.data.source.RecommendationListDataSource
 import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase
@@ -30,6 +32,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
  * Created by Rizky on 15/11/18.
  */
 class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View, RecommendationAdapter.OnClickListener {
+
+    private lateinit var abstractionRouter: AbstractionRouter
 
     private lateinit var digitalChannelPresenter: DigitalChannelPresenter
 
@@ -67,6 +71,15 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
 
         text_see_more.setOnClickListener {
             RouteManager.route(activity, "tokopedia://category-explore?type=2")
+
+            abstractionRouter
+                    .analyticTracker
+                    .sendEventTracking(
+                            ETollEventTracking.Event.USER_HOME_INTERACTION_PAGE,
+                            ETollEventTracking.Category.HOMEPAGE_DIGITAL,
+                            ETollEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
+                            ""
+                    )
         }
 
         digitalChannelPresenter.attachView(this)
@@ -96,6 +109,8 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
     }
 
     override fun initInjector() {
+        abstractionRouter = activity?.application as AbstractionRouter
+
         val digitalEndpointService = DigitalEndpointService()
         val digitalGqlApiService = DigitalGqlApiService()
         val globalCacheManager = GlobalCacheManager()
@@ -151,9 +166,24 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         text_error_message.text = message
     }
 
-    override fun onClickRecommendation(recommendation: Recommendation) {
+    override fun onClickRecommendation(recommendation: Recommendation, position: Int) {
         if (RouteManager.isSupportApplink(activity, recommendation.applink)) {
             RouteManager.route(activity, recommendation.applink)
+
+            val eventLabel = if (!recommendation.clientNumber.isNullOrEmpty()) {
+                "history - $position - ${recommendation.categoryId} - ${recommendation.title}"
+            } else {
+                "recommendation - $position - ${recommendation.categoryId} - ${recommendation.title}"
+            }
+
+            abstractionRouter
+                    .analyticTracker
+                    .sendEventTracking(
+                            ETollEventTracking.Event.USER_HOME_INTERACTION_PAGE,
+                            ETollEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                            ETollEventTracking.Action.CLICK_RECOMMENDATION_WIDGET,
+                            eventLabel
+                    )
         }
     }
 

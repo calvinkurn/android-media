@@ -18,7 +18,7 @@ class RecommendationAdapter(val recommendations: List<Recommendation>, val liste
         RecyclerView.Adapter<RecommendationAdapter.RecommendationItemViewHolder>() {
 
     interface OnClickListener {
-        fun onClickRecommendation(recommendation: Recommendation)
+        fun onClickRecommendation(recommendation: Recommendation, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationItemViewHolder {
@@ -45,7 +45,7 @@ class RecommendationAdapter(val recommendations: List<Recommendation>, val liste
 
         init {
             itemView.setOnClickListener {
-                listener.onClickRecommendation(recommendation)
+                listener.onClickRecommendation(recommendation, adapterPosition)
             }
         }
 

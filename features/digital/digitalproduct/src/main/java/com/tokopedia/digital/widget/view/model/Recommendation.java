@@ -10,13 +10,16 @@ public class Recommendation {
     private String clientNumber;
     private String applink;
     private String webLink;
+    private String categoryId;
 
-    public Recommendation(String iconUrl, String title, String clientNumber, String applink, String webLink) {
+    public Recommendation(String iconUrl, String title, String clientNumber, String applink,
+                          String webLink, String categoryId) {
         this.iconUrl = iconUrl;
         this.title = title;
         this.clientNumber = clientNumber;
         this.applink = applink;
         this.webLink = webLink;
+        this.categoryId = categoryId;
     }
 
     public String getIconUrl() {
@@ -39,4 +42,7 @@ public class Recommendation {
         return webLink;
     }
 
+    public String getCategoryId() {
+        return categoryId;
+    }
 }

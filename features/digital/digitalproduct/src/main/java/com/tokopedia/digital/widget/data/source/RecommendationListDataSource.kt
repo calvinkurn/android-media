@@ -25,7 +25,8 @@ class RecommendationListDataSource constructor(private val digitalGqlApiService:
                                             title,
                                             clientNumber,
                                             applink,
-                                            webLink)
+                                            webLink,
+                                            "")
                                 }
                             }
                 }
