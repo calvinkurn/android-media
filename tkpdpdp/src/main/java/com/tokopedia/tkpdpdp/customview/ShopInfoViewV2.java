@@ -164,10 +164,10 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     public void reverseFavorite() {
         if (isShopFavorite) {
             updateFavoriteStatus(0);
-            TrackingUtils.sendMoEngageFavoriteEvent(productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, false);
+            TrackingUtils.sendMoEngageFavoriteEvent(getContext(), productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, false);
         } else {
             updateFavoriteStatus(1);
-            TrackingUtils.sendMoEngageFavoriteEvent(productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, true);
+            TrackingUtils.sendMoEngageFavoriteEvent(getContext(), productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, true);
         }
     }
 

@@ -199,7 +199,7 @@ public class SearchActivity extends DiscoveryActivity
 
         if (intent != null &&
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            searchTracking.eventSearchShortcut(this);
+            searchTracking.eventSearchShortcut();
         }
         handleImageUri(intent);
     }

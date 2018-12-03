@@ -23,47 +23,56 @@ public abstract class MainRouterApplication extends BaseMainApplication implemen
 
     @Override
     public Class<?> getInboxTalkActivityClass() {
-        return InboxRouter.getInboxTalkActivityClass();
+        return null;
+//        return InboxRouter.getInboxTalkActivityClass();
     }
 
     @Override
     public Intent getSellerHomeActivityReal(Context context) {
-        return SellerAppRouter.getSellerHomeActivity(context);
+        return null;
+//        return SellerAppRouter.getSellerHomeActivity(context);
     }
 
     @Override
     public Intent getInboxTalkActivityIntentReal(Context context) {
-        return InboxRouter.getInboxTalkActivityIntent(context);
+        return null;
+//        return InboxRouter.getInboxTalkActivityIntent(context);
     }
 
     @Override
     public IAppNotificationReceiver getAppNotificationReceiver() {
-        return SellerAppRouter.getAppNotificationReceiver();
+        return null;
+//        return SellerAppRouter.getAppNotificationReceiver();
     }
 
     @Override
     public Class<?> getInboxMessageActivityClass() {
-        return InboxRouter.getInboxMessageActivityClass();
+        return null;
+//        return InboxRouter.getInboxMessageActivityClass();
     }
 
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
-        return InboxRouter.getInboxResCenterActivityClass();
+        return null;
+//        return InboxRouter.getInboxResCenterActivityClass();
     }
 
     @Override
     public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
+        return null;
+//        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
     }
 
     @Override
     public Class getSellingActivityClassReal() {
-        return SellerRouter.getSellingActivityClass();
+        return null;
+//        return SellerRouter.getSellingActivityClass();
     }
 
     @Override
     public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return SellerRouter.getActivitySellingTransactionList(mContext);
+        return null;
+//        return SellerRouter.getActivitySellingTransactionList(mContext);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
