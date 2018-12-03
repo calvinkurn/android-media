@@ -26,6 +26,8 @@ import java.util.List;
 
 public class UserIdentificationFormActivity extends BaseStepperActivity {
 
+    private static final String EXTRA_CURRENT_POSITION = "current_position";
+
     private List<Fragment> fragmentList;
     private SnackbarRetry snackbar;
 
@@ -40,6 +42,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA);
+            currentPosition = savedInstanceState.getInt(EXTRA_CURRENT_POSITION);
         } else {
             stepperModel = createNewStepperModel();
         }
@@ -49,6 +52,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_CURRENT_POSITION, currentPosition);
         outState.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
     }
 
