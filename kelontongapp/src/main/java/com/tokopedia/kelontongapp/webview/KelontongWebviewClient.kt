@@ -1,5 +1,6 @@
 package com.tokopedia.kelontongapp.webview
 
+import android.Manifest.permission.*
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.DialogInterface
@@ -14,8 +15,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 
-import android.Manifest.permission.CAMERA
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.SharedPreferences
 import android.webkit.WebResourceError
@@ -67,7 +66,8 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     fun checkPermission(): Boolean {
         val resultCamera = ContextCompat.checkSelfPermission(activity, CAMERA)
         val resultWrite = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE)
-        return resultCamera == PackageManager.PERMISSION_GRANTED && resultWrite == PackageManager.PERMISSION_GRANTED
+        return resultCamera == PackageManager.PERMISSION_GRANTED
+                && resultWrite == PackageManager.PERMISSION_GRANTED
     }
 
     fun requestPermission() {
@@ -77,7 +77,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            PERMISSION_REQUEST_CODE -> if (grantResults.size > 0) {
+            PERMISSION_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
                 val cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED
 
