@@ -61,7 +61,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     }
 
     @Override
-    public void onErrorLoadPrefed() {
+    public void onErrorLoadPrefered() {
 
     }
 

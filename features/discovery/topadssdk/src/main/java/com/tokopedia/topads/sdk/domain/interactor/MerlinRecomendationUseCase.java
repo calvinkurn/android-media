@@ -56,7 +56,7 @@ public class MerlinRecomendationUseCase extends UseCase<TopAdsParams, AdsView> {
                     listener.onSuccessLoadPrefered(merlinRecomendation.getProductCategoryId()
                             .get(merlinRecomendation.getProductCategoryId().size() - 1).getId());
                 } else {
-                    listener.onErrorLoadPrefed();
+                    listener.onErrorLoadPrefered();
                     view.notifyAdsErrorLoaded(Config.ERROR_CODE_INVALID_RESPONSE,
                             "Merlin Error occured");
                 }

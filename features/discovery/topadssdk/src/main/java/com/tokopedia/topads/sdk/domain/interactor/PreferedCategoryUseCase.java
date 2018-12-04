@@ -68,7 +68,7 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
                         listener.onSuccessLoadPrefered(getRandomId(preferedCategory.getUserCategoriesId()));
                         saveToCache(preferedCategory);
                     } else {
-                        listener.onErrorLoadPrefed();
+                        listener.onErrorLoadPrefered();
                         view.notifyAdsErrorLoaded(Config.ERROR_CODE_INVALID_RESPONSE,
                                 preferedCategory.getErrorMessage());
                     }
