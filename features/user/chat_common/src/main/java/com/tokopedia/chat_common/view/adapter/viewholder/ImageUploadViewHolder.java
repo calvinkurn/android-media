@@ -151,7 +151,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
         int imageResource;
         if (element.isShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
-            //TODO UNCOMMENT
             if (element.isRead()) {
                 imageResource = R.drawable.ic_chat_read;
             } else {

@@ -127,7 +127,7 @@
         android:layout_toLeftOf="@+id/hour"
         android:layout_toStartOf="@+id/hour"
         android:adjustViewBounds="true"
-        tools:src="@drawable/ic_check"/>
+        tools:src="@drawable/ic_read_thin"/>
 
     <TextView
         android:id="@+id/hour"
