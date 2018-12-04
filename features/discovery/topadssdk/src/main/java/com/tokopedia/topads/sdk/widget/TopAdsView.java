@@ -44,7 +44,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     private static final String TAG = TopAdsView.class.getSimpleName();
     @Inject
-    private TopAdsPresenter presenter;
+    TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
     private TypedArray styledAttributes;
