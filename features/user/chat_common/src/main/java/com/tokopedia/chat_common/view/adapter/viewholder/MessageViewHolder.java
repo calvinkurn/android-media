@@ -111,7 +111,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     }
 
     private void setReadStatus(MessageViewModel element) {
-        int imageResource;
+        int imageResource = 0;
         if (element.isShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
             if (element.isRead()) {
