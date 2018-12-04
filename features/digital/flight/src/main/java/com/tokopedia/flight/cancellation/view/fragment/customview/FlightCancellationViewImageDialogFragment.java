@@ -26,8 +26,20 @@ import java.io.File;
 
 public class FlightCancellationViewImageDialogFragment extends DialogFragment {
 
+    public static final String EXTRA_FILE_PATH = "EXTRA_FILE_PATH";
+
     AppCompatImageView imageView;
     Context context;
+
+    String filepath;
+
+    public static FlightCancellationViewImageDialogFragment newInstance(String filepath) {
+        FlightCancellationViewImageDialogFragment fragment = new FlightCancellationViewImageDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_FILE_PATH, filepath);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     public FlightCancellationViewImageDialogFragment() {
     }
@@ -43,12 +55,21 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
         return view;
     }
 
-    public void showImage(String filepath) {
+    public void showImage() {
         Glide.with(context)
                 .load(new File(filepath))
                 .asBitmap()
                 .centerCrop()
                 .into(getRoundedImageViewTarget(imageView, 5.0f));
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        filepath = getArguments().getString(EXTRA_FILE_PATH);
+
+        showImage();
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
