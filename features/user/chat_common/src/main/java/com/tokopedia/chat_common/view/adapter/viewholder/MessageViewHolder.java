@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
+import com.tokopedia.chat_common.R;
 
 /**
  * @author by nisie on 5/16/18.
@@ -29,20 +30,19 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     private TextView dot;
 
     @LayoutRes
-//    public static final int LAYOUT = R.layout.layout_message_chat;
-    public static final int LAYOUT = 1;
+    public static final int LAYOUT = R.layout.layout_message_chat;
 
 
     public MessageViewHolder(View itemView, ChatLinkHandlerListener listener) {
         super(itemView);
         this.context = itemView.getContext();
-//        message = itemView.findViewById(R.id.message);
+        message = itemView.findViewById(R.id.message);
         message.setMovementMethod(new ChatLinkHandlerMovementMethod(listener));
-//        chatStatus = itemView.findViewById(R.id.chat_status);
-//        name = itemView.findViewById(R.id.name);
-//        label = itemView.findViewById(R.id.label);
-//        dot = itemView.findViewById(R.id.dot);
-//        chatBalloon = itemView.findViewById(R.id.main);
+        chatStatus = itemView.findViewById(R.id.chat_status);
+        name = itemView.findViewById(R.id.name);
+        label = itemView.findViewById(R.id.label);
+        dot = itemView.findViewById(R.id.dot);
+        chatBalloon = itemView.findViewById(R.id.main);
 
     }
 
@@ -64,12 +64,12 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     }
 
     private void setChatLeft(View chatBalloon) {
-//        chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
-//                .left_bubble));
+        chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
+                .left_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, hour);
-//        message.setTextColor(MethodChecker.getColor(context, R.color.black_70));
-//        message.setLinkTextColor(MethodChecker.getColor(context, R.color.black_70));
+        message.setTextColor(MethodChecker.getColor(context, R.color.black_70));
+        message.setLinkTextColor(MethodChecker.getColor(context, R.color.black_70));
         chatStatus.setVisibility(View.GONE);
     }
 
@@ -82,12 +82,12 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     }
 
     private void setChatRight(View chatBalloon) {
-//        chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
-//                .right_bubble));
+        chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
+                .right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
-//        message.setTextColor(MethodChecker.getColor(context, R.color.white));
-//        message.setLinkTextColor(MethodChecker.getColor(context, R.color.white));
+        message.setTextColor(MethodChecker.getColor(context, R.color.white));
+        message.setLinkTextColor(MethodChecker.getColor(context, R.color.white));
         chatStatus.setVisibility(View.VISIBLE);
     }
 
@@ -115,13 +115,13 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         if (element.isShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
             if (element.isRead()) {
-//                imageResource = R.drawable.ic_chat_read;
+                imageResource = R.drawable.ic_chat_read;
             } else {
-//                imageResource = R.drawable.ic_chat_unread;
+                imageResource = R.drawable.ic_chat_unread;
             }
 
             if (element.isDummy()) {
-//                imageResource = R.drawable.ic_chat_pending;
+                imageResource = R.drawable.ic_chat_pending;
             }
             chatStatus.setImageResource(imageResource);
         } else {

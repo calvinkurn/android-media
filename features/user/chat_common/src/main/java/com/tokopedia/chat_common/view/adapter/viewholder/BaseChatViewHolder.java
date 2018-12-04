@@ -28,8 +28,8 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     public BaseChatViewHolder(View itemView) {
         super(itemView);
         view = itemView;
-        hour = (TextView) itemView.findViewById(R.id.hour);
-        date = (TextView) itemView.findViewById(R.id.date);
+        hour = itemView.findViewById(R.id.hour);
+        date = itemView.findViewById(R.id.date);
     }
 
     @Override
@@ -38,12 +38,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
             BaseChatViewModel element = (BaseChatViewModel) viewModel;
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    KeyboardHandler.DropKeyboard(itemView.getContext(), view);
-                }
-            });
+            view.setOnClickListener(v -> KeyboardHandler.DropKeyboard(itemView.getContext(), view));
 
             setHeaderDate(element);
             setBottomHour(element);
@@ -78,10 +73,8 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             long myTime = Long.parseLong(element.getReplyTime());
             Date date = new Date(myTime);
             if (DateUtils.isToday(myTime)) {
-                time = "";
                 time = itemView.getContext().getString(R.string.chat_today_date);
             } else if (DateUtils.isToday(myTime + DateUtils.DAY_IN_MILLIS)) {
-                time = "";
                 time = itemView.getContext().getString(R.string.chat_yesterday_date);
             } else {
                 time = DateFormat.getLongDateFormat(itemView.getContext()).format(date);

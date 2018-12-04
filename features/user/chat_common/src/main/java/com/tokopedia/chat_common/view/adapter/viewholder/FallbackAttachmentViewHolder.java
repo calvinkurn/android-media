@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
+import com.tokopedia.chat_common.R;
 
 /**
  * @author by nisie on 5/9/18.
@@ -15,7 +16,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAttachmentViewModel> {
 
     @LayoutRes
-//    public static final int LAYOUT = R.layout.layout_fallback_attachment;
+    public static final int LAYOUT = R.layout.layout_fallback_attachment;
     private final ChatLinkHandlerListener listener;
 
     private TextView message;
@@ -23,7 +24,7 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
     public FallbackAttachmentViewHolder(View itemView, ChatLinkHandlerListener listener) {
         super(itemView);
         this.listener = listener;
-//        message = (TextView) itemView.findViewById(R.id.message);
+        message = itemView.findViewById(R.id.message);
     }
 
     @Override
