@@ -109,6 +109,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.nps.NpsRouter;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -139,6 +140,7 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
@@ -1533,7 +1535,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title){
+    public Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title) {
         Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, url);
         intent.putExtra(BannerWebView.EXTRA_TITLE, title);
         return intent;
@@ -1842,7 +1844,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent navigateToGeoLocationActivityRequest(Context context, LocationPass locationPass) {
-       return GeolocationActivity.createInstance(context, locationPass, false);
+        return GeolocationActivity.createInstance(context, locationPass, false);
     }
 
     @Override
@@ -2148,7 +2150,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
-
 
 
     @Override
@@ -3093,12 +3094,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FlightOrderListFragment.createInstance();
     }
 
-    @Override
-    public String getResultSelectionPath(Intent data) {
-        MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
-        return item.getRealPath();
-    }
-
     public void onShowRationale(Context context, PermissionRequest request, String permission) {
         RequestPermissionUtil.onShowRationale(context, request, permission);
     }
@@ -3224,8 +3219,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void eventImageClickOnReview(Context context,
-                                             String productId,
-                                             String reviewId) {
+                                        String productId,
+                                        String reviewId) {
         ProductPageTracking.eventClickImageOnReviewList(
                 context,
                 productId,
