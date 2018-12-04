@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 
 public class DigitalCheckoutPassData implements Parcelable {
+    public static final int PARAM_WIDGET = 1;
+    public static final int PARAM_NATIVE = 2;
     public static final String PARAM_ACTION = "action";
     public static final String PARAM_CATEGORY_ID = "category_id";
     public static final String PARAM_CLIENT_NUMBER = "client_number";
@@ -38,6 +40,7 @@ public class DigitalCheckoutPassData implements Parcelable {
     private String utmContent;
     private String idemPotencyKey;
     private String voucherCodeCopied;
+    private int source;
 
     private DigitalCheckoutPassData(Builder builder) {
         setAction(builder.action);
@@ -53,6 +56,40 @@ public class DigitalCheckoutPassData implements Parcelable {
         setUtmContent(builder.utmContent);
         setIdemPotencyKey(builder.idemPotencyKey);
         setVoucherCodeCopied(builder.voucherCodeCopied);
+        setSource(builder.source);
+    }
+
+    protected DigitalCheckoutPassData(Parcel in) {
+        action = in.readString();
+        categoryId = in.readString();
+        clientNumber = in.readString();
+        productId = in.readString();
+        operatorId = in.readString();
+        isPromo = in.readString();
+        instantCheckout = in.readString();
+        utmSource = in.readString();
+        utmMedium = in.readString();
+        utmCampaign = in.readString();
+        utmContent = in.readString();
+        idemPotencyKey = in.readString();
+        voucherCodeCopied = in.readString();
+        source = in.readInt();
+    }
+
+    public static final Creator<DigitalCheckoutPassData> CREATOR = new Creator<DigitalCheckoutPassData>() {
+        @Override
+        public DigitalCheckoutPassData createFromParcel(Parcel in) {
+            return new DigitalCheckoutPassData(in);
+        }
+
+        @Override
+        public DigitalCheckoutPassData[] newArray(int size) {
+            return new DigitalCheckoutPassData[size];
+        }
+    };
+
+    public void setSource(int source) {
+        this.source = source;
     }
 
     public String getAction() {
@@ -159,7 +196,34 @@ public class DigitalCheckoutPassData implements Parcelable {
         this.voucherCodeCopied = voucherCodeCopied;
     }
 
+    public int getSource() {
+        return source;
+    }
+
     public DigitalCheckoutPassData() {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(action);
+        parcel.writeString(categoryId);
+        parcel.writeString(clientNumber);
+        parcel.writeString(productId);
+        parcel.writeString(operatorId);
+        parcel.writeString(isPromo);
+        parcel.writeString(instantCheckout);
+        parcel.writeString(utmSource);
+        parcel.writeString(utmMedium);
+        parcel.writeString(utmCampaign);
+        parcel.writeString(utmContent);
+        parcel.writeString(idemPotencyKey);
+        parcel.writeString(voucherCodeCopied);
+        parcel.writeInt(source);
     }
 
     public static final class Builder {
@@ -176,6 +240,7 @@ public class DigitalCheckoutPassData implements Parcelable {
         private String utmContent;
         private String idemPotencyKey;
         private String voucherCodeCopied;
+        private int source;
 
         public Builder() {
         }
@@ -245,59 +310,14 @@ public class DigitalCheckoutPassData implements Parcelable {
             return this;
         }
 
+        public Builder source(int val) {
+            source = val;
+            return this;
+        }
+
         public DigitalCheckoutPassData build() {
             return new DigitalCheckoutPassData(this);
         }
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.action);
-        dest.writeString(this.categoryId);
-        dest.writeString(this.clientNumber);
-        dest.writeString(this.productId);
-        dest.writeString(this.operatorId);
-        dest.writeString(this.isPromo);
-        dest.writeString(this.instantCheckout);
-        dest.writeString(this.utmSource);
-        dest.writeString(this.utmMedium);
-        dest.writeString(this.utmCampaign);
-        dest.writeString(this.utmContent);
-        dest.writeString(this.idemPotencyKey);
-        dest.writeString(this.voucherCodeCopied);
-    }
-
-    protected DigitalCheckoutPassData(Parcel in) {
-        this.action = in.readString();
-        this.categoryId = in.readString();
-        this.clientNumber = in.readString();
-        this.productId = in.readString();
-        this.operatorId = in.readString();
-        this.isPromo = in.readString();
-        this.instantCheckout = in.readString();
-        this.utmSource = in.readString();
-        this.utmMedium = in.readString();
-        this.utmCampaign = in.readString();
-        this.utmContent = in.readString();
-        this.idemPotencyKey = in.readString();
-        this.voucherCodeCopied = in.readString();
-    }
-
-    public static final Creator<DigitalCheckoutPassData> CREATOR =
-            new Creator<DigitalCheckoutPassData>() {
-                @Override
-                public DigitalCheckoutPassData createFromParcel(Parcel source) {
-                    return new DigitalCheckoutPassData(source);
-                }
-
-                @Override
-                public DigitalCheckoutPassData[] newArray(int size) {
-                    return new DigitalCheckoutPassData[size];
-                }
-            };
 }

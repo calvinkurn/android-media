@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
@@ -660,6 +661,19 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     @Override
     public void detachView() {
         getDigitalCategoryByIdUseCase.unsubscribe();
+    }
+
+    @Override
+    public DigitalCheckoutPassData generateCheckoutPassData(
+            BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
+            String versionInfoApplication,
+            String userLoginId
+    ) {
+        DigitalCheckoutPassData passData = super.generateCheckoutPassData(preCheckoutProduct,
+                versionInfoApplication,
+                userLoginId);
+        passData.setSource(DigitalCheckoutPassData.PARAM_NATIVE);
+        return passData;
     }
 
 }

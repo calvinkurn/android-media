@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
@@ -118,4 +119,16 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
         getDigitalCategoryByIdUseCase.unsubscribe();
     }
 
+    @Override
+    public DigitalCheckoutPassData generateCheckoutPassData(
+            BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
+            String versionInfoApplication,
+            String userLoginId
+    ) {
+        DigitalCheckoutPassData passData = super.generateCheckoutPassData(preCheckoutProduct,
+                versionInfoApplication,
+                userLoginId);
+        passData.setSource(DigitalCheckoutPassData.PARAM_WIDGET);
+        return passData;
+    }
 }

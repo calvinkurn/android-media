@@ -38,8 +38,6 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         CartDigitalFragment.ActionListener {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private static final String EXTRA_PASS_EXTRA_FROM = "EXTRA_PASS_EXTRA_FROM";
-    public static final int PARAM_WIDGET = 1;
-    public static final int PARAM_NATIVE = 2;
     private DigitalCheckoutPassData passData;
 
     @Inject
@@ -149,8 +147,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         } else if (!(fragment instanceof CartDigitalFragment)) {
             getFragmentManager().beginTransaction().replace(R.id.container,
                     CartDigitalFragment.newInstance(
-                            passData,
-                            getIntent().getIntExtra(EXTRA_PASS_EXTRA_FROM, PARAM_NATIVE))
+                            passData)
             ).commit();
         }
     }

@@ -3,8 +3,8 @@ package com.tokopedia.digital.tokocash;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
@@ -65,6 +65,7 @@ public class TopupTokoCashPresenter extends BaseDaggerPresenter<TopupTokoCashCon
                 .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                 .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                 .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
+                .source(DigitalCheckoutPassData.PARAM_NATIVE)
                 .build();
 
         if (getView().getMainApplication() instanceof DigitalRouter) {

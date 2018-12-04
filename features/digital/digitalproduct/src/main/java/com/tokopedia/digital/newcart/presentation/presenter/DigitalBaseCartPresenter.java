@@ -163,6 +163,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
+
+                digitalAnalytics.eventAddToCart(cartDigitalInfoData, getView().getCartPassData().getSource());
+                digitalAnalytics.eventCheckout(cartDigitalInfoData);
+
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
                     getView().showCartView();
                     getView().hideFullPageLoading();
@@ -318,6 +322,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             public void onNext(CheckoutDigitalData checkoutDigitalData) {
                 getView().hideFullPageLoading();
                 getView().renderToTopPay(checkoutDigitalData);
+                digitalAnalytics.eventProceedToPayment(getView().getCartInfoData(), getView().getCheckoutData().getVoucherCode());
             }
         };
     }
