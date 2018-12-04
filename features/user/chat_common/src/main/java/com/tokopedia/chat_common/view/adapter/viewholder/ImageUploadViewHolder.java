@@ -14,6 +14,7 @@ package com.tokopedia.chat_common.view.adapter.viewholder;
 //import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 //import com.tokopedia.topchat.common.util.ChatGlideImageRequestListener;
 
+import android.app.Activity;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,10 +22,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.PermissionCheckerHelper;
+import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.chat_common.data.ImageUploadViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 /**
  * Created by stevenfredian on 11/28/17.
@@ -41,6 +49,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     private static final int BLUR_WIDTH = 30;
     private static final int BLUR_HEIGHT = 30;
     private final ImageUploadListener listener;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     private View progressBarSendImage;
     private ImageView chatStatus;
@@ -97,6 +106,25 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
             }
 
             setVisibility(attachment, View.VISIBLE);
+            Activity activity;
+            permissionCheckerHelper.checkPermission(activity, PermissionCheckerHelper.Companion
+                    .PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(@NotNull String[] permissions) {
+                    RequestPermissionUtil.onPermissionDenied(activity, Arrays.asList(permissions));
+                }
+
+                @Override
+                public void onNeverAskAgain(@NotNull String[] permissions) {
+                    RequestPermissionUtil.onNeverAskAgain(activity, "");
+                }
+
+                @Override
+                public void onPermissionGranted() {
+
+                }
+
+            });
 
         }
     }

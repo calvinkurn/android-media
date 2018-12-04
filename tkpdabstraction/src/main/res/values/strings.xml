@@ -61,6 +61,9 @@
     <string name="permission_accounts">Akun</string>
     <string name="permission_phone">Telepon</string>
 
+    <string name="need_permission">Aplikasi ini membutuhkan izin untuk mengakses %s.
+        Perbolehkan?</string>
+
     <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
     <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
     <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
