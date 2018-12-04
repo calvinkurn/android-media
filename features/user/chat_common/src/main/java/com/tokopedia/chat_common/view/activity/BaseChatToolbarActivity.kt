@@ -1,19 +1,38 @@
 package com.tokopedia.chat_common
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-
-import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.di.ChatRoomComponent
+import com.tokopedia.chat_common.di.DaggerChatRoomComponent
+import com.tokopedia.chat_common.view.fragment.TopChatRoomFragment
 
 /**
  * @author by nisie on 23/11/18.
  */
-class BaseChatToolbarActivity : BaseChatActivity() {
+class BaseChatToolbarActivity : BaseChatActivity(), HasComponent<ChatRoomComponent> {
+    override fun getComponent(): ChatRoomComponent {
+        return DaggerChatRoomComponent.builder().baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent).build()
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun getCallingIntent(context: Context, messageId: String): Intent{
+            val intent = Intent(context, BaseChatToolbarActivity::class.java)
+            intent.putExtra("message_id", messageId)
+            return intent
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +53,13 @@ class BaseChatToolbarActivity : BaseChatActivity() {
             setHomeButtonEnabled(true)
 
             val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
-        if (upArrow != null) {
-            upArrow.setColorFilter(
-                    MethodChecker.getColor(this, R.color.grey_700),
-                    PorterDuff.Mode.SRC_ATOP
-            )
-            supportActionBar!!.setHomeAsUpIndicator(upArrow)
-        }
+            if (upArrow != null) {
+                upArrow.setColorFilter(
+                        MethodChecker.getColor(this@BaseChatToolbarActivity, R.color.grey_700),
+                        PorterDuff.Mode.SRC_ATOP
+                )
+                supportActionBar!!.setHomeAsUpIndicator(upArrow)
+            }
         }
 
         title = ""
@@ -53,7 +72,9 @@ class BaseChatToolbarActivity : BaseChatActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val bundle = Bundle()
+        bundle.putString("message_id", intent.getStringExtra("message_id"))
+        return TopChatRoomFragment.createInstance(bundle)
     }
 
 }

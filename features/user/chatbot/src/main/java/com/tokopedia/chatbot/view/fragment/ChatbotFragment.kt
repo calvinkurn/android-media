@@ -12,9 +12,7 @@ class ChatbotFragment : BaseChatFragment() {
     }
 
     override fun getScreenName(): String {
-
+        return ""
     }
-
-
 
 }

@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.chat_common.BaseChatToolbarActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -23,7 +24,6 @@ import com.tokopedia.topchat.chatlist.subscriber.SearchMessageSubscriber;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
@@ -269,17 +269,19 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 TopChatAnalytics.Action.INBOX_CHAT_CLICK,
                 TopChatAnalytics.Name.INBOX_CHAT);
 
-        Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
-                getView().getArguments().getString(InboxMessageConstant.PARAM_NAV),
-                String.valueOf(listMessage.getId()),
-                position,
-                listMessage.getName(),
-                listMessage.getLabel(),
-                listMessage.getSenderId(),
-                listMessage.getRole(),
-                viewModel.getMode(),
-                viewModel.getKeyword(),
-                listMessage.getImage());
+//        Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
+//                getView().getArguments().getString(InboxMessageConstant.PARAM_NAV),
+//                String.valueOf(listMessage.getId()),
+//                position,
+//                listMessage.getName(),
+//                listMessage.getLabel(),
+//                listMessage.getSenderId(),
+//                listMessage.getRole(),
+//                viewModel.getMode(),
+//                viewModel.getKeyword(),
+//                listMessage.getImage());
+
+        Intent intent = BaseChatToolbarActivity.Companion.getCallingIntent(getView().getActivity(), String.valueOf(listMessage.getId()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         getView().startActivityForResult(intent, InboxMessageConstant.OPEN_DETAIL_MESSAGE);
         getView().overridePendingTransition(0, 0);

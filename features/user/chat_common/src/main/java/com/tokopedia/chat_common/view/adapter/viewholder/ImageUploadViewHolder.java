@@ -1,18 +1,5 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 //
-//import android.support.annotation.LayoutRes;
-//import android.text.TextUtils;
-//import android.view.View;
-//import android.widget.ImageView;
-//import android.widget.RelativeLayout;
-//import android.widget.TextView;
-//
-//import com.bumptech.glide.Glide;
-//import com.tkpd.library.utils.ImageHandler;
-//import com.tokopedia.topchat.R;
-//import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
-//import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
-//import com.tokopedia.topchat.common.util.ChatGlideImageRequestListener;
 
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
@@ -21,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ImageUploadViewModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener;
 
@@ -33,8 +20,8 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewModel> {
     //
     @LayoutRes
-//    public static final int LAYOUT = R.layout.layout_image_upload;
-    public static final int LAYOUT = 2;
+    public static final int LAYOUT = R.layout.loading_layout;
+//    public static final int LAYOUT = 2;
 
 
     private static final String ROLE_USER = "User";
@@ -87,13 +74,13 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
 
             if (element.isDummy()) {
                 setVisibility(progressBarSendImage, View.VISIBLE);
-                ImageHandler.loadImageBlurredWithListener(attachment, element.getImageUrl(),
-                        BLUR_WIDTH, BLUR_HEIGHT,
-                        new DynamicSizeImageRequestListener());
+//                ImageHandler.loadImageBlurredWithListener(attachment, element.getImageUrl(),
+//                        BLUR_WIDTH, BLUR_HEIGHT,
+//                        new DynamicSizeImageRequestListener());
             } else {
                 setVisibility(progressBarSendImage, View.GONE);
-                ImageHandler.loadImageWithListener(attachment, element.getImageUrl(),
-                        new DynamicSizeImageRequestListener());
+//                ImageHandler.loadImageWithListener(attachment, element.getImageUrl(),
+//                        new DynamicSizeImageRequestListener());
             }
 
             setVisibility(attachment, View.VISIBLE);
@@ -169,13 +156,13 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
             chatStatus.setVisibility(View.VISIBLE);
             //TODO UNCOMMENT
             if (element.isRead()) {
-//                imageResource = R.drawable.ic_chat_read;
+                imageResource = R.drawable.ic_chat_read;
             } else {
-//                imageResource = R.drawable.ic_chat_unread;
+                imageResource = R.drawable.ic_chat_unread;
             }
 //
             if (element.isDummy()) {
-//                imageResource = R.drawable.ic_chat_pending;
+                imageResource = R.drawable.ic_chat_pending;
             }
             chatStatus.setImageResource(imageResource);
         } else {
