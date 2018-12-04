@@ -34,6 +34,8 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +70,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private TkpdProgressDialog tkpdProgressDialog;
     private boolean fromCamera;
     private String imagePath;
+    private UserSessionInterface userSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
+        userSession = new UserSession(this);
         proceed();
     }
 
@@ -289,13 +293,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         SearchParameter parameter = new SearchParameter();
         parameter.setQueryKey(keyword);
         parameter.setUniqueID(
-                sessionHandler.isV4Login() ?
-                        AuthUtil.md5(sessionHandler.getLoginID()) :
+                userSession.isLoggedIn() ?
+                        AuthUtil.md5(userSession.getUserId()) :
                         AuthUtil.md5(gcmHandler.getRegistrationId())
         );
         parameter.setUserID(
-                sessionHandler.isV4Login() ?
-                        sessionHandler.getLoginID() :
+                userSession.isLoggedIn() ?
+                        userSession.getUserId() :
                         null
         );
         parameter.setDepartmentId(categoryID);
@@ -315,13 +319,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         SearchParameter parameter = new SearchParameter();
         parameter.setQueryKey(keyword);
         parameter.setUniqueID(
-                sessionHandler.isV4Login() ?
-                        AuthUtil.md5(sessionHandler.getLoginID()) :
+                userSession.isLoggedIn() ?
+                        AuthUtil.md5(userSession.getUserId()) :
                         AuthUtil.md5(gcmHandler.getRegistrationId())
         );
         parameter.setUserID(
-                sessionHandler.isV4Login() ?
-                        sessionHandler.getLoginID() :
+                userSession.isLoggedIn() ?
+                        userSession.getUserId() :
                         null
         );
         onSearchingStart(keyword);

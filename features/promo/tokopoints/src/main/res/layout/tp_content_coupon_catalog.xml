@@ -2,8 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,7 +72,7 @@
                     android:paddingRight="@dimen/tp_margin_medium"
                     android:paddingTop="@dimen/tp_padding_small"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/tp_text_size_xsmall"
+                    android:textSize="@dimen/tp_text_size_small"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/img_banner" />
 
@@ -243,49 +242,59 @@
                     app:layout_constraintStart_toEndOf="@+id/img_time"
                     app:layout_constraintTop_toBottomOf="@+id/text_time_label" />
 
-                <LinearLayout
+                <ViewFlipper
                     android:id="@+id/lin_container_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/tp_margin_small"
+                    android:measureAllChildren="false"
                     android:orientation="horizontal"
                     android:padding="@dimen/tp_padding_medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_disabled_error">
 
-                    <Button
-                        android:id="@+id/button_action_1"
-                        android:layout_width="0dp"
-                        android:layout_height="42dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_tp_bg_gift"
-                        android:drawableLeft="@drawable/ic_tp_gift"
-                        android:drawableStart="@drawable/ic_tp_gift"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/dp_12"
-                        android:paddingRight="@dimen/dp_12"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black_54"
-                        android:textSize="@dimen/tp_text_size_small"
-                        android:visibility="visible" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/button_action_2"
-                        android:layout_width="0dp"
-                        android:layout_height="42dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_button_green"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/tp_text_size_small"
-                        android:visibility="visible" />
+                        <Button
+                            android:id="@+id/button_action_1"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tp_bg_gift"
+                            android:drawableLeft="@drawable/ic_tp_gift"
+                            android:drawableStart="@drawable/ic_tp_gift"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/dp_12"
+                            android:paddingRight="@dimen/dp_12"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black_54"
+                            android:textSize="@dimen/tp_text_size_small"
+                            android:visibility="visible" />
 
-                </LinearLayout>
+                        <Button
+                            android:id="@+id/button_action_2"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_button_green"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/tp_text_size_small"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <include layout="@layout/tp_layput_container_swipe" />
+
+                </ViewFlipper>
 
                 <ProgressBar
                     android:id="@+id/progress_refetch_code"
@@ -333,10 +342,10 @@
             </com.tokopedia.design.component.Tabs>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
+        <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
             android:id="@+id/view_pager_info"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>

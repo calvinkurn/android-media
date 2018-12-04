@@ -11,15 +11,16 @@ import android.view.KeyEvent;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -58,6 +59,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
+        resetWalletCache();
     }
 
     @Override
@@ -136,10 +138,13 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setPlatform(initialProps.getString(ThanksTrackerConst.Key.PLATFORM));
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
-        try {
-            data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES) != null &&
+                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()){
+            try {
+                data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
         ThanksTrackerService.start(this, data);
     }
@@ -147,12 +152,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     @Override
     public void onBackPressed() {
         if (isDigital()) {
-            AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
-                @Override
-                public void onDismiss() {
-                    closeThankyouPage();
-                }
-            });
+            AdvancedAppRatingDialog.show(this, dialog -> closeThankyouPage());
         } else {
             closeThankyouPage();
         }
@@ -167,6 +167,12 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
             }
         }
         return false;
+    }
+
+    private void resetWalletCache() {
+        if (getApplicationContext() != null && getApplicationContext() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplicationContext()).getGlobalCacheManager().delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
+        }
     }
 
     private void closeThankyouPage() {

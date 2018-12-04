@@ -41,6 +41,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private TopAdsListener adsListener;
     private TopAdsItemClickListener adsItemClickListener;
     private TopAdsItemImpressionListener adsItemImpressionListener;
+    private LinearLayoutManager layoutManager;
 
     public TopAdsCarouselView(Context context) {
         super(context);
@@ -64,11 +65,12 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
+                false);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                false));
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
 
@@ -111,7 +113,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     public void displayAds(List<Item> list, int position) {
         adapter.setList(list);
         if (adsListener != null && list.size() > 0) {
-            adsListener.onTopAdsLoaded();
+            adsListener.onTopAdsLoaded(list);
         }
     }
 

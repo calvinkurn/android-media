@@ -4,6 +4,10 @@ package com.tokopedia.seller.shopsettings.address.model.deletelocation;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class DeleteLocationResponse {
 
     @SerializedName("is_success")

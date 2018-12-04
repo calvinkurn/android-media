@@ -4,18 +4,16 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.AttachmentInvoice;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.AttachmentInvoiceAttributes;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Contact;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.ListReply;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.ReplyData;
-import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyListPojo;
-import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement
-        .ImageDualAnnouncementViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageDualAnnouncementViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
@@ -36,7 +34,7 @@ import static com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper.TYPE_CH
  * Created by stevenfredian on 8/31/17.
  */
 
-public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomViewModel> {
+public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData, ChatRoomViewModel> {
 
     private static final String SHOP_ADMIN_ROLE = "Shop Admin";
     private static final String SHOP_OWNER_ROLE = "Shop Owner";
@@ -64,10 +62,10 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
             } else if (item.getAttachment() != null
                     && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_ANNOUNCEMENT)) {
                 mapToImageAnnouncement(list, item);
-            } else if(item.getAttachment() != null
-                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_DUAL_ANNOUNCEMENT)){
+            } else if (item.getAttachment() != null
+                    && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_DUAL_ANNOUNCEMENT)) {
                 mapToImageDualAnnouncement(list, item);
-            }else if (item.getAttachment() != null
+            } else if (item.getAttachment() != null
                     && item.getAttachment().getType().equals(WebSocketMapper.TYPE_IMAGE_UPLOAD)) {
                 mapToImageUpload(list, item);
             } else if (item.getAttachment() != null
@@ -124,7 +122,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 item.getAttachment().getId(),
                 item.getAttachment().getType(),
                 item.getReplyTime(),
-                convertQuickItemChatList(item.getAttachment().getQuickReplies())
+                convertQuickItemChatList(item.getAttachment().getAttributes().getQuickReplies())
         );
         list.add(quickReplyListViewModel);
     }
@@ -177,7 +175,8 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 item.getReplyTime(),
                 item.getAttachment().getAttributes().getImageUrl(),
                 item.getAttachment().getAttributes().getUrl(),
-                item.getMsg()
+                item.getMsg(),
+                item.getBlastId()
         );
 
         list.add(imageAnnouncement);
@@ -196,7 +195,8 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 item.getAttachment().getAttributes().getImageUrl(),
                 item.getAttachment().getAttributes().getUrl(),
                 item.getAttachment().getAttributes().getImageUrl2(),
-                item.getAttachment().getAttributes().getUrl2()
+                item.getAttachment().getAttributes().getUrl2(),
+                item.getBlastId()
         );
 
         list.add(imageDualAnnouncement);
@@ -296,11 +296,11 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
                 if (!TextUtils.isEmpty(contact.getAttributes().getThumbnail())) {
                     chatRoomViewModel.setImageHeader(contact.getAttributes().getThumbnail());
                 }
-                if(!TextUtils.isEmpty(contact.getRole())){
-                    if(contact.getRole().equalsIgnoreCase(USER_ROLE)){
+                if (!TextUtils.isEmpty(contact.getRole())) {
+                    if (contact.getRole().equalsIgnoreCase(USER_ROLE)) {
                         chatRoomViewModel.setInterlocutorRole(contact.getRole());
                         chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getUserId()));
-                    } else if(contact.getRole().equalsIgnoreCase(SHOP_ADMIN_ROLE) || contact.getRole().equalsIgnoreCase(SHOP_OWNER_ROLE)) {
+                    } else if (contact.getRole().equalsIgnoreCase(SHOP_ADMIN_ROLE) || contact.getRole().equalsIgnoreCase(SHOP_OWNER_ROLE)) {
                         chatRoomViewModel.setInterlocutorRole(CLIENT_SHOP_ROLE);
                         chatRoomViewModel.setInterlocutorId(String.valueOf(contact.getShopId()));
                     }
@@ -311,12 +311,14 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData,ChatRoomView
         }
     }
 
-    private List<QuickReplyViewModel> convertQuickItemChatList(QuickReplyListPojo pojoList) {
+    private List<QuickReplyViewModel> convertQuickItemChatList(List<QuickReplyPojo> pojoList) {
 
         List<QuickReplyViewModel> list = new ArrayList<>();
         if (pojoList != null) {
-            for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {
-                QuickReplyViewModel model = new QuickReplyViewModel(pojo.getMessage());
+            for (QuickReplyPojo pojo : pojoList) {
+                QuickReplyViewModel model = new QuickReplyViewModel(pojo.getText(),
+                        pojo.getValue(),
+                        pojo.getAction());
                 list.add(model);
             }
         }

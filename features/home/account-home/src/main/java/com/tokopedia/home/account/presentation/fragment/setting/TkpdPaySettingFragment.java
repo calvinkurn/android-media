@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
@@ -131,9 +132,16 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     router.goToSaldo(getActivity());
                     break;
                 case SettingConstant.SETTING_TOKOCARD_ID:
-                    RouteManager.route(getActivity(), String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW,
-                            AccountHomeUrl.WEB_DOMAIN + AccountHomeUrl.TOKOCARD_URL));
+                    String url = walletPref.getTokoSwipeUrl();
+                    if (URLUtil.isValidUrl(url)) {
+                        RouteManager.route(getActivity(), String.format("%s?url=%s",
+                                ApplinkConst.WEBVIEW, url));
+                    } else {
+                        RouteManager.route(getActivity(), String.format("%s?url=%s",
+                                ApplinkConst.WEBVIEW,
+                                AccountHomeUrl.WEB_DOMAIN + AccountHomeUrl.TOKOCARD_URL));
+                    }
+
                     break;
                 default:
                     break;
@@ -163,7 +171,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     private void intentToAddPassword() {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getChangePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+                    .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
         }
     }
 }

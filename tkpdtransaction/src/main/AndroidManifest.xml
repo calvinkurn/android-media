@@ -38,7 +38,14 @@
         <activity
             android:name=".orders.orderlist.view.activity.OrderListActivity"
             android:label="@string/title_order_list"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".orders.orderlist.view.activity.SellerOrderListActivity"
+            android:label="@string/title_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Toolbar.White"
             android:launchMode="singleTask"/>
         <activity
             android:name=".orders.orderdetails.view.activity.OrderListDetailActivity"
@@ -104,6 +111,10 @@
         <activity
             android:name=".pickuppoint.view.activity.PickupPointMapActivity"
             android:label="@string/title_send_to_pick_up_booth" />
+
+        <activity android:name=".purchase.detail.activity.BookingCodeActivity"
+            android:label="@string/title_booking_code_detail"
+            android:theme="@style/Theme.White" />
 
         <service
             android:name=".purchase.services.TxActionIntentService"

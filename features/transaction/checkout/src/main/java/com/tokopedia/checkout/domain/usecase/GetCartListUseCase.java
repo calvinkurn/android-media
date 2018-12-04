@@ -38,12 +38,7 @@ public class GetCartListUseCase extends UseCase<CartListData> {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
         return cartRepository.getShopGroupList(param)
-                .map(new Func1<CartDataListResponse, CartListData>() {
-                    @Override
-                    public CartListData call(CartDataListResponse cartDataListResponse) {
-                        return cartMapper.convertToCartItemDataList(context, cartDataListResponse);
-                    }
-                });
+                .map(cartDataListResponse -> cartMapper.convertToCartItemDataList(context, cartDataListResponse));
     }
 
 }

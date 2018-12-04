@@ -31,7 +31,7 @@
             android:paddingRight="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_14"
             android:layout_marginEnd="@dimen/dp_14"
-            android:background="?attr/selectableItemBackground"
+            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             android:visibility="gone"

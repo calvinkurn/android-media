@@ -313,6 +313,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_catalog">Katalog</string>
     <string name="title_preorder">Preorder</string>
     <string name="title_desc">Deskripsi Produk</string>
+    <string name="title_image_from_buyer">Foto Dari Pembeli</string>
     <string name="title_most_helpful">Ulasan Paling Membantu</string>
     <string name="title_all_reviews">Lihat Semua Ulasan</string>
     <string name="title_shop_info">Penjual</string>
@@ -321,6 +322,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_service">Pelayanan</string>
     <string name="title_last_update_price">Perubahan Harga Terakhir :</string>
     <string name="message_add_new_talk">Berhasil menambahkan Diskusi Produk</string>
+    <string name="message_see_all_buyer_image">Lihat Semua</string>
     <string name="title_sending">Sedang mengirim...</string>
     <string name="title_dialog_delete">Apakah Anda ingin menghapus tkpd ini ?</string>
     <string name="title_dialog_follow">Apakah Anda ingin action tkpd ini ?</string>
@@ -820,8 +822,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="msg_tokopedia_indomaret_fee">"Tambahan biaya Rp 2.500,-"</string>
     <string name="title_admin_fee">Biaya administrasi</string>
     <string name="title_gratis">GRATIS</string>
-    <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
-    <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
+    <string name="message_tos_agreement">Dengan mengaktifkan fitur perlindungan, saya menyetujui Syarat dan Ketentuan yang berlaku.</string>
+    <string name="text_tos_agreement">Syarat dan Ketentuan</string>
     <!-- Strings related to add to cart -->
 
 
@@ -1350,10 +1352,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_error_otp">Kode Verifikasi Salah</string>
     <string name="title_mismatch_otp">Kode Verifikasi tidak benar.</string>
     <string name="phone_number_otp">Nomor Ponsel</string>
-    <string name="success_fetch_truecaller">Sukses mendapat data dari Truecaller.</string>
-    <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
-    <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
-    <string name="error_code_truecaller">Kode Error %1$d</string>
     <string name="email_otp_error">Terjadi kesalahan. Silakan coba kembali. Kode Error: 1005</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
@@ -2012,7 +2010,6 @@ di Tokopedia Sekarang!</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan klik
         disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
-    <string name="truecaller_verif">Lanjutkan dengan Truecaller</string>
 
     <string name="mark_as_read">Tandai sudah dibaca</string>
     <string name="mark_as_unread">Tandai belum dibaca</string>
@@ -2081,7 +2078,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_featured_product">Produk Unggulan</string>
     <string name="drawer_title_setting">Pengaturan</string>
     <string name="drawer_title_statistic">Statistik</string>
-    <string name="drawer_title_mitra_toppers">Mitra Toppers</string>
+    <string name="drawer_title_mitra_toppers">Pinjaman Modal</string>
     <string name="drawer_title_logout">Keluar</string>
     <string name="drawer_title_confirm_shipping">Konfirmasi Pengiriman</string>
     <string name="drawer_title_list_selling">Daftar Penjualan</string>
@@ -2161,11 +2158,6 @@ di Tokopedia Sekarang!</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="bri_transfer_info">*) Penarikan dana ke rekening BRI akan dikenakan biaya transfer Rp 1,500.- oleh bank BRI</string>
 
-    <string name="app_rating_button_rate">Beri Rating</string>
-    <string name="app_rating_button_later">Nanti</string>
-    <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
-    <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
-
     <string name="title_app_referral_howitworks">Info lebih lanjut</string>
 
     <string name="code_error">Kode error :</string>
@@ -2175,7 +2167,7 @@ di Tokopedia Sekarang!</string>
     <string name="title_download">Download</string>
     <string name="app_share_explore_btn_label">Dapatkan Cashback-mu</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
-    <string name="drawer_title_referral_appshare">Dapatkan TokoCash</string>
+    <string name="drawer_title_referral_appshare">Dapatkan Cashback</string>
     <string name="app_share_default_msg"><![CDATA[Ada bonus cashback hingga Rp30.000 khusus buat kamu! Yuk mulai beli & bayar ini itu di Aplikasi Tokopedia, gunakan kode %s.]]></string>
     <string name="no_coupon_to_copy_text">Gagal menyalin kode voucher</string>
     <string name="referral_friend_welcome_screen_name">Friend View After Install</string>
@@ -2201,23 +2193,23 @@ di Tokopedia Sekarang!</string>
     <string name="choose_profile_picture">Gambar Profile</string>
     <string name="change_cart_invoice">Ubah Pesanan</string>
     <string name="copy">Salin Link</string>
-    <string name="referral_tnc"><![CDATA[<ol> <li>Toppers akan mendapatkan bonus TokoCash Rp20.000 setelah Teman berhasil melakukan transaksi pertama via Aplikasi Tokopedia dengan menggunakan kode referral.</li> <li>Untuk mendapatkan bonus TokoCash, transaksi Teman harus berhasil, tidak boleh dibatalkan atau dikembalikan.</li> <li>Anda akan menerima bonus TokoCash dalam waktu maksimum 2x24 jam , terhitung sejak transaksi pertama yang dilakukan teman Anda berhasil.</li> <li>Apabila Anda berpartisipasi sebagai Toppers, bonus TokoCash akan diberikan untuk setiap referral yang berhasil.Artinya, bonus tidak langsung bertambah sesuai dengan jumlah</li> <li> Teman yang membuat akun di Tokopedia, karena bonus baru akan diberikan apabila Teman berhasil melakukan transaksi.</li> <li>Perlu kami informasikan bahwa nama yang Anda gunakan untuk membuat akun Tokopedia dapat ditambahkan ke dalam kode referral Anda.</li> <li>Dengan berpartisipasi, Anda setuju untuk: Mengirim kode referral hanya pada orang-orang yang Anda kenal; dan Tidak terlibat dalam kegiatan apapun yang dapat dianggap sebagai penipuan, pelanggaran privasi, atau spamming.</li> </ol>]]></string>
+    <string name="referral_tnc"><![CDATA[<ol> <li>Toppers akan mendapatkan bonus Cashback Rp20.000 setelah Teman berhasil melakukan transaksi pertama via Aplikasi Tokopedia dengan menggunakan kode referral.</li> <li>Untuk mendapatkan bonus Cashback, transaksi Teman harus berhasil, tidak boleh dibatalkan atau dikembalikan.</li> <li>Anda akan menerima bonus Cashback dalam waktu maksimum 2x24 jam , terhitung sejak transaksi pertama yang dilakukan teman Anda berhasil.</li> <li>Apabila Anda berpartisipasi sebagai Toppers, bonus Cashback akan diberikan untuk setiap referral yang berhasil.Artinya, bonus tidak langsung bertambah sesuai dengan jumlah</li> <li> Teman yang membuat akun di Tokopedia, karena bonus baru akan diberikan apabila Teman berhasil melakukan transaksi.</li> <li>Perlu kami informasikan bahwa nama yang Anda gunakan untuk membuat akun Tokopedia dapat ditambahkan ke dalam kode referral Anda.</li> <li>Dengan berpartisipasi, Anda setuju untuk: Mengirim kode referral hanya pada orang-orang yang Anda kenal; dan Tidak terlibat dalam kegiatan apapun yang dapat dianggap sebagai penipuan, pelanggaran privasi, atau spamming.</li> </ol>]]></string>
     <string name="referral_help_tell"><![CDATA[Minta teman untuk mendaftar & bertransaksi]]></string>
-    <string name="referral_help_receive">Dapatkan TokoCash</string>
+    <string name="referral_help_receive">Dapatkan Cashback</string>
     <string name="copied">Tersalin</string>
     <string name="fiends_invited_lable">teman diajak</string>
     <string name="referral_title_desc">Ajak teman belanja di Tokopedia dan dapatkan hingga Rp1.000.000 </string>
     <string name="perolehan_referral">Perolehan Referral:</string>
     <string name="cara_kerja">Cara Kerja</string>
     <string name="ketentuan">Ketentuan</string>
-    <string name="what_is_referral_tokocash">Cashback dari program Referral akan masuk ke TokoCash Anda. \n TokoCash adalah uang elektronik yang hanya bisa Anda gunakan untuk <b> bertransaksi di Tokopedia</b>. TokoCash tidak dapat diuangkan.</string>
+    <string name="what_is_referral_tokocash">Cashback dari program Referral akan masuk ke Cashback Anda. \n Cashback adalah uang elektronik yang hanya bisa Anda gunakan untuk <b> bertransaksi di Tokopedia</b>. Cashback tidak dapat diuangkan.</string>
     <string name="acquisition_referral">Perolehan Referral</string>
     <string name="bagikan_ke">Bagikan ke</string>
     <string name="dapatkan_cashback_dalam">Dapatkan Cashback dalam 3 Langkah:</string>
     <string name="bagi_kode_referral">Bagi kode referral-mu</string>
-    <string name="apa_itu_tokocash">Apa itu TokoCash?</string>
-    <string name="cashback_enter_tokocash"><![CDATA[<font color=\'#8a000000\'>Cashback akan masuk ke TokoCash.</font> <br /><font color=\'#399c3f\'>Apa itu TokoCash?</font>]]></string>
-    <string name="referral_welcome_header"><![CDATA[<font color=\'#399c3f\'>Givana</font> memberi kamu Promo Referral.]]></string>
+    <string name="apa_itu_tokocash">Apa itu Cashback?</string>
+    <string name="cashback_enter_tokocash"><![CDATA[<font color=\'#8a000000\'>Cashback akan masuk ke Cashback.</font> <br /><font color=\'#399c3f\'>Apa itu Cashback?</font>]]></string>
+    <string name="referral_welcome_header">Hi memberi kamu Promo Referral.</string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>

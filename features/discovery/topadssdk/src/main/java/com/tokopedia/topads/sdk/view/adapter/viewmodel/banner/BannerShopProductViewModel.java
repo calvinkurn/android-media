@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.viewmodel.banner;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
 
@@ -18,7 +18,7 @@ public class BannerShopProductViewModel implements Item<BannerAdsTypeFactory> {
     private final String appLink;
     private final String adsClickUrl;
 
-    public BannerShopProductViewModel(CpmData.Cpm cpm, String appLink, String adsClickUrl) {
+    public BannerShopProductViewModel(Cpm cpm, String appLink, String adsClickUrl) {
         if (cpm != null && cpm.getCpmShop() != null) {
             productList = cpm.getCpmShop().getProducts();
         } else {

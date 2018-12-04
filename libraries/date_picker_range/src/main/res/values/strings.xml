@@ -1,0 +1,12 @@
+<resources>
+    <string name="title_date_setting">Atur Tanggal</string>
+
+    <string name="label_date_period">Periode</string>
+    <string name="label_date_custom">Kustom</string>
+
+    <string name="label_date_picker_start_date">Tanggal Mulai</string>
+    <string name="label_date_picker_end_date">Tanggal Selesai</string>
+    <string name="date_picker_date_range_format_text">%1$s - %2$s</string>
+
+    <string name="save_date">Simpan</string>
+</resources>

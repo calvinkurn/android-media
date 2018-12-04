@@ -1,10 +1,17 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import android.content.res.Resources;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -13,6 +20,9 @@ import com.tokopedia.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.topads.dashboard.data.model.data.DashboardPopulateResponse;
 import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
+import com.tokopedia.topads.dashboard.data.model.ticker.Data;
+import com.tokopedia.topads.dashboard.data.model.ticker.ResponseTickerTopads;
+import com.tokopedia.topads.dashboard.data.model.ticker.TopAdsTicker;
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsTotalAdUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
@@ -24,10 +34,13 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -73,8 +86,9 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         this.userSession = userSession;
     }
 
-    public void getPopulateDashboardData(){
-        topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase.createRequestParams(userSession.getShopId()),
+    public void getPopulateDashboardData(String rawQuery){
+        topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase
+                        .createRequestParams(rawQuery, Integer.parseInt(userSession.getShopId())),
                 new Subscriber<DashboardPopulateResponse>() {
                     @Override
                     public void onCompleted() {
@@ -264,6 +278,41 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
                 if (isViewAttached()){
                     getView().onSuccesGetStatisticsInfo(dataStatistic);
                 }
+            }
+        });
+    }
+
+    public void getTickerTopAds(Resources resources){
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        Map<String, Object> variables = new HashMap<>();
+        int shopId;
+        try {
+            shopId = Integer.parseInt(userSession.getShopId());
+        }catch (Exception e){
+            shopId = 0;
+        }
+        variables.put(TopAdsConstant.SHOP_ID, shopId);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.query_ticker), Data.class, variables);
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(graphqlRequest);
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()){
+                    getView().onErrorGetTicker(e);
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                Data topAdsTicker = graphqlResponse.getData(Data.class);
+                getView().onSuccessGetTicker(topAdsTicker.getTopAdsTicker().getData().getMessage());
             }
         });
     }

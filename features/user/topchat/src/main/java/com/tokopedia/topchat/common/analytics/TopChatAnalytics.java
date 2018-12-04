@@ -26,10 +26,10 @@ public class TopChatAnalytics {
         public static final String PRODUCT_PAGE = "ClickProductDetailPage";
         public static final String SEND_MESSAGE_PAGE = "ClickMessageRoom";
         public static final String SHOP_PAGE = "ClickShopPage";
-        public static final String INBOX_CHAT = "ClickInboxChat";
+        public static final String INBOX_CHAT = "clickInboxChat";
         public static final String CHAT_DETAIL = "ClickChatDetail";
 
-        String EVENT_NAME_CLICK_INBOXCHAT = "ClickInboxChat";
+        String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
 
     }
 

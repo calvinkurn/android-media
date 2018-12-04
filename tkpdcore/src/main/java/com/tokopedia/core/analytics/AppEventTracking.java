@@ -162,10 +162,6 @@ public interface AppEventTracking {
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
 
-        String IMPRESSION_APP_RATING = "impressionAppRating";
-        String CLICK_APP_RATING = "clickAppRating";
-        String CANCEL_APP_RATING = "cancelAppRating";
-
         String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
@@ -293,7 +289,6 @@ public interface AppEventTracking {
         String TOKO_POINTS_PROMO_HOMEPAGE = "homepage-tokopoints";
         String TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
         String TOKOPOINTS_POP_UP = "tokopoints - pop up";
-        String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
@@ -350,7 +345,6 @@ public interface AppEventTracking {
         String REPORT_SUCCESS = "Report Success";
         String LOGIN = "Login Success";
         String LOGIN_ERROR = "Login Error";
-        String REGISTER = "Register";
         String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
         String ERROR = "Error";
@@ -499,9 +493,8 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
-        String CLICK_REFERRAL = "Click Share";
-        String CLICK_JUAL = "Click Jual";
-        String CLICK_BAYAR = "Click Bayar";
+
+        String CLICK_BILL = "Click Tagihan";
 
         String CLICK_VARIANTS = "click - variants";
         String CLICK_BUY_VARIANT_PDP = "click - buy";
@@ -877,9 +870,6 @@ public interface AppEventTracking {
         String RESO_CREATE_COMPLAINT_CONFIRM = "confirm - create complain";
         String RESO_CREATE_COMPLAINT_UNCONFIRM = "unconfirmed - create complain";
         String RESO_CREATE_ABANDON = "abandon";
-        String LONG_PRESS_SHORTCUT_REFERRAL = "Share";
-        String PRODUCT_SEARCH = "Product Search";
-        String TAKE_TO_SHOP = "Take to Shop";
         String DIGITAL = "Digital";
         String REFERRAL = "Referral";
     }
@@ -950,32 +940,28 @@ public interface AppEventTracking {
     }
 
     interface MOENGAGE {
-        String CURRENCY = "currency";
-        String QUANTITY = "quantity";
         String PRODUCT = "product";
-        String PURCHASE_DATE = "purchaseDate";
         String PRICE = "price";
         String IS_GOLD_MERCHANT = "is_gold_merchant";
-        String IS_SELLER = "is_seller";
         String SHOP_ID = "shop_id";
         String SHOP_NAME = "shop_name";
+        String ADDRESS_ADDED = "Address_Added";
+        String SHOP_URL_SLUG = "url_slug";
         String MOBILE_NUM = "Mobile Number";
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
         String LOGIN_STATUS = "logged_in_status";
-        String PRODUCTS_NUMBER = "number_of_products";
         String SUBCATEGORY = "subcategory";
         String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "category";
         String CATEGORY_ID = "category_id";
         String PRODUCT_ID = "product_id";
+        String PRODUCT_GROUP_NAME = "product_group_name";
+        String PRODUCT_GROUP_ID = "product_group_id";
         String PRODUCT_NAME = "product_name";
         String PRODUCT_URL = "product_url";
         String PRODUCT_PRICE = "product_price";
-        String BRAND_NAME = "brand_name";
-        String BRAND_ID = "brand_id";
-        String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
         String DIGITAL_CAT_ID = "digital_category_id";
         String HOTLIST_NAME = "hotlist_name";
@@ -986,20 +972,16 @@ public interface AppEventTracking {
         String KEYWORD = "keyword";
         String IS_RESULT_FOUND = "is_result_found";
         String IS_RECEIVED = "is_received";
-        String PAYMENT_TYPE = "payment_type";
-        String PURCHASE_SITE = "purchase_site";
-        String TOTAL_PRICE = "purchase_site";
-        String REVIEW_SCORE = "review_score";
+        String CATEGORY_NAME_MAPPING = "category_name_mapping";
+        String CATEGORY_ID_MAPPING = "category_id_mapping";
+        String REFINED_SEARCH = "refined_search";
 
         String TOTAL_SOLD_ITEM = "total_sold_item";
-        String REG_DATE = "registration_date";
-        String DATE_SHOP_CREATED = "date_shop_created";
         String SHOP_LOCATION = "shop_location";
 
         String TOKOCASH_AMT = "tokocash_amt";
         String SALDO_AMT = "saldo_amt";
         String TOPADS_AMT = "topads_amt";
-        String TOPADS_USER = "is_topads_user";
         String HAS_PURCHASED_TICKET = "has_purchased_ticket";
         String HAS_PURCHASED_MARKETPLACE = "has_purchased_marketplace";
         String HAS_PURCHASED_DIGITAL = "has_purchased_digital";
@@ -1011,6 +993,9 @@ public interface AppEventTracking {
         String CHANNEL = "channel";
         String APP_VERSION = "app version";
         String PLATFORM = "platform";
+        String HOTLIST_ID = "hotlist_id";
+        String CITY = "city";
+
     }
 
     interface EventMoEngage {
@@ -1020,30 +1005,20 @@ public interface AppEventTracking {
         String OPEN_FAVORITE = "Favorite_Screen_Launched";
         String OPEN_HOTLIST = "Hotlist_Screen_Launched";
         String OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String CLICK_HOTLIST = "Clicked_Hotlist_Item";
-        String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
-        String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
-        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched";
-        String CAT_SCREEN_OPEN = "Category_Screen_Launched";
         String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
         String PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace";
+        String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched";
+        String CLICK_HOTLIST = "Clicked_Hotlist_Item";
+        String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
+        String CAT_SCREEN_OPEN = "Category_Screen_Launched";
         String PRODUCT_REMOVED_FROM_WISHLIST = "Product_Removed_From_Wishlist_Marketplace";
         String CLICKED_DISKUSI_PDP = "Clicked_Diskusi_Pdp";
         String CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp";
         String SEARCH_ATTEMPT = "Search_Attempt";
-        String OPEN_THANKYOU_PAGE = "Thank_You_Page_Launched";
-        String SUCCESS_PURCHASE_REVIEW = "Success_Purchase_Review";
-        String SUBMIT_ULASAN_REVIEW = "Submit_Ulasan_Review";
-
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
-        String CLICKED_NEW_ORDER = "Seller_Clicked_Neworder";
-        String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favourite";
+        String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favorite";
         String SELLER_REMOVE_FAVORITE = "Seller_Removed_From_Favorite";
-        String EVENT_ADDR_ADD = "Address_Added";
-        String EVENT_USER_ATTR = "User_Attribute_Name";
-        String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
-        String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
         String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
         String REFERRAL_SHARE_EVENT = "Share_Event";
         String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";

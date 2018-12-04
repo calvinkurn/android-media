@@ -1,4 +1,5 @@
 query {
+  status
   isAuthenticated
   saldo {
     deposit

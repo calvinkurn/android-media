@@ -1,7 +1,7 @@
 package com.tokopedia.recentview.view.subscriber;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.recentview.domain.model.RecentViewBadgeDomain;
 import com.tokopedia.recentview.domain.model.RecentViewLabelDomain;
 import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
@@ -36,22 +36,27 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorGetRecentView(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorGetRecentView(ErrorHandler.getErrorMessage(viewListener.getContext(), e));
 
     }
 
     @Override
     public void onNext(List<RecentViewProductDomain> recentViewProductDomains) {
         if (!recentViewProductDomains.isEmpty()) {
-            viewListener.onSuccessGetRecentView(convertToViewModel(recentViewProductDomains));
+            ArrayList<RecentViewDetailProductViewModel> recentsViewModel = convertToViewModel(recentViewProductDomains);
+            ArrayList<Visitable> visitableList = new ArrayList<>(recentsViewModel);
+
+            viewListener.onSuccessGetRecentView(visitableList);
+            viewListener.sendRecentViewImpressionTracking(recentsViewModel);
         } else {
-            viewListener.onEmptyGetRecentView()
-            ;
+            viewListener.onEmptyGetRecentView();
         }
     }
 
-    private ArrayList<Visitable> convertToViewModel(List<RecentViewProductDomain> recentViewProductDomains) {
-        ArrayList<Visitable> listProduct = new ArrayList<>();
+    private ArrayList<RecentViewDetailProductViewModel> convertToViewModel(List<RecentViewProductDomain> recentViewProductDomains) {
+        ArrayList<RecentViewDetailProductViewModel> listProduct = new ArrayList<>();
+
+        int position = 1;
         for (RecentViewProductDomain domain : recentViewProductDomains) {
             listProduct.add(new RecentViewDetailProductViewModel(
                     Integer.parseInt(domain.getId()),
@@ -65,8 +70,10 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
                     domain.getIsGold() != null && domain.getIsGold().equals("1"),
                     convertToIsOfficial(domain.getBadges()),
                     domain.getShop().getName(),
-                    domain.getShop().getLocation()
+                    domain.getShop().getLocation(),
+                    position
             ));
+            position++;
         }
         return listProduct;
     }

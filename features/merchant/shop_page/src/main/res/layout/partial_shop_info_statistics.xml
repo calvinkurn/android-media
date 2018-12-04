@@ -5,19 +5,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_16">
 
     <TextView style="@style/TextView.Title.Bold"
         android:text="@string/shop_info_label_statistic"
-        android:padding="@dimen/dp_16"/>
+        android:layout_height="@dimen/dp_50"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"/>
 
     <LinearLayout
-        style="@style/LabelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:minHeight="@dimen/dp_64"
         android:orientation="horizontal"
         android:id="@+id/labelViewReview"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -52,38 +61,45 @@
 
         <TextView style="@style/TextView.Small.Green"
             android:id="@+id/textSeeRating"
-            android:text="@string/see_label"/>
+            android:text="@string/see_label"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"/>
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@drawable/bg_list_separator"/>
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bg_line_separator_thin"/>
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/labelViewDiscussion"
-        style="@style/LabelLayout"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8"
         app:lv_content="@string/see_label"
         app:lv_title="@string/shop_info_title_tab_discussion"
         app:lv_title_text_size="@dimen/sp_14"
         app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/tkpd_main_green"/>
+        app:lv_content_color="@color/tkpd_main_green"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@drawable/bg_list_separator"/>
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bg_line_separator_thin"/>
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/labelViewProcessOrder"
-        style="@style/LabelLayout"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         app:lv_content="@string/see_label"
         app:lv_title="@string/shop_info_label_process_time"
         app:lv_title_text_size="@dimen/sp_14"
@@ -93,13 +109,17 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@drawable/bg_list_separator"/>
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bg_line_separator_thin"/>
 
     <LinearLayout
-        style="@style/LabelLayout"
-        android:minHeight="@dimen/dp_64"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_24">
 
         <TextView
             style="@style/TextView.Small"
@@ -131,11 +151,17 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@drawable/bg_list_separator"/>
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bg_line_separator_thin"/>
 
-    <LinearLayout style="@style/LabelLayout"
-        android:minHeight="@dimen/dp_64"
-        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Small"
@@ -220,6 +246,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@drawable/bg_list_separator"/>
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bg_line_separator_thin"/>
 
 </LinearLayout>

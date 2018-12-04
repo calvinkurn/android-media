@@ -1,15 +1,12 @@
 package com.tokopedia.core.network.apiservices.etc.apis.home;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Slide;
-import com.tokopedia.core.network.entity.home.Ticker;
 
 import java.util.Map;
 
 import retrofit2.Response;
-import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
@@ -73,13 +70,6 @@ public interface CategoryApi {
             @Query(FILTER_DEVICE) String device,
             @Query(FILTER_STATE) String state,
             @Query(FILTER_EXPIRED) String expired
-    );
-
-    @GET(API_V1_ANNOUNCEMENT_TICKER)
-    Observable<Response<Ticker>> getTickers(
-            @Header(HEADER_USER_ID) String user_id,
-            @Query(PAGE_SIZE) String size,
-            @Query(FILTER_DEVICE) String device
     );
 
     @GET(API_V1_BRANDS)

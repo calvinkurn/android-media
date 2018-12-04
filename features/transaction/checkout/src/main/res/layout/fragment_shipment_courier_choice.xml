@@ -26,4 +26,12 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/dp_16"
+        android:visibility="gone" />
+
 </FrameLayout>

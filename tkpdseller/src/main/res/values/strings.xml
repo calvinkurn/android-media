@@ -14,7 +14,6 @@
 
     <string name="price_format_text">%1$s %2$s</string>
 
-    <string name="title_date_setting">Atur Tanggal</string>
     <string name="next">Selanjutnya</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="title_activity_category_picker">Pilih Kategori</string>
@@ -30,14 +29,7 @@
 
     <string name="label_today">Hari Ini</string>
     <string name="label_this_month">Bulan Ini</string>
-    <string name="label_date_period">Periode</string>
-    <string name="label_date_custom">Kustom</string>
 
-    <string name="label_date_picker_start_date">Tanggal Mulai</string>
-    <string name="label_date_picker_end_date">Tanggal Selesai</string>
-    <string name="date_picker_date_range_format_text">%1$s - %2$s</string>
-
-    <string name="save_date">Simpan</string>
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
 
     <string name="title_shop_score">Performa Toko</string>
@@ -125,8 +117,6 @@
     <string name="add_product_label_alert_dialog_dollar">Fitur harga dengan mata uang USD $ hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
     <string name="add_product_label_alert_dialog_video">Fitur upload video hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
     <string name="add_product_label_alert_save_as_draft_dollar_and_video">%s Jika ya, produk akan disimpan sebagai Draft</string>
-
-    <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
 
     <string name="app_widget_title_new_order">Order</string>
     <string name="app_widget_new_order_wording_empty">Belum ada data</string>
@@ -233,8 +223,6 @@
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
-    <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
-    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan Gold Merchant.</string>
     <string name="choose_shop_picture">Pilih Gambar Toko</string>
 
     <string name="sticker_shop_link">https://tokopedia.com/%s</string>

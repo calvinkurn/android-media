@@ -1,11 +1,8 @@
 package com.tokopedia.core.referral.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +12,10 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.manage.general.ManageWebViewActivity;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdUrl;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 /**
  * Created by ashwanityagi on 02/05/18.
@@ -45,7 +40,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(View container, int position, Object object) {
-            ((ViewPager) container).removeView((View) object);
+        ((ViewPager) container).removeView((View) object);
     }
 
     @Override
@@ -65,6 +60,9 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
             TextView btnShare = layout.findViewById(R.id.btn_app_share);
             TextView tvHelpLink = layout.findViewById(R.id.tv_referral_help_link);
 
+
+            tvHelpLink.setVisibility(isShowReferralHelpLink() ? View.VISIBLE : View.GONE);
+            tvHelpLink.setText(getHelpButtonText());
             btnShare.setOnClickListener(view1 -> {
                 listener.onShareClick();
                 UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_TEMAN, "");
@@ -72,7 +70,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
             tvHelpLink.setOnClickListener(view1 -> {
                 UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
-                showOnBoardingTooltip(context.getString(R.string.acquisition_referral) ,context.getString(R.string.what_is_referral_tokocash) );
+                showOnBoardingTooltip(getHelpButtonContentTitle(), getHelpButtonContentSubtitle());
             });
 
         } else {
@@ -83,8 +81,24 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
         return layout;
     }
 
+    private String getHelpButtonText() {
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_TEXT, context.getString(R.string.apa_itu_tokocash));
+    }
+
+    private String getHelpButtonContentTitle() {
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, context.getString(R.string.acquisition_referral));
+    }
+
+    private String getHelpButtonContentSubtitle() {
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, context.getString(R.string.what_is_referral_tokocash));
+    }
+
     public String getReferralTerms() {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
+            return remoteConfig.getString(RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
+    }
+
+    public boolean isShowReferralHelpLink() {
+        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
     }
 
     private void showOnBoardingTooltip(String title, String content) {

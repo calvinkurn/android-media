@@ -8,6 +8,7 @@ import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +31,8 @@ public class AccessTokenRefresh {
     private static final String GRANT_TYPE = "grant_type";
     private static final String REFRESH_TOKEN = "refresh_token";
 
-    public String refreshToken(Context context, UserSession userSession, NetworkRouter networkRouter)  {
+    public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
+            networkRouter) {
 
         userSession.clearToken();
         Map<String, String> params = new HashMap<>();
@@ -46,11 +48,18 @@ public class AccessTokenRefresh {
         try {
             Response<String> response = responseCall.clone().execute();
 
-            tokenResponseError = response.errorBody().string();
-            checkShowForceLogout(tokenResponseError, networkRouter);
+            if (response.errorBody() != null) {
+                tokenResponseError = response.errorBody().string();
+                checkShowForceLogout(tokenResponseError, networkRouter);
+            } else if (response.body() != null) {
+                tokenResponse = response.body();
+            } else {
+                return "";
+            }
 
-            tokenResponse = response.body();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -60,10 +69,15 @@ public class AccessTokenRefresh {
             userSession.setToken(model.getAccessToken(), model.getTokenType());
         }
 
-        return model.getAccessToken();
+        if (model != null) {
+            return model.getAccessToken();
+        } else {
+            return "";
+        }
     }
 
-    private Retrofit getRetrofit(Context context, UserSession userSession, NetworkRouter networkRouter) {
+    private Retrofit getRetrofit(Context context, UserSessionInterface userSession, NetworkRouter
+            networkRouter) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
@@ -78,7 +92,7 @@ public class AccessTokenRefresh {
         return responseString.toLowerCase().contains(FORCE_LOGOUT);
     }
 
-    protected void checkShowForceLogout(String response, NetworkRouter networkRouter){
+    protected void checkShowForceLogout(String response, NetworkRouter networkRouter) {
         if (isRequestDenied(response)) {
             networkRouter.showForceLogoutTokenDialog(response);
         }

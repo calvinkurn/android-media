@@ -15,7 +15,7 @@
     <string name="hint_anonym">Profil ditampilkan sebagai</string>
     <string name="submit_review">Kirim</string>
     <string name="favorite_button">Follow</string>
-    <string name="already_favorite">Following</string>
+    <string name="already_favorite">\u2713</string>
     <string name="title_activity_detail_review">Detail Ulasan</string>
     <string name="seller">Penjual</string>
     <string name="filter_time">Waktu</string>
@@ -30,6 +30,7 @@
     <string name="filter_no_reputation">Belum Dinilai</string>
     <string name="by">Oleh</string>
     <string name="give_review">Beri Ulasan</string>
+    <string name="review_product">Ulas Produk</string>
     <string name="menu_edit">Ubah</string>
     <string name="menu_skip">Lewati</string>
     <string name="reply">Balas</string>
@@ -46,7 +47,7 @@
     <string name="upload_product_image">Upload Gambar Produk</string>
     <string name="upload_product_info">Anda dapat mengupload 5 gambar dengan format .JPG, .JPEG, .PNG. Maksimal ukuran gambar 10 MB</string>
     <string name="review">Ulasan</string>
-    <string name="rating_title_0">Belum ada nilai</string>
+    <string name="rating_title_0">Beri Peringkat</string>
     <string name="rating_title_1">Sangat Buruk</string>
     <string name="rating_title_2">Buruk</string>
     <string name="rating_title_3">Cukup</string>
@@ -108,8 +109,8 @@
     <string name="hint_write_reply">Tulis balasan...</string>
     <string name="inbox_reputation_seller_empty_title">Belum ada ulasan dari pembeli.\nPastikan Produk Anda sudah terjual.</string>
     <string name="see_my_shop">Lihat Toko Saya</string>
-    <string name="query_hint_review_buyer">Invoice / Nama Penjual / Nama Produk</string>
-    <string name="query_hint_review_seller">Invoice / Nama Pembeli / Nama Produk</string>
+    <string name="query_hint_review_buyer">Cari toko atau invoice</string>
+    <string name="query_hint_review_seller">Cari toko atau invoice</string>
     <string name="product_is_banned">Produk telah diban</string>
     <string name="product_review_label_rating_comparison">/ 5</string>
     <string name="product_review_label_helpful_review">Ulasan Paling Membantu</string>
@@ -123,4 +124,8 @@
     <string name="product_review_label_by">Oleh</string>
     <string name="review_shop_label_show_more_review">Lihat Ulasan Selengkapnya</string>
     <string name="review_shop_empty_list_content">Belum ada ulasan yang diberikan untuk toko ini</string>
+    <string name="hint_review_edittext">Tulis ulasan produk</string>
+    <string name="review_min_character">Minimal 30 karakter</string>
+    <string name="review_label_all">Semua</string>
+    <string name="review_label_with_photo">Dengan Foto</string>
 </resources>

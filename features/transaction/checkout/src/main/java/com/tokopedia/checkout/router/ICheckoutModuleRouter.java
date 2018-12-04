@@ -1,10 +1,12 @@
 package com.tokopedia.checkout.router;
 
 import android.app.Activity;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
+import com.tokopedia.core.manage.people.address.model.AddressModel;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
@@ -23,9 +25,9 @@ public interface ICheckoutModuleRouter {
             boolean couponActive, String additionalStringData, String defaultSelectedTab);
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab);
+            boolean couponActive, String additionalStringData, String defaultSelectedTab, boolean isOneClickShipment);
 
-    Intent checkoutModuleRouterGetProductDetailIntent(ProductPass productPass);
+    Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 
     Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product);
 
@@ -49,7 +51,9 @@ public interface ICheckoutModuleRouter {
 
     Converter.Factory checkoutModuleRouterGetStringResponseConverter();
 
-    Intent checkoutModuleRouterGetHomeFeedIntent(Context context);
+    Intent checkoutModuleRouterGetHomeIntent(Context context);
+
+    Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
 
     boolean checkoutModuleRouterGetEnableFingerprintPayment();
 
@@ -58,4 +62,6 @@ public interface ICheckoutModuleRouter {
     String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
 
     void goToPurchasePage(Activity activity);
+
+    Intent checkoutModuleRouterGetRecentViewIntent();
 }

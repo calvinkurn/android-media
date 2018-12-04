@@ -1,19 +1,15 @@
 package com.tokopedia.posapp.auth.login.view.presenter;
 
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.posapp.auth.login.domain.usecase.LoginEmailUseCase;
 import com.tokopedia.posapp.auth.login.domain.usecase.PosLoginEmailUseCase;
+import com.tokopedia.posapp.auth.login.view.LoginSubscriber;
 import com.tokopedia.posapp.auth.login.view.PosLogin;
-import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
-import com.tokopedia.session.login.loginemail.domain.model.LoginEmailDomain;
-import com.tokopedia.session.login.loginemail.view.subscriber.LoginSubscriber;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * @author okasurya on 3/6/18.

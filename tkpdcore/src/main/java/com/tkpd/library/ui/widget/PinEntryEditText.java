@@ -36,7 +36,7 @@ import java.util.Locale;
 /**
  * Created by Alifa on 10/18/2016.
  */
-
+@Deprecated
 public class PinEntryEditText extends EditText {
     private static final String XML_NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
 

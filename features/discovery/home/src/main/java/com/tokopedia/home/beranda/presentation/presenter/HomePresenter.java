@@ -2,14 +2,13 @@ package com.tokopedia.home.beranda.presentation.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -22,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubsc
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
@@ -29,6 +29,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -36,7 +37,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
@@ -111,6 +111,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (isViewAttached() && !this.fetchFirstData && needRefresh) {
             updateHomeData();
         }
+        getTokocashBalance();
     }
 
     @Override
@@ -147,10 +148,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
+                .doOnNext(visitables ->
+                        compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber())))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(visitables -> {
-                    compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
-                })
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
@@ -181,6 +181,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @Override
+    public void showPopUpIntroWalletOvo(String applinkActivation) {
+        getView().showPopupIntroOvo(applinkActivation);
+    }
+
+    @Override
     public void onHeaderTokocashError() {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
@@ -203,7 +208,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     }
 
     @Override
-    public void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData) {
+    public void updateHeaderTokoPointData(TokopointHomeDrawerData tokoPointDrawerData) {
         if (headerViewModel == null) {
             headerViewModel = new HeaderViewModel();
         }
@@ -339,7 +344,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                         pagingHandler.getPage(),
                         userSession.getUserId(),
                         currentCursor),
-                new GetHomeFeedsSubscriber(feedListener, pagingHandler.getPage()));
+                new GetHomeFeedsSubscriber(getView().getContext(), feedListener, pagingHandler.getPage()));
     }
 
     public void setCursor(String currentCursor) {
@@ -397,7 +402,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onError(Throwable e) {
             if (homePresenter != null && homePresenter.isViewAttached()) {
-                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(e));
+                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(
+                        homePresenter.getView().getContext(),e));
                 onCompleted();
             }
         }
@@ -494,7 +500,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (!slidesModel.isImpressed()
                 && slidesModel.getTopadsViewUrl()!=null
                 && !slidesModel.getTopadsViewUrl().isEmpty()) {
-            new ImpresionTask(new ImpressionListener() {
+            compositeSubscription.add(Observable.just(new ImpresionTask(new ImpressionListener() {
                 @Override
                 public void onSuccess() {
                     slidesModel.setImpressed(true);
@@ -504,7 +510,12 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 public void onFailed() {
                     slidesModel.setImpressed(false);
                 }
-            }).execute(slidesModel.getTopadsViewUrl());
+            }).execute(slidesModel.getTopadsViewUrl()))
+                    .debounce(200, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe());
         }
     }
 

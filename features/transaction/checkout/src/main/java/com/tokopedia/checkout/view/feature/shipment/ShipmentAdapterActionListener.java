@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.shipment;
 
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
@@ -66,8 +67,25 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                                   int position);
 
     void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                 RecipientAddressModel recipientAddressModel, int position);
+                                 RecipientAddressModel recipientAddressModel,
+                                 ShipmentCartItemModel shipmentCartItemModel,
+                                 List<ShopShipment> shopShipmentList, int position);
 
     void hideSoftKeyboard();
 
+    void onLoadShippingState(int shipperId, int spId, int itemPosition,
+                             ShipmentDetailData shipmentDetailData,
+                             ShipmentCartItemModel shipmentCartItemModel,
+                             List<ShopShipment> shopShipmentList,
+                             boolean isCourierRecommendation);
+
+    void onCourierPromoCanceled(String shipperName);
+
+    boolean isToogleYearEndPromoOn();
+
+    void onPurchaseProtectionLogicError();
+
+    void onPurchaseProtectionChangeListener(int position);
+
+    void navigateToProtectionMore(String url);
 }

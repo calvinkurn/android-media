@@ -14,7 +14,7 @@
         app:eo_theme="@style/ExpandableStyleNoItemPadding"
         app:eo_title="@string/gm_statistic_compare_date_section">
 
-        <com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView
+        <com.tokopedia.datepicker.range.view.widget.DatePeriodView
             android:id="@+id/date_period_view_compared"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -20,6 +20,7 @@ import com.tokopedia.kol.feature.following_list.di.DaggerKolFollowingListCompone
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.following_list.view.adapter.KolFollowingAdapter;
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList;
+import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingResultViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewModel;
 
@@ -174,13 +175,25 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetKolFollowingListEmptyState() {
         emptyState.setVisibility(View.VISIBLE);
+        if (getActivity() instanceof KolFollowingListEmptyListener) {
+            ((KolFollowingListEmptyListener) getActivity()).onFollowingEmpty();
+        }
     }
 
     private void updateView(KolFollowingResultViewModel model) {
         adapter.setItemList(model.getKolFollowingViewModelList());
-        if (model.getKolFollowingViewModelList() == null || model.getKolFollowingViewModelList().size() == 0) {
+        if (model.getKolFollowingViewModelList() == null
+                || model.getKolFollowingViewModelList().size() == 0) {
             emptyButton.setText(model.getButtonText());
             emptyApplink = model.getButtonApplink();
+
+            if (getActivity() instanceof KolFollowingListEmptyListener) {
+                ((KolFollowingListEmptyListener) getActivity()).onFollowingEmpty();
+            }
+        } else {
+            if (getActivity() instanceof KolFollowingListEmptyListener) {
+                ((KolFollowingListEmptyListener) getActivity()).onFollowingNotEmpty();
+            }
         }
     }
 
@@ -191,12 +204,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetKolFollowingList(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                initView();
-            }
-        });
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, () -> initView());
     }
 
     @Override

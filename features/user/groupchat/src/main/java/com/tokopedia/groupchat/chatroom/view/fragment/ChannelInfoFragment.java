@@ -136,10 +136,19 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                 .COMPONENT_PARTNER, channelPartnerChildViewModel.getPartnerName(), GroupChatAnalytics
                 .ATTRIBUTE_PARTNER_LOGO, list);
 
+        analytics.eventActionClickOfficialPartner(
+                String.format("%s - %s", channelInfoViewModel.getChannelId(), channelPartnerChildViewModel.getPartnerUrl()));
+
         GroupChatModuleRouter router = ((GroupChatModuleRouter) getActivity().getApplicationContext());
         router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity())
                 .generateAttributeApplink(channelPartnerChildViewModel.getPartnerUrl(),
                         GroupChatAnalytics.ATTRIBUTE_PARTNER_LOGO));
+    }
+
+    @Override
+    public void onPartnerViewed(String partnerName) {
+        analytics.eventActionViewOfficialPartner(
+                String.format("%s - %s", channelInfoViewModel.getChannelId(), partnerName));
     }
 
     private void initView(View view) {

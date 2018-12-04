@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.LobDetails;
+import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface CatalogListingContract {
@@ -20,8 +20,6 @@ public interface CatalogListingContract {
         void onErrorBanners(String errorMessage);
 
         void onSuccessBanners(List<CatalogBanner> banners);
-
-        void onSuccessPoints(String point);
 
         void onErrorPoint(String errorMessage);
 
@@ -41,22 +39,20 @@ public interface CatalogListingContract {
 
         Resources getResources();
 
-        void refreshTab(int categoryId);
-
-        int getSelectedCategoryId();
-
-        void updateSelectedCategoryId(int id);
+        void refreshTab(int categoryId, int subCategoryId);
 
         boolean isAddedView();
+
+        void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails);
+
+        void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getHomePageData();
+        void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire);
 
         void getPointData();
-
-        int getSelectedCategoryId();
     }
 }

@@ -4,6 +4,10 @@ package com.tokopedia.seller.shopsettings.address.model.saveaddress;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class SaveAddress {
 
     @SerializedName("is_success")

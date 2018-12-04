@@ -4,15 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.StringRes;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import java.util.List;
@@ -57,15 +56,17 @@ public interface HomeContract {
 
         void showRecomendationButton();
 
-        Observable<TokoCashData> getTokocashBalance();
+        Observable<HomeHeaderWalletAction> getTokocashBalance();
 
         Observable<PendingCashback> getTokocashPendingCashback();
 
-        Observable<TokoPointDrawerData> getTokopoint();
+        Observable<TokopointHomeDrawerData> getTokopoint();
 
         void startShopInfo(String shopId);
 
         void startDeeplinkShopInfo(String url);
+
+        void showPopupIntroOvo(String applinkActivation);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -77,9 +78,11 @@ public interface HomeContract {
 
         void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletActionData);
 
+        void showPopUpIntroWalletOvo(String applinkActivation);
+
         void updateHeaderTokoCashPendingData(CashBackData cashBackData);
 
-        void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData);
+        void updateHeaderTokoPointData(TokopointHomeDrawerData tokoPointDrawerData);
 
         void getShopInfo(String url, String shopDomain);
 

@@ -84,6 +84,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     }
 
     @Override
+    protected String getComboKey() {
+        return getView().getComboKey();
+    }
+
+    @Override
     public void verifyBooking(String promoCode, int price, int adult, String cartId,
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                               String contactName, String country, String email, String phone,
@@ -179,7 +184,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public void onPaymentFailed() {
         getView().showPaymentFailedErrorMessage(R.string.flight_review_failed_checkout_message);
-        flightAnalytics.eventPurchaseAttemptFailed();
     }
 
     @Override
@@ -246,7 +250,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     getView().getDepartureTripId(),
                     getView().getReturnTripId(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId()),
-                    calculateTotalPassengerFare()
+                    calculateTotalPassengerFare(),
+                    getView().getComboKey()
             );
         } else {
             requestParams = addToCartUseCase.createRequestParam(
@@ -299,7 +304,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     @Override
                     public void onNext(Boolean aBoolean) {
                         getView().navigateToOrderList();
-                        flightAnalytics.eventPurchaseAttemptSuccess();
                     }
                 }
         );

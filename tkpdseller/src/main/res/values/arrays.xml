@@ -1,23 +1,4 @@
 <resources>
-
-    <!-- Library =============================================================================== -->
-    <string-array name="lib_date_picker_month_entries">
-        <item>Jan</item>
-        <item>Feb</item>
-        <item>Mar</item>
-        <item>Apr</item>
-        <item>Mei</item>
-        <item>Jun</item>
-        <item>Jul</item>
-        <item>Agu</item>
-        <item>Sep</item>
-        <item>Okt</item>
-        <item>Nov</item>
-        <item>Des</item>
-    </string-array>
-
-
-
     <string-array name="product_weight_entries">
         <item>Gram</item>
         <item>Kg</item>

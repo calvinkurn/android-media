@@ -17,6 +17,10 @@ import com.tokopedia.core.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class ListViewManageShopLocation extends BaseAdapter {
 
 	private List<String> addressList;

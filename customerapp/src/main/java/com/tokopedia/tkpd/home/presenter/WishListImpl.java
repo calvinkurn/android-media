@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -126,11 +127,13 @@ public class WishListImpl implements WishList {
     public void fetchSavedsInstance(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             //mPaging.onCreate(savedInstanceState);
-            data = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_MODEL));
-            dataWishlist = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_ENTITY));
-            if (mPaging != null) {
-                Pagination pagination = savedInstanceState.getParcelable(PAGINATION_MODEL);
-                mPaging.setPagination(pagination);
+            if (savedInstanceState.containsKey(WISHLIST_MODEL)) {
+                data = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_MODEL));
+                dataWishlist = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_ENTITY));
+                if (mPaging != null) {
+                    Pagination pagination = savedInstanceState.getParcelable(PAGINATION_MODEL);
+                    mPaging.setPagination(pagination);
+                }
             }
         }
     }
@@ -190,8 +193,13 @@ public class WishListImpl implements WishList {
     @Override
     public void saveDataBeforeRotate(Bundle saved) {
         //mPaging.onSavedInstanceState(saved);
-        saved.putParcelable(WISHLIST_MODEL, Parcels.wrap(data));
-        saved.putParcelable(WISHLIST_ENTITY, Parcels.wrap(dataWishlist));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(WISHLIST_MODEL, Parcels.wrap(data));
+        bundle.putParcelable(WISHLIST_ENTITY, Parcels.wrap(dataWishlist));
+        if (TooLargeTool.isPotentialCrash(bundle)) {
+            return;
+        }
+        saved.putAll(bundle);
         if (mPaging != null) {
             saved.putParcelable(PAGINATION_MODEL, mPaging.getPagination());
         }
@@ -306,6 +314,9 @@ public class WishListImpl implements WishList {
                 wishListView.setSearchNotFound();
         }
         wishListView.displayPull(false);
+
+        wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
+
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
@@ -376,8 +387,8 @@ public class WishListImpl implements WishList {
                         .notes("")
                         .quantity(dataDetail.getMinimumOrder())
                         .shopId(Integer.parseInt(dataDetail.getShop().getId()))
-                        .build()
-        ).subscribeOn(Schedulers.newThread())
+                        .build(),
+                false).subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(addToCartSubscriber(dataDetail));
@@ -592,6 +603,10 @@ public class WishListImpl implements WishList {
                         wishListView.setSearchNotFound();
                 }
                 gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
+
+                wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList()
+                        , dataWishlist.size());
+
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());

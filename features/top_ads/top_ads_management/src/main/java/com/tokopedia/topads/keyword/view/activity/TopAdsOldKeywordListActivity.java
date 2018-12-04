@@ -12,7 +12,7 @@ import android.view.View;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseTabActivity;
-import com.tokopedia.seller.common.datepicker.view.listener.DatePickerTabListener;
+import com.tokopedia.datepicker.range.view.listener.DatePickerTabListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;

@@ -63,8 +63,9 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
         int selectedTabIndex = 0;
 
         for (DigitalBrowseServiceCategoryViewModel item : viewModel.getCategoryViewModelList()) {
-            if (item.getId() == categoryId) {
+            if (item.isTitle() && item.getId() == categoryId) {
                 selectedTab = item.getName();
+                break;
             }
         }
 
@@ -96,7 +97,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
         int lastTitlePosition = 0;
 
         for (Map.Entry<String, IndexPositionModel> entry : titleMap.entrySet()) {
-            if (lastTitlePosition < entry.getValue().getIndexPositionInList() &&
+            if (lastTitlePosition <= entry.getValue().getIndexPositionInList() &&
                     entry.getValue().getIndexPositionInList() < itemPositionInList) {
 
                 lastTitlePosition = entry.getValue().getIndexPositionInList();
@@ -106,7 +107,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
             }
         }
 
-        model.setIconPosition(itemPositionInList - lastTitlePosition + 1);
+        model.setIconPosition(itemPositionInList - lastTitlePosition);
 
         return model;
     }

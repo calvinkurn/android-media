@@ -5,12 +5,10 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tokopoints.view.model.CatalogBanner;
-import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MyCouponListingContract {
 
@@ -23,9 +21,9 @@ public interface MyCouponListingContract {
 
         void openWebView(String url);
 
-        void populateCoupons(List<CouponValueEntity> coupons);
+        void populateCoupons(int categoryId);
 
-        void emptyCoupons();
+        void emptyCoupons(Map<String, String> errors);
 
         void onErrorCoupons(String errorMessage);
 
@@ -41,6 +39,6 @@ public interface MyCouponListingContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getCoupons();
+        void getCoupons(int categoryId);
     }
 }

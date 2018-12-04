@@ -24,10 +24,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -46,6 +46,8 @@ import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,12 +98,14 @@ public class SearchActivity extends DiscoveryActivity
     private String catalogTabTitle;
     private String shopTabTitle;
     private boolean forceSwipeToShop;
-
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     @Inject
     SearchPresenter searchPresenter;
+
+    @Inject
+    SearchTracking searchTracking;
 
     private SearchComponent searchComponent;
     private MenuItem menuChangeGrid;
@@ -152,6 +156,7 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GraphqlClient.init(this);
         initInjector();
 
         if (savedInstanceState != null) {
@@ -170,7 +175,6 @@ public class SearchActivity extends DiscoveryActivity
         initResources();
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
 
@@ -195,7 +199,7 @@ public class SearchActivity extends DiscoveryActivity
 
         if (intent != null &&
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            UnifyTracking.eventBeliLongClick();
+            searchTracking.eventSearchShortcut();
         }
         handleImageUri(intent);
     }
@@ -210,7 +214,7 @@ public class SearchActivity extends DiscoveryActivity
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
 
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH, false) &&
+        if (remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false) &&
                 intent != null) {
 
             if (intent.getClipData() != null &&

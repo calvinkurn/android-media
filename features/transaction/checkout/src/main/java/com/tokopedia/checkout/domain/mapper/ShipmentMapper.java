@@ -2,6 +2,8 @@ package com.tokopedia.checkout.domain.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
@@ -10,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipment;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipmentMapping;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
@@ -50,6 +53,28 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
+
+        if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
+            CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
+            cartPromoSuggestion.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
+            cartPromoSuggestion.setCtaColor(shipmentAddressFormDataResponse.getPromoSuggestion().getCtaColor());
+            cartPromoSuggestion.setPromoCode(shipmentAddressFormDataResponse.getPromoSuggestion().getPromoCode());
+            cartPromoSuggestion.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
+            cartPromoSuggestion.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
+            dataResult.setCartPromoSuggestion(cartPromoSuggestion);
+        }
+
+        if (shipmentAddressFormDataResponse.getAutoApply() != null) {
+            AutoApplyData autoApplyData = new AutoApplyData();
+            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoApply().getCode());
+            autoApplyData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoApply().getDiscountAmount());
+            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoApply().getIsCoupon());
+            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoApply().getMessageSuccess());
+            autoApplyData.setPromoId(shipmentAddressFormDataResponse.getAutoApply().getPromoId());
+            autoApplyData.setSuccess(shipmentAddressFormDataResponse.getAutoApply().isSuccess());
+            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoApply().getTitleDescription());
+            dataResult.setAutoApplyData(autoApplyData);
+        }
 
         if (shipmentAddressFormDataResponse.getDonation() != null) {
             Donation donation = new Donation();
@@ -104,6 +129,12 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setErrorMessage(mapperUtil.convertToString(groupShop.getErrors()));
                         groupShopResult.setWarning(!mapperUtil.isEmpty(groupShop.getMessages()));
                         groupShopResult.setWarningMessage(mapperUtil.convertToString(groupShop.getMessages()));
+
+                        groupShopResult.setShippingId(groupShop.getShippingId());
+                        groupShopResult.setSpId(groupShop.getSpId());
+                        groupShopResult.setDropshipperName(groupShop.getDropshiper() != null ? groupShop.getDropshiper().getName() : "");
+                        groupShopResult.setDropshipperPhone(groupShop.getDropshiper() != null ? groupShop.getDropshiper().getTelpNo() : "");
+                        groupShopResult.setUseInsurance(groupShop.isInsurance());
 
                         if (groupShop.getShop() != null) {
                             Shop shopResult = new Shop();
@@ -171,8 +202,12 @@ public class ShipmentMapper implements IShipmentMapper {
 
                                 AnalyticsProductCheckoutData analyticsProductCheckoutData = new AnalyticsProductCheckoutData();
                                 analyticsProductCheckoutData.setProductId(String.valueOf(product.getProductId()));
-                                analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
-                                analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
+
+                                if(product.getProductTrackerData() != null) {
+                                    analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
+                                    analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
+                                }
+
                                 analyticsProductCheckoutData.setProductCategory(product.getProductCategory());
                                 analyticsProductCheckoutData.setProductCategoryId(String.valueOf(product.getProductCatId()));
                                 analyticsProductCheckoutData.setProductName(product.getProductName());
@@ -185,7 +220,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
-                                productResult.setErrorMessage(mapperUtil.convertToString(product.getErrors()));
+                                if (product.getErrors() != null) {
+                                    productResult.setErrorMessage(product.getErrors().size() >= 1 ? product.getErrors().get(0) : "");
+                                    productResult.setErrorMessageDescription(product.getErrors().size() >= 2 ? product.getErrors().get(1) : "");
+                                }
 
                                 productResult.setProductId(product.getProductId());
                                 productResult.setCartId(product.getCartId());
@@ -201,6 +239,8 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductReturnable(product.getProductReturnable() == 1);
                                 productResult.setProductIsFreeReturns(product.getProductIsFreeReturns() == 1);
                                 productResult.setProductIsPreorder(product.getProductIsPreorder() == 1);
+                                productResult.setPreOrderDurationDay(product.getProductPreorder() != null ?
+                                        product.getProductPreorder().getDurationDay() : 0);
                                 productResult.setProductCashback(product.getProductCashback());
                                 productResult.setProductMinOrder(product.getProductMinOrder());
                                 productResult.setProductInvenageValue(product.getProductInvenageValue());
@@ -215,6 +255,25 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatId(product.getProductCatId());
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
+
+                                if (!mapperUtil.isEmpty(product.getPurchaseProtectionPlanData())) {
+                                    PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
+                                    com.tokopedia.transactiondata.entity.response.shippingaddressform.PurchaseProtectionPlanData pppDataMapping =
+                                            product.getPurchaseProtectionPlanData();
+
+                                    purchaseProtectionPlanData.setProtectionAvailable(pppDataMapping.getProtectionAvailable());
+                                    purchaseProtectionPlanData.setProtectionLinkText(pppDataMapping.getProtectionLinkText());
+                                    purchaseProtectionPlanData.setProtectionLinkUrl(pppDataMapping.getProtectionLinkUrl());
+                                    purchaseProtectionPlanData.setProtectionOptIn(pppDataMapping.getProtectionOptIn());
+                                    purchaseProtectionPlanData.setProtectionPrice(pppDataMapping.getProtectionPrice());
+                                    purchaseProtectionPlanData.setProtectionPricePerProduct(pppDataMapping.getProtectionPricePerProduct());
+                                    purchaseProtectionPlanData.setProtectionSubtitle(pppDataMapping.getProtectionSubtitle());
+                                    purchaseProtectionPlanData.setProtectionTitle(pppDataMapping.getProtectionTitle());
+                                    purchaseProtectionPlanData.setProtectionTypeId(pppDataMapping.getProtectionTypeId());
+
+                                    productResult.setPurchaseProtectionPlanData(purchaseProtectionPlanData);
+                                }
+
                                 if (!mapperUtil.isEmpty(product.getFreeReturns())) {
                                     productResult.setFreeReturnLogo(product.getFreeReturns().getFreeReturnsLogo());
                                 }

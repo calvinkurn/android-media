@@ -26,6 +26,18 @@ public class GroupShop {
     @SerializedName("products")
     @Expose
     private List<Product> products = new ArrayList<>();
+    @SerializedName("shipping_id")
+    @Expose
+    private int shippingId;
+    @SerializedName("sp_id")
+    @Expose
+    private int spId;
+    @SerializedName("dropshipper")
+    @Expose
+    private Dropshiper dropshiper;
+    @SerializedName("is_insurance")
+    @Expose
+    private boolean isInsurance;
 
     public List<String> getErrors() {
         return errors;
@@ -45,5 +57,21 @@ public class GroupShop {
 
     public List<String> getMessages() {
         return messages;
+    }
+
+    public int getShippingId() {
+        return shippingId;
+    }
+
+    public int getSpId() {
+        return spId;
+    }
+
+    public Dropshiper getDropshiper() {
+        return dropshiper;
+    }
+
+    public boolean isInsurance() {
+        return isInsurance;
     }
 }

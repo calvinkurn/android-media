@@ -31,7 +31,7 @@ public class DigitalBrowseMarketplaceUseCase extends GraphqlUseCase {
 
     private static final String VALUE_LANG = "id";
     private static final String VALUE_SOURCE = "microsite";
-    private static final int VALUE_TOTAL = 12;
+    private static final int VALUE_TOTAL = 6;
     private static final int VALUE_TYPE = 1;
 
     private static final String OFFICIAL_OPERATION_NAME = "officialStoreBrands";

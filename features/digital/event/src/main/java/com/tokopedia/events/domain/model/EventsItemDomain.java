@@ -207,6 +207,9 @@ public class EventsItemDomain {
     @SerializedName("likes")
     @Expose
     private int likes;
+    @SerializedName("is_liked")
+    @Expose
+    private boolean isLiked;
     @SerializedName("schedules")
     @Expose
     private Object schedules;
@@ -758,4 +761,11 @@ public class EventsItemDomain {
         this.forms = forms;
     }
 
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
 }

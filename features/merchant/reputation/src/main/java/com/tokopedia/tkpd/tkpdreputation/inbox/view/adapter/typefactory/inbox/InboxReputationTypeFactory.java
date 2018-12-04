@@ -2,8 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.EmptySearchModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 

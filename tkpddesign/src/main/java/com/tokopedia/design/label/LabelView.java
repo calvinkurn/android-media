@@ -43,6 +43,8 @@ public class LabelView extends BaseCustomView {
     private String subTitleText;
     @ColorInt
     private int titleColorValue;
+    @ColorInt
+    private int subtitleColorValue;
     private int contentTextStyleValue;
 
     private int badgeCounter;
@@ -88,6 +90,7 @@ public class LabelView extends BaseCustomView {
             imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_lv_image_margin_right, getResources().getDimension(R.dimen.dp_8));
             titleText = styledAttributes.getString(R.styleable.LabelView_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+            subtitleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_sub_title_color, ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
             subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
             contentText = styledAttributes.getString(R.styleable.LabelView_lv_content);
             badgeCounter = styledAttributes.getInt(R.styleable.LabelView_lv_badge, 0);
@@ -133,8 +136,12 @@ public class LabelView extends BaseCustomView {
         titleTextView.setText(titleText);
         titleTextView.setTypeface(null, titleTextStyleValue);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
+        titleTextView.setTextColor(titleColorValue);
         titleTextView.setMinWidth(minTitleWidth);
+
         subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTitleTextSize);
+        subTitleTextView.setTextColor(subtitleColorValue);
+
         if (!TextUtils.isEmpty(subTitleText)) {
             subTitleTextView.setText(subTitleText);
             subTitleTextView.setVisibility(View.VISIBLE);
@@ -184,9 +191,11 @@ public class LabelView extends BaseCustomView {
         if (enabled) {
             titleTextView.setTextColor(titleColorValue);
             contentTextView.setTextColor(contentColorValue);
+            subTitleTextView.setTextColor(subtitleColorValue);
         } else {
             titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
             contentTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            subTitleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
         }
     }
 

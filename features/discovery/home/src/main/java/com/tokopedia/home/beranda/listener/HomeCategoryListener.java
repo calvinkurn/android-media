@@ -9,6 +9,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackDa
 
 public interface HomeCategoryListener {
 
+    boolean isMainViewVisible();
+
     void onSectionItemClicked(String actionLink);
 
     void onDigitalMoreClicked(int pos);
@@ -19,15 +21,13 @@ public interface HomeCategoryListener {
 
     void openShop();
 
-    void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance);
+    void actionAppLinkWalletHeader(String appLinkBalance);
 
     void onRequestPendingCashBack();
 
-    void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String redirectUrlActionButton, String appLinkActionButton);
+    void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String appLinkActionButton);
 
     void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
-
-    boolean isMainViewVisible();
 
     void showNetworkError(String message);
 
@@ -40,4 +40,12 @@ public interface HomeCategoryListener {
     void onSixGridItemClicked(String actionLink, String trackingAttribution);
 
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
+
+    void onPromoAllClick();
+
+    void onServerTimeReceived(long serverTimeUnix);
+
+    long getServerTimeOffset();
+
+    boolean isHomeFragment();
 }

@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-
     <dimen name="dp_minus8">-8dp</dimen>
     <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
     <dimen name="dp_minus4">-4dp</dimen>
@@ -17,6 +16,7 @@
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_11">11dp</dimen>
     <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_13">13dp</dimen>
     <dimen name="dp_14">14dp</dimen>
     <dimen name="dp_15">15dp</dimen> <!-- not recommended -->
     <dimen name="dp_16">16dp</dimen>
@@ -25,6 +25,9 @@
     <dimen name="dp_22">22dp</dimen>
     <dimen name="dp_24">24dp</dimen>
     <dimen name="dp_25">25dp</dimen> <!-- not recommended -->
+    <dimen name="dp_26">26dp</dimen> <!-- not recommended -->
+    <dimen name="dp_27">27dp</dimen> <!-- not recommended -->
+    <dimen name="dp_28">28dp</dimen> <!-- not recommended -->
     <dimen name="dp_30">30dp</dimen> <!-- not recommended -->
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_35">35dp</dimen> <!-- not recommended -->
@@ -37,6 +40,7 @@
     <dimen name="dp_50">50dp</dimen> <!-- not recommended -->
     <dimen name="dp_56">56dp</dimen> <!-- not recommended -->
     <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_72">72dp</dimen>
     <dimen name="dp_75">75dp</dimen>
     <dimen name="dp_78">78dp</dimen> <!-- not recommended -->
@@ -46,6 +50,7 @@
     <dimen name="dp_90">90dp</dimen> <!-- not recommended -->
     <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_100">100dp</dimen> <!-- not recommended -->
+    <dimen name="dp_110">110dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
     <dimen name="dp_120">120dp</dimen>
     <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
@@ -65,6 +70,8 @@
     <dimen name="dp_500">500dp</dimen> <!-- not recommended -->
 
     <dimen name="sp_5">5sp</dimen> <!-- not recommended -->
+    <dimen name="sp_4">4sp</dimen> <!-- not recommended -->
+    <dimen name="sp_6">6sp</dimen> <!-- not recommended -->
     <dimen name="sp_8">8sp</dimen> <!-- not recommended -->
     <dimen name="sp_10">10sp</dimen> <!-- not recommended -->
     <dimen name="sp_11">11sp</dimen>
@@ -84,4 +91,5 @@
     <dimen name="sp_56">56sp</dimen>
     <dimen name="dep_64">64dp</dimen>
     <integer name="int_3">3</integer>
+    <dimen name="keyboard_min_height">200dp</dimen>
 </resources>

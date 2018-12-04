@@ -3,13 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
@@ -17,6 +15,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 
 
@@ -36,6 +35,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public TopAdsViewHolder(View itemView) {
         super(itemView);
         topAdsWidgetView = (TopAdsWidgetView) itemView;
+        topAdsWidgetView.setDisplayMode(DisplayMode.FEED);
         topAdsWidgetView.setItemClickListener(this);
         this.context = itemView.getContext();
     }
@@ -50,15 +50,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public void onProductItemClicked(int position, Product product) {
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
-            ProductItem data = new ProductItem();
-            data.setId(product.getId());
-            data.setName(product.getName());
-            data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_url());
-            Bundle bundle = new Bundle();
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(activity);
-            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-            intent.putExtras(bundle);
+            Intent intent = ((IHomeRouter) activity.getApplication()).getTopAdsProductDetailIntentForHome(context,
+                    product);
+
             activity.startActivity(intent);
         }
     }

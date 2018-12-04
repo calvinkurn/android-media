@@ -23,6 +23,7 @@
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
+    <string name="title_kyc_setting">Dokumen Data Diri</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="screentitle_account_setting">Atur Akun</string>
     <string name="title_shop_info_setting">Informasi</string>
@@ -32,7 +33,7 @@
     <string name="title_shop_shipment_setting">Pengiriman</string>
     <string name="title_shop_note_setting">Catatan</string>
     <string name="screentitle_store_setting">Atur Toko</string>
-    <string name="title_tokocard_setting">TokoCard</string>
+    <string name="title_tokocard_setting">TokoSwipe</string>
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
@@ -61,7 +62,7 @@
     <string name="label_receive_review">Ulasan</string>
     <string name="label_receive_promo">Promo</string>
     <string name="label_receive_seller_info">Info Penjual</string>
-    <string name="label_receive_group_chat">Group Chat</string>
+    <string name="label_receive_group_chat">Play</string>
 
 
     <string name="pref_receive_purchasing" translatable="false">notification_purchase</string>
@@ -179,5 +180,8 @@
     <string name="verified_account">Verified Account</string>
     <string name="error_no_internet_connection">Tidak ada koneksi internet</string>
     <string name="label_total_coupon">%1$d Kupon</string>
+
+    <string name="title_menu_challenge">Tokopedia Challenge</string>
+    <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
 
 </resources>

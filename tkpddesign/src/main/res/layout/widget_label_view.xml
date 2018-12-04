@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:visibility="gone"
         tools:src="@drawable/ic_badge_silver"
         tools:visibility="visible"
@@ -61,39 +61,6 @@
         app:layout_goneMarginRight="@dimen/dp_8"
         app:layout_goneMarginEnd="@dimen/dp_8"
         app:layout_constraintEnd_toStartOf="@+id/image_arrow"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <TextView
-        android:id="@+id/text_view_badge"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:textSize="@dimen/sp_12"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        tools:text="99+"
-        android:textColor="@color/white"
-        tools:visibility="visible"
-        android:visibility="gone"
-        android:background="@drawable/circle_red"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        app:layout_goneMarginRight="@dimen/dp_8"
-        app:layout_goneMarginEnd="@dimen/dp_8"
-        app:layout_constraintEnd_toStartOf="@+id/image_arrow"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <ImageView
-        android:id="@+id/image_arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:srcCompat="@drawable/ic_arrow_right_grey"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

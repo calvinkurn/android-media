@@ -215,7 +215,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @Override
     public void onBackPressed() {
         if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            startActivity(HomeRouter.getHomeActivity(this));
+            startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
             finish();
         } else {
             super.onBackPressed();

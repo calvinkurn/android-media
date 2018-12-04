@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LabelLayout.ReadOnly" parent="LabelLayout">
+        <item name="lv_title_text_size">@dimen/sp_12</item>
+        <item name="lv_title_color">@color/font_black_disabled_38</item>
+        <item name="lv_sub_title_text_size">@dimen/sp_14</item>
+        <item name="lv_sub_title_color">@color/font_black_primary_70</item>
+    </style>
+</resources>

@@ -39,13 +39,9 @@ public class DigitalBrowsePopularViewHolder extends AbstractViewHolder<DigitalBr
                 popularBrandListener.onPopularItemClicked(element, getAdapterPosition());
             }
         });
-
-        popularBrandListener.sendImpressionAnalytics(element, getAdapterPosition());
     }
 
     public interface PopularBrandListener {
         void onPopularItemClicked(DigitalBrowsePopularBrandsViewModel viewModel, int position);
-
-        void sendImpressionAnalytics(DigitalBrowsePopularBrandsViewModel viewModel, int position);
     }
 }

@@ -308,7 +308,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
 
     @Override
     public void renderErrorGetVoucherCode(String message) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, () -> presenter.getReferralVoucherCode()).showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, () -> presenter.checkLoginAndFetchReferralCode()).showRetrySnackbar();
     }
 
     @Override

@@ -31,6 +31,8 @@ public class DialogForceLogout {
                     public void onClick(DialogInterface dialog, int which) {
                         listener.onDialogClicked();
                         dialog.dismiss();
+                        setIsDialogShown(context, false);
+
                     }
                 });
         dialog.setCancelable(false);

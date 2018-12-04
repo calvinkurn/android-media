@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Large">
-        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textSize">@dimen/sp_18</item>
     </style>
 
     <style name="Bold">

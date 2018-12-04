@@ -9,14 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BrandModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by alifa on 5/26/17.
@@ -65,15 +61,17 @@ public class IntermediaryBrandsAdapter extends
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.thumbnail)
-        ImageView thumbnail;
-
-        @BindView(R2.id.linWrapper)
-        LinearLayout container;
+        private ImageView thumbnail;
+        private LinearLayout container;
 
         ItemRowHolder(View view) {
             super(view);
-            ButterKnife.bind(this,view);
+            initView(view);
+        }
+
+        private void initView(View view) {
+            thumbnail = view.findViewById(R.id.thumbnail);
+            container = view.findViewById(R.id.linWrapper);
         }
     }
 

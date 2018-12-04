@@ -25,6 +25,22 @@
 
                 <include layout="@layout/partial_top_ads_shop_info" />
 
+                <com.tokopedia.design.component.ticker.TickerView
+                    android:id="@+id/ticker_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_15"
+                    android:layout_marginLeft="@dimen/dp_15"
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:visibility="gone"
+                    app:tckv_content_text_size="@dimen/sp_12"
+                    app:tckv_indicator_off_color="@color/green_indicator_off"
+                    app:tckv_indicator_on_color="@color/green_1100"
+                    app:tckv_highlight_color="@color/green_1000"
+                    app:tckv_show_close_button="false"
+                    app:tckv_show_link_underline="false"/>
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">

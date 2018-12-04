@@ -5,4 +5,6 @@
     <dimen name="info_bank_account_width">271dp</dimen>
     <dimen name="info_bank_account_height">169dp</dimen>
     <dimen name="item_bank_height">64dp</dimen>
+    <dimen name="btn_height">44dp</dimen>
+
 </resources>

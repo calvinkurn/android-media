@@ -44,7 +44,7 @@ public class DepositUseCase extends UseCase<InfoDepositDomainModel> {
     }
 
     public static RequestParams createParams(UserSession userSession) {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         String deviceId = userSession.getDeviceId();
         String userId = userSession.getUserId();
         String hash = md5(userId + "~" + deviceId);

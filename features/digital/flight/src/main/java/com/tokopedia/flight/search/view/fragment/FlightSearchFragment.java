@@ -34,12 +34,12 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.di.FlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
@@ -54,6 +54,8 @@ import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
+import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +86,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final String SAVED_PROGRESS = "svd_progress";
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
+    private static final int REQUEST_CODE_CHANGE_DATE = 1001;
 
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
@@ -363,7 +366,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 anyLoadToCloud = true;
                 FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                         flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
-                        date, adult, child, infant, classID, flightAirportCombineModel.getAirlines());
+                        date, adult, child, infant, classID, flightAirportCombineModel.getAirlines(),
+                        FlightRequestUtil.getLocalIpAddress());
                 flightSearchPresenter.searchAndSortFlight(flightSearchApiRequestModel,
                         isReturning(), false, flightFilterModel, selectedSortOption);
             }
@@ -438,12 +442,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                flightSearchPresenter.getFlightStatistic(isReturning());
-                FlightSearchFragment.this.addToolbarElevation();
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
-                        isReturning(),
-                        flightFilterModel),
-                        REQUEST_CODE_SEARCH_FILTER);
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);
@@ -486,6 +484,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                             onSelectedFromDetail(selectedId);
                         }
                     }
+                    break;
+                case REQUEST_CODE_CHANGE_DATE:
+                    flightSearchPresenter.attachView(this);
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Calendar calendarSelected = Calendar.getInstance();
+                    calendarSelected.setTime(dateString);
+                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                     break;
             }
         }
@@ -616,7 +622,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     int classID = flightSearchPassDataViewModel.getFlightClass().getId();
                     FlightSearchApiRequestModel flightSearchApiRequestModel = new FlightSearchApiRequestModel(
                             flightAirportCombineModel.getDepAirport(), flightAirportCombineModel.getArrAirport(),
-                            date, adult, child, infant, classID, flightAirportCombineModel.getAirlines());
+                            date, adult, child, infant, classID, flightAirportCombineModel.getAirlines(),
+                            FlightRequestUtil.getLocalIpAddress());
                     flightSearchPresenter.searchAndSortFlightWithDelay(flightSearchApiRequestModel, isReturning(), flightMetaDataDB.getRefreshTime());
                 }
 
@@ -719,12 +726,13 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         reloadDataFromCache();
     }
 
-    public void onChangeDateClicked() {
+    public void onChangeDateClickedOld() {
         if (!getActivity().isFinishing()) {
             final String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
             Date date = FlightDateUtil.stringToDate(dateInput);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
+
             DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -735,6 +743,42 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             setMinMaxDatePicker(datePicker);
 
             datePickerDialog.show();
+        }
+    }
+
+    public void onChangeDateClicked() {
+        if (!getActivity().isFinishing()) {
+            final String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
+            Date date = FlightDateUtil.stringToDate(dateInput);
+
+            Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+            maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
+            maxDate = FlightDateUtil.trimDate(maxDate);
+            Date minDate;
+
+            if (isReturning()) {
+                String dateDepStr = flightSearchPassDataViewModel.getDate(false);
+                Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
+                dateDep = FlightDateUtil.trimDate(dateDep);
+                minDate = dateDep;
+            } else {
+                minDate = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate());
+
+                boolean isOneWay = flightSearchPassDataViewModel.isOneWay();
+                if (!isOneWay) {
+                    String dateReturnStr = flightSearchPassDataViewModel.getDate(true);
+                    Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
+                    dateReturn = FlightDateUtil.trimDate(dateReturn);
+                    maxDate = dateReturn;
+                }
+            }
+
+            int calendarTitleType = isReturning() ? TravelCalendarActivity.RETURN_TYPE : TravelCalendarActivity.DEPARTURE_TYPE;
+
+            startActivityForResult(TravelCalendarActivity
+                            .newInstance(getActivity(), date, minDate, maxDate,
+                                    calendarTitleType),
+                    REQUEST_CODE_CHANGE_DATE);
         }
     }
 

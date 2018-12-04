@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">top_ads_free_claim</string>
+    <string name="free_claim_template"><![CDATA[Selamat! Anda mendapatkan kredit TopAds sebesar %1$s
+                                        Gratis! Batas klaim kredit %2$s hari saja! <a href="%3$s">
+                                        <font color=#42b549>Pasang iklan sekarang</font></a>]]>
+    </string>
+</resources>

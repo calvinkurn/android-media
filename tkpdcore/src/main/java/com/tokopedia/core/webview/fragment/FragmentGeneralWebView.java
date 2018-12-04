@@ -235,7 +235,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         Uri uri = null;
         try {
             uri = Uri.parse(url);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         if (uri == null || uri.getHost() == null) {
             return false;
@@ -267,6 +268,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 case DeepLinkChecker.TOKOPOINT:
                     DeepLinkChecker.openTokoPoint(getActivity(), url);
                     return true;
+                case DeepLinkChecker.WALLET_OVO:
+                    return false;
                 default:
                     return false;
             }
@@ -430,10 +433,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             Log.d(TAG, "redirect url = " + url);
             if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
                     .isSupportedDelegateDeepLink(url)) {
-                if (url.startsWith(Constants.Applinks.WEBVIEW)){
+                if (url.startsWith(Constants.Applinks.WEBVIEW)) {
                     Uri uri = Uri.parse(url);
                     String newUrl = uri.getQueryParameter("url");
-                    if (!TextUtils.isEmpty(newUrl)){
+                    if (!TextUtils.isEmpty(newUrl)) {
                         newUrl = Uri.decode(newUrl);
                         // Check if url should redirect to applink
                         // Replace old url to new applink

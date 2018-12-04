@@ -12,14 +12,16 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12">
 
         <ImageView
             android:id="@+id/iv_icon_menu"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_24"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="start"
             android:adjustViewBounds="true"
             android:padding="@dimen/dp_8"
             tools:src="@drawable/ic_badge_shop_official"
@@ -28,9 +30,12 @@
         <TextView
             android:id="@+id/tv_title_menu"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_32"
             android:layout_alignWithParentIfMissing="true"
             android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:layout_toEndOf="@id/iv_icon_menu"
             android:layout_toRightOf="@id/iv_icon_menu"
             android:textColor="@color/grey_750"

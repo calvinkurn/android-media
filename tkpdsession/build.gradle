@@ -39,7 +39,11 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.phoneVerification)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.network)
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.maps

@@ -24,6 +24,8 @@ public class ReviewProductItemFilterView extends BaseCustomView {
     private TextView counterRating;
     private int rating;
     private boolean isActive;
+    private boolean isAll;
+    private boolean isWithPhoto;
 
     public ReviewProductItemFilterView(@NonNull Context context) {
         super(context);
@@ -46,6 +48,8 @@ public class ReviewProductItemFilterView extends BaseCustomView {
         try {
             rating = styledAttributes.getInt(R.styleable.ReviewProductItemFilterView_counter_rating, DEF_VALUE_EMPTY);
             isActive = styledAttributes.getBoolean(R.styleable.ReviewProductItemFilterView_isActive, false);
+            isAll = styledAttributes.getBoolean(R.styleable.ReviewProductItemFilterView_isAll, false);
+            isWithPhoto = styledAttributes.getBoolean(R.styleable.ReviewProductItemFilterView_isWithPhoto, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -63,7 +67,13 @@ public class ReviewProductItemFilterView extends BaseCustomView {
 
     public void setRating(int rating) {
         this.rating = rating;
-        counterRating.setText(String.valueOf(rating));
+        if(isAll){
+            counterRating.setText(R.string.review_label_all);
+        } else if (isWithPhoto){
+            counterRating.setText(R.string.review_label_with_photo);
+        } else {
+            counterRating.setText(String.valueOf(rating));
+        }
     }
 
     public boolean isActive() {
@@ -72,10 +82,30 @@ public class ReviewProductItemFilterView extends BaseCustomView {
 
     public void setActive(boolean active) {
         isActive = active;
-        if (active) {
-            ratingBar.setImageResource(R.drawable.ic_rating_gold);
-        } else {
-            ratingBar.setImageResource(R.drawable.ic_rating);
+        if(isAll || isWithPhoto){
+            ratingBar.setVisibility(GONE);
+        }else{
+            ratingBar.setVisibility(VISIBLE);
+            if (active) {
+                ratingBar.setImageResource(R.drawable.ic_rating_gold_micro);
+            } else {
+                ratingBar.setImageResource(R.drawable.ic_rating_grey_micro);
+            }
         }
+    }
+
+    public void setAll(boolean all) {
+        this.isAll = all;
+        populateView();
+    }
+
+    public void setWithPhoto(boolean withPhoto) {
+        this.isWithPhoto = withPhoto;
+        populateView();
+    }
+
+    private void populateView() {
+        setRating(rating);
+        setActive(isActive);
     }
 }

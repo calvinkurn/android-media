@@ -12,10 +12,11 @@
 
     <TextView
         android:id="@+id/cardNumber"
-        style="@style/TextView.Title"
+        style="@style/TextView.Title.White"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         tools:text="* * * * 6544" />
 
 </RelativeLayout>

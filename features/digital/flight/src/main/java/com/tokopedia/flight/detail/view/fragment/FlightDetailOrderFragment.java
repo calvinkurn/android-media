@@ -19,7 +19,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
@@ -46,14 +45,13 @@ import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
-import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
+import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
@@ -264,12 +262,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getWebviewActivity(getActivity(), invoiceLink) != null) {
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getWebviewActivity(getActivity(), invoiceLink));
-                }
+                startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
             }
         });
 
@@ -283,7 +276,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flightDetailOrderPresenter.onHelpButtonClicked();
+                flightDetailOrderPresenter.onHelpButtonClicked(getFlightOrder().getContactUsUrl());
             }
         });
         buttonReorder.setOnClickListener(new View.OnClickListener() {
@@ -444,7 +437,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToWebview(String url) {
-        startActivity(flightModuleRouter.getWebviewActivity(getActivity(), url));
+        startActivity(flightModuleRouter
+                .getDefaultContactUsIntent(getActivity(), url));
     }
 
     @Override
@@ -646,18 +640,18 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(
                 getString(R.string.flight_cancellation_dialog_refundable_description)));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Lanjut");
+        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });
@@ -670,18 +664,18 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(getString(
                 R.string.flight_cancellation_dialog_non_refundable_description)));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Lanjut");
+        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });

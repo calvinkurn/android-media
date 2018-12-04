@@ -11,11 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
@@ -40,7 +40,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
                 timeLabel, timeValue, disabledError, btnContinue,
                 labelPoint, textDiscount;
         ImageView imgBanner, imgTime, imgPoint;
-        ImageButton btnSendGift;
+        ProgressBar pbQuota;
         boolean isVisited = false;
 
         public ViewHolder(View view) {
@@ -58,7 +58,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             imgPoint = view.findViewById(R.id.img_points_stack);
             labelPoint = view.findViewById(R.id.text_point_label);
             textDiscount = view.findViewById(R.id.text_point_discount);
-            btnSendGift = view.findViewById(R.id.btn_send_gift);
+            pbQuota = view.findViewById(R.id.progress_timer_quota);
         }
     }
 
@@ -114,17 +114,34 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         //Quota text handling
         if (item.getUpperTextDesc() == null || item.getUpperTextDesc().isEmpty()) {
             holder.quota.setVisibility(View.GONE);
+            holder.pbQuota.setVisibility(View.GONE);
         } else {
             holder.quota.setVisibility(View.VISIBLE);
+            holder.pbQuota.setVisibility(View.VISIBLE);
+            holder.pbQuota.setProgress(0);
             StringBuilder upperText = new StringBuilder();
+
+            if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.red_150));
+            } else {
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.black_38));
+            }
+
             for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
                 if (i == 1) {
-                    //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                    if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                        //for flash sale progress bar handling
+                        holder.pbQuota.setProgress(item.getQuota());
+                        upperText.append(item.getUpperTextDesc().get(i));
+                    } else {
+                        //exclusive case for handling font color of second index.
+                        upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                    }
                 } else {
                     upperText.append(item.getUpperTextDesc().get(i)).append(" ");
                 }
             }
+
             holder.quota.setText(MethodChecker.fromHtml(upperText.toString()));
         }
 
@@ -166,14 +183,6 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             holder.textDiscount.setText(item.getDiscountPercentageStr());
         }
 
-        if (item.getIsGift() == 1) {
-            holder.btnSendGift.setVisibility(View.VISIBLE);
-            holder.btnSendGift.setOnClickListener(view -> mPresenter.startSendGift(item.getId(), item.getTitle(), item.getPointsStr()));
-        } else {
-            holder.btnSendGift.setVisibility(View.GONE);
-            holder.btnSendGift.setOnClickListener(null);
-        }
-
         holder.btnContinue.setOnClickListener(v -> {
             //call validate api the show dialog
             mPresenter.startValidateCoupon(item);
@@ -185,6 +194,9 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
+
+
+        holder.btnContinue.setVisibility(item.isShowTukarButton() ? View.VISIBLE : View.GONE);
     }
 
     @Override

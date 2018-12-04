@@ -9,16 +9,19 @@ import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.referral.fragment.FragmentReferralFriendsWelcome;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
+
+    private static final String WELCOME_SCREEN = "/referral/friends";
 
     @DeepLink(Constants.Applinks.REFERRAL_WELCOME)
     public static Intent getCallingReferral(Context context, Bundle extras) {
@@ -39,6 +42,11 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
         if(!isappShowReferralButtonActivated(this)){
             finish();
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return WELCOME_SCREEN;
     }
 
     @Override
@@ -113,7 +121,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
     private   Boolean isappShowReferralButtonActivated(Context context){
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
 
 

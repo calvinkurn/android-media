@@ -92,11 +92,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
-            Inbox inbox = inboxes.get(position);
+            Inbox inbox = adapter.getItem(position);
             if (inbox == null)
                 return;
 
-            globalNavAnalytics.eventInboxPage(inbox.getTitle().toString().toLowerCase());
+            globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
         });
 
@@ -146,7 +146,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onResume();
+        if(isVisible()) presenter.onResume();
     }
 
     @Override

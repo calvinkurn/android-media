@@ -55,6 +55,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class ManageShopAddress extends TActivity {
     private final int HIDE_MENU = 1;
     private final int SHOW_MENU = 0;

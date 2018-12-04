@@ -1,6 +1,6 @@
 package com.tokopedia.recentview.data.source;
 
-import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.recentview.data.api.RecentViewApi;
 import com.tokopedia.recentview.data.mapper.RecentProductMapper;
 import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
 import com.tokopedia.recentview.domain.usecase.GetRecentViewUseCase;
@@ -18,11 +18,11 @@ import rx.Observable;
 
 public class CloudRecentProductDataSource {
 
-    private final MojitoService mojitoService;
+    private final RecentViewApi mojitoService;
     private RecentProductMapper recentProductMapper;
 
     @Inject
-    CloudRecentProductDataSource(MojitoService mojitoService,
+    CloudRecentProductDataSource(RecentViewApi mojitoService,
                                  RecentProductMapper recentProductMapper) {
         this.mojitoService = mojitoService;
         this.recentProductMapper = recentProductMapper;

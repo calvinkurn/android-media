@@ -10,12 +10,13 @@ import com.tokopedia.payment.setting.add.model.ResponseGetIFrameCreditCard
 import com.tokopedia.payment.setting.detail.model.DataResponseDeleteCC
 import com.tokopedia.payment.setting.util.GET_IFRAME_ADD_CC_URL
 import com.tokopedia.payment.setting.util.PAYMENT_SETTING_URL
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import okhttp3.Interceptor
 
 class AddCreditCardUseCase(authInterceptor : List<Interceptor>, context: Context, val userSession: UserSession) : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
 
-    override fun buildRequest(): MutableList<RestRequest> {
+    override fun buildRequest(requestParams: RequestParams): MutableList<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
 
         val params = HashMap<String, Any>()

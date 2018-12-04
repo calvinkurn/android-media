@@ -22,6 +22,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendRev
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import rx.Subscriber;
@@ -57,18 +58,19 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ImageUploadPreviewFragment.REQUEST_CODE_IMAGE_REVIEW && resultCode == Activity.RESULT_OK && data!= null) {
-
-            int position = viewListener.getAdapter().getList().size();
-            ImageUpload image = new ImageUpload();
-            image.setPosition(position);
-            image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
+            ImageUpload image;
             ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
             if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
-                image.setFileLoc(imageUrlOrPathList.get(0));
+                for(String url : imageUrlOrPathList){
+                    int position = viewListener.getAdapter().getList().size();
+                    image = new ImageUpload();
+                    image.setPosition(position);
+                    image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
+                    image.setFileLoc(url);
+                    viewListener.getAdapter().addImage(image);
+                    viewListener.setPreviewImage(image);
+                }
             }
-            viewListener.getAdapter().addImage(image);
-            viewListener.setPreviewImage(image);
-
         }
     }
 
@@ -105,43 +107,15 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
             });
 
         } else {
-            File imgFile = new File(arguments.getString(ImageUploadHandler.FILELOC, ""));
 
-            if (imgFile.exists()) {
+            for(String url : Objects.requireNonNull(arguments.getStringArrayList(ImageUploadHandler.FILELOC))) {
+                int position = viewListener.getAdapter().getList().size();
                 final ImageUpload image = new ImageUpload();
-                image.setFileLoc(arguments.getString(ImageUploadHandler.FILELOC, ""));
+                image.setPosition(position);
+                image.setFileLoc(url);
                 image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
-
-                getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(SendReviewPass sendReviewPass) {
-
-                        if (sendReviewPass.getListImage().isEmpty()) {
-                            viewListener.getAdapter().addImage(image);
-                            viewListener.setPreviewImage(image);
-                        } else {
-                            for (int i = 0; i < sendReviewPass.getListImage().size(); i++) {
-                                sendReviewPass.getListImage().get(i).setPosition(i);
-                            }
-                            viewListener.getAdapter().addList(sendReviewPass.getListImage());
-                            image.setPosition(viewListener.getAdapter().getList().size());
-                            viewListener.getAdapter().addImage(image);
-                            viewListener.setPreviewImage(image);
-                        }
-
-                    }
-                });
-
+                viewListener.getAdapter().addImage(image);
+                viewListener.setPreviewImage(image);
             }
         }
     }

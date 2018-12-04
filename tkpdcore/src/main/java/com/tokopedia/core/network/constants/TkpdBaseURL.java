@@ -604,7 +604,6 @@ public class TkpdBaseURL {
         public static final String PATH_TOP_PICKS = "/hoth/toppicks/widget";
         public static final String PATH_HOTLIST_CATEGORY = "/hoth/hotlist/v1/category";
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
-        public static final String PATH_UNIVERSE_SEARCH_V5 = "/universe/v6";
         public static final String PATH_DELETE_SEARCH = "/universe/v1";
 
         public static final String PATH_SEARCH_V3_1 = "search/product/v3.1";
@@ -631,6 +630,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
         public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1.1/display/ads?ep=shop&device=android";
         public static final String URL_CHECK_PROMO = "v1/promo/check";
+
+        public static final String PATH_GET_PDP_AFFILIATE_DATA = "affiliate/v1/pdp/affiliate_data";
     }
 
     public static class Galadriel {

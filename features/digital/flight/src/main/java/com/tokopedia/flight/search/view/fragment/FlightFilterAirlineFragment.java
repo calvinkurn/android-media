@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.flight.search.view.adapter.FlightFilterAirlineAdapterTypeFactory;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;

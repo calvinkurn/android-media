@@ -102,6 +102,9 @@ public class Product {
     @SerializedName("product_catalog_id")
     @Expose
     private int productCatalogId;
+    @SerializedName("purchase_protection_plan_data")
+    @Expose
+    private PurchaseProtectionPlanData purchaseProtectionPlanData;
     @SerializedName("free_returns")
     @Expose
     private FreeReturns freeReturns;
@@ -111,6 +114,9 @@ public class Product {
     @SerializedName("product_tracker_data")
     @Expose
     private ProductTrackerData productTrackerData;
+    @SerializedName("product_preorder")
+    @Expose
+    private ProductPreorder productPreorder;
 
     public String getProductCategory() {
         return productCategory;
@@ -242,5 +248,17 @@ public class Product {
 
     public long getCartId() {
         return cartId;
+    }
+
+    public ProductPreorder getProductPreorder() {
+        return productPreorder;
+    }
+
+    public PurchaseProtectionPlanData getPurchaseProtectionPlanData() {
+        return purchaseProtectionPlanData;
+    }
+
+    public void setPurchaseProtectionPlanData(PurchaseProtectionPlanData purchaseProtectionPlanData) {
+        this.purchaseProtectionPlanData = purchaseProtectionPlanData;
     }
 }

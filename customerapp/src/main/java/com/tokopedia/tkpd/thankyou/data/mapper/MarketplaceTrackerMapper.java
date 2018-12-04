@@ -27,6 +27,8 @@ import rx.functions.Func1;
 
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
+    public static final String DEFAULT_SHOP_TYPE = "default";
+    
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
 
@@ -49,6 +51,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
                     BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(orderData));
                     indexOrdersData++;
                 }
+
+                PurchaseTracking.appsFlyerPurchaseEvent(getAppsFlyerTrackingData(paymentData.getOrders()),"MarketPlace");
+
             }
             return true;
         }
@@ -56,12 +61,37 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return false;
     }
 
+    private Purchase getAppsFlyerTrackingData(List<OrderData> orders) {
+        Purchase purchase = new Purchase();
+        float price = 0;
+        List<String> orderIds = new ArrayList<>();
+        float shipping = 0;
+        for (OrderData orderData : orders) {
+            orderIds.add(String.valueOf(orderData.getOrderId()));
+            shipping +=orderData.getShippingPrice();
+            price += orderData.getItemPrice();
+            for (Product product : getProductList(orderData)) {
+                purchase.addProduct(product.getProduct());
+            }
+        }
+        purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
+        purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
+        purchase.setTransactionID(orderIds);
+        purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setShipping(String.valueOf(shipping));
+
+        purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+
+        purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
+        return purchase;
+    }
+
     private Purchase getTrackignData(OrderData orderData, Integer position) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
-        purchase.setShopType((shopTypes.get(position)));
+        purchase.setShopType(checkShopTypeForMarketplace(shopTypes.get(position)));
         purchase.setShopId(getShopId(orderData));
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
@@ -70,6 +100,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
 
         for (Product product : getProductList(orderData)) {
@@ -77,6 +108,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return purchase;
+    }
+
+    private String checkShopTypeForMarketplace(String s){
+        if (s.isEmpty()){
+            return DEFAULT_SHOP_TYPE;
+        }
+
+        return s;
     }
 
     private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
@@ -181,6 +220,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             product.put(BranchIOPayment.KEY_NAME, getProductName(orderDetail));
             product.put(BranchIOPayment.KEY_PRICE, String.valueOf((int)orderDetail.getProductPrice()));
             product.put(BranchIOPayment.KEY_QTY, String.valueOf(orderDetail.getQuantity()));
+            product.put(BranchIOPayment.KEY_CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));
+
             branchIOPayment.setProduct(product);
         }
         return branchIOPayment;

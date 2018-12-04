@@ -116,6 +116,40 @@ public class OrderDetailData implements Parcelable {
 
     private String awbUploadProofUrl;
 
+    private String bookingCode;
+
+    private String barcodeType;
+
+    private int totalProtectionItem;
+
+    private String totalProtectionFee;
+
+    private List<String> bookingCodeMessage = null;
+
+    public String getBookingCode() {
+        return bookingCode;
+    }
+
+    public void setBookingCode(String bookingCode) {
+        this.bookingCode = bookingCode;
+    }
+
+    public String getBarcodeType() {
+        return barcodeType;
+    }
+
+    public void setBarcodeType(String barcodeType) {
+        this.barcodeType = barcodeType;
+    }
+
+    public List<String> getBookingCodeMessage() {
+        return bookingCodeMessage;
+    }
+
+    public void setBookingCodeMessage(List<String> bookingCodeMessage) {
+        this.bookingCodeMessage = bookingCodeMessage;
+    }
+
     public String getAwbUploadProofUrl() {
         return awbUploadProofUrl;
     }
@@ -527,6 +561,21 @@ public class OrderDetailData implements Parcelable {
         this.insuranceNotification = insuranceNotification;
     }
 
+    public int getTotalProtectionItem() {
+        return totalProtectionItem;
+    }
+
+    public void setTotalProtectionItem(int totalProtectionItem) {
+        this.totalProtectionItem = totalProtectionItem;
+    }
+
+    public String getTotalProtectionFee() {
+        return totalProtectionFee;
+    }
+
+    public void setTotalProtectionFee(String totalProtectionFee) {
+        this.totalProtectionFee = totalProtectionFee;
+    }
 
     public String getLiveTrackingUrl() {
         if (TextUtils.isEmpty(liveTrackingUrl))
@@ -597,6 +646,11 @@ public class OrderDetailData implements Parcelable {
         dest.writeString(this.awbUploadProofText);
         dest.writeString(this.awbUploadProofUrl);
         dest.writeString(this.liveTrackingUrl);
+        dest.writeString(this.bookingCode);
+        dest.writeString(this.barcodeType);
+        dest.writeInt(this.totalProtectionItem);
+        dest.writeString(this.totalProtectionFee);
+        dest.writeStringList(this.bookingCodeMessage);
     }
 
     protected OrderDetailData(Parcel in) {
@@ -652,6 +706,11 @@ public class OrderDetailData implements Parcelable {
         this.awbUploadProofText = in.readString();
         this.awbUploadProofUrl = in.readString();
         this.liveTrackingUrl = in.readString();
+        this.bookingCode = in.readString();
+        this.barcodeType = in.readString();
+        this.totalProtectionItem = in.readInt();
+        this.totalProtectionFee = in.readString();
+        this.bookingCodeMessage = in.createStringArrayList();
     }
 
     public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {

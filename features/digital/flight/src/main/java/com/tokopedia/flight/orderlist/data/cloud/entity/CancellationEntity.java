@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class CancellationEntity {
-    @SerializedName("refund_id")
+    @SerializedName("cancel_id")
     @Expose
     private int refundId;
     @SerializedName("details")
@@ -22,15 +22,9 @@ public class CancellationEntity {
     @SerializedName("estimated_refund")
     @Expose
     private String estimatedRefund;
-    @SerializedName("estimated_refund_numeric")
-    @Expose
-    private long estimatedRefundNumeric;
     @SerializedName("real_refund")
     @Expose
     private String realRefund;
-    @SerializedName("real_refund_numeric")
-    @Expose
-    private long realRefundNumeric;
     @SerializedName("status")
     @Expose
     private int status;
@@ -51,16 +45,8 @@ public class CancellationEntity {
         return estimatedRefund;
     }
 
-    public long getEstimatedRefundNumeric() {
-        return estimatedRefundNumeric;
-    }
-
     public String getRealRefund() {
         return realRefund;
-    }
-
-    public long getRealRefundNumeric() {
-        return realRefundNumeric;
     }
 
     public int getStatus() {

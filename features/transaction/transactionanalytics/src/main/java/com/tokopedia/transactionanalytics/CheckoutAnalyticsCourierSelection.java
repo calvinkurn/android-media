@@ -299,6 +299,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickCourierSelectionClickSelectCourierOnCart() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
@@ -308,12 +309,13 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
 
-    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap) {
+    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap, String transactionId) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
+                ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -510,4 +512,49 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    // Year End Promo
+    public void eventViewPreselectedCourierOption(int shippingProductId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
+                String.valueOf(shippingProductId)
+        );
+    }
+
+    public void eventViewDuration(boolean isCourierPromo, String duration) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_DURATION,
+                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+        );
+    }
+
+    public void eventViewCourierOption(boolean isCourierPromo, int shippingProductId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_COURIER_OPTION,
+                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+        );
+    }
+
+    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+        );
+    }
+
+    public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CHANGE_COURIER_OPTION,
+                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+        );
+    }
 }

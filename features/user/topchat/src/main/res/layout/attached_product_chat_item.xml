@@ -66,62 +66,12 @@
         android:textAllCaps="true"
         android:textSize="@dimen/fontvs" />
 
-
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="74dp"
-        android:id="@+id/attach_product_chat_container"
-        android:layout_below="@id/name"
-        android:maxWidth="250dp">
-        <com.tokopedia.core.customwidget.SquareImageView
-            android:id="@+id/attach_product_chat_image"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
-            android:adjustViewBounds="true"
-            android:layout_marginLeft="10dp"
-            android:gravity="center"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_loading_toped" />
-        <RelativeLayout
+    <include layout="@layout/attach_product_base_layout"
+            android:id="@+id/attach_product_chat_container"
+            android:layout_below="@id/name"
+            android:maxWidth="250dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/attach_product_chat_image"
-            android:layout_toEndOf="@id/attach_product_chat_image"
-            android:layout_marginLeft="14dp"
-            android:layout_marginStart="14dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_centerVertical="true"
-            android:maxWidth="172dp"
-            >
-        <TextView
-            android:id="@+id/attach_product_chat_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:textColor="@color/black_70"
-            android:lineSpacingExtra="4sp"
-            android:maxLines="2"
-            android:maxWidth="172dp"
-            android:text="Nama Produk" />
-        <TextView
-            android:id="@+id/attach_product_chat_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/orange_red"
-            android:text="@string/price_per_product"
-            android:textSize="14sp"
-            android:layout_below="@id/attach_product_chat_name"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:lineSpacingExtra="6sp"
-            tools:text="Rp 2.099.000"
-            />
-        </RelativeLayout>
-    </RelativeLayout>
+            android:layout_height="74dp" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

@@ -2,7 +2,6 @@ package com.tokopedia.shop.info.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
-import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedDailyUseCase
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase

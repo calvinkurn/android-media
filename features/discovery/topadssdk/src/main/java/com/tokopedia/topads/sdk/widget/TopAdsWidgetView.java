@@ -1,8 +1,10 @@
 package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -14,8 +16,10 @@ import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 
@@ -31,11 +35,15 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private static final String TAG = TopAdsWidgetView.class.getSimpleName();
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
-    private static final int DEFAULT_SPAN_COUNT = 2;
+    private static final int BIG_SPAN = 1;
+    private static final int GRID_SPAN = 2;
     private List<Data> data = new ArrayList<>();
     private TopAdsItemClickListener itemClickListener;
     private OpenTopAdsUseCase openTopAdsUseCase;
-    private GridLayoutManager layoutManager;
+    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
+    private DisplayMode mode = DisplayMode.GRID;
+    private TypedArray styledAttributes;
 
     public TopAdsWidgetView(Context context) {
         super(context);
@@ -53,17 +61,25 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
-        inflate(getContext(), R.layout.layout_ads, this);
+        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsWidgetView, defStyle, 0);
+        inflate(getContext(), R.layout.layout_ads_no_padding, this);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
+        adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
+        gridLayoutManager = new GridLayoutManager(context, GRID_SPAN,
                         GridLayoutManager.VERTICAL, false);
+        linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
+    }
+
+    public void setItemDecoration(RecyclerView.ItemDecoration decoration) {
+        recyclerView.addItemDecoration(decoration);
+        notifyDataChange();
     }
 
     public void setData(List<Data> data) {
@@ -72,11 +88,9 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
             if (d.getProduct() != null) {
-                layoutManager.setSpanCount(2);
-                visitables.add(ModelConverter.convertToProductFeedViewModel(d));
+                visitables.add(ModelConverter.convertProductData(d, mode));
             } else if (d.getShop() != null) {
-                layoutManager.setSpanCount(1);
-                visitables.add(ModelConverter.convertToShopFeedViewModel(d, DisplayMode.FEED));
+                visitables.add(ModelConverter.convertShopData(d, mode));
             }
         }
         adapter.setList(visitables);
@@ -113,7 +127,9 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     @Override
     public void onAddWishLish(int position, Data data) {
-
+        if(data.getProductWishlistUrl()!=null && itemClickListener!=null) {
+            itemClickListener.onAddWishList(position, data);
+        }
     }
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
@@ -126,5 +142,30 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     public void setAdapterPosition(int adapterPosition) {
         adapter.setAdapterPosition(adapterPosition);
+    }
+
+    public void setDisplayMode(DisplayMode mode) {
+        this.mode = mode;
+        switch (mode) {
+            case BIG:
+                gridLayoutManager.setSpanCount(BIG_SPAN);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                break;
+            case GRID:
+                gridLayoutManager.setSpanCount(GRID_SPAN);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                break;
+            case LIST:
+                recyclerView.setLayoutManager(linearLayoutManager);
+                break;
+            case FEED:
+                gridLayoutManager.setSpanCount(GRID_SPAN);
+                recyclerView.setLayoutManager(gridLayoutManager);
+                break;
+            case FEED_EMPTY:
+                recyclerView.setLayoutManager(linearLayoutManager);
+                break;
+        }
+        adapter.switchDisplayMode(mode);
     }
 }

@@ -12,12 +12,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,9 +38,9 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -48,8 +49,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -86,13 +89,14 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     public static final int RESULT_CODE_SKIP = 321;
     private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
     private static final int REQUEST_CODE_IMAGE_REVIEW = 384;
+    public static final int MAX_IMAGE_LIMIT = 5;
 
     ImageView productImage;
     TextView productName;
     RatingBar rating;
     TextView ratingText;
     EditText review;
-    TextInputLayout reviewLayout;
+    TkpdHintTextInputLayout reviewLayout;
     ImageView uploadInfo;
     RecyclerView listImageUpload;
     Switch shareFbSwitch;
@@ -148,7 +152,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         rating = (RatingBar) parentView.findViewById(R.id.rating);
         ratingText = (TextView) parentView.findViewById(R.id.rating_text);
         review = (EditText) parentView.findViewById(R.id.review);
-        reviewLayout = (TextInputLayout) parentView.findViewById(R.id.review_layout);
+        reviewLayout = (TkpdHintTextInputLayout) parentView.findViewById(R.id.review_layout);
         uploadInfo = (ImageView) parentView.findViewById(R.id.upload_info);
         listImageUpload = (RecyclerView) parentView.findViewById(R.id.list_image_upload);
         shareFbSwitch = (Switch) parentView.findViewById(R.id.switch_facebook);
@@ -179,6 +183,19 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 e.printStackTrace();
             }
         }
+
+        review.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkButtonShouldEnabled();
+            }
+        });
 
         adapter = ImageUploadAdapter.createAdapter(getContext());
         adapter.setCanUpload(true);
@@ -368,19 +385,35 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             productName.setText(MethodChecker.fromHtml(getArguments().getString
                     (InboxReputationFormActivity.ARGS_PRODUCT_NAME)));
 
-            ImageHandler.LoadImage(productImage, getArguments().getString
-                    (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR));
+            ImageHandler.loadImageRounded2(productImage.getContext(), productImage, getArguments().getString
+                    (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR), 15.0f);
         }
         String anonymouseInfoText = getString(R.string.hint_anonym) + " " + getAnonymousName();
         anonymousInfo.setText(anonymouseInfoText);
+
+        checkButtonShouldEnabled();
+        setTips();
+    }
+
+    private void checkButtonShouldEnabled() {
+        if (TextUtils.isEmpty(review.getText().toString())){
+            sendButton.setEnabled(false);
+        } else {
+            sendButton.setEnabled(true);
+        }
     }
 
     private void openImagePicker() {
+
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                 null
-                ,null);
+                ,new ImagePickerMultipleSelectionBuilder(
+                new ArrayList<>(),
+                null,
+                com.tokopedia.core.R.string.empty_desc,
+                MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);
     }
@@ -615,7 +648,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
             if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
                 startActivityForResult(ImageUploadPreviewActivity.getCallingIntent(getActivity(),
-                        imageUrlOrPathList.get(0)), ImageUploadHandler.CODE_UPLOAD_IMAGE);
+                        imageUrlOrPathList), ImageUploadHandler.CODE_UPLOAD_IMAGE);
             }
         } else if (requestCode == ImageUploadHandler.CODE_UPLOAD_IMAGE) {
             presenter.restoreFormFromCache();
