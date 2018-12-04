@@ -67,7 +67,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     SaldoDatePickerUtil datePicker;
     SaldoDepositAdapter adapter;
     LinearLayoutManager linearLayoutManager;
-    Snackbar snackbar;
+//    Snackbar snackbar;
     LinearLayout tickerMessageRL;
     TextView tickeRMessageTV;
     ImageView tickerMessageCloseButton;
@@ -151,8 +151,6 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
         tickerMessageRL = view.findViewById(R.id.ticker_message_layout);
         tickeRMessageTV = view.findViewById(R.id.ticker_message_text);
         tickerMessageCloseButton = view.findViewById(R.id.close_ticker_message);
-
-        snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_SHORT);
     }
 
     @Override
@@ -390,13 +388,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
-        snackbar = SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.sp_cancel), v -> {
-
-                        }
-                );
-        snackbar.show();
-
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
     }
 
     @Override
@@ -445,9 +437,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void removeError() {
-        snackbar.dismiss();
         adapter.removeErrorNetwork();
-
     }
 
     @Override
