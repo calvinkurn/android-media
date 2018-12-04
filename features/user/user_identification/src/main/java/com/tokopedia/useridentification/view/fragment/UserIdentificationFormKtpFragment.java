@@ -2,6 +2,8 @@ package com.tokopedia.useridentification.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -13,7 +15,8 @@ import com.tokopedia.useridentification.view.activity.UserIdentificationFormActi
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
+        .PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -30,6 +33,12 @@ public class UserIdentificationFormKtpFragment extends
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        analytics.eventViewKtpPage();
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -42,6 +51,7 @@ public class UserIdentificationFormKtpFragment extends
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickNextKtpPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_KTP);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);

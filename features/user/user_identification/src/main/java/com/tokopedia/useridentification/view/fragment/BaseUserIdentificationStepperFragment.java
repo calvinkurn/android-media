@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
@@ -18,6 +17,7 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
@@ -36,6 +36,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     protected TextView title;
     protected TextView subtitle;
     protected TextView button;
+    protected UserIdentificationAnalytics analytics;
 
     protected T stepperModel;
 
@@ -50,6 +51,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
         }
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
     }
 
     @Nullable

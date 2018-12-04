@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -86,7 +85,6 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.gallery.GalleryType;
-import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -112,7 +110,12 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
-import com.tokopedia.core.referral.ReferralActivity;
+import com.tokopedia.gallery.ImageReviewGalleryActivity;
+import com.tokopedia.nps.NpsRouter;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
@@ -138,11 +141,8 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
@@ -220,7 +220,6 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
-import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
@@ -241,7 +240,6 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -252,9 +250,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifcenter.NotifCenterRouter;
-import com.tokopedia.nps.NpsRouter;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
@@ -284,7 +279,6 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -342,7 +336,6 @@ import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
-import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
@@ -362,7 +355,7 @@ import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
-import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
@@ -765,6 +758,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
                 position);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 int position) {
+        ImageReviewGalleryActivity.Companion.moveTo(context, images, position);
     }
 
     @Override
@@ -1871,9 +1870,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     @Override
                     public TokopointHomeDrawerData call(TokoPointDrawerData tokoPointDrawerData) {
                         UserTier userTier = new UserTier(
+                                tokoPointDrawerData.getUserTier().getTierNameDesc(),
                                 tokoPointDrawerData.getUserTier().getTierImageUrl(),
-                                tokoPointDrawerData.getUserTier().getRewardPointsStr(),
-                                tokoPointDrawerData.getUserTier().getTierNameDesc()
+                                tokoPointDrawerData.getUserTier().getRewardPointsStr()
                         );
 
                         return new TokopointHomeDrawerData(
@@ -2997,6 +2996,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendOpenHomeEvent() {
+        TrackingUtils.sendMoEngageOpenHomeEvent();
+    }
+
+    @Override
+    public void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
+        TrackingUtils.sendMoEngageOpenFeedEvent(isEmptyFeed);
+    }
+
+    @Override
     public void setStringRemoteConfigLocal(String key, String value) {
         remoteConfig.setString(key, value);
     }
@@ -3207,6 +3216,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getProductTalk(Context context, String productId) {
         return TalkProductActivity.Companion.createIntent(context, productId);
+    }
+
+    @Override
+    public void eventClickFilterReview(Context context,
+                                       String filterName,
+                                       String productId) {
+        ProductPageTracking.eventClickFilterReview(
+                context,
+                filterName,
+                productId
+        );
+    }
+
+    @Override
+    public void eventImageClickOnReview(Context context,
+                                             String productId,
+                                             String reviewId) {
+        ProductPageTracking.eventClickImageOnReviewList(
+                context,
+                productId,
+                reviewId
+        );
     }
 
     @Override
