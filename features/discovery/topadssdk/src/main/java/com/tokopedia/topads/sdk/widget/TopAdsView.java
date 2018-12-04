@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -189,6 +190,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         if (adsItemClickListener != null) {
             adsItemClickListener.onAddWishList(position, data);
         }
+        Log.d(TAG, "onAddWishLish data "+data.getProduct().getName());
     }
 
     @Override
