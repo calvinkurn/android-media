@@ -6,6 +6,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsA
 import javax.annotation.Nullable;
 
 public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFactory> {
+    private String categoryName;
     private long salesPriceNumeric;
     private long beforePriceNumeric;
     private String title;
@@ -91,5 +92,13 @@ public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFa
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

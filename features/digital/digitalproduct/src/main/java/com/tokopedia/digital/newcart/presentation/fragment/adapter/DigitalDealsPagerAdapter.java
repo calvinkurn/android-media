@@ -29,7 +29,10 @@ public class DigitalDealsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        DigitalCartDealsListFragment fragment = DigitalCartDealsListFragment.newInstance(dealCategoryViewModels.get(position).getUrl());
+        DigitalCartDealsListFragment fragment = DigitalCartDealsListFragment.newInstance(
+                dealCategoryViewModels.get(position).getUrl(),
+                dealCategoryViewModels.get(position).getName()
+        );
         fragment.setInteractionListener(interactionListener);
         return fragment;
     }

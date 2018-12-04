@@ -42,7 +42,11 @@ import com.tokopedia.payment.model.PaymentPassData;
 import java.util.List;
 import java.util.Map;
 
-public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment implements DigitalBaseContract.View, InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener, DigitalCartCheckoutHolderView.ActionListener {
+public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
+        implements DigitalBaseContract.View,
+        InputPriceHolderView.ActionListener,
+        VoucherCartHachikoView.ActionListener,
+        DigitalCartCheckoutHolderView.ActionListener {
     protected static final String ARG_PASS_DATA = "ARG_PASS_DATA";
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
     protected static final String ARG_CHECKOUT_INFO = "ARG_CHECKOUT_INFO";

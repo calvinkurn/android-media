@@ -28,11 +28,13 @@ import rx.schedulers.Schedulers;
 public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<DigitalDealCheckoutContract.View>
         implements DigitalDealCheckoutContract.Presenter {
     private static final long AUTO_COLLAPSE_ANIMATION_DELAY = 2500;
+    private DigitalAnalytics digitalAnalytics;
     private UserSession userSession;
 
     @Inject
     public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase, DigitalAnalytics digitalAnalytics, DigitalModuleRouter digitalModuleRouter, ICartDigitalInteractor cartDigitalInteractor, UserSession userSession, DigitalCheckoutUseCase digitalCheckoutUseCase, DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
         super(digitalAddToCartUseCase, digitalAnalytics, digitalModuleRouter, cartDigitalInteractor, userSession, digitalCheckoutUseCase, digitalInstantCheckoutUseCase);
+        this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
     }
 
@@ -162,6 +164,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
     @Override
     public void onDealRemoved(DealProductViewModel viewModel) {
+        digitalAnalytics.eventRemoveDeal(viewModel);
         int indexOf = getView().getSelectedDeals().indexOf(viewModel);
         if (indexOf != -1) {
             getView().getSelectedDeals().remove(indexOf);
@@ -204,6 +207,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
     @Override
     public void onSkipMenuClicked() {
+        digitalAnalytics.eventSkipDeal();
         processToCheckout();
     }
 
@@ -219,5 +223,15 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             dealIds.add((int) viewModel.getId());
         }
         return dealIds;
+    }
+
+    @Override
+    public void processToCheckout() {
+        super.processToCheckout();
+        digitalAnalytics.eventAddDeal(
+                getView().getCartInfoData().getAttributes().getCategoryName(),
+                getView().getCheckoutDataParameter().build().getVoucherCode(),
+                getView().getSelectedDeals().size()
+        );
     }
 }

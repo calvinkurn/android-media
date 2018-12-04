@@ -258,7 +258,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (context.getApplicationContext() instanceof AbstractionRouter) {
-            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker());
+            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker(), context);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }

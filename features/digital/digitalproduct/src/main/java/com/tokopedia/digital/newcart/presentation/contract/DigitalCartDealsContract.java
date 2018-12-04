@@ -62,5 +62,7 @@ public interface DigitalCartDealsContract {
         void onSelectDealProduct(DealProductViewModel viewModel, int currentFragmentPosition);
 
         void unSelectDealFromCheckoutView(DealProductViewModel viewModel);
+
+        void onDealsTabSelected(CharSequence dealCategory);
     }
 }
