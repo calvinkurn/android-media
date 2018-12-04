@@ -157,7 +157,6 @@ public class SeeAllView extends BottomSheets {
                     getContext().getString(R.string.title_menu_transaction)
             );
             list.add(gridItem);
-            list.add(gridItem);
         }
 
         return list;
