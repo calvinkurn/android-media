@@ -427,8 +427,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void onResume() {
-        super.onResume();
         analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
-
+        super.onResume();
     }
 }
