@@ -130,7 +130,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             button.setOnClickListener(view -> {
                 String newUri = actionButton.uri();
                 if (newUri.startsWith(KEY_URI)) {
-                    if(newUri.contains(KEY_URI_PARAMETER)) {
+                    if (newUri.contains(KEY_URI_PARAMETER)) {
                         Uri url = Uri.parse(newUri);
                         newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
                         newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
@@ -138,7 +138,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     RouteManager.route(context, newUri);
                 } else if (!newUri.equals("")) {
                     try {
-                        context.startActivity(((UnifiedOrderListRouter)context.getApplicationContext()).getWebviewActivityWithIntent(context,
+                        context.startActivity(((UnifiedOrderListRouter) context.getApplicationContext()).getWebviewActivityWithIntent(context,
                                 URLEncoder.encode(newUri, "UTF-8")));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -270,15 +270,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void addCancelReplacementMenu(List<DotMenuList> item, PopupMenu popup) {
-        if (true) {
-            popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan");
-            popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail");
-        }
-    }
+        popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan");
+        popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail");
 
-    private int getMenuId(List<DotMenuList> item) {
-        int MenuID = R.menu.order_status_menu_list;
-        return MenuID;
     }
 
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {

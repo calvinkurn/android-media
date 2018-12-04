@@ -2,9 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-    maven { url 'https://hansel.io/maven' }
-}
 
 buildscript {
     repositories {
@@ -15,7 +12,6 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-
 project.ext {
     artifactId = 'challenges'
     groupId = 'com.tokopedia.challenges'

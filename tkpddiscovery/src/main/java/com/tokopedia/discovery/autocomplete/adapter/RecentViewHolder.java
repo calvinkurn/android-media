@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.adapter.decorater.SpacingItemDecoration;
