@@ -14,7 +14,7 @@ import com.tokopedia.chat_common.util.ChatTimeConverter;
 
 import java.util.Date;
 
-//import com.tokopedia.chat_common.R;
+import com.tokopedia.chat_common.R;
 
 /**
  * @author by nisie on 5/9/18.
@@ -28,8 +28,8 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     public BaseChatViewHolder(View itemView) {
         super(itemView);
         view = itemView;
-//        hour = (TextView) itemView.findViewById(R.id.hour);
-//        date = (TextView) itemView.findViewById(R.id.date);
+        hour = (TextView) itemView.findViewById(R.id.hour);
+        date = (TextView) itemView.findViewById(R.id.date);
     }
 
     @Override
@@ -79,10 +79,10 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
             Date date = new Date(myTime);
             if (DateUtils.isToday(myTime)) {
                 time = "";
-//                time = itemView.getContext().getString(R.string.chat_today_date);
+                time = itemView.getContext().getString(R.string.chat_today_date);
             } else if (DateUtils.isToday(myTime + DateUtils.DAY_IN_MILLIS)) {
                 time = "";
-//                time = itemView.getContext().getString(R.string.chat_yesterday_date);
+                time = itemView.getContext().getString(R.string.chat_yesterday_date);
             } else {
                 time = DateFormat.getLongDateFormat(itemView.getContext()).format(date);
             }

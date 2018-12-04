@@ -15,8 +15,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAttachmentViewModel> {
 
     @LayoutRes
-    ////    public static final int LAYOUT = R.layout.layout_fallback_attachment;
-    public static final int LAYOUT = 3;
+//    public static final int LAYOUT = R.layout.layout_fallback_attachment;
     private final ChatLinkHandlerListener listener;
 
     private TextView message;
