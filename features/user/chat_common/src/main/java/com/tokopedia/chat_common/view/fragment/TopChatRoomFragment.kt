@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
@@ -13,6 +14,7 @@ import com.tokopedia.chat_common.di.ChatRoomComponent
 import com.tokopedia.chat_common.di.DaggerChatComponent
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 import javax.inject.Inject
 /**
  * @author : Steven 29/11/18
@@ -22,10 +24,17 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
 
     @Inject
     lateinit var presenter: BaseChatPresenter
+
     private lateinit var chatViewState: TopChatViewState
 
-
     private lateinit var actionBox: View
+
+    private lateinit var adapter: BaseChatAdapter
+
+
+    override fun onSuccessGetChat(model: ChatRoomViewModel) {
+        chatViewState.addList(model.listChat)
+    }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -85,8 +94,14 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
     }
 
     fun initView(view: View?) {
-        chatViewState = TopChatViewState(view!!)
-        chatViewState.showLoading()
+        view?.run {
+            chatViewState = TopChatViewState(this)
+        }
+        chatViewState?.run{
+            chatViewState.showLoading()
+            chatViewState.setAdapter(adapter)
+        }
+
         hideLoading()
         presenter.getChatUseCase(arguments!!.getString("message_id"))
     }

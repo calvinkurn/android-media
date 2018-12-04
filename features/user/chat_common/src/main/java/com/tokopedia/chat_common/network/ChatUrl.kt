@@ -7,7 +7,7 @@ import com.tokopedia.network.constant.TkpdBaseURL
  */
 
 var CHATBOT_BASE_URL = "https://api.tokopedia.com/";
-var TOPCHAT = "https://api.tokopedia.com/";
+var TOPCHAT = "https://chat.tokopedia.com/";
 var TOPCHAT_BASE_URL = TkpdBaseURL.JS_DOMAIN;
 
 

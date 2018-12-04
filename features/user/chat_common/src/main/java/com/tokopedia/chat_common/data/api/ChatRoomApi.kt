@@ -15,30 +15,30 @@ import rx.Observable
 
 interface ChatRoomApi {
 //    @GET(ChatUrl.GET_EXISTING_CHAT)
-//    fun getExistingChat(@QueryMap requestParams: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun getExistingChat(@QueryMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //    @GET(ChatUrl.GET_MESSAGE)
-//    fun getMessage(@QueryMap requestParams: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun getMessage(@QueryMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 
     @GET(ChatUrl.GET_REPLY)
-    fun getReply(@Path("msgId") messageId: String, @QueryMap requestParams: Map<String, Any>): Observable<Response<DataResponse<ChatItemPojo>>>
+    fun getReply(@Path("msgId") messageId: String, @QueryMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<ChatItemPojo>>>
 
 //    @GET(ChatUrl.GET_USER_CONTACT)
-//    fun getUserContact(@Path("msgIds") messageIds: String, @QueryMap requestParams: Map<String, Any>): Observable<String>
+//    fun getUserContact(@Path("msgIds") messageIds: String, @QueryMap requestParams: HashMap<String, Any>): Observable<String>
 //
 //    @FormUrlEncoded
 //    @Headers("Cookie:_SID_TOKOPEDIA_")
 //    @POST(ChatUrl.REPLY)
-//    fun reply(@FieldMap requestParams: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun reply(@FieldMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //    @Headers("Cookie:_SID_TOKOPEDIA_")
 //    @GET(ChatUrl.LISTEN_WEBSOCKET)
-//    fun listenWebSocket(@QueryMap mapParam: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun listenWebSocket(@QueryMap mapParam: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //
 //    @Headers("Cookie:_SID_TOKOPEDIA_")
 //    @GET(ChatUrl.SEARCH)
-//    fun searchChat(@QueryMap requestParams: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun searchChat(@QueryMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //
 //    @Headers("Content-Type: application/json")
@@ -48,21 +48,21 @@ interface ChatRoomApi {
 //    @FormUrlEncoded
 //    @Headers("Cookie:_SID_TOKOPEDIA_")
 //    @POST(ChatUrl.SEND_MESSAGE)
-//    fun sendMessage(@FieldMap requestParams: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun sendMessage(@FieldMap requestParams: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //    @GET(ChatUrl.GET_TOPCHAT_NOTIFICATION)
-//    fun getNotification(@QueryMap params: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun getNotification(@QueryMap params: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //    @GET(ChatUrl.GET_TEMPLATE)
-//    fun getTemplate(@QueryMap parameters: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun getTemplate(@QueryMap parameters: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //    @FormUrlEncoded
 //    @PUT(ChatUrl.UPDATE_TEMPLATE)
-//    fun editTemplate(@Path("index") index: Int, @FieldMap jsonObject: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun editTemplate(@Path("index") index: Int, @FieldMap jsonObject: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //    @FormUrlEncoded
 //    @POST(ChatUrl.CREATE_TEMPLATE)
-//    fun createTemplate(@FieldMap parameters: Map<String, Any>): Observable<Response<DataResponse<>>>
+//    fun createTemplate(@FieldMap parameters: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
 //    @Headers("Content-Type: application/json")
 //    @PUT(ChatUrl.SET_TEMPLATE)

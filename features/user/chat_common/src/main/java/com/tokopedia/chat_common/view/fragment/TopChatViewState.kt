@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
+import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 
 /**
@@ -31,6 +32,7 @@ class TopChatViewState(var view: View) {
 
     fun setNonReplyable() {
         actionBox!!.visibility = View.GONE
+
     }
 
     fun setReplyable() {
@@ -43,6 +45,14 @@ class TopChatViewState(var view: View) {
 
     fun hideLoading() {
         mainLoading!!.visibility = View.GONE
+    }
+
+    fun setAdapter(adapter: BaseChatAdapter) {
+        recyclerView.adapter = adapter
+    }
+
+    fun addList(listChat: ArrayList<String>?) {
+
     }
 
 

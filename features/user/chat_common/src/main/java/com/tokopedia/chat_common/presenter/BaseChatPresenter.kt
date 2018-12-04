@@ -31,7 +31,8 @@ class BaseChatPresenter @Inject constructor(
     override fun getChatUseCase(messageId: String, page: Int) {
         getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page)
                 , object : Subscriber<ChatRoomViewModel>(){
-            override fun onNext(t: ChatRoomViewModel?) {
+            override fun onNext(model: ChatRoomViewModel?) {
+                model?.let { view.onSuccessGetChat(it) }
                 return
             }
 
