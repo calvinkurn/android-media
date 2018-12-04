@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/label_header"
+        android:layout_alignBottom="@+id/label_header"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_16"
+        android:src="@drawable/ic_arrow_right_grey" />
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/label_header"
@@ -11,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_toLeftOf="@+id/image_arrow"
         android:background="@drawable/selectable_background_tokopedia"
         android:paddingBottom="@dimen/dp_22" />
 
@@ -19,8 +29,9 @@
         style="@style/TextView.Micro.BlackDisabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/label_header"
         android:layout_marginBottom="@dimen/dp_3"
         android:layout_weight="1"
         android:paddingBottom="@dimen/dp_16"
         tools:text="Dewasa" />
-</LinearLayout>
+</RelativeLayout>
