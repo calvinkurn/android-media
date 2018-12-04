@@ -15,8 +15,7 @@ import com.tokopedia.useridentification.view.activity.UserIdentificationFormActi
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_FACE;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
 
 /**
  * @author by alvinatin on 09/11/18.

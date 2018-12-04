@@ -11,9 +11,9 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 
-import rx.Observable;
-
 import java.util.ArrayList;
+
+import rx.Observable;
 
 /**
  * @author madi on 5/15/17.
