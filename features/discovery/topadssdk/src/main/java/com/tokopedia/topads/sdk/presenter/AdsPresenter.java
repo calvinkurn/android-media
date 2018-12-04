@@ -41,6 +41,8 @@ public interface AdsPresenter <V extends AdsView>{
 
     void getMerlinCategory();
 
+    void trackWishlistUrl(String wishlistUrl);
+
     void setConfig(Config config);
 
     Config getConfig();

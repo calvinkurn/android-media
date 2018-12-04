@@ -14,6 +14,10 @@ import android.widget.RelativeLayout;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsModule;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -31,6 +35,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author by errysuprayogi on 3/27/17.
  */
@@ -38,6 +44,7 @@ import java.util.List;
 public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsView.class.getSimpleName();
+    @Inject
     private TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
@@ -88,8 +95,15 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
+    public void initInjector() {
+        TopAdsComponent component = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule()).build();
+        component.inject(this);
+        component.inject(presenter);
+    }
+
+    @Override
     public void initPresenter() {
-        presenter = new TopAdsPresenter(getContext());
+//        presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
         presenter.setMaxItems(styledAttributes.getInteger(R.styleable.TopAdsView_items, 2));
         String ep = styledAttributes.getString(R.styleable.TopAdsView_ep);
@@ -191,6 +205,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
             adsItemClickListener.onAddWishList(position, data);
         }
         Log.d(TAG, "onAddWishLish data "+data.getProduct().getName());
+        presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 
     @Override

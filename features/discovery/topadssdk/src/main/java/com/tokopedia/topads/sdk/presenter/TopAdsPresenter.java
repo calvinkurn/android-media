@@ -9,12 +9,19 @@ import com.tokopedia.topads.sdk.domain.interactor.MerlinRecomendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.PreferedCategoryUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.domain.model.WishlistModel;
 import com.tokopedia.topads.sdk.listener.PreferedCategoryListener;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -31,6 +38,9 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     private MerlinRecomendationUseCase merlinRecomendationUseCase;
     private TopAdsParams adsParams;
     private Config config;
+
+    @Inject
+    TopAdsWishlishedUseCase wishlishedUseCase;
 
     public TopAdsPresenter(Context context) {
         this.context = context;
@@ -188,5 +198,27 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     public void getMerlinCategory() {
         merlinRecomendationUseCase.setConfig(config);
         merlinRecomendationUseCase.execute(adsParams, adsView);
+    }
+
+    @Override
+    public void trackWishlistUrl(String wishlistUrl) {
+        RequestParams params = RequestParams.create();
+        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl);
+        wishlishedUseCase.execute(params, new Subscriber<WishlistModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(WishlistModel wishlistModel) {
+                Log.d(TAG, "trackWishlistUrl successs "+wishlistModel.getData().isSuccess());
+            }
+        });
     }
 }

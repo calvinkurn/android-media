@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface AdsView {
 
+    void initInjector();
+
     void initPresenter();
 
     void setMaxItems(int items);

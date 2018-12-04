@@ -112,6 +112,11 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     @Override
+    public void initInjector() {
+
+    }
+
+    @Override
     public void initPresenter() {
         presenter.attachView(this);
     }

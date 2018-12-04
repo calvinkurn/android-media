@@ -116,6 +116,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     @Override
+    public void initInjector() {
+
+    }
+
+    @Override
     public void initPresenter() {
         presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
