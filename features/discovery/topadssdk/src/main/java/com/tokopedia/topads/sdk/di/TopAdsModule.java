@@ -23,6 +23,14 @@ import retrofit2.Retrofit;
 @Module
 public class TopAdsModule {
 
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        if (context instanceof NetworkRouter) {
+            return ((NetworkRouter) context);
+        }
+        throw new RuntimeException("Application must implement " + NetworkRouter.class.getCanonicalName());
+    }
+
     @TopAdsScope
     @Provides
     TopAdsWishlishedUseCase topAdsWishlishedUseCase(TopAdsWishlistService topAdsWishlistService){

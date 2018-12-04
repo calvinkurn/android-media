@@ -11,6 +11,6 @@ public interface TopAdsComponent {
     void inject(TopAdsPresenter topAdsPresenter);
 
 //    void inject(TopAdsWidgetView topAdsWidgetView);
-//
+
 //    void inject(TopAdsBannerView topAdsBannerView);
 }
