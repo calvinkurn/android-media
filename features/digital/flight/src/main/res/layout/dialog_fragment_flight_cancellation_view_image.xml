@@ -5,8 +5,16 @@
     android:layout_gravity="center"
     android:layout_margin="@dimen/dp_10"
     android:background="@color/transparent"
-    android:gravity="center"
-    android:padding="@dimen/dp_10">
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_close" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_view"
@@ -14,6 +22,7 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:adjustViewBounds="true"
+        android:padding="@dimen/dp_10"
         android:scaleType="fitCenter" />
 
 </RelativeLayout>

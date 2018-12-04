@@ -31,6 +31,7 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
     public static final String EXTRA_FILE_PATH = "EXTRA_FILE_PATH";
 
     AppCompatImageView imageView;
+    ImageView ivClose;
     Context context;
 
     String filepath;
@@ -55,16 +56,15 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         imageView = view.findViewById(R.id.image_view);
+        ivClose = view.findViewById(R.id.iv_close);
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeDialog();
+            }
+        });
 
         return view;
-    }
-
-    public void showImage() {
-        Glide.with(context)
-                .load(new File(filepath))
-                .asBitmap()
-                .centerCrop()
-                .into(getRoundedImageViewTarget(imageView, 5.0f));
     }
 
     @Override
@@ -74,6 +74,18 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
         filepath = getArguments().getString(EXTRA_FILE_PATH);
 
         showImage();
+    }
+
+    private void closeDialog() {
+        getDialog().dismiss();
+    }
+
+    private void showImage() {
+        Glide.with(context)
+                .load(new File(filepath))
+                .asBitmap()
+                .centerCrop()
+                .into(getRoundedImageViewTarget(imageView, 5.0f));
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
