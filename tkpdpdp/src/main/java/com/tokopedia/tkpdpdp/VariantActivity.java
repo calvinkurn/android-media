@@ -226,13 +226,12 @@ public class VariantActivity extends TActivity  implements
                 selectedQuantity = num;
                 textCartPrice.setText(VariantActivity.this.generateTextCartPrice());
 
-                if(num <= widgetQty.getMinValue() ||
-                        num >= widgetQty.getMaxValue()){
-                    buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.orange_button_rounded));
-                    buttonSave.setClickable(true);
-                } else{
+                if(num < widgetQty.getMinValue()){
                     buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
                     buttonSave.setClickable(false);
+                } else{
+                    buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.orange_button_rounded));
+                    buttonSave.setClickable(true);
                 }
             }
         });
