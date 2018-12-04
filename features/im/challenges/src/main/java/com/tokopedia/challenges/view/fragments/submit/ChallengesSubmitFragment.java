@@ -119,7 +119,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         presenter.attachView(this);
         setClickListener();
         presenter.setSubmitButtonText();
-        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         return view;
 
     }
@@ -424,5 +423,12 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public void onDestroyView() {
         presenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+
     }
 }

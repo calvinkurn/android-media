@@ -155,6 +155,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             if (videoPlayer != null)
                 videoPlayer.startPlay(VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         super.onResume();
     }
 
@@ -249,7 +250,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 }
             });
         }
-        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         return view;
     }
 

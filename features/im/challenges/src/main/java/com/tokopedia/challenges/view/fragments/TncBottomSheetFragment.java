@@ -57,11 +57,14 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
             webView.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
         }
         analytics = new ChallengesGaAnalyticsTracker(getActivity());
-        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
-
         return view;
     }
 
+    @Override
+    public void onResume() {
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+        super.onResume();
+    }
 
     @Override
     public void onAttach(Activity activity) {

@@ -164,8 +164,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
                 }
             });
         }
-        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
-
         return view;
     }
 
@@ -175,6 +173,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             if (challengeImage != null)
                 challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         super.onResume();
 
     }

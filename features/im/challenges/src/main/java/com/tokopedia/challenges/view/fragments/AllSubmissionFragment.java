@@ -84,7 +84,6 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE || ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE) {
             ChallengesCacheHandler.setChallengeAllSubmissionssListCache();//to avoid duplicacy from onstart
         }
-        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         return view;
     }
 
@@ -254,5 +253,11 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         if (recyclerview.getAdapter() != null) {
             ((SubmissionItemAdapter) recyclerview.getAdapter()).clearList();
         }
+    }
+
+    @Override
+    public void onResume() {
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+        super.onResume();
     }
 }
