@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerUpdateContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.TravelDateUtil;
+import com.tokopedia.common.travel.utils.TravelPassengerValidator;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
 
 import java.util.Calendar;
@@ -23,24 +24,22 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPassengerUpdateContract.View>
         implements TravelPassengerUpdateContract.Presenter {
-    private static final String PASSENGER_NAME_REGEX = "^[a-zA-Z\\s]*$";
-    private static final String PASSENGER_ID_NUMBER_REGEX = "^[A-Za-z0-9]+$";
-    private static final int MAX_CONTACT_NAME = 60;
-    private static final int MAX_IDENTITY_NUMBER = 20;
-    private static final int MIN_IDENTITY_NUMBER = 5;
 
     private AddTravelPassengerUseCase addTravelPassengerUseCase;
     private EditTravelPassengerUseCase editTravelPassengerUseCase;
     private CompositeSubscription compositeSubscription;
     private TravelProvider travelProvider;
+    private TravelPassengerValidator travelPassengerValidator;
 
     @Inject
     public TravelPassengerUpdatePresenter(AddTravelPassengerUseCase addTravelPassengerUseCase,
                                           EditTravelPassengerUseCase editTravelPassengerUseCase,
-                                          TravelProvider travelProvider) {
+                                          TravelProvider travelProvider,
+                                          TravelPassengerValidator travelPassengerValidator) {
         this.addTravelPassengerUseCase = addTravelPassengerUseCase;
         this.editTravelPassengerUseCase = editTravelPassengerUseCase;
         this.travelProvider = travelProvider;
+        this.travelPassengerValidator = travelPassengerValidator;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -91,7 +90,7 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
             } else {
                 getView().showBirthdateChange(dateSelected);
             }
-        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT){
+        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT) {
             if (dateSelected.after(getView().getLowerBirthDate())) {
                 getView().showMessageErrorInSnackBar(R.string.error_message_pick_adult_passenger);
             } else {
@@ -133,45 +132,48 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
 
     private boolean isAllDataValid() {
         boolean allDataValid = true;
-        if (getView().getSalutationTitle() == null || getView().getSalutationTitle().length() == 0) {
+        if (travelPassengerValidator.isSalutationEmpty(getView().getSalutationTitle())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_salutation);
-        } else if (getView().getFirstName() == null || getView().getFirstName().length() == 0) {
+        } else if (travelPassengerValidator.isNameEmpty(getView().getFirstName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_first_name);
-        } else if (getView().getFirstName().length() > MAX_CONTACT_NAME) {
+        } else if (travelPassengerValidator.isNameMoreThanMax(getView().getFirstName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_max);
-        } else if (!getView().getFirstName().matches(PASSENGER_NAME_REGEX)) {
+        } else if (travelPassengerValidator.isNameUseSpecialCharacter(getView().getFirstName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
-        } else if (getView().getLastName() == null || getView().getLastName().length() == 0) {
+        } else if (travelPassengerValidator.isNameEmpty(getView().getLastName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_last_name);
-        } else if (getView().getLastName().length() > MAX_CONTACT_NAME) {
+        } else if (travelPassengerValidator.isNameContainSpace(getView().getLastName())) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_last_name_word);
+        } else if (travelPassengerValidator.isNameMoreThanMax(getView().getLastName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_max);
-        } else if (!getView().getLastName().matches(PASSENGER_NAME_REGEX)) {
+        } else if (travelPassengerValidator.isNameUseSpecialCharacter(getView().getLastName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
         } else if (getView().getPaxType() == TravelBookingPassenger.INFANT &&
-                (getView().getBirthdate() == null || getView().getBirthdate().length() == 0)) {
+                travelPassengerValidator.isBirthdateEmpty(getView().getBirthdate())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_birthdate_empty);
         } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                (getView().getIdentityNumber() == null || getView().getIdentityNumber().length() == 0)) {
+                travelPassengerValidator.isIdentityNumberEmpty(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number);
         } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                getView().getIdentityNumber().length() < MIN_IDENTITY_NUMBER) {
+                travelPassengerValidator.isIdentityNumberLessThanMin(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_min);
         } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER) {
+                travelPassengerValidator.isIdentityNumberMoreThanMax(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_max);
         } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                !getView().getIdentityNumber().matches(PASSENGER_ID_NUMBER_REGEX)) {
+                travelPassengerValidator.isIdNumberUseSpecialCharacter(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_alphanumeric);
         }

@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.domain.provider.TravelTestScheduler;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerUpdateContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.TravelDateUtil;
+import com.tokopedia.common.travel.utils.TravelPassengerValidator;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
 import com.tokopedia.usecase.RequestParams;
 
@@ -44,7 +45,7 @@ public class TravelPassengerUpdatePresenterTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         presenter = new TravelPassengerUpdatePresenter(addTravelPassengerUseCase,
-                editTravelPassengerUseCase, new TravelTestScheduler());
+                editTravelPassengerUseCase, new TravelTestScheduler(), new TravelPassengerValidator());
         presenter.attachView(view);
     }
 
@@ -120,6 +121,19 @@ public class TravelPassengerUpdatePresenterTest {
         presenter.submitAddPassengerData();
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_max);
+    }
+
+    @Test
+    public void onAddPassenger_LastNameMoreThan2Words_ShowError() {
+        //given
+        Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
+        Mockito.when(view.getFirstName()).thenReturn("Toped");
+        String nameNotValid = "ksdnak askdnakjdn";
+        Mockito.when(view.getLastName()).thenReturn(nameNotValid);
+        //when
+        presenter.submitAddPassengerData();
+        //then
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_last_name_word);
     }
 
     @Test
