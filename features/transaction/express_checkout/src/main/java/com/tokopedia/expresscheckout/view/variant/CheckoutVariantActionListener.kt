@@ -16,6 +16,6 @@ interface CheckoutVariantActionListener {
 
     fun onClickEditCourier()
 
-    fun onClickInsuranceInfo()
+    fun onClickInsuranceInfo(insuranceInfo: String)
 
 }

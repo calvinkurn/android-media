@@ -1,11 +1,12 @@
 package com.tokopedia.expresscheckout.view.variant
 
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
-class CheckoutVariantActivity : AppCompatActivity() {
+class CheckoutVariantActivity : BaseSimpleActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun getNewFragment(): Fragment {
+        return CheckoutVariantFragment.createInstance()
     }
+
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
@@ -11,11 +12,11 @@ interface CheckoutVariantContract {
 
     interface View : CustomerView {
 
-        fun showData()
+        fun showData(arrayList: ArrayList<Visitable<*>>)
 
-        fun showToasterError(message: String)
+        fun showToasterError(message: String?)
 
-        fun showNetworkError()
+        fun showGetListError(t: Throwable?)
 
     }
 

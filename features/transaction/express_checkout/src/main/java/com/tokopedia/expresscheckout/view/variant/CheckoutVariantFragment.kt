@@ -1,12 +1,19 @@
 package com.tokopedia.expresscheckout.view.variant
 
+import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.Tooltip
 import com.tokopedia.expresscheckout.R
+import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypefactory
 
 /**
@@ -15,6 +22,23 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypefactory>(),
         CheckoutVariantContract.View, CheckoutVariantActionListener {
+
+    val contextView: Context get() = activity!!
+    lateinit var list: List<Visitable<*>>
+    lateinit var presenter: CheckoutVariantPresenter
+
+    companion object {
+        fun createInstance(): CheckoutVariantFragment {
+            return CheckoutVariantFragment()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        presenter = CheckoutVariantPresenter()
+        presenter.attachView(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_detail_product_page, container)
@@ -25,55 +49,67 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onNeedToNotifySingleItem(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        adapter.notifyItemChanged(position)
     }
 
     override fun onNeedToNotifyAllItem() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onClickEditDuration() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onClickEditCourier() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onClickInsuranceInfo() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun loadData(page: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun showToasterError(message: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun showData() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun showNetworkError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        adapter.notifyDataSetChanged()
     }
 
     override fun onClickEditProfile() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun onClickEditDuration() {
+
+    }
+
+    override fun onClickEditCourier() {
+
+    }
+
+    override fun onClickInsuranceInfo(insuranceInfo: String) {
+        if (activity != null) {
+            val tooltip = Tooltip(contextView)
+            tooltip.setTitle(contextView.getString(R.string.title_bottomsheet_insurance))
+            tooltip.setDesc(insuranceInfo)
+            tooltip.setTextButton(contextView.getString(R.string.label_button_bottomsheet_close))
+            tooltip.setIcon(R.drawable.ic_insurance)
+            tooltip.btnAction.setOnClickListener {
+                tooltip.dismiss()
+            }
+            tooltip.show()
+        }
+    }
+
+    override fun getScreenName(): String? {
+        return null
+    }
+
+    override fun initInjector() {
+
+    }
+
+    override fun loadData(page: Int) {
+        presenter.loadData()
+    }
+
+    override fun showToasterError(message: String?) {
+        ToasterError.make(view, message
+                ?: contextView.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showData(arrayList: ArrayList<Visitable<*>>) {
+        getRecyclerView(view).layoutManager
+        (adapter as CheckoutVariantAdapter).addDataViewModel(arrayList)
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun showGetListError(t: Throwable?) {
+        super.showGetListError(t)
+    }
 }

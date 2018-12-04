@@ -1,6 +1,8 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.expresscheckout.R
@@ -20,10 +22,33 @@ class CheckoutVariantQuantityViewHolder(val view: View, val listener: CheckoutVa
 
     override fun bind(element: CheckoutVariantQuantityViewModel?) {
         if (element != null) {
+            itemView.et_qty.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    try {
+                        element.orderQuantity = s.toString().toInt()
+
+                        if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
+                            listener.onNeedToNotifySingleItem(adapterPosition)
+                        }
+                    } catch (e: NumberFormatException) {
+                        e.printStackTrace()
+                    }
+                }
+            })
+
             itemView.tv_quantity_stock_available.text = element.availableStock
             if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
                 listener.onNeedToNotifySingleItem(adapterPosition)
             }
+
             if (element.orderQuantity > element.minOrderQuantity && element.orderQuantity > 0) {
                 itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_enabled)
                 itemView.btn_qty_min.setOnClickListener {
