@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.common.travel.R;
-import com.tokopedia.common.travel.constant.TravelPlatformType;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerListFragment;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.presentation.model.TravelTrip;
@@ -53,6 +52,7 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
     public void onBackPressed() {
         KeyboardHandler.hideSoftKeyboard(this);
         super.onBackPressed();
+        overridePendingTransition(R.anim.travel_anim_stay,R.anim.travel_slide_out_up);
     }
 
     @Override
@@ -77,10 +77,16 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
         if (item.getItemId() == R.id.action_menu_passenger_list_edit) {
             supportInvalidateOptionsMenu();
             startActivity(TravelPassengerEditActivity.callingIntent(getApplicationContext(), travelTrip));
+            overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
     }
 
     @Override

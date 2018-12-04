@@ -247,7 +247,7 @@ public class TrainFilterSearchActivity extends TrainBaseActivity
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
-            overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+            overridePendingTransition(R.anim.travel_anim_stay,R.anim.travel_slide_out_up);
         }
     }
 

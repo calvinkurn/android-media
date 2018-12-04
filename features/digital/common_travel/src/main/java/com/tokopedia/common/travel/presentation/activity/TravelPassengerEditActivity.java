@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerEditFragment;
 import com.tokopedia.common.travel.presentation.model.TravelTrip;
 
@@ -31,6 +32,17 @@ public class TravelPassengerEditActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        updateTitle("Edit Penumpang");
+        updateTitle(getString(R.string.title_edit_passenger_list));
+    }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.travel_anim_stay,R.anim.travel_slide_out_up);
     }
 }

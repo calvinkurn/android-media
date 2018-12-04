@@ -21,7 +21,6 @@ import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.common.travel.presentation.dialog.TravelSearchSortBottomSheet;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
-import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainFlowUtil;
@@ -189,7 +188,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 trainAnalytics.eventClickFilterOnBottomBar();
                 startActivityForResult(TrainFilterSearchActivity.getCallingIntent(getActivity(),
                         arrivalScheduleSelected, getScheduleVariant(), filterSearchData), FILTER_SEARCH_REQUEST_CODE);
-                getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+                getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
             }
         });
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {

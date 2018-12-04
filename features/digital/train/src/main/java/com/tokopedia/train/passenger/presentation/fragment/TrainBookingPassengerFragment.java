@@ -206,7 +206,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
 
         });
 
@@ -224,7 +224,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
         });
     }
 
@@ -243,6 +243,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 travelTrip.setTravelPassengerBooking(travelPassenger);
                 startActivityForResult(TravelPassengerListActivity.callingIntent(getActivity(),
                         travelTrip, resetPassengerListSelected), PASSENGER_LIST_REQUEST_CODE);
+                getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());

@@ -172,7 +172,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
         });
 
         cardReturnTrip.setActionListener(() -> {
@@ -182,7 +182,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+            getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
         });
 
         buttonSubmit.setOnClickListener(v -> {
