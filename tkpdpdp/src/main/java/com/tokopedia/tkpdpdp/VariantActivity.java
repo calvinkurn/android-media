@@ -6,9 +6,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -227,11 +224,11 @@ public class VariantActivity extends TActivity  implements
                 textCartPrice.setText(VariantActivity.this.generateTextCartPrice());
 
                 if(num < widgetQty.getMinValue()){
-                    buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
-                    buttonSave.setClickable(false);
+                    buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
+                    buttonBuy.setClickable(false);
                 } else{
-                    buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.orange_button_rounded));
-                    buttonSave.setClickable(true);
+                    buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.orange_button_rounded));
+                    buttonBuy.setClickable(true);
                 }
             }
         });
