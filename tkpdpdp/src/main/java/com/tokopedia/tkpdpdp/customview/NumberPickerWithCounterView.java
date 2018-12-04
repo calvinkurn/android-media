@@ -66,6 +66,7 @@ public class NumberPickerWithCounterView extends com.tokopedia.design.component.
                 } finally {
                     setTextNumberInputView(current);
                 }
+                inputQuantity.setSelection(inputQuantity.getText().length());
                 updateButtonState();
             }
         });
