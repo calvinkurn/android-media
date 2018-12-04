@@ -145,7 +145,7 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
+        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
             android:id="@+id/contentViewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

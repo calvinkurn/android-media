@@ -1,6 +1,6 @@
-package com.tokopedia.kolcomponent.view.adapter
+package com.tokopedia.kolcomponent.view.adapter.post
 
-import com.tokopedia.kolcomponent.view.viewmodel.DynamicPostViewModel
+import com.tokopedia.kolcomponent.view.viewmodel.post.DynamicPostViewModel
 
 /**
  * @author by milhamj on 03/12/18.

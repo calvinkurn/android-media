@@ -1,11 +1,11 @@
-package com.tokopedia.kolcomponent.view.adapter
+package com.tokopedia.kolcomponent.view.adapter.post
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kolcomponent.view.viewholder.DynamicPostViewHolder
-import com.tokopedia.kolcomponent.view.viewmodel.DynamicPostViewModel
+import com.tokopedia.kolcomponent.view.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.kolcomponent.view.viewmodel.post.DynamicPostViewModel
 
 /**
  * @author by milhamj on 03/12/18.

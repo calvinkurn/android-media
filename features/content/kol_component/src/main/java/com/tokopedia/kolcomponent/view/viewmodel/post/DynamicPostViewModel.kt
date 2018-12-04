@@ -1,7 +1,7 @@
-package com.tokopedia.kolcomponent.view.viewmodel
+package com.tokopedia.kolcomponent.view.viewmodel.post
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kolcomponent.view.adapter.DynamicPostTypeFactory
+import com.tokopedia.kolcomponent.view.adapter.post.DynamicPostTypeFactory
 
 /**
  * @author by milhamj on 28/11/18.
