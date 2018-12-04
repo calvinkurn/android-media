@@ -349,6 +349,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             if (menuItemFilter != null)
                 menuItemFilter.setVisible(true);
             filtersBottomSheet = new FiltersBottomSheet();
+            pointRanges.get(0).setSelected(true);       //set Default selected
+            mPresenter.setPointRangeId(pointRanges.get(0).getId());        //set Default Id
             filtersBottomSheet.setData(pointRanges, this);
         } else {
             if (menuItemFilter != null)
@@ -625,8 +627,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void onSaveFilter(CatalogFilterPointRange filter) {
         if(filter!=null) {
-            mPresenter.setPointRangeId(filter.getId());
-            refreshTab();
+            if(mPresenter.getPointRangeId()!=filter.getId()) {
+                mPresenter.setPointRangeId(filter.getId());
+                refreshTab();
+            }
         }
     }
 }
