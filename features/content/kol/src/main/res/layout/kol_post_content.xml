@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imageViewPager"
         android:layout_marginBottom="@dimen/dp_4"
-        app:tabBackground="@drawable/affiliate_tab_selector"
+        app:tabBackground="@drawable/kol_tab_selector"
         app:tabGravity="center"
         app:tabIndicatorHeight="0dp" />
 
