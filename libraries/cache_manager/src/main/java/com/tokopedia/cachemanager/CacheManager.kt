@@ -38,7 +38,7 @@ abstract class CacheManager(val context: Context) {
 
     fun <T> get(customId: String, type: Type, defaultValue: T? = null): T? {
         try {
-            val jsonString: String? = cacheRepository.get(id + customId) ?: (return defaultValue)
+            val jsonString: String? = cacheRepository.get(id + customId)
             if (jsonString.isNullOrEmpty()) {
                 return defaultValue
             } else {
@@ -51,7 +51,7 @@ abstract class CacheManager(val context: Context) {
 
     fun getString(customId: String, defaultString: String): String? {
         try {
-            val value: String? = cacheRepository.get(id + customId) ?: (return defaultString)
+            val value: String? = cacheRepository.get(id + customId)
             if (value.isNullOrEmpty()) {
                 return defaultString
             } else {
