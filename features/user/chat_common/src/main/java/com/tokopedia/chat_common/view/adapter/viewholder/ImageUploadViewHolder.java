@@ -49,7 +49,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     private static final int BLUR_WIDTH = 30;
     private static final int BLUR_HEIGHT = 30;
     private final ImageUploadListener listener;
-    private PermissionCheckerHelper permissionCheckerHelper;
 
     private View progressBarSendImage;
     private ImageView chatStatus;
@@ -106,25 +105,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
             }
 
             setVisibility(attachment, View.VISIBLE);
-            Activity activity;
-            permissionCheckerHelper.checkPermission(activity, PermissionCheckerHelper.Companion
-                    .PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(@NotNull String[] permissions) {
-                    RequestPermissionUtil.onPermissionDenied(activity, Arrays.asList(permissions));
-                }
-
-                @Override
-                public void onNeverAskAgain(@NotNull String[] permissions) {
-                    RequestPermissionUtil.onNeverAskAgain(activity, "");
-                }
-
-                @Override
-                public void onPermissionGranted() {
-
-                }
-
-            });
 
         }
     }
