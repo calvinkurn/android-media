@@ -10,6 +10,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsWishlistService;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.user.session.UserSession;
 
@@ -21,6 +22,12 @@ import retrofit2.Retrofit;
 
 @Module
 public class TopAdsModule {
+
+    @TopAdsScope
+    @Provides
+    TopAdsWishlishedUseCase topAdsWishlishedUseCase(TopAdsWishlistService topAdsWishlistService){
+        return new TopAdsWishlishedUseCase(topAdsWishlistService);
+    }
 
     @TopAdsScope
     @Provides
