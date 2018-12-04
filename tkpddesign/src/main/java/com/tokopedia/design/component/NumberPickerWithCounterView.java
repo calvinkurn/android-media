@@ -36,7 +36,8 @@ public class NumberPickerWithCounterView extends BaseCustomView {
     private OnPickerActionListener onPickerActionListener;
 
     public interface OnPickerActionListener {
-        void onNumberChange(int num);
+        void onNumberChange(int num,
+                            AppCompatTextView numberInputView);
     }
 
     public NumberPickerWithCounterView(@NonNull Context context) {
@@ -123,7 +124,8 @@ public class NumberPickerWithCounterView extends BaseCustomView {
         plusImageButton.setEnabled(enabled && Integer.parseInt(getNumberTextString().trim()) < maxValue);
 
         if (onPickerActionListener != null) {
-            onPickerActionListener.onNumberChange(Integer.parseInt(getNumberTextString().trim()));
+            onPickerActionListener.onNumberChange(Integer.parseInt(getNumberTextString().trim()),
+                    numberInputView);
         }
     }
 

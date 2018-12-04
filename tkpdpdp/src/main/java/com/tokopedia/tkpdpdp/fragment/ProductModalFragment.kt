@@ -230,9 +230,22 @@ class ProductModalFragment : BaseDaggerFragment() {
                 selectedQuantity!!
                 )
 
-        number_picker_quantitiy_product.setOnPickerActionListener { num ->
+        number_picker_quantitiy_product.setOnPickerActionListener { num, numberInputView ->
             selectedQuantity = num
             text_product_price.text = generateTextCartPrice()
+
+            if (num <= number_picker_quantitiy_product.getMinValue() ||
+                    num >= number_picker_quantitiy_product.getMaxValue()) {
+                activity?.let {
+                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.orange_button_rounded)
+                }
+                new_button_save.isClickable = true;
+            } else {
+                activity?.let {
+                    new_button_save.background = ContextCompat.getDrawable(it, R.drawable.button_save_grey)
+                }
+                new_button_save.isClickable = false;
+            }
         }
 
         if (isCampaign()) {

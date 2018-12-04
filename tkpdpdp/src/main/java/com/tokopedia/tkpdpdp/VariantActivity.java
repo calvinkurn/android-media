@@ -6,6 +6,9 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,9 +29,9 @@ import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 import com.tokopedia.design.component.EditTextCompat;
-import com.tokopedia.design.component.NumberPickerWithCounterView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
+import com.tokopedia.tkpdpdp.customview.NumberPickerWithCounterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,8 @@ import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
 import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 
-public class VariantActivity extends TActivity  implements VariantOptionAdapter.OnVariantOptionChoosedListener  {
+public class VariantActivity extends TActivity  implements
+        VariantOptionAdapter.OnVariantOptionChoosedListener {
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
@@ -189,6 +193,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 }
             });
         }
+        widgetQty.setMinValue(
+                Integer.valueOf(productDetailData.getInfo().getProductMinOrder())
+        );
         renderHeaderInfo();
         setUpByConfiguration(getResources().getConfiguration());
     }
@@ -213,9 +220,21 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
         etNotesSeller.setText(selectedRemarkNotes);
-        widgetQty.setOnPickerActionListener(num -> {
-            selectedQuantity = num;
-            textCartPrice.setText(generateTextCartPrice());
+        widgetQty.setOnPickerActionListener(new com.tokopedia.design.component.NumberPickerWithCounterView.OnPickerActionListener() {
+            @Override
+            public void onNumberChange(int num, AppCompatTextView numberInputView) {
+                selectedQuantity = num;
+                textCartPrice.setText(VariantActivity.this.generateTextCartPrice());
+
+                if(num <= widgetQty.getMinValue() ||
+                        num >= widgetQty.getMaxValue()){
+                    buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.orange_button_rounded));
+                    buttonSave.setClickable(true);
+                } else{
+                    buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
+                    buttonSave.setClickable(false);
+                }
+            }
         });
         try {
             widgetQty.setInitialState(
@@ -627,5 +646,4 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         finish();
         VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
     }
-
 }

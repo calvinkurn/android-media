@@ -29,6 +29,18 @@ public class NumberPickerWithCounterView extends com.tokopedia.design.component.
         super(context, attrs, defStyleAttr);
     }
 
+    public void setMinValue(int minValue){
+        this.minValue = minValue;
+    }
+
+    public int getMinValue(){
+        return this.minValue;
+    }
+
+    public int getMaxValue(){
+        return this.maxValue;
+    }
+
     @Override
     protected void init() {
         View view = inflate(getContext(), R.layout.custom_number_picker, this);
