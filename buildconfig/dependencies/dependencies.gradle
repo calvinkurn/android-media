@@ -11,6 +11,7 @@ ext {
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
+    coroutineVersion = '0.30.2'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.1'
@@ -156,7 +157,9 @@ ext {
             hansel                : "io.hansel.preprocessor:preprocessor:7.0.4",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
-            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
+            flexBoxLayout         : "com.google.android:flexbox:0.3.2",
+            coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
+            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
     ]
 
     testDependencies = [
