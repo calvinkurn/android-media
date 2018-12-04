@@ -82,8 +82,20 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         }
         if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+        } else if (savedInstanceState != null){
+            stepperModel = savedInstanceState.getParcelable(BaseUserIdentificationStepperFragment
+                    .EXTRA_KYC_STEPPER_MODEL);
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
+        if (getActivity() != null) {
+            analytics = UserIdentificationAnalytics.createInstance(getActivity()
+                    .getApplicationContext());
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(BaseUserIdentificationStepperFragment.EXTRA_KYC_STEPPER_MODEL, stepperModel);
+        super.onSaveInstanceState(outState);
     }
 
     @Nullable
