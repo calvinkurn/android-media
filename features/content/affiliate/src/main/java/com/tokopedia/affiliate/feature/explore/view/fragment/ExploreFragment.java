@@ -205,6 +205,12 @@ public class ExploreFragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+    }
+
+    @Override
     public void onRefresh() {
         exploreParams.setFirstData();
         exploreParams.setLoading(true);

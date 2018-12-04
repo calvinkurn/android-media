@@ -2,14 +2,14 @@ package com.tokopedia.home.explore.view.presentation;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.explore.domain.GetExploreDataUseCase;
 import com.tokopedia.home.explore.domain.GetExploreLocalDataUseCase;
-import com.tokopedia.home.explore.domain.model.DataResponseModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -34,6 +34,8 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     GetExploreDataUseCase dataUseCase;
     @Inject
     GetExploreLocalDataUseCase localDataUseCase;
+    @Inject
+    UserSession userSession;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
@@ -93,7 +95,8 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showNetworkError(ErrorHandler.getErrorMessage(e));
+                    getView().showNetworkError(ErrorHandler.getErrorMessage(getView().getContext(),
+                            e));
                     onCompleted();
                 }
             }
@@ -108,7 +111,10 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     }
 
     public Observable<List<ExploreSectionViewModel>> getDataFromNetwork() {
-        return dataUseCase.getExecuteObservable(RequestParams.EMPTY)
+        RequestParams requestParams =
+                RequestParams.create();
+        requestParams.putString(ConstantKey.RequestKey.USER_ID, userSession.getUserId());
+        return dataUseCase.getExecuteObservable(requestParams)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

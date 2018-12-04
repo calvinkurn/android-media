@@ -40,7 +40,7 @@ public interface Verification {
 
         void onLimitOTPReached(String errorMessage);
 
-        void logError(String className, String message);
+        void logUnknownError(Throwable e);
     }
 
     interface Presenter extends CustomerPresenter<Verification.View> {

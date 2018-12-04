@@ -59,7 +59,7 @@ public class UrlUtil {
     private static void addLinkMovementMethod(@NonNull TextView t) {
         MovementMethod m = t.getMovementMethod();
 
-        if ((m == null) || !(m instanceof LinkMovementMethod)) {
+        if (!(m instanceof LinkMovementMethod)) {
             if (t.getLinksClickable()) {
                 t.setMovementMethod(LinkMovementMethod.getInstance());
             }

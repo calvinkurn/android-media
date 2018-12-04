@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.perf.metrics.Trace;
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -32,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
@@ -59,7 +59,6 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -137,7 +136,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
-    private Trace trace;
+    private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
@@ -160,7 +159,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
-        trace = TrackingUtils.startTrace(CART_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
     }
 
     @Override
@@ -236,9 +235,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
 
             cartListData = arguments.getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData);
-            }
         }
     }
 
@@ -413,18 +409,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void initialVar() {
-        if (getActivity() != null) {
-            setHasOptionsMenu(true);
-            getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
-            if (cartListData == null) {
-                refreshHandler.startRefresh();
-            }
-        }
+
     }
 
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            setHasOptionsMenu(true);
+            getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
+            if (cartListData == null) {
+                refreshHandler.startRefresh();
+            } else {
+                renderInitialGetCartListDataSuccess(cartListData);
+            }
+        }
     }
 
     @Override
@@ -782,8 +786,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        if (trace != null && !isTraceStopped) {
-            trace.stop();
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace();
             isTraceStopped = true;
         }
 
@@ -840,7 +844,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        cbSelectAll.setChecked(cartListData.isAllSelected());
+        if (cbSelectAll != null) {
+            cbSelectAll.setChecked(cartListData.isAllSelected());
+        }
 
         cartAdapter.checkForShipmentForm();
 
@@ -1182,7 +1188,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllCartItem) {
-        dPresenter.getCartListData().setAllSelected(selectAllCartItem);
+        if (dPresenter.getCartListData() != null) {
+            dPresenter.getCartListData().setAllSelected(selectAllCartItem);
+        }
         cbSelectAll.setChecked(selectAllCartItem);
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
