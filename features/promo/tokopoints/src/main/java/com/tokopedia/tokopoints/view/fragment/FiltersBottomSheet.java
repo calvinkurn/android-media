@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FiltersBottomSheet extends BottomSheets {
 
-    List<CatalogFilterPointRange> mFilterDetails;
+    private List<CatalogFilterPointRange> mFilterDetails;
     private OnSaveFilterCallback onSaveFilterCallback;
     private boolean fromInitView = true;
     private int lastCheckedPosition = Integer.MIN_VALUE, lastSavedPosition = Integer.MIN_VALUE;
@@ -54,11 +54,11 @@ public class FiltersBottomSheet extends BottomSheets {
 
     @Override
     protected String title() {
-        return "Filter Kupon";
+        return getString(R.string.title_bottomsheet_filters);
     }
 
-    public void setData(List<CatalogFilterPointRange> lobDetails, OnSaveFilterCallback onSaveFilterCallback) {
-        this.mFilterDetails = lobDetails;
+    public void setData(List<CatalogFilterPointRange> filterDetails, OnSaveFilterCallback onSaveFilterCallback) {
+        this.mFilterDetails = filterDetails;
         this.onSaveFilterCallback = onSaveFilterCallback;
     }
 
@@ -66,11 +66,11 @@ public class FiltersBottomSheet extends BottomSheets {
 
         private List<CatalogFilterPointRange> mFilterDetails;
 
-        public FiltersAdapter(List<CatalogFilterPointRange> mFilterDetails) {
-            this.mFilterDetails = mFilterDetails;
+        public FiltersAdapter(List<CatalogFilterPointRange> filterDetails) {
+            this.mFilterDetails = filterDetails;
             int size = getItemCount();
             for (int i = 0; i < size; i++) {
-                if (mFilterDetails.get(i).isSelected()) {
+                if (filterDetails.get(i).isSelected()) {
                     lastCheckedPosition = i;
                     lastSavedPosition = i;
                     break;
@@ -87,8 +87,6 @@ public class FiltersBottomSheet extends BottomSheets {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-//            mFilterDetails.get(position).setSelected(false);
-
             if (!TextUtils.isEmpty(mFilterDetails.get(position).getText()))
                 holder.radioButton.setText(mFilterDetails.get(position).getText());
             if (fromInitView) {

@@ -626,8 +626,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void onSaveFilter(CatalogFilterPointRange filter) {
-        if(filter!=null) {
-            if(mPresenter.getPointRangeId()!=filter.getId()) {
+        if (filter != null) {
+            if (mPresenter.getPointRangeId() != filter.getId()) {
                 mPresenter.setPointRangeId(filter.getId());
                 refreshTab();
             }

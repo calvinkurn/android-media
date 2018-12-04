@@ -173,7 +173,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void setPointRangeId(int id) {
-        this.pointRange=id;
+        this.pointRange = id;
     }
 
     @Override
@@ -183,7 +183,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void setCurrentCategoryId(int id) {
-        currentCategoryId=id;
+        currentCategoryId = id;
     }
 
     @Override
@@ -193,7 +193,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void setCurrentSubCategoryId(int id) {
-        currentSubCategoryId=id;
+        currentSubCategoryId = id;
     }
 
     @Override

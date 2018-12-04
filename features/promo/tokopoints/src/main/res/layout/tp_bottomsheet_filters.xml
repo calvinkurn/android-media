@@ -20,7 +20,7 @@
         android:textSize="@dimen/tp_margin_regular"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="Kisaran Points" />
+        android:text="@string/bottomsheet_filter_subtitle" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_filters"
