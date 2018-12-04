@@ -7,6 +7,7 @@ public class AccountConstants {
 
     public static final String QUERY = "query";
     public static final String VARIABLES = "variables";
+    public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
 
     public static class Navigation {

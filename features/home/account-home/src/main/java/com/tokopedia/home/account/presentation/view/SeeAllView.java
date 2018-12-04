@@ -8,6 +8,7 @@ import android.view.View;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.adapter.MenuGridAdapter;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.RC_GIFTCARD_ENABLE;
 
 /**
  * @author by alvinatin on 01/08/18.
@@ -142,6 +144,21 @@ public class SeeAllView extends BottomSheets {
                 getContext().getString(R.string.title_menu_transaction)
         );
         list.add(gridItem);
+
+        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_GIFTCARD_ENABLE, true)) {
+            gridItem = new MenuGridItemViewModel(
+                    AccountHomeUrl.ImageUrl.IMG_GIFT_CARD,
+                    getContext().getString(R.string.title_menu_gift_card),
+                    String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            "https://m.tokopedia.com/order-list?tab=GIFTCARDS"),
+                    0,
+                    PEMBELI,
+                    getContext().getString(R.string.title_menu_transaction)
+            );
+            list.add(gridItem);
+            list.add(gridItem);
+        }
 
         return list;
     }

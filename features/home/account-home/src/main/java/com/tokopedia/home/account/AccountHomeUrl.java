@@ -17,6 +17,7 @@ public class AccountHomeUrl {
 
         public static final String TOKOCASH_IMG = "/img/wallet/ic_tokocash_circle.png";
         public static final String SALDO_IMG = "/img/wallet/ic_saldo_circle.png";
+        public static final String IMG_GIFT_CARD = "https://ecs7.tokopedia.net/img/recharge/category/tokopedia-gift-card.png";
     }
 
     public static String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
