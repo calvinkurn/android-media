@@ -41,22 +41,23 @@ class TrackingMapper(context: Context) {
         val data = JSONArray()
         val row = JSONObject()
         var event = JSONArray()
-        var userId = ""
-        for (item in trackings) {
+        for (i in trackings.indices) {
+            val item = trackings[i]
+            event.put(transform(item))
+            val nextItem: Tracking? = try {
+                trackings[i+1]
+            } catch (e: IndexOutOfBoundsException) {
+                null
+            }
+            val userId: String = nextItem?.userId ?: ""
             if (userId != item.userId) {
-                if (!userId.isBlank()) {
+                if (event.length() > 0) {
                     row.put("event", event)
                     data.put(row)
                 }
                 row.put("device_id", uniqueDeviceId)
                 row.put("user_id", item.userId)
                 event = JSONArray()
-                userId = item.userId
-            }
-            event.put(transform(item))
-            if (trackings.size == 1) {
-                row.put("event", event)
-                data.put(row)
             }
         }
         result.put("data", data)

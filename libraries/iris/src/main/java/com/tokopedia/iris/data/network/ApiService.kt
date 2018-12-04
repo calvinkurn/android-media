@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.iris.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import java.util.concurrent.TimeUnit
@@ -39,6 +40,7 @@ class ApiService(context: Context) {
 
                     it.proceed(request)
                 }
+                .addInterceptor(HttpLoggingInterceptor())
                 .connectTimeout(15000, TimeUnit.MILLISECONDS)
                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .readTimeout(10000, TimeUnit.MILLISECONDS)

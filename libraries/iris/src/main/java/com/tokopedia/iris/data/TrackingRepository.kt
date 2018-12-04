@@ -7,6 +7,8 @@ import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import rx.schedulers.Schedulers
 
 /**
@@ -28,7 +30,8 @@ class TrackingRepository (
 
     fun sendSingleEvent(data: String, sessionId: String, userId: String) {
         val request = TrackingMapper(context).transform(data, sessionId, userId)
-        apiService.apiInterface.sendSingleEvent(request)
+        val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), request)
+        apiService.apiInterface.sendSingleEvent(body)
                 .subscribeOn(Schedulers.io())
                 .subscribe {
                     if (it.isSuccessful) {
