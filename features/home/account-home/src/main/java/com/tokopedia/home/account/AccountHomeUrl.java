@@ -6,6 +6,7 @@ package com.tokopedia.home.account;
 public class AccountHomeUrl {
     public static String BASE_SELLER_URL = "https://seller.tokopedia.com/";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
+    public static String BASE_MOBILE_DOMAIN = "https://m.tokopedia.com/";
 
     public static String CDN_URL = "https://ecs7.tokopedia.net";
     public static String CDN_IMAGE_PATH = "/img/android/others/";
@@ -43,4 +44,5 @@ public class AccountHomeUrl {
 
     public static String EMAS_URL = WEB_DOMAIN + "emas/";
     public static String EMAS_TX_URL = WEB_DOMAIN + "emas/daftar-transaksi/";
+    public static String GIFT_CARD_URL = BASE_MOBILE_DOMAIN + "order-list?tab=GIFTCARDS";
 }

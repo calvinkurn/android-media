@@ -145,13 +145,13 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
-        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_GIFTCARD_ENABLE, true)) {
+        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_GIFTCARD_ENABLE, false)) {
             gridItem = new MenuGridItemViewModel(
                     AccountHomeUrl.ImageUrl.IMG_GIFT_CARD,
                     getContext().getString(R.string.title_menu_gift_card),
                     String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW,
-                            "https://m.tokopedia.com/order-list?tab=GIFTCARDS"),
+                            AccountHomeUrl.GIFT_CARD_URL),
                     0,
                     PEMBELI,
                     getContext().getString(R.string.title_menu_transaction)
