@@ -2,6 +2,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.DigitalDealGetProductsUseCase;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductsViewModel;
@@ -14,16 +15,19 @@ import rx.Subscriber;
 public class DigitalCartDealsListPresenter extends BaseDaggerPresenter<DigitalCartDealsListContract.View> implements DigitalCartDealsListContract.Presenter {
 
     private DigitalDealGetProductsUseCase digitalDealGetProductsUseCase;
+    private DigitalAnalytics digitalAnalytics;
 
     @Inject
-    public DigitalCartDealsListPresenter(DigitalDealGetProductsUseCase digitalDealGetProductsUseCase) {
+    public DigitalCartDealsListPresenter(DigitalDealGetProductsUseCase digitalDealGetProductsUseCase,
+                                         DigitalAnalytics digitalAnalytics) {
         this.digitalDealGetProductsUseCase = digitalDealGetProductsUseCase;
+        this.digitalAnalytics = digitalAnalytics;
     }
 
     @Override
-    public void getProducts(String nextUrl) {
+    public void getProducts(String nextUrl, String categoryName) {
         digitalDealGetProductsUseCase.execute(
-                digitalDealGetProductsUseCase.createRequest(nextUrl),
+                digitalDealGetProductsUseCase.createRequest(nextUrl, categoryName),
                 new Subscriber<DealProductsViewModel>() {
                     @Override
                     public void onCompleted() {
@@ -53,6 +57,11 @@ public class DigitalCartDealsListPresenter extends BaseDaggerPresenter<DigitalCa
     @Override
     public void onDealDetailClicked(DealProductViewModel productViewModel) {
         getView().navigateToDetailPage(productViewModel);
+    }
+
+    @Override
+    public void onBuyButtonClicked(DealProductViewModel productViewModel) {
+        digitalAnalytics.eventAddDeal(productViewModel);
     }
 
     @Override

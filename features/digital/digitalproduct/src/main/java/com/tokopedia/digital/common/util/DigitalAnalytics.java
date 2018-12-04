@@ -1,10 +1,13 @@
 package com.tokopedia.digital.common.util;
 
+import android.content.Context;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.common.constant.DigitalEventTracking;
+import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +24,11 @@ import static com.tokopedia.digital.common.constant.DigitalEventTracking.Event.D
 public class DigitalAnalytics {
 
     private AnalyticTracker analyticTracker;
+    private Context context;
 
-    public DigitalAnalytics(AnalyticTracker analyticTracker) {
+    public DigitalAnalytics(AnalyticTracker analyticTracker, Context context) {
         this.analyticTracker = analyticTracker;
+        this.context = context;
     }
 
     public void eventClickPanduanPage(String categoryName) {
@@ -110,5 +115,89 @@ public class DigitalAnalytics {
 
     public void eventClickVoucher(String categoryName, String voucherAutoCode, String operatorName) {
 
+    }
+
+    public void eventSelectDeal(CharSequence dealCategory) {
+        analyticTracker.sendEventTracking(
+                DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
+                DigitalEventTracking.Action.SELECT_DEAL_CATEGORY,
+                String.valueOf(dealCategory).toLowerCase()
+        );
+    }
+
+    public void eventAddDeal(DealProductViewModel productViewModel) {
+        String label = productViewModel.getCategoryName() + " - " + productViewModel.getBrandName() + " - " +
+                productViewModel.getTitle() + " - " + productViewModel.getSalesPriceNumeric();
+        analyticTracker.sendEventTracking(
+                DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
+                DigitalEventTracking.Action.ADD_DEAL_OFFER,
+                String.valueOf(label).toLowerCase()
+        );
+    }
+
+    public void eventRemoveDeal(DealProductViewModel productViewModel) {
+        String label = productViewModel.getCategoryName() + " - " + productViewModel.getBrandName() + " - " +
+                productViewModel.getTitle() + " - " + productViewModel.getSalesPriceNumeric();
+        analyticTracker.sendEventTracking(
+                DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
+                DigitalEventTracking.Action.REMOVE_DEAL_OFFER,
+                String.valueOf(label).toLowerCase()
+        );
+    }
+
+    public void eventSkipDeal() {
+        analyticTracker.sendEventTracking(
+                DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
+                DigitalEventTracking.Action.CLICK_SKIP,
+                DigitalEventTracking.Label.DEFAULT_EMPTY_VALUE
+        );
+    }
+
+    public void eventDealMaximalError() {
+        analyticTracker.sendEventTracking(
+                DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
+                DigitalEventTracking.Action.ERROR_TO_ADD_DEAL,
+                DigitalEventTracking.Label.DEFAULT_EMPTY_VALUE
+        );
+
+    }
+
+    public void eventAddDeal(String categoryName, String voucherCode, int dealsSize) {
+        String newVoucherLabel = voucherCode.length() > 0 ? voucherCode :
+                DigitalEventTracking.Label.NO_PROMO;
+        String label = categoryName + " - " + newVoucherLabel + " - " + dealsSize;
+        analyticTracker.sendEventTracking(
+                DigitalEventTracking.Event.CLICK_CHECKOUT,
+                DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
+                DigitalEventTracking.Action.CLICK_PROCEED_PAYMENT,
+                label.toLowerCase()
+        );
+    }
+
+    public void eventMulticheckoutDeal(CartDigitalInfoData cartDigitalInfoData) {
+        String productName = cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase() + " " +
+                cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
+        List<Object> products = new ArrayList<>();
+        products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "event", DigitalEventTracking.Event.CHECKOUT,
+                        "eventCategory", DigitalEventTracking.Category.DIGITAL_MULTIPLE_CHECKOUT,
+                        "eventAction", DigitalEventTracking.Action.VIEW_CHECKOUT,
+                        "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase(),
+                        "ecommerce", DataLayer.mapOf(
+                                "checkout", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()]))
+                                )
+                        )
+                )
+        );
     }
 }

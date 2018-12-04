@@ -40,12 +40,12 @@ public class DigitalDealsRepositoryImpl implements DigitalDealsRepository {
     }
 
     @Override
-    public Observable<DealProductsViewModel> getProducts(String url) {
+    public Observable<DealProductsViewModel> getProducts(String url, String categoryName) {
         return dataSourceFactory.getProducts(url)
                 .map(new Func1<DealProductsResponse, DealProductsViewModel>() {
                     @Override
                     public DealProductsViewModel call(DealProductsResponse dealProductsResponse) {
-                        return productViewModelMapper.transformDealProduct(dealProductsResponse);
+                        return productViewModelMapper.transformDealProduct(dealProductsResponse, categoryName);
                     }
                 });
     }

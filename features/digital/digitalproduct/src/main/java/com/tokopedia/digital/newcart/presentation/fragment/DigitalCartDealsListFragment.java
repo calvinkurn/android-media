@@ -32,6 +32,7 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
         implements DigitalCartDealsListContract.View, DigitalDealActionListener,
         DigitalDealListListener {
     private static final String EXTRA_URL = "EXTRA_URL";
+    private static final String EXTRA_CATEGORY_NAME = "EXTRA_CATEGORY_NAME";
 
     private String nextUrl;
 
@@ -46,10 +47,11 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
         void selectDeal(DealProductViewModel viewModel);
     }
 
-    public static DigitalCartDealsListFragment newInstance(String url) {
+    public static DigitalCartDealsListFragment newInstance(String url, String categoryName) {
         DigitalCartDealsListFragment fragment = new DigitalCartDealsListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_URL, url);
+        bundle.putString(EXTRA_CATEGORY_NAME, categoryName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -66,7 +68,7 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
 
     @Override
     public void loadData(int page) {
-        presenter.getProducts(nextUrl);
+        presenter.getProducts(nextUrl, getCategoryName());
     }
 
     @Nullable
@@ -106,6 +108,7 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
         if (interactionListener != null) {
             interactionListener.selectDeal(productViewModel);
         }
+        presenter.onBuyButtonClicked(productViewModel);
     }
 
     @Override
@@ -132,6 +135,11 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
                 false,
                 false)
         );
+    }
+
+    @Override
+    public String getCategoryName() {
+        return getArguments().getString(EXTRA_CATEGORY_NAME);
     }
 
     public void setInteractionListener(InteractionListener interactionListener) {

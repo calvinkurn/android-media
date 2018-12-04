@@ -107,8 +107,8 @@ public class DigitalCartModule {
 
     @Provides
     @DigitalCartScope
-    DigitalAnalytics provideDigitalAnalytics(AbstractionRouter abstractionRouter) {
-        return new DigitalAnalytics(abstractionRouter.getAnalyticTracker());
+    DigitalAnalytics provideDigitalAnalytics(AbstractionRouter abstractionRouter, @ApplicationContext Context context) {
+        return new DigitalAnalytics(abstractionRouter.getAnalyticTracker(), context);
     }
 
     @Provides

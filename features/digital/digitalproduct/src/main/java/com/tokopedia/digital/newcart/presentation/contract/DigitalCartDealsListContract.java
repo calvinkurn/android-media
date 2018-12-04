@@ -10,12 +10,16 @@ public interface DigitalCartDealsListContract {
         void setNextUrl(String nextUrl);
 
         void navigateToDetailPage(DealProductViewModel dealApplink);
+
+        String getCategoryName();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getProducts(String nextUrl);
+        void getProducts(String nextUrl, String categoryName);
 
         void onDealDetailClicked(DealProductViewModel productViewModel);
+
+        void onBuyButtonClicked(DealProductViewModel productViewModel);
     }
 }

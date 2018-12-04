@@ -2,6 +2,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.DigitalDealsGetCategoriesUseCase;
 import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -15,16 +16,20 @@ import rx.Subscriber;
 
 public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDealsContract.View> implements DigitalCartDealsContract.Presenter {
     private DigitalDealsGetCategoriesUseCase digitalDealsGetCategoriesUseCase;
+    private DigitalAnalytics digitalAnalytics;
 
     @Inject
-    public DigitalCartDealsPresenter(DigitalDealsGetCategoriesUseCase digitalDealsGetCategoriesUseCase) {
+    public DigitalCartDealsPresenter(DigitalDealsGetCategoriesUseCase digitalDealsGetCategoriesUseCase,
+                                     DigitalAnalytics digitalAnalytics) {
         this.digitalDealsGetCategoriesUseCase = digitalDealsGetCategoriesUseCase;
+        this.digitalAnalytics = digitalAnalytics;
     }
 
     @Override
     public void onViewCreated() {
         getView().renderGetCategoriesLoading();
         getView().hideDealsPage();
+        digitalAnalytics.eventMulticheckoutDeal(getView().getCartInfoData());
         digitalDealsGetCategoriesUseCase.execute(
                 digitalDealsGetCategoriesUseCase.createRequestParam(
                         getView().getCartPassData().getCategoryId()
@@ -62,6 +67,7 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
     @Override
     public void onSelectDealProduct(DealProductViewModel viewModel, int currentFragmentPosition) {
         if (getView().getSelectedDeals().size() >= 5) {
+            digitalAnalytics.eventDealMaximalError();
             getView().renderErrorInRedSnackbar(R.string.digital_deals_maximum_error_message);
         } else {
             viewModel.setSelected(true);
@@ -82,6 +88,11 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
             getView().notifyAdapterInSpecifyFragment(fragmentPosition);
             getView().getSelectedDealsMap().remove(viewModel);
         }
+    }
+
+    @Override
+    public void onDealsTabSelected(CharSequence dealCategory) {
+        digitalAnalytics.eventSelectDeal(dealCategory);
     }
 
 

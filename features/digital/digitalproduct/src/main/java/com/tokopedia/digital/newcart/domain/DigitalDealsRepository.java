@@ -12,5 +12,5 @@ public interface DigitalDealsRepository {
 
     Observable<List<DealCategoryViewModel>> getDealsCategory(Map<String, Object> params);
 
-    Observable<DealProductsViewModel> getProducts(String url);
+    Observable<DealProductsViewModel> getProducts(String url, String categoryName);
 }

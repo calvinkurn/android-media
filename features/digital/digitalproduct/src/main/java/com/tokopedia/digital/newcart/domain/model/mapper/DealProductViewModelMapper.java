@@ -16,12 +16,12 @@ public class DealProductViewModelMapper {
     public DealProductViewModelMapper() {
     }
 
-    public List<DealProductViewModel> transform(List<DealProductEntity> entities) {
+    public List<DealProductViewModel> transform(List<DealProductEntity> entities, String categoryName) {
         List<DealProductViewModel> viewModels = new ArrayList<>();
         DealProductViewModel viewModel;
         if (entities != null) {
             for (DealProductEntity entity : entities) {
-                viewModel = transform(entity);
+                viewModel = transform(entity, categoryName);
                 if (viewModel != null) {
                     viewModels.add(viewModel);
                 }
@@ -30,7 +30,7 @@ public class DealProductViewModelMapper {
         return viewModels;
     }
 
-    private DealProductViewModel transform(DealProductEntity entity) {
+    private DealProductViewModel transform(DealProductEntity entity, String categoryName) {
         DealProductViewModel viewModel = null;
         if (entity != null) {
             viewModel = new DealProductViewModel();
@@ -42,14 +42,15 @@ public class DealProductViewModelMapper {
             viewModel.setImageUrl(entity.getImageThumbUrl());
             viewModel.setSelected(false);
             viewModel.setUrl(entity.getUrl());
+            viewModel.setCategoryName(categoryName);
         }
         return viewModel;
     }
 
-    public DealProductsViewModel transformDealProduct(DealProductsResponse dealProductsResponse) {
+    public DealProductsViewModel transformDealProduct(DealProductsResponse dealProductsResponse, String categoryName) {
         DealProductsViewModel viewModel = new DealProductsViewModel();
         viewModel.setNextUrl(dealProductsResponse.getPage().getUriNext());
-        viewModel.setProducts(transform(dealProductsResponse.getProducts()));
+        viewModel.setProducts(transform(dealProductsResponse.getProducts(), categoryName));
         return viewModel;
     }
 }
