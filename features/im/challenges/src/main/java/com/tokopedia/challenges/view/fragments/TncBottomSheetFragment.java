@@ -29,7 +29,6 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
     private String toolBarTitle;
     private String text;
     private final static String SCREEN_NAME = "challenges/tnc";
-    @Inject
     public ChallengesGaAnalyticsTracker analytics;
 
     public static Fragment createInstance(Bundle bundle) {
@@ -57,6 +56,7 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
             String html = m.markdown(text);
             webView.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
         }
+        analytics = new ChallengesGaAnalyticsTracker(getActivity());
         analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
 
         return view;
