@@ -19,7 +19,7 @@ data class ProductVariant(
 
         @SerializedName("variant")
         @Expose
-        val type: Variant,
+        val variants: ArrayList<Variant>,
 
         @SerializedName("children")
         @Expose

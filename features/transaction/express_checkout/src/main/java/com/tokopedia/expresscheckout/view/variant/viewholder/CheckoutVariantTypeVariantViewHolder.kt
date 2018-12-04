@@ -21,7 +21,7 @@ class CheckoutVariantTypeVariantViewHolder(val view: View) : AbstractViewHolder<
     override fun bind(element: CheckoutVariantTypeVariantViewModel?) {
         if (element != null) {
             itemView.tv_variant_name.text = element.variantName
-            itemView.tv_variant_value.text = element.variantSelectedValua
+            itemView.tv_variant_value.text = element.variantSelectedValue
             val chipsLayoutManager = ChipsLayoutManager.newBuilder(itemView.context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)

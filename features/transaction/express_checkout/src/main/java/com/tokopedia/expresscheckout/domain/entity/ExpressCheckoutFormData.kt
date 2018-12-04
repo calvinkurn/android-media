@@ -50,18 +50,18 @@ data class ExpressCheckoutFormData(
 
         @SerializedName("donation")
         @Expose
-        val donation: Donation,
+        val donation: Donation?,
 
         @SerializedName("promo_suggestion")
         @Expose
-        val promoSuggestion: PromoSuggestion,
+        val promoSuggestion: PromoSuggestion?,
 
         @SerializedName("autoapply")
         @Expose
-        val autoapply: AutoApply,
+        val autoapply: AutoApply?,
 
         @SerializedName("user_profile_default")
         @Expose
-        val userProfileDefault: UserProfile
+        val userProfileDefault: UserProfile?
 
 )

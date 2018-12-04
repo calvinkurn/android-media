@@ -1,6 +1,9 @@
 package com.tokopedia.expresscheckout.view.variant.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
+import com.tokopedia.expresscheckout.domain.entity.variant.Option
+import com.tokopedia.expresscheckout.domain.entity.variant.Variant
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 /**
@@ -8,6 +11,8 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
  */
 
 interface DataMapper {
+
+    fun convertToViewModels(expressCheckoutFormData: ExpressCheckoutFormData): ArrayList<Visitable<*>>
 
     fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantNoteViewModel
 
@@ -19,8 +24,8 @@ interface DataMapper {
 
     fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantSummaryViewModel
 
-    fun convertToTypeVariantViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantTypeVariantViewModel
+    fun convertToTypeVariantViewModel(variant: Variant): CheckoutVariantTypeVariantViewModel
 
-    fun convertToOptionVariantViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantOptionVariantViewModel
+    fun convertToOptionVariantViewModel(option: Option): CheckoutVariantOptionVariantViewModel
 
 }
