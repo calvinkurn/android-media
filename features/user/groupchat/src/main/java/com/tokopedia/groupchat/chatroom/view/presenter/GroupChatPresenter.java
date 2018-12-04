@@ -229,8 +229,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
                 , settingGroupChat.getPingInterval(), groupChatToken).subscribe(subscriber);
 
-        Log.i("doublesocket", "check before Add: " + mSubscription.hasSubscriptions());
-
         mSubscription.add(subscription);
     }
 
@@ -249,7 +247,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     public void destroyWebSocket() {
         if (mSubscription != null) {
-            Log.i("doublesocket", "hasSubscription: " + mSubscription.hasSubscriptions());
             mSubscription.clear();
         }
     }
