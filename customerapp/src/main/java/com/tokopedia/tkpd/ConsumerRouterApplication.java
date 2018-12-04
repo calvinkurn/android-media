@@ -2975,6 +2975,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendOpenHomeEvent() {
+        TrackingUtils.sendMoEngageOpenHomeEvent();
+    }
+
+    @Override
+    public void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
+        TrackingUtils.sendMoEngageOpenFeedEvent(isEmptyFeed);
+    }
+
+    @Override
     public void setStringRemoteConfigLocal(String key, String value) {
         remoteConfig.setString(key, value);
     }

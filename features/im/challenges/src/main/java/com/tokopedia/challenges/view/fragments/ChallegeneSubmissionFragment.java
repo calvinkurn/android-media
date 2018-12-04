@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -27,6 +26,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -100,7 +100,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private View flHeader;
     private SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
     private View mainContent;
-    private ConstraintLayout baseMainContent;
+    private RelativeLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
     private Toolbar toolbar;
@@ -160,7 +160,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onPause() {
-         if (videoPlayer != null) {
+        if (videoPlayer != null) {
             VIDEO_POS = videoPlayer.getPosition();
             isVideoPlaying = false;
             videoPlayer.pause();
@@ -364,7 +364,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
-        ChallengesMoengageAnalyticsTracker.challengeDetailsOpen(getActivity(),challengeResult.getTitle(),challengeResult.getId(),mPresenter.isParticipated(challengeResult));
+        ChallengesMoengageAnalyticsTracker.challengeDetailsOpen(getActivity(), challengeResult.getTitle(), challengeResult.getId(), mPresenter.isParticipated(challengeResult));
 
     }
 
@@ -510,7 +510,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);
         } else if (v.getId() == R.id.fab_share) {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult,false);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
         }
     }
 

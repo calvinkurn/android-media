@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
@@ -59,6 +60,10 @@ public class WebSocketUseCase {
                 .header("Origin", TkpdBaseURL.WEB_DOMAIN)
                 .header("Accounts-Authorization",
                         "Bearer " + userSession.getAccessToken())
+                .header("x-app-version",String.valueOf(GlobalConfig.VERSION_CODE))
+                .header("x-device", "android-" + GlobalConfig.VERSION_NAME)
+                .header("x-tkpd-app-version","android-" + GlobalConfig.VERSION_NAME)
+                .header("x-tkpd-app-name", GlobalConfig.getPackageApplicationName())
                 .build();
         ws = client.newWebSocket(request, listener);
     }
