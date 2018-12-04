@@ -358,8 +358,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
                 if (paging.getPage() == 1) {
                     getView().getAdapter().clearAllElements();
+                    depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
                 }
-                depositCacheInteractor.setSummaryDepositCache(gqlDepositSummaryResponse);
                 paging.setHasNext(gqlDepositSummaryResponse.getDepositActivityResponse()
                         .isHaveNextPage());
                 setData(gqlDepositSummaryResponse);

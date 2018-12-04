@@ -21,6 +21,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
     private static final String TAG = DepositCacheInteractorImpl.class.getSimpleName();
     private static final String CACHE_DEPOSIT = "CACHE_DEPOSIT";
     private static final String CACHE_USABLE_SALDO_BALANCE = "CACHE_USABLE_SALDO_BALANCE";
+    private static final int CACHE_TIME_LIMIT = 900;
     private CacheManager cacheManager;
 
     public DepositCacheInteractorImpl(Context context) {
@@ -46,11 +47,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
 
                     @Override
                     public void onNext(GqlDepositSummaryResponse result) {
-                        try {
-                            listener.onSuccess(result);
-                        } catch (Exception e) {
-                            listener.onError(e);
-                        }
+                        listener.onSuccess(result);
                     }
                 });
     }
@@ -74,11 +71,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
 
                     @Override
                     public void onNext(GqlSaldoBalanceResponse result) {
-                        try {
-                            listener.onSuccess(result);
-                        } catch (Exception e) {
-                            listener.onError(e);
-                        }
+                        listener.onSuccess(result);
                     }
                 });
     }
@@ -97,7 +90,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
                 .map(gqlDepositSummaryResponse -> {
                     cacheManager.save(CACHE_DEPOSIT, CacheUtil.convertModelToString(gqlDepositSummaryResponse,
                             new TypeToken<GqlDepositSummaryResponse>() {
-                            }.getType()), 900);
+                            }.getType()), CACHE_TIME_LIMIT);
                     return true;
                 })
                 .subscribe(new Subscriber<Boolean>() {
@@ -127,7 +120,7 @@ public class DepositCacheInteractorImpl implements DepositCacheInteractor {
                 .map(result -> {
                     cacheManager.save(CACHE_USABLE_SALDO_BALANCE, CacheUtil.convertModelToString(result,
                             new TypeToken<GqlSaldoBalanceResponse>() {
-                            }.getType()), 900);
+                            }.getType()), CACHE_TIME_LIMIT);
                     return true;
                 })
                 .subscribe(new Subscriber<Boolean>() {

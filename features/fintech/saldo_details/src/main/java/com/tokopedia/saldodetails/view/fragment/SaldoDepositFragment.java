@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
@@ -26,7 +25,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
@@ -67,7 +65,7 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
     SaldoDatePickerUtil datePicker;
     SaldoDepositAdapter adapter;
     LinearLayoutManager linearLayoutManager;
-//    Snackbar snackbar;
+    //    Snackbar snackbar;
     LinearLayout tickerMessageRL;
     TextView tickeRMessageTV;
     ImageView tickerMessageCloseButton;
@@ -366,10 +364,10 @@ public class SaldoDepositFragment extends BaseListFragment<DepositHistoryList, S
 
     @Override
     public void setWithdrawButtonState(boolean state) {
-        if (!state) {
-            drawButton.setTextColor(getResources().getColor(R.color.black_26));
-        } else {
+        if (state) {
             drawButton.setTextColor(Color.WHITE);
+        } else {
+            drawButton.setTextColor(getResources().getColor(R.color.black_26));
         }
         drawButton.setEnabled(state);
         drawButton.setClickable(state);

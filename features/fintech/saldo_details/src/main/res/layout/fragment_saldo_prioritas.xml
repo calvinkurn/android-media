@@ -39,7 +39,6 @@
                 android:layout_toEndOf="@+id/sp_title"
                 android:layout_toRightOf="@+id/sp_title"
                 android:background="@drawable/sp_bg_rounded_corners_red"
-                android:gravity="center"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_2"
                 android:paddingRight="@dimen/dp_10"
