@@ -230,7 +230,7 @@ class ProductModalFragment : BaseDaggerFragment() {
                 selectedQuantity!!
                 )
 
-        number_picker_quantitiy_product.setOnPickerActionListener { num, numberInputView ->
+        number_picker_quantitiy_product.setOnPickerActionListener { num ->
             selectedQuantity = num
             text_product_price.text = generateTextCartPrice()
 

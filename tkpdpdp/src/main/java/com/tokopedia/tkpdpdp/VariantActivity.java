@@ -222,7 +222,7 @@ public class VariantActivity extends TActivity  implements
         etNotesSeller.setText(selectedRemarkNotes);
         widgetQty.setOnPickerActionListener(new com.tokopedia.design.component.NumberPickerWithCounterView.OnPickerActionListener() {
             @Override
-            public void onNumberChange(int num, AppCompatTextView numberInputView) {
+            public void onNumberChange(int num) {
                 selectedQuantity = num;
                 textCartPrice.setText(VariantActivity.this.generateTextCartPrice());
 
