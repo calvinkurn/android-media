@@ -3,50 +3,30 @@ package com.tokopedia.kolcomponent.view.adapter
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kolcomponent.view.viewholder.ImageViewHolder
+import com.tokopedia.kolcomponent.view.viewmodel.ImageViewModel
 
 /**
  * @author by milhamj on 9/21/18.
  */
-class PostPagerAdapter(var clickListener: ImageClickListener?) : PagerAdapter() {
+class PostPagerAdapter : PagerAdapter() {
 
-    constructor() : this(null)
-
-    val imageList: ArrayList<String> = ArrayList()
+    val itemList: MutableList<Any> = ArrayList()
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
-    override fun getCount(): Int = imageList.size
+    override fun getCount(): Int = itemList.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-//        val view = LayoutInflater.from(container.context).inflate(
-//                R.layout.item_post_image,
-//                container,
-//                false
-//        )
-//        val imageView = view.findViewById<ImageView>(R.id.image)
-//        val imageUrl = imageList[position]
-//
-//        view.setOnClickListener { clickListener?.onImageClick(position) }
-//        imageView.viewTreeObserver.addOnGlobalLayoutListener(
-//                object : ViewTreeObserver.OnGlobalLayoutListener {
-//                    override fun onGlobalLayout() {
-//                        val viewTreeObserver = imageView.viewTreeObserver
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                        } else {
-//                            @Suppress("DEPRECATION")
-//                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-//                        }
-//
-//                        imageView.maxHeight = imageView.width
-//                        imageView.requestLayout()
-//                    }
-//                }
-//        )
-//        ImageHandler.loadImageRounded2(imageView.context, imageView, imageUrl)
-//        container.addView(view)
-        //TODO milhamj
-        return ""
+        val element: Any = itemList[position]
+        var view: View? = null
+
+        if (element is ImageViewModel) {
+            view = ImageViewHolder(container).inflate(element)
+        }
+
+        container.addView(view)
+        return view!!
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
@@ -55,9 +35,9 @@ class PostPagerAdapter(var clickListener: ImageClickListener?) : PagerAdapter() 
 
     override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
 
-    fun setList(imageList: ArrayList<String>) {
-        this.imageList.clear()
-        this.imageList.addAll(imageList)
+    fun setList(imageList: ArrayList<Any>) {
+        this.itemList.clear()
+        this.itemList.addAll(imageList)
         notifyDataSetChanged()
     }
 

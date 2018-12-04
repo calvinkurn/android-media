@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">kol_component</string>
+    <string name="kol_action_share">Share</string>
+    <string name="kol_action_like">Like</string>
+    <string name="kol_action_comment">Comment</string>
+    <string name="kol_action_follow">Follow</string>
 </resources>

@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kolcomponent.view.viewholder.DynamicPostViewHolder
 import com.tokopedia.kolcomponent.view.viewmodel.DynamicPostViewModel
 
 /**
@@ -11,10 +12,13 @@ import com.tokopedia.kolcomponent.view.viewmodel.DynamicPostViewModel
  */
 class DynamicPostTypeFactoryImpl : BaseAdapterTypeFactory(), DynamicPostTypeFactory {
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
-        return 0
+        return DynamicPostViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return super.createViewHolder(parent, type)
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return when(type) {
+            DynamicPostViewHolder.LAYOUT -> DynamicPostViewHolder(parent)
+            else -> super.createViewHolder(parent, type)
+        }
     }
 }
