@@ -2,11 +2,9 @@ package com.tokopedia.cachemanager
 
 import android.content.Context
 import android.os.Bundle
-import com.tokopedia.cachemanager.datasource.CacheDataSource
-import com.tokopedia.cachemanager.datasource.PersistentCacheDataSource
-import com.tokopedia.cachemanager.datasource.SaveInstanceCacheDataSource
 import com.tokopedia.cachemanager.db.dao.SaveInstanceCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.SaveInstanceCacheDbModel
+import com.tokopedia.cachemanager.repository.SaveInstanceCacheRepository
 
 /**
  * Use this to store saveInstanceState data to cache, avoiding TransactionTooLargeException in Nougat+
@@ -59,10 +57,10 @@ import com.tokopedia.cachemanager.db.model.SaveInstanceCacheDbModel
  *      cacheManager.put("KEY_TO_PUT", model, TimeUnit.DAYS.toMillis(1))
  * }
  */
-class SaveInstanceCacheManager : CacheManager<SaveInstanceCacheDbModel, SaveInstanceCacheDatabaseDao> {
-    override fun createDataSource(context: Context):
-            CacheDataSource<SaveInstanceCacheDbModel, SaveInstanceCacheDatabaseDao> =
-            SaveInstanceCacheDataSource(context)
+class SaveInstanceCacheManager : CacheManager {
+
+    override fun createRepository(context: Context) =
+            SaveInstanceCacheRepository(context)
 
     constructor(context: Context, savedInstanceState: Bundle?) : super(context) {
         if (savedInstanceState == null) {

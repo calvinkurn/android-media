@@ -15,14 +15,14 @@ class CacheDeletion {
         @JvmStatic
         var isSaveInstanceJobActive: Boolean = false
 
-        private var persistanceTimeStamp = 0L
+        private var persistentTimeStamp = 0L
         private var saveInstanceTimeStamp = 0L
         val SCHEDULE_INTERVAL by lazy {
-            TimeUnit.MINUTES.toMillis(5)
+            TimeUnit.HOURS.toMillis(1)
         }
 
         fun setPersistentLastDelete() {
-            persistanceTimeStamp = System.currentTimeMillis()
+            persistentTimeStamp = System.currentTimeMillis()
         }
 
         fun setSaveInstanceLastDelete() {
@@ -31,7 +31,7 @@ class CacheDeletion {
 
         fun isPersistentNeedDeletion(): Boolean {
             val currentSecond = System.currentTimeMillis()
-            return currentSecond - persistanceTimeStamp > SCHEDULE_INTERVAL
+            return currentSecond - persistentTimeStamp > SCHEDULE_INTERVAL
         }
 
         fun isSaveInstanceNeedDeletion(): Boolean {

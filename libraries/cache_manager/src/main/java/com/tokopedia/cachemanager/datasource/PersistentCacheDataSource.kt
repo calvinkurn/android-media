@@ -1,10 +1,14 @@
 package com.tokopedia.cachemanager.datasource
 
 import android.content.Context
-import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.db.CacheDatabase
+import com.tokopedia.cachemanager.db.CacheDeletion
 import com.tokopedia.cachemanager.db.dao.PersistentCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
+import kotlinx.coroutines.experimental.CoroutineExceptionHandler
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.launch
 
 class PersistentCacheDataSource(context: Context) :
         CacheDataSource<PersistentCacheDbModel, PersistentCacheDatabaseDao>(context) {
@@ -23,7 +27,6 @@ class PersistentCacheDataSource(context: Context) :
     }
 
     override fun get(key: String): PersistentCacheDbModel? {
-        CacheManager.deletePersistentExpiration(context);
         val data = cacheDatabaseDao.getCacheModel(key)
         return if (data == null) {
             null
@@ -32,6 +35,19 @@ class PersistentCacheDataSource(context: Context) :
             null
         } else {
             data
+        }
+    }
+
+    override fun deleteExpired() {
+        CacheDeletion.isPersistentJobActive = true
+        val handler = CoroutineExceptionHandler { _, ex ->
+            // no op
+        }
+        GlobalScope.launch(Dispatchers.Default + CacheDeletion.persistentExpireDeletionJob + handler) {
+            CacheDatabase.getInstance(context).getPersistentCacheDao()
+                    .deleteExpiredRecords(System.currentTimeMillis())
+            CacheDeletion.setPersistentLastDelete()
+            CacheDeletion.isPersistentJobActive = false
         }
     }
 

@@ -4,7 +4,8 @@ import android.content.Context
 import com.tokopedia.cachemanager.db.dao.CacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.CacheDbModel
 
-abstract class CacheDataSource<U : CacheDbModel, T : CacheDatabaseDao<U>>(val context: Context) {
+abstract class CacheDataSource<U : CacheDbModel, T : CacheDatabaseDao<U>>(val context: Context)
+    :ICacheDataSource<U> {
 
     abstract fun createCacheDatabaseDao(): T
 
@@ -12,15 +13,11 @@ abstract class CacheDataSource<U : CacheDbModel, T : CacheDatabaseDao<U>>(val co
         createCacheDatabaseDao()
     }
 
-    abstract fun put(key: String, value: String, cacheDurationInMillis: Long)
-
-    abstract fun get(key: String): U?
-
-    fun delete(key: String) {
+    override fun delete(key: String) {
         cacheDatabaseDao.deleteByKey(key)
     }
 
-    fun delete() {
+    override fun delete() {
         cacheDatabaseDao.deleteTable()
     }
 }
