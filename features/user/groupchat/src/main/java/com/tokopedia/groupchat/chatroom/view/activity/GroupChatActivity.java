@@ -127,6 +127,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private Map<String, SavedState> fragmentSavedStates;
     private List<Visitable> listMessage;
     private Handler youtubeRunnable;
+    private long enterTimeStamp;
 
     public GroupChatActivity() {
     }
@@ -335,8 +336,8 @@ public class GroupChatActivity extends BaseSimpleActivity
                                     Log.i(TAG, "onPlaying: ");
                                     if (onPlayTime == 0) {
                                         onPlayTime = System.currentTimeMillis() / 1000L;
-                                        analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
                                     }
+                                    analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
                                 }
 
                                 @Override
@@ -457,6 +458,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         });
 
+        channelInfoDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                analytics.eventClickJoin(getChannelInfoViewModel().getChannelId());
+            }
+        });
+
         sponsorLayout = findViewById(R.id.sponsor_layout);
         sponsorImage = findViewById(R.id.sponsor_image);
 
@@ -505,6 +513,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initData() {
+        enterTimeStamp = System.currentTimeMillis();
         listMessage = new ArrayList<>();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
@@ -606,7 +615,12 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void shareChannel() {
-        analytics.eventClickShare();
+        String channelId = "";
+        if(getChannelInfoViewModel() != null){
+            channelId = getChannelInfoViewModel().getChannelId();
+        }
+
+        analytics.eventClickShare(channelId);
 
         String link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, viewModel.getChannelUrl());
 
@@ -855,6 +869,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        analytics.eventUserExit(getChannelInfoViewModel().getChannelId() + " "+ getDurationOnGroupChat());
                         if (isTaskRoot()) {
                             startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
                         }
@@ -876,6 +891,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         return myAlertDialog;
     }
 
+    public String getDurationOnGroupChat() {
+        return String.valueOf(enterTimeStamp - System.currentTimeMillis());
+    }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
@@ -1154,14 +1172,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         TextView name = view.findViewById(R.id.name);
         TextView participant = view.findViewById(R.id.participant);
 
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                channelInfoDialog.dismiss();
-                analytics.eventClickJoin();
-            }
-        });
-
         participant.setText(TextFormatter.format(String.valueOf(channelInfoViewModel.getTotalView())));
         name.setText(channelInfoViewModel.getAdminName());
         title.setText(channelInfoViewModel.getTitle());
@@ -1187,7 +1197,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         setToolbarParticipantCount(TextFormatter.format(totalParticipant));
         setVisibilityHeader(View.VISIBLE);
-
     }
 
     private void setToolbarParticipantCount(String totalParticipant) {
@@ -1201,6 +1210,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getAdsImageUrl(),
                     R.drawable.loading_page);
+
             sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1221,6 +1231,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                             GroupChatAnalytics.ATTRIBUTE_BANNER,
                             list);
 
+                    analytics.eventClickBanner(String.format("%s - %s"
+                            , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsId()));
+
                     openSponsor(generateAttributeApplink(
                             viewModel.getChannelInfoViewModel().getAdsLink(),
                             GroupChatAnalytics.ATTRIBUTE_BANNER,
@@ -1239,6 +1252,12 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getVideoId())) {
             sponsorLayout.setVisibility(View.GONE);
         }
+
+        if (sponsorLayout.getVisibility() == View.VISIBLE) {
+            analytics.eventViewBanner(String.format("%s - %s"
+                    , getChannelInfoViewModel().getChannelId(), getChannelInfoViewModel().getAdsName()));
+        }
+
     }
 
     private void openSponsor(String adsLink) {
@@ -1366,11 +1385,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onPause() {
         super.onPause();
         if (canPause()) {
-            if (viewModel != null && viewModel.getChannelInfoViewModel() != null
-                    && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getTitle())) {
-                analytics.eventUserExit(viewModel.getChannelInfoViewModel().getTitle());
-            }
-
             if (tooltipHandler != null && runnable != null) {
                 tooltipHandler.removeCallbacks(runnable);
             }
@@ -1997,5 +2011,4 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void reportWebSocket(String url, String error) {
         ((GroupChatModuleRouter) getApplication()).sendAnalyticsGroupChat(url, error);
     }
-
 }

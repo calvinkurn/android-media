@@ -104,7 +104,7 @@ android {
 
     project.ext {
         defaultVersionCode = 307001101;
-        defaultVersionName = "3.7";
+        defaultVersionName = "3.10";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -353,6 +353,7 @@ dependencies {
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
+    implementation project(rootProject.ext.features.gallery)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)

@@ -56,6 +56,7 @@ public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "$android_url";
     private static final String BRANCH_IOS_DESKTOP_URL_KEY = "$ios_url";
     private static final String ProductCategory = "ProductCategory";
+    private static final String FIREBASE_KEY_INCLUDEMOBILEWEB = "app_branch_include_mobileweb";
 
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -109,8 +110,6 @@ public class BranchSdkUtils {
         String desktopUrl = null;
 
         linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
-        linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
-        linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
 
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
@@ -135,7 +134,7 @@ public class BranchSdkUtils {
                 linkProperties.setFeature(data.getPrice());
                 linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
                 linkProperties.setChannel(String.format("%s - Android", data.getType()));
-                linkProperties.addControlParameter("$uri_redirect_mode","2");
+                linkProperties.addControlParameter("$uri_redirect_mode", "2");
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
@@ -147,15 +146,18 @@ public class BranchSdkUtils {
 
         if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+        }
+        if (isAndroidIosUrlActivated() && !(ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
+                ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType()) ||
+                ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType()))) {
             linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
             linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
         }
 
-
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
 
-        if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())){
+        if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             String connector = "";
             String renderedUrl = "";
             String tempUri = data.getUri();
@@ -166,14 +168,14 @@ public class BranchSdkUtils {
                 connector = "?";
             }
             String tags = "";
-            if(linkProperties.getTags().size() > 0) {
+            if (linkProperties.getTags().size() > 0) {
                 tags = linkProperties.getTags().get(0);
             }
             Uri uri = Uri.parse(String.format("groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
                     tempUri, connector, linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags));
             try {
-                renderedUrl = uri.toString().replace(" ","%20");
-            }catch (Exception e){
+                renderedUrl = uri.toString().replace(" ", "%20");
+            } catch (Exception e) {
                 e.printStackTrace();
                 renderedUrl = uri.toString();
             }
@@ -433,5 +435,10 @@ public class BranchSdkUtils {
 
     public interface GenerateShareContents {
         void onCreateShareContents(String shareContents, String shareUri, String branchUrl);
+    }
+
+    public static Boolean isAndroidIosUrlActivated() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        return remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB, true);
     }
 }

@@ -134,10 +134,10 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         popup.setOnMenuItemClickListener(new OnMenuPopupClicked() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_cancel) {
+                /*if (item.getItemId() == R.id.action_cancel) {
                     onCancelOptionClicked();
                     return true;
-                }
+                }*/
                 return super.onMenuItemClick(item);
             }
         });
