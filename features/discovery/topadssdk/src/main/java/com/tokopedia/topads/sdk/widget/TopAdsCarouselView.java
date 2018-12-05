@@ -212,10 +212,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if (adsItemClickListener != null) {
-            adsItemClickListener.onAddWishList(position, data);
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
-        presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 
     @Override

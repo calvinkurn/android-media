@@ -237,19 +237,19 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     }
 
     public void addWishlist(Data data) {
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             addWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
                     getWishlistActionListener(data));
-        } else {
+        } else if (isViewAttached()) {
             adsView.doLogin();
         }
     }
 
     public void removeWishlist(Data data) {
-        if(userSession.isLoggedIn()) {
+        if (userSession.isLoggedIn()) {
             removeWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
                     getWishlistActionListener(data));
-        } else {
+        } else if (isViewAttached()) {
             adsView.doLogin();
         }
     }
@@ -265,7 +265,8 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
             @Override
             public void onSuccessAddWishlist(String productId) {
                 data.getProduct().setWishlist(true);
-                adsView.notifyAdapter();
+                if (isViewAttached())
+                    adsView.notifyAdapter();
                 trackWishlistUrl(data.getProductWishlistUrl());
             }
 
@@ -277,7 +278,8 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
             @Override
             public void onSuccessRemoveWishlist(String productId) {
                 data.getProduct().setWishlist(false);
-                adsView.notifyAdapter();
+                if (isViewAttached())
+                    adsView.notifyAdapter();
             }
 
             @Override
