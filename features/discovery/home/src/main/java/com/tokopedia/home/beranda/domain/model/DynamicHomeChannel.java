@@ -142,24 +142,6 @@ public class DynamicHomeChannel {
             );
         }
 
-//        public Map<String, Object> getEnhanceImpressionSprintSaleCarouselHomePage(int position) {
-//            List<Object> list = convertProductEnhanceSprintSaleCarouselDataLayer(getGrids());
-//            return DataLayer.mapOf(
-//                    "event", "promoView",
-//                    "eventCategory", "homepage",
-//                    "eventAction", "sprint sale banner impression",
-//                    "eventLabel", "",
-//                    "ecommerce", DataLayer.mapOf(
-//                            "promoView", DataLayer.mapOf(
-//                                    "promotions", DataLayer.listOf(
-//                                            list.toArray(new Object[list.size()])
-//                                    )
-//                            )
-//                    ),
-//                    "attribution", getHomeAttribution(position + 1, "")
-//            );
-//        }
-
         private List<Object> convertProductEnhanceSprintSaleDataLayer(Grid[] grids) {
             List<Object> list = new ArrayList<>();
 
