@@ -41,7 +41,7 @@ class SaveInstanceCacheDataSource(context: Context) :
         val handler = CoroutineExceptionHandler { _, ex ->
             // no op
         }
-        GlobalScope.launch(Dispatchers.Default + CacheDeletion.saveInstanceExpireDeletionJob + handler) {
+        GlobalScope.launch(Dispatchers.Default + handler) {
             CacheDatabase.getInstance(context).getSaveInstanceCacheDao()
                     .deleteExpiredRecords(System.currentTimeMillis())
             CacheDeletion.setSaveInstanceLastDelete()

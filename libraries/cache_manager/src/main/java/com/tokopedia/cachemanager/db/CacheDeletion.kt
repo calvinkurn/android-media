@@ -7,11 +7,7 @@ class CacheDeletion {
 
     companion object {
         @JvmStatic
-        val persistentExpireDeletionJob: Job = Job()
-        @JvmStatic
         var isPersistentJobActive: Boolean = false
-        @JvmStatic
-        val saveInstanceExpireDeletionJob: Job = Job()
         @JvmStatic
         var isSaveInstanceJobActive: Boolean = false
 

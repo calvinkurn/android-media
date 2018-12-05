@@ -43,7 +43,7 @@ class PersistentCacheDataSource(context: Context) :
         val handler = CoroutineExceptionHandler { _, ex ->
             // no op
         }
-        GlobalScope.launch(Dispatchers.Default + CacheDeletion.persistentExpireDeletionJob + handler) {
+        GlobalScope.launch(Dispatchers.Default + handler) {
             CacheDatabase.getInstance(context).getPersistentCacheDao()
                     .deleteExpiredRecords(System.currentTimeMillis())
             CacheDeletion.setPersistentLastDelete()
