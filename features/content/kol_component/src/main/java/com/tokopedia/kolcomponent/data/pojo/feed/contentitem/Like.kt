@@ -2,12 +2,12 @@ package com.tokopedia.kolcomponent.data.pojo.feed.contentitem
 
 import com.google.gson.annotations.SerializedName
 
-class Like {
+data class Like (
 
     @SerializedName("fmt")
-    var fmt: String? = ""
+    var fmt: String = "",
     @SerializedName("value")
-    var value: Int = 0
+    var value: Int = 0,
     @SerializedName("checked")
     var isChecked: Boolean = false
-}
+)

@@ -7,10 +7,10 @@ import com.tokopedia.kolcomponent.data.pojo.template.templateitem.Title
 /**
  * @author by yfsx on 04/12/18.
  */
-class Cardbanner {
+data class Cardbanner (
 
     @SerializedName("title")
     @Expose
-    val title: Title? = Title()
+    val title: Title = Title()
 
-}
+)

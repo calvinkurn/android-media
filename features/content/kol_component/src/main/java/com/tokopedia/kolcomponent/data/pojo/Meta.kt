@@ -6,18 +6,18 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Meta {
+data class Meta (
 
     @SerializedName("totalData")
     @Expose
-    val totalData: Int = 0
+    val totalData: Int = 0,
     @SerializedName("lastCursor")
     @Expose
-    val lastCursor: String? = ""
+    val lastCursor: String = "",
     @SerializedName("hasNextPage")
     @Expose
-    val hasNextPage: Boolean = false
+    val hasNextPage: Boolean = false,
     @SerializedName("linkSelf")
     @Expose
-    val linkSelf: String? = ""
-}
+    val linkSelf: String = ""
+)

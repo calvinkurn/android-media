@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class FeedQuery {
+data class FeedQuery (
     @SerializedName("feedv2")
     @Expose
-    val feedv2: FeedData? = FeedData()
-}
+    val feedv2: FeedData = FeedData()
+)

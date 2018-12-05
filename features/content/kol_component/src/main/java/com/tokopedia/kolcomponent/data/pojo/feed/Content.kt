@@ -2,13 +2,13 @@ package com.tokopedia.kolcomponent.data.pojo.feed
 
 import com.google.gson.annotations.SerializedName
 
-class Content {
+data class Content (
 
     @SerializedName("cardpost")
-    var cardpost: Cardpost? = Cardpost()
+    var cardpost: Cardpost = Cardpost(),
     @SerializedName("cardbanner")
-    var cardbanner: Cardbanner? = Cardbanner()
+    var cardbanner: Cardbanner = Cardbanner(),
     @SerializedName("cardrecom")
-    var cardrecom: Cardrecom? = Cardrecom()
+    var cardrecom: Cardrecom = Cardrecom()
 
-}
+)

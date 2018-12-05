@@ -7,15 +7,15 @@ import com.tokopedia.kolcomponent.data.pojo.feed.Feed
 /**
  * @author by yfsx on 04/12/18.
  */
-class FeedData {
+data class FeedData (
 
     @SerializedName("meta")
     @Expose
-    val meta: Meta? = null
+    val meta: Meta = Meta(),
     @SerializedName("included")
     @Expose
-    val included: Included? = null
+    val included: Included = Included(),
     @SerializedName("data")
     @Expose
-    val data: List<Feed>? = ArrayList()
-}
+    val data: List<Feed> = ArrayList()
+)

@@ -8,12 +8,12 @@ import com.tokopedia.kolcomponent.data.pojo.template.templateitem.Title
 /**
  * @author by yfsx on 04/12/18.
  */
-class Cardrecom {
+data class Cardrecom (
     @SerializedName("title")
     @Expose
-    val title: Title? = Title()
+    val title: Title = Title(),
 
     @SerializedName("item")
     @Expose
-    val item: Item? = Item()
-}
+    val item: Item = Item()
+)

@@ -10,20 +10,20 @@ import com.tokopedia.kolcomponent.data.pojo.template.templateitem.Title
 /**
  * @author by yfsx on 04/12/18.
  */
-class Cardpost {
+data class Cardpost (
     @SerializedName("title")
     @Expose
-    val title: Title? = Title()
+    val title: Title = Title(),
 
     @SerializedName("header")
     @Expose
-    val header: Header? = Header()
+    val header: Header = Header(),
 
     @SerializedName("body")
     @Expose
-    val body: Body? = Body()
+    val body: Body = Body(),
 
     @SerializedName("footer")
     @Expose
-    val footer: Footer? = Footer()
-}
+    val footer: Footer = Footer()
+)

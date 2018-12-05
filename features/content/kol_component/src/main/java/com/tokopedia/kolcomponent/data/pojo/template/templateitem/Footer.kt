@@ -6,19 +6,18 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Footer {
-
+data class Footer (
 
     @SerializedName("like")
     @Expose
-    val like: Boolean = false
+    val like: Boolean = false,
     @SerializedName("comment")
     @Expose
-    val comment: Boolean = false
+    val comment: Boolean = false,
     @SerializedName("share")
     @Expose
-    val share: Boolean = false
+    val share: Boolean = false,
     @SerializedName("ctaLink")
     @Expose
     val ctaLink: Boolean = false
-}
+)

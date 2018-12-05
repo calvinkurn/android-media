@@ -7,15 +7,15 @@ import com.tokopedia.kolcomponent.data.pojo.template.Template
 /**
  * @author by yfsx on 04/12/18.
  */
-class TemplateData {
+data class TemplateData (
+        
     @SerializedName("id")
     @Expose
-    val id: Int = 0
+    val id: Int = 0,
     @SerializedName("type")
     @Expose
-    val type: String? = null
+    val type: String = "",
     @SerializedName("template")
     @Expose
-    val template: Template? = Template()
-
-}
+    val template: Template = Template()
+)

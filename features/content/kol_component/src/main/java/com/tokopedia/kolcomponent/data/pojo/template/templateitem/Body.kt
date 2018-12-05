@@ -6,12 +6,12 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Body {
+data class Body (
 
     @SerializedName("media")
     @Expose
-    val media: Boolean = false
+    val media: Boolean = false,
     @SerializedName("caption")
     @Expose
     val caption: Boolean = false
-}
+)

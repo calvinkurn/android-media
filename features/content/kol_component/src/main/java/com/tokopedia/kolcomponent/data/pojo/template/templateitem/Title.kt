@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Title {
+data class Title (
     @SerializedName("text")
     @Expose
-    val text: Boolean = false
+    val text: Boolean = false,
     @SerializedName("textBadge")
     @Expose
-    val textBadge: Boolean = false
+    val textBadge: Boolean = false,
     @SerializedName("ctaLink")
     @Expose
     val ctaLink: Boolean = false
-}
+)

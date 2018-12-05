@@ -2,9 +2,9 @@ package com.tokopedia.kolcomponent.data.pojo.feed
 
 import com.google.gson.annotations.SerializedName
 
-class Tracking {
+data class Tracking (
     @SerializedName("id")
-    var id: String? = ""
+    var id: String = "",
     @SerializedName("type")
-    var type: String? = ""
-}
+    var type: String = ""
+)

@@ -3,21 +3,21 @@ package com.tokopedia.kolcomponent.data.pojo.feed.contentitem
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Title {
+data class Title (
 
     @SerializedName("text")
     @Expose
-    var text: String? = ""
+    var text: String = "",
     @SerializedName("textBadge")
     @Expose
-    var textBadge: String? = ""
+    var textBadge: String = "",
     @SerializedName("isClicked")
     @Expose
-    var isIsClicked: Boolean = false
+    var isIsClicked: Boolean = false,
     @SerializedName("ctaLink")
     @Expose
-    var ctaLink: CtaLink? = CtaLink()
+    var ctaLink: CtaLink = CtaLink(),
     @SerializedName("action")
-    var action: Action? = Action()
+    var action: Action = Action()
 
-}
+)

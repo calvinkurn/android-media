@@ -6,36 +6,36 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class MediaItem {
+data class MediaItem (
     @SerializedName("id")
     @Expose
-    var id:String = ""
+    var id:String = "",
 
     @SerializedName("text")
     @Expose
-    var text:String = ""
+    var text:String = "",
 
     @SerializedName("price")
     @Expose
-    var price:String = ""
+    var price:String = "",
 
     @SerializedName("type")
     @Expose
-    var type:String = ""
+    var type:String = "",
 
     @SerializedName("applink")
     @Expose
-    var applink:String = ""
+    var applink:String = "",
 
     @SerializedName("weblink")
     @Expose
-    var weblink:String = ""
+    var weblink:String = "",
 
     @SerializedName("thumbnail")
     @Expose
-    var thumbnail:String = ""
+    var thumbnail:String = "",
 
     @SerializedName("position")
     @Expose
     var position:List<Float> = ArrayList()
-}
+)

@@ -6,15 +6,15 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Template {
+data class Template (
 
-    @SerializedName("cardpost")
+        @SerializedName("cardpost")
     @Expose
-    val cardpost: Cardpost? = null
-    @SerializedName("cardbanner")
+    val cardpost: Cardpost = Cardpost(),
+        @SerializedName("cardbanner")
     @Expose
-    val cardbanner: Cardbanner? = null
-    @SerializedName("cardrecom")
+    val cardbanner: Cardbanner = Cardbanner(),
+        @SerializedName("cardrecom")
     @Expose
-    val cardrecom: Cardrecom? = null
-}
+    val cardrecom: Cardrecom = Cardrecom()
+)

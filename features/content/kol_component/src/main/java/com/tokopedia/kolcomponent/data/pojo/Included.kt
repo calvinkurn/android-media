@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Included {
+data class Included (
 
     @SerializedName("template")
     @Expose
-    val template: List<TemplateData>? = null
-}
+    val template: List<TemplateData> = ArrayList()
+)

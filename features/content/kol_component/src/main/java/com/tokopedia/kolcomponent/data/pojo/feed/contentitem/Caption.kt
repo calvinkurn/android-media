@@ -3,18 +3,18 @@ package com.tokopedia.kolcomponent.data.pojo.feed.contentitem
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Caption {
+data class Caption (
 
     @SerializedName("text")
     @Expose
-    var text: String? = null
+    var text: String = "",
     @SerializedName("buttonName")
     @Expose
-    var buttonName: String? = null
+    var buttonName: String = "",
     @SerializedName("appLink")
     @Expose
-    var appLink: String? = null
+    var appLink: String = "",
     @SerializedName("webLink")
     @Expose
-    var webLink: String? = null
-}
+    var webLink: String = ""
+)

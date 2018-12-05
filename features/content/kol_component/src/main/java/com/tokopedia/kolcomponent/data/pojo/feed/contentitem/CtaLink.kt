@@ -2,17 +2,12 @@ package com.tokopedia.kolcomponent.data.pojo.feed.contentitem
 
 import com.google.gson.annotations.SerializedName
 
-class CtaLink {
-    /**
-     * text :
-     * appLink :
-     * webLink :
-     */
+data class CtaLink (
 
     @SerializedName("text")
-    var text: String? = null
+    var text: String = "",
     @SerializedName("appLink")
-    var appLink: String? = null
+    var appLink: String = "",
     @SerializedName("webLink")
-    var webLink: String? = null
-}
+    var webLink: String = ""
+)

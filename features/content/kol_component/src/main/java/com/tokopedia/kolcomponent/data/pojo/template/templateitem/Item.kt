@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Item {
+data class Item (
     @SerializedName("ctaLink")
     @Expose
     val ctaLink: Boolean = false
-}
+)

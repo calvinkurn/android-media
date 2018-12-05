@@ -6,27 +6,27 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-class Header {
+data class Header (
 
     @SerializedName("avatar")
     @Expose
-    val avatar: Boolean = false
+    val avatar: Boolean = false,
     @SerializedName("avatarTitle")
     @Expose
-    val avatarTitle: Boolean = false
+    val avatarTitle: Boolean = false,
     @SerializedName("avatarDate")
     @Expose
-    val avatarDate: Boolean = false
+    val avatarDate: Boolean = false,
     @SerializedName("avatarBadge")
     @Expose
-    val avatarBadge: Boolean = false
+    val avatarBadge: Boolean = false,
     @SerializedName("avatarDescription")
     @Expose
-    val avatarDescription: Boolean = false
+    val avatarDescription: Boolean = false,
     @SerializedName("followCta")
     @Expose
-    val followCta: Boolean = false
+    val followCta: Boolean = false,
     @SerializedName("report")
     @Expose
     val report: Boolean = false
-}
+)
