@@ -334,7 +334,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onInAppShown(InAppMessage message) {
-        InAppTracker.getInstance(this).trackInAppClicked(message);
     }
 
     @Override
