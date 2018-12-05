@@ -48,6 +48,8 @@
         android:id="@+id/iv_free_return_icon"
         android:layout_width="@dimen/dp_16"
         android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
         app:srcCompat="@drawable/ic_free_return"
         tools:ignore="ContentDescription" />
 
@@ -68,8 +70,6 @@
         android:id="@+id/tv_cod"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
         android:background="@drawable/bg_pre_order"
         android:fontFamily="sans-serif"
         android:gravity="center"
