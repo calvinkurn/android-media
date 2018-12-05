@@ -9,6 +9,8 @@ abstract class CacheRepository<U : CacheDbModel>(val context: Context) : ICacheR
 
     abstract fun createCacheDataSource(): ICacheDataSource<U>
 
+    abstract fun needDeleteExpired(): Boolean
+
     val cacheDataSource by lazy {
         createCacheDataSource()
     }

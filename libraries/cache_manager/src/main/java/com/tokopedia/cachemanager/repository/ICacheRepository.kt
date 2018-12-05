@@ -2,8 +2,6 @@ package com.tokopedia.cachemanager.repository
 
 interface ICacheRepository {
 
-    fun needDeleteExpired(): Boolean
-
     fun deleteExpiredRecords()
 
     fun put(key: String, value: String, cacheDurationInMillis: Long)

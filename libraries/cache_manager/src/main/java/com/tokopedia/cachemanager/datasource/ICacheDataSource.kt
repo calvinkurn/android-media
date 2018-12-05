@@ -7,7 +7,9 @@ interface ICacheDataSource<U : Any> {
     fun get(key: String): U?
 
     fun deleteExpired()
+
     fun delete(key: String)
+
     fun delete()
 
 }
