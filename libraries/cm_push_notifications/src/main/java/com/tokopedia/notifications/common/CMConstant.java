@@ -15,27 +15,6 @@ public interface CMConstant {
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
 
 
-/*
-    String NOTIFICATION_CUSTOM_VALUES = "custom_values";
-    String FCM_EXTRA_CONFIRMATION_KEY = "isFromCM";
-    String FCM_EXTRA_CONFIRMATION_VALUE = "cm_toko";
-    String GENERAL = "ANDROID_GENERAL_CHANNEL";
-    String EXTRA_APPLINK_FROM_PUSH = "applink_from_cm_notif";
-    String EXTRA_NOTIFICATION_TYPE = "notif_type";
-    String NOTIFICATION_ACTION_BUTTONS = "actionButton";
-    String NOTIFICATION_PERSISTENT = "persButton";
-
-    interface NotificationId {
-        int GENERAL = 501;
-        int BIG_IMAGE = 502;
-        int PERSISTENT = 503;
-        int CUSTOM = 504;
-        int IN_APP = 505;
-        int CAROUSEL = 506;
-        int VIDEO = 507;
-        int ACTION_BUTTONS = 508;
-    }*/
-
     interface NotificationType {
         String GENERAL = "General";
         String BIG_IMAGE = "Image";
@@ -43,25 +22,19 @@ public interface CMConstant {
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
         String COUPON_CODE_NOTIFICATION = "coupon";
-
-        /*
-        String CUSTOM = "cm_custom";
-        String IN_APP = "cm_in_app";
-        String CAROUSEL = "cm_carousel";
-        String VIDEO = "cm_video";*/
     }
 
 
     interface PayloadKeys{
         String ICON = "icon";
         String SOUND = "sound";
-        String NOTIFICATION_ID = "notiId";
+        String NOTIFICATION_ID = "notificationId";
         String SOURCE = "source";
 
-        String FCM_EXTRA_CONFIRMATION_VALUE = "toko_cm";
+        String FCM_EXTRA_CONFIRMATION_VALUE = "toko-cm";
 
-        String TRIBE_KEY = "tribeKey";
-        String NOTIFICATION_TYPE = "notiType";
+        String TRIBE_KEY = "tribe";
+        String NOTIFICATION_TYPE = "notificationType";
         String CHANNEL = "channel";
 
         String TITLE = "title";
@@ -70,11 +43,11 @@ public interface CMConstant {
         String MEDIA = "media";
         String APP_LINK = "appLink";
 
-        String ACTION_BUTTON = "actionButton";
-        String PERSISTENT_DATA = "persButton";
+        String ACTION_BUTTON = "actionButtons";
+        String PERSISTENT_DATA = "persistentButtons";
         String TEXT = "text";
 
-        String CUSTOM_VALUE = "customvalues";
+        String CUSTOM_VALUE = "customValues";
     }
 
     interface ReceiverExtraData {
@@ -109,3 +82,32 @@ public interface CMConstant {
     }
 
 }
+
+
+/*
+    String NOTIFICATION_CUSTOM_VALUES = "custom_values";
+    String FCM_EXTRA_CONFIRMATION_KEY = "isFromCM";
+    String FCM_EXTRA_CONFIRMATION_VALUE = "cm_toko";
+    String GENERAL = "ANDROID_GENERAL_CHANNEL";
+    String EXTRA_APPLINK_FROM_PUSH = "applink_from_cm_notif";
+    String EXTRA_NOTIFICATION_TYPE = "notif_type";
+    String NOTIFICATION_ACTION_BUTTONS = "actionButton";
+    String NOTIFICATION_PERSISTENT = "persButton";
+
+    interface NotificationId {
+        int GENERAL = 501;
+        int BIG_IMAGE = 502;
+        int PERSISTENT = 503;
+        int CUSTOM = 504;
+        int IN_APP = 505;
+        int CAROUSEL = 506;
+        int VIDEO = 507;
+        int ACTION_BUTTONS = 508;
+    }
+
+
+        /*
+        String CUSTOM = "cm_custom";
+        String IN_APP = "cm_in_app";
+        String CAROUSEL = "cm_carousel";
+        String VIDEO = "cm_video";*/
