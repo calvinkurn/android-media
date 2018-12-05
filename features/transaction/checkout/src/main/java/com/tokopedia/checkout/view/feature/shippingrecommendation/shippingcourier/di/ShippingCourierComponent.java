@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di;
 
-import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierBottomsheet;
 
 import dagger.Component;
@@ -10,7 +9,7 @@ import dagger.Component;
  */
 
 @ShippingCourierScope
-@Component(modules = ShippingCourierModule.class, dependencies = CartComponent.class)
+@Component(modules = ShippingCourierModule.class)
 public interface ShippingCourierComponent {
     void inject(ShippingCourierBottomsheet shippingCourierBottomsheet);
 }

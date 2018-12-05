@@ -8,23 +8,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.view.di.component.CartComponent;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationModule;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +33,7 @@ import javax.inject.Inject;
  */
 
 public class ShippingDurationBottomsheet extends BottomSheets
-        implements ShippingDurationContract.View, HasComponent<CartComponent>,
-        ShippingDurationAdapterListener {
+        implements ShippingDurationContract.View, ShippingDurationAdapterListener {
 
     public static final String ARGUMENT_SHIPMENT_DETAIL_DATA = "ARGUMENT_SHIPMENT_DETAIL_DATA";
     public static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
@@ -81,7 +77,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     private void initializeInjector() {
         ShippingDurationComponent component = DaggerShippingDurationComponent.builder()
-                .cartComponent(getComponent())
                 .shippingDurationModule(new ShippingDurationModule())
                 .build();
 
@@ -137,11 +132,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvDuration.setLayoutManager(linearLayoutManager);
         rvDuration.setAdapter(shippingDurationAdapter);
-    }
-
-    @Override
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent();
     }
 
     @Override

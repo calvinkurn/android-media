@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di;
 
 import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
-import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationAdapter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationContract;
@@ -15,7 +14,7 @@ import dagger.Provides;
  * Created by Irfan Khoirul on 07/08/18.
  */
 
-@Module(includes = TrackingAnalyticsModule.class)
+@Module
 public class ShippingDurationModule {
 
     @Provides

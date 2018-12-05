@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di;
 
-import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
 
 import dagger.Component;
@@ -10,7 +9,7 @@ import dagger.Component;
  */
 
 @ShippingDurationScope
-@Component(modules = ShippingDurationModule.class, dependencies = CartComponent.class)
+@Component(modules = ShippingDurationModule.class)
 public interface ShippingDurationComponent {
     void inject(ShippingDurationBottomsheet shippingDurationBottomsheet);
 }
