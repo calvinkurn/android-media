@@ -44,6 +44,7 @@ import javax.inject.Inject;
 public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsView.class.getSimpleName();
+    @Inject
     TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
