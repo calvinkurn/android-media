@@ -39,6 +39,7 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
     }
 
     override fun developmentView() {
+        val dummyList = arrayListOf<Visitable<*>>()
         chatViewState.hideLoading()
         chatViewState.developmentView()
     }
