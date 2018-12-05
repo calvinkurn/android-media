@@ -499,11 +499,6 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-
-    }
-
-    @Override
     public void onItemWishListClicked(Wishlist wishlist, int position) {
         cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(
                 String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(wishlist, position));

@@ -1270,11 +1270,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
-    }
-
-    @Override
     public void onRefresh(View view) {
         if (dPresenter.dataHasChanged()) {
             showMainContainer();

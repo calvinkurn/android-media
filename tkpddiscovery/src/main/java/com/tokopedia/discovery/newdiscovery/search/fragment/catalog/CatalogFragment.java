@@ -508,11 +508,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
-    }
-
-    @Override
     protected SearchSectionGeneralAdapter getAdapter() {
         return catalogAdapter;
     }

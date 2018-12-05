@@ -2416,11 +2416,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     }
 
-    @Override
-    public void onAddWishList(int position, Data data) {
-
-    }
-
     public void setDrawableCount(Context context, int count) {
         MenuItem menuItem = menu.findItem(R.id.action_cart);
         if (menuItem.getIcon() instanceof LayerDrawable) {

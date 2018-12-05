@@ -69,7 +69,4 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     @Override
     public void onAddFavorite(int position, Data data) { }
 
-    @Override
-    public void onAddWishList(int position, Data data) { }
-
 }

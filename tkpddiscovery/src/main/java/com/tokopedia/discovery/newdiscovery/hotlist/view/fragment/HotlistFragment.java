@@ -601,11 +601,6 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        presenter.addWishlist(data.getProduct().getId());
-    }
-
-    @Override
     protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
