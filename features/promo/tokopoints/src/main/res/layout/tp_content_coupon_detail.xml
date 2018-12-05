@@ -155,7 +155,6 @@
                             android:layout_marginRight="@dimen/dp_6"
                             android:textColor="@color/black_38"
                             android:textSize="@dimen/tp_text_size_xxsmall"
-                            android:visibility="visible"
                             tool:text="Minimum Transaksi" />
 
                         <TextView
