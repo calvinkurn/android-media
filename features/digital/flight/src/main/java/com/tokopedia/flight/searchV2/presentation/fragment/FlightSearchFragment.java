@@ -443,7 +443,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         this.addToolbarElevation();
         progressBar.setVisibility(View.GONE);
         removeBottomPaddingForSortAndFilterActionButton();
-        super.showGetListError(e);
+        hideLoading();
+        // Note: add element should be the last in line.
+        if (!getAdapter().isContainData()) {
+            onGetListErrorWithEmptyData(e);
+        }
     }
 
     @Override
