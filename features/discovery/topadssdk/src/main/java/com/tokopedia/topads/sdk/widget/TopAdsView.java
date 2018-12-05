@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -43,7 +44,6 @@ import javax.inject.Inject;
 public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsView.class.getSimpleName();
-    @Inject
     TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
@@ -98,7 +98,10 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void initInjector() {
-        TopAdsComponent component = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule()).build();
+        BaseMainApplication application = ((BaseMainApplication) getContext().getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
         component.inject(this);
         component.inject(presenter);
     }
