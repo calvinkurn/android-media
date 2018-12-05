@@ -21,6 +21,7 @@ import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCa
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchV2UseCase;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSortAndFilterUseCase;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
+import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchFragment;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightFareViewModel;
@@ -65,6 +66,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
+
+    private int maxCall = 0;
+    private int callCounter = 0;
 
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
@@ -282,6 +286,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
             getView().removeToolbarElevation();
         }
 
+        maxCall = flightAirportCombineModelList.getData().size();
+
         for (int i = 0, sizei = flightAirportCombineModelList.getData().size(); i < sizei; i++) {
             FlightAirportCombineModel flightAirportCombineModel = flightAirportCombineModelList.getData().get(i);
             boolean needLoadFromCloud = true;
@@ -328,7 +334,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (isViewAttached()) {
+                        callCounter++;
+                        getView().addProgress(countProgress());
+                        if (isViewAttached() && isDoneLoadData()) {
                             if (e instanceof FlightException) {
                                 List<FlightError> errors = ((FlightException) e).getErrorList();
                                 if (errors.contains(new FlightError(FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND))) {
@@ -342,9 +350,17 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onNext(FlightSearchMetaViewModel flightSearchMetaViewModel) {
+                        if (!flightSearchMetaViewModel.isNeedRefresh()) {
+                            callCounter++;
+                        }
+
                         getView().onGetSearchMeta(flightSearchMetaViewModel);
                     }
                 });
+    }
+
+    private int countProgress() {
+        return FlightSearchFragment.MAX_PROGRESS / maxCall;
     }
 
     @Override
@@ -414,6 +430,16 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         super.detachView();
     }
 
+    @Override
+    public boolean isDoneLoadData() {
+        return callCounter >= maxCall;
+    }
+
+    @Override
+    public void resetCounterCall() {
+        callCounter = 0;
+    }
+
     private void deleteFlightReturnSearch(Subscriber subscriber) {
         flightDeleteFlightSearchReturnDataUseCase.execute(subscriber);
     }
@@ -431,7 +457,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
             @Override
             public void onError(Throwable throwable) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().onErrorDeleteFlightCache(throwable);
                 }
             }
@@ -452,7 +478,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
             @Override
             public void onError(Throwable throwable) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().onErrorDeleteFlightCache(throwable);
                 }
             }

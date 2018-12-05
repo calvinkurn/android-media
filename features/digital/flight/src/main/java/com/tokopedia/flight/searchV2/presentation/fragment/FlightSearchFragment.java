@@ -323,12 +323,45 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         if (list.size() > 0) {
             showFilterAndSortView();
         }
+
+    }
+
+    @Override
+    public void renderList(@NonNull List<FlightJourneyViewModel> list) {
+        hideLoading();
+        // remove all unneeded element (empty/retry/loading/etc)
+        if (isLoadingInitialData) {
+            clearAllData();
+        } else {
+            getAdapter().clearAllNonDataElement();
+        }
+        getAdapter().addElement(list);
+        // update the load more state (paging/can loadmore)
+        updateScrollListenerState(false);
+
+        if (isListEmpty() && flightSearchPresenter.isDoneLoadData()) {
+            // Note: add element should be the last in line.
+            getAdapter().addElement(getEmptyDataViewModel());
+        } else {
+            //set flag to false, indicate that the initial data has been set.
+            isLoadingInitialData = false;
+        }
+    }
+
+    @Override
+    public boolean isListEmpty() {
+        return !getAdapter().isContainData();
     }
 
     @Override
     public void addToolbarElevation() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(
                 getResources().getDimension(R.dimen.dp_4));
+    }
+
+    @Override
+    public void addProgress(int numberToAdd) {
+        progress += numberToAdd;
     }
 
     @Override
@@ -410,7 +443,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         this.addToolbarElevation();
         progressBar.setVisibility(View.GONE);
         removeBottomPaddingForSortAndFilterActionButton();
-        super.showGetListError(e);
+        hideLoading();
+        // Note: add element should be the last in line.
+        if (!getAdapter().isContainData()) {
+            onGetListErrorWithEmptyData(e);
+        }
     }
 
     @Override
@@ -525,6 +562,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void onRetryClicked() {
         getAdapter().clearAllElements();
+        flightSearchPresenter.resetCounterCall();
         fetchFlightSearchData();
     }
 
@@ -603,6 +641,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            flightSearchPresenter.resetCounterCall();
                             flightSearchPresenter.onSuccessDateChanged(year, month, dayOfMonth);
                         }
                     }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
@@ -838,6 +877,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         flightSearchPresenter.attachView(this);
         clearAllData();
         showLoading();
+
+        flightSearchPresenter.resetCounterCall();
 
         if (!isReturning()) {
             flightSearchPresenter.fetchCombineData(passDataViewModel);

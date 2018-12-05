@@ -111,6 +111,10 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
                                 .from(FlightAirlineDB.class)
                                 .where(FlightAirlineDB_Table.id.eq(airlineId))
                                 .querySingle();
+
+                        if (flightAirlineDb == null) {
+                            return new FlightAirlineDB(airlineId, "", "", "", 0, 1);
+                        }
                         return flightAirlineDb;
                     }
                 });
