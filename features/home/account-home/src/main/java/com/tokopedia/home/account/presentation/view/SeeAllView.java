@@ -147,7 +147,7 @@ public class SeeAllView extends BottomSheets {
 
         if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RC_GIFTCARD_ENABLE, false)) {
             gridItem = new MenuGridItemViewModel(
-                    AccountHomeUrl.CDN_URL + AccountHomeUrl.ImageUrl.IMG_GIFT_CARD,
+                    R.drawable.ic_giftcard,
                     getContext().getString(R.string.title_menu_gift_card),
                     String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW,
