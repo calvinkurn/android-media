@@ -27,6 +27,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticdata)
@@ -36,5 +37,10 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+
 
 }
