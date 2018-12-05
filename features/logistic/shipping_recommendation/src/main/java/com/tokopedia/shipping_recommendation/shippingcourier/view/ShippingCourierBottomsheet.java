@@ -10,12 +10,12 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;

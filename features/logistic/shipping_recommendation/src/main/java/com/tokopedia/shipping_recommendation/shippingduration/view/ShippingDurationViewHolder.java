@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingDurationViewModel;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;

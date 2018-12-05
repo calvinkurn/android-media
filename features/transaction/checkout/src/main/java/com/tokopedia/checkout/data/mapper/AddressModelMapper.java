@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.addressoptions.Paging;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
 

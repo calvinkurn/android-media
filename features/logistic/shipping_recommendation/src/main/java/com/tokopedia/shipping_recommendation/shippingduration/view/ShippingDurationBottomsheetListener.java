@@ -1,8 +1,8 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
 
 import java.util.List;
 

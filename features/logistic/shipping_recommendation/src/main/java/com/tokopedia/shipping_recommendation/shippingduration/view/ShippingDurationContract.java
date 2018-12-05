@@ -4,12 +4,12 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingCourierViewModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
 
 import java.util.List;
 

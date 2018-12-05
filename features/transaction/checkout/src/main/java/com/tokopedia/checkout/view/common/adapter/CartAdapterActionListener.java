@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view.common.adapter;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 
 /**

@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shippingoptions;
 
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
 
 /**
  * @author Irfan Khoirul on 04/05/18.

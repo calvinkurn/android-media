@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.R;
 
 /**

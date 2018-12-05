@@ -1,9 +1,7 @@
-package com.tokopedia.checkout.domain.datamodel.shipmentrates;
+package com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentOptionData;
 
 /**
  * Created by Irfan Khoirul on 25/01/18.

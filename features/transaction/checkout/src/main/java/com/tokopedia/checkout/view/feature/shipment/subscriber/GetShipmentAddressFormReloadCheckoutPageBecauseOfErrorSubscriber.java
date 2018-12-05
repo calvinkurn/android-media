@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipProd;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.shipment;
+package com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates;
 
 /**
  * @author Irfan Khoirul on 23/04/18.

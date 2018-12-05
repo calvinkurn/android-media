@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingDurationViewModel;
 
 import java.util.List;
 

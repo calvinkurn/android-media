@@ -1,10 +1,7 @@
-package com.tokopedia.checkout.domain.datamodel.addressoptions;
+package com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
-import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -32,7 +29,6 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     // For PickupPoint Alfamart
     private String tokenPickup;
     private String unixTime;
-    private Store store;
 
     private boolean selected;
     private boolean stateExtraPaddingTop;
@@ -153,14 +149,6 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
 
     public void setUnixTime(String unixTime) {
         this.unixTime = unixTime;
-    }
-
-    public Store getStore() {
-        return store;
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
     }
 
     public boolean isSelected() {
@@ -297,7 +285,6 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeString(this.provinceId);
         dest.writeString(this.tokenPickup);
         dest.writeString(this.unixTime);
-        dest.writeParcelable(this.store, flags);
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
         dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFromPdp ? (byte) 1 : (byte) 0);
@@ -322,7 +309,6 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.provinceId = in.readString();
         this.tokenPickup = in.readString();
         this.unixTime = in.readString();
-        this.store = in.readParcelable(Store.class.getClassLoader());
         this.selected = in.readByte() != 0;
         this.stateExtraPaddingTop = in.readByte() != 0;
         this.isFromPdp = in.readByte() != 0;

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingDurationViewModel;
 
 import java.util.List;
 

@@ -9,10 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;

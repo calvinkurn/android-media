@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 
 import rx.Subscriber;

@@ -14,9 +14,9 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipment;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ProductShipmentMapping;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 
 import java.util.ArrayList;

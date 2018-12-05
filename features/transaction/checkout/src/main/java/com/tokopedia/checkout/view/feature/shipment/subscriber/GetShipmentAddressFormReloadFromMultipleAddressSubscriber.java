@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;

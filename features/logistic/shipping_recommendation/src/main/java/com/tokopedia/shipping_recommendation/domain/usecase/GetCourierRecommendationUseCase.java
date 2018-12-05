@@ -2,15 +2,15 @@ package com.tokopedia.shipping_recommendation.domain.usecase;
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingRecommendationData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingRecommendationData;
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipProd;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;

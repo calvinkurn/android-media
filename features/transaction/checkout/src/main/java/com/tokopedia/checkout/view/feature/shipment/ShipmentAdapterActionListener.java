@@ -1,11 +1,11 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 

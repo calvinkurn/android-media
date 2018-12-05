@@ -2,14 +2,14 @@ package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.text.TextUtils;
 
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingCourierViewModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingDurationViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipProd;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
 
 import java.util.ArrayList;
 import java.util.List;

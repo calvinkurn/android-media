@@ -57,7 +57,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;

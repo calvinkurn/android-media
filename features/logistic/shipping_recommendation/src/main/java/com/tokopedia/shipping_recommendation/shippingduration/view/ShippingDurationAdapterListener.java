@@ -1,7 +1,7 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.feature.addressoptions;
 
 import android.app.Activity;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
 /**

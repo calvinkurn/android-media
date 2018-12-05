@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentData;
 
 /**
  * @author Irfan Khoirul on 13/07/18.

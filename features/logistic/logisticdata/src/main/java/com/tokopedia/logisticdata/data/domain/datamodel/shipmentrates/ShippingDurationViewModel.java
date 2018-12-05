@@ -1,9 +1,8 @@
-package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
+package com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.List;
