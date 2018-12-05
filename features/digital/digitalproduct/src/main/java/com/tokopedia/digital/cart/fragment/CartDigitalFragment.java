@@ -37,6 +37,7 @@ import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
 import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
+import com.tokopedia.digital.cart.data.cache.DigitalLocalCache;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.domain.CartDigitalRepository;
@@ -204,7 +205,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                         compositeSubscription,
                         new CartDigitalRepository(digitalEndpointService, cartMapperData),
                         new VoucherDigitalRepository(digitalEndpointService, cartMapperData),
-                        new CheckoutRepository(digitalEndpointService, cartMapperData))
+                        new CheckoutRepository(digitalEndpointService, cartMapperData)),
+                new DigitalLocalCache(getActivity())
         );
     }
 

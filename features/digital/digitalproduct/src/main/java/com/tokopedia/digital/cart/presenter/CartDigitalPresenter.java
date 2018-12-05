@@ -11,6 +11,7 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.cart.data.cache.DigitalLocalCache;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -61,15 +62,18 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     private DigitalAnalytics digitalAnalytics;
     private UserSession userSession;
     private final ICartDigitalInteractor cartDigitalInteractor;
+    private DigitalLocalCache digitalLocalCache;
 
     public CartDigitalPresenter(IDigitalCartView view,
                                 UserSession userSession,
                                 DigitalAnalytics digitalAnalytics,
-                                ICartDigitalInteractor iCartDigitalInteractor) {
+                                ICartDigitalInteractor iCartDigitalInteractor,
+                                DigitalLocalCache digitalLocalCache) {
         this.view = view;
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
         this.cartDigitalInteractor = iCartDigitalInteractor;
+        this.digitalLocalCache = digitalLocalCache;
         initRemoteConfig();
     }
 
@@ -116,7 +120,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     @Override
     public void processToCheckout() {
-        if (view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null){
+        if (!digitalLocalCache.isAlreadyShowPascaBayarPopUp(userSession.getUserId())
+                && view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null) {
+            digitalLocalCache.setAlreadyShowPascaBayarPopUp(userSession.getUserId());
             view.showPostPaidDialog(
                     view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getTitle(),
                     view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getContent(),
@@ -271,7 +277,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorCheckout(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -319,7 +325,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorInstantCheckout(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -366,7 +372,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 //                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
 //                    );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
 //                    view.renderErrorCheckVoucher(e.getMessage());
                     removeBranchPromoIfNeeded();
                 } else if (e instanceof ResponseDataNullException) {
@@ -412,7 +418,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorAddToCart(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -521,7 +527,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorGetCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -566,7 +572,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorGetCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
