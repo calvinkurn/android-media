@@ -7,7 +7,7 @@
     <View
         android:layout_width="match_parent"
         android:visibility="invisible"
-        android:layout_height="400dp" />
+        android:layout_height="@dimen/dp_500" />
 
     <WebView
         android:id="@+id/text_content"
