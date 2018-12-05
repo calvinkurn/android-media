@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.kolcomponent.data.pojo.feed.contentitem.Item
 import com.tokopedia.kolcomponent.data.pojo.feed.contentitem.Title
 
-data class Cardrecom (
+data class CardRecommendation (
 
     @SerializedName("title")
     @Expose
