@@ -9,7 +9,15 @@ public class DigitalLocalCache {
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPrefs;
 
-    public DigitalLocalCache(Context context) {
+    private static DigitalLocalCache instance;
+
+    public static synchronized DigitalLocalCache newInstance(Context context){
+        if (instance == null)
+            instance = new DigitalLocalCache(context);
+        return instance;
+    }
+
+    private DigitalLocalCache(Context context) {
         this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
         this.editor = sharedPrefs.edit();
     }

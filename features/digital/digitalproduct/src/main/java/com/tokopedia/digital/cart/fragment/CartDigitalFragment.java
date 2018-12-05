@@ -206,7 +206,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                         new CartDigitalRepository(digitalEndpointService, cartMapperData),
                         new VoucherDigitalRepository(digitalEndpointService, cartMapperData),
                         new CheckoutRepository(digitalEndpointService, cartMapperData)),
-                new DigitalLocalCache(getActivity())
+                DigitalLocalCache.newInstance(context)
         );
     }
 
