@@ -82,6 +82,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         inflate(getContext(), R.layout.layout_ads, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setEnableWishlist(true);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
@@ -109,7 +110,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void initPresenter() {
-//        presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
         presenter.setMaxItems(styledAttributes.getInteger(R.styleable.TopAdsView_items, 2));
         String ep = styledAttributes.getString(R.styleable.TopAdsView_ep);
