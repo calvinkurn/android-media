@@ -185,6 +185,10 @@ public class ChatRoomContract {
         void finishActivity();
 
         void setInboxMessageVisibility(ChatSettingsResponse data, boolean isVisible);
+
+        android.view.View getRootView();
+
+        void shouldShowChatSettingsMenu(boolean showChatSettingMenu);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

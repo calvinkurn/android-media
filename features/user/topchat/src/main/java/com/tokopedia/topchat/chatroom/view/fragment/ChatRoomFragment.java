@@ -85,7 +85,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.QuickReplyAdapter;
 import com.tokopedia.topchat.chatroom.view.adapter.ReasonAdapter;
 import com.tokopedia.topchat.chatroom.view.customview.ReasonBottomSheet;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
-import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
@@ -202,6 +201,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private RelativeLayout sendMessageLayout;
     private RelativeLayout chatBlockLayout;
     private TextView enableChatTextView;
+    private RelativeLayout mainContent;
 
     private String title, avatarImage, lastOnline;
     private boolean isOnline = false;
@@ -212,6 +212,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private boolean isChatEnabled;
     private String role= "";
     private String senderName= "";
+    private boolean showChatSettingMenu = false;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -254,6 +255,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams
                 .SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initVar();
+        mainContent = getActivity().findViewById(R.id.main);
         toolbar = getActivity().findViewById(R.id.app_bar);
         mainHeader = toolbar.findViewById(R.id.main_header);
         mainHeader.setVisibility(View.INVISIBLE);
@@ -1655,7 +1657,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 //        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
         if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_add_grey));
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
-        listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
+        if (showChatSettingMenu) {
+            listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
+        }
 
         headerMenu.setItemMenuList(listMenu);
         headerMenu.setActionText(getString(R.string.cancel_bottom_sheet));
@@ -1791,5 +1795,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
             templateRecyclerView.setVisibility(View.VISIBLE);
             chatBlockLayout.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public View getRootView() {
+        return mainContent;
+    }
+
+    @Override
+    public void shouldShowChatSettingsMenu(boolean showChatSettingMenu) {
+        this.showChatSettingMenu = showChatSettingMenu;
     }
 }

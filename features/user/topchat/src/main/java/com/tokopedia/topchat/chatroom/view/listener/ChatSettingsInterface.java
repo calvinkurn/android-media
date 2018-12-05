@@ -27,6 +27,16 @@ public interface ChatSettingsInterface {
         void setPromotionalInfoViewVisibility(boolean isVisible);
 
         void setChatSettingsVisibility(String chatRole);
+
+        void showToastMessage();
+
+        void showProgressBar();
+
+        void hideProgressBar();
+
+        void showPersonalToast(boolean enable);
+
+        void showPromotionToast(boolean enable);
     }
 
     interface Presenter extends CustomerPresenter<View> {

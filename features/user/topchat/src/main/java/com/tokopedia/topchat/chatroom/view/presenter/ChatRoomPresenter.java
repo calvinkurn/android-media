@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -205,8 +207,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
 
             @Override
-            public void onError(Throwable e) {
-
+            public void onError(Throwable throwable) {
+                CommonUtils.dumper("enter error");
+                throwable.printStackTrace();
+                getView().shouldShowChatSettingsMenu(false);
+                NetworkErrorHelper.showEmptyState(getView().getContext(),
+                        getView().getRootView(), () -> initialChatSettings());
             }
 
             @Override
@@ -215,6 +221,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 if (graphqlResponse != null) {
                     ChatSettingsResponse data = graphqlResponse.getData(ChatSettingsResponse.class);
                     getView().setInboxMessageVisibility(data, data.getChatBlockResponse().getChatBlockStatus().isBlocked());
+                    getView().shouldShowChatSettingsMenu(true);
                 }
 
             }

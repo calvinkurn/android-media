@@ -65,6 +65,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
     @Override
     public void onPersonalChatSettingChange(boolean state) {
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() == state) {
+            getView().showProgressBar();
             getChatSettingResponse(getView().getMessageId(), "1", state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
@@ -85,7 +86,9 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         chatSettingsResponse = data;
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPersonalResponse(data);
-//                    getView().setChatSettingPromotionResponse(data);
+                        getView().hideProgressBar();
+                        getView().showToastMessage();
+                        getView().showPersonalToast(state);
                     }
                 }
             });
@@ -101,6 +104,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
     @Override
     public void onPromotionalChatSettingChange(boolean state) {
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked() == state) {
+            getView().showProgressBar();
             getChatSettingResponse(getView().getMessageId(), "2", state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
@@ -121,6 +125,9 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         chatSettingsResponse = data;
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPromotionResponse(data);
+                        getView().hideProgressBar();
+                        getView().showToastMessage();
+                        getView().showPromotionToast(state);
                     }
                 }
             });

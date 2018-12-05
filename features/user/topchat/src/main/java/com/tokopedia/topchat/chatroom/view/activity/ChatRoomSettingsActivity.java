@@ -12,6 +12,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -49,6 +50,8 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
     private String chatRole, senderName;
+    private boolean shouldShowToast = false;
+    private FrameLayout progressBarLayout;
 
 
     @Inject
@@ -68,7 +71,9 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         initView();
         setChatSettingsVisibility(chatRole);
         toolbar.setTitle(getString(R.string.chat_incoming_settings) + " " + senderName);
-        chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
+        if (chatSettingsResponse != null) {
+            chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
+        }
         if (isChatEnabled) {
             chatSettingsPresenter.onPersonalChatSettingChange(true);
             chatSettingsPresenter.onPromotionalChatSettingChange(true);
@@ -91,6 +96,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         chatPersonalInfoText = findViewById(R.id.chat_personal_info);
         chatPersonalCardView = findViewById(R.id.chat_personal_cardview);
         chatPromotionalcardView = findViewById(R.id.chat_promotional_cardview);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
         chatPersonalSwitch.setOnCheckedChangeListener(this);
         chatPromotionSwitch.setOnCheckedChangeListener(this);
     }
@@ -213,6 +219,25 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     }
 
     @Override
+    public void showToastMessage() {
+        shouldShowToast = true;
+    }
+
+    @Override
+    public void showProgressBar() {
+        if (progressBarLayout != null) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideProgressBar() {
+        if (progressBarLayout != null) {
+            progressBarLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         if (this.chatSettingsResponse != null && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
             chatPromotionSwitch.setChecked(false);
@@ -220,10 +245,10 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
         if (compoundButton.getId() == R.id.chat_personal_switch) {
             chatSettingsPresenter.onPersonalChatSettingChange(isChecked);
-            showPersonalToast(isChecked);
+//            showPersonalToast(isChecked);
         } else if (compoundButton.getId() == R.id.chat_promotion_switch) {
             chatSettingsPresenter.onPromotionalChatSettingChange(isChecked);
-            showPromotionToast(isChecked);
+//            showPromotionToast(isChecked);
         }
     }
 
@@ -256,22 +281,28 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         return sb;
     }
 
-    private void showPersonalToast(boolean enable) {
-        if (!enable) {
-            ToasterNormal.show(this, String.format(getString(R.string.enable_chat_personal_settings), senderName));
-        } else {
-            ToasterNormal.show(this, String.format(getString(R.string.disable_chat_personal_settings), senderName));
+    @Override
+    public void showPersonalToast(boolean enable) {
+        if (shouldShowToast) {
+            if (!enable) {
+                ToasterNormal.show(this, String.format(getString(R.string.enable_chat_personal_settings), senderName));
+            } else {
+                ToasterNormal.show(this, String.format(getString(R.string.disable_chat_personal_settings), senderName));
+            }
         }
     }
 
 
-    private void showPromotionToast(boolean enable) {
-        if (enable && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
-            ToasterError.make(findViewById(android.R.id.content), getString(R.string.enable_chat_promotion_blocked_settings), BaseToaster.LENGTH_LONG).show();
-        } else if (!enable) {
-            ToasterNormal.show(this, String.format(getString(R.string.enable_chat_promotion_settings), senderName));
-        } else {
-            ToasterNormal.show(this, String.format(getString(R.string.disable_chat_promotion_settings), senderName));
+    @Override
+    public void showPromotionToast(boolean enable) {
+        if (shouldShowToast) {
+            if (enable && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
+                ToasterError.make(findViewById(android.R.id.content), getString(R.string.enable_chat_promotion_blocked_settings), BaseToaster.LENGTH_LONG).show();
+            } else if (!enable) {
+                ToasterNormal.show(this, String.format(getString(R.string.enable_chat_promotion_settings), senderName));
+            } else {
+                ToasterNormal.show(this, String.format(getString(R.string.disable_chat_promotion_settings), senderName));
+            }
         }
     }
 }
