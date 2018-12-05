@@ -105,7 +105,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
-        initVar()
+        initVar(savedInstanceState)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -133,6 +133,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(ProfileActivity.EXTRA_PARAM_USER_ID, userId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -529,15 +534,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         loadingLayout.visibility = View.GONE
     }
 
-    private fun initVar() {
-        arguments?.let {
-            userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
+    private fun initVar(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)
+        } else if (arguments != null) {
+            try {
+                userId = arguments!!
+                        .getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO)
+                        .toInt()
+            } catch (e: java.lang.NumberFormatException) {
+                activity?.finish()
+            }
+
             afterPost = TextUtils.equals(
-                    it.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
+                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
                     ProfileActivity.TRUE
             )
             afterEdit = TextUtils.equals(
-                    it.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
+                    arguments!!.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
                     ProfileActivity.TRUE
             )
         }

@@ -9,6 +9,7 @@ import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.subscriber.GetSellerAccountSubscriber;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -67,6 +68,7 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
             merchantId = Integer.parseInt(userSession.getShopId());
         }
         variables.put("merchantID", merchantId);
+        variables.put("projectId", KYCConstant.KYC_PROJECT_ID);
         requestParams.putObject(VARIABLES, variables);
 
         getSellerAccountUseCase.execute(requestParams, new GetSellerAccountSubscriber(view));

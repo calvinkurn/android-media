@@ -1,7 +1,6 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -30,7 +29,7 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
     public void bind(ShopCardViewModel element) {
         shopCardView.setShopName(element.getShopName());
         shopCardView.setShopImage(element.getShopImageUrl());
-        if(element.getGoldMerchant()) {
+        if (element.getGoldMerchant()) {
             shopCardView.setBadgeImage(R.drawable.ic_badge_shop_gm);
         }
         shopCardView.setShopReputation(element.getReputationImageUrl());
@@ -40,5 +39,8 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
         shopCardView.setOnClickShopName(v -> listener.onShopNameClicked(element));
 
         shopCardView.setOnClickDeposit(v -> listener.onDepositClicked(element));
+
+        shopCardView.setKyc(element.getVerificationStatus(), element.getVerificationStatusName(),
+                () -> listener.onKycLinkClicked(element.getVerificationStatus()));
     }
 }

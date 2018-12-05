@@ -89,7 +89,7 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
     }
 
     private fun refreshUIFirstTime() {
-        if (hasVisibleOnce && needLoadData) {
+        if (needLoadData) {
             shopInfo?.let {
                 displayImageBackground(it)
                 displayShopDescription(it)

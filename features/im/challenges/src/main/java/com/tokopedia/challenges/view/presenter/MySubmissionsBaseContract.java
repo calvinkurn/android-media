@@ -38,5 +38,7 @@ public interface MySubmissionsBaseContract {
         void getMySubmissionsList(Boolean isFirst);
 
         void setSubmissionLike(SubmissionResult result);
+
+        void onDestroy();
     }
 }

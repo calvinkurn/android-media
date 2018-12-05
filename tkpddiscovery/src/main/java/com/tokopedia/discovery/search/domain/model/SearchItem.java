@@ -23,6 +23,27 @@ public class SearchItem {
     private boolean isOfficial;
     @SerializedName("location")
     private String location;
+    @SerializedName("id")
+    private String productId;
+    @SerializedName("price")
+    private String price;
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     private String eventAction;
 
     public String getEventAction() {

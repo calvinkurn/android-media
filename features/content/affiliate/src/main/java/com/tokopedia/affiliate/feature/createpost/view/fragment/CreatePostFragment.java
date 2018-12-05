@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Guide;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Medium;
@@ -89,7 +90,13 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AffiliateEventTracking.Screen.BYME_CREATE_POST;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
     }
 
     @Override
@@ -286,7 +293,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private void initView() {
         doneBtn.setOnClickListener(view -> {
-            affiliateAnalytics.onSelesaiCreateButtonClicked();
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.getProductId());
             if (!viewModel.isEdit()) {
                 submitPost();
             } else {
@@ -294,11 +301,11 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             }
         });
         addImageBtn.setOnClickListener(view -> {
+            affiliateAnalytics.onTambahGambarButtonClicked(viewModel.getProductId());
             if (shouldShowExample()) {
                 goToImageExample(true);
                 createPostPreference.setFirstTime(getUserSession().getUserId());
             } else {
-                affiliateAnalytics.onTambahGambarButtonClicked();
                 goToImagePicker();
             }
         });
@@ -339,7 +346,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
         seeExample.setOnClickListener(v -> {
-            affiliateAnalytics.onLihatContohButtonClicked();
+            affiliateAnalytics.onLihatContohButtonClicked(viewModel.getProductId());
             goToImageExample(false);
         });
     }
