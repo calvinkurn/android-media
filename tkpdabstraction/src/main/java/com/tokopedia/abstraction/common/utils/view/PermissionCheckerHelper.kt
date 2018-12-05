@@ -128,7 +128,7 @@ class PermissionCheckerHelper {
         if (requestCode == REQUEST_PERMISSION_CODE) {
             for (i in permissions.indices) {
                 if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                    onPermissionDenied()
+                    listener.onPermissionDenied(permissions)
                 }
             }
         }
@@ -149,9 +149,5 @@ class PermissionCheckerHelper {
                 // Ignore all other requests.
             }
         }
-    }
-
-    fun onPermissionDenied() {
-
     }
 }

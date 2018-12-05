@@ -53,7 +53,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun shouldHandleUrlManually(url: String): Boolean {
-
+        return false
     }
 
     override fun onGoToWebView(attachment: String, id: String) {
