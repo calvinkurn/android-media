@@ -34,4 +34,5 @@ public interface AdsView {
 
     void doLogin();
 
+    void notifyAdapter();
 }

@@ -265,6 +265,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
             @Override
             public void onSuccessAddWishlist(String productId) {
                 data.getProduct().setWishlist(true);
+                adsView.notifyAdapter();
                 trackWishlistUrl(data.getProductWishlistUrl());
             }
 
@@ -276,6 +277,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
             @Override
             public void onSuccessRemoveWishlist(String productId) {
                 data.getProduct().setWishlist(false);
+                adsView.notifyAdapter();
             }
 
             @Override

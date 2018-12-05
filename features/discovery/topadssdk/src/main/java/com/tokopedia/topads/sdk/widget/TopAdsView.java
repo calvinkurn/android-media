@@ -259,4 +259,9 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         Intent intent = ((TopAdsRouter) getContext().getApplicationContext()).getLoginIntent(getContext());
         getContext().startActivity(intent);
     }
+
+    @Override
+    public void notifyAdapter() {
+        adapter.notifyDataSetChanged();
+    }
 }
