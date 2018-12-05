@@ -193,6 +193,7 @@ ext {
             paymentSetting          : ":features:payment:payment_setting",
 //            paymentSetting          : ":features:payment:payment_setting_no_op",
             paymentManagementSystem : ":features:payment:pms",
+//            paymentManagementSystem : ":features:payment:pms_no_op",
             withdraw                : ":features:payment:withdraw",
 
             gallery                : ":features:product:gallery",

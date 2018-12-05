@@ -66,6 +66,7 @@ include "features:operational:contact_us"
 
 include "features:payment:payment"
 include "features:payment:pms"
+//include "features:payment:pms_no_op"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
 //include "features:payment:payment_setting_no_op"
