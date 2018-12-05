@@ -170,6 +170,9 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     }
 
     private void populateData() {
+
+        hasAnalyze = new HashMap<>();
+
         if (rootView == null || channelInfoViewModel == null) {
             return;
         }
