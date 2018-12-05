@@ -11,7 +11,7 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.cart.data.cache.DigitalLocalCache;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -62,18 +62,18 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     private DigitalAnalytics digitalAnalytics;
     private UserSession userSession;
     private final ICartDigitalInteractor cartDigitalInteractor;
-    private DigitalLocalCache digitalLocalCache;
+    private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
 
     public CartDigitalPresenter(IDigitalCartView view,
                                 UserSession userSession,
                                 DigitalAnalytics digitalAnalytics,
                                 ICartDigitalInteractor iCartDigitalInteractor,
-                                DigitalLocalCache digitalLocalCache) {
+                                DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
         this.view = view;
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
         this.cartDigitalInteractor = iCartDigitalInteractor;
-        this.digitalLocalCache = digitalLocalCache;
+        this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
         initRemoteConfig();
     }
 
@@ -120,9 +120,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     @Override
     public void processToCheckout() {
-        if (!digitalLocalCache.isAlreadyShowPascaBayarPopUp(userSession.getUserId())
+        if (!digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())
                 && view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null) {
-            digitalLocalCache.setAlreadyShowPascaBayarPopUp(userSession.getUserId());
+            digitalPostPaidLocalCache.setAlreadyShowPostPaidPopUp(userSession.getUserId());
             view.showPostPaidDialog(
                     view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getTitle(),
                     view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getContent(),
