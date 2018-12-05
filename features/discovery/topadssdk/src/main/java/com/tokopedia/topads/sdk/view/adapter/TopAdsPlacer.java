@@ -328,13 +328,23 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if (adsItemClickListener != null) {
-            adsItemClickListener.onAddWishList(position, data);
+//        if (adsItemClickListener != null) {
+//            adsItemClickListener.onAddWishList(position, data);
+//        }
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
         presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 
     public interface DataObserver {
         void onStreamLoaded(int type);
+    }
+
+    @Override
+    public String getString(int resId) {
+        return context.getString(resId);
     }
 }

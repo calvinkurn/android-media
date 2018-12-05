@@ -30,4 +30,6 @@ public interface AdsView {
 
     void notifyShopClickListener(int position, Shop shop);
 
+    String getString(int resId);
+
 }

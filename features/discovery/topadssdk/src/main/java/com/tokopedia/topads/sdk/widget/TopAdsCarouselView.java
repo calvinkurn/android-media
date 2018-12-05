@@ -231,4 +231,9 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     public void setAdsItemImpressionListener(TopAdsItemImpressionListener adsItemImpressionListener) {
         this.adapter.setAdsItemImpressionListener(adsItemImpressionListener);
     }
+
+    @Override
+    public String getString(int resId) {
+        return getContext().getString(resId);
+    }
 }

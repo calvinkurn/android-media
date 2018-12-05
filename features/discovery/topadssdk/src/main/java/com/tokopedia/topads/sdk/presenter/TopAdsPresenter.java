@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.presenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.topads.sdk.base.Config;
@@ -10,6 +11,7 @@ import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.PreferedCategoryUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.domain.model.WishlistModel;
@@ -18,6 +20,10 @@ import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import javax.inject.Inject;
 
@@ -41,6 +47,12 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
 
     @Inject
     TopAdsWishlishedUseCase wishlishedUseCase;
+    @Inject
+    AddWishListUseCase addWishListUseCase;
+    @Inject
+    RemoveWishListUseCase removeWishListUseCase;
+    @Inject
+    UserSession userSession;
 
     public TopAdsPresenter(Context context) {
         this.context = context;
@@ -220,5 +232,45 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
                 Log.d(TAG, "trackWishlistUrl successs "+wishlistModel.getData().isSuccess());
             }
         });
+    }
+
+    public void addWishlist(Data data){
+        addWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
+                getWishlistActionListener(data));
+    }
+
+    public void removeWishlist(Data data){
+        removeWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
+                getWishlistActionListener(data));
+    }
+
+    @NonNull
+    private WishListActionListener getWishlistActionListener(Data data) {
+        return new WishListActionListener() {
+            @Override
+            public void onErrorAddWishList(String errorMessage, String productId) {
+                data.getProduct().setWishlist(false);
+            }
+
+            @Override
+            public void onSuccessAddWishlist(String productId) {
+                data.getProduct().setWishlist(true);
+            }
+
+            @Override
+            public void onErrorRemoveWishlist(String errorMessage, String productId) {
+                data.getProduct().setWishlist(true);
+            }
+
+            @Override
+            public void onSuccessRemoveWishlist(String productId) {
+                data.getProduct().setWishlist(false);
+            }
+
+            @Override
+            public String getString(int resId) {
+                return adsView.getString(resId);
+            }
+        };
     }
 }

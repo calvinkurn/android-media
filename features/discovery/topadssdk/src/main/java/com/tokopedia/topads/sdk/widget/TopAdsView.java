@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -207,8 +208,13 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if (adsItemClickListener != null) {
-            adsItemClickListener.onAddWishList(position, data);
+//        if (adsItemClickListener != null) {
+//            adsItemClickListener.onAddWishList(position, data);
+//        }
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
         presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
@@ -246,5 +252,10 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
             ((ShopListViewModel) item).getData().setFavorit(b);
         }
         adapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public String getString(int resId) {
+        return getContext().getString(resId);
     }
 }

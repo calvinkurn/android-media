@@ -14,6 +14,8 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -97,5 +99,17 @@ public class TopAdsModule {
     @Provides
     OpenTopAdsUseCase provideOpenTopAdsUseCase(@ApplicationContext Context context){
         return new OpenTopAdsUseCase(context);
+    }
+
+    @TopAdsScope
+    @Provides
+    AddWishListUseCase addWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
+
+    @TopAdsScope
+    @Provides
+    RemoveWishListUseCase removeWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
     }
 }
