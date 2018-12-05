@@ -2,23 +2,16 @@ package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v7.widget.AppCompatImageView;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
-import com.tokopedia.topads.sdk.listener.ImpressionListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import android.view.ViewTreeObserver;
-
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author by errysuprayogi on 3/27/17.
@@ -27,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
-    public static final int BOTTOM_MARGIN = 80;
     private ProductImage image;
     private ViewHintListener hintListener;
 
@@ -73,10 +65,17 @@ public class ImpressedImageView extends AppCompatImageView {
         if (!view.isShown()) {
             return false;
         }
-        final Rect actualPosition = new Rect();
-        view.getGlobalVisibleRect(actualPosition);
-        final Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
-        return actualPosition.intersect(screen);
+        Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
+
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        float X = location[0];
+        float Y = location[1];
+        if (screen.top <= Y && screen.bottom >= Y && screen.left <= X && screen.right >= X) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private int getScreenWidth() {
@@ -84,7 +83,8 @@ public class ImpressedImageView extends AppCompatImageView {
     }
 
     private int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels - offsetBottomMargin(BOTTOM_MARGIN);
+        return Resources.getSystem().getDisplayMetrics().heightPixels -
+                getResources().getDimensionPixelOffset(R.dimen.dp_45);
     }
 
     public void setViewHintListener(ViewHintListener hintListener) {
@@ -94,13 +94,6 @@ public class ImpressedImageView extends AppCompatImageView {
     public void setImage(ProductImage image) {
         this.image = image;
         Glide.with(getContext()).load(image.getM_ecs()).into(this);
-    }
-
-    private int offsetBottomMargin(float dp){
-        Resources resources = getContext().getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-        return (int) px;
     }
 
     public interface ViewHintListener {

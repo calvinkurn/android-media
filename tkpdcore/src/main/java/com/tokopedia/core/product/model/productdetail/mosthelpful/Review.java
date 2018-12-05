@@ -37,7 +37,7 @@ public class Review implements Parcelable {
     private ReviewUpdateTime reviewUpdateTime;
     @SerializedName("review_image_attachment")
     @Expose
-    private java.util.List<Object> reviewImageAttachment = null;
+    private java.util.List<ReviewImageAttachment> reviewImageAttachment = null;
     @SerializedName("review_anonymous")
     @Expose
     private int reviewAnonymous;
@@ -112,11 +112,11 @@ public class Review implements Parcelable {
         this.reviewUpdateTime = reviewUpdateTime;
     }
 
-    public java.util.List<Object> getReviewImageAttachment() {
+    public java.util.List<ReviewImageAttachment> getReviewImageAttachment() {
         return reviewImageAttachment;
     }
 
-    public void setReviewImageAttachment(java.util.List<Object> reviewImageAttachment) {
+    public void setReviewImageAttachment(java.util.List<ReviewImageAttachment> reviewImageAttachment) {
         this.reviewImageAttachment = reviewImageAttachment;
     }
 
@@ -177,7 +177,7 @@ public class Review implements Parcelable {
         this.productRatingDescription = in.readString();
         this.reviewCreateTime = in.readParcelable(ReviewCreateTime.class.getClassLoader());
         this.reviewUpdateTime = in.readParcelable(ReviewUpdateTime.class.getClassLoader());
-        this.reviewImageAttachment = new ArrayList<Object>();
+        this.reviewImageAttachment = new ArrayList<ReviewImageAttachment>();
         in.readList(this.reviewImageAttachment, Object.class.getClassLoader());
         this.reviewAnonymous = in.readInt();
         this.reviewResponse = in.readParcelable(ReviewResponse.class.getClassLoader());

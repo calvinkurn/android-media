@@ -264,9 +264,9 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
             }
 
             @Override
-            public void logUnknownError(String message) {
+            public void logUnknownError(Throwable message) {
                 try {
-                    Crashlytics.log(0, ChooseTokocashAccountFragment.class.getSimpleName(), message);
+                    Crashlytics.logException(message);
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 }

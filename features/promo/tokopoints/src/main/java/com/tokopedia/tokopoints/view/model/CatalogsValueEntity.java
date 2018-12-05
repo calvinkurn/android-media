@@ -45,7 +45,7 @@ public class CatalogsValueEntity implements Serializable {
 
     @Expose
     @SerializedName("quota")
-    private Integer quota;
+    private int quota;
 
     @Expose
     @SerializedName("slug")
@@ -130,6 +130,18 @@ public class CatalogsValueEntity implements Serializable {
     @SerializedName("cta")
     private String cta;
 
+    @Expose
+    @SerializedName("isShowTukarButton")
+    private boolean isShowTukarButton;
+
+    public boolean isShowTukarButton() {
+        return isShowTukarButton;
+    }
+
+    public void setShowTukarButton(boolean showTukarButton) {
+        isShowTukarButton = showTukarButton;
+    }
+
     public String getBaseCode() {
         return baseCode;
     }
@@ -202,11 +214,11 @@ public class CatalogsValueEntity implements Serializable {
         this.promoId = promoId;
     }
 
-    public Integer getQuota() {
+    public int getQuota() {
         return quota;
     }
 
-    public void setQuota(Integer quota) {
+    public void setQuota(int quota) {
         this.quota = quota;
     }
 

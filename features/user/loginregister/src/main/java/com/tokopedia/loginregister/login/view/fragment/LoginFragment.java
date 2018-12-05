@@ -796,8 +796,12 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             }
 
             @Override
-            public void logUnknownError(String message) {
-                Crashlytics.log(0, LoginFragment.class.getSimpleName(), message);
+            public void logUnknownError(Throwable message) {
+                try {
+                    Crashlytics.logException(message);
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }

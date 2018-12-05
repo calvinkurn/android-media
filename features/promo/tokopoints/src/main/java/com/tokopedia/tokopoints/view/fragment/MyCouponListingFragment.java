@@ -131,7 +131,10 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
-        mItemDecoration = new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small));
+
+        mItemDecoration = new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_16),
+                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_16));
     }
 
     private void initListener() {

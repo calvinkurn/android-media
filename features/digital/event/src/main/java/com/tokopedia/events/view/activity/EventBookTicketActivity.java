@@ -15,16 +15,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.fragment.LocationDateBottomSheetFragment;
-import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.FinishActivityReceiver;
-import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
@@ -36,8 +33,6 @@ public class EventBookTicketActivity
         extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView {
 
 
-    //    @BindView(R2.id.collasing_toolbar)
-//    CollapsingToolbarLayout collasingToolbar;
     @BindView(R2.id.pay_tickets)
     View buttonPayTickets;
     @BindView(R2.id.button_textview)
@@ -122,15 +117,6 @@ public class EventBookTicketActivity
         else
             tvDate.setVisibility(View.GONE);
         setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
-    }
-
-    @Override
-    public void setHolder(int resID, String label, ImageTextViewHolder holder) {
-        holder.setImage(resID);
-        holder.setImageTint(getResources().getColor(R.color.white));
-        holder.setTextView(label);
-        holder.setTextColor(getResources().getColor(R.color.white));
-        holder.setTextSize(16);
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.challenges.domain.usecase.GetMySubmissionsListUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
@@ -54,13 +55,17 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached()) return;
                 isLoading = false;
                 getView().removeProgressBarView();
+                getView().showErrorNetwork(
+                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                if(!isViewAttached()) return;
                 getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 SubmissionResponse mainDataObject = res1.getData();
@@ -90,8 +95,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
             requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
         if (!TextUtils.isEmpty(result.getId()))
             requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
-        postSubmissionLikeUseCase.setRequestParams(requestParams);
-        postSubmissionLikeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        postSubmissionLikeUseCase.execute(requestParams,new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
             }
@@ -127,5 +131,10 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                 getView().addFooter();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        detachView();
     }
 }

@@ -16,7 +16,6 @@ import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -417,6 +416,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && sprintSaleViewModel.getSprintSaleType() != null
                 && !sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_FINISHED)) {
             trackViewSprintSaleComponent(sprintSaleViewModel);
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                    .getChannelInfoViewModel();
+            if (channelInfoViewModel != null) {
+                analytics.eventViewFlashSale(
+                        String.format("%s - %s", channelInfoViewModel.getChannelId(), sprintSaleViewModel.getCampaignName()));
+            }
             sprintSaleIconLayout.setVisibility(View.VISIBLE);
             setupSprintSaleIcon(sprintSaleViewModel);
         } else {
@@ -440,7 +445,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 pinnedMessageView.setOnClickListener(view -> {
                     if (channelInfoViewModel != null) {
                         analytics.eventClickAdminPinnedMessage(
-                                channelInfoViewModel.getChannelId());
+                                String.format("%s - %s", channelInfoViewModel.getChannelId(), pinnedMessage.getTitle()));
                     }
 
                     showPinnedMessageBottomSheet(pinnedMessage);
@@ -591,8 +596,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && getActivity() instanceof GroupChatContract.View
                 && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
             analytics.eventClickQuickReply(
-                    ((GroupChatContract.View) getActivity()).
-                            getChannelInfoViewModel().getChannelId());
+                    String.format("%s - %s", ((GroupChatContract.View) getActivity()).
+                            getChannelInfoViewModel().getChannelId(), message));
         }
 
         String text = replyEditText.getText().toString();
@@ -759,7 +764,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
 
         if (messageItem instanceof ImageAnnouncementViewModel) {
-            analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel) messageItem);
+            analytics.eventViewBannerPushPromo(
+                    String.format("%s - %s"
+                            , ((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getChannelId()
+                            , ((ImageAnnouncementViewModel) messageItem).getRedirectUrl()));
         }
 
         if (!hideMessage) {
@@ -856,7 +864,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onImageAnnouncementClicked(String url) {
-        analytics.eventClickThumbnail(url);
+        analytics.eventClickThumbnail(String.format("%s - %s", ((GroupChatContract.View) getActivity()).
+                getChannelInfoViewModel().getChannelId(), url));
         if (!TextUtils.isEmpty(url)) {
             ((GroupChatModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
         }
@@ -916,6 +925,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
                     , ((GroupChatContract.View) getActivity()).generateAttributeApplink
                             (productViewModel.getProductUrl(), GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                    .getChannelInfoViewModel();
+            if (channelInfoViewModel != null) {
+                analytics.eventClickFlashSale(
+                        String.format("%s - %s", channelInfoViewModel.getChannelId(),
+                                ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignName()));
+            }
         }
     }
 
@@ -953,6 +970,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     , ((GroupChatContract.View) getActivity()).generateAttributeApplink
                             (sprintSaleAnnouncementViewModel.getRedirectUrl(),
                                     GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+
+            ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                    .getChannelInfoViewModel();
+            if (channelInfoViewModel != null) {
+                analytics.eventClickFlashSale(
+                        String.format("%s - %s", channelInfoViewModel.getChannelId(),
+                                ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignName()));
+            }
         }
 
     }
@@ -985,6 +1010,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         (sprintSaleViewModel.getRedirectUrl(),
                                 GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
 
+        ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                .getChannelInfoViewModel();
+        if (channelInfoViewModel != null) {
+            analytics.eventClickFlashSale(
+                    String.format("%s - %s", channelInfoViewModel.getChannelId(),
+                            ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignName()));
+        }
+
     }
 
     @Override
@@ -1010,7 +1043,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getTitle() != null) {
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
-            analytics.eventClickLoyaltyWidget(channelName);
+            analytics.eventClickLoyaltyWidget(((GroupChatActivity) getActivity()).getChannelInfoViewModel().getChannelId());
         }
     }
 
