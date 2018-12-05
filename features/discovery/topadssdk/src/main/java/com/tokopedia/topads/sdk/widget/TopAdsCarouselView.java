@@ -243,7 +243,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
 
     @Override
     public void doLogin() {
-        Intent intent = ((TopAdsRouter) getContext()).getLoginIntent(getContext());
+        Intent intent = ((TopAdsRouter) getContext().getApplicationContext()).getLoginIntent(getContext());
         getContext().startActivity(intent);
     }
 }

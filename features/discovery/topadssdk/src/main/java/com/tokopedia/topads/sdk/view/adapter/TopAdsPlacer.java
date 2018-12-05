@@ -348,7 +348,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void doLogin() {
-        Intent intent = ((TopAdsRouter) context).getLoginIntent(context);
+        Intent intent = ((TopAdsRouter) context.getApplicationContext()).getLoginIntent(context);
         context.startActivity(intent);
     }
 }

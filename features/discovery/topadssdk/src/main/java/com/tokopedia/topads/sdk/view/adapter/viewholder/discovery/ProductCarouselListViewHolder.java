@@ -8,6 +8,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,22 +48,37 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public TextView productName;
     public TextView productPrice;
     public TextView shopLocation;
+    private RelativeLayout wishlistBtnContainer;
+    private ImageView btnWishList;
     public ImpressedImageView productImage;
     private int clickPosition;
 
 
     public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener, int clickPosition,
-                                         TopAdsItemImpressionListener impressionListener) {
+                                         TopAdsItemImpressionListener impressionListener,
+                                         boolean enableWishlist) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.clickPosition = clickPosition;
         this.impressionListener = impressionListener;
+        btnWishList = itemView.findViewById(R.id.wishlist_button);
+        wishlistBtnContainer = itemView.findViewById(R.id.wishlist_button_container);
+        wishlistBtnContainer.setVisibility(enableWishlist ? View.VISIBLE : View.GONE);
+        wishlistBtnContainer.setOnClickListener(this);
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
+    }
+
+    protected void renderWishlistButton(boolean wishlist) {
+        if (wishlist) {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist_red);
+        } else {
+            btnWishList.setBackgroundResource(R.drawable.ic_wishlist);
+        }
     }
 
     @Override
@@ -90,6 +106,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
             productName.setText(Html.fromHtml(product.getName()));
         }
         productPrice.setText(product.getPriceFormat());
+        renderWishlistButton(data.getProduct().isWishlist());
     }
 
     @Override
@@ -98,9 +115,10 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
             if(v.getId() == R.id.container) {
                 itemClickListener.onProductItemClicked((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
             }
-            if(v.getId() == R.id.wishlist_button_container){
+            if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
                 data.getProduct().setWishlist(!data.getProduct().isWishlist());
+                renderWishlistButton(data.getProduct().isWishlist());
             }
         }
     }
