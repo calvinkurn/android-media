@@ -121,6 +121,9 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                     list.size(),channel);
                         }
                     }
+                }
+
+                if (!legoAndCuratedAndSprintSaleBannerList.isEmpty()){
                     HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(context, legoAndCuratedAndSprintSaleBannerList);
                 }
             }
