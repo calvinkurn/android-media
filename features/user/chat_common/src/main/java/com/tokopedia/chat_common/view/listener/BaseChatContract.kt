@@ -3,7 +3,6 @@ package com.tokopedia.chat_common.view.listener
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 
 /**
  * @author : Steven 29/11/18
@@ -12,7 +11,9 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 
 interface BaseChatContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun onSuccessGetChat(model: ChatRoomViewModel)
+        fun onSuccessGetChat(model: ArrayList<Visitable<*>>)
+
+        fun developmentView()
 
     }
     interface Presenter : CustomerPresenter<View> {

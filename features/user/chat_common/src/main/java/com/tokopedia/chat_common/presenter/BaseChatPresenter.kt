@@ -16,7 +16,7 @@ class BaseChatPresenter @Inject constructor(
     : BaseDaggerPresenter<BaseChatContract.View>(), BaseChatContract.Presenter {
 
     override fun attachView(view: BaseChatContract.View?) {
-
+        super.attachView(view)
     }
 
 
@@ -32,8 +32,8 @@ class BaseChatPresenter @Inject constructor(
         getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page)
                 , object : Subscriber<ChatRoomViewModel>(){
             override fun onNext(model: ChatRoomViewModel?) {
-                model?.let { view.onSuccessGetChat(it) }
-                return
+                view.developmentView()
+                model?.listChat.let { view.onSuccessGetChat(it!!) }
             }
 
             override fun onCompleted() {

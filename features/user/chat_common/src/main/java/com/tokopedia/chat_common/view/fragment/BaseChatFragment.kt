@@ -22,7 +22,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                                 , ImageUploadListener, ProductAttachmentListener{
 
 
-    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+    override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
         return BaseChatTypeFactoryImpl(this,
                 this, this, this)
     }

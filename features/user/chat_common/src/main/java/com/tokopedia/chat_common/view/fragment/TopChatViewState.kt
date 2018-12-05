@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 
@@ -26,33 +27,45 @@ class TopChatViewState(var view: View) {
     private var maximize: View = view.findViewById(R.id.maximize)
     private var notifier: View = view.findViewById(R.id.notifier)
 
+    fun developmentView() {
+        actionBox?.visibility = View.VISIBLE
+    }
+
     fun setDefault(){
         sendButton.requestFocus()
     }
 
     fun setNonReplyable() {
-        actionBox!!.visibility = View.GONE
+        actionBox?.visibility = View.GONE
 
     }
 
     fun setReplyable() {
-        actionBox!!.visibility = View.VISIBLE
+        actionBox?.visibility = View.VISIBLE
     }
 
     fun showLoading() {
-        mainLoading!!.visibility = View.VISIBLE
+        mainLoading?.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        mainLoading!!.visibility = View.GONE
+        mainLoading?.visibility = View.GONE
     }
 
     fun setAdapter(adapter: BaseChatAdapter) {
         recyclerView.adapter = adapter
     }
 
-    fun addList(listChat: ArrayList<String>?) {
+    fun getAdapter(): BaseChatAdapter {
+        return recyclerView.adapter as BaseChatAdapter
+    }
 
+    fun addList(listChat: ArrayList<Visitable<*>>) {
+        getAdapter().addList(listChat)
+    }
+
+    fun getList(): List<Visitable<*>> {
+        return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 
 
