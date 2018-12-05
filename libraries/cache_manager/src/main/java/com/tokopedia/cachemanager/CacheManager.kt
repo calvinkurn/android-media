@@ -62,6 +62,7 @@ abstract class CacheManager(val context: Context) {
         }
     }
 
+    @JvmOverloads
     fun put(customId: String, objectToPut: Any?, cacheDuration: Long = defaultExpiredDuration) {
         if (objectToPut == null) {
             return
@@ -75,6 +76,7 @@ abstract class CacheManager(val context: Context) {
         }
     }
 
+    @JvmOverloads
     fun put(customId: String, objectToPut: String?, cacheDuration: Long = defaultExpiredDuration) {
         if (objectToPut == null) {
             return
