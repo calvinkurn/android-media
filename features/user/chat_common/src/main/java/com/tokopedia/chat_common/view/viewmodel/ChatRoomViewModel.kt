@@ -2,10 +2,11 @@ package com.tokopedia.chat_common.view.viewmodel
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 class ChatRoomViewModel() : Parcelable{
 
-    var listChat: ArrayList<String>? = null
+    var listChat: ArrayList<Visitable<*>>? = null
 
     constructor(parcel: Parcel) : this() {
 

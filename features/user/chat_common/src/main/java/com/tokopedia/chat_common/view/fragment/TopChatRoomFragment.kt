@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.R
@@ -14,7 +15,6 @@ import com.tokopedia.chat_common.di.ChatRoomComponent
 import com.tokopedia.chat_common.di.DaggerChatComponent
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chat_common.view.listener.BaseChatContract
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 import javax.inject.Inject
 /**
  * @author : Steven 29/11/18
@@ -32,8 +32,15 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
     private lateinit var adapter: BaseChatAdapter
 
 
-    override fun onSuccessGetChat(model: ChatRoomViewModel) {
-        chatViewState.addList(model.listChat)
+    override fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {
+        chatViewState.hideLoading()
+        chatViewState.developmentView()
+        chatViewState.addList(listChat)
+    }
+
+    override fun developmentView() {
+        chatViewState.hideLoading()
+        chatViewState.developmentView()
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
@@ -99,6 +106,7 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
         }
         chatViewState?.run{
             chatViewState.showLoading()
+            adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
             chatViewState.setAdapter(adapter)
         }
 
