@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.di;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsPlacer;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
@@ -25,4 +26,6 @@ public interface TopAdsComponent {
     void inject(TopAdsView topAdsView);
 
     void inject(TopAdsCarouselView topAdsCarouselView);
+
+    void inject(TopAdsPlacer topAdsPlacer);
 }

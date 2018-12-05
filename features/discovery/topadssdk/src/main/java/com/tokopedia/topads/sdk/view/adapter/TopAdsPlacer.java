@@ -4,9 +4,12 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.ObserverType;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author by errysuprayogi on 4/18/17.
  */
@@ -32,7 +37,6 @@ import java.util.List;
 public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     private static final String TAG = TopAdsPlacer.class.getSimpleName();
-    private TopAdsPresenter presenter;
     private int ajustedPositionStart = 0;
     private int ajustedItemCount = 0;
     private int observerType;
@@ -50,13 +54,18 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private final TopAdsRecyclerAdapter adapter;
     private RecyclerView recyclerView;
     private static final int ROW_ADS_INDEX_FEED = 2;
+    private Context context;
+
+    @Inject
+    TopAdsPresenter presenter;
 
     public TopAdsPlacer(TopAdsRecyclerAdapter adapter, Context context,
                         TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
-        presenter = new TopAdsPresenter(context);
+        this.context = context;
         this.adapter = adapter;
         this.observer = observer;
         typeFactory.setItemClickListener(this);
+        initInjector();
         initPresenter();
     }
 
@@ -113,7 +122,12 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void initInjector() {
-
+        BaseMainApplication application = ((BaseMainApplication) context.getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
     }
 
     @Override
@@ -317,6 +331,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         if (adsItemClickListener != null) {
             adsItemClickListener.onAddWishList(position, data);
         }
+        presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 
     public interface DataObserver {
