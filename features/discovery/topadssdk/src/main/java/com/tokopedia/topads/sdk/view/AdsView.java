@@ -32,4 +32,6 @@ public interface AdsView {
 
     String getString(int resId);
 
+    void doLogin();
+
 }

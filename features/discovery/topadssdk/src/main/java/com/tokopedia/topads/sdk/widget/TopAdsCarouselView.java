@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.widget;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
@@ -200,9 +202,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     @Override
-    public void onAddFavorite(int position, Data dataShop) {
-        if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(position, dataShop);
+    public void onAddFavorite(int position, Data data) {
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
     }
 
@@ -235,5 +239,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     @Override
     public String getString(int resId) {
         return getContext().getString(resId);
+    }
+
+    @Override
+    public void doLogin() {
+        Intent intent = ((TopAdsRouter) getContext()).getLoginIntent(getContext());
+        getContext().startActivity(intent);
     }
 }

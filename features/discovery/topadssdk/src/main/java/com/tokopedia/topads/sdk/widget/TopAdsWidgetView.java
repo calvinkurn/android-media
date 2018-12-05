@@ -148,10 +148,11 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if(data.getProductWishlistUrl()!=null && itemClickListener!=null) {
-            itemClickListener.onAddWishList(position, data);
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
-        presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {

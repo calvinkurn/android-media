@@ -126,7 +126,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
         }
         if (config.isWithPreferedCategory()) {
             getPreferedCategory();
-        } else if(config.isWithMerlinCategory()){
+        } else if (config.isWithMerlinCategory()) {
             getMerlinCategory();
         } else {
             adsParams.getParam().put(TopAdsParams.KEY_USER_ID, config.getUserId());
@@ -179,6 +179,8 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
         this.adsView = null;
         adsUseCase.unsubscribe();
         openTopAdsUseCase.unsubscribe();
+        removeWishListUseCase.unsubscribe();
+        addWishListUseCase.unsubscribe();
     }
 
     @Override
@@ -229,19 +231,27 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
 
             @Override
             public void onNext(WishlistModel wishlistModel) {
-                Log.d(TAG, "trackWishlistUrl successs "+wishlistModel.getData().isSuccess());
+                Log.d(TAG, "trackWishlistUrl successs " + wishlistModel.getData().isSuccess());
             }
         });
     }
 
-    public void addWishlist(Data data){
-        addWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
-                getWishlistActionListener(data));
+    public void addWishlist(Data data) {
+        if(userSession.isLoggedIn()) {
+            addWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
+                    getWishlistActionListener(data));
+        } else {
+            adsView.doLogin();
+        }
     }
 
-    public void removeWishlist(Data data){
-        removeWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
-                getWishlistActionListener(data));
+    public void removeWishlist(Data data) {
+        if(userSession.isLoggedIn()) {
+            removeWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
+                    getWishlistActionListener(data));
+        } else {
+            adsView.doLogin();
+        }
     }
 
     @NonNull
@@ -255,6 +265,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
             @Override
             public void onSuccessAddWishlist(String productId) {
                 data.getProduct().setWishlist(true);
+                trackWishlistUrl(data.getProductWishlistUrl());
             }
 
             @Override

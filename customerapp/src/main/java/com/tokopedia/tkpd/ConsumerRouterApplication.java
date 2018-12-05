@@ -374,6 +374,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeMode
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
+import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
@@ -495,6 +496,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalBrowseRouter,
         TalkRouter,TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
+        TopAdsRouter,
         MerchantVoucherModuleRouter {
 
 
