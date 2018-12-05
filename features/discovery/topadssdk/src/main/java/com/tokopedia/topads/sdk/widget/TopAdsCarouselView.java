@@ -86,6 +86,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setEnableWishlist(true);
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
                 false);
         btnCta = findViewById(R.id.info_cta);
