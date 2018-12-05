@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di;
 
-import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierAdapter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierContract;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
@@ -13,7 +12,7 @@ import dagger.Provides;
  * Created by Irfan Khoirul on 08/08/18.
  */
 
-@Module(includes = TrackingAnalyticsModule.class)
+@Module
 public class ShippingCourierModule {
 
     @Provides
