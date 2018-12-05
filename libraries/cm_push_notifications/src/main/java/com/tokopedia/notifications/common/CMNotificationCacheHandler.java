@@ -23,4 +23,15 @@ public class CMNotificationCacheHandler {
         localCacheHandler.applyEditor();
     }
 
+    public int getIntValue(Context context, String Key) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_CMNOTIFICATIONS);
+        return localCacheHandler.getInt(Key);
+    }
+
+    public void saveIntValue(Context context, String key, int value) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_CMNOTIFICATIONS);
+        localCacheHandler.putInt(key, value);
+        localCacheHandler.applyEditor();
+    }
+
 }

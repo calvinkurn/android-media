@@ -52,7 +52,7 @@ public class CMPushNotificationManager {
     public void setFcmTokenCMNotif(String token) {
         Log.i(TAG, "token: " + token);
         if (mContext == null) {
-            throw new IllegalArgumentException("Kindly invoke init before calling notification library");
+            return;
         }
         if (TextUtils.isEmpty(token)) {
             return;
@@ -91,9 +91,13 @@ public class CMPushNotificationManager {
      * @param remoteMessage
      */
     public void handlePushPayload(RemoteMessage remoteMessage) {
+        if (null == remoteMessage)
+            return;
         if (mContext == null) {
             throw new IllegalArgumentException("Kindly invoke init before calling notification library");
         }
+        if (null == remoteMessage.getData())
+            return;
         try {
             if (isFromCMNotificationPlatform(remoteMessage.getData())) {
                 Bundle bundle = convertMapToBundle(remoteMessage.getData());

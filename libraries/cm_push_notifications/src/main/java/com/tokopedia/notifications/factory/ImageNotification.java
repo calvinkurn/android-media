@@ -24,9 +24,9 @@ public class ImageNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createPendingIntent(baseNotificationModel.getAppLink()));
+        builder.setContentIntent(createMainPendingIntent(baseNotificationModel.getAppLink(), getRequestCode()));
         builder.setAutoCancel(true);
-        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId()));
+        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
         setBigPictureNotification(builder, baseNotificationModel);
         return builder.build();
     }
@@ -42,12 +42,12 @@ public class ImageNotification extends BaseNotification {
             if (!TextUtils.isEmpty(baseNotificationModel.getMessage()))
                 bigPictureStyle.setSummaryText(baseNotificationModel.getMessage());
             builder.setStyle(bigPictureStyle);
-        }else {
+        } else {
             //TODO use fallbackUrl
         }
     }
 
-    private Bitmap getBlankBitmap(){
+    private Bitmap getBlankBitmap() {
         int w = 72, h = 72;
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         return Bitmap.createBitmap(w, h, conf);

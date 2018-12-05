@@ -25,56 +25,54 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        if (!intent.hasExtra(CMConstant.EXTRA_NOTIFICATION_ID))
+            return;
         int notificationId = intent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID, 0);
         if (null != action) {
             switch (action) {
                 case CMConstant.ReceiverAction.ACTION_BUTTON:
-                    String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
-                    Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
-                    context.startActivity(appLinkIntent);
-                    NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
-                    Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-                    context.sendBroadcast(it);
+                    handleActionButtonClick(context, intent, notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK:
                     handlePersistentClick(context, intent);
-                    context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
                     break;
                 case CMConstant.ReceiverAction.ACTION_CANCEL_PERSISTENT:
-                    CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
-                            CMEvents.PersistentEvent.EVENT_ACTION_CANCELED, CMEvents.PersistentEvent.EVENT_LABEL);
-                    context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
-                    NotificationManagerCompat.from(context).cancel(notificationId);
+                    cancelPersistentNotification(context, notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS:
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
                 case CMConstant.ReceiverAction.ACTION_ON_COPY_COUPON_CODE:
-                    String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
-                    appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
-                    appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
-                    context.startActivity(appLinkIntent);
-                    copyToClipboard(context, coupon);
-                    NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
+                    handleCopyCouponCode(context, intent, notificationId);
                     break;
             }
         }
     }
 
+    private void cancelPersistentNotification(Context context, int notificationId) {
+        CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                CMEvents.PersistentEvent.EVENT_ACTION_CANCELED, CMEvents.PersistentEvent.EVENT_LABEL);
+        context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        NotificationManagerCompat.from(context).cancel(notificationId);
+    }
+
     private void handlePersistentClick(Context context, Intent intent) {
         if (intent.hasExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)) {
             PersistentButton persistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA);
+            if (null == persistentButton)
+                return;
             if (persistentButton.isAppLogo()) {
                 CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
-                        CMEvents.PersistentEvent.EVENT_ACTION_LOGO_CLICK,persistentButton.getAppLink());
+                        CMEvents.PersistentEvent.EVENT_ACTION_LOGO_CLICK, persistentButton.getAppLink());
             } else {
                 CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT, CMEvents.PersistentEvent.EVENT_CATEGORY,
-                        persistentButton.getText(),persistentButton.getAppLink());
+                        persistentButton.getText(), persistentButton.getAppLink());
             }
 
             Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), persistentButton.getAppLink());
             context.startActivity(appLinkIntent);
         }
+        context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
     }
 
     private void copyToClipboard(Context context, String contents) {
@@ -82,6 +80,28 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         ClipData clip = ClipData.newPlainText("Tokopedia", contents);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(context, "Coupon code copied " + contents, Toast.LENGTH_LONG).show();
+    }
+
+    private void handleCopyCouponCode(Context context, Intent intent, int notificationId) {
+        if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
+            String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
+            String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
+            Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+            context.startActivity(appLinkIntent);
+            copyToClipboard(context, coupon);
+        }
+        NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
+        context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+    }
+
+    private void handleActionButtonClick(Context context, Intent intent, int notificationId) {
+        if(!intent.hasExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK))
+            return;
+        String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
+        Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+        context.startActivity(appLinkIntent);
+        NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
+        context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
     }
 
 }

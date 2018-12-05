@@ -15,6 +15,8 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -28,6 +30,10 @@ public class CMNotificationUtils {
 
     static String TAG = CMNotificationUtils.class.getSimpleName();
 
+    static final String STATE_LOGGED_OUT = "LOGGED_OUT";
+    static final String STATE_LOGGED_IN = "LOGGED_IN";
+
+
     public static boolean tokenUpdateRequired(Context context, String newToken) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
         String oldToken = cacheHandler.getStringValue(context, CMConstant.FCM_TOKEN_CACHE_KEY);
@@ -40,16 +46,31 @@ public class CMNotificationUtils {
         return true;
     }
 
+    public static String getUserStatus(Context context, String userId) {
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
+        String oldUserId = cacheHandler.getStringValue(context, CMConstant.USERID_CACHE_KEY);
+        if (TextUtils.isEmpty(userId)) {
+            if (TextUtils.isEmpty(oldUserId)) {
+                return "";
+            } else {
+                return STATE_LOGGED_OUT;
+            }
+        } else {
+            return STATE_LOGGED_IN;
+        }
+    }
+
     public static boolean mapTokenWithUserRequired(Context context, String newUserId) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
         String oldUserID = cacheHandler.getStringValue(context, CMConstant.USERID_CACHE_KEY);
-        if (TextUtils.isEmpty(newUserId)) {
-            return false;
-
-        } else if (newUserId.equals(oldUserID)) {
-            return false;
+        if (TextUtils.isEmpty(oldUserID)) {
+            return !TextUtils.isEmpty(newUserId);
+        } else if(!TextUtils.isEmpty(oldUserID)){
+            return TextUtils.isEmpty(newUserId);
+        }else if (!TextUtils.isEmpty(newUserId)) {
+            return !newUserId.equals(oldUserID);
         }
-        return true;
+        return false;
     }
 
     public static boolean mapTokenWithGAdsIdRequired(Context context, String gAdsId) {
@@ -108,7 +129,7 @@ public class CMNotificationUtils {
         return 0;
     }
 
-    public static Bitmap loadBitmapFromUrl(String imageUrl){
+    public static Bitmap loadBitmapFromUrl(String imageUrl) {
         if (imageUrl == null || imageUrl.length() == 0) {
             return null;
         }

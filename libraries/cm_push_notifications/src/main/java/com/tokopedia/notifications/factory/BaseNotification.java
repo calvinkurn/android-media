@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationCacheHandler;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
@@ -39,6 +40,10 @@ public abstract class BaseNotification {
 
     protected Context context;
     public BaseNotificationModel baseNotificationModel;
+    private CMNotificationCacheHandler cacheHandler;
+
+    private static final String CM_REQUEST_CODE = "cm_request_code";
+
 
     BaseNotification(Context context, BaseNotificationModel baseNotificationModel) {
         this.context = context;
@@ -129,31 +134,32 @@ public abstract class BaseNotification {
             Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" +
                     "/raw/" + baseNotificationModel.getSoundFileName());
             builder.setSound(soundUri);
-        }else {
+        } else {
             builder.setSound(getRingtoneUri());
         }
         builder.setVibrate(getVibratePattern());
     }
 
-    protected int getDrawableIcon() {
+    int getDrawableIcon() {
         if (GlobalConfig.isSellerApp())
             return R.drawable.ic_status_bar_notif_sellerapp;
         else
             return R.drawable.ic_status_bar_notif_customerapp;
     }
 
-    protected int getDrawableLargeIcon() {
+    private int getDrawableLargeIcon() {
+        //TODO need to discuss on Seller App Icon--- 02-12-2018
         if (GlobalConfig.isSellerApp())
             return R.drawable.ic_big_notif_sellerapp;
         else
             return R.mipmap.ic_launcher;
     }
 
-    protected Bitmap getBitmapLargeIcon() {
+    private Bitmap getBitmapLargeIcon() {
         return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
     }
 
-    protected Bitmap getBitmap(String url) {
+    Bitmap getBitmap(String url) {
         try {
             return Glide.with(context).load(url)
                     .asBitmap()
@@ -164,39 +170,15 @@ public abstract class BaseNotification {
         }
     }
 
-    protected int getImageWidth() {
+    private int getImageWidth() {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_width);
     }
 
-    protected int getImageHeight() {
+    private int getImageHeight() {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
     }
 
-    protected PendingIntent getButtonPendingIntent(ActionButton actionButton, int requestCode) {
-        PendingIntent resultPendingIntent;
-        Intent intent = new Intent(context, CMBroadcastReceiver.class);
-        intent.setAction(CMConstant.ReceiverAction.ACTION_BUTTON);
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
-        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, actionButton.getAppLink());
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        } else {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        }
-        return resultPendingIntent;
-    }
-
-    protected PendingIntent createPendingIntent(String appLinks) {
+    PendingIntent createMainPendingIntent(String appLinks, int requestCode) {
         PendingIntent resultPendingIntent;
         Intent intent = RouteManager.getIntent(context, appLinks);
         /*Bundle bundle = new Bundle();
@@ -207,14 +189,14 @@ public abstract class BaseNotification {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getActivity(
                     context,
-                    0,
+                    requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
             resultPendingIntent = PendingIntent.getActivity(
                     context,
-                    baseNotificationModel.getNotificationId(),
+                    getRequestCode(),
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
@@ -223,55 +205,39 @@ public abstract class BaseNotification {
         return resultPendingIntent;
     }
 
-    protected PendingIntent createDismissPendingIntent(int notificationId) {
+    PendingIntent createDismissPendingIntent(int notificationId, int requestCode) {
         Intent intent = new Intent(context, CMBroadcastReceiver.class);
         intent.setAction(CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
             return PendingIntent.getBroadcast(
                     context,
-                    notificationId,
+                    requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         }
     }
 
-
-    protected PendingIntent createCouponCodePendingIntent(String couponCode,String appLinks) {
-        PendingIntent resultPendingIntent;
-        Intent intent = new Intent(context, CMBroadcastReceiver.class);
-        intent.setAction(CMConstant.ReceiverAction.ACTION_ON_COPY_COUPON_CODE);
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
-        intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, couponCode);
-        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK, appLinks);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        } else {
-            resultPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    baseNotificationModel.getNotificationId(),
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
-        }
-        return resultPendingIntent;
-    }
-
-
-    protected long[] getVibratePattern() {
+    private long[] getVibratePattern() {
         return new long[]{500, 500};
     }
 
-    protected Uri getRingtoneUri() {
+    private Uri getRingtoneUri() {
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    }
+
+    protected int getRequestCode() {
+        if (cacheHandler == null)
+            cacheHandler = new CMNotificationCacheHandler();
+        int requestCode = cacheHandler.getIntValue(context, CM_REQUEST_CODE);
+        if (requestCode < 3000 || requestCode > 4000) {
+            requestCode = 3000;
+        }
+        cacheHandler.saveIntValue(context, CM_REQUEST_CODE, requestCode + 1);
+        return requestCode;
     }
 }
 

@@ -3049,6 +3049,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
         new IndiSession(activity).doLogout();
+
+        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
     }
 
     @Override

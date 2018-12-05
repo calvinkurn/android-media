@@ -19,10 +19,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import rx.Completable;
-import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -36,6 +33,7 @@ public class CMUserHandler {
 
     private UpdateFcmTokenUseCase updateFcmTokenUseCase;
 
+
     public CMUserHandler(Context context) {
         mContext = context;
     }
@@ -45,48 +43,53 @@ public class CMUserHandler {
                 .subscribeOn(Schedulers.io()).subscribe();
     }
 
-    public void sendFcmTokenToServer(String token) {
+    private void sendFcmTokenToServer(String token) {
+        try {
+            String userId = getUserId();
+            String gAdId = getGoogleAdId();
 
-        String userId = getUserId();
-        String gAdId = getGoogleAdId();
 
-        if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
-                CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
-                CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, getGoogleAdId())) {
+            Log.d(TAG, "UserState:" + CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()));
 
-            updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
-            RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
-                    userId,
-                    token,
-                    CMNotificationUtils.getSdkVersion(),
-                    CMNotificationUtils.getUniqueAppId(mContext),
-                    CMNotificationUtils.getCurrentAppVersion(mContext));
+            if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
+                    CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
+                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId)) {
 
-            updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
-                @Override
-                public void onCompleted() {
-                    Log.e(TAG, "onCompleted: sendFcmTokenToServer ");
-                }
+                updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
+                RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
+                        userId,
+                        token,
+                        CMNotificationUtils.getSdkVersion(),
+                        CMNotificationUtils.getUniqueAppId(mContext),
+                        CMNotificationUtils.getCurrentAppVersion(mContext),
+                        CMNotificationUtils.getUserStatus(mContext, userId));
 
-                @Override
-                public void onError(Throwable e) {
-                    Log.e(TAG, "CMPushNotificationManager: sendFcmTokenToServer " + e.getMessage());
-                }
-
-                @Override
-                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                    RestResponse res1 = typeRestResponseMap.get(String.class);
-                    Log.e("code", "" + res1.getCode());
-                    Log.e("data", "" + res1.getData());
-                    Log.e("error", "" + res1.getErrorBody());
-
-                    if (true) {
-                        CMNotificationUtils.saveToken(mContext, token);
-                        CMNotificationUtils.saveUserId(mContext, userId);
-                        CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
+                updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: sendFcmTokenToServer ");
                     }
-                }
-            });
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "CMPushNotificationManager: sendFcmTokenToServer " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                        RestResponse restResponse = typeRestResponseMap.get(String.class);
+                        Log.e(TAG, "Code:" + restResponse.getCode());
+                        Log.e(TAG, "Data:" + restResponse.getData());
+                        Log.e(TAG, "Error:" + restResponse.getErrorBody());
+                        if (restResponse.getCode() == 200) {
+                            CMNotificationUtils.saveToken(mContext, token);
+                            CMNotificationUtils.saveUserId(mContext, userId);
+                            CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -122,3 +125,4 @@ public class CMUserHandler {
     }
 
 }
+

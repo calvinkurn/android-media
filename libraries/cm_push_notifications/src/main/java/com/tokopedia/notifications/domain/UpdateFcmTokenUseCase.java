@@ -17,7 +17,7 @@ import java.util.List;
 public class UpdateFcmTokenUseCase extends RestRequestUseCase {
 
 
-    private static final String USER_ID = "userid";
+    private static final String USER_ID = "userId";
     private static final String SOURCE = "source";
     private static final String FCM_TOKEN = "token";
     private static final String APP_ID = "appId";
@@ -25,13 +25,14 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
     private static final String APP_VERSION = "appVersion";
     private static final String REQUEST_TIMESTAMP = "requestTimeStamp";
 
-    private static final String SOURCE_ANDROID = "ANDROID";
+    private static final String SOURCE_ANDROID = "android";
+    private static final String USER_STATE = "state";
 
 
     public UpdateFcmTokenUseCase() {
     }
 
-    public RequestParams createRequestParams(String userId, String token, int sdkVersion, String appId, int appVersion) {
+    public RequestParams createRequestParams(String userId, String token, int sdkVersion, String appId, int appVersion, String loginStatus) {
         RequestParams requestParams = RequestParams.create();
 
         if (userId != null && userId.length() > 0)
@@ -41,6 +42,7 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
         requestParams.putString(APP_ID, appId);
         requestParams.putString(SDK_VERSION, String.valueOf(sdkVersion));
         requestParams.putString(APP_VERSION, String.valueOf(appVersion));
+        requestParams.putString(USER_STATE, loginStatus);
         requestParams.putLong(REQUEST_TIMESTAMP, CMNotificationUtils.getCurrentLocalTimeStamp());
         return requestParams;
     }
