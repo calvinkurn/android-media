@@ -37,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.kolComponent)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.navigationCommon)

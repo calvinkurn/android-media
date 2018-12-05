@@ -52,15 +52,20 @@ import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
+import com.tokopedia.kolcomponent.view.adapter.post.DynamicPostTypeFactory;
+import com.tokopedia.kolcomponent.view.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.kolcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
 public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
-        implements FeedPlusTypeFactory, KolPostTypeFactory {
+        implements FeedPlusTypeFactory, KolPostTypeFactory, DynamicPostTypeFactory {
 
     private final FeedPlus.View viewListener;
     private final TopAdsItemClickListener topAdsItemClickListener;
@@ -192,6 +197,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(@NotNull DynamicPostViewModel dynamicPostViewModel) {
+        return DynamicPostViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -240,6 +250,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new ExploreViewHolder(view, kolPostListener);
         else if (type == WhitelistViewHolder.LAYOUT)
             viewHolder = new WhitelistViewHolder(view, viewListener);
+        else if (type == DynamicPostViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new DynamicPostViewHolder(view);
+        }
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

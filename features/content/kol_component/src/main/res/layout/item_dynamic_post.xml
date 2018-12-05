@@ -35,14 +35,14 @@
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_10"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="visible">
 
         <ImageView
             android:id="@+id/authorImage"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -62,7 +62,7 @@
             android:textColor="@color/black_70"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/authorSubtitile"
             app:layout_constraintEnd_toStartOf="@+id/actionBtn"
             app:layout_constraintHorizontal_bias="0.0"
@@ -84,7 +84,7 @@
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_10"
             android:textStyle="normal"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/actionBtn"
             app:layout_constraintHorizontal_bias="0.0"
@@ -100,7 +100,7 @@
             android:elevation="@dimen/dp_0"
             android:text="@string/kol_action_follow"
             android:textAllCaps="false"
-            android:visibility="gone"
+            android:visibility="visible"
             app:buttonCompatSize="small"
             app:buttonCompatType="primary"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -116,7 +116,7 @@
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:src="@drawable/ic_three_dots_more_menu"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -142,7 +142,7 @@
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="visible">
 
         <com.tokopedia.abstraction.base.view.widget.TouchViewPager
@@ -171,7 +171,7 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="visible">
 
         <TextView
@@ -185,7 +185,7 @@
             android:textColor="@color/medium_green"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:ignore="RtlSymmetry"
             tools:text="Info Vote Atau Enggak, Terserah dong"
             tools:visibility="visible" />
@@ -197,7 +197,7 @@
             android:contentDescription="@string/kol_action_like"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_thumb"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/likeText"
             app:layout_constraintTop_toTopOf="parent"
@@ -216,7 +216,7 @@
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:ignore="RtlSymmetry"
             tools:visibility="visible" />
 
@@ -227,7 +227,7 @@
             android:contentDescription="@string/kol_action_comment"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_comment"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:ignore="RtlSymmetry"
             tools:visibility="visible" />
 
@@ -244,7 +244,7 @@
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:ignore="RtlSymmetry"
             tools:visibility="visible" />
 
@@ -253,8 +253,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:visibility="gone"
-            tools:visibility="gone" />
+            android:visibility="visible"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/shareIcon"
@@ -263,7 +263,7 @@
             android:contentDescription="@string/kol_action_share"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_share_grey"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:visibility="visible" />
 
         <TextView
@@ -279,7 +279,7 @@
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:ignore="RtlSymmetry"
             tools:visibility="visible" />
     </LinearLayout>
