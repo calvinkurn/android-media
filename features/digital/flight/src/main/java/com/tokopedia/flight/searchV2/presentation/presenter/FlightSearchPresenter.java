@@ -20,6 +20,7 @@ import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCa
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchV2UseCase;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSortAndFilterUseCase;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
+import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchFragment;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightFareViewModel;
@@ -332,6 +333,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         callCounter++;
+                        getView().addProgress(countProgress());
                         if (isViewAttached() && isDoneLoadData()) {
                             if (e instanceof FlightException) {
                                 List<FlightError> errors = ((FlightException) e).getErrorList();
@@ -353,6 +355,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                         getView().onGetSearchMeta(flightSearchMetaViewModel);
                     }
                 });
+    }
+
+    private int countProgress() {
+        return FlightSearchFragment.MAX_PROGRESS / maxCall;
     }
 
     @Override

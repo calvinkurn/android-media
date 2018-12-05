@@ -360,6 +360,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
+    public void addProgress(int numberToAdd) {
+        progress += numberToAdd;
+    }
+
+    @Override
     public void addBottomPaddingForSortAndFilterActionButton() {
         float scale = getResources().getDisplayMetrics().density;
         getRecyclerView(getView()).setPadding(

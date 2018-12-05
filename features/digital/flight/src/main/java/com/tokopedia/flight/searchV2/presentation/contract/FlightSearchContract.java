@@ -44,6 +44,8 @@ public interface FlightSearchContract {
 
         void addToolbarElevation();
 
+        void addProgress(int numberToAdd);
+
         void addBottomPaddingForSortAndFilterActionButton();
 
         void setUIMarkFilter();
