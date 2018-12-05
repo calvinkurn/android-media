@@ -85,33 +85,32 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
                     for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                         if (channel.getLayout() != null) {
-                            if(!homeData.isCache()) {
-                                position++;
-                                if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
-                                    channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
-                                    HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                            context,
-                                            channel.getEnhanceImpressionSprintSaleHomePage(position)
-                                    );
-                                } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
-                                    channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
-                                    legoAndCuratedAndSprintSaleBannerList.addAll(
-                                            channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination()
-                                    );
-                                } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
-                                    channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
-                                    channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
-                                    legoAndCuratedAndSprintSaleBannerList.addAll(
-                                            channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
-                                    );
-                                } else {
-                                    channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
-                                    channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
-                                    legoAndCuratedAndSprintSaleBannerList.addAll(
-                                            channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
-                                    );
-                                }
+                            position++;
+                            if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
+                                channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
+                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        context,
+                                        channel.getEnhanceImpressionSprintSaleHomePage(position)
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
+                                channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination()
+                                );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
+                                channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
+                                channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
+                                );
+                            } else {
+                                channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
+                                channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
+                                );
                             }
+
                             if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
                                 list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
                             } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
