@@ -68,6 +68,7 @@ include "features:payment:payment"
 include "features:payment:pms"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
+//include "features:payment:payment_setting_no_op"
 
 include "features:product:gallery"
 

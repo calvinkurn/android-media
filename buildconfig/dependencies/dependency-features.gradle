@@ -191,6 +191,7 @@ ext {
 
             payment                 : ":features:payment:payment",
             paymentSetting          : ":features:payment:payment_setting",
+//            paymentSetting          : ":features:payment:payment_setting_no_op",
             paymentManagementSystem : ":features:payment:pms",
             withdraw                : ":features:payment:withdraw",
 
