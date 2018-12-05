@@ -8,23 +8,19 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.view.di.component.CartComponent;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierModule;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +32,7 @@ import javax.inject.Inject;
  */
 
 public class ShippingCourierBottomsheet extends BottomSheets
-        implements ShippingCourierContract.View, HasComponent<CartComponent>, ShippingCourierAdapterListener {
+        implements ShippingCourierContract.View, ShippingCourierAdapterListener {
 
     public static final String ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST";
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
@@ -90,7 +86,6 @@ public class ShippingCourierBottomsheet extends BottomSheets
 
     private void initializeInjector() {
         ShippingCourierComponent component = DaggerShippingCourierComponent.builder()
-                .cartComponent(getComponent())
                 .shippingCourierModule(new ShippingCourierModule())
                 .build();
 
@@ -147,11 +142,6 @@ public class ShippingCourierBottomsheet extends BottomSheets
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvCourier.setLayoutManager(linearLayoutManager);
         rvCourier.setAdapter(shippingCourierAdapter);
-    }
-
-    @Override
-    public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent();
     }
 
     @Override
