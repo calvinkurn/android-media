@@ -12,11 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -26,7 +28,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
-import com.tokopedia.topads.sdk.utils.GridSpaceItemDecoration;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
@@ -36,6 +37,8 @@ import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by errysuprayogi on 7/20/18.
  */
@@ -43,7 +46,6 @@ import java.util.List;
 public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAdsClickListener, View.OnClickListener {
 
     private static final String TAG = TopAdsCarouselView.class.getSimpleName();
-    private TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
     private TopAdsListener adsListener;
@@ -55,21 +57,27 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private TextView title;
     private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
 
+    @Inject
+    TopAdsPresenter presenter;
+
     public TopAdsCarouselView(Context context) {
         super(context);
         inflateView(context, null, 0);
+        initInjector();
         initPresenter();
     }
 
     public TopAdsCarouselView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         inflateView(context, attrs, 0);
+        initInjector();
         initPresenter();
     }
 
     public TopAdsCarouselView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflateView(context, attrs, defStyleAttr);
+        initInjector();
         initPresenter();
     }
 
@@ -117,12 +125,16 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
 
     @Override
     public void initInjector() {
-
+        BaseMainApplication application = ((BaseMainApplication) getContext().getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
     }
 
     @Override
     public void initPresenter() {
-        presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
         presenter.setEndpoinParam("1");
     }
@@ -198,6 +210,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         if (adsItemClickListener != null) {
             adsItemClickListener.onAddWishList(position, data);
         }
+        presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 
     @Override

@@ -210,7 +210,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         if (adsItemClickListener != null) {
             adsItemClickListener.onAddWishList(position, data);
         }
-        Log.d(TAG, "onAddWishLish data "+data.getProduct().getName());
         presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 

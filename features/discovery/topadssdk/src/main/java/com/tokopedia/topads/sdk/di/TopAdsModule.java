@@ -11,6 +11,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsWishlistService;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
+import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.user.session.UserSession;
 
@@ -72,6 +73,12 @@ public class TopAdsModule {
     @Provides
     UserSession provideUserSession(@ApplicationContext Context context){
         return new UserSession(context);
+    }
+
+    @TopAdsScope
+    @Provides
+    BannerAdsPresenter provideBannerAdsPresenter(@ApplicationContext Context context){
+        return new BannerAdsPresenter(context);
     }
 
     @TopAdsScope

@@ -9,9 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -19,12 +22,15 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by errysuprayogi on 2/20/18.
@@ -45,19 +51,34 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private DisplayMode mode = DisplayMode.GRID;
     private TypedArray styledAttributes;
 
+    @Inject
+    TopAdsPresenter presenter;
+
     public TopAdsWidgetView(Context context) {
         super(context);
         inflateView(context, null, 0);
+        initInjector();
+    }
+
+    private void initInjector() {
+        BaseMainApplication application = ((BaseMainApplication) getContext().getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
     }
 
     public TopAdsWidgetView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         inflateView(context, attrs, 0);
+        initInjector();
     }
 
     public TopAdsWidgetView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflateView(context, attrs, defStyleAttr);
+        initInjector();
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
@@ -130,6 +151,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         if(data.getProductWishlistUrl()!=null && itemClickListener!=null) {
             itemClickListener.onAddWishList(position, data);
         }
+        presenter.trackWishlistUrl(data.getProductWishlistUrl());
     }
 
     public void setItemClickListener(TopAdsItemClickListener itemClickListener) {
