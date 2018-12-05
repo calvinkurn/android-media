@@ -1519,9 +1519,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (!shipmentAdapter.isCourierPromoStillExist() && shipmentPresenter.getPromoCodeAppliedData() != null &&
                     !TextUtils.isEmpty(shipmentPresenter.getPromoCodeAppliedData().getPromoCode())) {
                 promoCode = shipmentPresenter.getPromoCodeAppliedData().getPromoCode();
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, true);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(
+                        promoCode, itemPosition, true, isOneClickShipment()
+                );
             } else {
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, false);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(
+                        promoCode, itemPosition, false, isOneClickShipment()
+                );
             }
         }
     }
