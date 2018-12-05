@@ -70,6 +70,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView ivIconFreeReturn;
     private TextView tvInfoPreOrder;
     private TextView tvInfoCashBack;
+    private TextView tvCodBadge;
     private AppCompatEditText etRemark;
     private TextView tvLabelRemarkOption;
     private ImageView btnDelete;
@@ -114,6 +115,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.ivIconFreeReturn = itemView.findViewById(R.id.iv_free_return_icon);
         this.tvInfoPreOrder = itemView.findViewById(R.id.tv_pre_order);
         this.tvInfoCashBack = itemView.findViewById(R.id.tv_cashback);
+        this.tvCodBadge = itemView.findViewById(R.id.tv_cod);
         this.tvLabelRemarkOption = itemView.findViewById(R.id.tv_label_remark_option);
         this.etRemark = itemView.findViewById(R.id.et_remark);
         this.btnDelete = itemView.findViewById(R.id.btn_delete_cart);
