@@ -3,7 +3,7 @@
 
     <string name="travel_passenger_error_salutation">Sapaan harus dipilih</string>
     <string name="travel_passenger_error_first_name">Nama Depan harus diisi</string>
-    <string name="travel_passenger_error_last_name">Nama Belakang harus diisi</string>
+    <string name="travel_passenger_error_last_name">Jika nama belakang tidak tersedia, mohon isi dengan nama depan</string>
     <string name="travel_passenger_error_identity_number">Nomor Identitas harus diisi</string>
     <string name="travel_passenger_error_identity_number_min">Nomor Identitas minimal 5 huruf</string>
     <string name="travel_passenger_error_identity_number_max">Nomor Identitas maksimal 20 huruf</string>
