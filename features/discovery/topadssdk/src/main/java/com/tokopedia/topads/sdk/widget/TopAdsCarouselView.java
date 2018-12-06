@@ -144,7 +144,6 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         presenter.setEndpoinParam("1");
     }
 
-    @Override
     public void setMaxItems(int items) {
         presenter.setMaxItems(items);
     }
@@ -154,7 +153,6 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         presenter.setDisplayMode(displayMode);
     }
 
-    @Override
     public void loadTopAds() {
         presenter.loadTopAds();
     }

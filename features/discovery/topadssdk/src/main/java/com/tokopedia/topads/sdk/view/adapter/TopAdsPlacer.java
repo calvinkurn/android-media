@@ -140,7 +140,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         presenter.attachView(this);
     }
 
-    @Override
     public void setMaxItems(int items) {
         presenter.setMaxItems(items);
     }
@@ -193,7 +192,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         adsItems.clear();
     }
 
-    @Override
     public void loadTopAds() {
         presenter.getTopAdsParam().setAdsPosition(ajustedPositionStart == 0 ? ajustedPositionStart : getItemCount());
         presenter.getTopAdsParam().getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
