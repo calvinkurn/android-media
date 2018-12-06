@@ -262,7 +262,7 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
 
     @Override
     public void showErrorAddWishlist() {
-        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_error_add_wishlist),
+        SnackbarManager.makeRed(getRootView(), getString(R.string.msg_error_add_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
@@ -274,7 +274,7 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
 
     @Override
     public void showErrorRemoveWishlist() {
-        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_error_remove_wishlist),
+        SnackbarManager.makeRed(getRootView(), getString(R.string.msg_error_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 }

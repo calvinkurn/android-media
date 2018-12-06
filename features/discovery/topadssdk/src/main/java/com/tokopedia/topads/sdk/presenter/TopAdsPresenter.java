@@ -239,6 +239,8 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
                         data.getProduct().setWishlist(wishlistModel.getData().isSuccess());
                         adsView.notifyAdapter();
                         adsView.showSuccessAddWishlist();
+                    } else if (isViewAttached()) {
+                        adsView.showErrorAddWishlist();
                     }
                 }
             });

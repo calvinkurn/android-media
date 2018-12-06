@@ -366,7 +366,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void showErrorAddWishlist() {
-        SnackbarManager.makeGreen(recyclerView.getRootView(), getString(R.string.msg_error_add_wishlist),
+        SnackbarManager.makeRed(recyclerView.getRootView(), getString(R.string.msg_error_add_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
@@ -378,7 +378,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void showErrorRemoveWishlist() {
-        SnackbarManager.makeGreen(recyclerView.getRootView(), getString(R.string.msg_error_remove_wishlist),
+        SnackbarManager.makeRed(recyclerView.getRootView(), getString(R.string.msg_error_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 }
