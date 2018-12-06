@@ -1,11 +1,7 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="Theme.White.MenuSmall" parent="Theme.White">
+        <item name="textAllCaps">false</item>
     </style>
 
     <style name="TravelButtonRound">
@@ -34,6 +30,13 @@
     <style name="WidgetSelectPassengerViewIcon">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
+    </style>
+
+    <style name="InputLabel">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
     </style>
 
 </resources>
