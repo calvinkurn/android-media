@@ -35,7 +35,7 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initPresenter();
-        ButterKnife.bind(this);
+        bindViews();
         mPresenter.attachView(this);
     }
 
@@ -104,5 +104,14 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
 
     private BaseAppComponent getBaseAppComponent() {
         return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    }
+
+    private void bindViews() {
+        ButterKnife.bind(this);
+        bindCustomViews();
+    }
+
+    protected void bindCustomViews() {
+
     }
 }

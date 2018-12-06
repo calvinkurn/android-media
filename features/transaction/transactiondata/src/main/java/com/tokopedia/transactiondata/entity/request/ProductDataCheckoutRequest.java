@@ -12,6 +12,9 @@ public class ProductDataCheckoutRequest {
     @SerializedName("product_id")
     @Expose
     public int productId;
+    @SerializedName("is_ppp")
+    @Expose
+    public boolean isPurchaseProtection;
 
     private String productName;
     private String productPrice;
@@ -28,6 +31,7 @@ public class ProductDataCheckoutRequest {
 
     private ProductDataCheckoutRequest(Builder builder) {
         productId = builder.productId;
+        isPurchaseProtection = builder.isPurchaseProtection;
         productName = builder.productName;
         productPrice = builder.productPrice;
         productBrand = builder.productBrand;
@@ -44,6 +48,10 @@ public class ProductDataCheckoutRequest {
 
     public int getProductId() {
         return productId;
+    }
+
+    public boolean isPurchaseProtection() {
+        return isPurchaseProtection;
     }
 
     public String getProductName() {
@@ -97,6 +105,7 @@ public class ProductDataCheckoutRequest {
 
     public static final class Builder {
         private int productId;
+        private boolean isPurchaseProtection;
         private String productName;
         private String productPrice;
         private String productBrand;
@@ -115,6 +124,11 @@ public class ProductDataCheckoutRequest {
 
         public Builder productId(int val) {
             productId = val;
+            return this;
+        }
+
+        public Builder purchaseProtection(boolean val) {
+            isPurchaseProtection = val;
             return this;
         }
 

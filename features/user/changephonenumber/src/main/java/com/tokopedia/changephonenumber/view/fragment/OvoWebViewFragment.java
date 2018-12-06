@@ -21,7 +21,9 @@ public class OvoWebViewFragment extends BaseSessionWebViewFragment{
     }
     @Override
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if (RouteManager.isSupportApplink(getContext(), url)) {
+        if (getContext() != null
+                && getContext().getApplicationContext() != null
+                && RouteManager.isSupportApplink(getContext(), url)) {
             RouteManager.route(getContext(), url);
             return true;
         }

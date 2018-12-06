@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">user_identification_common</string>
+
+    <string name="alert_not_verified_text">Akun toko Anda belum melakukan proses verifikasi.
+        Verifikasi sekarang</string>
+    <string name="alert_not_verified_highlight_text">Verifikasi sekarang</string>
+
+    <string name="alert_waiting_verification_text">Akun toko Anda sedang dalam proses menunggu
+        verifikasi. Lihat status</string>
+    <string name="alert_waiting_verification_highlight_text">Lihat status</string>
+
+    <string name="alert_failed_verification_text">Verifikasi akun toko anda gagal diproses.
+    Verifikasi ulang</string>
+    <string name="alert_failed_verification_highlight_text">Verifikasi ulang</string>
+
+    <string name="ticker_unverified"><![CDATA[Lakukan proses verifikasi untuk mendapatkan lebih
+        banyak keuntungan. <font color=\'#42b549\'><a href="https://m.tokopedia.com/terms/merchantkyc">Lihat keuntungan</a></font>
+]]></string>
+
+</resources>
