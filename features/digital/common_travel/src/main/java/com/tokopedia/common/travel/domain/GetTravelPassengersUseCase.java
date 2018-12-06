@@ -17,12 +17,14 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by nabillasabbaha on 14/08/18.
@@ -33,9 +35,14 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
     private GraphqlUseCase graphqlUseCase;
     private TravelPassengerDataStoreFactory travelPassengerDataStoreFactory;
     private boolean resetPassengerListSelected;
+    private String idPassengerSelected;
 
     public void setResetPassengerListSelected(boolean resetPassengerListSelected) {
         this.resetPassengerListSelected = resetPassengerListSelected;
+    }
+
+    public void setTravelPassengerSelected(String idPassengerSelected) {
+        this.idPassengerSelected = idPassengerSelected;
     }
 
     @Inject
@@ -83,12 +90,43 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
                         return travelPassengerDataStoreFactory.getPassengerListLocal(travelPassengerEntities, resetPassengerListSelected, new TravelPassengerListSpecification());
                     }
                 })
-                .map(new Func1<List<TravelPassenger>, List<TravelPassenger>>() {
+                .flatMap(new Func1<List<TravelPassenger>, Observable<List<TravelPassenger>>>() {
                     @Override
-                    public List<TravelPassenger> call(List<TravelPassenger> travelPassengers) {
-                        return travelPassengers;
+                    public Observable<List<TravelPassenger>> call(List<TravelPassenger> travelPassengers) {
+                        return Observable.zip(getPassengerNotSelected(travelPassengers), getPassengerSelected(travelPassengers),
+                                new Func2<List<TravelPassenger>, List<TravelPassenger>, List<TravelPassenger>>() {
+                                    @Override
+                                    public List<TravelPassenger> call(List<TravelPassenger> travelPassengerNotSelected, List<TravelPassenger> travelPassengersSelected) {
+                                        List<TravelPassenger> travelPassengerList = new ArrayList<>();
+                                        travelPassengerList.addAll(travelPassengerNotSelected);
+                                        travelPassengerList.addAll(travelPassengersSelected);
+                                        return travelPassengerList;
+                                    }
+                                });
                     }
                 });
+    }
+
+    private Observable<List<TravelPassenger>> getPassengerNotSelected(List<TravelPassenger> travelPassengers) {
+        return Observable.from(travelPassengers)
+                .filter(new Func1<TravelPassenger, Boolean>() {
+                    @Override
+                    public Boolean call(TravelPassenger travelPassenger) {
+                        return !travelPassenger.isSelected() ||
+                                travelPassenger.getIdPassenger().equals(idPassengerSelected);
+                    }
+                }).toList();
+    }
+
+    private Observable<List<TravelPassenger>> getPassengerSelected(List<TravelPassenger> travelPassengers) {
+        return Observable.from(travelPassengers)
+                .filter(new Func1<TravelPassenger, Boolean>() {
+                    @Override
+                    public Boolean call(TravelPassenger travelPassenger) {
+                        return travelPassenger.isSelected() &&
+                                !travelPassenger.getIdPassenger().equals(idPassengerSelected);
+                    }
+                }).toList();
     }
 
     public void unsubscribe() {

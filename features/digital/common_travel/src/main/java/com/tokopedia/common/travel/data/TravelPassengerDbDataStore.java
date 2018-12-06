@@ -4,6 +4,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
@@ -13,6 +14,7 @@ import com.tokopedia.common.travel.database.TravelPassengerDb_Table;
 import com.tokopedia.common.travel.domain.TravelPassengerMapper;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -167,6 +169,7 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
                 List<TravelPassengerDb> travelPassengerDbList = new Select()
                         .from(TravelPassengerDb.class)
                         .where(conditions)
+                        .orderBy(OrderBy.fromProperty(TravelPassengerDb_Table.name).ascending())
                         .queryList();
 
                 subscriber.onNext(travelPassengerDbList);
