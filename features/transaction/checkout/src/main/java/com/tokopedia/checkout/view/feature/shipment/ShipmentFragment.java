@@ -56,6 +56,7 @@ import com.tokopedia.checkout.view.feature.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierBottomsheetListener;
@@ -319,6 +320,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
             );
         }
+//        TODO : if(isCodAvailable())
+        shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
         shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
         shipmentPresenter.setCartItemPromoHolderData(cartItemPromoHolderData);
         if (promoCodeAppliedData != null) {
