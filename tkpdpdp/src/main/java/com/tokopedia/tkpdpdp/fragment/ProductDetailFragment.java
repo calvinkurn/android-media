@@ -2057,16 +2057,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
             toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.grey_toolbar_icon));
             toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_pdp_dark);
             if (menu != null && menu.size() > 2) {
-                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share));
+                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_dark));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_dark));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_pdp_dark));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
             }
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more));
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_overflow_pdp_dark));
         }
     }
 
@@ -2075,16 +2075,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getActivity(), R.color.white));
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
             toolbar.setBackgroundColor(Color.TRANSPARENT);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_pdp_light);
             if (menu != null && menu.size() > 1) {
-                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share_white));
+                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_light));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
                 menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
             }
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more_white));
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_overflow_pdp_light));
         }
     }
 
