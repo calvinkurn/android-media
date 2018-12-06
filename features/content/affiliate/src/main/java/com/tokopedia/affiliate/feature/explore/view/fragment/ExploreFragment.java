@@ -264,6 +264,7 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         dropKeyboard();
+        searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, true);
