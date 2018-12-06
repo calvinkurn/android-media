@@ -71,28 +71,48 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     @Override
     public void setContentView(View view) {
-        View contentView = inflateCustomView(view, "");
+        View contentView = inflateCustomView(view,true, "", true);
         super.setContentView(contentView);
     }
 
     public void setContentView(View view, String title) {
-        View contentView = inflateCustomView(view, title);
+        View contentView = inflateCustomView(view, true, title, true);
         super.setContentView(contentView);
     }
 
-    private View inflateCustomView(View view, String title) {
+    public void setCustomContentView(View view, boolean hasHeader, String title, boolean hasCloseButton) {
+        View contentView = inflateCustomView(view, hasHeader, title, hasCloseButton);
+        super.setContentView(contentView);
+    }
+
+    private View inflateCustomView(View view, boolean hasHeader, String title, boolean hasCloseButton) {
+        View contentView = inflateBasicView(view, title);
+        ImageView closeButton = contentView.findViewById(R.id.close_button);
+        if (!hasHeader) {
+            closeButton.setVisibility(View.GONE);
+            contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
+            ((TextView)closeButton.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
+        } else {
+            if (hasCloseButton) {
+                closeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dismiss();
+                        closeListener.onCloseDialog();
+                    }
+                });
+            } else
+                closeButton.setVisibility(View.GONE);
+        }
+
+        return contentView;
+    }
+
+    private View inflateBasicView(View view, String title) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                 .closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
-        ImageView closeButton = contentView.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                closeListener.onCloseDialog();
-            }
-        });
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

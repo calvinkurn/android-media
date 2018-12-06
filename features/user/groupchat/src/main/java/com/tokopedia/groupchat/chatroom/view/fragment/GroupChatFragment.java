@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
@@ -48,6 +49,7 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.InteruptViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
@@ -511,6 +513,55 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         return view;
     }
 
+    private void showInteruptDialog(final InteruptViewModel model) {
+        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        View view = createInteruptView(model);
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                    view.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        dialog.setCustomContentView(view, model.isHasHeader(), model.getBubbleTitle(), model.isHasCloseButton());
+        dialog.show();
+    }
+
+
+    private View createInteruptView(final InteruptViewModel model) {
+        View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
+
+        if (!TextUtils.isEmpty(model.getImageUrl()))
+            ImageHandler.loadImageRounded2(getActivity(),(ImageView) view.findViewById(R.id.ivImage), model.getImageUrl());
+        else
+            ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(model.getTitle()))
+            ((TextView) view.findViewById(R.id.tvTitle)).setText(MethodChecker.fromHtml(model.getTitle()));
+        else
+            ((TextView) view.findViewById(R.id.tvTitle)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(model.getDescription()))
+            ((TextView) view.findViewById(R.id.tvDesc)).setText(MethodChecker.fromHtml(model.getDescription()));
+        else
+            ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(model.getCtaButton()))
+            ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(model.getCtaButton()));
+        else
+            ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
+
+
+
+        return view;
+    }
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
