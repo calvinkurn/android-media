@@ -9,6 +9,7 @@ import com.tokopedia.topads.sdk.base.AuthInterceptor;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsWishlistService;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
@@ -26,6 +27,13 @@ import retrofit2.Retrofit;
 @Module
 public class TopAdsModule {
 
+    @TopAdsScope
+    @Provides
+    public TopAdsGqlUseCase provideTopAdsGqlUseCase(@ApplicationContext Context context){
+        return new TopAdsGqlUseCase(context);
+    }
+
+    @TopAdsScope
     @Provides
     public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         if (context instanceof NetworkRouter) {
