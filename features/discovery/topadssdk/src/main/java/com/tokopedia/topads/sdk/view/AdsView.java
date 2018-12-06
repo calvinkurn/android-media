@@ -35,4 +35,12 @@ public interface AdsView {
     void doLogin();
 
     void notifyAdapter();
+
+    void showSuccessAddWishlist();
+
+    void showErrorAddWishlist();
+
+    void showSuccessRemoveWishlist();
+
+    void showErrorRemoveWishlist();
 }

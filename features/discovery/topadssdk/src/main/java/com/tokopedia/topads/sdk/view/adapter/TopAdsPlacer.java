@@ -2,10 +2,13 @@ package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -355,5 +358,29 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     @Override
     public void notifyAdapter() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showSuccessAddWishlist() {
+        SnackbarManager.makeGreen(recyclerView, getString(R.string.msg_success_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorAddWishlist() {
+        SnackbarManager.makeGreen(recyclerView, getString(R.string.msg_error_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showSuccessRemoveWishlist() {
+        SnackbarManager.makeGreen(recyclerView, getString(R.string.msg_success_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorRemoveWishlist() {
+        SnackbarManager.makeGreen(recyclerView, getString(R.string.msg_error_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
     }
 }

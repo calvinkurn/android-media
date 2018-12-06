@@ -229,6 +229,8 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
                 @Override
                 public void onError(Throwable e) {
                     Log.e(TAG, e.getLocalizedMessage());
+                    if(isViewAttached())
+                        adsView.showErrorAddWishlist();
                 }
 
                 @Override
@@ -236,6 +238,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
                     if (wishlistModel.getData() != null && isViewAttached()) {
                         data.getProduct().setWishlist(wishlistModel.getData().isSuccess());
                         adsView.notifyAdapter();
+                        adsView.showSuccessAddWishlist();
                     }
                 }
             });
@@ -271,13 +274,17 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
             @Override
             public void onErrorRemoveWishlist(String errorMessage, String productId) {
                 data.getProduct().setWishlist(true);
+                if(isViewAttached())
+                    adsView.showErrorRemoveWishlist();
             }
 
             @Override
             public void onSuccessRemoveWishlist(String productId) {
                 data.getProduct().setWishlist(false);
-                if (isViewAttached())
+                if (isViewAttached()) {
                     adsView.notifyAdapter();
+                    adsView.showSuccessRemoveWishlist();
+                }
             }
 
             @Override

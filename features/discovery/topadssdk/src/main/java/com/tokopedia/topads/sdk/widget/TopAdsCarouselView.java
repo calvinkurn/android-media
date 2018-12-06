@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
@@ -247,5 +249,29 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     @Override
     public void notifyAdapter() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showSuccessAddWishlist() {
+        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_success_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorAddWishlist() {
+        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_error_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showSuccessRemoveWishlist() {
+        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_success_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorRemoveWishlist() {
+        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_error_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
     }
 }
