@@ -13,6 +13,8 @@ import android.util.AttributeSet;
 
 import com.tokopedia.design.R;
 
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
+
 /**
  * Created by meta on 16/03/18.
  */
@@ -115,7 +117,7 @@ public class ButtonCompat extends AppCompatButton {
     private void initSize(float textSize, int height) {
         setMinHeight(height);
         setMinimumHeight(height);
-        setTextSize(textSize);
+        setTextSize(COMPLEX_UNIT_SP, textSize);
     }
 
     public int getButtonCompatType() {

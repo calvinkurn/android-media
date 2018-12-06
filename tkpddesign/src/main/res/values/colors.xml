@@ -8,6 +8,16 @@
     <color name="colorPrimaryDark">@color/green_600</color>
     <color name="colorAccent">@color/green_400</color>
 
+    <color name="default_light_bg">#F1F1F1</color>
+    <color name="default_dark_bg">#212121</color>
+
+    <color name="lightprimary">#b3000000</color>
+    <color name="lightsecondary">#8b000000</color>
+    <color name="lightdisabled">#61000000</color>
+    <color name="darkprimary">#FFFFFF</color>
+    <color name="darksecondary">#8bffffff</color>
+    <color name="darkdisabled">#61FFFFFF</color>
+
     <color name="light_green">#F3FEF3</color>
     <color name="medium_green_50">#8042b549</color>
     <color name="strong_green">#7cb211</color>
