@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
@@ -61,6 +62,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private UserIdentificationStepperModel stepperModel;
 
     private StepperListener stepperListener;
+    private UserIdentificationAnalytics analytics;
 
     @Inject
     UserIdentificationUploadImage.Presenter presenter;
@@ -80,7 +82,20 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         }
         if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+        } else if (savedInstanceState != null){
+            stepperModel = savedInstanceState.getParcelable(BaseUserIdentificationStepperFragment
+                    .EXTRA_KYC_STEPPER_MODEL);
         }
+        if (getActivity() != null) {
+            analytics = UserIdentificationAnalytics.createInstance(getActivity()
+                    .getApplicationContext());
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(BaseUserIdentificationStepperFragment.EXTRA_KYC_STEPPER_MODEL, stepperModel);
+        super.onSaveInstanceState(outState);
     }
 
     @Nullable
@@ -97,6 +112,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         hideLoading();
+        analytics.eventViewFinalForm();
     }
 
     @Override
@@ -137,6 +153,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickUploadPhotos();
                 uploadImage();
             }
         });
