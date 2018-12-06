@@ -217,6 +217,7 @@ public class ExploreFragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                presenter.unsubscribeAutoComplete();
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
                 if (exploreParams.isCanLoadMore()
@@ -357,6 +358,7 @@ public class ExploreFragment
                     presenter.getFirstData(exploreParams, false);
                 }
         );
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override
@@ -370,6 +372,7 @@ public class ExploreFragment
         }
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override
@@ -393,6 +396,7 @@ public class ExploreFragment
         adapter.clearAllElements();
         adapter.addElement(new ExploreEmptySearchViewModel());
         exploreParams.disableLoadMore();
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override
