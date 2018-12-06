@@ -215,31 +215,30 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     }
 
     @Override
-    public void trackWishlistUrl(String wishlistUrl) {
-        RequestParams params = RequestParams.create();
-        params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl);
-        wishlishedUseCase.execute(params, new Subscriber<WishlistModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(WishlistModel wishlistModel) {
-                Log.d(TAG, "trackWishlistUrl successs " + wishlistModel.getData().isSuccess());
-            }
-        });
-    }
-
     public void addWishlist(Data data) {
         if (userSession.isLoggedIn()) {
-            addWishListUseCase.createObservable(data.getProduct().getId(), userSession.getUserId(),
-                    getWishlistActionListener(data));
+
+            RequestParams params = RequestParams.create();
+            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, data.getProductWishlistUrl());
+            wishlishedUseCase.execute(params, new Subscriber<WishlistModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, e.getLocalizedMessage());
+                }
+
+                @Override
+                public void onNext(WishlistModel wishlistModel) {
+                    if (wishlistModel.getData() != null && isViewAttached()) {
+                        data.getProduct().setWishlist(wishlistModel.getData().isSuccess());
+                        adsView.notifyAdapter();
+                    }
+                }
+            });
         } else if (isViewAttached()) {
             adsView.doLogin();
         }
@@ -267,7 +266,6 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
                 data.getProduct().setWishlist(true);
                 if (isViewAttached())
                     adsView.notifyAdapter();
-                trackWishlistUrl(data.getProductWishlistUrl());
             }
 
             @Override
