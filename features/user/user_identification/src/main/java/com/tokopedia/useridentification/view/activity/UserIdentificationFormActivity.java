@@ -29,6 +29,10 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     private List<Fragment> fragmentList;
     private SnackbarRetry snackbar;
 
+    public interface Listener {
+        void trackOnBackPressed();
+    }
+
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, UserIdentificationFormActivity.class);
         Bundle bundle = new Bundle();
@@ -81,6 +85,14 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
         if (snackbar != null && snackbar.isShown()) {
             snackbar.hideRetrySnackbar();
         }
+    }
+
+    @Override
+    protected void onBackEvent() {
+        if (getListFragment().get(currentPosition) instanceof Listener){
+            ((Listener) getListFragment().get(currentPosition)).trackOnBackPressed();
+        }
+        super.onBackEvent();
     }
 
     @Override
