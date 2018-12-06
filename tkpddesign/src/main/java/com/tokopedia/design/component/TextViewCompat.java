@@ -19,7 +19,7 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
  *
  * fontSize = headline, subheadline, title big, title, small, micro
  * weight = regular, medium
- * theme = lightprimary, lightsecondary, lightdisabled, darkprimary, darksecondary, darkdisabled
+ * textviewTheme = lightprimary, lightsecondary, lightdisabled, darkprimary, darksecondary, darkdisabled
  *
  * http://product.tkp.me/styles/typography/design
  */
