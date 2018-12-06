@@ -14,15 +14,17 @@ public class InteruptViewModel implements Parcelable {
     String imageUrl;
     String description;
     String ctaButton;
+    String ctaUrl;
     boolean hasCloseButton;
     boolean hasHeader;
 
-    public InteruptViewModel(String bubbleTitle, String title, String imageUrl, String description, String ctaButton, boolean hasCloseButton, boolean hasHeader) {
+    public InteruptViewModel(String bubbleTitle, String title, String imageUrl, String description, String ctaButton, String ctaUrl, boolean hasCloseButton, boolean hasHeader) {
         this.bubbleTitle = bubbleTitle;
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
         this.ctaButton = ctaButton;
+        this.ctaUrl = ctaUrl;
         this.hasCloseButton = hasCloseButton;
         this.hasHeader = hasHeader;
     }
@@ -57,6 +59,14 @@ public class InteruptViewModel implements Parcelable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getCtaUrl() {
+        return ctaUrl;
+    }
+
+    public void setCtaUrl(String ctaUrl) {
+        this.ctaUrl = ctaUrl;
     }
 
     public String getDescription() {
@@ -95,6 +105,7 @@ public class InteruptViewModel implements Parcelable {
         dest.writeString(this.imageUrl);
         dest.writeString(this.description);
         dest.writeString(this.ctaButton);
+        dest.writeString(this.ctaUrl);
         dest.writeByte(this.hasCloseButton ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasHeader ? (byte) 1 : (byte) 0);
     }
@@ -105,6 +116,7 @@ public class InteruptViewModel implements Parcelable {
         this.imageUrl = in.readString();
         this.description = in.readString();
         this.ctaButton = in.readString();
+        this.ctaUrl = in.readString();
         this.hasCloseButton = in.readByte() != 0;
         this.hasHeader = in.readByte() != 0;
     }

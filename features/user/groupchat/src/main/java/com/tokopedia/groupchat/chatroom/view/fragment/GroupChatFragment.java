@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
@@ -553,11 +554,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         else
             ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(model.getCtaButton()))
+        if (!TextUtils.isEmpty(model.getCtaButton())) {
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(model.getCtaButton()));
-        else
+            ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
+                RouteManager.route(getActivity(), model.getCtaUrl());
+            });
+        } else
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
-
 
 
         return view;
@@ -1081,5 +1084,17 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         return adapter.getList();
     }
 
-
+    @Override
+    public void onShowInterupt() {
+        showInteruptDialog(
+                new InteruptViewModel(
+                        "Bubble Title",
+                        "title",
+                        "",
+                        "description",
+                        "Start Vote",
+                        "tokopedia://affiliate/explore",
+                        true,
+                        true));
+    }
 }
