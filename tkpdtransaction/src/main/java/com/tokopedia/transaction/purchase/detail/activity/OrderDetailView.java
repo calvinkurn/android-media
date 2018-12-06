@@ -92,6 +92,8 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
 
     void showSnackbar(String errorMessage);
 
+    void showSnackbarWithCloseButton(String errorMessage);
+
     void dismissSellerActionFragment();
 
     void dismissRejectOrderActionFragment();

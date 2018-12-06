@@ -98,6 +98,9 @@ include "features:user:sessioncommon"
 include "features:user:talk"
 include "features:user:topchat"
 include "features:user:updateinactivephone"
+include "features:user:user_identification"
+//include "features:user:user_identification_no_op"
+include "features:user:user_identification_common"
 include "features:user:vote"
 
 include 'logisticanalytics'

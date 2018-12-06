@@ -16,5 +16,6 @@
     <color name="topchat_admin_label_shape_color">#ffeaac</color>
     <color name="topchat_seller_label_shape_color">#daf5db</color>
     <color name="time_color">#909090</color>
+    <color name="tkpd_yellow_status">#FFF6BF</color>
 
 </resources>

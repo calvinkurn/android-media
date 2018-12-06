@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kyc_intro_title">Verifikasi Dokumen Data Diri</string>
+    <string name="kyc_intro_text">Demi keamanan akun Anda, lakukan verifikasi dokumen data diri dengan unggah foto KTP.</string>
+    <string name="kyc_intro_button">Lanjut</string>
+    
+    <string name="kyc_pending_title">Menunggu Verifikasi</string>
+    <string name="kyc_pending_text">Kami akan memverifikasi dokumen Anda dalam 1x24 jam.\n\nHasil verifikasi akan dikirim melalui Email dan Chat Tokopedia.</string>
+    
+    <string name="kyc_failed_title">Gagal Verifikasi</string>
+    <string name="kyc_failed_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.\n\nSilakan unggah ulang dokumen Anda. Pastikan foto tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
+    <string name="kyc_failed_button">Unggah Ulang</string>
+    
+    <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
+    <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan dan terlindungi dengan aman di dalam sistem Tokopedia.</string>
+    <string name="kyc_verified_button">Info Selengkapnya</string>
+
+    <string name="ktp_title">Foto Bagian Depan KTP</string>
+    <string name="ktp_subtitle">Gunakan KTP asli, bukan hasil fotokopi. Pastikan seluruh bagian KTP tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
+    <string name="ktp_button">Ambil Foto KTP</string>
+
+    <string name="face_title">Foto Diri Bersama KTP</string>
+    <string name="face_subtitle">Tunjukkan bagian depan KTP dengan posisi di bawah dagu tanpa menutupi wajah.</string>
+    <string name="face_button">Ambil Foto Diri Bersama KTP</string>
+
+    <string name="camera_ktp_title">Ambil Foto KTP</string>
+    <string name="camera_ktp_subtitle">Pastikan KTP berada dalam area kotak dan terbaca dengan jelas. </string>
+
+    <string name="camera_face_title">Ambil Foto Diri Bersama KTP</string>
+    <string name="camera_face_subtitle">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
+
+    <string name="change_button">Ubah</string>
+    <string name="form_final_info">Sebelum klik “Unggah”, pastikan foto yang Anda ambil sudah
+        benar dan terlihat jelas.\n\nDengan mengunggah, saya menyatakan bahwa data yang saya
+        berikan adalah benar dan telah menyetujui Syarat &amp; Ketentuan.</string>
+    <string name="terms_and_condition">Syarat &amp; Ketentuan</string>
+    <string name="upload_button">Unggah</string>
+    
+    <string name="title_kyc_info">Dokumen Data Diri</string>
+
+    <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
+
+    <string name="title_kyc_form_ktp">1. Foto KTP</string>
+    <string name="title_kyc_form_face">2. Foto Diri &amp; KTP</string>
+    <string name="title_kyc_form_upload">Unggah Dokumen Data Diri</string>
+
+    <string name="text_notification_success_upload">Dokumen berhasil diunggah. Mohon menunggu verifikasi dalam 1x24 jam.</string>
+
+    <string name="error_upload_image_kyc">Terjadi kesalahan. Mohon coba beberapa saat lagi
+        (%s)</string>
+
+    <string name="camera_recapture_text">Foto Ulang</string>
+    <string name="camera_next_button">Lanjut</string>
+</resources>

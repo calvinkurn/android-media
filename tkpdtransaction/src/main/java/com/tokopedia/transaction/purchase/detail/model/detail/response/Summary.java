@@ -27,6 +27,13 @@ public class Summary {
     @SerializedName("total_price")
     @Expose
     private String totalPrice;
+    @SerializedName("total_purchase_protection_quantity")
+    @Expose
+    private int totalProtectionItem;
+    @SerializedName("total_purchase_protection_fee")
+    @Expose
+    private String totalProtectionFee;
+
 
     public String getItemsPrice() {
         return itemsPrice;
@@ -84,4 +91,19 @@ public class Summary {
         this.totalPrice = totalPrice;
     }
 
+    public int getTotalProtectionItem() {
+        return totalProtectionItem;
+    }
+
+    public void setTotalProtectionItem(int totalProtectionItem) {
+        this.totalProtectionItem = totalProtectionItem;
+    }
+
+    public String getTotalProtectionFee() {
+        return totalProtectionFee;
+    }
+
+    public void setTotalProtectionFee(String totalProtectionFee) {
+        this.totalProtectionFee = totalProtectionFee;
+    }
 }

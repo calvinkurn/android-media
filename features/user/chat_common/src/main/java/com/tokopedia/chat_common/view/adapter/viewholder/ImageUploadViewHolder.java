@@ -1,5 +1,4 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
-//
 
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
@@ -8,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.ImageUploadViewModel;
@@ -20,8 +20,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewModel> {
     //
     @LayoutRes
-    public static final int LAYOUT = R.layout.loading_layout;
-//    public static final int LAYOUT = 2;
+    public static final int LAYOUT = R.layout.layout_image_upload;
 
 
     private static final String ROLE_USER = "User";
@@ -38,19 +37,17 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     private ImageView attachment;
     private ImageView action;
 
-    //
     public ImageUploadViewHolder(View itemView, ImageUploadListener listener) {
         super(itemView);
         this.listener = listener;
-//        chatStatus = itemView.findViewById(R.id.chat_status);
-//        name = itemView.findViewById(R.id.name);
-//        label = itemView.findViewById(R.id.label);
-//        dot = itemView.findViewById(R.id.dot);
-//        attachment = itemView.findViewById(R.id.image);
-//        action = itemView.findViewById(R.id.left_action);
-//        progressBarSendImage = itemView.findViewById(R.id.progress_bar);
-//        chatBalloon = itemView.findViewById(R.id.card_group_chat_message);
-//
+        chatStatus = itemView.findViewById(R.id.chat_status);
+        name = itemView.findViewById(R.id.name);
+        label = itemView.findViewById(R.id.label);
+        dot = itemView.findViewById(R.id.dot);
+        attachment = itemView.findViewById(R.id.image);
+        action = itemView.findViewById(R.id.left_action);
+        progressBarSendImage = itemView.findViewById(R.id.progress_bar);
+        chatBalloon = itemView.findViewById(R.id.card_group_chat_message);
     }
 
     @Override
@@ -154,13 +151,12 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
         int imageResource;
         if (element.isShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
-            //TODO UNCOMMENT
             if (element.isRead()) {
                 imageResource = R.drawable.ic_chat_read;
             } else {
                 imageResource = R.drawable.ic_chat_unread;
             }
-//
+
             if (element.isDummy()) {
                 imageResource = R.drawable.ic_chat_pending;
             }

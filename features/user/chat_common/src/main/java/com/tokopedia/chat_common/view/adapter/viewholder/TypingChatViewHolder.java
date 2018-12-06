@@ -22,7 +22,7 @@ public class TypingChatViewHolder extends AbstractViewHolder<TypingChatModel> {
 
     public TypingChatViewHolder(View itemView) {
         super(itemView);
-        logo = (ImageView) itemView.findViewById(R.id.image);
+        logo = itemView.findViewById(R.id.image);
     }
 
     @Override

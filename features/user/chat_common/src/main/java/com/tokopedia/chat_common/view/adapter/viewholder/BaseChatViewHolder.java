@@ -27,8 +27,8 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
     public BaseChatViewHolder(View itemView) {
         super(itemView);
         view = itemView;
-        hour = (TextView) itemView.findViewById(R.id.hour);
-        date = (TextView) itemView.findViewById(R.id.date);
+        hour = itemView.findViewById(R.id.hour);
+        date = itemView.findViewById(R.id.date);
     }
 
     @Override
@@ -37,12 +37,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
             BaseChatViewModel element = (BaseChatViewModel) viewModel;
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    KeyboardHandler.DropKeyboard(itemView.getContext(), view);
-                }
-            });
+            view.setOnClickListener(v -> KeyboardHandler.DropKeyboard(itemView.getContext(), view));
 
             setHeaderDate(element);
             setBottomHour(element);
