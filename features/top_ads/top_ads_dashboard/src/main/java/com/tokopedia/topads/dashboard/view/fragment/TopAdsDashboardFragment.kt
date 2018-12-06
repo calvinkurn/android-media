@@ -603,14 +603,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         } else {
             topads_dashboard_empty.visibility = View.VISIBLE
             topads_dashboard_content.visibility = View.GONE
-
-            if (GlobalConfig.isCustomerApp()){
-                isShowAutoAddPromo = true
-                button_topads_add_promo.setText(getString(R.string.label_auto_add_promo))
-            } else {
-                isShowAutoAddPromo = false
-                button_topads_add_promo.setText(getString(R.string.label_add_promo))
-            }
+            isShowAutoAddPromo = GlobalConfig.isCustomerApp()
         }
     }
 
