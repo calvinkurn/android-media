@@ -88,17 +88,17 @@ public class TextViewCompat extends AppCompatTextView {
     private void configTheme(Context context, TypedArray attributeArray) {
         int theme = attributeArray.getInteger(R.styleable.TextViewCompat_textViewTheme, 1);
         if (theme == 1) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.lightprimary));
+            this.setTextColor(ContextCompat.getColor(context, R.color.light_primary));
         } else if (theme == 2) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.lightsecondary));
+            this.setTextColor(ContextCompat.getColor(context, R.color.light_secondary));
         } else if (theme == 3) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.lightdisabled));
+            this.setTextColor(ContextCompat.getColor(context, R.color.light_disabled));
         } else if (theme == 4) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.darkprimary));
+            this.setTextColor(ContextCompat.getColor(context, R.color.dark_primary));
         } else if (theme == 5) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.darksecondary));
+            this.setTextColor(ContextCompat.getColor(context, R.color.dark_secondary));
         } else if (theme == 6) {
-            this.setTextColor(ContextCompat.getColor(context, R.color.darkdisabled));
+            this.setTextColor(ContextCompat.getColor(context, R.color.dark_disabled));
         }
     }
 

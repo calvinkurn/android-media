@@ -211,8 +211,8 @@
     <declare-styleable name="TextViewCompat">
         <attr name="fontSize" format="enum">
             <enum name="headline" value="1" />
-            <enum name="subheadline" value="2" />
-            <enum name="titlebig" value="3" />
+            <enum name="subHeadline" value="2" />
+            <enum name="titleBig" value="3" />
             <enum name="title" value="4" />
             <enum name="small" value="5" />
             <enum name="micro" value="6" />
@@ -222,12 +222,12 @@
             <enum name="medium" value="2" />
         </attr>
         <attr name="textViewTheme" format="enum">
-            <enum name="lightprimary" value="1" />
-            <enum name="lightsecondary" value="2" />
-            <enum name="lightdisabled" value="3" />
-            <enum name="darkprimary" value="4" />
-            <enum name="darksecondary" value="5" />
-            <enum name="darkdisabled" value="6" />
+            <enum name="lightPrimary" value="1" />
+            <enum name="lightSecondary" value="2" />
+            <enum name="lightDisabled" value="3" />
+            <enum name="darkPrimary" value="4" />
+            <enum name="darkSecondary" value="5" />
+            <enum name="darkDisabled" value="6" />
         </attr>
         <attr name="drawableLeftCompat" format="reference" />
         <attr name="drawableRightCompat" format="reference" />
