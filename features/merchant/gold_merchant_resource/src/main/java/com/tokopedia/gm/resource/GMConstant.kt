@@ -48,4 +48,20 @@ object GMConstant {
     @JvmStatic
     fun isPowerMerchantEnabled(context: Context) = FirebaseRemoteConfigImpl(context)
             .getBoolean(GMConstant.GM_REMOTE_CONFIG_KEY, GMConstant.DEFAULT_IS_POWER_ACTIVE)
+
+    @JvmStatic
+    fun getGMPointerDrawable(context: Context?): Drawable? {
+        if (context == null)
+            return null
+        return ContextCompat.getDrawable(context, getGMPointerDrawableResource(context))
+    }
+
+    @JvmStatic
+    private fun getGMPointerDrawableResource(context: Context): Int {
+        return if (isPowerMerchantEnabled(context)){
+            R.drawable.ic_pointer_power_merchant
+        } else {
+            R.drawable.ic_pointer_gold_badge
+        }
+    }
 }
