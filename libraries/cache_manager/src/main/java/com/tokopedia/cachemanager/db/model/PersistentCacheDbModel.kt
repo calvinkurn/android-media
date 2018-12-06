@@ -10,4 +10,3 @@ class PersistentCacheDbModel: CacheDbModel() {
         const val PERSISTENT_CACHE_TABLE_NAME = "persistent_cache_tb"
     }
 }
-
