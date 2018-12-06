@@ -382,6 +382,7 @@ public class ExploreFragment
 
     @Override
     public void onButtonEmptySearchClicked() {
+        presenter.unsubscribeAutoComplete();
         adapter.clearAllElements();
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
