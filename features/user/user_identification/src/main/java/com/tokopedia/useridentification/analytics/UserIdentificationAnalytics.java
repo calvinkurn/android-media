@@ -62,7 +62,7 @@ public class UserIdentificationAnalytics {
         private static final String CLICK_BACK_PENDING_PAGE = "click on back menunggu verifikasi";
         private static final String VIEW_SUCCESS_SNACKBAR_PENDING_PAGE = "view on success message verifikasi";
 
-        private static final String VIEW_REJECTED_PAGE = "view on gagal verfikasi";
+        private static final String VIEW_REJECTED_PAGE = "view on gagal verifikasi";
         private static final String CLICK_BACK_REJECTED_PAGE = "click on back gagal verifikasi";
         private static final String CLICK_NEXT_REJECTED_PAGE = "click on unggah ulang gagal verifikasi";
 
