@@ -340,6 +340,7 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         searchView.addTextWatcherToSearch();
+        presenter.unsubscribeAutoComplete();
     }
 
     @Override

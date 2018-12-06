@@ -85,4 +85,9 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         checkQuotaUseCase.addRequest(checkQuotaUseCase.getRequest());
         checkQuotaUseCase.execute(new CheckQuotaSubscriber(getView(), productId, adId));
     }
+
+    @Override
+    public void unsubscribeAutoComplete() {
+        autoCompleteUseCase.unsubscribe();
+    }
 }
