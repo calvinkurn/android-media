@@ -369,7 +369,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 ImageView imgToken = getView().findViewById(R.id.img_token);
                 textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
-                textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
+                textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
                 if(tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")){
                     ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
                 }else{

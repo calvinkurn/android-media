@@ -533,7 +533,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
                 this.mLobDetails = lobDetails;
-                textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
+                textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
                 ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
                 if (mSumToken == 0) {
