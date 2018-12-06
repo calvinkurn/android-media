@@ -25,7 +25,7 @@ abstract class CacheManager(val context: Context) {
 
     fun generateUniqueRandomNumber() = System.currentTimeMillis().toString() + Random().nextInt(RANDOM_RANGE)
 
-    fun <T> get(customId: String, type: Type, defaultValue: T? = null): T? {
+    open fun <T> get(customId: String, type: Type, defaultValue: T? = null): T? {
         try {
             return cacheRepository.get(id + customId) as T
         } catch (e: Throwable) {
