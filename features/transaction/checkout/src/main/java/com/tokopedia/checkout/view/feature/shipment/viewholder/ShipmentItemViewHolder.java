@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -100,7 +101,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvFreeReturnLabel;
     private TextView tvPreOrder;
     private TextView tvCashback;
-    private LinearLayout llProductPoliciesLayout;
+    private FlexboxLayout llProductPoliciesLayout;
     private TextView tvItemCountAndWeight;
     private TextView tvNoteToSellerLabel;
     private TextView tvOptionalNoteToSeller;

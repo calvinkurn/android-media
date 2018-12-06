@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
@@ -83,7 +84,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
     private TextView tvNoteCharCounter;
-    private LinearLayout productProperties;
+    private FlexboxLayout productProperties;
     private TextView tvRemark;
     private TextView tvLabelFormRemark;
     private ImageView imgWishlist;

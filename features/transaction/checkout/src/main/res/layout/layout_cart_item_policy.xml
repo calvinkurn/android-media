@@ -1,9 +1,10 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_product_policies_layout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_24"
+    android:layout_height="wrap_content"
+    app:flexWrap="wrap"
     android:layout_marginTop="@dimen/dp_4">
 
     <TextView
@@ -83,4 +84,4 @@
         android:textStyle="normal"
         tools:ignore="SmallSp" />
 
-</LinearLayout>
+</com.google.android.flexbox.FlexboxLayout>
