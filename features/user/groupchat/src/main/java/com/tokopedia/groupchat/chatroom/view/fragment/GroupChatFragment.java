@@ -117,6 +117,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View login;
     private View sprintSaleIconLayout;
     private TextView sprintSaleText;
+    private CloseableBottomSheetDialog interuptDialog;
 
     private UserSession userSession;
 
@@ -515,10 +516,12 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void showInteruptDialog(final InteruptViewModel model) {
-        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        View view = createInteruptView(model);
-        dialog.setCustomContentView(view, model.isHasHeader(), model.getBubbleTitle(), model.isHasCloseButton());
-        dialog.show();
+        if (!interuptDialog.isShowing()) {
+            interuptDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+            View view = createInteruptView(model);
+            interuptDialog.setCustomContentView(view, model.isHasHeader(), model.getBubbleTitle(), model.isHasCloseButton());
+            interuptDialog.show();
+        }
     }
 
 
