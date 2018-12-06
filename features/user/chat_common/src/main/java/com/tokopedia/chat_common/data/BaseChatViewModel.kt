@@ -29,6 +29,11 @@ open class BaseChatViewModel
  var replyTime: String?,
  val message: String) {
 
+    companion object {
+        const val SENDING_TEXT = "Sedang mengirim ..."
+    }
+
+
     /**
      * Set in [BaseChatAdapter]
      *

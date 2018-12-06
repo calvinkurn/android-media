@@ -17,7 +17,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/fontvs"
         tools:text="13:16 wib"/>
 
     <TextView
@@ -47,7 +47,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:lineSpacingExtra="3sp"
-        android:text="@string/dot"
+        android:text="●"
         android:textColor="@color/grey_500"
         android:textSize="@dimen/sp_5"
         android:textStyle="normal"/>
@@ -83,7 +83,7 @@
             android:textColor="@color/white"
             android:textColorLink="@color/white"
             android:textIsSelectable="true"
-            android:textSize="@dimen/sp_14"
+            android:textSize="@dimen/fonts"
             tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
 
     </RelativeLayout>
@@ -111,16 +111,19 @@
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@+id/hour"
         android:layout_toStartOf="@+id/hour"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        tools:src="@drawable/checked_thin"/>
 
     <TextView
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/card_group_chat_message"
+        android:layout_alignRight="@id/card_group_chat_message"
         android:layout_below="@id/main"
         android:layout_marginTop="@dimen/dp_3"
         android:textColor="@color/time_color"
-        android:textSize="@dimen/sp_10"
+        android:textSize="@dimen/fontvvs"
         tools:text="10:13 pm"
         tools:visibility="visible"
         />
