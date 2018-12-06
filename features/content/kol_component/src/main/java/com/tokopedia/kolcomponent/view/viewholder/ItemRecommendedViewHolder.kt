@@ -8,7 +8,6 @@ import com.tokopedia.kolcomponent.R
 import com.tokopedia.kolcomponent.view.viewmodel.ItemRecommendedViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import kotlinx.android.synthetic.main.adapter_trailing_bullet.view.*
 import kotlinx.android.synthetic.main.item_feed_recommended.view.*
 
 /**
@@ -33,7 +32,7 @@ class ItemRecommendedViewHolder(v: View) : AbstractViewHolder<ItemRecommendedVie
         itemView.ivImage3.loadImage(element.image3Url)
         itemView.ivProfile.loadImageCircle(element.profileImageUrl)
         setButtonUi(element.isFollowing, element.btnText)
-        itemView.description.text = element.description
+        itemView.tvDescription.text = element.description
         itemView.ivBadge.loadImage(element.badgeUrl)
         itemView.tvName.text = element.profileName
     }
