@@ -10,13 +10,13 @@ public class Media {
     @SerializedName("fallback_url")
     String fallbackUrl;
 
-    @SerializedName("high_quality")
+    @SerializedName("high_quality_url")
     String highQuality;
 
-    @SerializedName("medium_quality")
+    @SerializedName("medium_quality_url")
     String mediumQuality;
 
-    @SerializedName("low_quality")
+    @SerializedName("low_quality_url")
     String lowQuality;
 
     @SerializedName("display_url")
