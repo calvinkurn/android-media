@@ -21,8 +21,6 @@ import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
-import com.tokopedia.navigation_common.model.NotificationResolutionModel;
-import com.tokopedia.navigation_common.model.NotificationSellerOrderModel;
 import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
@@ -32,6 +30,7 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.LOAN;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
@@ -151,10 +150,12 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         items.add(menuList);
 
         String mitraTopperMaxLoan = "";
+        String mitraTopperUrl = "";
         if (accountModel.getLePreapprove() != null &&
                 accountModel.getLePreapprove().getFieldData() != null &&
                 accountModel.getLePreapprove().getFieldData().getPreApp() != null) {
             mitraTopperMaxLoan = accountModel.getLePreapprove().getFieldData().getPreApp().getPartnerMaxLoan();
+            mitraTopperUrl = accountModel.getLePreapprove().getFieldData().getUrl();
         }
 
         try {
@@ -166,12 +167,15 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             }
         } catch (NumberFormatException e) { /*ignore*/ }
 
-        if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0")) {
+        if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0") && !mitraTopperUrl.isEmpty()) {
             InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
             infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
+            infoCardViewModel.setTitleTrack(PENJUAL);
+            infoCardViewModel.setSectionTrack(LOAN);
+            infoCardViewModel.setItemTrack(LOAN);
             infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
             infoCardViewModel.setSecondaryText(String.format("%s %s", context.getString(R.string.label_menu_loan), mitraTopperMaxLoan));
-            infoCardViewModel.setApplink(AccountConstants.Navigation.MITRA_TOPPERS);
+            infoCardViewModel.setApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, mitraTopperUrl));
             items.add(infoCardViewModel);
         }
 
@@ -237,6 +241,8 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
             shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
         }
+
+        setKycToModel(shopCard, accountModel);
 
         return shopCard;
     }

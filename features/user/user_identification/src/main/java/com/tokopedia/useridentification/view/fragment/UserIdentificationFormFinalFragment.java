@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
@@ -61,6 +62,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private UserIdentificationStepperModel stepperModel;
 
     private StepperListener stepperListener;
+    private UserIdentificationAnalytics analytics;
 
     @Inject
     UserIdentificationUploadImage.Presenter presenter;
@@ -81,6 +83,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
         }
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
     }
 
     @Nullable
@@ -97,6 +100,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         hideLoading();
+        analytics.eventViewFinalForm();
     }
 
     @Override
@@ -137,6 +141,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickUploadPhotos();
                 uploadImage();
             }
         });
@@ -204,7 +209,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                RouteManager.route(getContext(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
 
             @Override
