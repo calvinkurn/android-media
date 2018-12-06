@@ -42,7 +42,7 @@ abstract class CacheManager(val context: Context) {
             if (jsonString.isNullOrEmpty()) {
                 return defaultValue
             } else {
-                return GsonSingleton.getInstance().fromJson(jsonString, type)
+                return GsonSingleton.instance.fromJson(jsonString, type)
             }
         } catch (e: Throwable) {
             return defaultValue
@@ -69,7 +69,7 @@ abstract class CacheManager(val context: Context) {
         }
         try {
             cacheRepository.put(id + customId,
-                    GsonSingleton.getInstance().toJson(objectToPut),
+                    GsonSingleton.instance.toJson(objectToPut),
                     cacheDuration)
         } catch (e: Throwable) {
             return
