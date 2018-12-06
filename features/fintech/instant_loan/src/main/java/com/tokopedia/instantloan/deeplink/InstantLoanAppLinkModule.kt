@@ -3,4 +3,6 @@ package com.tokopedia.instantloan.deeplink
 import com.airbnb.deeplinkdispatch.DeepLinkModule
 
 @DeepLinkModule
-class InstantLoanAppLinkModule
+class InstantLoanAppLinkModule{
+
+}

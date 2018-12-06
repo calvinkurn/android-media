@@ -33,12 +33,12 @@ class DenganAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     private var mSpinnerLoanAmount: Spinner? = null
 
     @Inject
-    var presenter: InstantLoanPresenter? = null
+    lateinit var presenter: InstantLoanPresenter
     @Inject
-    var instantLoanAnalytics: InstantLoanAnalytics? = null
+    lateinit var instantLoanAnalytics: InstantLoanAnalytics
 
     @Inject
-    var userSession: UserSession? = null
+    lateinit var userSession: UserSession
 
     private var mCurrentTab: Int = 0
     private var mContext: Context? = null

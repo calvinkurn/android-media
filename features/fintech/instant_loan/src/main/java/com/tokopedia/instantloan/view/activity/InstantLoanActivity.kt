@@ -45,16 +45,16 @@ import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View, DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick, View.OnClickListener {
     @Inject
-    var mBannerPresenter: BannerListPresenter? = null
+    lateinit var mBannerPresenter: BannerListPresenter
 
     @Inject
-    var onGoingLoanPresenter: OnGoingLoanPresenter? = null
+    lateinit var onGoingLoanPresenter: OnGoingLoanPresenter
 
     @Inject
-    var instantLoanAnalytics: InstantLoanAnalytics? = null
+    lateinit var instantLoanAnalytics: InstantLoanAnalytics
 
     @Inject
-    var userSession: UserSession? = null
+    lateinit var userSession: UserSession
 
     private var mBannerPager: ViewPager? = null
     private var mBtnNextBanner: FloatingActionButton? = null

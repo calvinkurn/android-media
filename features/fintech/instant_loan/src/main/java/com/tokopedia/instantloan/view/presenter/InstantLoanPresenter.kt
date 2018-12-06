@@ -40,7 +40,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         BaseDaggerPresenter<InstantLoanContractor.View>(), InstantLoanContractor.Presenter {
 
     @Inject
-    var userSession: UserSession? = null
+    lateinit var userSession: UserSession
 
     private val mPermissionRequestCallback = object : PermissionResultCallback {
 

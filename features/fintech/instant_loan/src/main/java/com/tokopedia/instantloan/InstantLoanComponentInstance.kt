@@ -3,6 +3,7 @@ package com.tokopedia.instantloan
 import android.app.Application
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.instantloan.di.component.DaggerInstantLoanComponent
 import com.tokopedia.instantloan.di.component.InstantLoanComponent
 import com.tokopedia.instantloan.di.module.InstantLoanModule
 

@@ -42,25 +42,25 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     private var mContext: Context? = null
 
     @Inject
-    var presenter: InstantLoanPresenter? = null
+    lateinit var presenter: InstantLoanPresenter
     @Inject
-    var instantLoanAnalytics: InstantLoanAnalytics? = null
+    lateinit var instantLoanAnalytics: InstantLoanAnalytics
 
     @Inject
-    var userSession: UserSession? = null
+    lateinit var userSession: UserSession
 
     private var mCurrentTab: Int = 0
     private var mCurrentPagePosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter!!.attachView(this)
+        presenter.attachView(this)
         mCurrentTab = arguments!!.getInt(TAB_POSITION)
     }
 
     override fun onResume() {
         super.onResume()
-        presenter!!.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun initInjector() {
