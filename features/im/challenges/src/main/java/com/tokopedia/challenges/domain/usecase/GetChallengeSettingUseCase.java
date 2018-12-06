@@ -8,6 +8,7 @@ import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class GetChallengeSettingUseCase extends RestRequestSupportInterceptorUse
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.Upload.CHALLENGE_SETTING,challengeID), ChallengeSettings.class)

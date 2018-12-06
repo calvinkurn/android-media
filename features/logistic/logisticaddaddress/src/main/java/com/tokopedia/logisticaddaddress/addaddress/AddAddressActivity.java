@@ -28,11 +28,6 @@ import static com.tokopedia.logisticaddaddress.ManageAddressConstant.PLATFORM_MA
 public class AddAddressActivity extends BasePresenterActivity {
 
     @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_ADD_ADDRESS_FORM;
-    }
-
-    @Override
     protected void setupURIPass(Uri data) {
 
     }

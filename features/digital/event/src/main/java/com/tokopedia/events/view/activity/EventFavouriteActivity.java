@@ -1,43 +1,37 @@
 package com.tokopedia.events.view.activity;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.adapter.EventCategoryAdapterRevamp;
 import com.tokopedia.events.view.contractor.EventFavouriteContract;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by pranaymohapatra on 16/05/18.
  */
 
-public class EventFavouriteActivity extends TActivity implements EventFavouriteContract.EventFavouriteView {
+public class EventFavouriteActivity extends EventBaseActivity implements EventFavouriteContract.EventFavouriteView {
 
-    EventComponent eventComponent;
-    @Inject
-    public EventFavouritePresenter mPresenter;
+    public EventFavouritePresenter eventFavouritePresenter;
+    private EventsAnalytics eventsAnalytics;
 
     @BindView(R2.id.rv_fav_view)
     RecyclerView favRecyclerView;
@@ -51,37 +45,48 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
     View title;
 
     @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getEventFavoritePresenter();
+        eventFavouritePresenter = (EventFavouritePresenter) mPresenter;
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.setTitle("Favorit Saya");
-        executeInjector();
-        ButterKnife.bind(this);
-        mPresenter.attachView(this);
+        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        setLightToolbarStyle();
+    }
+
+
+    protected void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(R.color.white);
+        } else {
+            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+        }
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
+        if (drawable != null)
+            drawable.setBounds(5, 5, 5, 5);
+
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+
+        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, R.style.WebViewToolbarSubtitleText);
     }
 
     @Override
-    protected int getContentId() {
+    protected int getLayoutRes() {
         return R.layout.activity_favourites;
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-
     }
 
     @Override
@@ -95,17 +100,12 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
 
     @Override
     public void showProgressBar() {
-
+        super.showProgressBar();
     }
 
     @Override
     public void hideProgressBar() {
-
-    }
-
-    @Override
-    public View getRootView() {
-        return null;
+        super.hideProgressBar();
     }
 
     @Override
@@ -127,26 +127,25 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
         finish();
     }
 
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
-    }
-
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
     public String getScreenName() {
         return EventsGAConst.EVENTS_FAV_PAGE;
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        eventFavouritePresenter.onClickOptionMenu(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 }

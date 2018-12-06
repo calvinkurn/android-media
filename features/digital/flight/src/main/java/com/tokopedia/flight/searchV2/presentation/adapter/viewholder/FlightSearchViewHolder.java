@@ -1,7 +1,6 @@
 package com.tokopedia.flight.searchV2.presentation.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -9,12 +8,12 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.util.DurationUtil;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,13 +137,15 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     }
 
     private void setSavingPrice(FlightJourneyViewModel flightJourneyViewModel) {
-        if (TextUtils.isEmpty(flightJourneyViewModel.getBeforeTotal())) {
+
+        if (flightJourneyViewModel.getBeforeTotal() != null &&
+                flightJourneyViewModel.getBeforeTotal().length() > 0) {
+            savingPrice.setVisibility(View.VISIBLE);
+            discountTag.setVisibility(View.VISIBLE);
+            savingPrice.setText(flightJourneyViewModel.getBeforeTotal());
+        } else {
             discountTag.setVisibility(View.GONE);
             savingPrice.setVisibility(View.GONE);
-        } else {
-            discountTag.setVisibility(View.VISIBLE);
-            savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setText(flightJourneyViewModel.getBeforeTotal());
         }
     }
 
@@ -178,19 +179,15 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     private void setBestPairingPrice(FlightJourneyViewModel flightJourneyViewModel) {
         if (flightJourneyViewModel.isBestPairing()) {
             bestPairingTag.setVisibility(View.VISIBLE);
-            savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setText(flightJourneyViewModel.getTotal());
+            discountTag.setVisibility(View.GONE);
             tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
                     flightJourneyViewModel.getFare().getAdultNumericCombo()));
-        } else if(flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
-            savingPrice.setVisibility(View.VISIBLE);
-            savingPrice.setText(flightJourneyViewModel.getTotal());
+        } else if (flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
+            bestPairingTag.setVisibility(View.GONE);
             tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
                     flightJourneyViewModel.getFare().getAdultNumericCombo()));
         } else {
             bestPairingTag.setVisibility(View.GONE);
-            discountTag.setVisibility(View.GONE);
-            savingPrice.setVisibility(View.GONE);
         }
     }
 }

@@ -412,7 +412,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 scrollToBottom();
-                rvQuickReply.setVisibility(View.GONE);
                 if (templateAdapter != null && templateAdapter.getList().size() != 0) {
                     templateRecyclerView.setVisibility(View.VISIBLE);
                 }
@@ -754,6 +753,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
             });
         }
+        setResult();
     }
 
     @Override
@@ -1339,7 +1339,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void processReceiveMessage(BaseChatViewModel message) {
-        rvQuickReply.setVisibility(View.GONE);
         if (templateAdapter != null && templateAdapter.getList().size() != 0) {
             templateRecyclerView.setVisibility(View.VISIBLE);
         }
@@ -1348,14 +1347,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         removeDummyReplyIfExist(message);
         removeIsTyping();
 
-        if (message instanceof QuickReplyListViewModel) {
-            showQuickReplyView((QuickReplyListViewModel) message);
-            if (!TextUtils.isEmpty(message.getMessage())) {
-                addMessageToList(message);
-            }
-        } else {
-            addMessageToList(message);
-        }
+        mapMessageToList(message);
 
         if (isMyMessage(message.getFromUid())) {
             scrollToBottom();
@@ -1365,7 +1357,29 @@ public class ChatRoomFragment extends BaseDaggerFragment
             readMessage(message.getMessageId());
         }
 
+        checkHideQuickReply(message);
         setResult();
+    }
+
+    private void mapMessageToList(BaseChatViewModel message) {
+        if (message instanceof QuickReplyListViewModel) {
+            showQuickReplyView((QuickReplyListViewModel) message);
+            if (!TextUtils.isEmpty(message.getMessage())) {
+                addMessageToList(message);
+            }
+        } else {
+            addMessageToList(message);
+        }
+    }
+
+    private void checkHideQuickReply(BaseChatViewModel message) {
+        if (TextUtils.isEmpty(message.getAttachmentId())
+                && quickReplyAdapter != null
+                && rvQuickReply != null
+                && !isMyMessage(message.getFromUid())) {
+            quickReplyAdapter.clearData();
+            rvQuickReply.setVisibility(View.GONE);
+        }
     }
 
     private void removeDummyReplyIfExist(BaseChatViewModel message) {
@@ -1403,16 +1417,22 @@ public class ChatRoomFragment extends BaseDaggerFragment
             quickReplyAdapter = new QuickReplyAdapter(model, this);
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
+        } else if(quickReplyAdapter != null){
+            quickReplyAdapter.clearData();
+            rvQuickReply.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void onQuickReplyClicked(QuickReplyViewModel quickReply) {
-        rvQuickReply.setVisibility(View.GONE);
-        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
-            templateRecyclerView.setVisibility(View.VISIBLE);
+    public void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply) {
+        if (getArguments() != null) {
+            if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+                templateRecyclerView.setVisibility(View.VISIBLE);
+            }
+            String msgId = getArguments().getString(PARAM_MESSAGE_ID, "");
+
+            presenter.sendQuickReply(msgId, quickReply, SendableViewModel.generateStartTime());
         }
-        presenter.sendMessage(networkType, quickReply.getMessage());
     }
 
     @Override

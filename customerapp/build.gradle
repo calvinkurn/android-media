@@ -48,6 +48,10 @@ def allowProguard() {
     return project.hasProperty('tkpdBuildType')
 }
 
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
+}
+
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -99,8 +103,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 229001101;
-        defaultVersionName = "2.29";
+        defaultVersionCode = 307001101;
+        defaultVersionName = "3.10";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -158,7 +162,7 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (!isProduction() && !isAlpha() && !allowDistribution()) {
+            if (devMode()) {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel=true
@@ -272,6 +276,7 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.features.affiliate)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
@@ -291,6 +296,7 @@ dependencies {
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.flightDbFlow)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
@@ -302,12 +308,11 @@ dependencies {
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
-    implementation project(rootProject.ext.features.districtrecommendation)
+    implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
-    implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
@@ -321,6 +326,7 @@ dependencies {
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.withdraw)
@@ -336,10 +342,18 @@ dependencies {
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
+    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
+    implementation project(rootProject.ext.features.gallery)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -359,6 +373,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.viewDependencies.appIntro
@@ -410,7 +425,6 @@ dependencies {
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    implementation rootProject.ext.miscDependencies.sendBird
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.reactNative

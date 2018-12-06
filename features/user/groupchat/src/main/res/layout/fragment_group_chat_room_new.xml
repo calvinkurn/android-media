@@ -152,6 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_15"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/pinned_message"
             app:layout_constraintEnd_toEndOf="parent">
 

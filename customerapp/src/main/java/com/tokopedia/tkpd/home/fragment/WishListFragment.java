@@ -73,6 +73,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
+    public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
@@ -167,6 +168,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         prepareView();
         setListener();
         loadWishlistData();
+        trackingAppshortcut();
         return parentView;
     }
 
@@ -175,6 +177,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
         searchEditText = view.findViewById(R.id.wishlist_search_edittext);
+    }
+
+    private void trackingAppshortcut() {
+        boolean isFromAppShortcut = getArguments() != null && getArguments().getBoolean(FROM_APP_SHORTCUTS);
+        if (isFromAppShortcut) {
+            wishlistAnalytics.eventWishlistShortcut();
+        }
     }
 
     private AnalyticTracker getAnalyticTracker() {

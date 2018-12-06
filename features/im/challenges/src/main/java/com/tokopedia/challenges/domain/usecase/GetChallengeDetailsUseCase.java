@@ -24,19 +24,14 @@ import javax.inject.Inject;
 public class GetChallengeDetailsUseCase extends RestRequestSupportInterceptorUseCase {
 
 
-    private RequestParams requestParams;
 
     @Inject
     public GetChallengeDetailsUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 
-    public void setRequestParams(RequestParams requestParams){
-        this.requestParams=requestParams;
-    }
-
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         HashMap headers = new HashMap();
         if (ChallengesCacheHandler.CHALLENGES_DETAILS_CACHE) {

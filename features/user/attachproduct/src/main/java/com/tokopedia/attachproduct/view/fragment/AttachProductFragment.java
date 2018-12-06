@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -139,7 +138,14 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void loadData(int page) {
-        presenter.loadProductData(searchInputView.getSearchText(), activityContract.getShopId(), page);
+        if (activityContract != null
+                && activityContract.getShopId() != null
+                && presenter != null
+                && searchInputView != null) {
+            presenter.loadProductData(searchInputView.getSearchText(), activityContract.getShopId(), page);
+        } else if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -192,9 +198,9 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void addProductToList(List<AttachProductItemViewModel> products, boolean hasNextPage) {
-        if(products.size()> 0){
+        if (products.size() > 0) {
             sendButton.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             sendButton.setVisibility(View.VISIBLE);
         }
 
@@ -231,10 +237,10 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     protected Visitable getEmptyDataViewModel() {
         EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
         if (TextUtils.isEmpty(searchInputView.getSearchText())) {
-            if(activityContract.isSeller()) {
+            if (activityContract.isSeller()) {
                 emptyResultViewModel.setContent(getString(R.string
                         .string_attach_product_my_empty_product));
-            }else{
+            } else {
                 emptyResultViewModel.setContent(getString(R.string.string_attach_product_empty_product));
             }
             emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);

@@ -9,6 +9,7 @@ import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class GetActiveChallengesUseCase extends RestRequestSupportInterceptorUse
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         HashMap headers = new HashMap();
         if (ChallengesCacheHandler.OPEN_CHALLENGES_LIST_CACHE) {

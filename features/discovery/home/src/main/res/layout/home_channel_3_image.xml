@@ -17,8 +17,9 @@
             style="@style/TextView.Title.Bold"
             android:layout_centerVertical="true"
             android:paddingTop="@dimen/page_margin"
+            android:paddingRight="@dimen/page_margin"
             android:paddingLeft="@dimen/page_margin"
-            android:paddingBottom="@dimen/page_margin"
+            android:paddingBottom="@dimen/dp_8"
             android:maxEms="12"
             tools:text="Sprint Sale"/>
 
@@ -33,11 +34,21 @@
 
         <TextView
             android:id="@+id/see_all_button"
-            style="@style/TextView.Small.Green"
-            android:text="@string/see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="end"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:padding="@dimen/page_margin"
-            android:layout_alignParentRight="true"/>
+            android:lineSpacingExtra="3sp"
+            android:text="@string/lihat_semua"
+            android:textColor="@color/medium_green"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            android:paddingTop="@dimen/page_margin"
+            android:paddingRight="@dimen/page_margin"
+            android:paddingLeft="@dimen/page_margin"
+            android:paddingBottom="@dimen/dp_8"/>
 
     </RelativeLayout>
 

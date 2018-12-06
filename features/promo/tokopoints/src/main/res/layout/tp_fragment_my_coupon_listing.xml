@@ -2,6 +2,7 @@
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -16,12 +17,7 @@
         android:id="@+id/recycler_view_coupons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/tp_margin_xsmall"
         android:layout_marginBottom="@dimen/tp_margin_xsmall"
-        android:layout_marginEnd="@dimen/tp_margin_xsmall"
-        android:layout_marginRight="@dimen/tp_margin_xsmall"
-        android:layout_marginStart="@dimen/tp_margin_xsmall"
-        android:layout_marginLeft="@dimen/tp_margin_xsmall"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
     <include layout="@layout/layout_tp_network_error_large" />

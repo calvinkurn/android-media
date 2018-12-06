@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.Constants;
@@ -32,7 +33,7 @@ public class ProfileCompletionActivity extends BasePresenterActivity implements 
     private static final String ERROR_IMPLEMENT_LISTENER = "Error not implementing " +
             "ProfileCompletionContract.View";
 
-    @DeepLink(Constants.Applinks.PROFILE_COMPLETION)
+    @DeepLink(ApplinkConst.PROFILE_COMPLETION)
     public static Intent getCallingTopProfile(Context context, Bundle bundle) {
         return new Intent(context, ProfileCompletionActivity.class);
     }

@@ -1,8 +1,9 @@
 package com.tokopedia.events.view.activity;
 
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -10,19 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.events.R;
-import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.domain.model.scanticket.ScanTicketResponse;
 import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.presenter.ScanCodeDataPresenter;
 
-import javax.inject.Inject;
-
-public class ScanQRCodeActivity extends TActivity implements HasComponent<EventComponent>, ScanCodeContract.ScanCodeDataView, View.OnClickListener {
+public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeContract.ScanCodeDataView, View.OnClickListener {
 
     private View divider1, divider2;
     private TextView userName, gender, dob, identityNum, eventName, eventDate, eventLocation;
@@ -37,17 +32,30 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
 
     private String scanUrl = "";
 
-    @Inject
     ScanCodeDataPresenter scanCodeDataPresenter;
 
-    private EventComponent eventComponent;
+
+    @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getScanCodePresenter();
+        scanCodeDataPresenter = (ScanCodeDataPresenter) mPresenter;
+
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_scan_ticket_result;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_ticket_result);
-        executeInjector();
-
         divider1 = findViewById(R.id.divider1);
         divider2 = findViewById(R.id.divider2);
         userName = findViewById(R.id.user_name);
@@ -80,7 +88,6 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
         scanUrl = getIntent().getStringExtra("scanUrl");
 
 
-        scanCodeDataPresenter.attachView(this);
         scanCodeDataPresenter.getScanData(scanUrl);
 
 
@@ -93,25 +100,6 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
 
         divider1.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         divider2.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-    }
-
-
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
-    }
-
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
-    @Override
-    public EventComponent getComponent() {
-        if (eventComponent == null) initInjector();
-        return eventComponent;
     }
 
     @Override
@@ -186,12 +174,14 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
 
     @Override
     public void showProgressBar() {
+        super.showProgressBar();
         mainContent.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
+        super.hideProgressBar();
         mainContent.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
@@ -199,5 +189,16 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
     @Override
     public void onClick(View view) {
         finish();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        scanCodeDataPresenter.onClickOptionMenu(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 }

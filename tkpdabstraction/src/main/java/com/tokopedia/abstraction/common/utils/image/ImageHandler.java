@@ -15,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -268,6 +269,18 @@ public class ImageHandler {
                     .fitCenter()
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(imageview);
+        }
+    }
+
+    public static void loadImageWithoutPlaceholder(ImageView imageview, String url) {
+
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .dontAnimate()
                     .error(R.drawable.error_drawable)
                     .into(imageview);
         }
@@ -606,6 +619,13 @@ public class ImageHandler {
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
         Glide.with(imageView.getContext()).load(gifDrawable)
+                .asGif()
+                .placeholder(placeholder)
+                .into(imageView);
+    }
+
+    public static void loadGifFromUrl(ImageView imageView, String url, int placeholder){
+        Glide.with(imageView.getContext()).load(url)
                 .asGif()
                 .placeholder(placeholder)
                 .into(imageView);

@@ -9,9 +9,11 @@ import com.tokopedia.topads.sdk.view.adapter.factory.AdsTypeFactory;
 
 public class ProductDynamicChannelViewModel implements Item<AdsTypeFactory> {
 
+    private String productId;
     private String productName;
     private String productPrice;
     private String productCashback;
+    private String productClickUrl;
     private ProductImage productImage;
 
     @Override
@@ -22,6 +24,14 @@ public class ProductDynamicChannelViewModel implements Item<AdsTypeFactory> {
     @Override
     public int originalPos() {
         return RecyclerView.NO_POSITION;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public ProductImage getProductImage() {
@@ -54,5 +64,13 @@ public class ProductDynamicChannelViewModel implements Item<AdsTypeFactory> {
 
     public void setProductCashback(String productCashback) {
         this.productCashback = productCashback;
+    }
+
+    public String getProductClickUrl() {
+        return productClickUrl;
+    }
+
+    public void setProductClickUrl(String productClickUrl) {
+        this.productClickUrl = productClickUrl;
     }
 }

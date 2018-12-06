@@ -5,11 +5,11 @@ import android.os.Build;
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -62,6 +62,24 @@ public class AnalyticsLog {
     }
 
 
+    public static void logGroupChatWebSocketError(String url, String error) {
+        AnalyticsLog.log("ErrorType=LogGroupChatWebSocketError!"
+                + " Error=" + error
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
+                .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
+                + " Url=" + "'" + url + "'"
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " "
+
+        );
+    }
+
+
     public static void logNetworkError(String url, int errorCode) {
         String baseUrl = getBaseUrl(url);
 
@@ -100,7 +118,7 @@ public class AnalyticsLog {
 
     public static void logNotification(String notificationId, String notificationCode) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
             AnalyticsLog.log("Notification Received. User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
                     + " Notification Id: " + notificationId
                     + " Notification Code: " + notificationCode
