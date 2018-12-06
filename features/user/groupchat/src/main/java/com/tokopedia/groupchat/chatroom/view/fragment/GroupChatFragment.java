@@ -446,7 +446,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                 channelInfoViewModel.getChannelId());
                     }
 
-                    showPinnedMessageBottomSheet(pinnedMessage);
+//                    showPinnedMessageBottomSheet(pinnedMessage);
+                    onShowInterupt();
                 });
             } else {
                 pinnedMessageView.setVisibility(View.GONE);
@@ -515,13 +516,21 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         return view;
     }
 
-    private void showInteruptDialog(final InteruptViewModel model) {
-        if (!interuptDialog.isShowing()) {
-            interuptDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-            View view = createInteruptView(model);
-            interuptDialog.setCustomContentView(view, model.isHasHeader(), model.getBubbleTitle(), model.isHasCloseButton());
-            interuptDialog.show();
+    private void showInteruptDialog(InteruptViewModel model) {
+        if (interuptDialog == null) {
+            createInteruptDialog(model);
+        } else {
+            if (!interuptDialog.isShowing()) {
+                createInteruptDialog(model);
+            }
         }
+    }
+
+    private void createInteruptDialog(InteruptViewModel model) {
+        interuptDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        View view = createInteruptView(model);
+        interuptDialog.setCustomContentView(view, model.isHasHeader(), model.getBubbleTitle(), model.isHasCloseButton());
+        interuptDialog.show();
     }
 
 
@@ -1073,7 +1082,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         return adapter.getList();
     }
 
-    @Override
     public void onShowInterupt() {
         showInteruptDialog(
                 new InteruptViewModel(

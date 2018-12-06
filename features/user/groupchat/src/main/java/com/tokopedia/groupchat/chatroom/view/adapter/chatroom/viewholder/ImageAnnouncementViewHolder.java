@@ -37,6 +37,5 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
                 listener.onImageAnnouncementClicked(element.getRedirectUrl());
             }
         });
-        listener.onShowInterupt();
     }
 }

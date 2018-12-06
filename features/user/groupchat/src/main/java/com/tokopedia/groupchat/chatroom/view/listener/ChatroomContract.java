@@ -32,7 +32,6 @@ public interface ChatroomContract {
 
         interface ImageAnnouncementViewHolderListener {
             void onImageAnnouncementClicked(String url);
-            void onShowInterupt();
         }
 
         interface VoteAnnouncementViewHolderListener {
