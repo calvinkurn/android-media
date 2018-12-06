@@ -107,15 +107,10 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
                 .map(new Func1<String, FlightAirlineDB>() {
                     @Override
                     public FlightAirlineDB call(String airlineId) {
-                        FlightAirlineDB flightAirlineDb = new Select()
+                        return new Select()
                                 .from(FlightAirlineDB.class)
                                 .where(FlightAirlineDB_Table.id.eq(airlineId))
                                 .querySingle();
-
-                        if (flightAirlineDb == null) {
-                            return new FlightAirlineDB(airlineId, "", "", "", 0, 1);
-                        }
-                        return flightAirlineDb;
                     }
                 });
     }
