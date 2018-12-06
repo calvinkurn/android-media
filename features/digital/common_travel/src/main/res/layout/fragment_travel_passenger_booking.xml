@@ -6,6 +6,7 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/form_passenger_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -20,28 +21,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
             android:paddingStart="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_10">
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_10">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/InputLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sapaan" />
 
             <com.tokopedia.design.text.SpinnerTextView
                 android:id="@+id/sp_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_15"
-                app:spinner_hint="@string/travel_passenger_choose_salutation"
-                app:spinner_selection_index="1" />
+                android:layout_marginBottom="@dimen/dp_15" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_first_name"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_15"
                 android:hint="@string/travel_buyer_first_name"
                 android:padding="0dp">
 
@@ -49,11 +56,9 @@
                     android:id="@+id/et_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/widget_card_with_action_separator"
                     android:hint="@string/travel_buyer_first_name_hint"
-                    android:imeActionLabel="@string/label_next"
                     android:lines="1"
-                    android:nextFocusForward="@+id/et_contact_email"
+                    android:nextFocusForward="@+id/et_last_name"
                     android:singleLine="true"
                     android:textAppearance="@style/TextView.Title"
                     android:textColor="@color/font_black_secondary_54" />
@@ -64,8 +69,8 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_15"
                 android:hint="@string/travel_buyer_last_name"
                 android:padding="0dp">
 
@@ -73,11 +78,9 @@
                     android:id="@+id/et_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/widget_card_with_action_separator"
                     android:hint="@string/travel_buyer_last_name_hint"
-                    android:imeActionLabel="@string/label_next"
                     android:lines="1"
-                    android:nextFocusForward="@+id/et_contact_email"
+                    android:nextFocusForward="@+id/et_birth_date"
                     android:singleLine="true"
                     android:textAppearance="@style/TextView.Title"
                     android:textColor="@color/font_black_secondary_54" />
@@ -88,8 +91,8 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_15"
                 android:hint="@string/travel_passenger_birthdate">
 
                 <com.tokopedia.design.component.EditTextCompat
@@ -119,13 +122,10 @@
                     android:id="@+id/et_identity_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/widget_card_with_action_separator"
                     android:hint="@string/travel_passenger_identity_number_hint"
-                    android:imeActionLabel="@string/label_next"
                     android:inputType="textEmailAddress"
                     android:lines="1"
                     android:maxLength="20"
-                    android:nextFocusForward="@+id/et_phone_number"
                     android:singleLine="true"
                     android:textAppearance="@style/TextView.Title"
                     android:textColor="@color/font_black_secondary_54" />
