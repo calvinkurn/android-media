@@ -517,20 +517,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void showInteruptDialog(final InteruptViewModel model) {
         CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
         View view = createInteruptView(model);
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
-
-                if (bottomSheet != null) {
-                    BottomSheetBehavior.from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-                    view.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
-                }
-            }
-        });
         dialog.setCustomContentView(view, model.isHasHeader(), model.getBubbleTitle(), model.isHasCloseButton());
         dialog.show();
     }
@@ -1090,7 +1076,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 new InteruptViewModel(
                         "Bubble Title",
                         "title",
-                        "",
+                        "https://vignette.wikia.nocookie.net/swordartonline/images/6/67/Kirito_SAO.png/revision/latest?cb=20140228021241",
                         "description",
                         "Start Vote",
                         "tokopedia://affiliate/explore",
