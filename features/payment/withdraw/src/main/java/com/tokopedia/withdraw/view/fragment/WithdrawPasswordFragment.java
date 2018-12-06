@@ -14,7 +14,8 @@ import android.widget.EditText;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -99,7 +100,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
                 Bundle bundle = new Bundle();
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 65);
