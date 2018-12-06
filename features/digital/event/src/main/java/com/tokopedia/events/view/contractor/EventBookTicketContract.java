@@ -1,7 +1,10 @@
 package com.tokopedia.events.view.contractor;
 
+import android.support.v4.app.Fragment;
+
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
+import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;

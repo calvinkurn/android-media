@@ -1,10 +1,13 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
+import com.tokopedia.core.network.entity.wishlistCount.WishlistCountResponse;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.MostHelpfulReviewResponse;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Subscriber;
 
 public class MostHelpfulReviewSubscriber extends Subscriber<List<Review>> {

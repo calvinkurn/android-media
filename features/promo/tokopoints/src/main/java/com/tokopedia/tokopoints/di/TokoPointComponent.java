@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.fragment.CatalogListItemFragment;
 import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;

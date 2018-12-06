@@ -18,6 +18,8 @@ import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.user.session.UserSession;
 
 public class CouponDetailActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
     private static final int REQUEST_CODE_LOGIN = 1;
