@@ -15,7 +15,6 @@ import rx.Observable;
 
 import java.util.ArrayList;
 
-
 /**
  * @author madi on 5/15/17.
  */
