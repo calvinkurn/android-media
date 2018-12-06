@@ -21,7 +21,6 @@ project.ext {
 
 
 dependencies {
-    implementation rootProject.ext.miscDependencies.gson
 
 }
 

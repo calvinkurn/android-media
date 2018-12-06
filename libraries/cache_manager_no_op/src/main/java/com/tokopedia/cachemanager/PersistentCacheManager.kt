@@ -1,7 +1,6 @@
 package com.tokopedia.cachemanager
 
 import android.content.Context
-import com.tokopedia.cachemanager.repository.PersistentCacheRepository
 
 /**
  * Use this to store persistent data to cache (replacing the old GlobalCacheManager)
@@ -39,7 +38,7 @@ import com.tokopedia.cachemanager.repository.PersistentCacheRepository
 class PersistentCacheManager : CacheManager {
 
     override fun createRepository(context: Context) =
-        PersistentCacheRepository(context)
+        CacheManager.persistentMap
 
     constructor(context: Context, id: String? = null) : super(context, id)
 

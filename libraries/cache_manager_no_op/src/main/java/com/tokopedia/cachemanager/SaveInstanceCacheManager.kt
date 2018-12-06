@@ -2,7 +2,6 @@ package com.tokopedia.cachemanager
 
 import android.content.Context
 import android.os.Bundle
-import com.tokopedia.cachemanager.repository.SaveInstanceCacheRepository
 
 /**
  * Use this to store saveInstanceState data to cache, avoiding TransactionTooLargeException in Nougat+
@@ -58,7 +57,7 @@ import com.tokopedia.cachemanager.repository.SaveInstanceCacheRepository
 class SaveInstanceCacheManager : CacheManager {
 
     override fun createRepository(context: Context) =
-            SaveInstanceCacheRepository(context)
+            CacheManager.saveInstanceMap
 
     constructor(context: Context, savedInstanceState: Bundle?) : super(context) {
         if (savedInstanceState == null) {
