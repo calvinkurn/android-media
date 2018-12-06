@@ -6,7 +6,7 @@
     android:padding="@dimen/dp_16"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.design.image.RoundedCornerImageView
+    <ImageView
         android:id="@+id/ivImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

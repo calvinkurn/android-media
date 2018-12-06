@@ -559,8 +559,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             });
         } else
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
-
-
         return view;
     }
 
