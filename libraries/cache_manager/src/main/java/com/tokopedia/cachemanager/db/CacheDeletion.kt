@@ -1,6 +1,5 @@
 package com.tokopedia.cachemanager.db
 
-import kotlinx.coroutines.experimental.Job
 import java.util.concurrent.TimeUnit
 
 class CacheDeletion {
