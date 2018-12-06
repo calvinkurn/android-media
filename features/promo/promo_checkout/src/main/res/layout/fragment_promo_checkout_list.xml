@@ -30,7 +30,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_32"
+                    android:layout_marginBottom="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16">
@@ -62,8 +62,10 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:background="@drawable/green_button_rounded"
-                        android:paddingTop="@dimen/dp_7"
-                        android:paddingBottom="@dimen/dp_7"
+                        android:paddingTop="@dimen/dp_8"
+                        android:paddingBottom="@dimen/dp_8"
+                        android:paddingLeft="@dimen/dp_16"
+                        android:paddingRight="@dimen/dp_16"
                         android:text="@string/promo_label_button_use" />
 
                 </RelativeLayout>
@@ -95,9 +97,9 @@
 
             <TextView
                 style="@style/TextView.Micro.BlackSecondary"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
                 android:text="@string/promo_label_my_coupon" />
 
         </LinearLayout>
@@ -111,7 +113,6 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_list_promo_checkout"

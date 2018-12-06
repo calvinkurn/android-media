@@ -6,8 +6,8 @@
             android:useLevel="false">
             <solid android:color="@color/grey_300" />
             <size
-                android:width="40dp"
-                android:height="40dp" />
+                android:width="30dp"
+                android:height="30dp" />
         </shape>
     </item>
 </layer-list>

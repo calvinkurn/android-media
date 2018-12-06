@@ -11,6 +11,14 @@ data class PromoData(var typePromo: Int = 0,
                      var amount: Int = 0,
                      var state: TickerCheckoutView.State = TickerCheckoutView.State.EMPTY) : Parcelable{
 
+    fun getPromoCodeSafe() : String{
+        if(state != TickerCheckoutView.State.EMPTY){
+            return promoCode
+        }else{
+            return ""
+        }
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString(),

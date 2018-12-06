@@ -14,12 +14,21 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
 
     override fun bind(element: PromoCheckoutListModel?) {
         listenerTrackingCoupon.onImpressionCoupon(element)
-        ImageHandler.loadImageRounded2(view?.context, view?.imageBannerPromo, element?.imageUrlMobile)
+        ImageHandler.loadImageRounded2(view?.context, view?.imageBanner, element?.imageUrlMobile)
         view?.titlePeriod?.text = element?.usage?.text
         view?.titleMinTrans?.text = element?.minimumUsageLabel
         if(TextUtils.isEmpty(element?.minimumUsage)) {
             view?.textMinTrans?.visibility = View.GONE
-        }else{
+            if(TextUtils.isEmpty(element?.minimumUsageLabel)){
+                view?.titleMinTrans?.visibility = View.GONE
+                view?.imageMinTrans?.visibility = View.GONE
+            }else{
+                view?.titleMinTrans?.visibility = View.VISIBLE
+                view?.imageMinTrans?.visibility = View.VISIBLE
+            }
+        } else {
+            view?.titleMinTrans?.visibility = View.VISIBLE
+            view?.imageMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.visibility = View.VISIBLE
             view?.textMinTrans?.text = element?.minimumUsage
         }
@@ -56,14 +65,16 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
 
     fun setDateUsage(element: PromoCheckoutListModel?) {
         view?.timerUsage?.visibility = View.GONE
-        view?.containerUsageDate?.visibility = View.VISIBLE
+        view?.titlePeriod?.visibility = View.VISIBLE
+        view?.textPeriod?.visibility = View.VISIBLE
         view?.textPeriod?.text = element?.usage?.usageStr
     }
 
     fun setTimerUsage(countDown: Long) {
         view?.timerUsage?.cancel()
         view?.timerUsage?.visibility = View.VISIBLE
-        view?.containerUsageDate?.visibility = View.GONE
+        view?.titlePeriod?.visibility = View.GONE
+        view?.textPeriod?.visibility = View.GONE
         view?.timerUsage?.expiredTimer = countDown
         view?.timerUsage?.start()
     }

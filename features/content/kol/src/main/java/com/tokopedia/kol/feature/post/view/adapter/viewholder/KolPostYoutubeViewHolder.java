@@ -163,15 +163,30 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     @Override
     public void onLikeButtonClickListener(BaseKolViewModel element) {
         if (element.isLiked()) {
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getContentId());
+            viewListener.onUnlikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         } else {
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getContentId());
+            viewListener.onLikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         }
     }
 
     @Override
     public void onCommentClickListener(BaseKolViewModel element) {
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
+        viewListener.onGoToKolComment(
+                getAdapterPosition(),
+                element.getContentId(),
+                element.isMultipleContent(),
+                element.getActivityType()
+        );
     }
 
     @Override
@@ -210,26 +225,6 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 
-        } else if (type == Type.PROFILE) {
-            promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getContentId(),
-                    KolEnhancedTracking.Promotion.createContentNameKolPost(
-                            element.getTagsType()),
-                    TextUtils.isEmpty(element.getName()) ? DASH :
-                            element.getName(),
-                    getAdapterPosition(),
-                    TextUtils.isEmpty(element.getLabel()) ? DASH :
-                            element.getLabel(),
-                    element.getTagsId(),
-                    TextUtils.isEmpty(element.getTagsLink()) ? DASH :
-                            element.getTagsLink(),
-                    Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
-                            viewListener.getUserSession().getUserId() : "0")
-            ));
-
-            analyticTracker.sendEnhancedEcommerce(
-                    KolEnhancedTracking.getKolClickTracking(promotionList)
-            );
         }
 
         viewListener.onOpenKolTooltip(

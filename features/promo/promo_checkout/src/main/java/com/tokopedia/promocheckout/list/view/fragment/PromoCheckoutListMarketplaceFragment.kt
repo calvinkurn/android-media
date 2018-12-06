@@ -102,7 +102,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
             trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(dataVoucher.code ?: "")
         }
         val intent = Intent()
-        val typePromo = if (dataVoucher.isCoupon == PromoData.TYPE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
+        val typePromo = if (dataVoucher.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
         val promoData = PromoData(typePromo, dataVoucher.code ?: "",
                 dataVoucher.message?.text ?: "", dataVoucher.titleDescription ?: "",
                 dataVoucher.cashbackAmount, dataVoucher.message?.state?.mapToStatePromoCheckout()

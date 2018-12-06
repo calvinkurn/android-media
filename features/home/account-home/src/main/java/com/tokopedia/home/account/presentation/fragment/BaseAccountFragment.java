@@ -1,6 +1,5 @@
 package com.tokopedia.home.account.presentation.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,15 +8,14 @@ import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
-
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.home.account.AccountConstants;
-
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -29,7 +27,13 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 
 /**
@@ -265,6 +269,24 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                 AccountHomeUrl.MORE_SELLER));
     }
 
+    @Override
+    public void onKycLinkClicked(int verificationStatus) {
+        if (getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter) {
+            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
+            applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
+        }
+    }
+
+    @Override
+    public void onTickerLinkClicked(String url) {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof ApplinkRouter) {
+            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
+            applinkRouter.goToApplinkActivity(getActivity(),
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+        }
+    }
+
     private void sendTracking(String title, String section, String item) {
         if (accountAnalytics == null)
             return;
@@ -283,5 +305,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             return;
 
         accountAnalytics.eventClickActivationOvoMyAccount();
+    }
+
+    @Override
+    public void onTickerClosed() {
+
     }
 }

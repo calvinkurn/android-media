@@ -8,6 +8,7 @@
     android:paddingEnd="@dimen/tp_padding_medium"
     android:paddingLeft="@dimen/tp_padding_medium"
     android:paddingRight="@dimen/tp_padding_medium"
+    android:visibility="gone"
     android:paddingStart="@dimen/tp_padding_medium"
     android:paddingTop="@dimen/tp_padding_regular">
 
@@ -35,7 +36,7 @@
         android:id="@+id/text_my_coupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_label_outline_grey"
+        android:background="@drawable/bg_tp_gray_outline"
         android:gravity="center"
         android:paddingBottom="@dimen/tp_padding_small"
         android:paddingLeft="@dimen/tp_padding_regular"

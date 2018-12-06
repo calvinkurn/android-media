@@ -30,6 +30,7 @@ public class FlightOrder {
     private List<CancellationEntity> cancellations;
     private List<FlightInsurance> insurances;
     private int cancelledPassengerCount;
+    private String contactUsUrl;
 
     public FlightOrder() {
     }
@@ -192,5 +193,13 @@ public class FlightOrder {
 
     public void setCancelledPassengerCount(int cancelledPassengerCount) {
         this.cancelledPassengerCount = cancelledPassengerCount;
+    }
+
+    public String getContactUsUrl() {
+        return contactUsUrl;
+    }
+
+    public void setContactUsUrl(String contactUsUrl) {
+        this.contactUsUrl = contactUsUrl;
     }
 }

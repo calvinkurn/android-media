@@ -235,7 +235,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
         boolean skipToCart = data.isSkipToCart();
-        routeToNewCheckout(context, data, skipToCart ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()), skipToCart);
+        Subscriber subscriber = skipToCart ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc());
+        boolean isOneClickShipment = skipToCart && !data.isBigPromo();
+        routeToNewCheckout(context, data, subscriber, isOneClickShipment);
         UnifyTracking.eventPDPCart();
     }
 
@@ -535,7 +537,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData, productPass, context);
 
-                            if(campaign.getActive()){
+                            if (campaign.getActive()) {
                                 getProductDetailFromNetwork(context, productPass, useVariant);
                             }
                         }
@@ -1160,7 +1162,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             CourierViewData items = new CourierViewData();
             items.setCourierId(shopShipment.getShippingId());
             items.setLogo(shopShipment.getLogo());
-            items.setPackageName(shopShipment.getPackageNames());
+            if (shopShipment.getPackageNames() != null) {
+                items.setPackageName(shopShipment.getPackageNames());
+            } else {
+                items.setPackageName(new ArrayList<>());
+            }
             items.setCourierName(shopShipment.getShippingName());
             list.add(items);
         }

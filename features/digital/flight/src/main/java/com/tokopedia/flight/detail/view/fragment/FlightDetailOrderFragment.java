@@ -51,6 +51,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
+import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightOrderDetailInsuranceAdapter;
@@ -261,12 +262,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getWebviewActivity(getActivity(), invoiceLink) != null) {
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getWebviewActivity(getActivity(), invoiceLink));
-                }
+                startActivity(FlightInvoiceActivity.newInstance(getActivity(), invoiceLink));
             }
         });
 
@@ -280,7 +276,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flightDetailOrderPresenter.onHelpButtonClicked(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData.getStatus());
+                flightDetailOrderPresenter.onHelpButtonClicked(getFlightOrder().getContactUsUrl());
             }
         });
         buttonReorder.setOnClickListener(new View.OnClickListener() {
@@ -644,18 +640,18 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(
                 getString(R.string.flight_cancellation_dialog_refundable_description)));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Lanjut");
+        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });
@@ -668,18 +664,18 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(MethodChecker.fromHtml(getString(
                 R.string.flight_cancellation_dialog_non_refundable_description)));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setBtnOk("Lanjut");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Lanjut");
+        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flightDetailOrderPresenter.checkIfFlightCancellable(invoiceId, items);
                 dialog.dismiss();
             }
         });

@@ -42,44 +42,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/layout_used_promo"
+
+                <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+                    android:id="@+id/ticker_checkout_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@drawable/border_rectangle_grey"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textview_promo_code"
-                            style="@style/TextSmallMediumBlack54"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:lineSpacingExtra="6sp"
-                            android:padding="@dimen/dp_16"
-                            tools:text="Lorem ipsum dolor sit amet, consect etur adipiscing elit, sed do eiusmodte mpor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamane" />
-
-                        <ImageView
-                            android:id="@+id/button_cancel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/dp_16"
-                            app:srcCompat="@drawable/ic_ticker_action_close_12dp"
-                            tools:ignore="ContentDescription,VectorDrawableCompat" />
-
-                    </LinearLayout>
-
-                </RelativeLayout>
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

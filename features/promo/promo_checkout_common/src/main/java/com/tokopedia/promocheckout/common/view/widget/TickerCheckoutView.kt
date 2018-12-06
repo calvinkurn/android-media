@@ -90,6 +90,7 @@ class TickerCheckoutView @JvmOverloads constructor(
         imageCheck.setImageResource(R.drawable.ic_failed_promo_checkout)
         imageTitleCoupon.setImageResource(R.drawable.ic_coupon_red_promo_checkout)
         imageClose.setImageResource(R.drawable.ic_close_red_promo_checkout)
+        titleCoupon.setTextColor(ContextCompat.getColor(context, R.color.background_error))
     }
 
     private fun setViewActive() {
@@ -100,6 +101,7 @@ class TickerCheckoutView @JvmOverloads constructor(
         imageCheck.setImageResource(R.drawable.ic_check_black)
         imageTitleCoupon.setImageResource(R.drawable.ic_coupon_green_promo_checkout)
         imageClose.setImageResource(R.drawable.ic_close_green_promo_checkout)
+        titleCoupon.setTextColor(ContextCompat.getColor(context,R.color.tkpd_main_green))
     }
 
     private fun setViewInactive() {
@@ -110,6 +112,7 @@ class TickerCheckoutView @JvmOverloads constructor(
         imageCheck.setImageResource(R.drawable.ic_question_promo_checkout)
         imageTitleCoupon.setImageResource(R.drawable.ic_coupon_grey_promo_checkout)
         imageClose.setImageResource(R.drawable.ic_close_grey_promo_checkout)
+        titleCoupon.setTextColor(ContextCompat.getColor(context,R.color.font_black_secondary_54))
     }
 
     override fun onFinishInflate() {

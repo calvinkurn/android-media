@@ -1,10 +1,14 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.checkout.domain.datamodel.voucher.CouponListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
 import com.tokopedia.transactiondata.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
 import com.tokopedia.transactiondata.entity.response.couponlist.Coupon;
@@ -130,7 +134,11 @@ public class VoucherCouponMapper implements IVoucherCouponMapper {
         promoCodeCartShipmentData.setErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         if (!mapperUtil.isEmpty(dataVoucherShipment)) {
             PromoCodeCartShipmentData.DataVoucher dataVoucher = new PromoCodeCartShipmentData.DataVoucher();
-            dataVoucher.setVoucherAmount(dataVoucherShipment.getCashbackAmount());
+            int voucherAmount = 0;
+            if(!TextUtils.isEmpty(dataVoucherShipment.getDiscountAmount())){
+                voucherAmount = CurrencyFormatHelper.convertRupiahToInt(dataVoucherShipment.getDiscountAmount());
+            }
+            dataVoucher.setVoucherAmount(voucherAmount);
             dataVoucher.setVoucherPromoDesc(dataVoucherShipment.getMessage().getText());
             dataVoucher.setIsCoupon(dataVoucherShipment.isCoupon());
             dataVoucher.setState(dataVoucherShipment.getMessage().getState());

@@ -20,4 +20,7 @@
     <string name="promote_info_text">Promosi oleh TopAds yang muncul berdasarkan minat Anda.</string>
     <string name="kunjungi_toko">Kunjungi Toko</string>
     <string name="promoted_products_related_to_this_item">Produk Terkait dengan Barang Ini</string>
+    <string name="produk_pilihan">Produk Pilihan</string>
+    <string name="topads_info_dynamic_channel">Promosi oleh TopAds yang muncul berdasarkan minat Anda.</string>
+    <string name="baca_selengkapnya">Baca Selengkapnya</string>
 </resources>

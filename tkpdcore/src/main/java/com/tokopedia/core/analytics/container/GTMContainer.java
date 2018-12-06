@@ -274,7 +274,7 @@ public class GTMContainer implements IGTMContainer {
 
         CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
-        eventAuthenticate(authEvent).sendScreen(screenName);
+        eventAuthenticate(authEvent);
 
         return this;
     }

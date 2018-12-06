@@ -100,8 +100,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     @Override
     protected Fragment getNewFragment() {
         shipmentFragment = ShipmentFragment.newInstance(
-                getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
-                getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION),
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false),
                 getIntent().getBooleanExtra(EXTRA_IS_FROM_PDP, false)

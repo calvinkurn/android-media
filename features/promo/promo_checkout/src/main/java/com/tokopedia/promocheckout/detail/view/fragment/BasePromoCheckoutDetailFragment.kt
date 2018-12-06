@@ -21,6 +21,7 @@ import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
+import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailException
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
@@ -70,10 +71,10 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     protected fun validateViewLoading() {
         if (isLoadingFinished) {
             mainView.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
+            progressBarLoading.visibility = View.GONE
         } else {
             mainView.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
+            progressBarLoading.visibility = View.VISIBLE
         }
     }
 
@@ -85,7 +86,16 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
             view?.titleMinTrans?.text = promoCheckoutDetailModel.minimumUsageLabel
             if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage)) {
                 view?.textMinTrans?.visibility = View.GONE
+                if(TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsageLabel)){
+                    view?.titleMinTrans?.visibility = View.GONE
+                    view?.imageMinTrans?.visibility = View.GONE
+                }else{
+                    view?.titleMinTrans?.visibility = View.VISIBLE
+                    view?.imageMinTrans?.visibility = View.VISIBLE
+                }
             } else {
+                view?.titleMinTrans?.visibility = View.VISIBLE
+                view?.imageMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
             }
@@ -107,7 +117,8 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     private fun setTimerUsage(countDown: Long) {
         view?.timerUsage?.cancel()
         view?.timerUsage?.visibility = View.VISIBLE
-        view?.containerUsageDate?.visibility = View.GONE
+        view?.titlePeriod?.visibility = View.GONE
+        view?.textPeriod?.visibility = View.GONE
         view?.timerUsage?.expiredTimer = countDown
         view?.timerUsage?.start()
     }
@@ -122,7 +133,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
         val intent = Intent()
-        val typePromo = if (dataVoucher.isCoupon == PromoData.TYPE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
+        val typePromo = if (dataVoucher.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
         val promoData = PromoData(typePromo, dataVoucher.code ?: "",
                 dataVoucher.message?.text ?: "", dataVoucher.titleDescription ?: "",
                 dataVoucher.cashbackAmount, dataVoucher.message?.state?.mapToStatePromoCheckout()
@@ -139,6 +150,11 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     override fun onSuccessCancelPromo() {
         isUse = false
         validateButton()
+        val intent = Intent()
+        val promoData = PromoData(PromoData.TYPE_COUPON,state =TickerCheckoutView.State.EMPTY)
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun showLoading() {
@@ -151,7 +167,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     }
 
     private fun getFormattedHtml(content: String?): String {
-        return "<html><head><style>li{ font-size: 10pt; color: 8A000000; }</style></head><body>$content</body></html>"
+        return getString(R.string.promo_label_html_tnc_promo, content)
     }
 
     override fun onErroGetDetail(e: Throwable) {
@@ -159,6 +175,10 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         if (e is CheckPromoCodeException) {
             message = e.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT
             setDisabledButtonUse()
+        } else if (e is CheckPromoCodeDetailException) {
+            setDisabledButtonUse()
+            NetworkErrorHelper.showRedCloseSnackbar(activity,e.message)
+            return
         }
         NetworkErrorHelper.showEmptyState(activity, view, message, { loadData() })
     }
