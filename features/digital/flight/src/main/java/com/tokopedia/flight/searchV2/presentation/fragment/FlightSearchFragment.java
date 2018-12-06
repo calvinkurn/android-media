@@ -114,7 +114,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         passDataViewModel = getArguments().getParcelable(EXTRA_PASS_DATA);
 
         if (savedInstanceState == null) {
@@ -130,7 +129,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
             setNeedRefreshFromCache(true);
         }
-
     }
 
     @Nullable
@@ -142,21 +140,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         setUpBottomAction(view);
         setUpSwipeRefresh(view);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        flightSearchPresenter.attachView(this);
-
-        if (!isReturning()) {
-            flightSearchPresenter.fetchCombineData(passDataViewModel);
-        } else {
-            fetchFlightSearchData();
-        }
-
-        showLoading();
     }
 
     @Override
@@ -230,6 +213,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                 .build();
 
         flightSearchComponent.inject(this);
+
+        flightSearchPresenter.attachView(this);
     }
 
     @Override
@@ -255,7 +240,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     @Override
     protected boolean callInitialLoadAutomatically() {
-        return false;
+        return true;
     }
 
     @Override
@@ -291,6 +276,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     @Override
     public void loadInitialData() {
+        showLoading();
         flightSearchPresenter.initialize();
     }
 
