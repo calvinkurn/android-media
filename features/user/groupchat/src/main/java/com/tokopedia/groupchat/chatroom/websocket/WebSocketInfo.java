@@ -129,8 +129,6 @@ public class WebSocketInfo {
         }
     }
 
-    private Visitable<>
-
     private Visitable mapToParticipant(JsonObject data) {
         Gson gson = new Gson();
         ParticipantPojo pojo = gson.fromJson(data, ParticipantPojo.class);
