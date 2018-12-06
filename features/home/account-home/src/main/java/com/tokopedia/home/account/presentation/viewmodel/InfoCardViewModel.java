@@ -20,6 +20,7 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
 
     private String titleTrack;
     private String sectionTrack;
+    private String itemTrack;
 
     private int newTxtVisiblle = View.GONE;
 
@@ -82,6 +83,14 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
 
     public void setSectionTrack(String sectionTrack) {
         this.sectionTrack = sectionTrack;
+    }
+
+    public String getItemTrack() {
+        return itemTrack;
+    }
+
+    public void setItemTrack(String itemTrack) {
+        this.itemTrack = itemTrack;
     }
 
     public int isNewTxtVisiblle() {
