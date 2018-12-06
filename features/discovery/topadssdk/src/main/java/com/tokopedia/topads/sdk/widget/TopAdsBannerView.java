@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +27,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
 import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
@@ -38,6 +40,7 @@ import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.BannerAdsContract;
+import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter;
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
@@ -97,48 +100,48 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         final ArrayList<ImageView> indicatorItems = new ArrayList<>();
         inflate(getContext(), R.layout.layout_ads_banner_shop_pager, this);
         RecyclerView recyclerView = findViewById(R.id.list);
-        LinearLayout indicatorContainer = findViewById(R.id.indicator);
+        TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
+        TextView shopName = (TextView) findViewById(R.id.shop_name);
+        LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
+
+        promotedTxt.setText(cpm.getPromotedText());
+        shopName.setText(TopAdsBannerView.escapeHTML(cpm.getName()));
+        if (cpm.getBadges().size() > 0) {
+            badgeContainer.removeAllViews();
+            badgeContainer.setVisibility(View.VISIBLE);
+            for (Badge badge : cpm.getBadges()) {
+                ImageView badgeImg = new ImageView(context);
+                badgeImg.setLayoutParams(new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size_small),
+                        context.getResources().getDimensionPixelSize(R.dimen.badge_size_small)));
+                Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
+                badgeContainer.addView(badgeImg);
+            }
+        } else {
+            badgeContainer.setVisibility(View.GONE);
+        }
+
         bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(bannerAdsAdapter);
-        recyclerView.setOnFlingListener(null);
-        SnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(recyclerView);
+        final int mItemOffset = getResources().getDimensionPixelOffset(R.dimen.dp_8);
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                if(parent.getChildAdapterPosition(view) == 0) {
+                    outRect.left = mItemOffset;
+                }
+                outRect.right = mItemOffset;
+            }
+        });
         if (cpm != null && cpm.getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
-            if (cpm.getCpmShop().getProducts().size() > 1) {
-                indicatorContainer.removeAllViews();
-                items.add(new BannerShopProductViewModel(cpm, appLink, adsClickUrl));
-                for (int i = 0; i < 2; i++) {
-                    ImageView pointView = new ImageView(getContext());
-                    pointView.setPadding(10, 0, 10, 5);
-                    if (i == 0) {
-                        pointView.setImageResource(R.drawable.dot_green);
-                    } else {
-                        pointView.setImageResource(R.drawable.dot_grey);
-                    }
-                    indicatorItems.add(pointView);
-                    indicatorContainer.addView(pointView);
-                }
+            for (int i = 0; i < cpm.getCpmShop().getProducts().size(); i++) {
+                items.add(new BannerShopProductViewModel(cpm.getCpmShop().getProducts().get(i),
+                        appLink, adsClickUrl));
             }
             bannerAdsAdapter.setList(items);
         }
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int currentPosition =
-                        ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-                for (int i = 0; i < indicatorItems.size(); i++) {
-                    if (currentPosition != i) {
-                        indicatorItems.get(i).setImageResource(R.drawable.dot_grey);
-                    } else {
-                        indicatorItems.get(i).setImageResource(R.drawable.dot_green);
-                    }
-                }
-            }
-        });
     }
 
     private boolean activityIsFinishing(Context context) {
