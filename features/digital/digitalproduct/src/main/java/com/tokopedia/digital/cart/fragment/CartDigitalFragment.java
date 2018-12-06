@@ -296,7 +296,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void showPostPaidDialog(String title, String content, String confirmButtonTitle) {
-        Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
+                getActivity(),
+                Dialog.Type.RETORIC,
+                DigitalPostPaidLocalCache.newInstance(getActivity()),
+                getUserId()
+        );
         dialog.setTitle(title);
         dialog.setDesc(MethodChecker.fromHtml(content));
         dialog.setBtnOk(confirmButtonTitle);
@@ -803,11 +808,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
                     if (getApplicationContext() instanceof DigitalModuleRouter) {
-                        ((DigitalModuleRouter)getApplicationContext()).
+                        ((DigitalModuleRouter) getApplicationContext()).
                                 showAdvancedAppRatingDialog(getActivity(), dialog -> {
-                            getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                            closeView();
-                        });
+                                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                                    closeView();
+                                });
                     }
                     presenter.onPaymentSuccess(passData.getCategoryId());
 

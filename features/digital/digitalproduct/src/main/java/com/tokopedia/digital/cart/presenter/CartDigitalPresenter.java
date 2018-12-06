@@ -122,7 +122,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToCheckout() {
         if (!digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())
                 && view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null) {
-            digitalPostPaidLocalCache.setAlreadyShowPostPaidPopUp(userSession.getUserId());
             view.showPostPaidDialog(
                     view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getTitle(),
                     view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getContent(),

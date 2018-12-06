@@ -22,10 +22,10 @@ public class DigitalPostPaidLocalCache {
         this.editor = sharedPrefs.edit();
     }
 
-    public void setAlreadyShowPostPaidPopUp(String userId) {
+    public void setDontShowAgain(String userId, boolean dontShowAgain) {
         editor
                 .putBoolean(POST_PAID_POP_UP + userId,
-                        true)
+                        dontShowAgain)
                 .apply();
     }
 
