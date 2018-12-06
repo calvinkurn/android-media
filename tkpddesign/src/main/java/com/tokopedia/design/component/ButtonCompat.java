@@ -155,13 +155,13 @@ public class ButtonCompat extends AppCompatButton {
     private void defineSize() {
         switch (mSize) { // this size initiate same as zeplin by px
             case BIG:
-                initSize(14, getResources().getDimensionPixelSize(R.dimen.dp_48));
+                initSize(getResources().getInteger(R.integer.button_big), getResources().getDimensionPixelSize(R.dimen.dp_48));
                 break;
             case MEDIUM:
-                initSize(13, getResources().getDimensionPixelSize(R.dimen.dp_40));
+                initSize(getResources().getInteger(R.integer.button_medium), getResources().getDimensionPixelSize(R.dimen.dp_40));
                 break;
             case SMALL:
-                initSize(11, getResources().getDimensionPixelSize(R.dimen.dp_32));
+                initSize(getResources().getInteger(R.integer.button_small), getResources().getDimensionPixelSize(R.dimen.dp_32));
                 break;
         }
     }

@@ -17,9 +17,9 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
 /**
  * Created by meyta on 06/03/18.
  *
- * fontSize = headline, subheadline, title big, title, small, micro
+ * fontSize = headline, subHeadline, titleBig, title, small, micro
  * weight = regular, medium
- * textviewTheme = lightprimary, lightsecondary, lightdisabled, darkprimary, darksecondary, darkdisabled
+ * textviewTheme = lightPrimary, lightSecondary, lightDisabled, darkPrimary, darkSecondary, darkDisabled
  *
  * http://product.tkp.me/styles/typography/design
  */
@@ -55,24 +55,24 @@ public class TextViewCompat extends AppCompatTextView {
 
     private void configFontSize(TypedArray attributeArray) {
         int fontSize  = attributeArray.getInteger(R.styleable.TextViewCompat_fontSize, 5);
-        if (fontSize == 1) { // headline
-            this.setTextSize(COMPLEX_UNIT_SP, 34);
-            this.setMinimumHeight(38);
-        } else if (fontSize == 2) { // sub headline
-            this.setTextSize(COMPLEX_UNIT_SP, 24);
-            this.setMinimumHeight(28);
-        } else if (fontSize == 3) { // title big
-            this.setTextSize(COMPLEX_UNIT_SP, 20);
-            this.setMinimumHeight(24);
-        } else if (fontSize == 4) { // title
-            this.setTextSize(COMPLEX_UNIT_SP, 17);
-            this.setMinimumHeight(22);
-        } else if (fontSize == 5) { // small
-            this.setTextSize(COMPLEX_UNIT_SP, 14);
-            this.setMinimumHeight(18);
-        } else if (fontSize == 6) { // micro
-            this.setTextSize(COMPLEX_UNIT_SP, 12);
-            this.setMinimumHeight(16);
+        if (fontSize == 1) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.headline));
+            this.setMinimumHeight(getResources().getInteger(R.integer.headline_weight));
+        } else if (fontSize == 2) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.sub_headline));
+            this.setMinimumHeight(getResources().getInteger(R.integer.sub_headline_weight));
+        } else if (fontSize == 3) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.title_big));
+            this.setMinimumHeight(getResources().getInteger(R.integer.title_big_weight));
+        } else if (fontSize == 4) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.title));
+            this.setMinimumHeight(getResources().getInteger(R.integer.title_weight));
+        } else if (fontSize == 5) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.small));
+            this.setMinimumHeight(getResources().getInteger(R.integer.small_weight));
+        } else if (fontSize == 6) {
+            this.setTextSize(COMPLEX_UNIT_SP, getResources().getInteger(R.integer.micro));
+            this.setMinimumHeight(getResources().getInteger(R.integer.micro_weight));
         }
     }
 
