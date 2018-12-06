@@ -29,6 +29,7 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
+import com.tokopedia.affiliate.common.widget.ExploreSearchView;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
@@ -74,7 +75,7 @@ public class ExploreFragment
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
-    private SearchInputView searchView;
+    private ExploreSearchView searchView;
     private ExploreAdapter adapter;
     private ImageView ivBack, ivBantuan;
     private ExploreParams exploreParams;
@@ -232,6 +233,7 @@ public class ExploreFragment
     @Override
     public void onSearchSubmitted(String text) {
         dropKeyboard();
+        searchView.removeSearchTextWatcher();
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
@@ -337,6 +339,7 @@ public class ExploreFragment
         adapter.addElement(itemList);
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
+        searchView.addTextWatcherToSearch();
     }
 
     @Override
