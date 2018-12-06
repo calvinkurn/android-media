@@ -126,7 +126,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         this.adsItemClickListener = adsItemClickListener;
     }
 
-    @Override
     public void setMaxItems(int items) {
         presenter.setMaxItems(items);
     }
@@ -145,7 +144,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         presenter.loadTopAds();
     }
 
-    @Override
     public void loadTopAds() {
         presenter.loadTopAds();
     }

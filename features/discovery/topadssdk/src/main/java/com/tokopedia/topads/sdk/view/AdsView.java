@@ -16,11 +16,7 @@ public interface AdsView {
 
     void initPresenter();
 
-    void setMaxItems(int items);
-
     void setDisplayMode(DisplayMode displayMode);
-
-    void loadTopAds();
 
     void displayAds(List<Item> list, int position);
 
