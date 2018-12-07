@@ -17,11 +17,14 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.playServicesDependencies.analytics;
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
