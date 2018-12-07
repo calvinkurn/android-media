@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="headline">34</integer>
-    <integer name="sub_headline">24</integer>
-    <integer name="title_big">20</integer>
-    <integer name="title">17</integer>
-    <integer name="small">14</integer>
-    <integer name="micro">12</integer>
+    <integer name="text_headline">34</integer>
+    <integer name="text_sub_headline">24</integer>
+    <integer name="text_title_big">20</integer>
+    <integer name="text_title">17</integer>
+    <integer name="text_small">14</integer>
+    <integer name="text_micro">12</integer>
 
-    <integer name="headline_weight">38</integer>
-    <integer name="sub_headline_weight">28</integer>
-    <integer name="title_big_weight">24</integer>
-    <integer name="title_weight">22</integer>
-    <integer name="small_weight">18</integer>
-    <integer name="micro_weight">16</integer>
+    <integer name="text_headline_weight">38</integer>
+    <integer name="text_sub_headline_weight">28</integer>
+    <integer name="text_title_big_weight">24</integer>
+    <integer name="text_title_weight">22</integer>
+    <integer name="text_small_weight">18</integer>
+    <integer name="text_micro_weight">16</integer>
 
     <integer name="button_big">14</integer>
     <integer name="button_medium">13</integer>
