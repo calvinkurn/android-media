@@ -134,9 +134,6 @@
                 <data
                     android:host="exclusive.tokopedia.net"
                     android:scheme="https"/>
-                <data
-                    android:host="merchant.tokopedia.net"
-                    android:scheme="https"/>
             </intent-filter>
         </activity>
 
