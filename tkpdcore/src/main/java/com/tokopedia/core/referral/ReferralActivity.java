@@ -26,6 +26,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 public class ReferralActivity extends BasePresenterActivity implements HasComponent<ReferralComponent> {
 
+    private static final String REFERRAL_SCREEN = "/referral";
     ReferralComponent referralComponent = null;
 
     @DeepLink(Constants.Applinks.REFERRAL)
@@ -47,6 +48,10 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
         return intent;
     }
 
+    @Override
+    public String getScreenName() {
+        return REFERRAL_SCREEN;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

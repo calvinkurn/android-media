@@ -32,6 +32,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.analytics)
     implementation (rootProject.ext.miscDependencies.flexBoxLayout){
         exclude group: 'com.android.support'
     }
@@ -46,6 +47,9 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
 
     implementation project(rootProject.ext.features.kolCommon)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
