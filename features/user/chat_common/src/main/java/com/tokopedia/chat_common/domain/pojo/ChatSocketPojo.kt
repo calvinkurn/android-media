@@ -2,7 +2,6 @@ package com.tokopedia.chat_common.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 /**
  * @author : Steven 06/12/18
@@ -26,7 +25,7 @@ data class ChatSocketPojo(
         var toUid: Int = 0,
         @SerializedName("message")
         @Expose
-        var message: Objects? = null,
+        var message: Boolean,
         @SerializedName("start_time")
         @Expose
         var startTime: String = "",
@@ -35,7 +34,7 @@ data class ChatSocketPojo(
         var imageUri: String = "",
         @SerializedName("attachment")
         @Expose
-        var attachment: Objects? = null,
+        var attachment: Boolean,
         @SerializedName("show_rating")
         @Expose
         var showRating: Boolean = false,
