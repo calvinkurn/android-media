@@ -1,7 +1,6 @@
 package com.tokopedia.loyalty.domain.apiservice;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
@@ -24,8 +23,8 @@ import okhttp3.Response;
 public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = TokoPointAuthInterceptor.class.getSimpleName();
 
-    public TokoPointAuthInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession) {
-        super(context, networkRouter, userSession);
+    public TokoPointAuthInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession, String hmacKey) {
+        super(context, networkRouter, userSession, hmacKey);
     }
 
     @Override

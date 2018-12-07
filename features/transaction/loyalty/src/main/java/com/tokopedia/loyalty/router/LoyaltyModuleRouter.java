@@ -35,4 +35,12 @@ public interface LoyaltyModuleRouter {
     void sendEventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title);
 
     void eventClickPromoListItem(List<Object> dataLayerSinglePromoCodeList, String title);
+
+    void sendEventCouponPageClosed();
+
+    void sendEventMyCouponClicked();
+
+    void sendEventCouponChosen(String title);
+
+    void sendEventDigitalEventTracking(String text, String failmsg);
 }

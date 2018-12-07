@@ -1,6 +1,7 @@
 package com.tokopedia.loyalty.view.data;
 
-import android.app.Fragment;
+
+import android.support.v4.app.Fragment;
 
 /**
  * @author anggaprasetiyo on 30/11/17.

@@ -3,13 +3,17 @@ package com.tokopedia.loyalty.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.loyalty.di.LoyaltyScope;
+import com.tokopedia.loyalty.di.qualifier.DigitalQualifier;
 import com.tokopedia.loyalty.di.qualifier.LoyaltyModuleQualifier;
 import com.tokopedia.loyalty.di.qualifier.PromoQualifier;
 import com.tokopedia.loyalty.di.qualifier.TokopointGqlQualifier;
+import com.tokopedia.loyalty.di.qualifier.TokopointQualifier;
 import com.tokopedia.loyalty.di.qualifier.TxPaymentQualifier;
+import com.tokopedia.loyalty.domain.apiservice.DigitalApi;
+import com.tokopedia.loyalty.domain.apiservice.DigitalHmacAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.PromoApi;
 import com.tokopedia.loyalty.domain.apiservice.TXPaymentVoucherApi;
+import com.tokopedia.loyalty.domain.apiservice.TokoPointApi;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointGqlApi;
 import com.tokopedia.loyalty.domain.apiservice.RetrofitFactory;
@@ -60,10 +64,27 @@ public class ServiceApiModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context,builder);
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter,userSession));
-        tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(context, networkRouter, userSession));
+        tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.TokoPoint.HMAC_KEY));
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
         return RetrofitFactory.createRetrofitTokoPointConfig(TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @TokopointQualifier
+    Retrofit provideRetrofitTokopoint(@ApplicationContext Context context,
+                                         @LoyaltyModuleQualifier NetworkRouter networkRouter,
+                                         @LoyaltyModuleQualifier UserSession userSession){
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context,builder);
+        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter,userSession));
+        tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.TokoPoint.HMAC_KEY));
+        OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
+
+        return RetrofitFactory.createRetrofitTokoPointConfig(TkpdBaseURL.TOKOPOINT_API_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }
@@ -103,6 +124,23 @@ public class ServiceApiModule {
     }
 
     @Provides
+    @DigitalQualifier
+    Retrofit provideRetrofitDigital(@ApplicationContext Context context,
+                                      @LoyaltyModuleQualifier NetworkRouter networkRouter,
+                                      @LoyaltyModuleQualifier UserSession userSession){
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context,builder);
+        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter,userSession));
+        tkpdOkHttpBuilder.addInterceptor(new DigitalHmacAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.DigitalApi.HMAC_KEY));
+        OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
+
+        return RetrofitFactory.createRetrofitDigitalConfig(TkpdBaseURL.DIGITAL_API_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
     @LoyaltyModuleQualifier
     NetworkRouter provideNetworkRouter(@ApplicationContext Context context){
         if(context instanceof NetworkRouter){
@@ -136,13 +174,25 @@ public class ServiceApiModule {
     ITokoPointRepository provideITokoPointRepository(TokoPointGqlApi tokoPointGqlApi,
                                                      ITokoPointDBService tokoPointDBService,
                                                      TokoPointResponseMapper tokoPointResponseMapper,
-                                                     TXPaymentVoucherApi txPaymentVoucherApi
+                                                     TXPaymentVoucherApi txPaymentVoucherApi,
+                                                     DigitalApi digitalApi,
+                                                     TokoPointApi tokoPointApi
     ) {
         return new TokoPointRepository(
                 tokoPointGqlApi,
                 tokoPointDBService,
                 tokoPointResponseMapper,
-                txPaymentVoucherApi);
+                txPaymentVoucherApi, digitalApi, tokoPointApi);
+    }
+
+    @Provides
+    DigitalApi provideDigitalApi(@DigitalQualifier Retrofit retrofit){
+        return retrofit.create(DigitalApi.class);
+    }
+
+    @Provides
+    TokoPointApi provideTokopointApi(@TokopointQualifier Retrofit retrofit){
+        return retrofit.create(TokoPointApi.class);
     }
 
     @Provides

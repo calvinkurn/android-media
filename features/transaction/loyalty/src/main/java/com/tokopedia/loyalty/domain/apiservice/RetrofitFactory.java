@@ -44,4 +44,19 @@ public class RetrofitFactory {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
+
+    public static Retrofit.Builder createRetrofitDigitalConfig(String baseUrl) {
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(new DigitalResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
 }

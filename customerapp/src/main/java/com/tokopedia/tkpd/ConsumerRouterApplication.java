@@ -81,6 +81,7 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -105,7 +106,6 @@ import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
@@ -2051,11 +2051,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor() {
-        return getAppComponent().fingerprintInterceptor();
-    }
-
-    @Override
     public Converter.Factory loyaltyModuleRouterGetStringResponseConverter() {
         return new StringResponseConverter();
     }
@@ -3348,5 +3343,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
         SimpleAppRatingDialog.show(activity);
+    }
+
+    @Override
+    public void sendEventCouponPageClosed() {
+        UnifyTracking.eventCouponPageClosed();
+    }
+
+    @Override
+    public void sendEventMyCouponClicked() {
+        UnifyTracking.eventMyCouponClicked();
+    }
+
+    @Override
+    public void sendEventCouponChosen(String title) {
+        UnifyTracking.eventCouponChosen(title);
+    }
+
+    @Override
+    public void sendEventDigitalEventTracking(String text, String failmsg) {
+        UnifyTracking.eventDigitalEventTracking(text, failmsg);
     }
 }
