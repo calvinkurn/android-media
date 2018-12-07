@@ -2,9 +2,15 @@ package com.tokopedia.chatbot.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.chat_common.BaseChatToolbarActivity.Companion.PARAM_HEADER
+import com.tokopedia.chat_common.BaseChatToolbarActivity.Companion.PARAM_MESSAGE_ID
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 
 /**
@@ -24,8 +30,6 @@ class ChatbotActivity : BaseSimpleActivity() {
 
     companion object {
 
-        val PARAM_MESSAGE_ID = "message_id"
-
         @JvmStatic
         fun getCallingIntent(messageId: String, context: Context): Intent {
             val intent = Intent(context, ChatbotActivity::class.java)
@@ -34,6 +38,36 @@ class ChatbotActivity : BaseSimpleActivity() {
             intent.putExtras(bundle)
             return intent
         }
+
+        @JvmStatic
+        fun getCallingIntent(context: Context, messageId: String, name: String,
+                             label: String, senderId: String, role: String, mode: Int,
+                             keyword: String, image: String): Intent{
+            val intent = Intent(context, ChatbotActivity::class.java)
+            intent.putExtra(PARAM_MESSAGE_ID, messageId)
+            val model = ChatRoomHeaderViewModel()
+            model.name = name
+            model.label = label
+            model.senderId = senderId
+            model.role = role
+            model.mode = mode
+            model.keyword = keyword
+            model.image = image
+            intent.putExtra(PARAM_HEADER, model)
+            return intent
+        }
+    }
+
+    object DeepLinkIntents {
+        @JvmStatic
+        @DeepLink(ApplinkConst.CHATBOT)
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return Intent(context, ChatbotActivity::class.java)
+                    .setData(uri.build())
+                    .putExtras(extras)
+        }
+
     }
 
 }

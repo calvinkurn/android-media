@@ -11,8 +11,8 @@ import javax.inject.Inject
  * @author : Steven 29/11/18
  */
 
-class BaseChatPresenter @Inject constructor(
-        val getChatUseCase : GetChatUseCase)
+open class BaseChatPresenter @Inject constructor(
+        open var getChatUseCase : GetChatUseCase)
     : BaseDaggerPresenter<BaseChatContract.View>(), BaseChatContract.Presenter {
 
     override fun attachView(view: BaseChatContract.View?) {

@@ -24,17 +24,27 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
  * @author by nisie on 23/11/18.
  */
 class BaseChatToolbarActivity : BaseChatActivity(), HasComponent<ChatRoomComponent> {
+
+
+
     override fun getComponent(): ChatRoomComponent {
         return DaggerChatRoomComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 
     companion object {
+        val PARAM_MESSAGE_ID = "message_id"
+        val PARAM_HEADER = "header"
 
+        /**
+         * To create intent with header already initialized.
+         */
         @JvmStatic
-        fun getCallingIntent(context: Context, messageId: String, name: String, label: String, senderId: String, role: String, mode: Int, keyword: String, image: String): Intent{
+        fun getCallingIntent(context: Context, messageId: String, name: String,
+                             label: String, senderId: String, role: String, mode: Int,
+                             keyword: String, image: String): Intent{
             val intent = Intent(context, BaseChatToolbarActivity::class.java)
-            intent.putExtra("message_id", messageId)
+            intent.putExtra(PARAM_MESSAGE_ID, messageId)
             val model = ChatRoomHeaderViewModel()
             model.name = name
             model.label = label
@@ -43,7 +53,7 @@ class BaseChatToolbarActivity : BaseChatActivity(), HasComponent<ChatRoomCompone
             model.mode = mode
             model.keyword = keyword
             model.image = image
-            intent.putExtra("header", model)
+            intent.putExtra(PARAM_HEADER, model)
             return intent
         }
     }
@@ -85,7 +95,7 @@ class BaseChatToolbarActivity : BaseChatActivity(), HasComponent<ChatRoomCompone
         }
 
 
-        intent.getParcelableExtra<ChatRoomHeaderViewModel>("header")?.let {
+        intent.getParcelableExtra<ChatRoomHeaderViewModel>(PARAM_HEADER)?.let {
 
             ImageHandler.loadImageCircle2(this@BaseChatToolbarActivity, findViewById<ImageView>(R.id.user_avatar), it.image)
             (findViewById<TextView>(R.id.title)).text = it.name
@@ -100,7 +110,7 @@ class BaseChatToolbarActivity : BaseChatActivity(), HasComponent<ChatRoomCompone
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        bundle.putString("message_id", intent.getStringExtra("message_id"))
+        bundle.putString(PARAM_MESSAGE_ID, intent.getStringExtra(PARAM_MESSAGE_ID))
         return TopChatRoomFragment.createInstance(bundle)
     }
 

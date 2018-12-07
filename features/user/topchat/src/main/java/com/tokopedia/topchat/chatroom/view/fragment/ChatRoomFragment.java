@@ -128,7 +128,8 @@ import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARA
  */
 
 public class ChatRoomFragment extends BaseDaggerFragment
-        implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
+        implements ChatRoomContract.View, InboxMessageConstant,
+        InboxChatConstant, WebSocketInterface {
 
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
     private static final int MAX_SIZE_IMAGE_PICKER = 5;
