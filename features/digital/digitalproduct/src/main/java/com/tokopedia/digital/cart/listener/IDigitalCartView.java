@@ -101,4 +101,6 @@ public interface IDigitalCartView extends IBaseView {
     void navigateToLoggedInPage();
 
     void showPostPaidDialog(String title, String content, String confirmButtonTitle);
+
+    boolean isAlreadyShowPostPaid();
 }

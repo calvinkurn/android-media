@@ -124,6 +124,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
     private CompositeSubscription compositeSubscription;
+    private boolean isAlreadyShowPostPaidPopUp;
 
     public static Fragment newInstance(DigitalCheckoutPassData passData, int from) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
@@ -295,7 +296,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void showPostPaidDialog(String title, String content, String confirmButtonTitle) {
+    public void showPostPaidDialog(String title,
+                                   String content,
+                                   String confirmButtonTitle) {
+        isAlreadyShowPostPaidPopUp = true;
         DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
                 getActivity(),
                 Dialog.Type.RETORIC,
@@ -309,10 +313,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                presenter.onConfirmPostPaidDialog();
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public boolean isAlreadyShowPostPaid() {
+        return isAlreadyShowPostPaidPopUp;
     }
 
     @Override

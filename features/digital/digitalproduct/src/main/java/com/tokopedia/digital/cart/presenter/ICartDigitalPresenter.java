@@ -37,6 +37,4 @@ public interface ICartDigitalPresenter {
     void onFirstTimeLaunched();
 
     void onLoginResultReceived();
-
-    void onConfirmPostPaidDialog();
 }

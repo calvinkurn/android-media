@@ -131,4 +131,5 @@
     <string name="digital_coupon_applied_ticker_message">Kode kupon telah dimasukkan. Silahkan pilih produk yang diinginkan, lalu check-out.</string>
     <string name="digital_list_device_consumer_app_prefix">android-%s</string>
     <string name="digital_list_device_seller_app_prefix">seller_app-%s</string>
+    <string name="digital_post_paid_dont_show_again_label">Jangan tampilkan lagi</string>
 </resources>

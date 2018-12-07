@@ -120,19 +120,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     @Override
     public void processToCheckout() {
-        if (!digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())
-                && view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null) {
-            view.showPostPaidDialog(
-                    view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getTitle(),
-                    view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getContent(),
-                    view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
-            );
-        } else {
-            actionCheckout();
-        }
-    }
-
-    private void actionCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
             startOTPProcess();
@@ -143,11 +130,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 getRequestBodyCheckout(checkoutData),
                 getSubscriberCheckout()
         );
-    }
-
-    @Override
-    public void onConfirmPostPaidDialog() {
-        actionCheckout();
     }
 
     @Override
@@ -440,6 +422,14 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                     view.setCartDigitalInfo(cartDigitalInfoData);
                     startOTPProcess();
                 } else {
+                    if (cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
+                            && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+                        view.showPostPaidDialog(
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
+                        );
+                    }
                     view.renderAddToCartData(cartDigitalInfoData);
                 }
             }
@@ -545,6 +535,16 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 view.renderCartDigitalInfoData(cartDigitalInfoData);
+
+                if (!view.isAlreadyShowPostPaid()
+                        && view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null
+                        && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+                    view.showPostPaidDialog(
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
+                    );
+                }
             }
         };
     }
