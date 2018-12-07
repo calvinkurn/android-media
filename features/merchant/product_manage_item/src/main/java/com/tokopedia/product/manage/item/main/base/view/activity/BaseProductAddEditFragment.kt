@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
-import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
@@ -41,16 +40,16 @@ import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView
 import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
-import com.tokopedia.product.manage.item.price.model.*
-import com.tokopedia.product.manage.item.utils.*
 import com.tokopedia.product.manage.item.main.base.view.listener.ListenerOnErrorAddProduct
 import com.tokopedia.product.manage.item.main.base.view.model.ProductAddViewModel
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.item.name.view.activity.ProductEditNameActivity
 import com.tokopedia.product.manage.item.name.view.model.ProductName
+import com.tokopedia.product.manage.item.price.model.ProductPrice
 import com.tokopedia.product.manage.item.price.view.activity.ProductEditPriceActivity
 import com.tokopedia.product.manage.item.stock.view.activity.ProductEditStockActivity
 import com.tokopedia.product.manage.item.stock.view.model.ProductStock
+import com.tokopedia.product.manage.item.utils.*
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
@@ -67,7 +66,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     protected abstract var statusUpload: Int
 
     private var isHasLoadShopInfo: Boolean = false
-    private var cacheManager: SaveInstanceCacheManager? = null
+    lateinit var cacheManager: SaveInstanceCacheManager
     private var officialStore: Boolean = false
     private var isFreeReturn: Boolean = false
     private var isGoldMerchant: Boolean = false
@@ -94,7 +93,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 isGoldMerchant = getBoolean(EXTRA_IS_GOLD_MERCHANT)
             }
         }
-        currentProductAddViewModel = cacheManager?.get(SAVED_PRODUCT_VIEW_MODEL,ProductAddViewModel::class.java) ?: ProductAddViewModel()
+        currentProductAddViewModel = cacheManager.get(SAVED_PRODUCT_VIEW_MODEL,ProductAddViewModel::class.java) ?: ProductAddViewModel()
         return inflater.inflate(R.layout.fragment_base_product_edit, container, false)
     }
 
@@ -185,8 +184,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        cacheManager?.onSave(outState)
-        cacheManager?.put(SAVED_PRODUCT_VIEW_MODEL, currentProductAddViewModel)
+        cacheManager.onSave(outState)
+        cacheManager.put(SAVED_PRODUCT_VIEW_MODEL, currentProductAddViewModel)
         outState.putBoolean(EXTRA_IS_GOLD_MERCHANT, isGoldMerchant)
         outState.putBoolean(EXTRA_IS_OFFICIAL_STORE, officialStore)
         outState.putBoolean(EXTRA_IS_FREE_RETURN, isFreeReturn)

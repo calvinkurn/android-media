@@ -1,20 +1,17 @@
 package com.tokopedia.cachemanager.datasource
 
 import android.content.Context
-import com.tokopedia.cachemanager.db.CacheDatabase
 import com.tokopedia.cachemanager.db.CacheDeletion
+import com.tokopedia.cachemanager.db.PersistentCacheDatabase
 import com.tokopedia.cachemanager.db.dao.PersistentCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
-import kotlinx.coroutines.experimental.CoroutineExceptionHandler
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.*
 
 class PersistentCacheDataSource(context: Context) :
         CacheDataSource<PersistentCacheDbModel, PersistentCacheDatabaseDao>(context) {
 
     override fun createCacheDatabaseDao(): PersistentCacheDatabaseDao =
-            CacheDatabase.getInstance(context).getPersistentCacheDao()
+            PersistentCacheDatabase.getInstance(context).getPersistentCacheDao()
 
     override fun put(key: String, value: String, cacheDurationInMillis: Long) {
         cacheDatabaseDao.insertCacheSingle(
@@ -41,11 +38,10 @@ class PersistentCacheDataSource(context: Context) :
     override fun deleteExpired() {
         CacheDeletion.isPersistentJobActive = true
         val handler = CoroutineExceptionHandler { _, ex ->
-            // no op
+            CacheDeletion.isPersistentJobActive = false
         }
-        GlobalScope.launch(Dispatchers.Default + handler) {
-            CacheDatabase.getInstance(context).getPersistentCacheDao()
-                    .deleteExpiredRecords(System.currentTimeMillis())
+        CoroutineScope(Dispatchers.IO + handler).launch {
+            cacheDatabaseDao.deleteExpiredRecords(System.currentTimeMillis())
             CacheDeletion.setPersistentLastDelete()
             CacheDeletion.isPersistentJobActive = false
         }

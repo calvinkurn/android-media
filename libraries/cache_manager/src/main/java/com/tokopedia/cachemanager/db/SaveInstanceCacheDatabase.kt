@@ -1,39 +1,37 @@
+
 package com.tokopedia.cachemanager.db
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
-import com.tokopedia.cachemanager.db.CacheDatabase.Companion.VERSION
-import com.tokopedia.cachemanager.db.dao.PersistentCacheDatabaseDao
+import com.tokopedia.cachemanager.db.SaveInstanceCacheDatabase.Companion.VERSION
 import com.tokopedia.cachemanager.db.dao.SaveInstanceCacheDatabaseDao
-import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
 import com.tokopedia.cachemanager.db.model.SaveInstanceCacheDbModel
 
-@Database(entities = [PersistentCacheDbModel::class, SaveInstanceCacheDbModel::class],
+@Database(entities = [SaveInstanceCacheDbModel::class],
         version = VERSION,
         exportSchema = false)
-abstract class CacheDatabase : RoomDatabase() {
+abstract class SaveInstanceCacheDatabase : RoomDatabase() {
 
-    abstract fun getPersistentCacheDao(): PersistentCacheDatabaseDao
     abstract fun getSaveInstanceCacheDao(): SaveInstanceCacheDatabaseDao
 
     companion object {
         @Volatile
-        private var INSTANCE: CacheDatabase? = null
-        const val CACHE_DB_NAME = "tokopedia_cache_db"
+        private var INSTANCE: SaveInstanceCacheDatabase? = null
         const val VERSION = 1
 
         @JvmStatic
-        fun getInstance(context: Context): CacheDatabase {
+        fun getInstance(context: Context): SaveInstanceCacheDatabase {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE
                         ?: buildDatabase(context.applicationContext).also { INSTANCE = it }
             }
         }
 
-        private fun buildDatabase(context: Context): CacheDatabase {
-            return Room.databaseBuilder(context.applicationContext, CacheDatabase::class.java, CACHE_DB_NAME)
+        private fun buildDatabase(context: Context): SaveInstanceCacheDatabase {
+            return Room
+                    .inMemoryDatabaseBuilder(context.applicationContext, SaveInstanceCacheDatabase::class.java)
                     .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()
                     .build()
