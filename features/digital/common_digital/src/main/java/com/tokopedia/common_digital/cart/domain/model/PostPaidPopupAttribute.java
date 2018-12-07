@@ -1,4 +1,4 @@
-package com.tokopedia.digital.cart.model;
+package com.tokopedia.common_digital.cart.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

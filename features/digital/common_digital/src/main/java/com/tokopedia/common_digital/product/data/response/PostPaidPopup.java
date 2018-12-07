@@ -1,4 +1,4 @@
-package com.tokopedia.digital.cart.data.entity.response;
+package com.tokopedia.common_digital.product.data.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

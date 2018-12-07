@@ -442,7 +442,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
                 } else {
                     if (cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
                             && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
-                        view.showPostPaidDialog(
+                        getView().showPostPaidDialog(
                                 cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
                                 cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
                                 cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
@@ -547,10 +547,10 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 getView().renderCartDigitalInfoData(cartDigitalInfoData);
 
-                if (!view.isAlreadyShowPostPaid()
-                        && view.getCartDataInfo().getAttributes().getPostPaidPopupAttribute() != null
+                if (!getView().isAlreadyShowPostPaid()
+                        && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
                         && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
-                    view.showPostPaidDialog(
+                    getView().showPostPaidDialog(
                             cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
                             cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
                             cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()

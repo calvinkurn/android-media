@@ -39,14 +39,10 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
-import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
-import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
-import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
-import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.digital.cart.fragment.DigitalPostPaidDialog;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
@@ -122,7 +118,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private DigitalCheckoutPassData passData;
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
-    private CompositeSubscription compositeSubscription;
     private boolean isAlreadyShowPostPaidPopUp;
 
     @Inject
@@ -286,17 +281,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public CartDigitalInfoData getCartDataInfo() {
         return cartDigitalInfoDataState;
-    }
-
-    @Override
-    public void navigateToLoggedInPage() {
-        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
-            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
-                    .getLoginIntent(getActivity());
-            if (intent != null) {
-                navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
-            }
-        }
     }
 
     @Override
