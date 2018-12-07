@@ -9,12 +9,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.BaseChatViewModel;
 import com.tokopedia.chat_common.util.ChatTimeConverter;
 
 import java.util.Date;
-
-import com.tokopedia.chat_common.R;
 
 /**
  * @author by nisie on 5/9/18.

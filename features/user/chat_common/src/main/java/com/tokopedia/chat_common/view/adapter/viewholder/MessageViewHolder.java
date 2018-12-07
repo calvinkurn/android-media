@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
@@ -21,9 +22,9 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
 
     private static final String ROLE_USER = "User";
 
-    Context context;
-    TextView message;
-    ImageView chatStatus;
+    private Context context;
+    private TextView message;
+    private ImageView chatStatus;
     private View chatBalloon;
     private TextView name;
     private TextView label;
@@ -111,7 +112,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     }
 
     private void setReadStatus(MessageViewModel element) {
-        int imageResource = 0;
+        int imageResource;
         if (element.isShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
             if (element.isRead()) {

@@ -44,6 +44,7 @@ class ChatRoomModule {
         return retrofit.create(ChatRoomApi::class.java)
     }
 
+
     @ChatRoomScope
     @Provides
     internal fun provideGetChatUseCase(api: ChatRoomApi, mapper: GetChatMapper): GetChatUseCase {

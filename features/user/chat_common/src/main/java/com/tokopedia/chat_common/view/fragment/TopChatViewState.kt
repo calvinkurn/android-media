@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.view.fragment
 
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.EditText
@@ -8,6 +9,9 @@ import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * @author : Steven 29/11/18
@@ -26,6 +30,34 @@ class TopChatViewState(var view: View) {
     private var pickerButton: View = view.findViewById(R.id.image_picker)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var notifier: View = view.findViewById(R.id.notifier)
+
+    init {
+        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
+        (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
+        replyEditText.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus){
+                scrollDownWhenInBottom()
+            }
+        }
+    }
+
+    private fun scrollDownWhenInBottom() {
+        if(checkLastCompletelyVisibleItemIsFirst()) {
+            scrollToBottom()
+        }
+    }
+
+    private fun scrollToBottom() {
+        Observable.timer(250, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    recyclerView.scrollToPosition(0)
+                }
+    }
+
+    private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
+        return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
+    }
 
     fun developmentView() {
         actionBox?.visibility = View.VISIBLE
@@ -68,5 +100,16 @@ class TopChatViewState(var view: View) {
         return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 
+    fun recipientTyping() {
+        getAdapter().showTyping()
+        scrollDownWhenInBottom()
+    }
 
+    fun recipientStopTyping() {
+        getAdapter().removeTyping()
+    }
+
+    fun addMessage(visitable: Visitable<*>) {
+        getAdapter().addList(listOf(visitable))
+    }
 }
