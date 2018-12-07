@@ -5,7 +5,6 @@ import android.text.format.DateFormat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.TypingChatModel
@@ -75,9 +74,10 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
     }
 
     fun removeTyping(){
-        this.visitables.remove(typingModel)
-        notifyItemRemoved(0)
-
+        var isContainsTyping = this.visitables.remove(typingModel)
+        if (isContainsTyping) {
+            notifyItemRemoved(0)
+        }
     }
 
     fun isTyping(): Boolean {

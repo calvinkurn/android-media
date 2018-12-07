@@ -91,6 +91,27 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun receiveStartTypingEvent() {
+        chatViewState.recipientTyping()
+    }
+
+    override fun receiveMessageEvent(visitable: Visitable<*>) {
+        chatViewState.addMessage(visitable)
+    }
+
+    override fun receiveStopTypingEvent() {
+        chatViewState.recipientStopTyping()
+    }
+
+    override fun receiveReadEvent() {
+        return
+    }
+
+    override fun getMessageId(): String? {
+        return arguments?.getString("message_id")
+    }
+
     companion object {
 
         private const val POST_ID = "{post_id}"

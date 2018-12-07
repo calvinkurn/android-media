@@ -4,7 +4,7 @@ package com.tokopedia.topchat.chatroom.domain.pojo.reply;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class WebSocketResponseData {
+public class  WebSocketResponseData {
 
     @SerializedName("msg_id")
     @Expose

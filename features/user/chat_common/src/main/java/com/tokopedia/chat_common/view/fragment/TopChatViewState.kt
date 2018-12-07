@@ -35,9 +35,15 @@ class TopChatViewState(var view: View) {
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus && checkLastCompletelyVisibleItemIsFirst()){
-                scrollToBottom()
+            if(hasFocus){
+                scrollDownWhenInBottom()
             }
+        }
+    }
+
+    private fun scrollDownWhenInBottom() {
+        if(checkLastCompletelyVisibleItemIsFirst()) {
+            scrollToBottom()
         }
     }
 
@@ -92,5 +98,18 @@ class TopChatViewState(var view: View) {
 
     fun getList(): List<Visitable<*>> {
         return (recyclerView.adapter as BaseChatAdapter).getList()
+    }
+
+    fun recipientTyping() {
+        getAdapter().showTyping()
+        scrollDownWhenInBottom()
+    }
+
+    fun recipientStopTyping() {
+        getAdapter().removeTyping()
+    }
+
+    fun addMessage(visitable: Visitable<*>) {
+        getAdapter().addList(listOf(visitable))
     }
 }

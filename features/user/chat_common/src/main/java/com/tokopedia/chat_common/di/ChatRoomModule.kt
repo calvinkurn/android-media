@@ -45,6 +45,7 @@ class ChatRoomModule {
         return retrofit.create(ChatRoomApi::class.java)
     }
 
+
     @ChatRoomScope
     @Provides
     internal fun provideChatRatingApi(retrofit: Retrofit): ChatBotApi {
