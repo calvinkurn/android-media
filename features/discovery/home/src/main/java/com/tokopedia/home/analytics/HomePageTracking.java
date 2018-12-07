@@ -3,14 +3,16 @@ package com.tokopedia.home.analytics;
 import android.app.Activity;
 import android.content.Context;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.Promotion;
 
+import java.util.List;
 import java.util.Map;
 
 /**
- * Created by nakama on 2/6/18.
+ * Created by Akmal on 2/6/18.
  */
 
 public class HomePageTracking {
@@ -383,4 +385,27 @@ public class HomePageTracking {
             );
         }
     }
+
+    public static void eventEnhanceImpressionLegoAndCuratedHomePage(
+            Context context,
+            List<Object> legoAndCuratedList) {
+
+        AnalyticTracker tracker = getTracker(context);
+
+        Map<String, Object> data = DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "home banner impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        legoAndCuratedList.toArray(new Object[legoAndCuratedList.size()])
+                                )
+                        )
+                )
+        );
+        tracker.sendEnhancedEcommerce(data);
+    }
+
 }
