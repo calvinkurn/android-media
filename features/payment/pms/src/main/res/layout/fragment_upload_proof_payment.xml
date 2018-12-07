@@ -84,7 +84,6 @@
 
                         <com.tokopedia.design.component.TextViewCompat
                             android:id="@+id/label_date_2"
-                            style="@style/TextView.Micro.Bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dp_8"
@@ -115,12 +114,15 @@
                             android:layout_marginRight="@dimen/dp_5"
                             android:background="@drawable/circle_green" />
 
-                        <TextView
+                        <com.tokopedia.design.component.TextViewCompat
                             android:id="@+id/label_date_3"
-                            style="@style/TextView.Micro.Bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/dp_8"
                             android:layout_toRightOf="@+id/circle_green_3"
-                            android:text="@string/payment_label_help_proof_receiver" />
+                            android:text="@string/payment_label_help_proof_receiver"
+                            app:fontSize="micro"
+                            app:weight="medium" />
 
                         <com.tokopedia.design.component.TextViewCompat
                             android:layout_width="wrap_content"
@@ -237,19 +239,31 @@
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/button_save_choose_another_image"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/button_save"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:maxHeight="52dp"
             android:text="@string/payment_label_choose_another_image"
             android:visibility="gone"
+            app:buttonCompatSize="big"
             app:buttonCompatType="secondary" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/button_save"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:maxHeight="52dp"
             android:text="@string/payment_label_choose_image"
+            app:buttonCompatSize="big"
             app:buttonCompatType="primary" />
     </RelativeLayout>
 
