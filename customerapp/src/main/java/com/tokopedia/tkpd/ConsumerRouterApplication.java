@@ -42,6 +42,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.challenges.ChallengesModuleRouter;
