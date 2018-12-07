@@ -1,4 +1,4 @@
-package com.tokopedia.kolcomponent.view.viewholder.post
+package com.tokopedia.kolcomponent.view.adapter.viewholder.post
 
 import android.content.Context
 import android.view.LayoutInflater

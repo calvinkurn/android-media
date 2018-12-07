@@ -3,9 +3,9 @@ package com.tokopedia.kolcomponent.view.adapter.post
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kolcomponent.view.viewholder.post.BasePostViewHolder
-import com.tokopedia.kolcomponent.view.viewholder.post.ImagePostViewHolder
-import com.tokopedia.kolcomponent.view.viewmodel.post.ImagePostViewModel
+import com.tokopedia.kolcomponent.view.adapter.viewholder.post.BasePostViewHolder
+import com.tokopedia.kolcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
+import com.tokopedia.kolcomponent.view.viewmodel.post.image.ImagePostViewModel
 
 /**
  * @author by milhamj on 9/21/18.

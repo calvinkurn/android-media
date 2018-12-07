@@ -1,4 +1,4 @@
-package com.tokopedia.kolcomponent.view.viewholder
+package com.tokopedia.kolcomponent.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View

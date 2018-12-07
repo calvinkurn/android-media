@@ -1,10 +1,11 @@
-package com.tokopedia.kolcomponent.view.viewholder.post
+package com.tokopedia.kolcomponent.view.adapter.viewholder.post.image
 
 import android.os.Build
 import android.view.ViewTreeObserver
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kolcomponent.R
-import com.tokopedia.kolcomponent.view.viewmodel.post.ImagePostViewModel
+import com.tokopedia.kolcomponent.view.adapter.viewholder.post.BasePostViewHolder
+import com.tokopedia.kolcomponent.view.viewmodel.post.image.ImagePostViewModel
 import kotlinx.android.synthetic.main.item_post_image.view.*
 
 /**

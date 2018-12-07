@@ -19,7 +19,9 @@
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
-        tools:text="Post Pilihan Tokopedia" />
+        android:visibility="gone"
+        tools:text="Post Pilihan Tokopedia"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/topShadow"

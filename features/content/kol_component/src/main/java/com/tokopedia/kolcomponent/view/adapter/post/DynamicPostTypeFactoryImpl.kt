@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kolcomponent.view.viewholder.ItemCreateContentViewHolder
-import com.tokopedia.kolcomponent.view.viewholder.ItemRecommendedViewHolder
-import com.tokopedia.kolcomponent.view.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.kolcomponent.view.adapter.viewholder.ItemCreateContentViewHolder
+import com.tokopedia.kolcomponent.view.adapter.viewholder.ItemRecommendedViewHolder
+import com.tokopedia.kolcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.kolcomponent.view.viewmodel.post.DynamicPostViewModel
 
 /**

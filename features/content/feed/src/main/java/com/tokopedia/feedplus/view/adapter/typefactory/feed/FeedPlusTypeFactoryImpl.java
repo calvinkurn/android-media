@@ -53,7 +53,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kolcomponent.view.adapter.post.DynamicPostTypeFactory;
-import com.tokopedia.kolcomponent.view.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.kolcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.kolcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;

@@ -12,11 +12,11 @@ import com.tokopedia.kotlin.extensions.R
  * @author by milhamj on 30/11/18.
  */
 
-fun View.show() {
+fun View.visible() {
     this.visibility = View.VISIBLE
 }
 
-fun View.hide() {
+fun View.gone() {
     this.visibility = View.GONE
 }
 
@@ -24,9 +24,18 @@ fun View.invisible() {
     this.visibility = View.INVISIBLE
 }
 
+fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
+    if (shouldShow) {
+        visible()
+        action()
+    } else {
+        gone()
+    }
+}
+
 fun View.showLoading() {
     try {
-        this.findViewById<View>(R.id.loadingView)!!.show()
+        this.findViewById<View>(R.id.loadingView)!!.visible()
     } catch (e: NullPointerException) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val params = LinearLayout.LayoutParams(
@@ -41,7 +50,7 @@ fun View.showLoading() {
 
 fun View.hideLoading() {
     try {
-        this.findViewById<View>(R.id.loadingView)!!.hide()
+        this.findViewById<View>(R.id.loadingView)!!.gone()
     } catch (e: NullPointerException) {
         e.debugTrace()
     }
