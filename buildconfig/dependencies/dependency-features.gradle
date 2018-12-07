@@ -237,7 +237,6 @@ ext {
             core                    : ":tkpdcore",
             discovery               : ":tkpddiscovery",
             inbox                   : ":tkpdinbox",
-            loyalty                 : ":tkpdloyalty",
             productDetail           : ":tkpdpdp",
             seller                  : ":tkpdseller",
             session                 : ":tkpdsession",
