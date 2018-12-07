@@ -61,6 +61,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -136,8 +138,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
-import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivity;
 import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -937,8 +939,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        Intent intent = new Intent(activity, SettingListPaymentActivity.class);
-        activity.startActivity(intent);
+        activity.startActivity(PaymentSettingInternalRouter.getSettingListPaymentActivityIntent(activity));
     }
 
     @Override
@@ -1647,6 +1648,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
         final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
         return resourceUrl;
+    }
+
+    @Override
+    public Intent getIntentOtpPageVerifCreditCard(Context context, String phoneNumber) {
+        return VerificationActivity.getCallingIntent(context, phoneNumber, RequestOtpUseCase.OTP_TYPE_VERIFY_AUTH_CREDIT_CARD,
+                false, RequestOtpUseCase.MODE_SMS);
     }
 
     @Override
