@@ -116,6 +116,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private boolean isWinnerList = false;
     private View bottomMarginView;
     private TextView submitPhoto;
+    private final static String SCREEN_NAME = "challenges/challenge_detail";
 
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
@@ -139,7 +140,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         setHasOptionsMenu(true);
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -155,6 +155,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             if (videoPlayer != null)
                 videoPlayer.startPlay(VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         super.onResume();
     }
 
