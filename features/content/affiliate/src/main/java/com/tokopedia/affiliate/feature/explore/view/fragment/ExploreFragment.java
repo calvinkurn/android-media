@@ -252,7 +252,7 @@ public class ExploreFragment
         if (TextUtils.isEmpty(text)) {
             onSearchReset();
         } else {
-            autoCompleteLayout.setVisibility(View.VISIBLE);
+            autoCompleteAdapter.clearAdapter();
             if (!isFromAutoComplete && !exploreParams.isLoading()) {
                 affiliateAnalytics.onSearchSubmitted(text);
                 presenter.getAutoComplete(text);
