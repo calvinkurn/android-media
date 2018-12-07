@@ -12,7 +12,7 @@ public class SampleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.id.activity_sample);
+        setContentView(R.layout.activity_sample);
 
     }
 }
