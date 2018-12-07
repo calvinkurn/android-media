@@ -43,7 +43,8 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (getFragment() instanceof Listener) {
+        if (getFragment() != null &&
+                getFragment() instanceof Listener) {
             ((Listener) getFragment()).onTrackBackPressed();
         }
     }

@@ -465,6 +465,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     public boolean isCameraVisible() {
-        return (cameraView.getVisibility() == View.VISIBLE);
+        return (cameraView != null &&
+                cameraView.getVisibility() == View.VISIBLE);
     }
 }

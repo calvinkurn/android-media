@@ -89,7 +89,9 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
 
     @Override
     protected void onBackEvent() {
-        if (getListFragment().get(currentPosition) instanceof Listener){
+        if (getListFragment().size() > 0 &&
+                getListFragment().get(currentPosition) != null &&
+                getListFragment().get(currentPosition) instanceof Listener){
             ((Listener) getListFragment().get(currentPosition - 1)).trackOnBackPressed();
         }
         super.onBackEvent();
