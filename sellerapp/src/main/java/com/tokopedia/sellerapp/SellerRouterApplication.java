@@ -212,6 +212,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
@@ -664,6 +665,12 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
                 position);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 int position) {
+
     }
 
     @Override
@@ -1555,7 +1562,28 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getShopTalkIntent(Context context, String shopId) {
         return ShopTalkActivity.Companion.createIntent(context, shopId);
+    }
 
+    @Override
+    public void eventClickFilterReview(Context context,
+                                       String filterName,
+                                       String productId) {
+        ProductPageTracking.eventClickFilterReview(
+                context,
+                filterName,
+                productId
+        );
+    }
+
+    @Override
+    public void eventImageClickOnReview(Context context,
+                                        String productId,
+                                        String reviewId) {
+        ProductPageTracking.eventClickImageOnReviewList(
+                context,
+                productId,
+                reviewId
+        );
     }
 
     @Override

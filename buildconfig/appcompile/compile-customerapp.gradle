@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:developer_options"
 
 include "features:communication:broadcast_message_common"
 
@@ -70,6 +71,8 @@ include "features:payment:pms"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
 
+include "features:product:gallery"
+
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"
 include "features:promo:tokopoints"
@@ -83,6 +86,8 @@ include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 
 include "features:user:groupchat"
+//include "features:user:groupchat_no_op"
+include "features:user:otp"
 include "features:user:topchat"
 include "features:user:changepassword"
 include "features:user:changephonenumber"

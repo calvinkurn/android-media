@@ -6,13 +6,13 @@ import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.R;
@@ -446,6 +446,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                             sessionHandler.getTokenType(getView().getContext())
                                     + " " +
                                     sessionHandler.getAuthAccessToken())
+                    .header("x-app-version",String.valueOf(GlobalConfig.VERSION_CODE))
+                    .header("x-device", "android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-version","android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-name", GlobalConfig.getPackageApplicationName())
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;

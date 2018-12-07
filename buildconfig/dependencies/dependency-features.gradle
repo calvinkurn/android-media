@@ -8,6 +8,7 @@ ext {
     tkpdContactUsVersion = '2.22'
     tkpdCoreVersion = '2.23'
     tkpdDealsVersion = '2.22'
+    tkpdDeveloperOptions = '2.22'
     tkpdDigitalVersion = '2.22'
     tkpdDiscoveryVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
@@ -125,6 +126,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     features = [
             nps                     : ":features:common:nps",
+            developerOptions       : ":features:common:developer_options",
 
             broadcastMessage            : ":features:communication:broadcast_message",
 //            broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
@@ -196,9 +198,11 @@ ext {
             paymentManagementSystem : ":features:payment:pms",
             withdraw                : ":features:payment:withdraw",
 
-            gamification            : ":features:promo:gamification",
-            merchantVoucher         : ":features:promo:merchant_voucher",
-            tokopoints              : ":features:promo:tokopoints",
+            gallery                : ":features:product:gallery",
+
+            gamification           : ":features:promo:gamification",
+            merchantVoucher        : ":features:promo:merchant_voucher",
+            tokopoints             : ":features:promo:tokopoints",
 
             topAdsFreeClaim         : ":features:top_ads:top_ads_free_claim",
             topAdsManagement        : ":features:top_ads:top_ads_management",
@@ -214,6 +218,7 @@ ext {
             changepassword          : ":features:user:changepassword",
             changePhoneNumber       : ":features:user:changephonenumber",
             groupchat               : ":features:user:groupchat",
+//            groupchat                   : ":features:user:groupchat_no_op",
             logout                  : ":features:user:logout",
             loginphone              : ":features:user:loginphone",
             loginregister           : ":features:user:loginregister",

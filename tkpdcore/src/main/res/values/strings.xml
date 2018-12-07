@@ -313,6 +313,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_catalog">Katalog</string>
     <string name="title_preorder">Preorder</string>
     <string name="title_desc">Deskripsi Produk</string>
+    <string name="title_image_from_buyer">Foto Dari Pembeli</string>
     <string name="title_most_helpful">Ulasan Paling Membantu</string>
     <string name="title_all_reviews">Lihat Semua Ulasan</string>
     <string name="title_shop_info">Penjual</string>
@@ -321,6 +322,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_service">Pelayanan</string>
     <string name="title_last_update_price">Perubahan Harga Terakhir :</string>
     <string name="message_add_new_talk">Berhasil menambahkan Diskusi Produk</string>
+    <string name="message_see_all_buyer_image">Lihat Semua</string>
     <string name="title_sending">Sedang mengirim...</string>
     <string name="title_dialog_delete">Apakah Anda ingin menghapus tkpd ini ?</string>
     <string name="title_dialog_follow">Apakah Anda ingin action tkpd ini ?</string>
