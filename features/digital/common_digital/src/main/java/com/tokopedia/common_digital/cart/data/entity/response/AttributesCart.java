@@ -74,6 +74,9 @@ public class AttributesCart {
     @SerializedName("cross_selling_config")
     @Expose
     private CrossSellingConfig crossSellingConfig;
+    @SerializedName("pop_up")
+    @Expose
+    private PostPaidPopup postPaidPopUp;
 
     public String getClientNumber() {
         return clientNumber;
@@ -157,5 +160,9 @@ public class AttributesCart {
 
     public CrossSellingConfig getCrossSellingConfig() {
         return crossSellingConfig;
+    }
+
+    public PostPaidPopup getPostPaidPopUp() {
+        return postPaidPopUp;
     }
 }

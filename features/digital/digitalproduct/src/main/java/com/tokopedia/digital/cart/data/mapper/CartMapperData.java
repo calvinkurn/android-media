@@ -18,6 +18,18 @@ import com.tokopedia.digital.exception.MapperDataException;
 
 public class CartMapperData implements ICartMapperData {
 
+            if (responseCartData.getAttributes().getPostPaidPopUp() != null &&
+            responseCartData.getAttributes().getPostPaidPopUp().getAction() != null &&
+            responseCartData.getAttributes().getPostPaidPopUp().getAction().getConfirmAction() != null){
+        PostPaidPopup postPaidPopup = responseCartData.getAttributes().getPostPaidPopUp();
+        PostPaidPopupAttribute postPaidPopupAttribute = new PostPaidPopupAttribute();
+        postPaidPopupAttribute.setTitle(postPaidPopup.getTitle());
+        postPaidPopupAttribute.setContent(postPaidPopup.getContent());
+        postPaidPopupAttribute.setImageUrl(postPaidPopup.getImageUrl());
+        postPaidPopupAttribute.setConfirmButtonTitle(postPaidPopup.getAction().getConfirmAction().getTitle());
+        attributesDigital.setPostPaidPopupAttribute(postPaidPopupAttribute);
+    }
+
     @Override
     public VoucherDigital transformVoucherDigitalData(
             ResponseVoucherData responseVoucherData
