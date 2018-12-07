@@ -33,6 +33,17 @@ object GMConstant {
     }
 
     @JvmStatic
+    fun getGMBadgeTitleResource(context: Context?): Int {
+        return context?.run {
+            if (isPowerMerchantEnabled(context)) {
+                R.string.pm_badge_title
+            } else {
+                R.string.gm_badge_title
+            }
+        } ?: R.string.gm_badge_title
+    }
+
+    @JvmStatic
     fun getGMDrawableResource(context: Context): Int {
         return if (isPowerMerchantEnabled(context)){
                     R.drawable.ic_power_merchant
@@ -62,6 +73,22 @@ object GMConstant {
             R.drawable.ic_pointer_power_merchant
         } else {
             R.drawable.ic_pointer_gold_badge
+        }
+    }
+
+    @JvmStatic
+    fun getGMSubscribeBadgeDrawable(context: Context?): Drawable? {
+        if (context == null)
+            return null
+        return ContextCompat.getDrawable(context, getGMSubscribeBadgeDrawableResource(context))
+    }
+
+    @JvmStatic
+    private fun getGMSubscribeBadgeDrawableResource(context: Context): Int {
+        return if (isPowerMerchantEnabled(context)){
+            R.drawable.ic_pmsubscribe_feature_badge
+        } else {
+            R.drawable.ic_gmsubscribe_feature_badge
         }
     }
 }

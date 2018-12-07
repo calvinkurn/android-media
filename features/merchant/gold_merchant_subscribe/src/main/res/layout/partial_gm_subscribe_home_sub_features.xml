@@ -13,7 +13,7 @@
         android:textAlignment="center"
         android:textSize="16sp" />
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/gmsubscribe_subfeature_container_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginLeft="15dp"
@@ -49,7 +49,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/gmsubscribe_subfeature_container_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginBottom="38dp"

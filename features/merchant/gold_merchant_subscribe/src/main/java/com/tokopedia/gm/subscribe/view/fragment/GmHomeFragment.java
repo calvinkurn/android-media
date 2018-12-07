@@ -17,6 +17,7 @@ import com.tokopedia.gm.subscribe.R;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
 import com.tokopedia.gm.subscribe.view.presenter.GmHomePresenterImpl;
+import com.tokopedia.gm.subscribe.view.widget.home.GmMainFeatureView;
 import com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView;
 
 
@@ -135,11 +136,30 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
     @Override
     protected void setActionVar() {
         presenter.clearGMProductCache();
+        GmMainFeatureView goldBadge = getView().findViewById(R.id.feature_gold_badge);
+        goldBadge.setImageViewFeature(GMConstant.getGMSubscribeBadgeDrawable(getActivity()));
+        int badgeTitleRes = GMConstant.getGMBadgeTitleResource(getActivity());
+        goldBadge.setTitleFeature(badgeTitleRes);
+        goldBadge.setDescFeature(getString(R.string.gmsubscribe_feature_gold_badge_desc, getString(badgeTitleRes)));
         String gm = getString(GMConstant.getGMTitleResource(getActivity()));
         TextView titleSubFeature = getView().findViewById(R.id.title_gm_sub_features);
         titleSubFeature.setText(getString(R.string.gmsubscribe_subfeature_title, gm));
         GmSubFeatureView filter = getView().findViewById(R.id.sub_feature_video);
         filter.setDescSubFeature(getString(R.string.gmsubscribe_feature_filter_gold_merchant, gm));
+
+        if (GMConstant.isPowerMerchantEnabled(getActivity())){
+            getView().findViewById(R.id.feature_wawasan).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.feature_topads).setVisibility(View.GONE);
+            getView().findViewById(R.id.title_gm_sub_features).setVisibility(View.GONE);
+            getView().findViewById(R.id.gmsubscribe_subfeature_container_top).setVisibility(View.GONE);
+            getView().findViewById(R.id.gmsubscribe_subfeature_container_bottom).setVisibility(View.GONE);
+        } else {
+            getView().findViewById(R.id.feature_wawasan).setVisibility(View.GONE);
+            getView().findViewById(R.id.feature_topads).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.title_gm_sub_features).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.gmsubscribe_subfeature_container_top).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.gmsubscribe_subfeature_container_bottom).setVisibility(View.VISIBLE);
+        }
     }
 
 
