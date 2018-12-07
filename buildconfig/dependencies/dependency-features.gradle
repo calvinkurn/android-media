@@ -214,6 +214,7 @@ ext {
             attachproduct           : ":features:user:attachproduct",
             bankdb                  : ":features:user:bankdb",
             changepassword          : ":features:user:changepassword",
+//            changepassword              : ":features:user:changepassword_no_op",
             changePhoneNumber       : ":features:user:changephonenumber",
             groupchat               : ":features:user:groupchat",
 //            groupchat                   : ":features:user:groupchat_no_op",

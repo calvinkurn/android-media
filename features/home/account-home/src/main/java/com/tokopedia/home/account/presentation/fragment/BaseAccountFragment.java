@@ -85,10 +85,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
-        } else if (applink.equals(AccountConstants.Navigation.MITRA_TOPPERS)
-                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getMitraToppersActivityIntent
-                    (getContext()));
         }
 
         return false;
@@ -142,7 +138,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMainText());
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
+                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
     }
 

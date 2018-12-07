@@ -46,7 +46,6 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.checkout.CartConstant;
@@ -3143,11 +3142,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getSettingBankIntent(Context context) {
         return SettingBankActivity.Companion.createIntent(context);
-    }
-
-    @Override
-    public Intent getChangePasswordIntent(Context context) {
-        return ChangePasswordActivity.Companion.createIntent(context);
     }
 
     @Override

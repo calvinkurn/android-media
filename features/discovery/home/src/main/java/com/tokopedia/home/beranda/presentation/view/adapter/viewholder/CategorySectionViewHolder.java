@@ -22,8 +22,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
-import butterknife.ButterKnife;
-
 /**
  * @author by errysuprayogi on 11/28/17.
  */
@@ -39,7 +37,6 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
     public CategorySectionViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         this.listener = listener;
         adapter = new SectionItemAdapter(itemView.getContext(), listener);
         recyclerView = itemView.findViewById(R.id.list);
