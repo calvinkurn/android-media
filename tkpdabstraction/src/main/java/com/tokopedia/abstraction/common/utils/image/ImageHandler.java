@@ -15,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -631,6 +632,13 @@ public class ImageHandler {
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
         Glide.with(imageView.getContext()).load(gifDrawable)
+                .asGif()
+                .placeholder(placeholder)
+                .into(imageView);
+    }
+
+    public static void loadGifFromUrl(ImageView imageView, String url, int placeholder){
+        Glide.with(imageView.getContext()).load(url)
                 .asGif()
                 .placeholder(placeholder)
                 .into(imageView);
