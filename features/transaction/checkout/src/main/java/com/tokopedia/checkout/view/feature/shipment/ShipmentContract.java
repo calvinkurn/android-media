@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.app.Activity;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -108,6 +109,8 @@ public interface ShipmentContract {
         boolean checkCourierPromoStillExist();
 
         void setCourierPromoApplied(int itemPosition);
+
+        void proceedCod(android.view.View view);
     }
 
     interface AnalyticsActionListener {

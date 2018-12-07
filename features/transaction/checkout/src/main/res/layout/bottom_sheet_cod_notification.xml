@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <TextView
+        style="@style/TextSmallMediumBlack54"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Untuk menggunakan Bayar di Tempat, perbaiki sesuai ketentuan berikut:"
+        tools:text="Untuk menggunakan Bayar di Tempat, perbaiki sesuai ketentuan berikut:" />
+
+    <TextView
+        style="@style/TextSmallMediumBlack54"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="Total transaksi maksimum Rp1.000.000 di luar biaya pengiriman\nSemua produk dalam transaksi wajib mendukung fitur Bayar di Tempat" />
+
+
+    <Button
+        android:id="@+id/button_bottom_sheet_cod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/bg_button_green"
+        android:text="@string/lebel_understood"
+        android:textColor="@color/white" />
+
+</LinearLayout>
