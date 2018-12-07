@@ -96,19 +96,19 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         initInjector()
-        mBannerPresenter!!.attachView(this)
-        onGoingLoanPresenter!!.attachView(this)
+        mBannerPresenter.attachView(this)
+        onGoingLoanPresenter.attachView(this)
         initializeView()
         attachViewListener()
         setupToolbar()
         loadSection()
-        mBannerPresenter!!.loadBanners()
+        mBannerPresenter.loadBanners()
 
-        if (userSession != null && userSession!!.isLoggedIn) {
-            onGoingLoanPresenter!!.checkUserOnGoingLoanStatus()
+        if (userSession != null && userSession.isLoggedIn) {
+            onGoingLoanPresenter.checkUserOnGoingLoanStatus()
         }
 
     }
@@ -251,8 +251,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun onDestroy() {
         super.onDestroy()
-        mBannerPresenter!!.detachView()
-        onGoingLoanPresenter!!.detachView()
+        mBannerPresenter.detachView()
+        onGoingLoanPresenter.detachView()
     }
 
 
@@ -261,7 +261,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     override fun renderUserList(banners: List<BannerEntity>?) {
-        if (banners!!.isEmpty()) {
+        if (!banners!!.isEmpty()) {
             if (banners.size > 1) {
                 (findViewById<View>(R.id.button_next) as FloatingActionButton).show()
             }
@@ -362,7 +362,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
             val eventLabel = (bannerPagerAdapter.bannerEntityList[position].link
                     + " - " + position.toString())
 
-            instantLoanAnalytics!!.eventLoanBannerImpression(eventLabel)
+            instantLoanAnalytics.eventLoanBannerImpression(eventLabel)
         }
     }
 
@@ -373,7 +373,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onBannerClick(view: View, position: Int) {
         val url = view.tag as String
         val eventLabel = url + " - " + position.toString()
-        instantLoanAnalytics!!.eventLoanBannerClick(eventLabel)
+        instantLoanAnalytics.eventLoanBannerClick(eventLabel)
         if (!TextUtils.isEmpty(url)) {
             openWebView(url)
         }
@@ -391,7 +391,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
             }
         }
 
-        instantLoanAnalytics!!.eventInstantLoanPermissionStatus(eventLabel.toString())
+        instantLoanAnalytics.eventInstantLoanPermissionStatus(eventLabel.toString())
     }
 
     override fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int) {
