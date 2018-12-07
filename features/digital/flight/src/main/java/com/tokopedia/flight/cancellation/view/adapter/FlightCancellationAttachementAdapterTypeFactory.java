@@ -19,6 +19,8 @@ public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapter
         void onUploadAttachmentButtonClicked(int positionIndex);
 
         void deleteAttachement(FlightCancellationAttachmentViewModel element);
+
+        void viewImage(String filePath);
     }
 
     private OnAdapterInteractionListener interactionListener;
