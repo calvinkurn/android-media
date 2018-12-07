@@ -18,12 +18,15 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.design.component.BottomSheets;
 
 import java.io.File;
+
+import javax.inject.Inject;
 
 /**
  * Created by Ashwani Tyagi on 13/09/18.
@@ -32,6 +35,7 @@ import java.io.File;
 public class ShareInstagramBottomSheet extends BottomSheets {
 
     private static final String PACKAGENAME_INSTAGRAM = "com.instagram.android";
+    private final static String SCREEN_NAME = "challenges/instagram_hashtagcopy";
 
     private Result challengeItem;
     private SubmissionResult submissionResult;
@@ -40,6 +44,8 @@ public class ShareInstagramBottomSheet extends BottomSheets {
     private File media;
     boolean isVideo;
     private String hastag;
+
+    private ChallengesGaAnalyticsTracker analytics;
 
     @Override
     public int getLayoutResourceId() {
@@ -84,6 +90,8 @@ public class ShareInstagramBottomSheet extends BottomSheets {
             createInstagramIntent();
         });
         btnCancel.setOnClickListener(v -> dismiss());
+        analytics = new ChallengesGaAnalyticsTracker(getActivity());
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
 
     }
 
