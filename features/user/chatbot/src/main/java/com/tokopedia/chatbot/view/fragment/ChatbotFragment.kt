@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.fragment
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
+import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import javax.inject.Inject
 
