@@ -1,14 +1,8 @@
-package com.tokopedia.checkout.view.feature.shipment.viewmodel;
+package com.tokopedia.shipping_recommendation.domain.shipping;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentCartData;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentData;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;

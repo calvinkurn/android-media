@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentItemData;
+import com.tokopedia.transaction.common.data.shipping.ShipmentItemData;
 
 import java.util.List;
 

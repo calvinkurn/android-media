@@ -1,6 +1,7 @@
 package com.tokopedia.shipping_recommendation.shippingcourier.view;
 
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
+
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 
 /**
  * Created by Irfan Khoirul on 08/08/18.

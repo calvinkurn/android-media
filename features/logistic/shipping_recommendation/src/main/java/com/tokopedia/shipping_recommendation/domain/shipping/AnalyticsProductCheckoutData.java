@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
+package com.tokopedia.shipping_recommendation.domain.shipping;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -5,11 +5,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
 import com.tokopedia.checkout.view.common.base.CartMvpPresenter;
 import com.tokopedia.checkout.view.common.utils.PagingHandler;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

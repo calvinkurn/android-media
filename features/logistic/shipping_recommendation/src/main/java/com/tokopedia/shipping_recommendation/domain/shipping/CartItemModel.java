@@ -1,9 +1,7 @@
-package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
+package com.tokopedia.shipping_recommendation.domain.shipping;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

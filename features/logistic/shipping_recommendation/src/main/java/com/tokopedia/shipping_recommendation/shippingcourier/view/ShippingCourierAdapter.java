@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
+
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 
 import java.util.List;
 

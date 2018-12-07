@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.di.module;
 
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
+import com.tokopedia.transaction.common.data.shipping.RecipientAddressModel;
 import com.tokopedia.checkout.view.di.scope.AddShipmentAddressScope;
 import com.tokopedia.checkout.view.feature.multipleaddressform.AddShipmentAddressPresenter;
 import com.tokopedia.checkout.view.feature.multipleaddressform.IAddShipmentAddressPresenter;

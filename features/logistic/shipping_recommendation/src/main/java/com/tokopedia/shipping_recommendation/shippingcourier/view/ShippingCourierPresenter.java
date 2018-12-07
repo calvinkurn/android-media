@@ -1,9 +1,9 @@
 package com.tokopedia.shipping_recommendation.shippingcourier.view;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShippingCourierViewModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

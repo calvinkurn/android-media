@@ -20,16 +20,16 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.shippingoptions.di.CourierComponent;
 import com.tokopedia.checkout.view.feature.shippingoptions.di.CourierModule;
 import com.tokopedia.checkout.view.feature.shippingoptions.di.DaggerCourierComponent;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 
 import java.util.List;
 

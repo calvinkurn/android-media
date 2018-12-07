@@ -36,6 +36,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
 
+    implementation rootProject.ext.miscDependencies.apacheLang
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {

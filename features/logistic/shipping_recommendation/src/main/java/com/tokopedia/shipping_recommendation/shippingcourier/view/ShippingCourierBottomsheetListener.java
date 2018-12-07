@@ -1,9 +1,9 @@
 package com.tokopedia.shipping_recommendation.shippingcourier.view;
 
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.domain.datamodel.shipmentrates.ShopShipment;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 
 import java.util.List;
 
