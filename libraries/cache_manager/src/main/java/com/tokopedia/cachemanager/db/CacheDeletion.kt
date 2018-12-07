@@ -1,14 +1,10 @@
 package com.tokopedia.cachemanager.db
 
-import kotlinx.coroutines.experimental.Dispatchers
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.experimental.CoroutineContext
 
 class CacheDeletion {
 
     companion object {
-        @JvmStatic
-        val coroutineContext: CoroutineContext = Dispatchers.IO
         @JvmStatic
         var isPersistentJobActive: Boolean = false
         @JvmStatic
