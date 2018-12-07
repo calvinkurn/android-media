@@ -733,6 +733,21 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onProductBuySessionLogin(@NonNull ProductCartPass data, String source) {
+
+    }
+
+    @Override
+    public void renderAddToCartSuccessOpenCheckout(AddToCartResult addToCartResult) {
+
+    }
+
+    @Override
+    public boolean isFromExploreAffiliate() {
+        return false;
+    }
+
+    @Override
     public void moveToEstimationDetail() {
 
     }
