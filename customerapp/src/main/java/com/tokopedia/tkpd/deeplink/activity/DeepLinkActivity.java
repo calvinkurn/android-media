@@ -57,7 +57,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
- *         modified Alvarisi
+ * modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
@@ -136,7 +136,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void shareProductInfo(@NonNull ShareData shareData) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_view,
-                        ProductShareFragment.newInstance(shareData,false),
+                        ProductShareFragment.newInstance(shareData, false),
                         ProductShareFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
@@ -210,12 +210,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void finishLoading() {
-        if(progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
+        if (progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isNeedToUseToolbarWithOptions){
+        if (isNeedToUseToolbarWithOptions) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
         }
@@ -317,11 +317,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 presenter.actionGotUrlFromApplink(uriData);
             } else {
                 presenter.checkUriLogin(uriData);
-                if (presenter.isLandingPageWebView(uriData)) {
-                    presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
-                } else {
-                    presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
-                }
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
             }
         }
     }
