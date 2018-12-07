@@ -32,6 +32,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.wishlistCommon)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.miscDependencies.multiDex
