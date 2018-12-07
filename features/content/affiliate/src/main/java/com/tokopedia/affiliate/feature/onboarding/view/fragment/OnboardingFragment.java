@@ -16,6 +16,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
@@ -33,12 +36,13 @@ public class OnboardingFragment extends BaseDaggerFragment {
     private static final String ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android";
     private static final String FINISH_IMAGE_NAME = "af_onboarding_finish";
     private static final String START_IMAGE_NAME = "af_onboarding_start";
-    //TODO milhamj change to real url
-    private static final String COMMISSION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
     private static final int LOGIN_CODE = 13;
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     private ImageView image;
     private TextView title;
@@ -72,6 +76,7 @@ public class OnboardingFragment extends BaseDaggerFragment {
         super.onViewCreated(view, savedInstanceState);
         initVar(savedInstanceState);
         initView();
+        affiliateAnalytics.onImpressionOnboard();
         if (!userSession.isLoggedIn()) {
             startActivityForResult(
                     RouteManager.getIntent(
@@ -83,6 +88,12 @@ public class OnboardingFragment extends BaseDaggerFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        affiliateAnalytics.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(OnboardingActivity.PARAM_IS_FINISH, isOnboardingFinish);
@@ -91,7 +102,7 @@ public class OnboardingFragment extends BaseDaggerFragment {
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AffiliateEventTracking.Screen.BYME_CLAIM_TOKOPEDIA;
     }
 
     @Override
@@ -138,15 +149,23 @@ public class OnboardingFragment extends BaseDaggerFragment {
                 START_IMAGE_NAME
         );
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
-        goBtn.setOnClickListener(view1 ->
-                startActivity(UsernameInputActivity.createIntent(getContext(), productId))
+        goBtn.setOnClickListener(view1 -> {
+                    affiliateAnalytics.onCobaSekarangButtonClicked();
+                    startActivity(UsernameInputActivity.createIntent(getContext(), productId));
+                }
         );
         commission.setVisibility(View.VISIBLE);
-        commission.setOnClickListener(v ->
-                RouteManager.route(
-                        getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, COMMISSION_URL)
-                )
+        commission.setOnClickListener(v -> {
+                    affiliateAnalytics.onTentangKomisiButtonClicked();
+                    RouteManager.route(
+                            getContext(),
+                            String.format(
+                                "%s?url=%s",
+                                ApplinkConst.WEBVIEW,
+                                AffiliateConstant.ABOUT_COMMISSION_URL
+                        )
+                    );
+                }
         );
     }
 
@@ -163,6 +182,7 @@ public class OnboardingFragment extends BaseDaggerFragment {
         subtitle.setText(R.string.af_select_product_recommendation);
         goBtn.setText(R.string.af_see_product_selection);
         goBtn.setOnClickListener(view -> {
+            affiliateAnalytics.onDirectRecommPilihanProdukButtonClicked();
             if (getActivity() != null) {
                 Intent intent = ExploreActivity.getInstance(getActivity());
                 startActivity(intent);

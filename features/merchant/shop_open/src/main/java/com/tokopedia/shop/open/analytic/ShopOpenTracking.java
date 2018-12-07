@@ -1,6 +1,12 @@
 package com.tokopedia.shop.open.analytic;
 
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant.*;
 
 /**
  * Created by zulfikarrahman on 1/8/18.
@@ -8,9 +14,11 @@ import com.tokopedia.seller.SellerModuleRouter;
 
 public class ShopOpenTracking {
     private final SellerModuleRouter sellerModuleRouter;
+    private final UserSessionInterface userSession;
 
-    public ShopOpenTracking(SellerModuleRouter sellerModuleRouter) {
+    public ShopOpenTracking(SellerModuleRouter sellerModuleRouter, UserSessionInterface userSession) {
         this.sellerModuleRouter = sellerModuleRouter;
+        this.userSession = userSession;
     }
 
     public void eventOpenShop(String category, String action, String label){
@@ -181,5 +189,16 @@ public class ShopOpenTracking {
         eventOpenShop(ShopOpenTrackingConstant.OPEN_SHOP_DOMAIN_RESERVE,
                 ShopOpenTrackingConstant.OPEN_SHOP_CLICK_NEXT_STEP,
                 label);
+    }
+
+    public void eventSellShortcut() {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(EVENT, LONG_CLICK);
+        eventTracking.put(EVENT_CATEGORY, LONG_PRESS);
+        eventTracking.put(EVENT_ACTION, CLICK_SELL);
+        eventTracking.put(EVENT_LABEL, TAKE_TO_SHOP);
+        eventTracking.put(USER_ID, userSession.isLoggedIn() ? userSession.getUserId() : "0");
+
+        sellerModuleRouter.sendEventTracking(eventTracking);
     }
 }

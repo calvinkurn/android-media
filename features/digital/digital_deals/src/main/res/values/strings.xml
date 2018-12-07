@@ -92,5 +92,6 @@
     <string name="text_deals">Deals</string>
     <string name="text_available_locations">Tersedia di\u0020%d\u0020Lokasi</string>
     <string name="product_expired">Maaf, Deals yang Anda pilih sudah kadaluwarsa</string>
+    <string name="deals_all_indonesia">Seluruh Indonesia</string>
 
 </resources>

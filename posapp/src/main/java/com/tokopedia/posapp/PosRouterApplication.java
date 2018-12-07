@@ -770,12 +770,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getChangePasswordIntent(Context context) {
-        //        There is no change password in pos
-        return null;
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(Context context) {
         return null;
     }

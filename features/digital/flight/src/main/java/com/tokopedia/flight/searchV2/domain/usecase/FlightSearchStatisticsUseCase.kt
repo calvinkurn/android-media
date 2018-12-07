@@ -49,14 +49,15 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         var isHaveSpecialPrice = false
 
         for (journeyAndRoutes in journeyAndRoutesList) {
-            val price = journeyAndRoutes.flightJourneyTable.adultNumeric
-            val priceString = journeyAndRoutes.flightJourneyTable.adult
+            val price = journeyAndRoutes.flightJourneyTable.sortPriceNumeric
+            val priceString = journeyAndRoutes.flightJourneyTable.sortPrice
             if (price < minPrice) {
                 minPrice = price
             }
             if (price > maxPrice) {
                 maxPrice = price
             }
+
             val duration = journeyAndRoutes.flightJourneyTable.durationMinute
             if (duration < minDuration) {
                 minDuration = duration

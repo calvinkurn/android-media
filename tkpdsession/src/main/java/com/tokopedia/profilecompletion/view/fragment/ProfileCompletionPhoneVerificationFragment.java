@@ -1,7 +1,5 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -13,10 +11,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -59,8 +53,10 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
-        parentPresenter = parentView.getPresenter();
-        userSession = parentView.getUserSession();
+        if (parentView != null) {
+            parentPresenter = parentView.getPresenter();
+            userSession = parentView.getUserSession();
+        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -113,7 +109,7 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
 
     @Override
     public void onSuccessVerifyPhoneNumber() {
-        parentView.getUserSession().setIsMsisdnVerified(true);
+        parentView.getUserSession().setIsMSISDNVerified(true);
         userSession.setPhoneNumber(getPhoneNumber());
         parentView.onSuccessEditProfile(EditUserProfileUseCase.EDIT_VERIF);
         CommonUtils.UniversalToast(getActivity(), getString(R.string

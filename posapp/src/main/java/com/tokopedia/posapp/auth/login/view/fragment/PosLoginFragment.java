@@ -39,11 +39,7 @@ import com.tokopedia.posapp.auth.login.di.component.PosLoginComponent;
 import com.tokopedia.posapp.auth.login.view.PosLogin;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.register.view.subscriber.registerinitial
-        .GetFacebookCredentialSubscriber;
-import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
 import java.util.ArrayList;
 
@@ -223,16 +219,6 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
     }
 
     @Override
-    public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> providers) {
-
-    }
-
-    @Override
-    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener() {
-        return null;
-    }
-
-    @Override
     public void onGoToCreatePasswordPage(GetUserInfoDomainData getUserInfoDomainData) {
 
     }
@@ -290,7 +276,7 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
 
     @Override
     public void onForbidden() {
-        ForbiddenActivity.startActivity(getActivity());
+
     }
 
     @Override

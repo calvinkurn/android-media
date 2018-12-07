@@ -55,7 +55,8 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         exploreUseCase.execute(
                 new GetExploreFirstSubscriber(
                         getView(),
-                        !TextUtils.isEmpty(exploreParams.getKeyword()))
+                        !TextUtils.isEmpty(exploreParams.getKeyword()),
+                        exploreParams)
         );
     }
 
