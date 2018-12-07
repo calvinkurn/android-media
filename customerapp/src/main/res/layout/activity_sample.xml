@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="headline"
+            android:text="Headline Regular"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="headline"
+            app:weight="medium"
+            android:text="Headline Medium"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="subHeadline"
+            android:text="Sub Headline Regular"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="subHeadline"
+            app:weight="medium"
+            android:text="Sub Headline Medium"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="titleBig"
+            android:text="Title Big Regular"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="titleBig"
+            app:weight="medium"
+            android:text="Title Big Medium"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="title"
+            android:text="Title Regular"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="title"
+            app:weight="medium"
+            android:text="Title Medium"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="small"
+            android:text="Small Regular"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="small"
+            app:weight="medium"
+            android:text="Small Medium"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="micro"
+            android:text="Micro Regular"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="micro"
+            app:weight="medium"
+            android:text="Micro Medium"/>
+
+    </LinearLayout>
+
+</ScrollView>
