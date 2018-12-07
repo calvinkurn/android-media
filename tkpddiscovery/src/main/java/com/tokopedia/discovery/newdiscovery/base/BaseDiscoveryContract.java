@@ -28,7 +28,7 @@ public interface BaseDiscoveryContract {
 
         void onHandleImageSearchResponseError();
 
-        void onHandleResponseIntermediary(String departmentId, String query);
+        void onHandleResponseIntermediary(String departmentId);
 
         void onHandleOfficialStorePage();
 

@@ -78,7 +78,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     }
 
     protected void onHandleIntermediary(SearchResultModel searchResult) {
-        discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId(), searchResult.getQuery());
+        discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId());
     }
 
     protected void onHandleCatalog(SearchResultModel searchResult) {
