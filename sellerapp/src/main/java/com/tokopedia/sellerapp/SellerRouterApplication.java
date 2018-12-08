@@ -888,6 +888,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getGMHomeIntent(Context context) {
+        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
+    }
+
+    @Override
     public String getFlavor() {
         return BuildConfig.FLAVOR;
     }

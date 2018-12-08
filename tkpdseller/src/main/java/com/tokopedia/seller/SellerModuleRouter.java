@@ -48,6 +48,8 @@ public interface SellerModuleRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
+    Intent getGMHomeIntent(Context context);
+
     void gotoTopAdsDashboard(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);

@@ -9,13 +9,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.gm.common.constant.GMParamConstant;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.subscribe.R;
 import com.tokopedia.gm.subscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.gm.subscribe.di.module.GmSubscribeModule;
+import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.gm.subscribe.view.presenter.GmHomePresenterImpl;
 import com.tokopedia.gm.subscribe.view.widget.home.GmMainFeatureView;
 import com.tokopedia.gm.subscribe.view.widget.home.GmSubFeatureView;
@@ -30,12 +33,21 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
     public static final String TAG = "GMHomeFragment";
     private GmHomeFragmentCallback listener;
     private TkpdProgressDialog progressDialog;
+    private boolean isFromFeatured = false;
 
     /**
      * CONSTRUCTOR AREA
      */
     public static Fragment createFragment() {
         return new GmHomeFragment();
+    }
+
+    public static Fragment createFragment(boolean isFromFeatured){
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(GMParamConstant.PARAM_KEY_FROM_FEATURE, isFromFeatured);
+        Fragment fragment = createFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public void goToProductSelection() {
@@ -97,17 +109,6 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        view.findViewById(R.id.button_home_to_select_product).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToProductSelection();
-            }
-        });
-        return view;
-    }
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_gm_subscribe_home;
     }
@@ -130,6 +131,7 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
 
     @Override
     protected void initialVar() {
+        isFromFeatured = getArguments().getBoolean(GMParamConstant.PARAM_KEY_FROM_FEATURE, false);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
@@ -160,6 +162,16 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
             getView().findViewById(R.id.gmsubscribe_subfeature_container_top).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.gmsubscribe_subfeature_container_bottom).setVisibility(View.VISIBLE);
         }
+
+        getView().findViewById(R.id.button_home_to_select_product).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter){
+                    new GMTracking((AbstractionRouter) getActivity().getApplication()).sendClickGMSubscribingEvent(isFromFeatured);
+                }
+                goToProductSelection();
+            }
+        });
     }
 
 
