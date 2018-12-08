@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -35,10 +34,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
@@ -92,6 +93,8 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -215,6 +218,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
 
+    private SaveInstanceCacheManager saveInstanceCacheManager;
+
     @Inject
     ProductDigitalPresenter presenter;
 
@@ -255,6 +260,27 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        if (savedInstanceState!= null) {
+            categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
+                    CategoryData.class, null);
+            bannerDataListState = saveInstanceCacheManager.get(EXTRA_STATE_BANNER_LIST_DATA,
+                    (new TypeToken<ArrayList<BannerData>>() {
+                    }).getType(), new ArrayList<>());
+            otherBannerDataListState = saveInstanceCacheManager.get(EXTRA_STATE_OTHER_BANNER_LIST_DATA,
+                    (new TypeToken<ArrayList<BannerData>>() {
+                    }).getType(), new ArrayList<>());
+            guideDataListState = saveInstanceCacheManager.get(EXTRA_STATE_GUIDE_LIST_DATA,
+                    (new TypeToken<ArrayList<GuideData>>() {
+                    }).getType(), new ArrayList<>());
+            digitalCheckoutPassDataState = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
+                    DigitalCheckoutPassData.class, null);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (context.getApplicationContext() instanceof AbstractionRouter) {
@@ -266,7 +292,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         renderViewShadow();
     }
 
@@ -292,20 +317,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     digitalProductView.isInstantCheckoutChecked()
             );
         }
-        state.putParcelable(EXTRA_STATE_CATEGORY_DATA, categoryDataState);
-        state.putParcelableArrayList(
-                EXTRA_STATE_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) bannerDataListState
-        );
-        state.putParcelableArrayList(
-                EXTRA_STATE_OTHER_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) otherBannerDataListState
-        );
-        state.putParcelableArrayList(
-                EXTRA_STATE_GUIDE_LIST_DATA, (ArrayList<? extends Parcelable>) guideDataListState
-        );
-        state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
-        state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
+        state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_HELP_URL, digitalHelpUrl);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveInstanceCacheManager.onSave(outState);
+        saveInstanceCacheManager.put(EXTRA_STATE_CATEGORY_DATA, categoryDataState);
+        saveInstanceCacheManager.put(EXTRA_STATE_BANNER_LIST_DATA, bannerDataListState);
+        saveInstanceCacheManager.put(EXTRA_STATE_OTHER_BANNER_LIST_DATA, otherBannerDataListState);
+        saveInstanceCacheManager.put(EXTRA_STATE_GUIDE_LIST_DATA, guideDataListState);
+        saveInstanceCacheManager.put(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
     }
 
     @Override
@@ -314,13 +339,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         operatorSelectedState = savedState.getParcelable(EXTRA_STATE_OPERATOR_SELECTED);
         productSelectedState = savedState.getParcelable(EXTRA_STATE_PRODUCT_SELECTED);
         isInstantCheckoutChecked = savedState.getBoolean(EXTRA_STATE_INSTANT_CHECKOUT_CHECKED);
-        categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
-        bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
-        otherBannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_OTHER_BANNER_LIST_DATA);
-        guideDataListState = savedState.getParcelableArrayList(EXTRA_STATE_GUIDE_LIST_DATA);
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
         voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
-        digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);
         digitalHelpUrl = savedState.getString(EXTRA_STATE_HELP_URL);
         presenter.processStateDataToReRender();
     }
