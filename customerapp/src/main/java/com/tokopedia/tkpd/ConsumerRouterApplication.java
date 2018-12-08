@@ -56,6 +56,7 @@ import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -111,13 +112,14 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
+import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -145,16 +147,18 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -498,7 +502,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
         LoginPhoneNumberRouter,
-        NpsRouter {
+        NpsRouter,
+        DigitalRouter {
 
     private static final String EXTRA = "extra";
 
@@ -1148,7 +1153,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        return CartDigitalActivity.newInstance(this, passData);
+        if (getBooleanRemoteConfig(DigitalRouter.MULTICHECKOUT_CART_REMOTE_CONFIG, true)) {
+            return DigitalCartActivity.newInstance(this, passData);
+        } else {
+            return CartDigitalActivity.newInstance(this, passData);
+        }
     }
 
     @Override
@@ -1199,6 +1208,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
+    }
+
+    @Override
+    public String getTrackingClientId() {
+        return TrackingUtils.getClientID();
+    }
+
+    @Override
+    public Intent getDealDetailIntent(Activity activity,
+                                      String slug,
+                                      boolean enableBuy,
+                                      boolean enableRecommendation,
+                                      boolean enableShare,
+                                      boolean enableLike) {
+        return DealDetailsActivity.getCallingIntent(activity,
+                new DealDetailPassData.Builder()
+                        .slug(slug)
+                        .enableBuy(enableBuy)
+                        .enableRecommendation(enableRecommendation)
+                        .enableShare(enableShare)
+                        .enableLike(enableLike)
+                        .build()
+        );
+    }
+
+    @Override
+    public String getBranchAutoApply(Activity activity) {
+        return BranchSdkUtils.getAutoApplyCouponIfAvailable(activity);
     }
 
     @Override
@@ -3260,6 +3297,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getDefferedDeeplinkPathIfExists() {
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
+
     @Override
     public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
         TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);

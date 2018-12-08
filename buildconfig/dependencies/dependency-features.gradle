@@ -140,6 +140,7 @@ ext {
 
             browse                  : ":features:digital:digital_browse",
             digitalDeals            : ":features:digital:digital_deals",
+            commonDigital           : ":features:digital:common_digital",
             digitalproduct          : ":features:digital:digitalproduct",
             event                   : ":features:digital:event",
             flight                  : ":features:digital:flight",

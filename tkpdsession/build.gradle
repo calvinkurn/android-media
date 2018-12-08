@@ -48,7 +48,7 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.plus
-    implementation rootProject.ext.playServicesDependencies.maps
+
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

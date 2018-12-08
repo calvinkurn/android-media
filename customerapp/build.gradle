@@ -349,6 +349,7 @@ dependencies {
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.userIdentification)
