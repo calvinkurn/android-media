@@ -37,7 +37,8 @@
     <string name="title_copy_promo_code">Salin Kode</string>
     <string name="title_copied">Kode Promo Berhasil Disalin</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
-    <string name="headerview_label_official_store">Produk dari Brand Resmi</string>
+    <string name="headerview_label_official_store_1">Produk dari</string>
+    <string name="headerview_label_official_store_2">Brand Resmi</string>
     <string name="per_pcs">/pcs</string>
     <string name="change_variant">Ubah Varian</string>
     <string name="error_variant">Terjadi kesalahan dalam memproses permintaan Anda</string>
