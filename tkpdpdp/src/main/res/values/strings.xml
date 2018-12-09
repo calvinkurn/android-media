@@ -83,4 +83,6 @@
     <string name="title_wishlist_pdp">Wishlist</string>
     <string name="button_add_to_affiliate">Kurasi Produk Ini</string>
     <string name="label_atc_open_cart">Lihat</string>
+    <string name="label_description">Deskripsi</string>
+    <string name="default_max_rating">5</string>
 </resources>

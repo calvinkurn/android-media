@@ -22,10 +22,9 @@ import com.tokopedia.tkpdpdp.revamp.ProductViewData;
  */
 
 public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDetailView> {
-    private ImageView ivQualityRate;
+    private RatingBarWithTextView productRating;
     private TextView tvReview;
     private TextView tvTalk;
-    private TextView tvCourier;
     private LinearLayout talkContainer;
     private LinearLayout reviewContainer;
     private LinearLayout courierContainer;
@@ -62,10 +61,9 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        ivQualityRate = (ImageView) findViewById(R.id.iv_quality);
+        productRating = findViewById(R.id.product_rating);
         tvReview = (TextView) findViewById(R.id.tv_review);
         tvTalk = (TextView) findViewById(R.id.tv_talk);
-        tvCourier = (TextView) findViewById(R.id.tv_courier);
         talkContainer = (LinearLayout) findViewById(R.id.talk_container);
         reviewContainer = (LinearLayout) findViewById(R.id.review_container);
         courierContainer = (LinearLayout) findViewById(R.id.courier_container);
@@ -77,14 +75,15 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     }
 
     public void renderData(@NonNull ProductDetailData data, @NonNull ProductViewData viewData) {
-        ivQualityRate.setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
+        productRating.setRating(
+                data.getRating().getProductRatingStarPoint()
+        );
         int courierCount = 0;
         if (data.getShopInfo().getShopShipments() != null) {
             courierCount = data.getShopInfo().getShopShipments().size();
         }
         tvReview.setText(String.format("%1$s %2$s", data.getStatistic().getProductReviewCount(), getContext().getString(R.string.ulasan)));
         tvTalk.setText(String.format("%1$s %2$s",data.getStatistic().getProductTalkCount(), getContext().getString(R.string.diskusi)));
-        tvCourier.setText(String.format("%1$s %2$s", courierCount, getContext().getString(R.string.kurir) ));
         courierContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,11 +99,11 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     }
 
     public void renderTempdata(ProductPass productPass) {
-        ivQualityRate
-                .setImageResource(getRatingDrawable(productPass.getStarRating()));
+        productRating.setRating(
+                productPass.getStarRating()
+        );
         tvReview.setText(String.format("%1$s %2$s", productPass.getCountReview(), getContext().getString(R.string.ulasan)));
         tvTalk.setText(String.format("%1$s %2$s", productPass.getCountDiscussion(), getContext().getString(R.string.diskusi)));
-        tvCourier.setText(String.format("%1$s %2$s", productPass.getCountCourrier(), getContext().getString(R.string.kurir) ));
         setVisibility(VISIBLE);
     }
 

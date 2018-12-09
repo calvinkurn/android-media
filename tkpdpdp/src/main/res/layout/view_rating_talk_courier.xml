@@ -29,14 +29,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:gravity="center_horizontal">
+                <com.tokopedia.tkpdpdp.customview.RatingBarWithTextView
+                    android:id="@+id/product_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-                <ImageView
-                    android:id="@id/iv_quality"
-                    android:layout_width="80dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:contentDescription="@string/image_product_desc"
-                    app:srcCompat="@drawable/ic_star_five" />
             </LinearLayout>
 
             <TextView
@@ -51,13 +48,6 @@
 
 
         </LinearLayout>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/grey_300" />
 
         <LinearLayout
             android:id="@id/talk_container"
@@ -89,14 +79,6 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_height="match_parent"
-            android:layout_width="1dp"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/grey_300" />
-
-
         <LinearLayout
             android:id="@id/courier_container"
             android:layout_width="0dp"
@@ -111,15 +93,15 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
                 android:contentDescription="@string/image_product_desc"
-                app:srcCompat="@drawable/icon_kurir_green" />
+                android:src="@drawable/ic_description_pdp" />
 
 
             <TextView
-                android:id="@id/tv_courier"
+                android:id="@id/tv_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="0 Kurir"
+                android:text="@string/label_description"
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="@dimen/fontvs"
                 tools:ignore="HardcodedText" />
