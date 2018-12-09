@@ -526,6 +526,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails) {
         if (tokenDetail != null) {
             try {
+                if (tokenDetail.isOffFlag()) {
+                    return;
+                }
+
                 containerEgg.setVisibility(View.VISIBLE);
                 TextView textCount = getView().findViewById(R.id.text_token_count);
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
