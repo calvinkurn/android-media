@@ -36,7 +36,7 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    implementation project(":libraries:core_legacy")
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
 

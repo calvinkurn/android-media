@@ -27,7 +27,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(":libraries:core_legacy")
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.core)
     implementation rootProject.ext.miscDependencies.multiDex
 

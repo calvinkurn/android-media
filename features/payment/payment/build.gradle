@@ -32,7 +32,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation project(":libraries:core_legacy")
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../../../publish_local.gradle'

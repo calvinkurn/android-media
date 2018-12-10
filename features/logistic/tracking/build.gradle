@@ -15,7 +15,7 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(":libraries:core_legacy")
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)

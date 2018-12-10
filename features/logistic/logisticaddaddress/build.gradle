@@ -33,7 +33,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
 
-    implementation project(":libraries:core_legacy")
+    implementation project(rootProject.ext.libraries.core_legacy)
 
     // TODO remove this when possible
     implementation project(rootProject.ext.features.core)
