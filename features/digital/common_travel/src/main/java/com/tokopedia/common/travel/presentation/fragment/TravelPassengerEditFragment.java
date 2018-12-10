@@ -81,10 +81,7 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
     }
 
     private void renderPassengerList() {
-        adapter = new TravelPassengerEditAdapter();
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewPassenger.getContext());
-        dividerItemDecoration.setUsePaddingLeft(true);
-        recyclerViewPassenger.addItemDecoration(dividerItemDecoration);
+        adapter = new TravelPassengerEditAdapter(travelTrip.getTravelPassengerBooking());
         adapter.setListener(new TravelPassengerEditAdapter.ActionListener() {
             @Override
             public void onEditPassenger(TravelPassenger travelPassenger) {
@@ -94,8 +91,8 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
             }
 
             @Override
-            public void onDeletePassenger(String id, int travelId) {
-                showDeleteDialog(id, travelId);
+            public void onDeletePassenger(String idPassenger, String id, int travelId) {
+                showDeleteDialog(idPassenger, id, travelId);
             }
         });
         recyclerViewPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -167,7 +164,12 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
         presenter.getPassengerList();
     }
 
-    private void showDeleteDialog(String id, int travelId) {
+    @Override
+    public TravelPassenger getTravelPassengerBooking() {
+        return travelTrip.getTravelPassengerBooking();
+    }
+
+    private void showDeleteDialog(String idPassenger, String id, int travelId) {
         dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.dialog_delete_passenger_title));
         dialog.setDesc(getString(R.string.dialog_delete_passenger_question));
@@ -176,7 +178,7 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.deletePassenger(id, travelId);
+                presenter.deletePassenger(idPassenger, id, travelId);
                 dialog.dismiss();
             }
         });

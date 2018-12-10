@@ -40,6 +40,7 @@ public class TravelPassengerEditPresenter extends BaseDaggerPresenter<TravelPass
     public void getPassengerList() {
         getView().showProgressBar();
         getTravelPassengersUseCase.setResetPassengerListSelected(false);
+        getTravelPassengersUseCase.setTravelPassengerSelected(getView().getTravelPassengerBooking().getIdPassenger());
         compositeSubscription.add(getTravelPassengersUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(travelProvider.computation())
                 .unsubscribeOn(travelProvider.computation())
@@ -66,9 +67,9 @@ public class TravelPassengerEditPresenter extends BaseDaggerPresenter<TravelPass
     }
 
     @Override
-    public void deletePassenger(String id, int travelId) {
+    public void deletePassenger(String idPassenger, String id, int travelId) {
         getView().showProgressBar();
-        deleteTravelPassengerUseCase.setIdPassengerSelected(id + travelId);
+        deleteTravelPassengerUseCase.setIdPassengerSelected(idPassenger);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteTravelPassengerUseCase.ID_PASSENGER, id);
         requestParams.putObject(DeleteTravelPassengerUseCase.TRAVEL_ID, travelId);

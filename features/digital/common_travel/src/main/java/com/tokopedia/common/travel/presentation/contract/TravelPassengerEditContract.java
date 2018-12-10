@@ -33,12 +33,14 @@ public interface TravelPassengerEditContract {
 
         void successDeletePassenger();
 
+        TravelPassenger getTravelPassengerBooking();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getPassengerList();
 
-        void deletePassenger(String id, int travelId);
+        void deletePassenger(String idPassenger, String id, int travelId);
 
         void onDestroyView();
     }

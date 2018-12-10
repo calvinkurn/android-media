@@ -20,13 +20,17 @@ import java.util.List;
 public abstract class BaseTravelPassengerAdapter extends RecyclerView.Adapter {
 
     protected List<TravelPassenger> travelPassengerList;
+    protected TravelPassenger passengerSelected;
     protected Context context;
+    protected boolean showCheckbox;
 
-    public BaseTravelPassengerAdapter() {
+    public BaseTravelPassengerAdapter(TravelPassenger passengerSelected) {
         this.travelPassengerList = new ArrayList<>();
+        this.passengerSelected = passengerSelected;
     }
 
     protected abstract RecyclerView.ViewHolder getViewHolder(View view);
+
     protected abstract int getLayoutAdapter();
 
     @NonNull
@@ -42,10 +46,21 @@ public abstract class BaseTravelPassengerAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         TravelItemViewHolder itemViewHolder = (TravelItemViewHolder) holder;
         TravelPassenger travelPassenger = travelPassengerList.get(position);
-        itemViewHolder.passengerStatus.setVisibility(travelPassenger.isBuyer() == 1 ? View.VISIBLE : View.GONE);
         String salutationString = getSalutationString(travelPassenger.getTitle());
         itemViewHolder.passengerName.setText(salutationString + ". " + travelPassenger.getName());
         itemViewHolder.passengerName.setTextColor(getColorPassenger(travelPassenger.isSelected()));
+
+        showCheckbox = false;
+        if (travelPassenger.getIdPassenger().equals(passengerSelected.getIdPassenger())) {
+            showCheckbox = true;
+            itemViewHolder.passengerName.setTextColor(context.getResources().getColor(R.color.black));
+        }
+
+        String statusPassenger = "(Utama)";
+        if (travelPassenger.isSelected()) {
+            statusPassenger = "(Terpilih)";
+        }
+        itemViewHolder.passengerStatus.setText(statusPassenger);
     }
 
     protected int getColorPassenger(boolean isSelected) {

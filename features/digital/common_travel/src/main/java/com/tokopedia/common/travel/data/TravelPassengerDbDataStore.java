@@ -9,6 +9,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
+import com.tokopedia.common.travel.data.specification.DbFlowSpecification;
+import com.tokopedia.common.travel.data.specification.Specification;
 import com.tokopedia.common.travel.database.TravelPassengerDb;
 import com.tokopedia.common.travel.database.TravelPassengerDb_Table;
 import com.tokopedia.common.travel.domain.TravelPassengerMapper;
@@ -73,7 +75,9 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
 
     private TravelPassengerDb mapTravelPassengerToDb(TravelPassengerEntity travelPassengerEntity) {
         TravelPassengerDb travelPassengerDb = new TravelPassengerDb();
-        travelPassengerDb.setIdPassenger(travelPassengerEntity.getId() + travelPassengerEntity.getTravelId());
+        Long currentTimestamp = System.currentTimeMillis()/1000;
+        travelPassengerDb.setIdPassenger(travelPassengerEntity.getFirstName() +
+                travelPassengerEntity.getLastName() + currentTimestamp.toString());
         travelPassengerDb.setId(travelPassengerEntity.getId());
         travelPassengerDb.setNamePassenger(travelPassengerEntity.getName());
         travelPassengerDb.setFirstName(travelPassengerEntity.getFirstName());
@@ -93,7 +97,7 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
         return travelPassengerDb;
     }
 
-    public Observable<Boolean> updateDatas(List<TravelPassengerEntity> datas) {
+    public Observable<Boolean> updateDatas(List<TravelPassengerEntity> datas, String idPassengerPrevious) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -105,18 +109,22 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
 
             private void updateInsertData(TravelPassengerEntity travelPassengerEntity) {
                 ConditionGroup conditions = ConditionGroup.clause();
-                conditions.and(TravelPassengerDb_Table.idPassenger.eq(travelPassengerEntity.getId() + travelPassengerEntity.getTravelId()));
+                conditions.or(TravelPassengerDb_Table.name.eq(travelPassengerEntity.getName()));
+                conditions.or(TravelPassengerDb_Table.idPassenger.eq(idPassengerPrevious));
 
                 TravelPassengerDb result = new Select().from(TravelPassengerDb.class)
                         .where(conditions)
                         .querySingle();
 
                 boolean isSelected = false;
+                String idPassengerPrevious = "";
                 if (result != null) {
+                    idPassengerPrevious = result.getIdPassenger();
                     isSelected = result.isSelected();
                     result.delete();
                 }
                 result = mapTravelPassengerToDb(travelPassengerEntity);
+                result.setIdPassenger(idPassengerPrevious);
                 result.setSelected(isSelected);
                 result.insert();
             }
@@ -158,17 +166,12 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
     }
 
     @Override
-    public Observable<List<TravelPassenger>> getDatas(Specification specification) {
+    public Observable<List<TravelPassenger>> getDatas() {
         return Observable.unsafeCreate(new Observable.OnSubscribe<List<TravelPassengerDb>>() {
             @Override
             public void call(Subscriber<? super List<TravelPassengerDb>> subscriber) {
-                ConditionGroup conditions = ConditionGroup.clause();
-                if (specification instanceof DbFlowSpecification) {
-                    conditions = ((DbFlowSpecification) specification).getCondition();
-                }
                 List<TravelPassengerDb> travelPassengerDbList = new Select()
                         .from(TravelPassengerDb.class)
-                        .where(conditions)
                         .orderBy(OrderBy.fromProperty(TravelPassengerDb_Table.name).ascending())
                         .queryList();
 

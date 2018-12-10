@@ -21,6 +21,8 @@ public interface TravelPassengerListContract {
 
         void renderPassengerList(List<TravelPassenger> travelPassengerList);
 
+        void updatePassengerSelected(TravelPassenger travelPassengerSelected);
+
         void showProgressBar();
 
         void hideProgressBar();
@@ -35,7 +37,7 @@ public interface TravelPassengerListContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getPassengerList(boolean resetPassengerListSelected);
+        void getPassengerList(boolean resetPassengerListSelected, int idLocal, String idPassengerSelected);
 
         void selectPassenger(TravelPassenger passengerBooking, TravelPassenger travelPassenger);
 

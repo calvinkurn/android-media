@@ -1,5 +1,7 @@
 package com.tokopedia.common.travel.data;
 
+import com.tokopedia.common.travel.data.specification.Specification;
+
 import java.util.List;
 
 import rx.Observable;
@@ -16,7 +18,7 @@ public interface TravelPassengerDataDbSource<T, U> {
 
     Observable<Boolean> insertAll(List<T> datas);
 
-    Observable<List<U>> getDatas(Specification specification);
+    Observable<List<U>> getDatas();
 
     Observable<Integer> getCount(Specification specification);
 

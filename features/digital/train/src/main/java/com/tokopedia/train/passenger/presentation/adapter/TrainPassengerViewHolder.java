@@ -3,6 +3,7 @@ package com.tokopedia.train.passenger.presentation.adapter;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.label.LabelView;
@@ -21,6 +22,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
     private TrainBookingPassengerAdapterListener listener;
     private LabelView headerLabel;
     private AppCompatTextView passengerPaxTypeTv;
+    private RelativeLayout itemPassengerLayout;
 
     public TrainPassengerViewHolder(View itemView, TrainBookingPassengerAdapterListener listener) {
         super(itemView);
@@ -31,6 +33,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
     private void initView(View itemView) {
         headerLabel = itemView.findViewById(R.id.label_header);
         passengerPaxTypeTv = itemView.findViewById(R.id.tv_passenger_pax_type);
+        itemPassengerLayout = itemView.findViewById(R.id.item_passenger_layout);
     }
 
     @Override
@@ -49,7 +52,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
             headerLabel.setContent(getString(R.string.train_btn_fill_passenger_data));
         }
 
-        headerLabel.setOnClickListener(new View.OnClickListener() {
+        itemPassengerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onChangePassengerData(trainPassengerViewModel);

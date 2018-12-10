@@ -83,7 +83,7 @@ public class TravelPassengerListPresenterTest {
         Mockito.when(getTravelPassengersUseCase.createObservable(RequestParams.EMPTY))
                 .thenReturn(Observable.just(travelPassengerList));
         //when
-        presenter.getPassengerList(true);
+        presenter.getPassengerList(true, travelPassengerList.get(0).getIdLocal(),travelPassengerList.get(0).getIdPassenger());
         //then
         Assert.assertEquals(travelPassengerList.size(), 2);
 
@@ -105,7 +105,7 @@ public class TravelPassengerListPresenterTest {
         Mockito.when(getTravelPassengersUseCase.createObservable(RequestParams.EMPTY))
                 .thenReturn(Observable.just(travelPassengerList));
         //when
-        presenter.getPassengerList(false);
+        presenter.getPassengerList(false, travelPassengerList.get(0).getIdLocal(),travelPassengerList.get(0).getIdPassenger());
         //then
         Assert.assertEquals(travelPassengerList.size(), 2);
         Assert.assertEquals(travelPassengerList.get(0).getName(), "Test New");
@@ -118,12 +118,13 @@ public class TravelPassengerListPresenterTest {
     @Test
     public void onLoadPassengerList_DataError_ShowErrorSnackbar() {
         //given
+        setPassengerList();
         String messageError = "Terjadi kesalahan pada server";
         MessageErrorException exception = new MessageErrorException(messageError);
         Mockito.when(getTravelPassengersUseCase.createObservable(RequestParams.EMPTY))
                 .thenReturn(Observable.error(exception));
         //when
-        presenter.getPassengerList(true);
+        presenter.getPassengerList(true, travelPassengerList.get(0).getIdLocal(),travelPassengerList.get(0).getIdPassenger());
         //then
         Mockito.verify(view).showProgressBar();
         Mockito.verify(view).hideProgressBar();

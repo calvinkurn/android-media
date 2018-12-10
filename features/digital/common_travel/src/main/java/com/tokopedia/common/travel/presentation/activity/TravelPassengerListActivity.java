@@ -24,6 +24,7 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
     public static final String TRAVEL_TRIP = "travel_trip";
     public static final String RESET_PASSENGER_LIST_SELECTED = "reset_passenger_list";
     private TravelTrip travelTrip;
+    private TravelPassenger travelPassenger;
 
     public static Intent callingIntent(Context context,
                                        TravelTrip travelTrip,
@@ -51,7 +52,11 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
     @Override
     public void onBackPressed() {
         KeyboardHandler.hideSoftKeyboard(this);
-        super.onBackPressed();
+        if (this.travelPassenger != null) {
+            onClickPassenger(this.travelPassenger);
+        } else {
+            super.onBackPressed();
+        }
         overridePendingTransition(R.anim.travel_anim_stay,R.anim.travel_slide_out_up);
     }
 
@@ -95,5 +100,10 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
         intent.putExtra(PASSENGER_DATA, travelPassenger);
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressedActivity(TravelPassenger travelPassenger) {
+        this.travelPassenger = travelPassenger;
     }
 }

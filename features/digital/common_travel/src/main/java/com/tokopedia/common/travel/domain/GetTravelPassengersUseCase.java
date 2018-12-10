@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.data.TravelPassengerDataStoreFactory;
-import com.tokopedia.common.travel.data.TravelPassengerListSpecification;
 import com.tokopedia.common.travel.data.entity.ResponseTravelPassengerList;
 import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
@@ -87,7 +86,7 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
                 .flatMap(new Func1<List<TravelPassengerEntity>, Observable<List<TravelPassenger>>>() {
                     @Override
                     public Observable<List<TravelPassenger>> call(List<TravelPassengerEntity> travelPassengerEntities) {
-                        return travelPassengerDataStoreFactory.getPassengerListLocal(travelPassengerEntities, resetPassengerListSelected, new TravelPassengerListSpecification());
+                        return travelPassengerDataStoreFactory.getPassengerListLocal(travelPassengerEntities, resetPassengerListSelected, idPassengerSelected);
                     }
                 })
                 .flatMap(new Func1<List<TravelPassenger>, Observable<List<TravelPassenger>>>() {

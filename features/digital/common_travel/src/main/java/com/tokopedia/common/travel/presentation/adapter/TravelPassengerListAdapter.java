@@ -15,13 +15,10 @@ import java.util.ArrayList;
  */
 public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
 
-    private TravelPassenger passengerSelected;
     private ActionListener listener;
-    private boolean showCheckbox;
 
     public TravelPassengerListAdapter(TravelPassenger passengerSelected) {
-        this.travelPassengerList = new ArrayList<>();
-        this.passengerSelected = passengerSelected;
+        super(passengerSelected);
     }
 
     public void setListener(ActionListener listener) {
@@ -43,11 +40,6 @@ public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
         super.onBindViewHolder(holder, position);
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         TravelPassenger travelPassenger = travelPassengerList.get(position);
-        showCheckbox = false;
-        if (travelPassenger.getIdPassenger().equals(passengerSelected.getIdPassenger())) {
-            showCheckbox = true;
-            itemViewHolder.passengerName.setTextColor(context.getResources().getColor(R.color.black));
-        }
 
         itemViewHolder.passengerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,8 +52,10 @@ public class TravelPassengerListAdapter extends BaseTravelPassengerAdapter {
                 }
             }
         });
+
         itemViewHolder.passengerName.setTextColor(getColorPassenger(travelPassenger.isSelected()));
         itemViewHolder.checkboxImg.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
+        itemViewHolder.passengerStatus.setVisibility(travelPassenger.isBuyer() == 1 || (travelPassenger.isSelected() && !showCheckbox) ? View.VISIBLE : View.GONE);
     }
 
     @Override

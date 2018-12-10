@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.R;
@@ -120,9 +119,6 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
 
     private void initRecyclerView() {
         adapter = new TravelPassengerListAdapter(passengerBooking);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(passengerListRecyclerView.getContext());
-        dividerItemDecoration.setUsePaddingLeft(true);
-        passengerListRecyclerView.addItemDecoration(dividerItemDecoration);
         adapter.setListener(new TravelPassengerListAdapter.ActionListener() {
             @Override
             public void onClickChoosePassenger(TravelPassenger travelPassenger) {
@@ -166,6 +162,11 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void updatePassengerSelected(TravelPassenger travelPassengerSelected) {
+        listener.onBackPressedActivity(travelPassengerSelected);
+    }
+
+    @Override
     public void showProgressBar() {
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -201,7 +202,8 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-        presenter.getPassengerList(resetPassengerListSelected);
+        presenter.getPassengerList(resetPassengerListSelected, travelTrip.getTravelPassengerBooking().getIdLocal(),
+                travelTrip.getTravelPassengerBooking().getIdPassenger());
     }
 
     @Override
@@ -227,5 +229,7 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
 
     public interface ActionListener {
         void onClickPassenger(TravelPassenger travelPassenger);
+
+        void onBackPressedActivity(TravelPassenger travelPassenger);
     }
 }

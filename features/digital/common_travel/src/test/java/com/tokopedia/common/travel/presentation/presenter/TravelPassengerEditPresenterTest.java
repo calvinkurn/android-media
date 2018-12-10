@@ -94,7 +94,10 @@ public class TravelPassengerEditPresenterTest {
     public void onLoadPassengerList_DataError_ShowErrorSnackbar() {
         //given
         String messageError = "Terjadi kesalahan pada server";
+        TravelPassenger travelPassenger = new TravelPassenger();
+        travelPassenger.setIdPassenger("TesToped1234");
         MessageErrorException exception = new MessageErrorException(messageError);
+        Mockito.when(view.getTravelPassengerBooking()).thenReturn(travelPassenger);
         Mockito.when(getTravelPassengersUseCase.createObservable(RequestParams.EMPTY))
                 .thenReturn(Observable.error(exception));
         //when
@@ -118,7 +121,7 @@ public class TravelPassengerEditPresenterTest {
         Mockito.when(deleteTravelPassengerUseCase.createObservable(Mockito.any()))
                 .thenReturn(Observable.just(true));
         //when
-        presenter.deletePassenger(travelPassengerList.get(0).getId(), travelPassengerList.get(0).getTravelId());
+        presenter.deletePassenger("TesToped1234", travelPassengerList.get(0).getId(), travelPassengerList.get(0).getTravelId());
         //then
         Mockito.verify(view).showProgressBar();
         Mockito.verify(view).hideProgressBar();
@@ -129,7 +132,10 @@ public class TravelPassengerEditPresenterTest {
     public void onDeletePassenger_DataError_ShowErrorSnackbar() {
         //given
         String messageError = "Terjadi kesalahan pada server";
+        TravelPassenger travelPassenger = new TravelPassenger();
+        travelPassenger.setIdPassenger("TesToped1234");
         MessageErrorException exception = new MessageErrorException(messageError);
+        Mockito.when(view.getTravelPassengerBooking()).thenReturn(travelPassenger);
         Mockito.when(getTravelPassengersUseCase.createObservable(RequestParams.EMPTY))
                 .thenReturn(Observable.error(exception));
         //when

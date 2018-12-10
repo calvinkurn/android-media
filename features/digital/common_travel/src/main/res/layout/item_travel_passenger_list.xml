@@ -6,9 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_15"
-    android:paddingRight="@dimen/dp_15"
-    android:paddingTop="@dimen/dp_20"
-    android:paddingBottom="@dimen/dp_20">
+    android:paddingTop="@dimen/dp_20">
 
     <TextView
         android:id="@+id/passenger_name"
@@ -27,8 +25,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_16"
         app:srcCompat="@drawable/ic_travel_checked_green"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/white_two"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_below="@+id/passenger_status"/>
 
 </RelativeLayout>

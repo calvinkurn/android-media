@@ -319,7 +319,6 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         int passengerId = 1;
         for (int i = 1; i <= adultPassengers; i++) {
             TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
-            trainPassengerViewModel.setIdPassenger("");
             trainPassengerViewModel.setIdLocal(passengerId);
             trainPassengerViewModel.setPaxType(TrainBookingPassenger.ADULT);
             trainPassengerViewModel.setHeaderTitle(
@@ -330,7 +329,6 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
         for (int i = 1; i <= infantPassengers; i++) {
             TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
-            trainPassengerViewModel.setIdPassenger("");
             trainPassengerViewModel.setIdLocal(passengerId);
             trainPassengerViewModel.setPaxType(TrainBookingPassenger.INFANT);
             trainPassengerViewModel.setHeaderTitle(

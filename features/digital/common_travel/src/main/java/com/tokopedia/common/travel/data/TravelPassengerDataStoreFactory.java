@@ -19,7 +19,7 @@ public class TravelPassengerDataStoreFactory {
         this.dbDataStore = dbDataStore;
     }
 
-    public Observable<List<TravelPassenger>> getPassengerListLocal(List<TravelPassengerEntity> travelPassengerListNetwork, boolean resetPassengerListSelected, Specification specification) {
+    public Observable<List<TravelPassenger>> getPassengerListLocal(List<TravelPassengerEntity> travelPassengerListNetwork, boolean resetPassengerListSelected, String idPassengerPrevious) {
         return Observable.just(resetPassengerListSelected)
                 .flatMap(new Func1<Boolean, Observable<List<TravelPassenger>>>() {
                     @Override
@@ -29,7 +29,7 @@ public class TravelPassengerDataStoreFactory {
                                 @Override
                                 public Observable<List<TravelPassenger>> call(Boolean isSuccessDelete) {
                                     if (isSuccessDelete) {
-                                        return insertPassengerList(travelPassengerListNetwork, specification);
+                                        return insertPassengerList(travelPassengerListNetwork);
                                     } else {
                                         return Observable.empty();
                                     }
@@ -41,9 +41,9 @@ public class TravelPassengerDataStoreFactory {
                                         @Override
                                         public Observable<List<TravelPassenger>> call(Boolean isDataAvailable) {
                                             if (isDataAvailable) {
-                                                return updatePassengerList(travelPassengerListNetwork, specification);
+                                                return updatePassengerList(travelPassengerListNetwork, idPassengerPrevious);
                                             } else {
-                                                return insertPassengerList(travelPassengerListNetwork, specification);
+                                                return insertPassengerList(travelPassengerListNetwork);
                                             }
                                         }
                                     });
@@ -52,13 +52,13 @@ public class TravelPassengerDataStoreFactory {
                 });
     }
 
-    private Observable<List<TravelPassenger>> updatePassengerList(List<TravelPassengerEntity> travelPassengerListNetwork, Specification specification) {
-        return dbDataStore.updateDatas(travelPassengerListNetwork)
+    private Observable<List<TravelPassenger>> updatePassengerList(List<TravelPassengerEntity> travelPassengerListNetwork, String idPassengerPrevious) {
+        return dbDataStore.updateDatas(travelPassengerListNetwork, idPassengerPrevious)
                 .flatMap(new Func1<Boolean, Observable<List<TravelPassenger>>>() {
                     @Override
                     public Observable<List<TravelPassenger>> call(Boolean isSuccess) {
                         if (isSuccess) {
-                            return dbDataStore.getDatas(specification);
+                            return dbDataStore.getDatas();
                         } else {
                             return Observable.empty();
                         }
@@ -66,13 +66,13 @@ public class TravelPassengerDataStoreFactory {
                 });
     }
 
-    private Observable<List<TravelPassenger>> insertPassengerList(List<TravelPassengerEntity> travelPassengerListNetwork, Specification specification) {
+    private Observable<List<TravelPassenger>> insertPassengerList(List<TravelPassengerEntity> travelPassengerListNetwork) {
         return dbDataStore.insertAll(travelPassengerListNetwork)
                 .flatMap(new Func1<Boolean, Observable<List<TravelPassenger>>>() {
                     @Override
                     public Observable<List<TravelPassenger>> call(Boolean isSuccess) {
                         if (isSuccess) {
-                            return dbDataStore.getDatas(specification);
+                            return dbDataStore.getDatas();
                         } else {
                             return Observable.empty();
                         }

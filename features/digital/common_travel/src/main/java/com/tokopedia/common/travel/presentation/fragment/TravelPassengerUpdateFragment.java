@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -34,8 +35,6 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.usecase.RequestParams;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -60,6 +59,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
     private AppCompatEditText birthDateEt;
     private TravelPassenger trainPassengerViewModel;
     private ActionListener listener;
+    private LinearLayout formPassengerLinear;
     private String birthdate;
     private int typePage;
     private TravelTrip travelTrip;
@@ -89,6 +89,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
         idNumberEt = view.findViewById(R.id.et_identity_number);
         birthDateEt = view.findViewById(R.id.et_birth_date);
         submitBtn = view.findViewById(R.id.button_submit);
+        formPassengerLinear = view.findViewById(R.id.form_passenger_layout);
 
         Calendar calendar = TravelDateUtil.getCurrentCalendar();
         year = calendar.get(Calendar.YEAR);
@@ -104,7 +105,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
                 KeyboardHandler.hideSoftKeyboard(getActivity());
                 if (typePage == TravelPassengerUpdateActivity.ADD_PASSENGER_TYPE) {
                     presenter.submitAddPassengerData();
-                } else if (typePage == TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE){
+                } else if (typePage == TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE) {
                     presenter.submitEditPassengerData();
                 }
             }
@@ -127,7 +128,6 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
                 datePickerDialog.show();
             }
         });
-
         return view;
     }
 
@@ -158,6 +158,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
             renderSpinnerForInfant();
         }
         renderPassengerData();
+        KeyboardHandler.DropKeyboard(getActivity(), formPassengerLinear);
     }
 
     private void renderSpinnerForAdult() {
@@ -174,10 +175,11 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
 
     private void renderPassengerData() {
         trainPassengerViewModel = travelTrip.getTravelPassengerBooking();
-        if (trainPassengerViewModel.getTitle() == 0) {
-            spTitle.setSpinnerPosition(0);
-        } else {
+        spTitle.setHint("");
+        if (trainPassengerViewModel.getTitle() >= 0) {
             spTitle.setSpinnerPosition(trainPassengerViewModel.getTitle() - 1);
+        } else {
+            spTitle.setSpinnerValue(null);
         }
         if (!TextUtils.isEmpty(trainPassengerViewModel.getFirstName()))
             firstNameEt.setText(trainPassengerViewModel.getFirstName());
@@ -247,9 +249,11 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
         requestParams.putString(AddTravelPassengerUseCase.FIRSTNAME, getFirstName());
         requestParams.putString(AddTravelPassengerUseCase.LASTNAME, getLastName());
         requestParams.putString(AddTravelPassengerUseCase.ID_NUMBER, getIdentityNumber());
-        requestParams.putString(AddTravelPassengerUseCase.BIRTHDATE, birthdate + "T00:00:00Z");
         requestParams.putInt(AddTravelPassengerUseCase.TITLE, getSalutationId());
         requestParams.putInt(AddTravelPassengerUseCase.PAX_TYPE, trainPassengerViewModel.getPaxType());
+        if (birthdate != null) {
+            requestParams.putString(AddTravelPassengerUseCase.BIRTHDATE, birthdate + "T00:00:00Z");
+        }
         return requestParams;
     }
 

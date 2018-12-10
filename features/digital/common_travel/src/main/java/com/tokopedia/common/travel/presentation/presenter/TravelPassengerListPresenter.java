@@ -38,9 +38,10 @@ public class TravelPassengerListPresenter extends BaseDaggerPresenter<TravelPass
     }
 
     @Override
-    public void getPassengerList(boolean resetPassengerListSelected) {
+    public void getPassengerList(boolean resetPassengerListSelected, int idLocal, String idPassengerSelected) {
         getView().showProgressBar();
         getTravelPassengersUseCase.setResetPassengerListSelected(resetPassengerListSelected);
+        getTravelPassengersUseCase.setTravelPassengerSelected(idPassengerSelected);
         compositeSubscription.add(getTravelPassengersUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(travelProvider.computation())
                 .unsubscribeOn(travelProvider.computation())
@@ -63,6 +64,14 @@ public class TravelPassengerListPresenter extends BaseDaggerPresenter<TravelPass
                     public void onNext(List<TravelPassenger> travelPassengers) {
                         getView().hideProgressBar();
                         getView().renderPassengerList(travelPassengers);
+
+                        for (int i = 0; i < travelPassengers.size(); i++) {
+                            if (travelPassengers.get(i).getIdPassenger().equals(idPassengerSelected)) {
+                                TravelPassenger travelPassenger = travelPassengers.get(i);
+                                travelPassenger.setIdLocal(idLocal);
+                                getView().updatePassengerSelected(travelPassenger);
+                            }
+                        }
                     }
                 })
         );

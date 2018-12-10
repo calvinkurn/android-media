@@ -17,8 +17,8 @@ public class TravelPassengerEditAdapter extends BaseTravelPassengerAdapter {
 
     private ActionListener listener;
 
-    public TravelPassengerEditAdapter() {
-        this.travelPassengerList = new ArrayList<>();
+    public TravelPassengerEditAdapter(TravelPassenger selectedPassenger) {
+        super(selectedPassenger);
     }
 
     public void setListener(ActionListener listener) {
@@ -44,7 +44,8 @@ public class TravelPassengerEditAdapter extends BaseTravelPassengerAdapter {
         itemViewHolder.editImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!travelPassenger.isSelected())
+                if (!travelPassenger.isSelected() ||
+                        travelPassenger.getIdPassenger().equals(passengerSelected.getIdPassenger()))
                     listener.onEditPassenger(travelPassenger);
             }
         });
@@ -53,17 +54,19 @@ public class TravelPassengerEditAdapter extends BaseTravelPassengerAdapter {
             @Override
             public void onClick(View view) {
                 if (!travelPassenger.isSelected())
-                    listener.onDeletePassenger(travelPassenger.getId(), travelPassenger.getTravelId());
+                    listener.onDeletePassenger(travelPassenger.getIdPassenger(), travelPassenger.getId(),
+                            travelPassenger.getTravelId());
             }
         });
-
-        itemViewHolder.deleteImg.setVisibility(travelPassenger.isBuyer() == 1 ? View.GONE : View.VISIBLE);
+        itemViewHolder.passengerStatus.setVisibility(travelPassenger.isBuyer() == 1 || travelPassenger.isSelected() ? View.VISIBLE : View.GONE);
+        itemViewHolder.deleteImg.setVisibility(travelPassenger.isBuyer() == 1 || travelPassenger.isSelected() ? View.GONE : View.VISIBLE);
+        itemViewHolder.editImg.setVisibility(travelPassenger.isSelected() && !showCheckbox ? View.GONE : View.VISIBLE);
         itemViewHolder.passengerName.setTextColor(getColorPassenger(travelPassenger.isSelected()));
     }
 
     @Override
     protected int getColorPassenger(boolean isSelected) {
-        return isSelected ?
+        return isSelected && !showCheckbox ?
                 context.getResources().getColor(R.color.black_24) :
                 context.getResources().getColor(R.color.font_black_primary_70);
     }
@@ -84,6 +87,6 @@ public class TravelPassengerEditAdapter extends BaseTravelPassengerAdapter {
     public interface ActionListener {
         void onEditPassenger(TravelPassenger travelPassenger);
 
-        void onDeletePassenger(String id, int travelId);
+        void onDeletePassenger(String idPassenger, String id, int travelId);
     }
 }

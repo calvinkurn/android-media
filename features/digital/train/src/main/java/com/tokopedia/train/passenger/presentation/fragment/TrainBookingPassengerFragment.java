@@ -475,9 +475,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             return "Tn";
         } else if (title == TravelPassengerTitle.NYONYA) {
             return "Ny";
-        } else {
+        } else if (title == TravelPassengerTitle.NONA){
             return "Nn";
         }
+        return "";
     }
 
     @Override
