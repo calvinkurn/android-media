@@ -353,3 +353,4 @@
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
+-keep class kotlinx.coroutines.experimental.android.AndroidExceptionPreHandler { *; }
