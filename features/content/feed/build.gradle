@@ -56,6 +56,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.analytics)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.reactNative
 

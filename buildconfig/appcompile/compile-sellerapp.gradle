@@ -67,6 +67,9 @@ include "features:user:updateinactivephone"
 include "features:user:loginregister"
 include "features:user:phoneverification"
 include "features:user:sessioncommon"
+include "features:user:user_identification"
+//include "features:user:user_identification_no_op"
+include "features:user:user_identification_common"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'

@@ -42,6 +42,9 @@ dependencies {
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.shopCommon)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

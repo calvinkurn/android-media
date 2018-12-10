@@ -33,4 +33,20 @@ public class ShopOpenTrackingConstant {
     public static String OPEN_SHOP_CLICK_ADDRESS_LIST = "click address list";
     public static String OPEN_SHOP_CLICK_PINPOINT_LOCATION = "click pinpoint location";
     public static String OPEN_SHOP_CLICK_DELETE_PINPOINT_LOCATION = "click delete pinpoint location";
+
+
+    // app shortcut
+    static String EVENT = "event";
+    static String EVENT_CATEGORY = "eventCategory";
+    static String EVENT_ACTION = "eventAction";
+    static String EVENT_LABEL = "eventLabel";
+
+    static String USER_ID = "userId";
+
+    static String CLICK_SELL = "Click Jual";
+
+    static String TAKE_TO_SHOP = "Take to Shop";
+
+    static String LONG_CLICK = "longClick";
+    static String LONG_PRESS = "Long Press";
 }

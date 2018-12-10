@@ -30,6 +30,7 @@ public class BaseKolViewModel {
     private boolean isShowLike;
     private boolean editable;
     private boolean deletable;
+    private boolean reportable;
     private boolean multipleContent;
     private boolean isKol = true;
 
@@ -244,6 +245,14 @@ public class BaseKolViewModel {
 
     public void setDeletable(boolean deletable) {
         this.deletable = deletable;
+    }
+
+    public boolean isReportable() {
+        return reportable;
+    }
+
+    public void setReportable(boolean reportable) {
+        this.reportable = reportable;
     }
 
     public boolean isKol() {

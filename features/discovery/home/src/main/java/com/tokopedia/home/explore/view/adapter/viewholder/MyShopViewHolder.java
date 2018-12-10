@@ -2,19 +2,16 @@ package com.tokopedia.home.explore.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.Request;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.explore.domain.model.ShopData;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;

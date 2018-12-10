@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -117,7 +116,13 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     private fun initVar() {
         arguments?.let {
-            userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
+            try {
+                userId = it
+                        .getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO)
+                        .toInt()
+            } catch (e: java.lang.NumberFormatException) {
+                activity?.finish()
+            }
         }
         if (context!!.applicationContext is ProfileModuleRouter) {
             profileRouter = context!!.applicationContext as ProfileModuleRouter

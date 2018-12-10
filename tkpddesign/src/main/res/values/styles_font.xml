@@ -64,6 +64,12 @@
     <style name="TextView.TitleMedium.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="TextView.TitleMedium.OrangeRed">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+    <style name="TextView.TitleMedium.OrangeRed.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.Title">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/sp_16</item>
@@ -200,12 +206,15 @@
     <style name="TextView.Nano.Red">
         <item name="android:textColor">@color/colorRed</item>
     </style>
+    <style name="TextView.Nano.Green">
+        <item name="android:textColor">@color/green_400</item>
+    </style>
     <style name="TextView.Nano.Red.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-
-
-
+    <style name="TextView.Nano.Green.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.TitleBig.FontMedium">
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>

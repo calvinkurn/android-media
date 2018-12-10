@@ -2,9 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-    maven { url 'https://hansel.io/maven' }
-}
 
 buildscript {
     repositories {
@@ -15,7 +12,6 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-
 project.ext {
     artifactId = 'challenges'
     groupId = 'com.tokopedia.challenges'
@@ -25,7 +21,7 @@ project.ext {
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.supportLibDependencies.supportV4
+
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.useCase)
@@ -34,9 +30,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 

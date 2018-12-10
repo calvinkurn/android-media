@@ -6,10 +6,10 @@
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_14"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingTop="@dimen/dp_12">
 
     <TextView
         android:id="@+id/tv_passenger_name"
@@ -21,6 +21,7 @@
         android:id="@+id/tv_passenger_type"
         style="@style/TextView.Small"
         android:padding="@dimen/dp_2"
+        android:textColor="@color/font_black_secondary_54"
         tools:text="@string/flight_label_departure_flight" />
 
 </LinearLayout>
