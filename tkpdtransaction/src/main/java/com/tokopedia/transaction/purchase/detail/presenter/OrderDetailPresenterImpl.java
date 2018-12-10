@@ -1,19 +1,34 @@
 package com.tokopedia.transaction.purchase.detail.presenter;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.text.TextUtils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
+import com.tokopedia.transaction.purchase.detail.model.buyagain.DataResponseBuyAgain;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Subscriber;
 
@@ -23,12 +38,21 @@ import rx.Subscriber;
 
 public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
+    public static final String PRODUCT_ID = "ProductID";
+    public static final String QUANTITY = "Quantity";
+    public static final String NOTES = "Notes";
+    public static final String SHOP_ID = "shop_id";
+    public static final String CUSTOMER_ID = "customer_id";
+    public static final String PARAM = "param";
+
     private OrderDetailView mainView;
 
     private OrderDetailInteractor orderDetailInteractor;
+    private GraphqlUseCase buyAgainUseCase;
 
-    public OrderDetailPresenterImpl(OrderDetailInteractor orderDetailInteractor) {
+    public OrderDetailPresenterImpl(OrderDetailInteractor orderDetailInteractor, GraphqlUseCase buyAgainUseCase) {
         this.orderDetailInteractor = orderDetailInteractor;
+        this.buyAgainUseCase = buyAgainUseCase;
     }
 
     @Override
@@ -311,6 +335,62 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processBuyAgain(Resources resources, OrderDetailData data) {
+        mainView.showProgressDialog();
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(PARAM, generateInputQueryBuyAgain(data));
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.buy_again), DataResponseBuyAgain.class, variables);
+
+        buyAgainUseCase.clearRequest();
+        buyAgainUseCase.addRequest(graphqlRequest);
+
+        buyAgainUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(mainView != null) {
+                    mainView.dismissProgressDialog();
+                    mainView.onErrorBuyAgain(e);
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse objects) {
+                mainView.dismissProgressDialog();
+                DataResponseBuyAgain dataBuyAgain = objects.getData(DataResponseBuyAgain.class);
+                if(dataBuyAgain.getSuccess() == 1){
+                    mainView.onSuccessBuyAgain(StringUtils.convertListToStringDelimiter(dataBuyAgain.getMessage(), ","));
+                }else{
+                    mainView.onErrorBuyAgain( new MessageErrorException(StringUtils.convertListToStringDelimiter(dataBuyAgain.getMessage(),",")));
+                }
+            }
+        });
+
+    }
+
+    private JsonArray generateInputQueryBuyAgain(OrderDetailData data) {
+        List<OrderDetailItemData> orderDetailItemData = data.getItemList();
+        JsonArray jsonArray = new JsonArray();
+        for (OrderDetailItemData dataOrder : orderDetailItemData) {
+            JsonObject passenger = new JsonObject();
+            passenger.addProperty(PRODUCT_ID, dataOrder.getProductId());
+            passenger.addProperty(QUANTITY, dataOrder.getItemQuantity());
+            passenger.addProperty(NOTES, dataOrder.getNotes());
+            passenger.addProperty(SHOP_ID, data.getShopId());
+            passenger.addProperty(CUSTOMER_ID, data.getBuyerId());
+            jsonArray.add(passenger);
+        }
+        return jsonArray;
+    }
+
+    @Override
     public void processFinish(Context context, String orderId, String orderStatus) {
         TKPDMapParam<String, String> orderDetailParams = new TKPDMapParam<>();
         orderDetailParams.put(ORDER_ID_KEY, orderId);
@@ -327,6 +407,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     @Override
     public void onDestroyed() {
         orderDetailInteractor.onActivityClosed();
+        buyAgainUseCase.unsubscribe();
     }
 
     private Subscriber<OrderDetailData> orderDetailDataSubscriber() {

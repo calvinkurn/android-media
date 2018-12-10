@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.presenter;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
@@ -91,6 +92,8 @@ public interface OrderDetailPresenter {
 
     void cancelReplacement(Context context, String orderId, int reasonCode, String reasonText);
 
+    void processBuyAgain(Resources resources,OrderDetailData data);
+
     void onDestroyed();
 
     String SHIPPING_REF_KEY = "shipping_ref";
@@ -136,5 +139,4 @@ public interface OrderDetailPresenter {
     String CHANGE_PRODUCT_CODE = "3";
 
     String CONFIRM_SHIPPING_CONSTANT = "confirm";
-
 }

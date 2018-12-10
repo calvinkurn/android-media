@@ -1,0 +1,16 @@
+mutation add_product_cart_multi($param:[ItemDetailCart]){
+   add_product_cart_multi(param: $param){
+      data{
+         success
+         message
+         data{
+            cart_id
+            product_id
+            quantity
+            notes
+            shop_id
+            customer_id
+         }
+      }
+   }
+}

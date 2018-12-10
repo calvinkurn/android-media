@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.transaction.purchase.detail.dialog.AcceptOrderDialog;
@@ -19,6 +20,8 @@ import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderWeightPrice
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
+
+import java.util.List;
 
 /**
  * Created by kris on 11/13/17. Tokopedia
@@ -106,4 +109,7 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
 
     void dismissProgressDialog();
 
+    void onErrorBuyAgain(Throwable e);
+
+    void onSuccessBuyAgain(String message);
 }
