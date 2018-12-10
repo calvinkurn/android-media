@@ -26,6 +26,7 @@ import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightRouteModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchCombinedApiRequestModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 
