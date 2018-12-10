@@ -104,6 +104,10 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         parentView.findViewById(R.id.button_go_to_seller_center).setOnClickListener(goToSellerCenter);
         parentView.findViewById(R.id.button_go_to_complete_information).setOnClickListener(goToCompleteInformation);
 
+        TextView textView = parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
+        textView.setText(getString(R.string.description_shop_score_gold_badge_state,
+                getString(GMConstant.getGMBadgeTitleResource(getActivity()))));
+
         presenter.attachView(this);
         presenter.getShopScoreDetail();
         return parentView;
