@@ -15,9 +15,9 @@ interface DigitalBrowseMarketplaceContract {
 
     interface View : CustomerView {
 
-        val context: Context
-
         val categoryItemCount: Int
+
+        val fragmentContext: Context?
 
         fun renderData(marketplaceData: DigitalBrowseMarketplaceViewModel)
 

@@ -15,9 +15,9 @@ interface DigitalBrowseServiceContract {
 
     interface View : CustomerView {
 
-        val context: Context
-
         val itemCount: Int
+
+        val fragmentContext: Context?
 
         fun renderData(viewModel: DigitalBrowseServiceViewModel)
 

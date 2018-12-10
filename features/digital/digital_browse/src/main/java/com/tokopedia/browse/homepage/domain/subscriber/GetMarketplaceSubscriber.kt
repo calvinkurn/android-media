@@ -1,16 +1,13 @@
 package com.tokopedia.browse.homepage.domain.subscriber
 
-import android.content.Context
-
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseMarketplaceViewModel
-
 import rx.Subscriber
 
 /**
  * @author by furqan on 04/09/18.
  */
 
-class GetMarketplaceSubscriber(private val marketplaceActionListener: MarketplaceActionListener, private val context: Context) : Subscriber<DigitalBrowseMarketplaceViewModel>() {
+class GetMarketplaceSubscriber(private val marketplaceActionListener: MarketplaceActionListener) : Subscriber<DigitalBrowseMarketplaceViewModel>() {
 
     override fun onCompleted() {
 

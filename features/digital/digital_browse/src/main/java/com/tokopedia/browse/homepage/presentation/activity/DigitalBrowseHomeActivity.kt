@@ -54,13 +54,13 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     override fun getNewFragment(): Fragment? {
 
         if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
-            fragmentDigital = DigitalBrowseMarketplaceFragment.getFragmentInstance()
+            fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
         } else if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
             if (intent.hasExtra(EXTRA_TAB)) {
                 fragmentDigital = DigitalBrowseServiceFragment.getFragmentInstance(
                         Integer.parseInt(intent.getStringExtra(EXTRA_TAB)))
             } else {
-                fragmentDigital = DigitalBrowseServiceFragment.getFragmentInstance()
+                fragmentDigital = DigitalBrowseServiceFragment.fragmentInstance
             }
         }
 
