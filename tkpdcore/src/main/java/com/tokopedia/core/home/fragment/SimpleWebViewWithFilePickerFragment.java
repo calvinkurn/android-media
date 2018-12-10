@@ -194,7 +194,9 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         if (!TextUtils.isEmpty(url)) {
             String encodedUrl;
             try {
-                if (Uri.decode(url).equals(url))
+                if (url.contains(SEAMLESS))
+                    encodedUrl = url;
+                else if (Uri.decode(url).equals(url))
                     encodedUrl = URLEncoder.encode(url, "UTF-8");
                 else
                     encodedUrl = url;
