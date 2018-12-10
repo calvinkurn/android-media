@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:developer_options"
 
 include "features:content:affiliate"
 //include "features:content:affiliate_no_op"
@@ -45,6 +46,7 @@ include "features:logistic:logisticanalytics"
 include "features:logistic:logisticuploadawb"
 include "features:logistic:tracking"
 include "features:logistic:logisticaddaddress"
+include "features:logistic:shipping_recommendation"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_subscribe"
@@ -68,6 +70,8 @@ include "features:payment:pms"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
 
+include "features:product:gallery"
+
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"
 include "features:promo:tokopoints"
@@ -82,6 +86,8 @@ include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 
 include "features:user:groupchat"
+//include "features:user:groupchat_no_op"
+include "features:user:otp"
 include "features:user:topchat"
 include "features:user:changepassword"
 include "features:user:changephonenumber"

@@ -41,10 +41,11 @@ dependencies {
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.shippingRecommendation)
 
     implementation rootProject.ext.playServicesDependencies.perfMon
-    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.debugToolsDependencies.chuck
 

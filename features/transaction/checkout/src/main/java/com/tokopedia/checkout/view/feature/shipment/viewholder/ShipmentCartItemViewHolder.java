@@ -12,17 +12,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 
 /**
  * @author Aghny A. Putra on 02/03/18

@@ -57,8 +57,6 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -71,6 +69,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -235,9 +235,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
 
             cartListData = arguments.getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData);
-            }
         }
     }
 
@@ -412,18 +409,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void initialVar() {
-        if (getActivity() != null) {
-            setHasOptionsMenu(true);
-            getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
-            if (cartListData == null) {
-                refreshHandler.startRefresh();
-            }
-        }
+
     }
 
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            setHasOptionsMenu(true);
+            getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
+            if (cartListData == null) {
+                refreshHandler.startRefresh();
+            } else {
+                renderInitialGetCartListDataSuccess(cartListData);
+            }
+        }
     }
 
     @Override

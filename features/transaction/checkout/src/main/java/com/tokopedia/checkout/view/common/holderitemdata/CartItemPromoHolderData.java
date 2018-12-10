@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 
 /**
  * @author anggaprasetiyo on 20/02/18.
