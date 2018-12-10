@@ -173,7 +173,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
     private void renderPassengerData() {
         trainPassengerViewModel = travelTrip.getTravelPassengerBooking();
         spTitle.setHint("");
-        if (trainPassengerViewModel.getTitle() >= 0) {
+        if (trainPassengerViewModel.getTitle() > 0) {
             spTitle.setSpinnerPosition(trainPassengerViewModel.getTitle() - 1);
         } else {
             spTitle.setSpinnerValue(null);
