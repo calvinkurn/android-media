@@ -168,7 +168,6 @@ ext {
             logisticdata            : ":features:logistic:logisticdata",
             logisticuploadawb       : ":features:logistic:logisticuploadawb",
             tracking                : ":features:logistic:tracking",
-            shippingRates           : ":features:logistic:shipping_rates",
 
             goldMerchant            : ":features:merchant:gold_merchant",
             goldMerchantCommon      : ":features:merchant:gold_merchant_common",
