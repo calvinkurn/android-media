@@ -1215,7 +1215,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getTrackingClientId() {
-        return TrackingUtils.getClientID();
+        return TrackingUtils.getClientID(getAppContext());
     }
 
     @Override
@@ -3414,32 +3414,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void eventTopAdsProductAddBalance() {
-        UnifyTracking.eventTopAdsProductAddBalance();
+        UnifyTracking.eventTopAdsProductAddBalance(getAppContext());
     }
 
     @Override
     public void eventTopAdsShopChooseDateCustom() {
-        UnifyTracking.eventTopAdsShopChooseDateCustom();
+        UnifyTracking.eventTopAdsShopChooseDateCustom(getAppContext());
     }
 
     @Override
     public void eventTopAdsShopDatePeriod(@NonNull String label) {
-        UnifyTracking.eventTopAdsShopDatePeriod(label);
+        UnifyTracking.eventTopAdsShopDatePeriod(getAppContext(), label);
     }
 
     @Override
     public void eventTopAdsProductStatisticBar(@NonNull String label) {
-        UnifyTracking.eventTopAdsProductStatisticBar(label);
+        UnifyTracking.eventTopAdsProductStatisticBar(getAppContext(), label);
     }
 
     @Override
     public void eventTopAdsShopStatisticBar(@NonNull String label) {
-        UnifyTracking.eventTopAdsShopStatisticBar(label);
+        UnifyTracking.eventTopAdsShopStatisticBar(getAppContext(), label);
     }
 
     @Override
     public void eventOpenTopadsPushNotification(@NonNull String label) {
-        UnifyTracking.eventOpenTopadsPushNotification(label);
+        UnifyTracking.eventOpenTopadsPushNotification(getAppContext(), label);
     }
 
     @Override
