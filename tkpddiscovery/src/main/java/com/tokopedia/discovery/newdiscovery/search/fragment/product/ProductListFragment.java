@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.BannerWebView;
@@ -81,6 +82,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
+    private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
     @Inject
@@ -100,6 +102,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -622,6 +625,13 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void stopTracePerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
+    }
+
+    @Override
     public void launchLoginActivity(Bundle extras) {
         Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
                 (getActivity());
@@ -676,6 +686,7 @@ public class ProductListFragment extends SearchSectionFragment
         initTopAdsParams();
         SearchParameter searchParameter
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
         presenter.loadData(searchParameter, isForceSearch(), getAdditionalParams());
     }
 

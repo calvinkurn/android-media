@@ -26,7 +26,7 @@ import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightRouteModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchCombinedApiRequestModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchMetaVieflihwModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 
@@ -63,6 +63,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
 
+    private int maxCall = 0;
+    private int callCounter = 0;
+
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
                                  FlightSortAndFilterUseCase flightSortAndFilterUseCase,
@@ -82,7 +85,36 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
+<<<<<<< HEAD:features/digital/flight/src/main/java/com/tokopedia/flight/search/presentation/presenter/FlightSearchPresenter.java
     public void initialize() {}
+=======
+    public void initialize() {
+        if (!getView().isReturning()) {
+            flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                    if (isViewAttached()) {
+                        getView().showGetListError(e);
+                    }
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    getView().setNeedRefreshAirline(false);
+                    fetchCombineData(getView().getFlightSearchPassData());
+                }
+            });
+        } else {
+            getView().fetchFlightSearchData();
+        }
+    }
+>>>>>>> master:features/digital/flight/src/main/java/com/tokopedia/flight/searchV2/presentation/presenter/FlightSearchPresenter.java
 
     @Override
     public void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
@@ -255,6 +287,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
             getView().removeToolbarElevation();
         }
 
+        maxCall = flightAirportCombineModelList.getData().size();
+
         for (int i = 0, sizei = flightAirportCombineModelList.getData().size(); i < sizei; i++) {
             FlightAirportCombineModel flightAirportCombineModel = flightAirportCombineModelList.getData().get(i);
             boolean needLoadFromCloud = true;
@@ -301,7 +335,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (isViewAttached()) {
+                        callCounter++;
+                        getView().addProgress(countProgress());
+                        if (isViewAttached() && isDoneLoadData()) {
                             if (e instanceof FlightException) {
                                 List<FlightError> errors = ((FlightException) e).getErrorList();
                                 if (errors.contains(new FlightError(FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND))) {
@@ -315,9 +351,17 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onNext(FlightSearchMetaViewModel flightSearchMetaViewModel) {
+                        if (!flightSearchMetaViewModel.isNeedRefresh()) {
+                            callCounter++;
+                        }
+
                         getView().onGetSearchMeta(flightSearchMetaViewModel);
                     }
                 });
+    }
+
+    private int countProgress() {
+        return FlightSearchFragment.MAX_PROGRESS / maxCall;
     }
 
     @Override
@@ -386,6 +430,16 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         super.detachView();
     }
 
+    @Override
+    public boolean isDoneLoadData() {
+        return callCounter >= maxCall;
+    }
+
+    @Override
+    public void resetCounterCall() {
+        callCounter = 0;
+    }
+
     private void deleteFlightReturnSearch(Subscriber subscriber) {
         flightDeleteFlightSearchReturnDataUseCase.execute(subscriber);
     }
@@ -403,7 +457,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
             @Override
             public void onError(Throwable throwable) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().onErrorDeleteFlightCache(throwable);
                 }
             }
@@ -424,7 +478,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
             @Override
             public void onError(Throwable throwable) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().onErrorDeleteFlightCache(throwable);
                 }
             }

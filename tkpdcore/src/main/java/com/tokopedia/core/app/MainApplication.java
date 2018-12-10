@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -12,9 +13,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 
-
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -275,7 +276,25 @@ public abstract class MainApplication extends MainRouterApplication{
         initBranch();
         initializeAnalytics();
         NotificationUtils.setNotificationChannel(this);
+        upgradeSecurityProvider();
+    }
 
+    private void upgradeSecurityProvider() {
+        try {
+            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+                @Override
+                public void onProviderInstalled() {
+                    // Do nothing
+                }
+
+                @Override
+                public void onProviderInstallFailed(int i, Intent intent) {
+                    // Do nothing
+                }
+            });
+        } catch (Throwable t) {
+            // Do nothing
+        }
     }
 
 

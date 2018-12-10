@@ -60,11 +60,14 @@ public class ReviewImageAttachment implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(this.attachmentId);
-        parcel.writeString(this.description);
-        parcel.writeString(this.uriThumbnail);
-        parcel.writeString(this.uriLarge);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.attachmentId);
+        dest.writeString(this.description);
+        dest.writeString(this.uriThumbnail);
+        dest.writeString(this.uriLarge);
+    }
+
+    public ReviewImageAttachment() {
     }
 
     protected ReviewImageAttachment(Parcel in) {
