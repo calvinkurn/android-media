@@ -14,7 +14,7 @@ object RxWebSocket {
     }
 
     fun send(url: String, msg: String) {
-        RxWebSocketUtil.getInstance()?.send(url, msg)
+        RxWebSocketUtil.getInstance()?.send(msg)
     }
 
     fun asyncSend(url: String, msg: String, groupChatToken: String) {

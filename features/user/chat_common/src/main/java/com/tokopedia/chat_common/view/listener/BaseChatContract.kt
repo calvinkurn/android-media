@@ -11,7 +11,11 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
 interface BaseChatContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun getMessageId(): String?
+        fun getMessageId(): String
+
+        fun getStringResource(str: Int)
+
+        fun getNetworkMode(): Int
 
         fun onSuccessGetChat(model: ArrayList<Visitable<*>>)
 
@@ -24,6 +28,16 @@ interface BaseChatContract {
         fun receiveReadEvent()
 
         fun receiveMessageEvent(visitable: Visitable<*>)
+
+        fun disableAction()
+
+        fun showSnackbarError(string: Unit)
+
+        fun addDummyMessage(visitable: Visitable<*>)
+
+        fun removeDummy(visitable: Visitable<*>)
+
+        fun clearEditText()
 
     }
     interface Presenter : CustomerPresenter<View> {

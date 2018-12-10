@@ -25,7 +25,7 @@ data class ChatSocketPojo(
         var toUid: Int = 0,
         @SerializedName("message")
         @Expose
-        var message: Boolean,
+        var message: MessagePojo,
         @SerializedName("start_time")
         @Expose
         var startTime: String = "",
@@ -34,7 +34,7 @@ data class ChatSocketPojo(
         var imageUri: String = "",
         @SerializedName("attachment")
         @Expose
-        var attachment: Boolean,
+        var attachment: AttachmentPojo,
         @SerializedName("show_rating")
         @Expose
         var showRating: Boolean = false,

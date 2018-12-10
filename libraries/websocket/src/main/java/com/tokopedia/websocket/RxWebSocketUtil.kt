@@ -60,7 +60,7 @@ class RxWebSocketUtil private constructor(private val delay: Int, private val ma
                 .map { webSocketInfo -> webSocketInfo.webSocket }
     }
 
-    fun send(url: String, msg: String) {
+    fun send(msg: String) {
         val webSocket = webSocketMap
         webSocket?.send(msg) ?: throw WebSocketException("The WebSokcet not open")
     }
@@ -81,11 +81,7 @@ class RxWebSocketUtil private constructor(private val delay: Int, private val ma
         @JvmOverloads
         fun getInstance(delay: Int = DEFAULT_DELAY, maxRetries: Int = DEFAULT_MAX_RETRIES, pingInterval: Int = DEFAULT_PING): RxWebSocketUtil? {
             if (instance == null) {
-                synchronized(RxWebSocketUtil::class.java) {
-                    if (instance == null) {
-                        instance = RxWebSocketUtil(delay, maxRetries, pingInterval)
-                    }
-                }
+                instance = RxWebSocketUtil(delay, maxRetries, pingInterval)
             }
             return instance
         }

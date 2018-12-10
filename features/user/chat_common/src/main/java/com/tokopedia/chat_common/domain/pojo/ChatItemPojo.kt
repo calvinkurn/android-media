@@ -47,7 +47,7 @@ data class ChatItemPojo(
         private var attachmentId: Int = 0,
         @Expose
         @SerializedName("attachment")
-//        private var attachment: Attachment? = null,
+//        private var attachment: AttachmentPojo? = null,
         private var attachment: Objects? = null,
         @Expose
         @SerializedName("old_msg_id")

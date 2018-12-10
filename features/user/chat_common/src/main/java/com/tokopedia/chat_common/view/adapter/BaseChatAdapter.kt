@@ -224,4 +224,16 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
     protected fun enableShowTime(): Boolean {
         return true
     }
+
+    fun addNewMessage(item: Visitable<*>) {
+        visitables.add(0, item)
+        notifyItemInserted(0)
+        if(visitables.size > 1) notifyItemRangeChanged(0, 1)
+    }
+
+    fun removeDummy(visitable: Visitable<*>) {
+        var indexToRemove = visitables.indexOf(visitable)
+        visitables.removeAt(indexToRemove)
+        notifyItemRemoved(indexToRemove)
+    }
 }

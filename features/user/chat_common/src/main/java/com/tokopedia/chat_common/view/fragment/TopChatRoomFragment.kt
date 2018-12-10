@@ -22,6 +22,26 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
+    override fun getNetworkMode(): Int {
+        return 1
+    }
+
+    override fun disableAction() {
+        chatViewState.setActionable(false)
+    }
+
+    override fun showSnackbarError(string: Unit) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun addDummyMessage(visitable: Visitable<*>) {
+        chatViewState.addMessage(visitable)
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        chatViewState.removeDummy(visitable)
+    }
+
 
     @Inject
     lateinit var presenter: BaseChatPresenter
@@ -100,6 +120,10 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
         chatViewState.addMessage(visitable)
     }
 
+    override fun clearEditText() {
+        chatViewState.clearEditText()
+    }
+
     override fun receiveStopTypingEvent() {
         chatViewState.recipientStopTyping()
     }
@@ -108,8 +132,15 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
         return
     }
 
-    override fun getMessageId(): String? {
-        return arguments?.getString("message_id")
+    override fun getMessageId(): String {
+        var messageId = arguments?.getString("message_id")
+        if(messageId == null){
+            messageId =""
+        }
+        return messageId
+    }
+    override fun getStringResource(str: Int) {
+        activity?.getString(str)
     }
 
     companion object {
@@ -140,7 +171,7 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
 
     fun initView(view: View?) {
         view?.run {
-            chatViewState = TopChatViewState(this)
+            chatViewState = TopChatViewState(this, presenter)
         }
         chatViewState?.run{
             chatViewState.showLoading()

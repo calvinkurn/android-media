@@ -3,12 +3,11 @@ package com.tokopedia.chat_common.view.fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
+import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -17,12 +16,12 @@ import java.util.concurrent.TimeUnit
  * @author : Steven 29/11/18
  */
 
-class TopChatViewState(var view: View) {
+class TopChatViewState(var view: View, presenter: BaseChatPresenter) {
 
     private var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-    private var replyBox: View = view.findViewById(R.id.reply_box)
-    private var actionBox: View? = view.findViewById(R.id.add_comment_area)
-    private var mainLoading: ProgressBar? = view.findViewById(R.id.progress)
+    private var replyBox: RelativeLayout = view.findViewById(R.id.reply_box)
+    private var actionBox: LinearLayout = view.findViewById(R.id.add_comment_area)
+    private var mainLoading: ProgressBar = view.findViewById(R.id.progress)
 
     private var sendButton: View = view.findViewById(R.id.send_but)
     private var replyEditText: EditText = view.findViewById(R.id.new_comment)
@@ -39,6 +38,8 @@ class TopChatViewState(var view: View) {
                 scrollDownWhenInBottom()
             }
         }
+
+        sendButton.setOnClickListener { presenter.sendMessage(replyEditText.text.toString())}
     }
 
     private fun scrollDownWhenInBottom() {
@@ -109,7 +110,24 @@ class TopChatViewState(var view: View) {
         getAdapter().removeTyping()
     }
 
+    fun removeDummy(visitable: Visitable<*>) {
+        getAdapter().removeDummy(visitable)
+    }
+
     fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addList(listOf(visitable))
+        getAdapter().addNewMessage(visitable)
+        scrollDownWhenInBottom()
+    }
+
+    fun setActionable(actionable: Boolean) {
+        val count = actionBox.childCount
+        for (i in 0 until count) {
+            actionBox.getChildAt(i).isEnabled = actionable
+
+        }
+    }
+
+    fun clearEditText() {
+        replyEditText.setText("")
     }
 }
