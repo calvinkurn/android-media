@@ -87,7 +87,6 @@ import com.tokopedia.topchat.chatroom.view.customview.ReasonBottomSheet;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
-import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
@@ -1661,7 +1660,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (isFavorited) profileText = getString(R.string.already_follow_store);
 
 //        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
-        if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_add_grey));
+        if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_chat_add_grey));
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
         if (showChatSettingMenu) {
             listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
