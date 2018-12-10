@@ -28,6 +28,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
@@ -72,7 +73,6 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -682,7 +682,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
     }
 
-    @Override
+
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
     }
@@ -1760,5 +1760,30 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
 
+    }
+
+    @Override
+    public void eventClickFilterReview(Context context, String filterName, String productId) {
+
+    }
+
+    @Override
+    public void eventImageClickOnReview(Context context, String productId, String reviewId) {
+
+    }
+
+    @Override
+    public String getBranchAutoApply(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public String getTrackingClientId() {
+        return null;
+    }
+
+    @Override
+    public Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation, boolean enableShare, boolean enableLike) {
+        return null;
     }
 }
