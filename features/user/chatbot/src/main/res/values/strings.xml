@@ -3,4 +3,6 @@
 
     <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
     <string name="total_invoice">Total: </string>
+    <string name="title_reason_bottom_sheet">Beritahu kami apa yang salah?</string>
+
 </resources>

@@ -46,5 +46,4 @@ open class BaseChatViewModel
      * @param showTime set true to show time in chat
      */
     var isShowTime = true
-
 }

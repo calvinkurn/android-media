@@ -61,9 +61,6 @@ class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activi
     companion object {
         var TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY = "ATTACH_INVOICE_USER_ID"
         var TOKOPEDIA_ATTACH_INVOICE_MSG_ID_KEY = "ATTACH_INVOICE_MSG_ID"
-        val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
-        val TOKOPEDIA_ATTACH_INVOICE_RESULT_CODE_OK = 325
-        var TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY = "SELECTED_INVOICE"
 
         fun createInstance(context: Context, userId: String, messageId: Int): Intent {
             val intent = Intent(context, AttachInvoiceActivity::class.java)

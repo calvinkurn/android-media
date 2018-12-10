@@ -1,58 +1,23 @@
 package com.tokopedia.tkpdpdp;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.crashlytics.android.Crashlytics;
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
-import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
-import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
@@ -63,6 +28,7 @@ public class PreviewProductImageDetail extends TActivity {
     private static final String IMAGE_DESC = "image_desc";
     private static final String FROM_CHAT = "from_chat";
     private static final String TITLE = "title";
+    private static final String SUBTITLE = "subtitle";
     private static final String PREVIEW_IMAGE_PDP = "PREVIEW_IMAGE_PDP";
     private TouchViewPager vpImage;
     private View tvDownload;
@@ -78,6 +44,53 @@ public class PreviewProductImageDetail extends TActivity {
 
     }
 
+    /**
+     *
+     * @param context activity / fragment context
+     * @param extras must include {@link ApplinkConst.Query} for IMAGE_PREVIEW_FILELOC,
+     *               IMAGE_PREVIEW_IMAGE_DESC and IMAGE_PREVIEW_IMG_POSITION
+     *               IMAGE_PREVIEW_FILELOC for array of image locations in file
+     *               IMAGE_PREVIEW_IMAGE_DESC for description to be shown
+     *               IMAGE_PREVIEW_IMG_POSITION current selected position from array
+     *               (OPTIONAL)
+     *
+     * @return intent
+     */
+    @DeepLink(ApplinkConst.IMAGE_PREVIEW)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        if (extras != null) {
+            ArrayList<String> images = extras.getStringArrayList(ApplinkConst.Query
+                    .IMAGE_PREVIEW_FILELOC) != null ? extras.getStringArrayList(ApplinkConst.Query
+                    .IMAGE_PREVIEW_FILELOC) : new ArrayList();
+            ArrayList<String> imageDesc = extras.getStringArrayList(ApplinkConst.Query
+                    .IMAGE_PREVIEW_IMAGE_DESC) != null ? extras.getStringArrayList(ApplinkConst.Query
+                    .IMAGE_PREVIEW_IMAGE_DESC) : new ArrayList<>();
+            int position = extras.getInt(ApplinkConst.Query
+                    .IMAGE_PREVIEW_IMG_POSITION, 0);
+            boolean fromChat = extras.getBoolean(ApplinkConst.Query
+                    .IMAGE_PREVIEW_FROM_CHAT, false);
+            String title = extras.getString(ApplinkConst.Query
+                    .IMAGE_PREVIEW_TITLE, "");
+            String subtitle = extras.getString(ApplinkConst.Query
+                    .IMAGE_PREVIEW_SUBTITLE, "");
+
+            Intent intent = new Intent(context, PreviewProductImageDetail.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(FROM_CHAT, fromChat);
+            bundle.putStringArrayList(FILELOC, images);
+            bundle.putStringArrayList(IMAGE_DESC, imageDesc);
+            bundle.putInt(IMG_POSITION, position);
+            bundle.putString(TITLE, title);
+            bundle.putString(SUBTITLE, subtitle);
+
+            intent.putExtras(bundle);
+            return intent;
+        } else {
+            RouteManager.route(context, ApplinkConst.HOME);
+            return new Intent();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -88,11 +101,11 @@ public class PreviewProductImageDetail extends TActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            if(extras.getBoolean(FROM_CHAT,false)){
+            if (extras.getBoolean(FROM_CHAT, false)) {
                 inflateView(R.layout.activity_preview_image_new);
                 initTitleView();
                 title.setText(extras.getString(TITLE));
-                subtitle.setText(extras.getString(IMG_POSITION));
+                subtitle.setText(extras.getString(SUBTITLE));
             } else {
                 inflateView(R.layout.activity_preview_image);
             }
@@ -102,7 +115,7 @@ public class PreviewProductImageDetail extends TActivity {
 
         if (extras != null) {
             fileLocations = extras.getStringArrayList(FILELOC);
-            position = extras.getInt(IMG_POSITION,0);
+            position = extras.getInt(IMG_POSITION, 0);
         } else {
             fileLocations = new ArrayList<>();
         }
@@ -428,10 +441,9 @@ public class PreviewProductImageDetail extends TActivity {
         bundle.putString(PreviewProductImageDetail.TITLE, title);
         bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
         bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
-        bundle.putString(PreviewProductImageDetail.IMG_POSITION, date);
+        bundle.putString(PreviewProductImageDetail.SUBTITLE, date);
         intent.putExtras(bundle);
         return intent;
     }
-
 
 }

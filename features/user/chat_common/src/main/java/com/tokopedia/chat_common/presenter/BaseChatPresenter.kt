@@ -13,9 +13,6 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocket
-import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.websocket.WebSocketSubscriber
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
@@ -26,12 +23,12 @@ import javax.inject.Inject
  * @author : Steven 29/11/18
  */
 
-class BaseChatPresenter @Inject constructor(
-        var userSession: UserSessionInterface,
-        var getChatUseCase : GetChatUseCase)
+open class BaseChatPresenter @Inject constructor(
+        open var userSession: UserSessionInterface,
+        open var getChatUseCase: GetChatUseCase)
     : BaseDaggerPresenter<BaseChatContract.View>(), BaseChatContract.Presenter {
 
-    var thisMessageId : String = ""
+    var thisMessageId: String = ""
     var EVENT_REPLY_MESSAGE = 102
     val EVENT_TOPCHAT_REPLY_MESSAGE = 103
     var EVENT_TYPING = 201
@@ -42,24 +39,22 @@ class BaseChatPresenter @Inject constructor(
     var MONITORING = 900
     var CLOSE_CONNECTION = 999
 
-    private lateinit var mSubscription : CompositeSubscription
+    private lateinit var mSubscription: CompositeSubscription
 
     override fun attachView(view: BaseChatContract.View?) {
         super.attachView(view)
-        thisMessageId = this.view.getMessageId()!!
         mSubscription = CompositeSubscription()
-        connectWebSocket()
     }
 
-    fun connectWebSocket() {
-        var webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET+
+    fun connectWebSocket(messageId: String) {
+        var webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
                 "&user_id=" + userSession.userId
 
         destroyWebSocket()
 
-        if(mSubscription == null || mSubscription.isUnsubscribed){
+        if (mSubscription == null || mSubscription.isUnsubscribed) {
             mSubscription = CompositeSubscription()
         }
 
@@ -80,7 +75,7 @@ class BaseChatPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "item")
                 }
-                mappingEvent(webSocketResponse)
+                mappingEvent(webSocketResponse, messageId)
             }
 
             override fun onMessage(byteString: ByteString) {
@@ -111,16 +106,17 @@ class BaseChatPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    private fun mappingEvent(response: WebSocketResponse) {
-        val pojo :ChatSocketPojo= Gson().fromJson(response.getData(), ChatSocketPojo::class.java)
+    override fun mappingEvent(websocketResponse: WebSocketResponse, messageId: String) {
+        val pojo: ChatSocketPojo = Gson().fromJson(websocketResponse.getData(), ChatSocketPojo::class.java)
 
-        if(pojo.msgId.toString() != thisMessageId) return
-        when(response.getCode()){
-            EVENT_TOPCHAT_TYPING -> view.receiveStartTypingEvent()
-            EVENT_TOPCHAT_END_TYPING -> view.receiveStopTypingEvent()
-            EVENT_TOPCHAT_READ_MESSAGE -> view.receiveReadEvent()
+        if (pojo.msgId.toString() != messageId) return
+
+        when (websocketResponse.getCode()) {
+            EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
+            EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
+            EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                view.receiveMessageEvent(mapToVisitable(pojo))
+                view.onReceiveMessageEvent(mapToVisitable(pojo))
             }
         }
     }
@@ -142,7 +138,7 @@ class BaseChatPresenter @Inject constructor(
 
     override fun getChatUseCase(messageId: String, page: Int) {
         getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page)
-                , object : Subscriber<ChatRoomViewModel>(){
+                , object : Subscriber<ChatRoomViewModel>() {
             override fun onNext(model: ChatRoomViewModel?) {
                 view.developmentView()
                 model?.listChat.let { view.onSuccessGetChat(it!!) }

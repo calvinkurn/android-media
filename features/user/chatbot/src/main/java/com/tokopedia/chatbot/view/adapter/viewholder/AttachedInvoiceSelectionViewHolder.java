@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.chatbot.data.AttachInvoiceSelectionViewModel;
 import com.tokopedia.chatbot.data.AttachInvoiceSingleViewModel;
+import com.tokopedia.chatbot.domain.AttachInvoiceMapper;
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener;
 //import com.tokopedia.chatbot.R;
 import java.util.List;
@@ -69,7 +70,7 @@ public class AttachedInvoiceSelectionViewHolder extends
                     @Override
                     public void onClick(View v) {
                         selectedListener.onInvoiceSelected(
-                                AttachInvoiceMapper.
+                                AttachInvoiceMapper.Companion.
                                         invoiceViewModelToDomainInvoicePojo(list.get(getAdapterPosition()))
                         );
                     }

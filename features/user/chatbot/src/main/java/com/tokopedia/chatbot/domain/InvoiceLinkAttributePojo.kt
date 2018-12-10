@@ -8,23 +8,23 @@ import com.google.gson.annotations.SerializedName
 class InvoiceLinkAttributePojo {
 
     @SerializedName("code")
-    var code: String? = null
+    var code: String = ""
     @SerializedName("create_time")
-    var createTime: String? = null
+    var createTime: String = ""
     @SerializedName("description")
-    var description: String? = null
+    var description: String = ""
     @SerializedName("href_url")
-    var hrefUrl: String? = null
+    var hrefUrl: String = ""
     @SerializedName("id")
     var id: Long = 0
     @SerializedName("image_url")
-    var imageUrl: String? = null
+    var imageUrl: String = ""
     @SerializedName("status")
-    var status: String? = null
+    var status: String = ""
     @SerializedName("status_id")
     var statusId: Int = 0
     @SerializedName("title")
-    var title: String? = null
+    var title: String = ""
     @SerializedName("total_amount")
-    var totalAmount: String? = null
+    var totalAmount: String = ""
 }

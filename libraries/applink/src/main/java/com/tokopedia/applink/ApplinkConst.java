@@ -114,11 +114,11 @@ public interface ApplinkConst {
     String TC_LANDING = "tokopedia://tc-landing";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
-    String CONTENT_DETAIL ="tokopedia://content/{post_id}";
-    String INTEREST_PICK ="tokopedia://interestpick";
+    String CONTENT_DETAIL = "tokopedia://content/{post_id}";
+    String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
 
-    String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
+    String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
@@ -182,6 +182,10 @@ public interface ApplinkConst {
     String KYC = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
+    String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
+    String IMAGE_PREVIEW = "tokopedia://imagepreview";
+
+
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";
@@ -198,5 +202,19 @@ public interface ApplinkConst {
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+
+        String IMAGE_PREVIEW_FILELOC = "fileloc";
+        String IMAGE_PREVIEW_IMG_POSITION = "img_pos";
+        String IMAGE_PREVIEW_IMAGE_DESC = "image_desc";
+        String IMAGE_PREVIEW_FROM_CHAT = "from_chat";
+        String IMAGE_PREVIEW_TITLE = "title";
+        String IMAGE_PREVIEW_SUBTITLE = "subtitle";
+
+        String PDP_ID = "product_id";
+        String PDP_NAME = "product_name";
+        String PDP_PRICE = "product_price";
+        String PDP_DATE = "product_date";
+        String PDP_IMAGE = "product_image";
+
     }
 }

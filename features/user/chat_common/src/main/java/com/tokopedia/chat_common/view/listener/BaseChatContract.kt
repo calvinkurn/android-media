@@ -11,25 +11,26 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
 interface BaseChatContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun getMessageId(): String?
 
         fun onSuccessGetChat(model: ArrayList<Visitable<*>>)
 
         fun developmentView()
 
-        fun receiveStartTypingEvent()
+        fun onReceiveStartTypingEvent()
 
-        fun receiveStopTypingEvent()
+        fun onReceiveStopTypingEvent()
 
-        fun receiveReadEvent()
+        fun onReceiveReadEvent()
 
-        fun receiveMessageEvent(visitable: Visitable<*>)
+        fun onReceiveMessageEvent(visitable: Visitable<*>)
 
     }
     interface Presenter : CustomerPresenter<View> {
         fun getChatUseCase(messageId : String)
 
         fun getChatUseCase(messageId : String, page: Int)
+
+        fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String)
 
     }
 }

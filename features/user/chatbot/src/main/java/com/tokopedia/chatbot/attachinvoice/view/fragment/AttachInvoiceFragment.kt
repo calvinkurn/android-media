@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.attachinvoice.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -19,6 +20,7 @@ import com.tokopedia.chatbot.attachinvoice.view.adapter.AttachInvoiceListAdapter
 import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.chatbot.attachinvoice.view.presenter.AttachInvoicePresenter
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
+import com.tokopedia.chatbot.view.ChatbotInternalRouter
 
 import javax.inject.Inject
 
@@ -67,9 +69,10 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
     override fun onItemClicked(invoiceViewModel: InvoiceViewModel) {
         val data = Intent()
-        data.putExtra(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, SelectedInvoice(invoiceViewModel))
-        getActivity()!!.setResult(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_RESULT_CODE_OK,
-                data)
+        data.putExtra(ChatbotInternalRouter.Companion
+                .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, SelectedInvoice
+        (invoiceViewModel))
+        getActivity()!!.setResult(Activity.RESULT_OK, data)
         getActivity()!!.finish()
     }
 

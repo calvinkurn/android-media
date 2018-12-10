@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.view.fragment
+package com.tokopedia.chat_common.view
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,19 +17,19 @@ import java.util.concurrent.TimeUnit
  * @author : Steven 29/11/18
  */
 
-class TopChatViewState(var view: View) {
+open class BaseChatViewState(open var view: View) {
 
-    private var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-    private var replyBox: View = view.findViewById(R.id.reply_box)
-    private var actionBox: View? = view.findViewById(R.id.add_comment_area)
-    private var mainLoading: ProgressBar? = view.findViewById(R.id.progress)
+    protected var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
+    protected var replyBox: View = view.findViewById(R.id.reply_box)
+    protected var actionBox: View? = view.findViewById(R.id.add_comment_area)
+    protected var mainLoading: ProgressBar? = view.findViewById(R.id.progress)
 
-    private var sendButton: View = view.findViewById(R.id.send_but)
-    private var replyEditText: EditText = view.findViewById(R.id.new_comment)
-    private var attachButton: ImageView = view.findViewById(R.id.add_url)
-    private var pickerButton: View = view.findViewById(R.id.image_picker)
-    private var maximize: View = view.findViewById(R.id.maximize)
-    private var notifier: View = view.findViewById(R.id.notifier)
+    protected var sendButton: View = view.findViewById(R.id.send_but)
+    protected var replyEditText: EditText = view.findViewById(R.id.new_comment)
+    protected var attachButton: ImageView = view.findViewById(R.id.add_url)
+    protected var pickerButton: View = view.findViewById(R.id.image_picker)
+    protected var maximize: View = view.findViewById(R.id.maximize)
+    protected var notifier: View = view.findViewById(R.id.notifier)
 
     init {
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
@@ -41,13 +41,13 @@ class TopChatViewState(var view: View) {
         }
     }
 
-    private fun scrollDownWhenInBottom() {
+    protected fun scrollDownWhenInBottom() {
         if(checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }
 
-    private fun scrollToBottom() {
+    fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -55,7 +55,7 @@ class TopChatViewState(var view: View) {
                 }
     }
 
-    private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
+    protected fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
         return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
 
@@ -63,16 +63,16 @@ class TopChatViewState(var view: View) {
         actionBox?.visibility = View.VISIBLE
     }
 
-    fun setDefault(){
+    protected fun setDefault(){
         sendButton.requestFocus()
     }
 
-    fun setNonReplyable() {
+    protected fun setNonReplyable() {
         actionBox?.visibility = View.GONE
 
     }
 
-    fun setReplyable() {
+    protected fun setReplyable() {
         actionBox?.visibility = View.VISIBLE
     }
 
@@ -88,7 +88,7 @@ class TopChatViewState(var view: View) {
         recyclerView.adapter = adapter
     }
 
-    fun getAdapter(): BaseChatAdapter {
+    private fun getAdapter(): BaseChatAdapter {
         return recyclerView.adapter as BaseChatAdapter
     }
 
@@ -96,7 +96,7 @@ class TopChatViewState(var view: View) {
         getAdapter().addList(listChat)
     }
 
-    fun getList(): List<Visitable<*>> {
+    protected fun getList(): List<Visitable<*>> {
         return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 

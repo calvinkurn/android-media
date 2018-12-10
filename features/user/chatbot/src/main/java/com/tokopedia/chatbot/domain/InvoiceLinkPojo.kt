@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 class InvoiceLinkPojo {
 
     @SerializedName("attributes")
-    var attributes: InvoiceLinkAttributePojo? = null
+    var attributes: InvoiceLinkAttributePojo = InvoiceLinkAttributePojo()
     @SerializedName("type")
     var type: String? = null
     @SerializedName("type_id")
