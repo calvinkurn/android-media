@@ -269,6 +269,10 @@ public class KolPostFragment extends BaseDaggerFragment implements
     @Override
     public void onSuccessDeletePost(int rowNumber) {
         adapter.removeItem(rowNumber);
+        if (adapter.getItemCount() == 0) {
+            fetchDataFirstTime();
+        }
+
         ToasterNormal.make(getView(), getString(R.string.kol_post_deleted), BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_ok, v -> {
 
