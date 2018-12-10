@@ -46,7 +46,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHold
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
-import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheet;
+import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
@@ -65,7 +65,6 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -627,7 +626,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void proceedCod(View view) {
         // todo : show dialog for testing purpose
-        CodBottomSheet bottomSheet = new CodBottomSheet();
+        CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
         bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
     }
 

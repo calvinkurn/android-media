@@ -230,7 +230,6 @@
     <string name="title_activity_checkout_webview">Proteksi Gadget</string>
     <string name="label_cod">Bayar di Tempat</string>
     <string name="label_cod_duration">(Tersedia Bayar di Tempat)</string>
-    <string name="branding_cod">Bayar di Tempat</string>
     <string name="lebel_understood">Mengerti</string>
 
 </resources>
