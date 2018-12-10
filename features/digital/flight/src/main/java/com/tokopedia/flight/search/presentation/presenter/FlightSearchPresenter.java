@@ -85,9 +85,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-<<<<<<< HEAD:features/digital/flight/src/main/java/com/tokopedia/flight/search/presentation/presenter/FlightSearchPresenter.java
-    public void initialize() {}
-=======
     public void initialize() {
         if (!getView().isReturning()) {
             flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
@@ -114,7 +111,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
             getView().fetchFlightSearchData();
         }
     }
->>>>>>> master:features/digital/flight/src/main/java/com/tokopedia/flight/searchV2/presentation/presenter/FlightSearchPresenter.java
 
     @Override
     public void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {

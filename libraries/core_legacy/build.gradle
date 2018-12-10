@@ -85,6 +85,9 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
 }
 
 apply plugin: 'com.google.gms.google-services'
