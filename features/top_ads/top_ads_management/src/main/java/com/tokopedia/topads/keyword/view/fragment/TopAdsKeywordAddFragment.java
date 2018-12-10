@@ -220,16 +220,16 @@ public class TopAdsKeywordAddFragment extends TopAdsBaseStepperFragment<TopAdsKe
 
         switch (keywordType){
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT:
-                UnifyTracking.eventTopAdsProductNewKeyword(AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
+                UnifyTracking.eventTopAdsProductNewKeyword(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE:
-                UnifyTracking.eventTopAdsProductNewKeyword(AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
+                UnifyTracking.eventTopAdsProductNewKeyword(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_EXACT:
-                UnifyTracking.eventTopAdsProductNewKeywordNegatif(AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
+                UnifyTracking.eventTopAdsProductNewKeywordNegatif(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_EXACT);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_PHRASE:
-                UnifyTracking.eventTopAdsProductNewKeywordNegatif(AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
+                UnifyTracking.eventTopAdsProductNewKeywordNegatif(getActivity(), AppEventTracking.EventLabel.KEYWORD_TYPE_PHRASE);
                 break;
         }
     }

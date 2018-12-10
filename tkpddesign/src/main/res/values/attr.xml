@@ -243,6 +243,7 @@
     </declare-styleable>
 
     <declare-styleable name="ButtonCompat">
+        <attr name="buttonCompatTextAllCaps" format="boolean" />
         <attr name="buttonCompatType" format="enum">
             <enum name="primary" value="1" />
             <enum name="secondary" value="2" />

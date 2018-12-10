@@ -1,9 +1,11 @@
 package com.tokopedia.kol.feature.post.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.subscriber.DeletePostSubscriber;
 import com.tokopedia.kol.feature.post.view.subscriber.GetKolPostSubscriber;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 
@@ -18,14 +20,17 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
 
     private final GetKolPostUseCase getKolPostUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
+    private final DeletePostUseCase deletePostUseCase;
 
     private String lastCursor;
 
     @Inject
     public KolPostPresenter(GetKolPostUseCase getKolPostUseCase,
-                            LikeKolPostUseCase likeKolPostUseCase) {
+                            LikeKolPostUseCase likeKolPostUseCase,
+                            DeletePostUseCase deletePostUseCase) {
         this.getKolPostUseCase = getKolPostUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
+        this.deletePostUseCase = deletePostUseCase;
     }
 
     @Override
@@ -79,6 +84,14 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
                 new LikeKolPostSubscriber(likeListener, rowNumber)
+        );
+    }
+
+    @Override
+    public void deletePost(int rowNumber, int id) {
+        deletePostUseCase.execute(
+                DeletePostUseCase.Companion.createRequestParams(String.valueOf(id)),
+                new DeletePostSubscriber(getView(), rowNumber, id)
         );
     }
 }

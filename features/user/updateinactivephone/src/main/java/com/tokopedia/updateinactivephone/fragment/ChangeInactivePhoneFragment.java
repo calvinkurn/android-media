@@ -73,7 +73,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
 
@@ -134,7 +134,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
             setErrorText("");
             presenter.checkPhoneNumberStatus(inputMobileNumber.getText().toString());
             hideKeyboard(v);
-            UpdateInactivePhoneEventTracking.eventInactivePhoneClick();
+            UpdateInactivePhoneEventTracking.eventInactivePhoneClick(v.getContext());
         });
     }
 
@@ -204,12 +204,12 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
         dialog.setDesc(getString(R.string.registered_email_dialog_message));
         dialog.setBtnOk(getString(R.string.drawer_title_login));
         dialog.setOnOkClickListener(v -> {
-            UpdateInactivePhoneEventTracking.eventLoginDialogClick();
+            UpdateInactivePhoneEventTracking.eventLoginDialogClick(v.getContext());
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
         });
         dialog.setBtnCancel(getString(R.string.title_cancel));
         dialog.setOnCancelClickListener(v -> {
-            UpdateInactivePhoneEventTracking.eventCancelDialogClick();
+            UpdateInactivePhoneEventTracking.eventCancelDialogClick(v.getContext());
             dialog.dismiss();
         });
         dialog.show();
