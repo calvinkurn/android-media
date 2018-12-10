@@ -210,8 +210,8 @@ ext {
             checkout                : ":features:transaction:checkout",
             transactiondata         : ":features:transaction:transactiondata",
             transactionanalytics    : ":features:transaction:transactionanalytics",
-            loyalty                     : ":features:transaction:loyalty",
-            loyaltyCommon               : ":features:transaction:loyalty_common",
+            loyalty                     : ":features:promo:loyalty",
+            loyaltyCommon               : ":features:promo:loyalty_common",
 
             attachproduct           : ":features:user:attachproduct",
             bankdb                  : ":features:user:bankdb",
