@@ -34,11 +34,13 @@ def main(argv):
     android_manifest = ''
     name = ''
     channel = ''
+
     try:
         opts, args = getopt.getopt(argv,"ham:n:c",["android-manifest=","name=","channel="])
     except getopt.GetoptError:
         print 'preinstall.py -am <android manifest path> -n <name> -c <channel>'
         sys.exit(2)
+
     for opt, arg in opts:
         if opt == '-h':
             print 'preinstall.py -am <android manifest path> -n <name> -c <channel>'
