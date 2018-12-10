@@ -31,6 +31,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.playServicesDependencies.analytics
 

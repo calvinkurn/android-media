@@ -24,6 +24,8 @@ dependencies {
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.features.goldMerchantResource)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.graphql)
@@ -32,6 +34,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

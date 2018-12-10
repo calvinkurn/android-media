@@ -50,7 +50,7 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
  */
 
 public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
-        implements UserIdentificationUploadImage.View {
+        implements UserIdentificationUploadImage.View, UserIdentificationFormActivity.Listener {
 
     private ImageView imageKtp;
     private ImageView imageFace;
@@ -123,6 +123,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         buttonKtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickChangeKtpFinalFormPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_KTP);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
@@ -132,6 +133,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         buttonFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickChangeSelfieFinalFormPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_FACE);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
@@ -209,6 +211,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
+                analytics.eventClickTermsFinalFormPage();
                 RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
             }
 
@@ -279,4 +282,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         presenter.detachView();
     }
 
+    @Override
+    public void trackOnBackPressed() {
+        analytics.eventClickBackFinalForm();
+    }
 }

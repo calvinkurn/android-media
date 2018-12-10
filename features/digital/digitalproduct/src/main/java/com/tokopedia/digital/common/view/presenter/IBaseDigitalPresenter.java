@@ -3,7 +3,7 @@ package com.tokopedia.digital.common.view.presenter;
 import android.content.ContentResolver;
 import android.net.Uri;
 
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ContactData;
 
@@ -15,7 +15,7 @@ import com.tokopedia.digital.product.view.model.ContactData;
 public interface IBaseDigitalPresenter {
 
     void storeLastClientNumberTyped(String categoryId, String operatorId, String clientNumber,
-                                           String productId);
+                                    String productId);
 
     String getLastOperatorSelected(String categoryId);
 

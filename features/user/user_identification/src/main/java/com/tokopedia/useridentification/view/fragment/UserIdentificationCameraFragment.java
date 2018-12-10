@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 
 import java.io.File;
 
@@ -64,6 +65,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private View nextButton;
     private String imagePath;
     private Size mCaptureNativeSize;
+    private UserIdentificationAnalytics analytics;
 
     private int viewMode;
 
@@ -102,6 +104,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         if (getArguments() != null) {
             viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
+        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
     }
 
     @Nullable
@@ -139,6 +142,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         shutterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendAnalyticClickShutter();
                 capturePictureWithCheck();
             }
         });
@@ -146,6 +150,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         switchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendAnalyticClickFlipCamera();
                 toggleCamera();
             }
         });
@@ -153,6 +158,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         reCaptureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sendAnalyticClickRecapture();
                 showCameraView();
             }
         });
@@ -180,6 +186,11 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
                 if (getActivity() != null) {
                     getActivity().setResult(Activity.RESULT_CANCELED);
                 }
+                if (isCameraVisible()) {
+                    sendAnalyticClickBackCamera();
+                } else {
+                    sendAnalyticClickCloseImagePreview();
+                }
                 getActivity().finish();
             }
         });
@@ -196,11 +207,117 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
                         getActivity().setResult(KYCConstant.IS_FILE_IMAGE_TOO_BIG);
                     }
                 }
+                sendAnalyticClickNext();
                 getActivity().finish();
             }
         });
-        populateViewByViewMode(viewMode);
+        populateViewByViewMode();
         showCameraView();
+        sendAnalyticOpenCamera();
+    }
+
+    private void sendAnalyticOpenCamera() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventViewOpenCameraKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventViewOpenCameraSelfie();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendAnalyticClickBackCamera() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventClickBackCameraKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventClickBackCameraSelfie();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendAnalyticClickShutter() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventClickShutterCameraKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventClickShutterCameraSelfie();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendAnalyticClickFlipCamera() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventClickFlipCameraKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventClickFlipCameraSelfie();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendAnalyticViewImagePreview() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventViewImagePreviewKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventViewImagePreviewSelfie();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendAnalyticClickCloseImagePreview() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventClickCloseImagePreviewKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventClickCloseImagePreviewSelfie();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendAnalyticClickRecapture() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventClickRecaptureKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventClickRecaptureSelfie();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendAnalyticClickNext() {
+        switch (viewMode) {
+            case PARAM_VIEW_MODE_KTP:
+                analytics.eventClickNextImagePreviewKtp();
+                break;
+            case PARAM_VIEW_MODE_FACE:
+                analytics.eventClickNextImagePreviewSelfie();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -285,7 +402,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         }
     }
 
-    private void populateViewByViewMode(int viewMode) {
+    private void populateViewByViewMode() {
         switch (viewMode) {
             case PARAM_VIEW_MODE_KTP:
                 focusedKtpView.setVisibility(View.VISIBLE);
@@ -321,6 +438,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         destroyCamera();
         imagePreview.setVisibility(View.VISIBLE);
         buttonLayout.setVisibility(View.VISIBLE);
+        sendAnalyticViewImagePreview();
     }
 
     private void hideCameraButtonAndShowLoading() {
@@ -332,7 +450,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void toggleCamera() {
-        if (cameraView.getVisibility() == View.VISIBLE) {
+        if (isCameraVisible()) {
             cameraView.toggleFacing();
         }
     }
@@ -344,5 +462,10 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             return (fileSize <= MAX_FILE_SIZE);
         } else
             return false;
+    }
+
+    public boolean isCameraVisible() {
+        return (cameraView != null &&
+                cameraView.getVisibility() == View.VISIBLE);
     }
 }

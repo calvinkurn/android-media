@@ -15,7 +15,7 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.fragment.TopAdsBaseListFragment;
-import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
+import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;

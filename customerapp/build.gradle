@@ -286,6 +286,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
+    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.groupchat)
@@ -312,6 +313,7 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
+    implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.instantLoan)
@@ -349,16 +351,17 @@ dependencies {
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.userIdentification)
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
 
+    implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
-    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
@@ -374,6 +377,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.viewDependencies.appIntro
