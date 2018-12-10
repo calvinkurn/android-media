@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.chat_common.data.api.ChatRoomApi
 import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.mapper.GetChatMapper
-import com.tokopedia.chat_common.network.ChatBotApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -45,12 +44,6 @@ class ChatRoomModule {
         return retrofit.create(ChatRoomApi::class.java)
     }
 
-
-    @ChatRoomScope
-    @Provides
-    internal fun provideChatRatingApi(retrofit: Retrofit): ChatBotApi {
-        return retrofit.create(ChatBotApi::class.java)
-    }
 
     @ChatRoomScope
     @Provides

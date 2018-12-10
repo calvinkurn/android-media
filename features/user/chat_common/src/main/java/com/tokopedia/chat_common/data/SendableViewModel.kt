@@ -29,6 +29,8 @@ open class SendableViewModel
  message: String) : BaseChatViewModel(messageId, fromUid, from, fromRole, attachmentId,
         attachmentType, replyTime, message) {
 
+
+
     var startTime: String protected set
     var isShowRole = true
 
@@ -39,6 +41,8 @@ open class SendableViewModel
     companion object {
 
         val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+
+        const val SENDING_TEXT = "Sedang mengirim ..."
 
         fun generateStartTime(): String {
             val date = SimpleDateFormat(
