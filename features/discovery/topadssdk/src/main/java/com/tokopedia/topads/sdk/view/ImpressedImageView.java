@@ -90,7 +90,7 @@ public class ImpressedImageView extends AppCompatImageView {
         if (!view.isShown()) {
             return false;
         }
-        Rect screen = new Rect(0, 0, getScreenWidth(), (offset > 0) ? offset : getScreenHeight());
+        Rect screen = new Rect(0, 0, getScreenWidth(), getOffsetHeight());
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -103,13 +103,20 @@ public class ImpressedImageView extends AppCompatImageView {
         }
     }
 
+    private int getOffsetHeight() {
+        if(offset > 0){
+            return getScreenHeight() - offset;
+        } else {
+            return getScreenHeight() - getResources().getDimensionPixelOffset(R.dimen.dp_45);
+        }
+    }
+
     private int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     private int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels -
-                getResources().getDimensionPixelOffset(R.dimen.dp_45);
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     public void setViewHintListener(ViewHintListener hintListener) {
