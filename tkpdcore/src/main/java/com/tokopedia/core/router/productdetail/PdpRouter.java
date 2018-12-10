@@ -41,6 +41,8 @@ public interface PdpRouter {
     void openImagePreview(Context context, ArrayList<String> images, ArrayList<String>
             imageDesc, int position);
 
+    void openImagePreview(Context context, ArrayList<String> images, int position);
+
     void openImagePreviewFromChat(Context context, ArrayList<String> images,
                                   ArrayList<String> imageDesc, String title, String date);
 
@@ -63,4 +65,12 @@ public interface PdpRouter {
     int getCartCount(Context context);
 
     Intent getProductTalk(Context context, String productId);
+
+    void eventClickFilterReview(Context context,
+                                String filterName,
+                                String productId);
+
+    void eventImageClickOnReview(Context context,
+                                 String productId,
+                                 String reviewId);
 }

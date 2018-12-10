@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 
 /**
  * @author Aghny A. Putra on 25/01/18

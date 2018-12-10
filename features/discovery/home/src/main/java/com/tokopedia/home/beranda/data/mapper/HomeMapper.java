@@ -18,7 +18,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +113,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         }
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
                             list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
+                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
+                            list.add(mappingDynamicTopAds(channel));
                         } else {
                             list.add(mappingDynamicChannel(channel));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
@@ -127,6 +133,28 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 throw new RuntimeException(String.valueOf(response.code()));
             }
         }
+    }
+
+    private Visitable mappingDynamicTopAds(DynamicHomeChannel.Channels channel) {
+        TopAdsDynamicChannelModel visitable = new TopAdsDynamicChannelModel();
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < channel.getGrids().length; i++) {
+            DynamicHomeChannel.Grid grid = channel.getGrids()[i];
+            ProductDynamicChannelViewModel model = new ProductDynamicChannelViewModel();
+            model.setProductId(grid.getId());
+            model.setProductPrice(grid.getPrice());
+            model.setProductName(grid.getName());
+            model.setProductCashback(grid.getCashback());
+            ProductImage productImage = new ProductImage();
+            productImage.setM_url(grid.getImpression());
+            productImage.setM_ecs(grid.getImageUrl());
+            model.setProductImage(productImage);
+            model.setProductClickUrl(grid.getProductClickUrl());
+            items.add(model);
+        }
+        visitable.setTitle(channel.getHeader().getName());
+        visitable.setItems(items);
+        return visitable;
     }
 
     private Visitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {

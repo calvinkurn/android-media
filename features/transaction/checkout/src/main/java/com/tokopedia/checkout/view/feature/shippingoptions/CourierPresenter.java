@@ -4,17 +4,17 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
-import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentOptionData;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTickerInfoData;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewmodel.ShipmentTypeData;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
+import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentOptionData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

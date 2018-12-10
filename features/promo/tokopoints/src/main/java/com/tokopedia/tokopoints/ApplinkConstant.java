@@ -16,4 +16,12 @@ public class ApplinkConstant {
     public static final String COUPON_DETAIL2 = "tokopedia://tokopoints/detail/{coupon_code}/";
     public static final String CATALOG_DETAIL = "tokopedia://tokopoints/kupon-saya/{catalog_code}";
     public static final String CATALOG_DETAIL2 = "tokopedia://tokopoints/kupon-saya/{catalog_code}/";
+
+
+    //New applinks
+    public static final String CATALOG_DETAIL3 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}";
+    public static final String CATALOG_DETAIL4 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}/";
+
+    public static final String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
+    public static final String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
 }
