@@ -83,7 +83,7 @@ public class HomeFeedModule {
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(
-                new FingerprintInterceptor(),
+                new FingerprintInterceptor(context),
                 new TkpdAuthInterceptor(),
                 OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
                 new ChuckInterceptor(context).showNotification(

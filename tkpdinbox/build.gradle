@@ -84,6 +84,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.viewDependencies.appIntro
+    implementation project(":libraries:core_legacy")
 }
 
 apply from: '../publish_local.gradle'

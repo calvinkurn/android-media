@@ -57,4 +57,5 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation project(":libraries:core_legacy")
 }

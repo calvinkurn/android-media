@@ -34,6 +34,7 @@ public class OpportunityTncActivity extends BaseSimpleActivity implements Opport
     public void onBackPressed() {
         super.onBackPressed();
         UnifyTracking.eventOpportunity(
+                this,
                 OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_NO,
                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                 AppEventTracking.Action.CLICK,

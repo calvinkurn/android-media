@@ -70,7 +70,7 @@ public class TrackingPageModule {
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .addInterceptor(new TkpdAuthInterceptor())
-                .addInterceptor(new FingerprintInterceptor());
+                .addInterceptor(new FingerprintInterceptor(context));
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(new HttpLoggingInterceptor())
                     .addInterceptor(new ChuckInterceptor(context));

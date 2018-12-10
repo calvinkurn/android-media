@@ -40,6 +40,7 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation project(":libraries:core_legacy")
 }
 
 apply from: '../../../publish_local.gradle'

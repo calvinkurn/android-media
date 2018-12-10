@@ -29,7 +29,7 @@ import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.Locale;
 
