@@ -27,6 +27,7 @@ public class Product extends BaseGTMModel {
     public static final String KEY_DIMENSION_38 = "dimension38";
     public static final String KEY_DIMENSION_40 = "dimension40";
     public static final String KEY_ATTRIBUTION = "attribution";
+    public static final String KEY_COUPON = "coupon";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none/other";
 
@@ -44,6 +45,10 @@ public class Product extends BaseGTMModel {
 
     public void setPrice(Object price) {
         Product.put(KEY_PRICE, price);
+    }
+
+    public void setCoupon(String couponCode) {
+        Product.put(KEY_COUPON, couponCode);
     }
 
     public void setQty(Object qty) {
