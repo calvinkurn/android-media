@@ -14,10 +14,6 @@ public interface ChallengesModuleRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getGalleryVideoIntent(Context activity);
-
-    Intent getGalleryVideoImageIntent(Context activity);
-
     void onShowRationale(Context context, PermissionRequest request, String permission);
 
     void onPermissionDenied(Context context, String permission);
