@@ -44,7 +44,7 @@ import com.tokopedia.topads.common.view.adapter.TopAdsMultipleCheckListAdapter;
 import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
-import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
+import com.tokopedia.topads.common.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;

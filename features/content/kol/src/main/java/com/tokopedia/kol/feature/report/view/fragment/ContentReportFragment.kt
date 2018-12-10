@@ -13,9 +13,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.R
-import com.tokopedia.kol.common.util.afterTextChanged
-import com.tokopedia.kol.common.util.hideLoading
-import com.tokopedia.kol.common.util.showLoading
+import com.tokopedia.kol.common.util.*
 import com.tokopedia.kol.feature.report.di.DaggerContentReportComponent
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
@@ -103,7 +101,9 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     override fun onErrorSendReport(message: String) {
-        NetworkErrorHelper.showEmptyState(context!!, mainView, message) { sendReport() }
+        mainView.showEmptyState(message) {
+            sendReport()
+        }
     }
 
     override fun onErrorSendReportDuplicate(message: String) {

@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.fragment.SelectDealQuantityFragment;
@@ -50,6 +52,16 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
 
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
+    }
+
+    public static Intent getCallingIntent(Activity activity,
+                                          DealDetailPassData passData) {
+        Intent intent = new Intent(activity, DealDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(DealDetailsPresenter.HOME_DATA, passData.getSlug());
+        bundle.putParcelable(DealDetailsPresenter.PARAM_DEAL_PASSDATA, passData);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override

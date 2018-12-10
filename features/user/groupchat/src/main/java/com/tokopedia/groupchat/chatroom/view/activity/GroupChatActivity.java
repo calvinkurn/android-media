@@ -1624,7 +1624,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void handleParticipant(ParticipantViewModel map) {
         if (map.channelId.equals(getChannelInfoViewModel().getChannelId())) {
-            setToolbarParticipantCount(map.totalView);
+            setToolbarParticipantCount(TextFormatter.format(map.totalView));
         }
     }
 
@@ -1717,31 +1717,35 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onUserBanned() {
         hideLoading();
         String errorMessage = getResources().getString(R.string.user_is_banned);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.default_banned_title);
-        if (viewModel != null
-                && viewModel.getChannelInfoViewModel() != null
-                && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getBannedMessage())) {
-            builder.setMessage(viewModel.getChannelInfoViewModel().getBannedMessage());
-        } else {
-            builder.setMessage(errorMessage);
-        }
-        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                Intent intent = new Intent();
-                if (viewModel != null) {
-                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
-                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
-                }
-                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
-                finish();
+        try{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.default_banned_title);
+            if (viewModel != null
+                    && viewModel.getChannelInfoViewModel() != null
+                    && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getBannedMessage())) {
+                builder.setMessage(viewModel.getChannelInfoViewModel().getBannedMessage());
+            } else {
+                builder.setMessage(errorMessage);
             }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
+            builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    Intent intent = new Intent();
+                    if (viewModel != null) {
+                        intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
+                        intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
+                    }
+                    setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
+                    finish();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.setCancelable(false);
+            dialog.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void onChannelDeleted() {

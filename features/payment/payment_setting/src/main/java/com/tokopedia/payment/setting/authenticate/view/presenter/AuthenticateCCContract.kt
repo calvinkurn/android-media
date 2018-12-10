@@ -13,11 +13,12 @@ interface AuthenticateCCContract{
         fun showProgressLoading()
         fun hideProgressLoading()
         fun getString(resId: Int): String
+        fun goToOtpPage(phoneNumber: String)
 
     }
 
     interface Presenter : CustomerPresenter<View>{
-        fun updateWhiteList(authValue: Int, resources: Resources)
+        fun updateWhiteList(authValue: Int, resources: Resources, isNeedCheckOtp : Boolean = false)
         fun checkWhiteList(resources: Resources)
     }
 }

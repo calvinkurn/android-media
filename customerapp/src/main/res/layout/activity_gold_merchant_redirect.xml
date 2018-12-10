@@ -55,7 +55,7 @@
             app:srcCompat="@drawable/ic_topseller___logo_02"
             android:layout_marginBottom="@dimen/margin_vl"/>
 
-        <TextView
+        <TextView android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"

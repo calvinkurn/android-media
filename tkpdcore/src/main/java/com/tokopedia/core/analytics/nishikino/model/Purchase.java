@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
+
 /**
  * Created by ricoharisin on 9/29/15.
  */
@@ -39,6 +41,7 @@ public class Purchase {
     private String eventCategory;
     private String eventLabel;
     private String shopType;
+    private String coupon;
 
     public String getItemPrice() {
         return itemPrice;
@@ -138,6 +141,10 @@ public class Purchase {
         ActionField.put(SHIPPING_KEY, shipping);
     }
 
+    public void setCouponCode(Object coupon) {
+        ActionField.put(KEY_COUPON, coupon);
+    }
+
     public Object getRevenue() {
        return ActionField.get(REVENUE_KEY);
     }
@@ -173,6 +180,7 @@ public class Purchase {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
             Purchase.put("currencyCode", currency);
+//            Purchase.put(KEY_COUPON, coupon);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -183,6 +191,7 @@ public class Purchase {
         setAffiliation(null);
         setRevenue(null);
         setShipping(null);
+        setCouponCode(null);
         setTransactionID(null);
         setVoucherCode(null);
         ListProduct = null;
@@ -194,4 +203,11 @@ public class Purchase {
     }
 
 
+    public String getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(String coupon) {
+        this.coupon = coupon;
+    }
 }
