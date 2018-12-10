@@ -31,7 +31,7 @@ import java.util.List;
 
 public class OrderListActivity extends BaseSimpleActivity
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
-    private static final String ORDER_CATEGORY = "orderCategory";
+    private static final String ORDER_CATEGORY = OrderCategory.KEY_LABEL;
     private static final int REQUEST_CODE = 100;
     private String orderCategory = "ALL";
     private TabLayout tabLayout;
@@ -60,7 +60,6 @@ public class OrderListActivity extends BaseSimpleActivity
 
     @DeepLink(ApplinkConst.FLIGHT_ORDER)
     public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
-
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
         return new Intent(context, OrderListActivity.class)
@@ -102,24 +101,9 @@ public class OrderListActivity extends BaseSimpleActivity
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
-            initTabs();
+            presenter.getInitData();
         }
-    }
 
-    private void initTabs() {
-        removeProgressBarView();
-        int position = 0;
-        for (int i = 0; i < OrderCategory.TABS_CATEGORY.length; i++) {
-            if (orderCategory.equals(OrderCategory.TABS_CATEGORY[i])) {
-                position = i;
-            }
-            tabLayout.addTab(tabLayout.newTab().setText(OrderCategory.TABS_LABEL[i]));
-        }
-        adapter = new OrderTabAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        viewPager.setCurrentItem(position);
     }
 
     @Override
@@ -137,12 +121,18 @@ public class OrderListActivity extends BaseSimpleActivity
 
     @Override
     public void renderTabs(List<OrderLabelList> orderLabelList) {
-        for (OrderLabelList tabContent : orderLabelList)
-            tabLayout.addTab(tabLayout.newTab().setText(tabContent.getLabel()));
-        adapter = new OrderTabAdapter(getSupportFragmentManager(), this);
+        int position = 0;
+        for (int i = 0; i < orderLabelList.size(); i++) {
+            if (orderCategory.equals(orderLabelList.get(i).getOrderCategory())) {
+                position = i;
+            }
+            tabLayout.addTab(tabLayout.newTab().setText(orderLabelList.get(i).getLabelBhasa()));
+        }
+        adapter = new OrderTabAdapter(getSupportFragmentManager(), this, orderLabelList);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        viewPager.setCurrentItem(position);
     }
 
     @Override
@@ -167,9 +157,15 @@ public class OrderListActivity extends BaseSimpleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            initTabs();
+            presenter.getInitData();
         } else {
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.destroyView();
+        super.onDestroy();
     }
 }

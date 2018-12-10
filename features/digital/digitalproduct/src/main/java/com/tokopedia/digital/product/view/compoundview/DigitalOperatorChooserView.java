@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.Operator;
 

@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
-import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.ArrayList;
 import java.util.List;

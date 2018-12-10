@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -158,7 +159,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         super.onActivityCreated(savedInstanceState);
 
         if (isFromAppShortcut()) {
-            UnifyTracking.eventBayarLongClick();
+            UnifyTracking.eventBillShortcut();
         }
     }
 

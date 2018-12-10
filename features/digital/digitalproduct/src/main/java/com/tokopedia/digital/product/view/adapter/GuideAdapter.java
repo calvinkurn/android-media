@@ -18,7 +18,6 @@ import com.tokopedia.digital.product.view.model.GuideData;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author by furqan on 04/07/18.
  */

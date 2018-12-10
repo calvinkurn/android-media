@@ -9,8 +9,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.List;
 

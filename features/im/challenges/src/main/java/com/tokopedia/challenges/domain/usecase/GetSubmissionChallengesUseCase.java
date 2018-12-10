@@ -30,16 +30,9 @@ import rx.Observable;
 
 public class GetSubmissionChallengesUseCase extends RestRequestSupportInterceptorUseCase {
 
-
-    private RequestParams requestParams;
-
     @Inject
     public GetSubmissionChallengesUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
-    }
-
-    public void setRequestParams(RequestParams requestParams) {
-        this.requestParams = requestParams;
     }
 
     @Override

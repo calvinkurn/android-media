@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -38,15 +37,15 @@ import rx.functions.Func1;
 public class CategoryDetailDataSource {
 
     private DigitalGqlApiService digitalEndpointService;
-    private GlobalCacheManager globalCacheManager;
+    private CacheManager cacheManager;
     private ProductDigitalMapper productDigitalMapper;
     private Context context;
 
     public CategoryDetailDataSource(DigitalGqlApiService digitalEndpointService,
-                                    GlobalCacheManager globalCacheManager,
+                                    CacheManager cacheManager,
                                     ProductDigitalMapper productDigitalMapper) {
         this.digitalEndpointService = digitalEndpointService;
-        this.globalCacheManager = globalCacheManager;
+        this.cacheManager = cacheManager;
         this.productDigitalMapper = productDigitalMapper;
         context = MainApplication.getAppContext();
     }
@@ -59,12 +58,7 @@ public class CategoryDetailDataSource {
      */
     public Observable<ProductDigitalData> getCategory(String categoryId) {
         return Observable.concat(getCategoryDataFromLocal(categoryId), getCategoryDataFromCloud(categoryId))
-                .first(new Func1<ProductDigitalData, Boolean>() {
-                    @Override
-                    public Boolean call(ProductDigitalData categoryData) {
-                        return categoryData != null;
-                    }
-                });
+                .first(categoryData -> categoryData != null);
     }
 
     /**
@@ -75,12 +69,7 @@ public class CategoryDetailDataSource {
      */
     public Observable<ProductDigitalData> getCategoryDetailWithFavorit(String categoryId) {
         return Observable.concat(getCategoryAndFavDataFromLocal(categoryId), getCategoryAndFavoritFromCloud(categoryId, "", "", ""))
-                .first(new Func1<ProductDigitalData, Boolean>() {
-                    @Override
-                    public Boolean call(ProductDigitalData productDigitalData) {
-                        return productDigitalData != null;
-                    }
-                });
+                .first(productDigitalData -> productDigitalData != null);
     }
 
     /**
@@ -94,7 +83,7 @@ public class CategoryDetailDataSource {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
             digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
-                    globalCacheManager.getValueString(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
+                    cacheManager.get(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
                     new TypeToken<RechargeResponseEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
@@ -137,7 +126,7 @@ public class CategoryDetailDataSource {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
             digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
-                    globalCacheManager.getValueString(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId),
+                    cacheManager.get(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId),
                     new TypeToken<RechargeResponseEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
@@ -171,23 +160,25 @@ public class CategoryDetailDataSource {
 
     private Action1<RechargeResponseEntity> saveCategoryDetailToCache(final String categoryId) {
         return digitalCategoryDetailEntity -> {
-            globalCacheManager.setKey(DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId);
-            globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
-                    new TypeToken<RechargeResponseEntity>() {
-                    }.getType()));
-            globalCacheManager.setCacheDuration(900); // 15 minutes
-            globalCacheManager.store();
+            cacheManager.save(
+                    DigitalCache.NEW_DIGITAL_CATEGORY_DETAIL + "/" + categoryId,
+                    CacheUtil.convertModelToString(digitalCategoryDetailEntity,
+                            new TypeToken<RechargeResponseEntity>() {
+                            }.getType()),
+                    900
+            );
         };
     }
 
     private Action1<RechargeResponseEntity> saveCategoryDetailAndFavToCache(final String categoryId) {
         return digitalCategoryDetailEntity -> {
-            globalCacheManager.setKey(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
-            globalCacheManager.setValue(CacheUtil.convertModelToString(digitalCategoryDetailEntity,
-                    new TypeToken<RechargeResponseEntity>() {
-                    }.getType()));
-            globalCacheManager.setCacheDuration(900); // 15 //fetch category detail if user is not logged in
-            globalCacheManager.store();
+            cacheManager.save(
+                    DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId,
+                    CacheUtil.convertModelToString(digitalCategoryDetailEntity,
+                            new TypeToken<RechargeResponseEntity>() {
+                            }.getType()),
+                    900
+            );
         };
     }
 
@@ -263,14 +254,13 @@ public class CategoryDetailDataSource {
     }
 
     private String getCategoryRequestPayload(String categoryId) {
-        String query = loadRawString(context.getResources(), R.raw.digital_category_query);
+        String query = loadRawString(context.getResources(), R.raw.common_digital_category_query);
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
         return String.format(query, categoryId, isSeller);
     }
 
     private String getCategoryAndFavRequestPayload(String categoryId, String operatorId, String clientNumber, String productId) {
-
-        String query = loadRawString(context.getResources(), R.raw.digital_category_favourites_query);
+        String query = loadRawString(context.getResources(), R.raw.common_digital_category_favourites_query);
 
         String isSeller = GlobalConfig.isSellerApp() ? "1" : "0";
 

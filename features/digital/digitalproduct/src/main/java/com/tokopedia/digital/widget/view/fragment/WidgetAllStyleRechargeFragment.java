@@ -14,41 +14,38 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.activity.CartDigitalActivity;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetCategoryCategoryPresenter;
 import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetCategoryPresenter;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -76,11 +73,12 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private CategoryData categoryDataState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
 
-    private DigitalWidgetCategoryCategoryPresenter presenter;
-
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
+
+    @Inject
+    DigitalWidgetPresenter presenter;
 
     public static WidgetAllStyleRechargeFragment newInstance(Category category, int position) {
         WidgetAllStyleRechargeFragment fragment = new WidgetAllStyleRechargeFragment();
@@ -117,19 +115,16 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
+    }
+
+    @Override
     protected void initialPresenter() {
-        DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalGqlApiService, new GlobalCacheManager(), new ProductDigitalMapper()
-        );
-
-        IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(categoryDetailDataSource);
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(getContext(), digitalRepository);
-
-        presenter = new DigitalWidgetCategoryCategoryPresenter(getActivity(),
-                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
-                this,
-                getCategoryByIdUseCase);
+        presenter.attachView(this);
     }
 
     @Override
@@ -211,10 +206,14 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 SessionHandler.getLoginID(getActivity()));
 
         if (SessionHandler.isV4Login(getActivity())) {
-            navigateToActivityRequest(
-                    CartDigitalActivity.newInstance(getActivity(), digitalCheckoutPassData, CartDigitalActivity.PARAM_WIDGET),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-            );
+            if (getActivity().getApplication() instanceof DigitalRouter) {
+                DigitalRouter digitalModuleRouter =
+                        (DigitalRouter) getActivity().getApplication();
+                navigateToActivityRequest(
+                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                );
+            }
         } else {
             interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
@@ -339,7 +338,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                         String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
@@ -361,11 +360,14 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
                 if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
-                    navigateToActivityRequest(
-                            CartDigitalActivity.newInstance(getActivity(), digitalCheckoutPassDataState),
-                            IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-                    );
-
+                    if (getActivity().getApplication() instanceof DigitalRouter) {
+                        DigitalRouter digitalModuleRouter =
+                                (DigitalRouter) getActivity().getApplication();
+                        navigateToActivityRequest(
+                                digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
+                                DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                        );
+                    }
                 }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
