@@ -44,6 +44,8 @@ public interface FlightSearchContract {
 
         void addToolbarElevation();
 
+        void addProgress(int numberToAdd);
+
         void addBottomPaddingForSortAndFilterActionButton();
 
         void setUIMarkFilter();
@@ -122,6 +124,10 @@ public interface FlightSearchContract {
         void fetchSearchDataFromCloudWithDelay(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModel flightAirportCombineModelList, int delayInSecond);
 
         void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh);
+
+        boolean isDoneLoadData();
+
+        void resetCounterCall();
     }
 
 }

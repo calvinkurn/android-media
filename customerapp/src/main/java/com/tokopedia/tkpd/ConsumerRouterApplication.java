@@ -1557,7 +1557,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title){
+    public Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title) {
         Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, url);
         intent.putExtra(BannerWebView.EXTRA_TITLE, title);
         return intent;
@@ -2182,7 +2182,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
 
-
     @Override
     public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
         return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
@@ -2465,7 +2464,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendAnalyticsGroupChat(String url, String error) {
-        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+        if (remoteConfig.getBoolean("groupchat_analytics", false)) {
             AnalyticsLog.logGroupChatWebSocketError(url, error);
         }
     }
@@ -3171,7 +3170,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
+    public Intent getChangePasswordIntent(Context context) {
+        return ChangePasswordActivity.Companion.createIntent(context);
+    }
+
+    @Override
+    public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_desc, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.INDI_CHALLENGE_TYPE)
                 .setName(title)
@@ -3179,6 +3183,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setSource(channel)
                 .setOgUrl(og_url)
                 .setOgTitle(og_title)
+                .setDescription(og_desc)
                 .setOgImageUrl(og_image)
                 .setDeepLink(deepLink)
                 .build();
@@ -3250,8 +3255,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void eventImageClickOnReview(Context context,
-                                             String productId,
-                                             String reviewId) {
+                                        String productId,
+                                        String reviewId) {
         ProductPageTracking.eventClickImageOnReviewList(
                 context,
                 productId,

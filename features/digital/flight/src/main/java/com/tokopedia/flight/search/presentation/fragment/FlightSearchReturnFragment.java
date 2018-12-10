@@ -90,6 +90,8 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         duration = view.findViewById(R.id.duration);
         departureHeaderLabel = view.findViewById(R.id.tv_departure_header_card_label);
 
+        flightSearchReturnPresenter.attachView(this);
+
         clearAdapterData();
         flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
 
