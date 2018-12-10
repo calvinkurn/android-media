@@ -133,7 +133,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
             holder = new ProductCarouselListViewHolder(view, itemClickListener, clickPosition,
                     itemImpressionListener, offset);
         } else {
-            throw TypeNotSupportedException.Companion.create("Layout not supported");
+            throw TypeNotSupportedException.create("Layout not supported");
         }
         return holder;
     }
