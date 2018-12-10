@@ -29,9 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
-    implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.transactiondata)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
