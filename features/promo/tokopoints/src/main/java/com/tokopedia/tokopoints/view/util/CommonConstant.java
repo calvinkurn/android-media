@@ -6,7 +6,7 @@ public interface CommonConstant {
     String PREF_TOKOPOINTS = "pref_tokopoints";
     String PREF_KEY_ON_BOARDED = "pref_key_on_boarded";
     String ARGS_CATEGORY_ID = "category_id";
-    String ARGS_SUB_CATEGORY_ID = "category_id";
+    String ARGS_SUB_CATEGORY_ID = "sub_category_id";
     String ARGS_SLUG_CATEGORY = "slug_category";
     String ARGS_SLUG_SUB_CATEGORY = "slug_sub_category";
     String ARGS_SORT_TYPE = "sort_type";
@@ -34,6 +34,7 @@ public interface CommonConstant {
     int COUPON_RE_FETCH_DELAY_S = 5;
     long COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S = 86400;
     int UI_SETTLING_DELAY_MS = 250;
+    int UI_SETTLING_DELAY_MS2 = 500;
     String ARGS_POINTS_AVAILABILITY = "points_availability";
 
     interface CouponRedemptionCode {
