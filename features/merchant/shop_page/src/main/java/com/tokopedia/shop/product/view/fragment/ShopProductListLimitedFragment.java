@@ -196,8 +196,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
-                ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
+                if (shopInfo!= null) {
+                    Intent intent = ShopProductSortActivity.createIntent(getActivity(), sortName);
+                    ShopProductListLimitedFragment.this.startActivityForResult(intent, REQUEST_CODE_SORT);
+                }
             }
         });
         bottomActionView.setVisibility(View.GONE);
@@ -706,6 +708,9 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void promoClicked(String url) {
+        if (getActivity() == null) {
+            return;
+        }
         boolean urlProceed = ShopProductOfficialStoreUtils.proceedUrl(getActivity(), url, shopInfo.getInfo().getShopId(),
                 shopProductLimitedListPresenter.isLogin(),
                 shopProductLimitedListPresenter.getDeviceId(),
@@ -838,17 +843,19 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         this.selectedEtalaseId = etalaseId;
                         this.selectedEtalaseName = etalaseName;
                     } else {
-                        Intent intent = ShopProductListActivity.createIntent(getActivity(),
-                                shopInfo.getInfo().getShopId(), "",
-                                etalaseId, attribution, sortName);
-                        startActivity(intent);
+                        if (shopInfo!= null) {
+                            Intent intent = ShopProductListActivity.createIntent(getActivity(),
+                                    shopInfo.getInfo().getShopId(), "",
+                                    etalaseId, attribution, sortName);
+                            startActivity(intent);
+                        }
                     }
                     shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
                     shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, etalaseBadge);
 
                     needReloadData = true;
 
-                    if (shopPageTracking != null) {
+                    if (shopPageTracking != null && shopInfo!= null) {
                         shopPageTracking.clickMenuFromMoreMenu(
                                 shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                                 etalaseName,
@@ -868,8 +875,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         shopPageTracking.clickSortBy(shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                                 sortName, CustomDimensionShopPage.create(shopInfo));
                     }
-                    startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(),
-                            "", selectedEtalaseId, "", sortName));
+                    if (shopInfo!=null) {
+                        startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(),
+                                "", selectedEtalaseId, "", sortName));
+                    }
                 }
                 break;
             case REQUEST_CODE_LOGIN_USE_VOUCHER:

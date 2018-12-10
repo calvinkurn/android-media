@@ -1,5 +1,6 @@
 // Sort alphabetically by name
 include "features:common:nps"
+include "features:common:developer_options"
 
 include "features:content:affiliate"
 //include "features:content:affiliate_no_op"
@@ -67,8 +68,12 @@ include "features:operational:contact_us"
 
 include "features:payment:payment"
 include "features:payment:pms"
+//include "features:payment:pms_no_op"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
+//include "features:payment:payment_setting_no_op"
+
+include "features:product:gallery"
 
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"
@@ -83,6 +88,8 @@ include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 
 include "features:user:groupchat"
+//include "features:user:groupchat_no_op"
+include "features:user:otp"
 include "features:user:topchat"
 include "features:user:changepassword"
 include "features:user:changephonenumber"
@@ -99,6 +106,9 @@ include "features:user:loginphone"
 include "features:user:loginregister"
 include "features:user:phoneverification"
 include "features:user:sessioncommon"
+include "features:user:user_identification"
+//include "features:user:user_identification_no_op"
+include "features:user:user_identification_common"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'
