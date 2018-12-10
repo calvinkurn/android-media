@@ -536,40 +536,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 } else {
                     return 1;
                 }
-//                // column size default is one
-//                int headerColumnSize = 1,
-//                        footerColumnSize = 1,
-//                        regularColumnSize = 1;
-//
-//                // check the orientation to determine landscape or portrait
-//                switch (getResources().getConfiguration().orientation) {
-//                    case Configuration.ORIENTATION_LANDSCAPE:
-//                        headerColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN_HEADER;
-//                        regularColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN;
-//                        footerColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN_FOOTER;
-//                        break;
-//                    case Configuration.ORIENTATION_PORTRAIT:
-//                        headerColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN_HEADER;
-//                        regularColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN;
-//                        footerColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN_FOOTER;
-//                        break;
-//                }
-//
-//                // set the value of footer, regular and header
-//                if (position == wishList.getData().size()) {
-//                    // header column
-//                    return footerColumnSize;
-//                } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
-//                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
-//                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_STATE) {
-//                    // top ads span column
-//                    return headerColumnSize;
-//                } else if (wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST) {
-//                    return regularColumnSize;
-//                } else {
-//                    // regular one column
-//                    return regularColumnSize;
-//                }
             }
         };
     }
