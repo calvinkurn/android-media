@@ -13,10 +13,10 @@ class DigitalBrowseCategoryGroupEntity(
         val id: Int,
         @SerializedName("title")
         @Expose
-        val title: String?,
+        val title: String,
         @SerializedName("desc")
         @Expose
-        val desc: String?,
+        val desc: String,
         @SerializedName("categoryRows")
         @Expose
-        val categoryRow: List<DigitalBrowseCategoryRowEntity>?)
+        val categoryRow: List<DigitalBrowseCategoryRowEntity>)
