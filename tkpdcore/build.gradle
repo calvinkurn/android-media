@@ -59,6 +59,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.analytics)
+
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.saldodetails)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
@@ -138,12 +143,9 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation rootProject.ext.analyticsDependencies.logentries
-    implementation project(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.analytics)
 
-    implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.saldodetails)
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply plugin: 'com.google.gms.google-services'

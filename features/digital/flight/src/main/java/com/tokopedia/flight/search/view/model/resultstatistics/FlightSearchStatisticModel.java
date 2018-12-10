@@ -3,11 +3,11 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.text.TextUtils;
 import android.util.SparseIntArray;
 
-import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 
 import java.util.ArrayList;
 import java.util.Collections;

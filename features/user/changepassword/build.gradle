@@ -27,6 +27,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.applink)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {

@@ -2,11 +2,15 @@ package com.tokopedia.feedplus.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +25,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseToaster;
@@ -79,6 +85,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED;
+import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
@@ -110,6 +118,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+    private static final String FEED_TRACE = "feed_trace";
+    public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
 
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -117,9 +129,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private View newFeed;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
+    private BroadcastReceiver newFeedReceiver;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
+    private PerformanceMonitoring performanceMonitoring;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private String firstCursor = "";
     private int loginIdInt;
@@ -159,7 +173,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (getActivity() != null) GraphqlClient.init(getActivity());
-        ((FeedModuleRouter) getActivity().getApplicationContext()).startTrace("feed_trace");
+        performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE);
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
             firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
@@ -208,6 +222,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
+
+        newFeedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
+                    boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false);
+                    if (isHaveNewFeed) {
+                        onShowNewFeed("");
+                    }
+                }
+            }
+        };
+        registerNewFeedReceiver();
     }
 
     public boolean isMainViewVisible() {
@@ -323,6 +350,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
+        triggerClearNewFeedNotification();
         adapter.clearData();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
@@ -340,6 +368,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void setFirstCursor(String firstCursor) {
         this.firstCursor = firstCursor;
+    }
+
+    @Override
+    public void setLastCursorOnFirstPage(String lastCursor) {
+        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_FEED);
+        cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor);
+        cache.applyEditor();
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,
@@ -749,17 +784,42 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
+        triggerClearNewFeedNotification();
+    }
+
+    private void triggerClearNewFeedNotification() {
+        Intent intent = new Intent(BROADCAST_FEED);
+        intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        registerNewFeedReceiver();
         if (firstCursor == null)
             firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unRegisterNewFeedReceiver();
+    }
+
+    private void registerNewFeedReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BROADCAST_FEED);
+        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).registerReceiver(newFeedReceiver, intentFilter);
+    }
+
+    private void unRegisterNewFeedReceiver() {
+        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).unregisterReceiver(newFeedReceiver);
+    }
+
 
     private boolean isLoadedOnce = false;
 
@@ -768,7 +828,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 && getActivity() != null && presenter != null) {
             if (!isLoadedOnce) {
                 presenter.fetchFirstPage();
-                ((FeedModuleRouter) getActivity().getApplicationContext()).stopTrace("feed_trace");
+                performanceMonitoring.stopTrace();
 
                 presenter.checkNewFeed(firstCursor);
 
@@ -1305,6 +1365,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         analytics.eventTrackingEnhancedEcommerce(
                 FeedEnhancedTracking.getClickTracking(list, loginIdInt));
+    }
+
+    @Override
+    public void sendMoEngageOpenFeedEvent() {
+        feedModuleRouter.sendMoEngageOpenFeedEvent(!hasFeed());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (getActivity() != null && getActivity().isFinishing()) {
+            unRegisterNewFeedReceiver();
+        }
     }
 
     @Override

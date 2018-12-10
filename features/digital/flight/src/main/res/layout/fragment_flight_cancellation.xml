@@ -5,14 +5,6 @@
     android:background="@color/background_apps"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/txt_cancellation_steps"
-        style="@style/TextView.Micro.BlackDisabled"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
-        android:text="@string/flight_cancellation_choose_to_cancel_hint" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

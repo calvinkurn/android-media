@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -89,21 +90,19 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         return fragment;
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_checkout_deal, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
-        mPresenter.getCheckoutDetails();
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mPresenter.getCheckoutDetails();
+    }
 
     private void setViewIds(View view) {
         imageViewBrand = view.findViewById(R.id.image_view_brand);
@@ -175,7 +174,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tvExpiryDate.setText(String.format(getString(R.string.valid_through),
                 Utils.convertEpochToString(dealDetails.getSaleEndDate())));
 
-
+        TextView availableLocations = getView().findViewById(R.id.tv_available_locations);
+        if (dealDetails.getOutlets() == null || dealDetails.getOutlets().isEmpty())
+            availableLocations.setText(R.string.deals_all_indonesia);
         if (dealDetails.getMrp() != 0 && dealDetails.getMrp() != dealDetails.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
@@ -281,7 +282,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public void onClick(View v) {
         if (v.getId() == R.id.ll_select_payment_method) {
             mPresenter.getPaymentLink();
-            if(dealDetails.getBrand()!=null){
+            if (dealDetails.getBrand() != null) {
                 dealsAnalytics.sendEcommercePayment(dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
             }
@@ -330,3 +331,4 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         }
     }
 }
+

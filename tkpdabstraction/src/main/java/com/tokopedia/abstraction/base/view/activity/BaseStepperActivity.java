@@ -82,7 +82,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         onBackEvent();
     }
 
-    private void onBackEvent() {
+    protected void onBackEvent() {
         if (currentPosition > 1) {
             decrementPage();
         } else {
@@ -106,5 +106,9 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
+    }
+
+    public void updateToolbarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }
