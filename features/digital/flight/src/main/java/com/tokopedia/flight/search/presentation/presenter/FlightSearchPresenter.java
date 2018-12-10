@@ -18,6 +18,7 @@ import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.domain.usecase.FlightSearchV2UseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightSortAndFilterUseCase;
 import com.tokopedia.flight.search.presentation.contract.FlightSearchContract;
+import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.search.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.search.presentation.model.FlightFareViewModel;
