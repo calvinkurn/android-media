@@ -8,17 +8,16 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.subscriber.GetChatRepliesSubscriber
 import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.view.listener.BaseChatContract
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import okhttp3.WebSocket
 import okio.ByteString
-import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
@@ -29,7 +28,8 @@ import javax.inject.Inject
 open class BaseChatPresenter @Inject constructor(
         open var userSession: UserSessionInterface,
         open var getChatUseCase: GetChatUseCase,
-        open var websocketMessageMapper: WebsocketMessageMapper)
+        open var websocketMessageMapper: WebsocketMessageMapper
+        )
     : BaseDaggerPresenter<BaseChatContract.View>(), BaseChatContract.Presenter {
 
     var thisMessageId: String = ""
@@ -139,37 +139,18 @@ open class BaseChatPresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         destroyWebSocket()
-    }
 
-    override fun getChatUseCase(messageId: String) {
-        getChatUseCase(messageId, 1)
     }
 
     //TODO MOVE THIS TO TOPCHAT PRESENTER
-    override fun getChatUseCase(messageId: String, page: Int) {
-        getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page)
-                , object : Subscriber<ChatRoomViewModel>() {
-            override fun onNext(model: ChatRoomViewModel?) {
-//                view.developmentView()
-                model?.listChat.run {
-                    //TODO MOVE THIS TO TOPCHAT VIEW
-//                    view.onSuccessGetChat(this)
- }
-            }
-
-            override fun onCompleted() {
-                return
-            }
-
-            override fun onError(e: Throwable?) {
-                return
-            }
-
-        })
+    override fun getChatUseCase(messageId: String, onError : (Exception) -> Unit ) {
+        getChatUseCase.execute(GetChatUseCase.generateParam(messageId),
+                GetChatRepliesSubscriber(onError))
     }
 
     fun destroyWebSocket() {
         mSubscription.clear()
         mSubscription.unsubscribe()
     }
+
 }

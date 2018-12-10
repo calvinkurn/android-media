@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.subscriber.GetChatRepliesSubscriber
 import com.tokopedia.websocket.WebSocketResponse
 
 /**
@@ -24,9 +25,8 @@ interface BaseChatContract {
 
     }
     interface Presenter : CustomerPresenter<View> {
-        fun getChatUseCase(messageId : String)
 
-        fun getChatUseCase(messageId : String, page: Int)
+        fun getChatUseCase(messageId : String, onError : (Exception) -> Unit)
 
         fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String)
 

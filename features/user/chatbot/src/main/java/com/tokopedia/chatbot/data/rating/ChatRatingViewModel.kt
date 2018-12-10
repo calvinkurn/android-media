@@ -26,8 +26,8 @@ class ChatRatingViewModel(msgId: String,
     }
 
     companion object {
-        val RATING_NONE = 0
-        val RATING_GOOD = 1
-        val RATING_BAD = -1
+        const val RATING_NONE = 0
+        const val RATING_GOOD = 1
+        const val RATING_BAD = -1
     }
 }

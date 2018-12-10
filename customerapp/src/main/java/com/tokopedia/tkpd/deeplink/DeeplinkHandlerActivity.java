@@ -19,6 +19,7 @@ import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -172,7 +173,8 @@ import io.branch.referral.BranchError;
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        UserIdentificationApplinkModule.class
+        UserIdentificationApplinkModule.class,
+        ChatbotApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -229,7 +231,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
-                    new UserIdentificationApplinkModuleLoader()
+                    new UserIdentificationApplinkModuleLoader(),
+                    new ChatbotApplinkModuleLoader()
             );
         }
 
