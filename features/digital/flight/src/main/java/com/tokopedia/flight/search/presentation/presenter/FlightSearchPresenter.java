@@ -26,7 +26,6 @@ import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightRouteModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchCombinedApiRequestModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaVieflihwModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 
@@ -85,36 +84,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-<<<<<<< HEAD:features/digital/flight/src/main/java/com/tokopedia/flight/search/presentation/presenter/FlightSearchPresenter.java
     public void initialize() {}
-=======
-    public void initialize() {
-        if (!getView().isReturning()) {
-            flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                    if (isViewAttached()) {
-                        getView().showGetListError(e);
-                    }
-                }
-
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    getView().setNeedRefreshAirline(false);
-                    fetchCombineData(getView().getFlightSearchPassData());
-                }
-            });
-        } else {
-            getView().fetchFlightSearchData();
-        }
-    }
->>>>>>> master:features/digital/flight/src/main/java/com/tokopedia/flight/searchV2/presentation/presenter/FlightSearchPresenter.java
 
     @Override
     public void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
