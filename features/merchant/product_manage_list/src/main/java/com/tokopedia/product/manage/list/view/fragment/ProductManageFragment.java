@@ -49,6 +49,7 @@ import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
@@ -149,6 +150,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected void initInjector() {
+        GraphqlClient.init(getContext());
         super.initInjector();
         DaggerProductManageComponent.builder()
                 .productManageModule(new ProductManageModule())
@@ -167,7 +169,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        GraphqlClient.init(getContext());
     }
 
     @Override
@@ -851,7 +852,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void showDialogActionGoToGMSubscribe() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(R.string.product_manage_cashback_limited_title);
-        alertDialog.setMessage(R.string.product_manage_cashback_limited_desc);
+        alertDialog.setMessage(getString(R.string.product_manage_cashback_limited_desc,
+                getString(GMConstant.getGMTitleResource(getContext()))));
         alertDialog.setPositiveButton(R.string.pml_label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

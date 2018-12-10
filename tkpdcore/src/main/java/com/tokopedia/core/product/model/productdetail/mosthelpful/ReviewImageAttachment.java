@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ReviewImageAttachment  implements Parcelable {
+public class ReviewImageAttachment implements Parcelable {
 
     @SerializedName("attachment_id")
     @Expose
@@ -60,11 +60,14 @@ public class ReviewImageAttachment  implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(this.attachmentId);
-        parcel.writeString(this.description);
-        parcel.writeString(this.uriThumbnail);
-        parcel.writeString(this.uriLarge);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.attachmentId);
+        dest.writeString(this.description);
+        dest.writeString(this.uriThumbnail);
+        dest.writeString(this.uriLarge);
+    }
+
+    public ReviewImageAttachment() {
     }
 
     protected ReviewImageAttachment(Parcel in) {
@@ -74,7 +77,7 @@ public class ReviewImageAttachment  implements Parcelable {
         this.uriLarge = in.readString();
     }
 
-    public static final Parcelable.Creator<ReviewImageAttachment> CREATOR = new Parcelable.Creator<ReviewImageAttachment>() {
+    public static final Creator<ReviewImageAttachment> CREATOR = new Creator<ReviewImageAttachment>() {
         @Override
         public ReviewImageAttachment createFromParcel(Parcel source) {
             return new ReviewImageAttachment(source);

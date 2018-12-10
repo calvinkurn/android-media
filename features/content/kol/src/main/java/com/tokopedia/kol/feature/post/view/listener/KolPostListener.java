@@ -38,6 +38,10 @@ public interface KolPostListener {
 
         void updateCursor(String lastCursor);
 
+        void onSuccessDeletePost(int rowNumber);
+
+        void onErrorDeletePost(String message, int rowNumber, int id);
+
         interface Like {
             Context getContext();
 
@@ -99,5 +103,7 @@ public interface KolPostListener {
         void likeKol(int id, int rowNumber, View.Like likeListener);
 
         void unlikeKol(int id, int rowNumber, View.Like likeListener);
+
+        void deletePost(int rowNumber, int id);
     }
 }

@@ -162,7 +162,7 @@ public class Review implements Parcelable {
         dest.writeString(this.productRatingDescription);
         dest.writeParcelable(this.reviewCreateTime, flags);
         dest.writeParcelable(this.reviewUpdateTime, flags);
-        dest.writeList(this.reviewImageAttachment);
+        dest.writeTypedList(this.reviewImageAttachment);
         dest.writeInt(this.reviewAnonymous);
         dest.writeParcelable(this.reviewResponse, flags);
         dest.writeParcelable(this.user, flags);
@@ -177,8 +177,7 @@ public class Review implements Parcelable {
         this.productRatingDescription = in.readString();
         this.reviewCreateTime = in.readParcelable(ReviewCreateTime.class.getClassLoader());
         this.reviewUpdateTime = in.readParcelable(ReviewUpdateTime.class.getClassLoader());
-        this.reviewImageAttachment = new ArrayList<ReviewImageAttachment>();
-        in.readList(this.reviewImageAttachment, Object.class.getClassLoader());
+        this.reviewImageAttachment = in.createTypedArrayList(ReviewImageAttachment.CREATOR);
         this.reviewAnonymous = in.readInt();
         this.reviewResponse = in.readParcelable(ReviewResponse.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());
