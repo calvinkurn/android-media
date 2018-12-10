@@ -17,8 +17,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
 open class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: ImageAnnouncementListener,
                                    private val chatLinkHandlerListener: ChatLinkHandlerListener,
                                    private val imageUploadListener : ImageUploadListener,
-                                   private val productAttachmentListener :
-                                   ProductAttachmentListener) :
+                                   private val productAttachmentListener : ProductAttachmentListener) :
         BaseAdapterTypeFactory(),
         BaseChatTypeFactory {
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {

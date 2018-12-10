@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,7 +17,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel;
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel;
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper;
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener;
-//import com.tokopedia.chatbot.R;
+import com.tokopedia.chatbot.R;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class AttachedInvoiceSelectionViewHolder extends
     private static final int ADDITIONAL_GET_ALL_BUTTON = 1;
 
     @LayoutRes
-//    public static final int LAYOUT = R.layout.item_chat_invoice_attach_selection;
+    public static final int LAYOUT = R.layout.item_chat_invoice_attach_selection;
     private AttachedInvoiceSelectionListener selectedListener;
     private AttachedInvoiceSelectionViewHolder.AttachedInvoicesItemsAdapter singleItemAdapter;
     private RecyclerView invoiceSelection;
@@ -37,7 +38,7 @@ public class AttachedInvoiceSelectionViewHolder extends
         super(itemView);
         this.selectedListener = selectedListener;
         singleItemAdapter = new AttachedInvoicesItemsAdapter();
-//        invoiceSelection = itemView.findViewById(R.id.attach_invoice_chat_invoice_selection);
+        invoiceSelection = itemView.findViewById(R.id.attach_invoice_chat_invoice_selection);
         invoiceSelection.setLayoutManager(new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         invoiceSelection.setAdapter(singleItemAdapter);
@@ -55,8 +56,8 @@ public class AttachedInvoiceSelectionViewHolder extends
         @Override
         public AttachedInvoiceSingleItemViewHolder onCreateViewHolder(ViewGroup parent, int
                 viewType) {
-//            View itemView = LayoutInflater.from(parent.getContext())
-//                    .inflate(R.layout.item_carousel_invoice_attach, parent, false);
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_carousel_invoice_attach, parent, false);
             return new AttachedInvoiceSingleItemViewHolder(itemView);
         }
 
@@ -110,17 +111,17 @@ public class AttachedInvoiceSelectionViewHolder extends
 
         public AttachedInvoiceSingleItemViewHolder(View itemView) {
             super(itemView);
-//            invoiceNo = itemView.findViewById(R.id.attach_invoice_item_invoice_no);
-//            invoiceDate = itemView.findViewById(R.id.attach_invoice_item_invoice_date);
-//            productName = itemView.findViewById(R.id.attach_invoice_item_product_name);
-//            productDesc = itemView.findViewById(R.id.attach_invoice_item_product_desc);
-//            invoiceStatus = itemView.findViewById(R.id.attach_invoice_item_invoice_status);
-//            totalAmount = itemView.findViewById(R.id.attach_invoice_item_invoice_total);
-//            productImage = itemView.findViewById(R.id.attach_invoice_item_product_image);
-//            invoiceContainer = itemView.findViewById(R.id.container_all_invoice_attach);
-//            searchAllButton = itemView.findViewById(R.id.all_invoice_button);
-//            buttonContainer = itemView.findViewById(R.id
-//                    .container_invoice_attach_get_all_invoice_button);
+            invoiceNo = itemView.findViewById(R.id.attach_invoice_item_invoice_no);
+            invoiceDate = itemView.findViewById(R.id.attach_invoice_item_invoice_date);
+            productName = itemView.findViewById(R.id.attach_invoice_item_product_name);
+            productDesc = itemView.findViewById(R.id.attach_invoice_item_product_desc);
+            invoiceStatus = itemView.findViewById(R.id.attach_invoice_item_invoice_status);
+            totalAmount = itemView.findViewById(R.id.attach_invoice_item_invoice_total);
+            productImage = itemView.findViewById(R.id.attach_invoice_item_product_image);
+            invoiceContainer = itemView.findViewById(R.id.container_all_invoice_attach);
+            searchAllButton = itemView.findViewById(R.id.all_invoice_button);
+            buttonContainer = itemView.findViewById(R.id
+                    .container_invoice_attach_get_all_invoice_button);
             searchAllButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

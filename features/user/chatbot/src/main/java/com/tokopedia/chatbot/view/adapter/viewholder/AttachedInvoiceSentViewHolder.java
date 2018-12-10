@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot;
+package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -9,9 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.topchat.R;
+import com.tokopedia.chatbot.R;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BaseChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
