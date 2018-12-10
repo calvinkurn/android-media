@@ -19,7 +19,7 @@ data class DynamicPostViewModel(
         var likeCount: String = "",
         var commentCount: String = "",
         var isLiked: Boolean = false,
-        var contentList: MutableList<Any>
+        var contentList: MutableList<BasePostViewModel>
 
 ) : Visitable<DynamicPostTypeFactory> {
     
