@@ -13,6 +13,7 @@ import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
+import com.tokopedia.shipping_recommendation.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;

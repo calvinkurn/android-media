@@ -22,6 +22,7 @@ import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartAddressChoiceComponent;
+import com.tokopedia.checkout.view.di.component.DaggerCartAddressChoiceComponent;
 import com.tokopedia.checkout.view.di.module.CartAddressChoiceModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.model.Destination;
