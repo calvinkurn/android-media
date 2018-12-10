@@ -31,6 +31,8 @@ import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_
 public abstract class BaseUserIdentificationStepperFragment<T extends
         UserIdentificationStepperModel> extends TkpdBaseV4Fragment {
 
+    public final static String EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model";
+
     protected ImageView correctImage;
     protected ImageView wrongImage;
     protected TextView title;
@@ -50,8 +52,18 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         }
         if (getArguments() != null && savedInstanceState == null) {
             stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+        } else if (savedInstanceState != null){
+            stepperModel = savedInstanceState.getParcelable(EXTRA_KYC_STEPPER_MODEL);
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getApplicationContext());
+        if (getActivity() != null) {
+            analytics = UserIdentificationAnalytics.createInstance(getActivity()
+                    .getApplicationContext());
+        }    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(EXTRA_KYC_STEPPER_MODEL, stepperModel);
+        super.onSaveInstanceState(outState);
     }
 
     @Nullable
