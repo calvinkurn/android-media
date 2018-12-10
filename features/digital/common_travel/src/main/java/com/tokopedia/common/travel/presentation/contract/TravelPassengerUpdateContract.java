@@ -2,8 +2,6 @@ package com.tokopedia.common.travel.presentation.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.common.travel.constant.TravelPlatformType;
-import com.tokopedia.common.travel.presentation.model.TravelTrip;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.Date;

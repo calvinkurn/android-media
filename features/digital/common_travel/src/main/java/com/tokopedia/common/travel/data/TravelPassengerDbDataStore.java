@@ -16,7 +16,6 @@ import com.tokopedia.common.travel.database.TravelPassengerDb_Table;
 import com.tokopedia.common.travel.domain.TravelPassengerMapper;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -75,7 +74,7 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
 
     private TravelPassengerDb mapTravelPassengerToDb(TravelPassengerEntity travelPassengerEntity) {
         TravelPassengerDb travelPassengerDb = new TravelPassengerDb();
-        Long currentTimestamp = System.currentTimeMillis()/1000;
+        Long currentTimestamp = System.currentTimeMillis() / 1000;
         travelPassengerDb.setIdPassenger(travelPassengerEntity.getFirstName() +
                 travelPassengerEntity.getLastName() + currentTimestamp.toString());
         travelPassengerDb.setId(travelPassengerEntity.getId());

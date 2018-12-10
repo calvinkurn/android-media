@@ -37,7 +37,6 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -47,9 +46,7 @@ import javax.inject.Inject;
 public class TravelPassengerUpdateFragment extends BaseDaggerFragment
         implements TravelPassengerUpdateContract.View {
 
-    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
-    public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
-
+    private final String SUFFIX_BIRTHDATE = "T00:00:00Z";
 
     private SpinnerTextView spTitle;
     private AppCompatEditText firstNameEt;
@@ -144,7 +141,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
     @Override
     public void showBirthdateChange(Date dateSelected) {
         birthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dateSelected);
-        String dateString = TravelDateUtil.dateToString(DEFAULT_VIEW_FORMAT, dateSelected);
+        String dateString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dateSelected);
         birthDateEt.setText(dateString);
     }
 
@@ -252,7 +249,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
         requestParams.putInt(AddTravelPassengerUseCase.TITLE, getSalutationId());
         requestParams.putInt(AddTravelPassengerUseCase.PAX_TYPE, trainPassengerViewModel.getPaxType());
         if (birthdate != null) {
-            requestParams.putString(AddTravelPassengerUseCase.BIRTHDATE, birthdate + "T00:00:00Z");
+            requestParams.putString(AddTravelPassengerUseCase.BIRTHDATE, birthdate + SUFFIX_BIRTHDATE);
         }
         return requestParams;
     }
@@ -315,6 +312,12 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         listener = (ActionListener) context;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
     }
 
     public interface ActionListener {

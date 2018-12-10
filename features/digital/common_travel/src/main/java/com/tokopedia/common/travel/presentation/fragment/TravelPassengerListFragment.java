@@ -227,6 +227,12 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
+    }
+
     public interface ActionListener {
         void onClickPassenger(TravelPassenger travelPassenger);
 

@@ -7,11 +7,15 @@ import javax.inject.Inject;
  */
 public class TravelPassengerValidator {
 
-    private static final String PASSENGER_NAME_REGEX = "^[a-zA-Z\\s]*$";
-    private static final String PASSENGER_ID_NUMBER_REGEX = "^[A-Za-z0-9]+$";
+    private static final String REGEX_NAME = "^[a-zA-Z\\s]*$";
+    private static final String REGEX_ID_NUMBER = "^[A-Za-z0-9]+$";
+    private static final String REGEX_NUMERIC = "^[0-9\\s]*$";
+    private static final String REGEX_EMAIL = "^[A-Za-z0-9_.-]+@(.+)$";
     private static final int MAX_CONTACT_NAME = 60;
     private static final int MAX_IDENTITY_NUMBER = 20;
     private static final int MIN_IDENTITY_NUMBER = 5;
+    private static final int MIN_PHONE_NUMBER = 9;
+    private static final int MAX_PHONE_NUMBER = 15;
 
     @Inject
     public TravelPassengerValidator() {
@@ -34,7 +38,7 @@ public class TravelPassengerValidator {
     }
 
     public boolean isNameUseSpecialCharacter(String name) {
-        return !name.matches(PASSENGER_NAME_REGEX);
+        return !name.matches(REGEX_NAME);
     }
 
     public boolean isBirthdateEmpty(String birthdate) {
@@ -54,6 +58,30 @@ public class TravelPassengerValidator {
     }
 
     public boolean isIdNumberUseSpecialCharacter(String idNumber) {
-        return !idNumber.matches(PASSENGER_ID_NUMBER_REGEX);
+        return !idNumber.matches(REGEX_ID_NUMBER);
+    }
+
+    public boolean isPhoneNumberEmpty(String phoneNumber) {
+        return phoneNumber == null || phoneNumber.length() == 0;
+    }
+
+    public boolean isPhoneNumberUseChar(String phoneNumber) {
+        return !phoneNumber.matches(REGEX_NUMERIC);
+    }
+
+    public boolean isPhoneNumberLessThanMin(String phoneNumber) {
+        return phoneNumber.length() < MIN_PHONE_NUMBER;
+    }
+
+    public boolean isPhoneNumberMoreThanMax(String phoneNumber) {
+        return phoneNumber.length() > MAX_PHONE_NUMBER;
+    }
+
+    public boolean isEmailEmpty(String email) {
+        return email == null || email.length() == 0;
+    }
+
+    public boolean isEmailNotValid(String email) {
+        return !email.matches(REGEX_EMAIL);
     }
 }

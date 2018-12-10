@@ -1,7 +1,7 @@
 package com.tokopedia.train.passenger.presentation.presenter;
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.common.travel.utils.TravelDateUtil;
+import com.tokopedia.common.travel.utils.TravelPassengerValidator;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
@@ -71,7 +71,8 @@ public class TrainBookingPassengerPresenterTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        presenter = new TestTrainBookingPassengerPresenter(getDetailScheduleUseCase, trainSoftBookingUseCase, new TrainTestScheduler());
+        presenter = new TestTrainBookingPassengerPresenter(getDetailScheduleUseCase, trainSoftBookingUseCase,
+                new TrainTestScheduler(), new TravelPassengerValidator());
         presenter.attachView(view);
         trainSoftbook = new TrainSoftbook();
         validName = "Cincin Seller";
@@ -636,8 +637,10 @@ public class TrainBookingPassengerPresenterTest {
     public class TestTrainBookingPassengerPresenter extends TrainBookingPassengerPresenter {
 
         public TestTrainBookingPassengerPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase,
-                                                  TrainSoftBookingUseCase trainSoftBookingUseCase, TrainProvider trainProvider) {
-            super(getDetailScheduleUseCase, trainSoftBookingUseCase, trainProvider);
+                                                  TrainSoftBookingUseCase trainSoftBookingUseCase,
+                                                  TrainProvider trainProvider,
+                                                  TravelPassengerValidator travelPassengerValidator) {
+            super(getDetailScheduleUseCase, trainSoftBookingUseCase, trainProvider, travelPassengerValidator);
         }
 
         @Override

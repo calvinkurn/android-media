@@ -2,7 +2,6 @@ package com.tokopedia.common.travel.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 
 /**
  * Created by nabillasabbaha on 22/11/18.

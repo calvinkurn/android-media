@@ -14,12 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.di.CommonTravelComponent;
-import com.tokopedia.common.travel.domain.DeleteTravelPassengerUseCase;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerEditActivity;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerUpdateActivity;
 import com.tokopedia.common.travel.presentation.adapter.TravelPassengerEditAdapter;
@@ -31,7 +29,6 @@ import com.tokopedia.common.travel.utils.CommonTravelUtils;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -200,5 +197,11 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
             }
             presenter.getPassengerList();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
     }
 }

@@ -92,7 +92,9 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
                 .flatMap(new Func1<List<TravelPassenger>, Observable<List<TravelPassenger>>>() {
                     @Override
                     public Observable<List<TravelPassenger>> call(List<TravelPassenger> travelPassengers) {
-                        return Observable.zip(getPassengerNotSelected(travelPassengers), getPassengerSelected(travelPassengers),
+                        return Observable.zip(
+                                getPassengerNotSelected(travelPassengers),
+                                getPassengerSelected(travelPassengers),
                                 new Func2<List<TravelPassenger>, List<TravelPassenger>, List<TravelPassenger>>() {
                                     @Override
                                     public List<TravelPassenger> call(List<TravelPassenger> travelPassengerNotSelected, List<TravelPassenger> travelPassengersSelected) {

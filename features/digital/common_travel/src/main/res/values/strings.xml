@@ -57,5 +57,9 @@
     <string name="error_message_pick_infant_passenger">Umur penumpang bayi harus dibawah 3 tahun.</string>
     <string name="error_message_pick_adult_passenger">Umur penumpang dewasa harus diatas 3 tahun.</string>
     <string name="title_edit_passenger_list">Edit Penumpang</string>
-
+    <string name="account_default">(Utama)</string>
+    <string name="account_chosen">(Terpilih)</string>
+    <string name="salutation_mister_string">Tn</string>
+    <string name="salutation_mrs_string">Ny</string>
+    <string name="salutation_miss_string">Nn</string>
 </resources>

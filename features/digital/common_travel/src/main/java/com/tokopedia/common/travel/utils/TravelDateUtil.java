@@ -15,6 +15,7 @@ public class TravelDateUtil {
     public static final String YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
+    public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
 
     public static Date stringToDate(String format, String input) {
         DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
