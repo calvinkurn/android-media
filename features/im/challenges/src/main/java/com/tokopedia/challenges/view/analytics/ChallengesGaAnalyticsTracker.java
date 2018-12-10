@@ -1,5 +1,6 @@
 package com.tokopedia.challenges.view.analytics;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -50,4 +51,9 @@ public class ChallengesGaAnalyticsTracker {
         tracker.sendEventTracking(event, category, action, label);
     }
 
+    public void sendScreenEvent(Activity activity, String screen) {
+        if (tracker == null)
+            return;
+        tracker.sendScreen(activity, screen);
+    }
 }

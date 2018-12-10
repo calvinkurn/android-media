@@ -8,7 +8,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_6"
+        android:layout_height="@dimen/dp_4"
         android:background="@drawable/bg_tp_shadow" />
 
     <android.support.constraint.ConstraintLayout

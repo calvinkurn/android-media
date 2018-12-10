@@ -55,7 +55,7 @@ public interface CatalogListItemContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getCatalog(int categoryId, int sortId);
+        void getCatalog(int categoryId, int subCategoryId);
 
         void fetchLatestStatus(List<Integer> catalogsIds);
     }

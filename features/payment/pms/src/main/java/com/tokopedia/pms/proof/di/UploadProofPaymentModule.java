@@ -30,7 +30,7 @@ public class UploadProofPaymentModule {
     @UploadProofPaymentScope
     @Provides
     UploadProofPaymentPresenter uploadProofPaymentPresenter(UploadProofPaymentUseCase uploadProofPaymentUseCase) {
-        return new UploadProofPaymentPresenter(uploadProofPaymentUseCase);
+        return new UploadProofPaymentPresenter(uploadProofPaymentUseCase, new GraphqlUseCase());
     }
 
     @UploadProofPaymentScope
