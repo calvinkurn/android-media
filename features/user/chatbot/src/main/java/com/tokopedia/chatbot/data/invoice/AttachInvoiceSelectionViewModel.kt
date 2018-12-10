@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.data
+package com.tokopedia.chatbot.data.invoice
 
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable

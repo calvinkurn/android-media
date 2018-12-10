@@ -3,26 +3,28 @@ package com.tokopedia.chatbot.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.text.TextUtils
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
-import com.tokopedia.chatbot.data.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.domain.AttachInvoiceMapper
-import com.tokopedia.chatbot.domain.InvoiceLinkPojo
+import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
+import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
-import com.tokopedia.chatbot.view.customview.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.chatbot.view.listener.ChatbotViewState
+import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import javax.inject.Inject
 
@@ -37,46 +39,81 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     @Inject
     lateinit var presenter: ChatbotPresenter
 
-    private lateinit var chatbotViewState: ChatbotViewState
-
     override fun initInjector() {
 
+        presenter.attachView(this)
     }
 
     override fun getScreenName(): String {
         return ""
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewState = ChatbotViewStateImpl(view, userSession)
+        super.onViewCreated(view, savedInstanceState)
+        loadInitialData()
+    }
+
+    override fun loadInitialData() {
+       developmentView()
+    }
+
+
+    override fun loadData(page: Int) {
+        super.loadData(page)
+        developmentView()
+    }
+
+    override fun developmentView() {
+        val dummyList = arrayListOf<Visitable<*>>()
+
+        dummyList.add(MessageViewModel("1", "1960918", "lawan", "User", "", "", "213123123", "213123123", true, false, false, "hi1"))
+        dummyList.add(MessageViewModel("2", "7977933", "lawan", "User", "", "", "213123124", "213123123", true, false, true, "hi2"))
+        dummyList.add(MessageViewModel("3", "1960918", "lawan", "User", "", "", "213123125", "213123123", true, false, false, "hi3"))
+        dummyList.add(MessageViewModel("4", "7977933", "lawan", "User", "", "", "213123126", "213123123", true, false, true, "hi4"))
+        dummyList.add(MessageViewModel("5", "1960918", "lawan", "User", "", "", "213123127", "213123123", true, false, false, "hi5"))
+        dummyList.add(MessageViewModel("6", "7977933", "lawan", "User", "", "", "213123128", "213123123", true, false, true, "hi6"))
+        dummyList.add(MessageViewModel("11", "1960918", "lawan", "User", "", "", "213123123", "213123123", true, false, false, "hi11"))
+        dummyList.add(MessageViewModel("21", "7977933", "lawan", "User", "", "", "213123124", "213123123", true, false, true, "hi21"))
+        dummyList.add(MessageViewModel("31", "1960918", "lawan", "User", "", "", "213123125", "213123123", true, false, false, "hi31"))
+        dummyList.add(MessageViewModel("41", "7977933", "lawan", "User", "", "", "213123126", "213123123", true, false, true, "hi41"))
+        dummyList.add(MessageViewModel("51", "1960918", "lawan", "User", "", "", "213123127", "213123123", true, false, false, "hi51"))
+        dummyList.add(MessageViewModel("61", "7977933", "lawan", "User", "", "", "213123128", "213123123", true, false, true, "hi61"))
+
+        onSuccessLoadFirstTime(dummyList)
+    }
+
+    override fun onSuccessLoadFirstTime(list: ArrayList<Visitable<*>>) {
+        getViewState().onSuccessLoadFirstTime(list)
+        presenter.connectWebSocket(messageId)
+    }
+
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         mapMessageToList(visitable)
-        checkHideQuickReply(visitable)
+        getViewState().onCheckToHideQuickReply(visitable)
     }
 
-    private fun checkHideQuickReply(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel
-                && TextUtils.isEmpty(visitable.attachmentId)
-                && chatbotViewState.hasQuickReply()
-                && !isMyMessage(visitable.fromUid)) {
-            chatbotViewState.hideQuickReply()
-        }
-    }
-
-    private fun isMyMessage(fromUid: String?): Boolean {
-        return fromUid != null && userSession.userId == fromUid
+    private fun getViewState(): ChatbotViewState {
+       return viewState as ChatbotViewState
     }
 
     private fun mapMessageToList(visitable: Visitable<*>) {
         when (visitable) {
-            is QuickReplyListViewModel -> chatbotViewState.showQuickReply()
+            is QuickReplyListViewModel -> getViewState().onReceiveQuickReplyEvent(visitable)
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
 
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
-        val generatedInvoice = generateInvoice(invoiceLinkPojo)
-        adapter.addElement(generatedInvoice)
+        val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, senderId)
+        getViewState().onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime)
-        chatbotViewState.scrollToBottom()
+    }
+
+    private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
+        val generatedInvoice = presenter.generateInvoice(selectedInvoice)
+        getViewState().onShowInvoiceToChat(generatedInvoice)
+        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
     }
 
     override fun showSearchInvoiceScreen() {
@@ -86,7 +123,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     messageId.toInt())
             startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
         }
-
     }
 
     override fun onQuickReplyClicked(quickReplyListViewModel: QuickReplyListViewModel,
@@ -94,19 +130,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime())
 
-    }
-
-    private fun generateInvoice(selectedInvoice: InvoiceLinkPojo): AttachInvoiceSentViewModel {
-        val invoiceLinkAttributePojo = selectedInvoice.attributes
-        return AttachInvoiceSentViewModel(
-                senderId,
-                userSession.name,
-                invoiceLinkAttributePojo.title,
-                invoiceLinkAttributePojo.description,
-                invoiceLinkAttributePojo.imageUrl,
-                invoiceLinkAttributePojo.totalAmount,
-                SendableViewModel.generateStartTime()
-        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -124,13 +147,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice))
             }
         }
-    }
-
-    private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
-        val generatedInvoice = generateInvoice(selectedInvoice)
-        adapter.addElement(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
-        chatbotViewState.scrollToBottom()
     }
 
     override fun onGoToWebView(url: String, id: String) {
@@ -165,5 +181,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
      */
     override fun shouldHandleUrlManually(url: String): Boolean {
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }

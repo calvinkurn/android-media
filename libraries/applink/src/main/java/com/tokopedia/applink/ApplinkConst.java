@@ -215,6 +215,28 @@ public interface ApplinkConst {
         String PDP_PRICE = "product_price";
         String PDP_DATE = "product_date";
         String PDP_IMAGE = "product_image";
+    }
+
+    interface Chat {
+        String MESSAGE_ID = "message_id";
+        String SENDER_ID = "sender_id";
+        String SENDER_NAME = "sender_name";
+        String SENDER_ROLE = "sender_role";
+
+        String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+
+        String IMAGE_PREVIEW_FILELOC = "fileloc";
+        String IMAGE_PREVIEW_IMG_POSITION = "img_pos";
+        String IMAGE_PREVIEW_IMAGE_DESC = "image_desc";
+        String IMAGE_PREVIEW_FROM_CHAT = "from_chat";
+        String IMAGE_PREVIEW_TITLE = "title";
+        String IMAGE_PREVIEW_SUBTITLE = "subtitle";
+
+        String PDP_ID = "product_id";
+        String PDP_NAME = "product_name";
+        String PDP_PRICE = "product_price";
+        String PDP_DATE = "product_date";
+        String PDP_IMAGE = "product_image";
 
     }
 }

@@ -1,0 +1,20 @@
+package com.tokopedia.chat_common.domain.pojo.productattachment
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+class ProductProfile {
+
+    @SerializedName("image_url")
+    @Expose
+    val imageUrl: String = ""
+    @SerializedName("name")
+    @Expose
+    val name: String = ""
+    @SerializedName("price")
+    @Expose
+    val price: String = ""
+    @SerializedName("url")
+    @Expose
+    val url: String = ""
+}

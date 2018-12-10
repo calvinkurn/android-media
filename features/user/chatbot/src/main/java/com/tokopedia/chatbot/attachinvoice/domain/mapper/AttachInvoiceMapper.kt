@@ -1,7 +1,9 @@
-package com.tokopedia.chatbot.domain
+package com.tokopedia.chatbot.attachinvoice.domain.mapper
 
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
-import com.tokopedia.chatbot.data.AttachInvoiceSingleViewModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
+import com.tokopedia.chatbot.domain.pojo.InvoiceLinkAttributePojo
+import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 
 import javax.inject.Inject
 

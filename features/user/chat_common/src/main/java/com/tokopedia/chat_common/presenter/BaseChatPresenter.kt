@@ -5,14 +5,17 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.GetChatUseCase
+import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.RxWebSocket
+import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.websocket.WebSocketSubscriber
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
@@ -25,7 +28,8 @@ import javax.inject.Inject
 
 open class BaseChatPresenter @Inject constructor(
         open var userSession: UserSessionInterface,
-        open var getChatUseCase: GetChatUseCase)
+        open var getChatUseCase: GetChatUseCase,
+        open var websocketMessageMapper: WebsocketMessageMapper)
     : BaseDaggerPresenter<BaseChatContract.View>(), BaseChatContract.Presenter {
 
     var thisMessageId: String = ""
@@ -75,6 +79,8 @@ open class BaseChatPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "item")
                 }
+                val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
+                if (pojo.msgId.toString() != messageId) return
                 mappingEvent(webSocketResponse, messageId)
             }
 
@@ -104,14 +110,18 @@ open class BaseChatPresenter @Inject constructor(
 
 
         mSubscription.add(subscription)
+
     }
 
-    override fun mappingEvent(websocketResponse: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo = Gson().fromJson(websocketResponse.getData(), ChatSocketPojo::class.java)
+    override fun sendMessage(sendMessage: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
+    override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
+        val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
         if (pojo.msgId.toString() != messageId) return
 
-        when (websocketResponse.getCode()) {
+        when (webSocketResponse.getCode()) {
             EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
@@ -121,9 +131,8 @@ open class BaseChatPresenter @Inject constructor(
         }
     }
 
-    private fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel(pojo.msgId.toString(), pojo.fromUid, pojo.from, pojo.fromRole, ""
-                , "", "", pojo.startTime, "", false, false, pojo.isOpposite)
+    override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
+        return websocketMessageMapper.map(pojo)
     }
 
 
@@ -136,12 +145,16 @@ open class BaseChatPresenter @Inject constructor(
         getChatUseCase(messageId, 1)
     }
 
+    //TODO MOVE THIS TO TOPCHAT PRESENTER
     override fun getChatUseCase(messageId: String, page: Int) {
         getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page)
                 , object : Subscriber<ChatRoomViewModel>() {
             override fun onNext(model: ChatRoomViewModel?) {
-                view.developmentView()
-                model?.listChat.let { view.onSuccessGetChat(it!!) }
+//                view.developmentView()
+                model?.listChat.run {
+                    //TODO MOVE THIS TO TOPCHAT VIEW
+//                    view.onSuccessGetChat(this)
+ }
             }
 
             override fun onCompleted() {

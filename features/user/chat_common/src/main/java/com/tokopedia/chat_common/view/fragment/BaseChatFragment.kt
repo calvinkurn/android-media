@@ -18,15 +18,17 @@ import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chat_common.view.BaseChatViewState
+import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_chatroom.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -45,11 +47,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     @Inject
     protected lateinit var userSession: UserSessionInterface
 
-    protected lateinit var baseChatViewState: BaseChatViewState
+    protected lateinit var viewState: BaseChatViewState
 
     protected var messageId: String = ""
     protected var senderId = ""
-    protected var title = ""
+    protected var senderName = ""
     protected var senderRole = ""
 
     override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
@@ -72,27 +74,45 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getRecyclerView(view).setHasFixedSize(true)
+        viewState = BaseChatViewStateImpl(view)
+
         setupViewData(arguments, savedInstanceState)
-        presenter.connectWebSocket(messageId)
+        prepareView(view)
+        prepareListener()
+        viewState.onSetupViewFirstTime()
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
+    }
+
+    private fun prepareListener() {
+        send_but.setOnClickListener(View.OnClickListener {
+            val sendMessage = ""
+            presenter.sendMessage(sendMessage)
+        })
+
+    }
+
+    private fun prepareView(view: View) {
+        getRecyclerView(view).setHasFixedSize(true)
     }
 
     private fun setupViewData(arguments: Bundle?, savedInstanceState: Bundle?) {
-        messageId = when {
-            savedInstanceState != null
-                    && savedInstanceState.getString("message_id", "").isNotEmpty()
-            -> savedInstanceState.getString("message_id")
-            arguments != null && arguments.getString("message_id", "").isNotEmpty()
-            -> arguments.getString("message_id")
-            else -> ""
-        }
+        messageId = getParamString(ApplinkConst.Chat.MESSAGE_ID, arguments, savedInstanceState)
+        senderId = getParamString(ApplinkConst.Chat.SENDER_ID, arguments, savedInstanceState)
+        senderName = getParamString(ApplinkConst.Chat.SENDER_NAME, arguments, savedInstanceState)
+        senderRole = getParamString(ApplinkConst.Chat.SENDER_ROLE, arguments, savedInstanceState)
+    }
 
-        senderId = when {
+    private fun getParamString(paramName: String, arguments: Bundle?,
+                               savedInstanceState: Bundle?): String {
+        return when {
             savedInstanceState != null
-                    && savedInstanceState.getString("sender_id", "").isNotEmpty()
-            -> savedInstanceState.getString("sender_id")
-            arguments != null && arguments.getString("sender_id", "").isNotEmpty()
-            -> arguments.getString("sender_id")
+                    && savedInstanceState.getString(paramName, "").isNotEmpty()
+            -> savedInstanceState.getString(paramName)
+            arguments != null && arguments.getString(paramName, "").isNotEmpty()
+            -> arguments.getString(paramName)
             else -> ""
         }
     }
@@ -176,7 +196,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_FILELOC, strings)
             bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_IMAGE_DESC, ArrayList())
             bundle.putInt(ApplinkConst.Query.IMAGE_PREVIEW_IMG_POSITION, 0)
-            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_TITLE, title)
+            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_TITLE, senderName)
             bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_SUBTITLE, replyTime)
             intent.putExtras(bundle)
             startActivity(intent)
@@ -187,7 +207,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         val ROLE_SHOP = "shop"
 
         if (!GlobalConfig.isSellerApp() || senderRole != ROLE_SHOP) {
-            activity?.run{
+            activity?.run {
 
                 var routingAppLink: String = ApplinkConst.PRODUCT_INFO
                 val uriBuilder = Uri.Builder()
@@ -213,29 +233,25 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onSuccessGetChat(model: ArrayList<Visitable<*>>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun developmentView() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-
     override fun onReceiveStartTypingEvent() {
-        baseChatViewState.recipientTyping()
+        viewState.onShowStartTyping()
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        baseChatViewState.addMessage(visitable)
+        viewState.onReceiveMessageEvent(visitable)
     }
 
     override fun onReceiveStopTypingEvent() {
-        baseChatViewState.recipientStopTyping()
+        viewState.onShowStopTyping()
     }
 
     override fun onReceiveReadEvent() {
         return
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
 }

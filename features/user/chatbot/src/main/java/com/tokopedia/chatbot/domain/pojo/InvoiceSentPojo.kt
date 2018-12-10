@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain
+package com.tokopedia.chatbot.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
@@ -9,6 +9,6 @@ import com.google.gson.annotations.SerializedName
 class InvoiceSentPojo {
 
     @SerializedName("invoice_link")
-    var invoiceLink: InvoiceLinkPojo? = null
+    var invoiceLink: InvoiceLinkPojo = InvoiceLinkPojo()
 
 }

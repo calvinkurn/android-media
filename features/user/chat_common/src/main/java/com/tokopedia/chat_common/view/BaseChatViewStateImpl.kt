@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit
  * @author : Steven 29/11/18
  */
 
-open class BaseChatViewState(open var view: View) {
+open class BaseChatViewStateImpl(open var view: View) : BaseChatViewState {
 
     protected var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
     protected var replyBox: View = view.findViewById(R.id.reply_box)
@@ -35,19 +36,37 @@ open class BaseChatViewState(open var view: View) {
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus){
+            if (hasFocus) {
                 scrollDownWhenInBottom()
             }
         }
     }
 
+    override fun onSetupViewFirstTime() {
+        //hide send box
+        showLoading()
+    }
+
+    override fun onShowStartTyping() {
+        getAdapter().showTyping()
+        scrollDownWhenInBottom()
+    }
+
+    override fun onShowStopTyping() {
+        getAdapter().removeTyping()
+    }
+
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        getAdapter().addList(listOf(visitable))
+    }
+
     protected fun scrollDownWhenInBottom() {
-        if(checkLastCompletelyVisibleItemIsFirst()) {
+        if (checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }
 
-    fun scrollToBottom() {
+    protected fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -63,7 +82,7 @@ open class BaseChatViewState(open var view: View) {
         actionBox?.visibility = View.VISIBLE
     }
 
-    protected fun setDefault(){
+    protected fun setDefault() {
         sendButton.requestFocus()
     }
 
@@ -76,23 +95,23 @@ open class BaseChatViewState(open var view: View) {
         actionBox?.visibility = View.VISIBLE
     }
 
-    fun showLoading() {
+    protected fun showLoading() {
         mainLoading?.visibility = View.VISIBLE
     }
 
-    fun hideLoading() {
+    protected fun hideLoading() {
         mainLoading?.visibility = View.GONE
     }
 
-    fun setAdapter(adapter: BaseChatAdapter) {
+    protected fun setAdapter(adapter: BaseChatAdapter) {
         recyclerView.adapter = adapter
     }
 
-    private fun getAdapter(): BaseChatAdapter {
+    protected fun getAdapter(): BaseChatAdapter {
         return recyclerView.adapter as BaseChatAdapter
     }
 
-    fun addList(listChat: ArrayList<Visitable<*>>) {
+    protected fun addList(listChat: ArrayList<Visitable<*>>) {
         getAdapter().addList(listChat)
     }
 
@@ -100,16 +119,21 @@ open class BaseChatViewState(open var view: View) {
         return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 
-    fun recipientTyping() {
-        getAdapter().showTyping()
-        scrollDownWhenInBottom()
+    protected fun hideExpandButton() {
+        maximize.visibility = View.GONE
     }
 
-    fun recipientStopTyping() {
-        getAdapter().removeTyping()
+    protected fun hidePickerButton() {
+        pickerButton.visibility = View.GONE
     }
 
-    fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addList(listOf(visitable))
+    protected fun hideAttachButton() {
+        attachButton.visibility = View.GONE
     }
+
+    protected fun showReplyBox(){
+        //TODO SHOW REPLY BOX
+
+    }
+
 }

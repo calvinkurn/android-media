@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain
+package com.tokopedia.chatbot.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
  */
 class InvoicesSelectionPojo {
     @SerializedName("invoices")
-    var invoices: List<InvoicesSelectionSingleItemPojo>? = null
+    var invoices: List<InvoicesSelectionSingleItemPojo> = ArrayList()
 }

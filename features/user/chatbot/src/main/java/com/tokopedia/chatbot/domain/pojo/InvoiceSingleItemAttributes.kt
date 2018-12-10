@@ -1,20 +1,20 @@
-package com.tokopedia.chatbot.domain
+package com.tokopedia.chatbot.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * @author by yfsx on 16/05/18.
+ * Created by Hendri on 16/05/18.
  */
-class InvoiceLinkAttributePojo {
+class InvoiceSingleItemAttributes {
 
     @SerializedName("code")
     var code: String = ""
     @SerializedName("create_time")
-    var createTime: String = ""
+    var createdTime: String = ""
     @SerializedName("description")
     var description: String = ""
-    @SerializedName("href_url")
-    var hrefUrl: String = ""
+    @SerializedName("url")
+    var url: String = ""
     @SerializedName("id")
     var id: Long = 0
     @SerializedName("image_url")
@@ -26,5 +26,5 @@ class InvoiceLinkAttributePojo {
     @SerializedName("title")
     var title: String = ""
     @SerializedName("total_amount")
-    var totalAmount: String = ""
+    var amount: String = ""
 }

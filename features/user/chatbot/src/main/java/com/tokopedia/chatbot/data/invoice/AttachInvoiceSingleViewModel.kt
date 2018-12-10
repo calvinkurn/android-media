@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.data
+package com.tokopedia.chatbot.data.invoice
 
 /**
  * Created by Hendri on 28/03/18.

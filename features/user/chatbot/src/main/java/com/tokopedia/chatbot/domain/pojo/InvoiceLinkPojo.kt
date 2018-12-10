@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain
+package com.tokopedia.chatbot.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 

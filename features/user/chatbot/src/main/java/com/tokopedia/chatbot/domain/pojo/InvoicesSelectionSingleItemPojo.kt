@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain
+package com.tokopedia.chatbot.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName
 class InvoicesSelectionSingleItemPojo {
 
     @SerializedName("attributes")
-    var attributes: InvoiceSingleItemAttributes? = null
+    var attributes: InvoiceSingleItemAttributes = InvoiceSingleItemAttributes()
     @SerializedName("type")
-    var type: String? = null
+    var type: String = ""
     @SerializedName("type_id")
     var typeId: Int = 0
 }
