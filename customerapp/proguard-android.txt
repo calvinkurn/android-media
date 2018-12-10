@@ -49,7 +49,6 @@
 -repackageclasses ''
 -allowaccessmodification
 -dontoptimize
--optimizations !code/simplification/arithmetic
 -keepattributes *Annotation*
 
 -dontwarn com.comscore.**
