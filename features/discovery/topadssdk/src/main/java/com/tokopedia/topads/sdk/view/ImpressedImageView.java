@@ -104,7 +104,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
     private int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels -
-                getResources().getDimensionPixelOffset(R.dimen.dp_200);
+                getResources().getDimensionPixelOffset(R.dimen.dp_100);
     }
 
     public void setViewHintListener(ViewHintListener hintListener) {
