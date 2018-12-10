@@ -1,5 +1,8 @@
 package com.tokopedia.checkout.view.feature.bottomsheetcod;
 
+import android.app.Dialog;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,6 +19,15 @@ public class CodBottomSheet extends BottomSheets {
     @Override
     public int getLayoutResourceId() {
         return R.layout.bottom_sheet_cod_notification;
+    }
+
+    @Override
+    public void setupDialog(Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        if (getBottomSheetBehavior() != null)
+            getBottomSheetBehavior().setPeekHeight(metrics.heightPixels / 2);
     }
 
     @Override
