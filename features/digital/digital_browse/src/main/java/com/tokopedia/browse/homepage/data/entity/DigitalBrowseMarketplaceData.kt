@@ -8,11 +8,10 @@ import com.google.gson.annotations.SerializedName
  */
 
 class DigitalBrowseMarketplaceData(
-
         @SerializedName("dynamicHomeIcon")
         @Expose
-        var categoryGroups: DigitalBrowseDynamicHomeIcon?,
+        var categoryGroups: DigitalBrowseDynamicHomeIcon? = null,
         @SerializedName("popularBrandDatas")
         @Expose
-        var popularBrandDatas: List<DigitalBrowsePopularBrand>?
+        var popularBrandDatas: List<DigitalBrowsePopularBrand>? = null
 )
