@@ -229,6 +229,54 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     }
 
+
+    private void getChatSettingResponse(String messageId, String blockType, boolean state, Subscriber<GraphqlResponse> graphqlResponseSubscriber) {
+
+        if (!isViewAttached()) {
+            return;
+        }
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(InboxChatConstant.MSG_ID, messageId);
+        variables.put(InboxChatConstant.BLOCK_TYPE, blockType);
+        variables.put(InboxChatConstant.BLOKCED, !state);
+
+
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getContext().getResources(),
+                R.raw.chatsettings), ChatSettingsResponse.class, variables);
+
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(graphqlRequest);
+        graphqlUseCase.execute(graphqlResponseSubscriber);
+
+    }
+
+    public void onPersonalChatSettingChange(String messageId, boolean state) {
+
+            getChatSettingResponse(messageId, "1", state, new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    com.tkpd.library.utils.CommonUtils.dumper("error occured" + e);
+                }
+
+                @Override
+                public void onNext(GraphqlResponse response) {
+
+                    if (response != null) {
+
+                        getView().enableChatSettings();
+                    }
+                }
+            });
+
+    }
+
     @Override
     public void detachView() {
         super.detachView();

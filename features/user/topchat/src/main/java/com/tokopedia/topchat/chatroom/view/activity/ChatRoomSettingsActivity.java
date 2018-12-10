@@ -75,8 +75,8 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
             chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
         }
         if (isChatEnabled) {
-            chatSettingsPresenter.onPersonalChatSettingChange(true);
-            chatSettingsPresenter.onPromotionalChatSettingChange(true);
+            chatSettingsPresenter.onPersonalChatSettingChange(true, false);
+            chatSettingsPresenter.onPromotionalChatSettingChange(true, false);
         }
 
     }
@@ -244,10 +244,10 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         }
 
         if (compoundButton.getId() == R.id.chat_personal_switch) {
-            chatSettingsPresenter.onPersonalChatSettingChange(isChecked);
+            chatSettingsPresenter.onPersonalChatSettingChange(isChecked, true);
 //            showPersonalToast(isChecked);
         } else if (compoundButton.getId() == R.id.chat_promotion_switch) {
-            chatSettingsPresenter.onPromotionalChatSettingChange(isChecked);
+            chatSettingsPresenter.onPromotionalChatSettingChange(isChecked, true);
 //            showPromotionToast(isChecked);
         }
     }

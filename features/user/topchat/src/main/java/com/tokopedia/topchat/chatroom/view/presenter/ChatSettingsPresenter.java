@@ -9,6 +9,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
+import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 
 import java.util.HashMap;
@@ -20,9 +21,6 @@ import rx.Subscriber;
 
 public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInterface.View> implements ChatSettingsInterface.Presenter {
 
-    private static final String MESSAGE_ID = "messageID";
-    private static final String BLOCK_TYPE = "blockType";
-    private static final String BLOKCED = "isBlocked";
 
     GraphqlUseCase graphqlUseCase;
     private ChatSettingsResponse chatSettingsResponse;
@@ -41,16 +39,16 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
         this.chatSettingsResponse = chatSettingsResponse;
     }
 
-    public void getChatSettingResponse(String messageId, String blockType, boolean state, Subscriber<GraphqlResponse> graphqlResponseSubscriber) {
+    private void getChatSettingResponse(String messageId, String blockType, boolean state, Subscriber<GraphqlResponse> graphqlResponseSubscriber) {
 
         if (!isViewAttached()) {
             return;
         }
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put(MESSAGE_ID, messageId);
-        variables.put(BLOCK_TYPE, blockType);
-        variables.put(BLOKCED, !state);
+        variables.put(InboxChatConstant.MSG_ID, messageId);
+        variables.put(InboxChatConstant.BLOCK_TYPE, blockType);
+        variables.put(InboxChatConstant.BLOKCED, !state);
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
@@ -63,9 +61,11 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
     }
 
     @Override
-    public void onPersonalChatSettingChange(boolean state) {
+    public void onPersonalChatSettingChange(boolean state, boolean initialState) {
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() == state) {
-            getView().showProgressBar();
+            if (initialState) {
+                getView().showProgressBar();
+            }
             getChatSettingResponse(getView().getMessageId(), "1", state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
@@ -82,13 +82,14 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
 
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
-
                         chatSettingsResponse = data;
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPersonalResponse(data);
-                        getView().hideProgressBar();
-                        getView().showToastMessage();
-                        getView().showPersonalToast(state);
+                        if (initialState) {
+                            getView().showToastMessage();
+                            getView().hideProgressBar();
+                            getView().showPersonalToast(state);
+                        }
                     }
                 }
             });
@@ -102,9 +103,11 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
     }
 
     @Override
-    public void onPromotionalChatSettingChange(boolean state) {
+    public void onPromotionalChatSettingChange(boolean state, boolean initialState) {
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked() == state) {
-            getView().showProgressBar();
+            if (initialState) {
+                getView().showProgressBar();
+            }
             getChatSettingResponse(getView().getMessageId(), "2", state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
@@ -121,13 +124,14 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
 
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
-
                         chatSettingsResponse = data;
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPromotionResponse(data);
-                        getView().hideProgressBar();
-                        getView().showToastMessage();
-                        getView().showPromotionToast(state);
+                        if (initialState) {
+                            getView().hideProgressBar();
+                            getView().showToastMessage();
+                            getView().showPromotionToast(state);
+                        }
                     }
                 }
             });

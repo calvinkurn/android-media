@@ -189,6 +189,8 @@ public class ChatRoomContract {
         android.view.View getRootView();
 
         void shouldShowChatSettingsMenu(boolean showChatSettingMenu);
+
+        void enableChatSettings();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

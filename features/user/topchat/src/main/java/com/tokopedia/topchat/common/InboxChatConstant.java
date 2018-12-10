@@ -21,4 +21,9 @@ public interface InboxChatConstant {
     String CHAT_ROLE = "chatRole";
     String SENDER_NAME = "senderName";
     String CHAT_ENABLED = "isChatEnabled";
+
+    String MSG_ID = "messageID";
+    String BLOCK_TYPE = "blockType";
+    String BLOKCED = "isBlocked";
+
 }

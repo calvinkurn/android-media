@@ -40,9 +40,9 @@ public interface ChatSettingsInterface {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void onPersonalChatSettingChange(boolean state);
+        void onPersonalChatSettingChange(boolean state, boolean initialState);
 
-        void onPromotionalChatSettingChange(boolean state);
+        void onPromotionalChatSettingChange(boolean state, boolean initialState);
 
         void initialChatSettings(ChatSettingsResponse chatSettingsResponse);
 

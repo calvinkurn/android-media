@@ -85,7 +85,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.QuickReplyAdapter;
 import com.tokopedia.topchat.chatroom.view.adapter.ReasonAdapter;
 import com.tokopedia.topchat.chatroom.view.customview.ReasonBottomSheet;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
+import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
@@ -158,6 +160,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private static final long MILIS_TO_SECOND = 1000;
     @Inject
     ChatRoomPresenter presenter;
+
+    @Inject
+    ChatSettingsInterface.Presenter chatSettingsPresenter;
 
     @Inject
     ChatSettingsAnalytics chatSettingsAnalytics;
@@ -279,7 +284,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         enableChatTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                enableChatSettings();
+                presenter.onPersonalChatSettingChange(getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID), true );
             }
         });
         headerMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -297,7 +302,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return rootView;
     }
 
-    private void enableChatSettings() {
+    @Override
+    public void enableChatSettings() {
         isChatEnabled = true;
         sendMessageLayout.setVisibility(View.VISIBLE);
         chatBlockLayout.setVisibility(View.GONE);
