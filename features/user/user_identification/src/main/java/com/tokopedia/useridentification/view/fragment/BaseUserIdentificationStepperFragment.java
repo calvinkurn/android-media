@@ -86,9 +86,23 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
                 stepperListener.goToNextPage(stepperModel);
             }
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
+            sendAnalyticErrorImageTooLarge(requestCode);
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_file_too_big));
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void sendAnalyticErrorImageTooLarge(int requestCode) {
+        switch (requestCode) {
+            case REQUEST_CODE_CAMERA_KTP:
+                analytics.eventViewErrorImageTooLargeKtpPage();
+                break;
+            case REQUEST_CODE_CAMERA_FACE:
+                analytics.eventViewErrorImageTooLargeSelfiePage();
+                break;
+            default:
+                break;
+        }
     }
 
     protected abstract void setContentView();

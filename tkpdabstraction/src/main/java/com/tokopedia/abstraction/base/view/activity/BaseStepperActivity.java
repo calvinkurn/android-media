@@ -82,7 +82,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         onBackEvent();
     }
 
-    private void onBackEvent() {
+    protected void onBackEvent() {
         if (currentPosition > 1) {
             decrementPage();
         } else {
