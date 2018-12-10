@@ -5,11 +5,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
+import rx.functions.Func1
 import java.util.concurrent.TimeUnit
 
 /**
@@ -30,20 +33,45 @@ class TopChatViewState(var view: View, presenter: BaseChatPresenter) {
     private var maximize: View = view.findViewById(R.id.maximize)
     private var notifier: View = view.findViewById(R.id.notifier)
 
+    private var replyWatcher: Observable<String>
+    private var replyIsTyping: Observable<Boolean>
+
     init {
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus){
+            if (hasFocus) {
                 scrollDownWhenInBottom()
             }
         }
+        replyWatcher = EventsWatcher.text(replyEditText)
 
-        sendButton.setOnClickListener { presenter.sendMessage(replyEditText.text.toString())}
+        replyIsTyping = replyWatcher.map(Func1 { t -> t.length > 0 })
+
+        replyIsTyping.subscribe(Action1 {
+            if (it) {
+                minimizeTools()
+            }
+        })
+
+        maximize.setOnClickListener { maximizeTools() }
+        sendButton.setOnClickListener { presenter.sendMessage(replyEditText.text.toString()) }
+    }
+
+    private fun minimizeTools() {
+        maximize.visibility = View.VISIBLE
+        pickerButton.visibility = View.GONE
+        attachButton.visibility = View.GONE
+    }
+
+    private fun maximizeTools() {
+        maximize.visibility = View.GONE
+        pickerButton.visibility = View.VISIBLE
+        attachButton.visibility = View.VISIBLE
     }
 
     private fun scrollDownWhenInBottom() {
-        if(checkLastCompletelyVisibleItemIsFirst()) {
+        if (checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }
@@ -64,7 +92,7 @@ class TopChatViewState(var view: View, presenter: BaseChatPresenter) {
         actionBox?.visibility = View.VISIBLE
     }
 
-    fun setDefault(){
+    fun setDefault() {
         sendButton.requestFocus()
     }
 
