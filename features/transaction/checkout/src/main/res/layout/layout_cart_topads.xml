@@ -4,5 +4,6 @@
     android:id="@+id/topads"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:ads_offset="@dimen/dp_100"
     app:ads_title="@string/recomendasi_untuk_anda"
     android:visibility="gone"/>

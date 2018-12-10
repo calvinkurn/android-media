@@ -28,6 +28,7 @@ public class ImpressedImageView extends AppCompatImageView {
     private float radius = 8.0f;
     private Path path;
     private RectF rect;
+    private int offset;
 
     public ImpressedImageView(Context context) {
         super(context);
@@ -78,6 +79,10 @@ public class ImpressedImageView extends AppCompatImageView {
         });
     }
 
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
     private boolean isVisible(final View view) {
         if (view == null) {
             return false;
@@ -85,7 +90,7 @@ public class ImpressedImageView extends AppCompatImageView {
         if (!view.isShown()) {
             return false;
         }
-        Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
+        Rect screen = new Rect(0, 0, getScreenWidth(), (offset > 0) ? offset : getScreenHeight());
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -104,7 +109,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
     private int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels -
-                getResources().getDimensionPixelOffset(R.dimen.dp_100);
+                getResources().getDimensionPixelOffset(R.dimen.dp_45);
     }
 
     public void setViewHintListener(ViewHintListener hintListener) {

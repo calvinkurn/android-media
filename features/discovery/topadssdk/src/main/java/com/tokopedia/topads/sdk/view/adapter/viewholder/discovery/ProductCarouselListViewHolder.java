@@ -1,32 +1,21 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
-
-import java.util.List;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -49,15 +38,17 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public TextView shopLocation;
     public ImpressedImageView productImage;
     private int clickPosition;
+    private int offset;
 
 
     public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener, int clickPosition,
-                                         TopAdsItemImpressionListener impressionListener) {
+                                         TopAdsItemImpressionListener impressionListener, int offset) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.clickPosition = clickPosition;
         this.impressionListener = impressionListener;
+        this.offset = offset;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
@@ -69,12 +60,13 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public void bind(ProductCarouselListViewModel element) {
         data = element.getData();
         if (data.getProduct() != null) {
-            bindProduct(data.getProduct());
+            bindProduct(data.getProduct(), offset);
         }
     }
 
-    private void bindProduct(final Product product) {
+    private void bindProduct(final Product product, int offset) {
         productImage.setImage(product.getImage());
+        productImage.setOffset(offset);
         productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
