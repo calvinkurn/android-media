@@ -75,6 +75,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -136,6 +137,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    @Inject
+    CheckoutAnalyticsPurchaseProtection checkoutAnalyticsPurchaseProtection;
     @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
 
@@ -1755,6 +1758,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void navigateToProtectionMore(String url) {
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPurchaseProtectionShowed() {
+        checkoutAnalyticsPurchaseProtection.eventImpressionOfProduct();
     }
 
     public int getResultCode() {
