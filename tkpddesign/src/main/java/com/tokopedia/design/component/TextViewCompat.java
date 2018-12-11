@@ -103,7 +103,7 @@ public class TextViewCompat extends AppCompatTextView {
     }
 
     private void configTheme(Context context, TypedArray attributeArray) {
-        int theme = attributeArray.getInteger(R.styleable.TextViewCompat_textViewTheme, LIGHT_PRIMARY);
+        int theme = attributeArray.getInteger(R.styleable.TextViewCompat_textViewTheme, 0);
         if (theme == LIGHT_PRIMARY) {
             this.setTextColor(ContextCompat.getColor(context, R.color.light_primary));
         } else if (theme == LIGHT_SECONDARY) {
