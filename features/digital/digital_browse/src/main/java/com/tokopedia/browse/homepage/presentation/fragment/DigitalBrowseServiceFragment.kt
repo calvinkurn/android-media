@@ -38,10 +38,10 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         DigitalBrowseServiceViewHolder.CategoryListener {
 
     @Inject
-    internal var presenter: DigitalBrowseServicePresenter? = null
+    var presenter: DigitalBrowseServicePresenter? = null
 
     @Inject
-    internal var digitalBrowseAnalytics: DigitalBrowseAnalytics? = null
+    var digitalBrowseAnalytics: DigitalBrowseAnalytics? = null
 
     private var tabLayout: TabLayout? = null
     private var rvCategory: RecyclerView? = null

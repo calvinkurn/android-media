@@ -41,9 +41,9 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         DigitalBrowseCategoryViewHolder.CategoryListener, DigitalBrowsePopularViewHolder.PopularBrandListener {
 
     @Inject
-    internal var presenter: DigitalBrowseMarketplacePresenter? = null
+    var presenter: DigitalBrowseMarketplacePresenter? = null
     @Inject
-    internal var digitalBrowseAnalytics: DigitalBrowseAnalytics? = null
+    var digitalBrowseAnalytics: DigitalBrowseAnalytics? = null
 
     private var containerPopularBrand: LinearLayout? = null
     private var tvAllPopularBrand: TextViewCompat? = null
