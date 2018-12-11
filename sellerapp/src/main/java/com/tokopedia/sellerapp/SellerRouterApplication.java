@@ -1895,4 +1895,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openTopAdsDashboardApplink(Context context) {}
+
+    @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue){
+        return remoteConfig.getBoolean(key, defaultValue);
+    }
 }

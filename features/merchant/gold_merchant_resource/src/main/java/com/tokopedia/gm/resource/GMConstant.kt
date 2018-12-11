@@ -57,8 +57,8 @@ object GMConstant {
         POWER_MERCHANT_URL else GOLD_MERCHANT_URL
 
     @JvmStatic
-    fun isPowerMerchantEnabled(context: Context) = FirebaseRemoteConfigImpl(context)
-            .getBoolean(GMConstant.GM_REMOTE_CONFIG_KEY, GMConstant.DEFAULT_IS_POWER_ACTIVE)
+    fun isPowerMerchantEnabled(context: Context) = true /*FirebaseRemoteConfigImpl(context)
+            .getBoolean(GMConstant.GM_REMOTE_CONFIG_KEY, GMConstant.DEFAULT_IS_POWER_ACTIVE)*/
 
     @JvmStatic
     fun getGMPointerDrawable(context: Context?): Drawable? {
@@ -89,6 +89,22 @@ object GMConstant {
             R.drawable.ic_pmsubscribe_feature_badge
         } else {
             R.drawable.ic_gmsubscribe_feature_badge
+        }
+    }
+
+    @JvmStatic
+    fun getGMRegularBadgeDrawable(context: Context?): Drawable? {
+        if (context == null)
+            return null
+        return ContextCompat.getDrawable(context, getGMRegularBadgeDrawableResource(context))
+    }
+
+    @JvmStatic
+    private fun getGMRegularBadgeDrawableResource(context: Context): Int {
+        return if (isPowerMerchantEnabled(context)){
+            R.drawable.ic_pm_badge_shop_regular
+        } else {
+            R.drawable.ic_badge_shop_regular
         }
     }
 }
