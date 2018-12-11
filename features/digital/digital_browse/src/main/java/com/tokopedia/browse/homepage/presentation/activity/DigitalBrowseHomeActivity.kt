@@ -89,33 +89,32 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 
     companion object {
 
-        private val EXTRA_TYPE = "type"
+        val EXTRA_TYPE = "type"
         private val EXTRA_TAB = "tab"
-        private val EXTRA_TITLE = "title"
+        val EXTRA_TITLE = "title"
 
-        private val TYPE_BELANJA = 1
-        private val TYPE_LAYANAN = 2
+        val TYPE_BELANJA = 1
+        val TYPE_LAYANAN = 2
 
-        private val TITLE_BELANJA = "Belanja di Tokopedia"
-        private val TITLE_LAYANAN = "Lainnya"
+        val TITLE_BELANJA = "Belanja di Tokopedia"
+        val TITLE_LAYANAN = "Lainnya"
 
         private var digitalBrowseHomeComponent: DigitalBrowseHomeComponent? = null
-
-        @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
-
-            if (!extras.containsKey(EXTRA_TITLE)) {
-                if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_BELANJA) {
-                    extras.putString(EXTRA_TITLE, TITLE_BELANJA)
-                } else if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_LAYANAN) {
-                    extras.putString(EXTRA_TITLE, TITLE_LAYANAN)
-                }
-            }
-
-            return intent.setData(uri.build()).putExtras(extras)
-        }
     }
 }
 
+@DeepLink(ApplinkConstant.DIGITAL_BROWSE)
+fun getCallingIntent(context: Context, extras: Bundle): Intent {
+    val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+    val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+
+    if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
+        if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
+            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
+        } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
+            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
+        }
+    }
+
+    return intent.setData(uri.build()).putExtras(extras)
+}
