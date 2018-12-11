@@ -167,6 +167,7 @@ ext {
             districtRecommendation  : ":features:logistic:district_recommendation",
             logisticaddaddress      : ":features:logistic:logisticaddaddress",
             logisticanalytics       : ":features:logistic:logisticanalytics",
+            logisticCod             : ":features:transaction:cod",
             logisticdata            : ":features:logistic:logisticdata",
             logisticuploadawb       : ":features:logistic:logisticuploadawb",
             shippingRecommendation  : ":features:logistic:shipping_recommendation",
