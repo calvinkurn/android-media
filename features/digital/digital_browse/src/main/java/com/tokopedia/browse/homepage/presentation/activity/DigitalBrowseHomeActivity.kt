@@ -22,8 +22,7 @@ import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
 
-    @Inject
-    var digitalBrowseAnalytics: DigitalBrowseAnalytics? = null
+    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var fragmentDigital: Fragment? = null
 

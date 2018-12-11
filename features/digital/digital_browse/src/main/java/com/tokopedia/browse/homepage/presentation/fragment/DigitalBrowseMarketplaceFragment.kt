@@ -40,10 +40,8 @@ import javax.inject.Inject
 class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMarketplaceContract.View,
         DigitalBrowseCategoryViewHolder.CategoryListener, DigitalBrowsePopularViewHolder.PopularBrandListener {
 
-    @Inject
-    var presenter: DigitalBrowseMarketplacePresenter? = null
-    @Inject
-    var digitalBrowseAnalytics: DigitalBrowseAnalytics? = null
+    @Inject lateinit var presenter: DigitalBrowseMarketplacePresenter
+    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var containerPopularBrand: LinearLayout? = null
     private var tvAllPopularBrand: TextViewCompat? = null

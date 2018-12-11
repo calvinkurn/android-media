@@ -37,11 +37,8 @@ import javax.inject.Inject
 class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceContract.View,
         DigitalBrowseServiceViewHolder.CategoryListener {
 
-    @Inject
-    var presenter: DigitalBrowseServicePresenter? = null
-
-    @Inject
-    var digitalBrowseAnalytics: DigitalBrowseAnalytics? = null
+    @Inject lateinit var presenter: DigitalBrowseServicePresenter
+    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var tabLayout: TabLayout? = null
     private var rvCategory: RecyclerView? = null
