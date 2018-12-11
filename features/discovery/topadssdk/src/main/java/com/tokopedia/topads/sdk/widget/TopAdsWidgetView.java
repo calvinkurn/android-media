@@ -92,9 +92,9 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
             if (d.getProduct() != null) {
-                visitables.add(ModelConverter.INSTANCE.convertProductData(d, mode));
+                visitables.add(ModelConverter.convertProductData(d, mode));
             } else if (d.getShop() != null) {
-                visitables.add(ModelConverter.INSTANCE.convertShopData(d, mode));
+                visitables.add(ModelConverter.convertShopData(d, mode));
             }
         }
         adapter.setList(visitables);
