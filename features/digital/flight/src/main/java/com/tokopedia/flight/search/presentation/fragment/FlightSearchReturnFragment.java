@@ -121,7 +121,6 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         flightSearchComponent
                 .inject(this);
         flightSearchReturnPresenter.attachView(this);
-        searchFlightData();
     }
 
     @Override
