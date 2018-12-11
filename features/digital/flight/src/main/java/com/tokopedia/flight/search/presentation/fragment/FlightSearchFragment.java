@@ -215,6 +215,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         flightSearchComponent.inject(this);
 
         flightSearchPresenter.attachView(this);
+        searchFlightData();
     }
 
     @Override
@@ -863,6 +864,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
         flightSearchPresenter.resetCounterCall();
 
+        searchFlightData();
+    }
+
+    protected void searchFlightData() {
         if (!isReturning()) {
             flightSearchPresenter.fetchCombineData(passDataViewModel);
         } else {
