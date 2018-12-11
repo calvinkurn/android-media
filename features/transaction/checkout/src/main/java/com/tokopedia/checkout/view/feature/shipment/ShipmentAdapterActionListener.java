@@ -89,5 +89,5 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void navigateToProtectionMore(String url);
 
-    void onPurchaseProtectionShowed();
+    void onPurchaseProtectionShown();
 }

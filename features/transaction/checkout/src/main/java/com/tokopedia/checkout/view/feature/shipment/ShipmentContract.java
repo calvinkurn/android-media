@@ -108,6 +108,8 @@ public interface ShipmentContract {
 
         boolean checkCourierPromoStillExist();
 
+        boolean checkIfPurchaseProtectionPage();
+
         void setCourierPromoApplied(int itemPosition);
     }
 

@@ -55,6 +55,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -762,6 +763,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
                     analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest), checkoutData.getTransactionId());
+                    checkForPppAnalytics(checkoutRequest.data);
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
@@ -769,6 +771,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         };
+    }
+
+    private void checkForPppAnalytics(List<DataCheckoutRequest> data) {
+        if (!getView().checkIfPurchaseProtectionPage()) return;
+        for (DataCheckoutRequest datum : data) {
+            for (ShopProductCheckoutRequest shopProduct : datum.shopProducts) {
+                for (ProductDataCheckoutRequest productDatum : shopProduct.productData) {
+                    if (productDatum.isPurchaseProtection()) {
+                        analyticsPurchaseProtection.eventClickOnBuy(
+                                productDatum.isPurchaseProtection() ?
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     private Map<String, Object> generateCheckoutAnalyticsStep2DataLayer(CheckoutRequest checkoutRequest) {
