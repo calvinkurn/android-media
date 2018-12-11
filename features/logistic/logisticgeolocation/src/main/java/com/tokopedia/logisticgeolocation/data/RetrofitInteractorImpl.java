@@ -10,6 +10,7 @@ import com.tokopedia.logisticgeolocation.di.GeolocationScope;
 import com.tokopedia.logisticgeolocation.pinpoint.GeolocationPresenter;
 import com.tokopedia.network.utils.TKPDMapParam;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -17,7 +18,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -76,7 +76,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
-    public void generateLatLng(TKPDMapParam<String, String> param,
+    public void generateLatLng(Map<String, String> param,
                                final GenerateLatLongListener listener) {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
         paramaters.putAll(param);
@@ -104,7 +104,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
-    public void generateLatLngGeoCode(TKPDMapParam<String, String> param,
+    public void generateLatLngGeoCode(Map<String, String> param,
                                       final GenerateLatLongListener listener) {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
         paramaters.putAll(param);

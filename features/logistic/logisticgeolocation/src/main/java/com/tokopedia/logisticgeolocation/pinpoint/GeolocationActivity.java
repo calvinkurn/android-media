@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -18,19 +16,17 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticgeolocation.R;
 import com.tokopedia.logisticgeolocation.data.RetrofitInteractor;
-import com.tokopedia.logisticgeolocation.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticgeolocation.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticgeolocation.di.GeolocationModule;
-import com.tokopedia.logisticgeolocation.domain.LocationPassMapper;
-import com.tokopedia.logisticgeolocation.R;
 import com.tokopedia.logisticgeolocation.util.RequestPermissionUtil;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -123,7 +119,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
             if(locationPass != null && !locationPass.getLatitude().isEmpty()) {
                 fragment = GoogleMapFragment.newInstance(locationPass);
             } else {
-                TKPDMapParam<String,String> params = new TKPDMapParam<>();
+                Map<String,String> params = new HashMap<>();
                 params.put("address", locationPass.getDistrictName()
                         + ", "
                         + locationPass.getCityName());

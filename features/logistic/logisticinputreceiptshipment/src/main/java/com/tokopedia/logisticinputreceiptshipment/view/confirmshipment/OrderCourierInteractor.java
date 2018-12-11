@@ -16,11 +16,11 @@ public interface OrderCourierInteractor {
 
     void onGetCourierList(
             String selectedCourierId,
-            TKPDMapParam<String, String> params,
+            Map<String, String> params,
             Subscriber<ListCourierViewModel> model
     );
 
-    void confirmShipping(TKPDMapParam<String, String> params, Subscriber<String> subscriber);
+    void confirmShipping(Map<String, String> params, Subscriber<String> subscriber);
 
     void changeCourier(Map<String, String> params, Subscriber<String> subscriber);
 

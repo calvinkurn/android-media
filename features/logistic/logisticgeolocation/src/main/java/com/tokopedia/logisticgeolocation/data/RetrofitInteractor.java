@@ -4,7 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
-import com.tokopedia.network.utils.TKPDMapParam;
+
+import java.util.Map;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -17,9 +18,9 @@ public interface RetrofitInteractor {
 
     void unSubscribe();
 
-    void generateLatLng(TKPDMapParam<String, String> param, GenerateLatLongListener listener);
+    void generateLatLng(Map<String, String> param, GenerateLatLongListener listener);
 
-    void generateLatLngGeoCode(TKPDMapParam<String, String> param, GenerateLatLongListener listener);
+    void generateLatLngGeoCode(Map<String, String> param, GenerateLatLongListener listener);
 
     CompositeSubscription getCompositeSubscription();
 

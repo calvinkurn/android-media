@@ -32,7 +32,7 @@ public class OrderCourierInteractorImpl implements OrderCourierInteractor {
 
     @Override
     public void onGetCourierList(String selectedCourierId,
-                                 TKPDMapParam<String, String> params,
+                                 Map<String, String> params,
                                  Subscriber<ListCourierViewModel> subscriber) {
         compositeSubscription.add(repository.onOrderCourierRepository(selectedCourierId, params)
                 .map(courierResponse -> mapper.getCourierServiceModel(courierResponse,
@@ -45,7 +45,7 @@ public class OrderCourierInteractorImpl implements OrderCourierInteractor {
     }
 
     @Override
-    public void confirmShipping(TKPDMapParam<String, String> params,
+    public void confirmShipping(Map<String, String> params,
                                 Subscriber<String> subscriber) {
         compositeSubscription.add(repository.processShipping(params)
                 .subscribeOn(Schedulers.newThread())

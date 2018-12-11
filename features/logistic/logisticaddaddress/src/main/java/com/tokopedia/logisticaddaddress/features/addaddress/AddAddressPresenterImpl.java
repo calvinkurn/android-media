@@ -11,6 +11,8 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 /**
@@ -56,7 +58,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void saveAddress() {
         mView.showLoading();
-        TKPDMapParam<String, String> param = AuthUtil.generateParamsNetwork(
+        Map<String, String> param = AuthUtil.generateParamsNetwork(
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {

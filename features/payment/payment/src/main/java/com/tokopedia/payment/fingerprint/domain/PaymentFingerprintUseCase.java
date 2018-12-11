@@ -9,6 +9,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -39,7 +40,7 @@ public class PaymentFingerprintUseCase extends UseCase<ResponsePaymentFingerprin
 
     @Override
     public Observable<ResponsePaymentFingerprint> createObservable(final RequestParams requestParams) {
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(
+        Map<String, String> params = AuthUtil.generateParamsNetwork(
                 userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()
         );
         requestParams.putAllString(params);

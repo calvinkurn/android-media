@@ -1,13 +1,14 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -37,8 +38,8 @@ public class ManageAddressRepository implements DataSource {
                                 .convertDataObj(GetPeopleAddress.class));
     }
 
-    private TKPDMapParam<String, String> generateParams(RequestParams useCaseParams) {
-        TKPDMapParam<String, String> tkpdMapParam = new TKPDMapParam<>();
+    private Map<String, String> generateParams(RequestParams useCaseParams) {
+        Map<String, String> tkpdMapParam = new TKPDMapParam<>();
         tkpdMapParam.putAll(useCaseParams.getParamsAllValueInString());
         return AuthUtil.generateParamsNetwork(
                 userSession.getUserId(),

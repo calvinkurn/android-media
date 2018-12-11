@@ -35,14 +35,14 @@ public class OrderCourierRepository implements IOrderCourierRepository {
     @Override
     public Observable<CourierResponse> onOrderCourierRepository(
             final String selectedCourierId,
-            TKPDMapParam<String, String> params
+            Map<String, String> params
     ) {
         return myShopOrderApi.getEditShippingForm(params)
                 .map(tkpdResponseResponse -> tkpdResponseResponse.body().convertDataObj(CourierResponse.class));
     }
 
     @Override
-    public Observable<String> processShipping(TKPDMapParam<String, String> param) {
+    public Observable<String> processShipping(Map<String, String> param) {
         return myShopOrderActApi.proceedShipping(param)
                 .map(this::displayMessageToUser);
     }
