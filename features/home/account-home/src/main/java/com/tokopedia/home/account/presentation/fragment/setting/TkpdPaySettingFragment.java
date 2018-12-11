@@ -91,8 +91,6 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     vccUserStatus.getTitle()));
         }
 
-        /*settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCARD_ID,
-                getString(R.string.title_tokocard_setting)));*/
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,
                 getString(R.string.title_saldo_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_BANK_ACCOUNT_ID,
