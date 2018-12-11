@@ -4,8 +4,6 @@ import android.util.Log;
 
 import com.tokopedia.network.constant.TkpdBaseURL;
 
-import java.util.Map;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -19,7 +17,6 @@ import rx.Subscriber;
  * @author : Steven 07/10/18
  */
 public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSocketInfo> {
-    private final Map<String, WebSocket> webSocketMap;
     private String url;
     private String accessToken;
 
@@ -30,11 +27,11 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
 
     private OkHttpClient client;
 
-    WebSocketOnSubscribe(OkHttpClient client, String url, String accessToken, Map<String, WebSocket> webSocketMap) {
+    WebSocketOnSubscribe(OkHttpClient client, String url, String accessToken, WebSocket webSocketMap) {
         this.client = client;
         this.url = url;
         this.accessToken = accessToken;
-        this.webSocketMap = webSocketMap;
+        this.webSocket = webSocketMap;
     }
 
     @Override
@@ -53,10 +50,11 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
     private void initWebSocket(final Subscriber<? super WebSocketInfo> subscriber, String accessToken) {
         webSocket = client.newWebSocket(getRequest(url, accessToken), new WebSocketListener() {
             @Override
-            public void onOpen(final WebSocket webSocket, Response response) {
+            public void onOpen(WebSocket webSocket, Response response) {
                 if (showLog) {
                     Log.d(logTag, url + " --> onOpen");
                 }
+
                 if (!subscriber.isUnsubscribed()) {
                     subscriber.onNext(new WebSocketInfo(webSocket, true));
                 }

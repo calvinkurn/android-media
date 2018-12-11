@@ -12,10 +12,11 @@
     <string name="expired_reward_title">Maaf, Anda kurang cepat</string>
     <string name="expired_reward_message">Tunggu Kesempatan Lainnya</string>
     <string name="expired_reward_color">#ffffff</string>
-    <string name="expired_reward_size">medium</string>
+    <string name="expired_reward_size">small</string>
 
     <string name="error_reward_title">Maaf, sayang sekali sepertinya</string>
     <string name="error_reward_message">Terjadi Kesalahan Teknis</string>
     <string name="try_again_btn">Coba Lagi</string>
+    <string name="return_to_home">Kembali ke Beranda</string>
 
 </resources>

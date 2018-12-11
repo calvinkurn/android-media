@@ -32,6 +32,8 @@ public class CheckQuotaSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        if (mainView == null)
+            return;
         mainView.hideLoading();
         mainView.onErrorCheckQuota(
                 ErrorHandler.getErrorMessage(mainView.getContext(), e), productId, adId

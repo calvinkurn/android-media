@@ -144,6 +144,7 @@ ext {
             reactNative             : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             tokocash                : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
             topads                  : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
+            topAdsDashboard         : "com.tokopedia.topads:top_ads_dashboard:${tkpdTopAdsSDKVersion}",
             topAdsManagement        : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
@@ -170,6 +171,7 @@ ext {
 
             browse                      : ":features:digital:digital_browse",
             digitalDeals                : ":features:digital:digital_deals",
+            commonDigital               : ":features:digital:common_digital",
             digitalproduct              : ":features:digital:digitalproduct",
             event                       : ":features:digital:event",
             flight                      : ":features:digital:flight",
@@ -224,7 +226,9 @@ ext {
 
             goldMerchant                : ":features:merchant:gold_merchant",
             goldMerchantCommon          : ":features:merchant:gold_merchant_common",
+            goldMerchantResource        : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe       : ":features:merchant:gold_merchant_subscribe",
+//            goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe_no_op",
             productDraftDatabase        : ":features:merchant:product_draft_database",
             productManageItem           : ":features:merchant:product_manage_item",
             productManageList           : ":features:merchant:product_manage_list",
@@ -240,10 +244,12 @@ ext {
 
             contactUs                   : ":features:operational:contact_us",
 
-            withdraw                    : ":features:payment:withdraw",
-            paymentManagementSystem     : ":features:payment:pms",
-            paymentSetting              : ":features:payment:payment_setting",
             payment                     : ":features:payment:payment",
+            paymentSetting              : ":features:payment:payment_setting",
+//            paymentSetting          : ":features:payment:payment_setting_no_op",
+            paymentManagementSystem     : ":features:payment:pms",
+//            paymentManagementSystem : ":features:payment:pms_no_op",
+            withdraw                    : ":features:payment:withdraw",
 
             gallery                     : ":features:product:gallery",
 
@@ -251,8 +257,11 @@ ext {
             merchantVoucher             : ":features:promo:merchant_voucher",
             tokopoints                  : ":features:promo:tokopoints",
 
+            topAdsDashboard             : ":features:top_ads:top_ads_dashboard",
+            //topAdsDashboard         : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",
             topAdsManagement            : ":features:top_ads:top_ads_management",
+            //topAdsManagement        : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon      : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging         : ":features:top_ads:top_ads_management_sourcetagging",
 
@@ -264,6 +273,7 @@ ext {
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
             changepassword              : ":features:user:changepassword",
+//            changepassword              : ":features:user:changepassword_no_op",
             changePhoneNumber           : ":features:user:changephonenumber",
             groupchat                   : ":features:user:groupchat",
 //            groupchat                   : ":features:user:groupchat_no_op",

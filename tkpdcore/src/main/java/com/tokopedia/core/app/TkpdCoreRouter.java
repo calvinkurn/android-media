@@ -196,8 +196,6 @@ public interface TkpdCoreRouter {
     void setStringRemoteConfigLocal(String key, String value);
     Intent getSettingBankIntent(Context context);
 
-    Intent getChangePasswordIntent(Context context);
-
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getAutomaticResetPasswordIntent(Context context, String email);

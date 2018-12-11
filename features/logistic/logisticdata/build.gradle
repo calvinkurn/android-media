@@ -32,4 +32,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.cacheApi)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }

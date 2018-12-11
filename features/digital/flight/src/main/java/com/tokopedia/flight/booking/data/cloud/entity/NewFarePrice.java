@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.flight.search.data.cloud.model.response.Fare;
+import com.tokopedia.flight.search.data.api.single.response.Fare;
 
 /**
  * @author by alvarisi on 11/15/17.

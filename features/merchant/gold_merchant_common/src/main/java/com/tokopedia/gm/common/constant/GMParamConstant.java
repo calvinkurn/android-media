@@ -7,4 +7,5 @@ package com.tokopedia.gm.common.constant;
 public class GMParamConstant {
 
     public static final String SHOP_ID = "SHOP_ID";
+    public static final String PARAM_KEY_FROM_FEATURE = "isFromFeaturedProduct";
 }

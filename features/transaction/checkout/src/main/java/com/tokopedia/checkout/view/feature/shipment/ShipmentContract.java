@@ -214,7 +214,8 @@ public interface ShipmentContract {
 
         void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 
-        void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
+        void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition,
+                                                      boolean noToast, boolean isOneClickShipment);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
