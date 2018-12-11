@@ -24,7 +24,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -42,7 +42,7 @@ import java.util.List;
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends BaseMainApplication {
+public abstract class MainApplication extends MainRouterApplication{
 
     public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -255,7 +255,6 @@ public abstract class MainApplication extends BaseMainApplication {
         //CommonUtils.dumper("asdasas");
         MainApplication.context = getApplicationContext();
         init();
-        initFacebook();
         initCrashlytics();
         initStetho();
         PACKAGE_NAME = getPackageName();
@@ -314,20 +313,12 @@ public abstract class MainApplication extends BaseMainApplication {
         }
     }
 
-    /**
-     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
-     */
-
-    private void initFacebook() {
-
-    }
-
     protected void initializeAnalytics() {
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
-        TrackingUtils.setMoEngageExistingUser();
-        TrackingUtils.enableDebugging(isDebug());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.GTM, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.APPSFLYER, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.MOENGAGE, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.setMoEngageExistingUser(this, getTkpdCoreRouter().legacySessionHandler().isLoggedIn());
+        TrackingUtils.enableDebugging(this, isDebug());
     }
 
     public void initCrashlytics() {
