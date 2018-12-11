@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import com.tokopedia.core2.R;
 
 
 /**
@@ -212,7 +213,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             moveToHome();
         } else {
             try {
-                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID(this));
                 branch.initSession(new Branch.BranchReferralInitListener() {
                     @Override
                     public void onInitFinished(JSONObject referringParams, BranchError error) {

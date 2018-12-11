@@ -58,7 +58,7 @@ ext {
             williamchart      : ":libraries:williamchart",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil       : ":libraries:youtubeutil",
-
+            core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
     ]

@@ -116,9 +116,9 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
-            cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
-            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
-            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            cashbackTextView.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_label);
+            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core2.R.color.white));
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core2.R.color.tkpd_main_green));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
             } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
@@ -155,9 +155,9 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
         if (!TextUtils.isEmpty(productPass.getCashback())) {
             cashbackTextView.setText(productPass.getCashback());
-            cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
-            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
-            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            cashbackTextView.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_label);
+            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core2.R.color.white));
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core2.R.color.tkpd_main_green));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
             } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {

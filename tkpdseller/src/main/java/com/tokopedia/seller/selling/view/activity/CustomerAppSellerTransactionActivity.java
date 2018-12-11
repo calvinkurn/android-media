@@ -193,7 +193,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     private void setTrackerWidget() {
         boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
         if (fromWidget) {
-            UnifyTracking.eventAccessAppViewWidget();
+            UnifyTracking.eventAccessAppViewWidget(this);
         }
     }
 
@@ -296,12 +296,12 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     private void initVariable() {
         CONTENT = new String[]{
-                getString(com.tokopedia.core.R.string.title_opportunity_list),
-                getString(com.tokopedia.core.R.string.title_tab_new_order),
+                getString(com.tokopedia.core2.R.string.title_opportunity_list),
+                getString(com.tokopedia.core2.R.string.title_tab_new_order),
                 getString(R.string.title_seller_tx_ready_to_ship),
                 getString(R.string.title_seller_tx_shipped),
                 getString(R.string.title_seller_tx_delivered),
-                getString(com.tokopedia.core.R.string.title_transaction_list)
+                getString(com.tokopedia.core2.R.string.title_transaction_list)
         };
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         fragmentList = new ArrayList<>();
@@ -330,7 +330,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
             @Override
             public void onPageSelected(int position) {
                 if (indicator.getTabAt(position) != null) {
-                    UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
+                    UnifyTracking.eventShopTabSelected(CustomerAppSellerTransactionActivity.this,
+                            indicator.getTabAt(position).getText().toString());
                 }
                 initSellerTicker();
             }

@@ -115,7 +115,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        UnifyTracking.eventTopAdsProductDeleteGrup();
+        UnifyTracking.eventTopAdsProductDeleteGrup(getActivity());
         presenter.deleteAd(ad.getId());
     }
 
@@ -259,23 +259,23 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     private void trackingDateTopAds(int lastSelection, int selectionType) {
         if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
-            UnifyTracking.eventTopAdsProductDetailGroupPageDateCustom();
+            UnifyTracking.eventTopAdsProductDetailGroupPageDateCustom(getActivity());
         }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
             switch (lastSelection){
                 case 0:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
                     break;
                 case 1:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
                     break;
                 case 2:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
                     break;
                 case 3:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
                     break;
                 case 4:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
                     break;
                 default:
                     break;
