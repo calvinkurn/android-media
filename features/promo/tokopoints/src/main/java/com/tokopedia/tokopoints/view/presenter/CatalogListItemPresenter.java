@@ -33,6 +33,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
     private GraphqlUseCase mFetchCatalogStatusUseCase;
+    private int pointRange=0;
 
     @Inject
     public CatalogListItemPresenter(GraphqlUseCase getHomePageData,
@@ -115,7 +116,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     }
 
     private int getPointsRange() {
-        return 0;
+        return pointRange;
     }
 
     private int getSortId() {
@@ -284,5 +285,9 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
+    }
+
+    public void setPointRange(int pointRange) {
+        this.pointRange=pointRange;
     }
 }

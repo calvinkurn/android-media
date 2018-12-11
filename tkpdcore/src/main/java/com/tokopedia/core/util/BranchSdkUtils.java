@@ -57,6 +57,8 @@ public class BranchSdkUtils {
     private static final String BRANCH_IOS_DESKTOP_URL_KEY = "$ios_url";
     private static final String ProductCategory = "ProductCategory";
     private static final String FIREBASE_KEY_INCLUDEMOBILEWEB = "app_branch_include_mobileweb";
+    private static final String CHALLENGES_DESKTOP_URL = "https://m.tokopedia.com/kontes";
+    private static final String REFERRAL_DESKTOP_URL = "https://www.tokopedia.com/referral";
 
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -144,7 +146,11 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
 
-        if (desktopUrl == null) {
+        if (ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, CHALLENGES_DESKTOP_URL);
+        } else if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, REFERRAL_DESKTOP_URL);
+        } else if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
         }
         if (isAndroidIosUrlActivated() && !(ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||

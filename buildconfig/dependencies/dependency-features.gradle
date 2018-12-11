@@ -114,6 +114,7 @@ ext {
             reactNative             : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             tokocash                : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
             topads                  : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
+            topAdsDashboard         : "com.tokopedia.topads:top_ads_dashboard:${tkpdTopAdsSDKVersion}",
             topAdsManagement        : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
@@ -205,8 +206,11 @@ ext {
             merchantVoucher        : ":features:promo:merchant_voucher",
             tokopoints             : ":features:promo:tokopoints",
 
+            topAdsDashboard         : ":features:top_ads:top_ads_dashboard",
+            //topAdsDashboard         : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim         : ":features:top_ads:top_ads_free_claim",
             topAdsManagement        : ":features:top_ads:top_ads_management",
+            //topAdsManagement        : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon  : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging     : ":features:top_ads:top_ads_management_sourcetagging",
 
