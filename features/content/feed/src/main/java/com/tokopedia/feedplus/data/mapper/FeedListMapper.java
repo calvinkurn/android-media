@@ -1,10 +1,11 @@
 package com.tokopedia.feedplus.data.mapper;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.util.TimeConverter;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedplus.data.pojo.ContentFeedKol;
 import com.tokopedia.feedplus.data.pojo.Feed;
 import com.tokopedia.feedplus.data.pojo.FeedBanner;
@@ -40,6 +41,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
+import com.tokopedia.kol.common.util.TimeConverter;
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import org.json.JSONException;
@@ -62,9 +64,11 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
     private static final String ERROR_SERVER = "ERROR_SERVER";
     private static final String ERROR_NETWORK = "ERROR_NETWORK";
     private static final String ERROR_EMPTY_RESPONSE = "ERROR_EMPTY_RESPONSE";
+    private final Context context;
 
     @Inject
-    public FeedListMapper() {
+    public FeedListMapper(@ApplicationContext Context context) {
+        this.context = context;
     }
 
     @Override
@@ -343,6 +347,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                     kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
                     kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
                     kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
+                    datum.isAllowReport(),
                     datum.getContent().getType() == null ? "" : datum.getContent().getType()
             );
 
@@ -378,6 +383,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                     kolpost.getUserId() == null ? 0 : kolpost.getUserId(),
                     kolpost.getShowComment() == null ? true : kolpost.getShowComment(),
                     kolpost.getShowLike() == null ? true : kolpost.getShowLike(),
+                    datum.isAllowReport(),
                     datum.getContent().getType() == null ? "" : datum.getContent().getType());
         } else {
             return null;
@@ -495,7 +501,7 @@ public class FeedListMapper implements Func1<Response<GraphqlResponse<FeedQuery>
                 polling.getCommentCount() == null ? 0 : polling.getCommentCount(),
                 0,
                 TextUtils.isEmpty(activityId) ? 0 : Integer.valueOf(activityId),
-                TimeConverter.generateTime(
+                TimeConverter.generateTime(context,
                         polling.getCreateTime() == null ? "" : polling.getCreateTime()
                 ),
                 polling.getShowComment() == null ? true : polling.getShowComment(),

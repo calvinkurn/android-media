@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
-import com.project.youtubeutils.common.YoutubeInitializer;
-import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -27,6 +25,8 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
+import com.tokopedia.youtubeutils.common.YoutubeInitializer;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     private Type type;
 
     public enum Type {
-        PROFILE, FEED
+        PROFILE, FEED, SHOP_PAGE
     }
 
     public KolPostYoutubeViewHolder(View itemView,
@@ -163,15 +163,35 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     @Override
     public void onLikeButtonClickListener(BaseKolViewModel element) {
         if (element.isLiked()) {
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onUnlikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         } else {
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onLikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         }
     }
 
     @Override
     public void onCommentClickListener(BaseKolViewModel element) {
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getKolId());
+        viewListener.onGoToKolComment(
+                getAdapterPosition(),
+                element.getContentId(),
+                element.isMultipleContent(),
+                element.getActivityType()
+        );
+    }
+
+    @Override
+    public void onMenuClickListener(BaseKolViewModel element) {
+
     }
 
     private void tooltipAreaClicked(KolPostYoutubeViewModel element) {
@@ -185,7 +205,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             );
 
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
+                    element.getContentId(),
                     KolEnhancedTracking.Promotion.createContentNameFeed(
                             element.getTagsType(),
                             element.getCardType()),
@@ -205,29 +225,11 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 
-        } else if (type == Type.PROFILE) {
-            promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
-                    KolEnhancedTracking.Promotion.createContentNameKolPost(
-                            element.getTagsType()),
-                    TextUtils.isEmpty(element.getName()) ? DASH :
-                            element.getName(),
-                    getAdapterPosition(),
-                    TextUtils.isEmpty(element.getLabel()) ? DASH :
-                            element.getLabel(),
-                    element.getTagsId(),
-                    TextUtils.isEmpty(element.getTagsLink()) ? DASH :
-                            element.getTagsLink(),
-                    Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
-                            viewListener.getUserSession().getUserId() : "0")
-            ));
-
-            analyticTracker.sendEnhancedEcommerce(
-                    KolEnhancedTracking.getKolClickTracking(promotionList)
-            );
         }
 
-        viewListener.onOpenKolTooltip(getAdapterPosition(),
+        viewListener.onOpenKolTooltip(
+                getAdapterPosition(),
+                "",
                 element.getTagsLink()
         );
     }
@@ -245,7 +247,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         if (element.getUserId() > 0) {
             viewListener.onGoToKolProfile(getAdapterPosition(),
                     String.valueOf(element.getUserId()),
-                    element.getKolId()
+                    element.getContentId()
             );
         } else {
             viewListener.onGoToKolProfileUsingApplink(
@@ -273,13 +275,13 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                 KolEventTracking.Event.EVENT_CLICK_FEED,
                 KolEventTracking.Category.CONTENT_FEED,
                 KolEventTracking.Action.CLICK_YOUTUBE_VIDEO,
-                String.valueOf(element.getKolId())
+                String.valueOf(element.getContentId())
         );
 
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
 
         promotionList.add(new KolEnhancedTracking.Promotion(
-                element.getKolId(),
+                element.getContentId(),
                 KolEnhancedTracking.Promotion.createContentNameAnnouncement(
                         element.getTagsType(),
                         element.getCardType()),

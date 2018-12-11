@@ -12,6 +12,7 @@ import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class GetLoanProfileStatusUseCase extends RestRequestSupportInterceptorUs
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
 
         List<RestRequest> restRequestList = new ArrayList<>();
 

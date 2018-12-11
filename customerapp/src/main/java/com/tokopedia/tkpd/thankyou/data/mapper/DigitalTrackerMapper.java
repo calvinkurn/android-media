@@ -45,6 +45,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         purchase.setPaymentType(data.getPaymentType());
         purchase.setPaymentStatus(data.getPaymentStatus());
         purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setItemPrice(String.valueOf(parseStringToInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
         if (isActionFieldValid(data)) {
             purchase.setTransactionID(data.getEcommerce().getPurchase().getActionField().getId());
             purchase.setShipping(DEFAULT_DIGITAL_SHIPPING);
@@ -87,7 +88,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         branchIOPayment.setPaymentId(String.valueOf(data.getPaymentId()));
         if (isActionFieldValid(data)) {
             branchIOPayment.setShipping(DEFAULT_DIGITAL_SHIPPING);
-            branchIOPayment.setRevenue(String.valueOf(Integer.parseInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
+            branchIOPayment.setRevenue(String.valueOf(parseStringToInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
             branchIOPayment.setOrderId(data.getEcommerce().getPurchase().getActionField().getId());
         }
         branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_DIGITAL);
@@ -96,11 +97,21 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
                 HashMap<String, String> localProduct = new HashMap<>();
                 localProduct.put(BranchIOPayment.KEY_ID, product.getId());
                 localProduct.put(BranchIOPayment.KEY_NAME, product.getName());
-                localProduct.put(BranchIOPayment.KEY_PRICE,String.valueOf(Integer.parseInt(product.getPrice())));
+                localProduct.put(BranchIOPayment.KEY_PRICE,String.valueOf(parseStringToInt(product.getPrice())));
                 localProduct.put(BranchIOPayment.KEY_QTY, String.valueOf(product.getQuantity()));
+                localProduct.put(BranchIOPayment.KEY_CATEGORY, String.valueOf(product.getCategory()));
                 branchIOPayment.setProduct(localProduct);
             }
         }
         return branchIOPayment;
+    }
+
+    private  int parseStringToInt(String input){
+
+        try{
+            return Integer.parseInt(input);
+        }catch(NumberFormatException e){
+            return 0;
+        }
     }
 }

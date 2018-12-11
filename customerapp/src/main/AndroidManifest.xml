@@ -121,35 +121,21 @@
                     android:pathPattern=".*"
                     android:scheme="https"/>
                 <data
-                    android:host="www.tokopedia.com"
+                    android:host="m.tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="tkpd"/>
+                    android:scheme="https"/>
                 <data
                     android:host="tokopedia.com"
                     android:pathPattern=".*"
                     android:scheme="https"/>
                 <data
-                    android:host="m.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https"/>
-                <data
                     android:host="tokopedia.onelink.me"
+                    android:scheme="https"/>
+                <data
+                    android:host="exclusive.tokopedia.com"
+                    android:scheme="https"/>
+                <data
+                    android:host="merchant.tokopedia.com"
                     android:scheme="https"/>
             </intent-filter>
         </activity>
@@ -166,9 +152,6 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer"/>
-        <meta-data
-            android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="@string/key_truecaller_main_app"/>
 
         <activity
             android:name=".home.ParentIndexHome"
@@ -340,6 +323,10 @@
                 <action android:name="com.tokopedia.tkpd.utils.delete" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="com.tokopedia.tkpd.onboarding.NewOnboardingActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

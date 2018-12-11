@@ -1,14 +1,10 @@
 package com.tokopedia.otp.cotp.domain.source;
 
-import com.crashlytics.android.Crashlytics;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.BranchSdkUtils;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.otp.cotp.data.SQLoginApi;
 import com.tokopedia.otp.cotp.di.CotpScope;
 import com.tokopedia.otp.cotp.domain.mapper.MakeLoginMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.OtpLoginDomain;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -27,7 +23,7 @@ public class MakeLoginDataSource {
     private final MakeLoginMapper makeLoginMapper;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     public MakeLoginDataSource(@CotpScope SQLoginApi otpLoginApi,
@@ -40,25 +36,8 @@ public class MakeLoginDataSource {
         return otpLoginApi
                 .makeLogin(parameters)
                 .map(makeLoginMapper)
-                .doOnNext(saveToCache())
-                .doOnNext(setTrackingData());
+                .doOnNext(saveToCache());
     }
-
-    private Action1<? super OtpLoginDomain> setTrackingData() {
-        return new Action1<OtpLoginDomain>() {
-            @Override
-            public void call(OtpLoginDomain makeLoginDomain) {
-                TrackingUtils.eventPushUserID();
-                if (!GlobalConfig.DEBUG) {
-                    Crashlytics.setUserIdentifier(String.valueOf(makeLoginDomain
-                            .getUserId()));
-                }
-                BranchSdkUtils.sendIdentityEvent(String.valueOf(makeLoginDomain
-                        .getUserId()));
-            }
-        };
-    }
-
 
     private Action1<OtpLoginDomain> saveToCache() {
         return new Action1<OtpLoginDomain>() {
@@ -69,9 +48,8 @@ public class MakeLoginDataSource {
                     userSession.setUserId(String.valueOf(makeLoginDomain.getUserId()));
                     userSession.setName(makeLoginDomain.getFullName());
                     userSession.setEmail(userSession.getTempEmail());
-                    userSession.setIsMsisdnVerified(makeLoginDomain.isMsisdnVerified());
+                    userSession.setIsMSISDNVerified(makeLoginDomain.isMsisdnVerified());
                     userSession.setPhoneNumber(userSession.getTempPhoneNumber());
-
                     userSession.setShopId(String.valueOf(makeLoginDomain.getShopId()));
                     userSession.setShopName(makeLoginDomain.getShopName());
                     userSession.setIsGoldMerchant(makeLoginDomain.getShopIsGold());

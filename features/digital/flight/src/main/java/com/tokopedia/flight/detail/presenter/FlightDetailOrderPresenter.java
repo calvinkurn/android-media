@@ -102,8 +102,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     @Override
-    public void onHelpButtonClicked() {
-        getView().navigateToWebview(FlightUrl.CONTACT_US);
+    public void onHelpButtonClicked(String contactUsUrl) {
+        getView().navigateToWebview(contactUsUrl);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
                 getView().setTransactionDate(
-                        FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.FORMAT_DATE_API_DETAIL,
+                        FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime())
                 );
                 getView().updateOrderData(
@@ -256,7 +256,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             if (flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_THIRD_PARTY
                     || flightOrder.getStatus() == FlightStatusOrderType.WAITING_FOR_TRANSFER) {
                 getView().setPaymentDueDate(
-                        FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API,
+                        FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT,
                                 flightOrder.getPayment().getExpireOn()
                         )
@@ -388,7 +388,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         boolean canGoToCancelPage = false;
         for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
             if (isDepartureDateMoreThan6Hours(
-                    FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, item.getDepartureTime()))) {
+                    FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.getDepartureTime()))) {
                 canGoToCancelPage = true;
             }
         }

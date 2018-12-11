@@ -17,7 +17,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -193,6 +196,11 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
     @Override
     public void onSuccessRegister(LoginRegisterPhoneNumberModel model) {
         dismissLoading();
+        if(model.getMakeLoginDomain() != null) {
+            if(getContext().getApplicationContext() instanceof SessionRouter) {
+                ((SessionRouter) getContext().getApplicationContext()).sendAFCompleteRegistrationEvent(model.getMakeLoginDomain().getUserId(), LoginAnalytics.Label.PHONE_NUMBER);
+            }
+        }
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }

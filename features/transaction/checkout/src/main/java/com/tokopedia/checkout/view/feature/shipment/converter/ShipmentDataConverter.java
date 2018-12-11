@@ -8,6 +8,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
@@ -130,24 +131,17 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setWarning(groupShop.isWarning());
         shipmentCartItemModel.setWarningTitle(groupShop.getWarningMessage());
 
-        if (!shipmentCartItemModel.isError()) {
-            int productErrorCounter = 0;
-            for (Product product : groupShop.getProducts()) {
-                if (product.isError()) {
-                    productErrorCounter++;
-                }
-            }
-            if (productErrorCounter > 0) {
-                shipmentCartItemModel.setError(true);
-                shipmentCartItemModel.setErrorTitle("Terdapat kendala pada " + productErrorCounter + " produk");
-            }
-        }
-
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
         shipmentCartItemModel.setShopName(shop.getShopName());
         shipmentCartItemModel.setOfficialStore(shop.isOfficial());
         shipmentCartItemModel.setGoldMerchant(shop.isGold());
+
+        shipmentCartItemModel.setShippingId(groupShop.getShippingId());
+        shipmentCartItemModel.setSpId(groupShop.getSpId());
+        shipmentCartItemModel.setDropshiperName(groupShop.getDropshipperName());
+        shipmentCartItemModel.setDropshiperPhone(groupShop.getDropshipperPhone());
+        shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -190,6 +184,7 @@ public class ShipmentDataConverter {
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
         cartItemModel.setNoteToSeller(product.getProductNotes());
         cartItemModel.setPreOrder(product.isProductIsPreorder());
+        cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
@@ -198,6 +193,19 @@ public class ShipmentDataConverter {
         cartItemModel.setfCancelPartial(product.isProductFinsurance());
         cartItemModel.setError(product.isError());
         cartItemModel.setErrorMessage(product.getErrorMessage());
+        cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
+
+        if(product.getPurchaseProtectionPlanData() != null) {
+            PurchaseProtectionPlanData ppp = product.getPurchaseProtectionPlanData();
+            cartItemModel.setProtectionAvailable(ppp.isProtectionAvailable());
+            cartItemModel.setProtectionPricePerProduct(ppp.getProtectionPricePerProduct());
+            cartItemModel.setProtectionPrice(ppp.getProtectionPrice());
+            cartItemModel.setProtectionTitle(ppp.getProtectionTitle());
+            cartItemModel.setProtectionSubTitle(ppp.getProtectionSubtitle());
+            cartItemModel.setProtectionLinkText(ppp.getProtectionLinkText());
+            cartItemModel.setProtectionLinkUrl(ppp.getProtectionLinkUrl());
+            cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());
+        }
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());
         return cartItemModel;

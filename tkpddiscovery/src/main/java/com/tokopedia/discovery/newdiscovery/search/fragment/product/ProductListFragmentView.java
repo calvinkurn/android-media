@@ -3,7 +3,9 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
@@ -31,10 +33,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     int getStartFrom();
 
-    void setTopAdsEndlessListener();
-
-    void unSetTopAdsEndlessListener();
-
     void setHeaderTopAds(boolean hasHeader);
 
     void setProductList(List<Visitable> list);
@@ -54,11 +52,17 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void backToTop();
 
-    void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel);
+    List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
 
-    void getQuickFilter();
+    void addLoading();
 
-    void renderQuickFilter(DynamicFilterModel dynamicFilterModel);
+    void removeLoading();
 
-    void getGuidedSearch();
+    void onSuccessAddWishlist(String productId);
+
+    void onErrorAddWishList(String errorMessage, String productId);
+
+    void notifyAdapter();
+
+    void stopTracePerformanceMonitoring();
 }

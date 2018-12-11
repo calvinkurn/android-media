@@ -9,26 +9,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.recentview.R;
+import com.tokopedia.recentview.RecentViewRouter;
+import com.tokopedia.recentview.analytics.RecentViewTracking;
 import com.tokopedia.recentview.di.DaggerRecentViewComponent;
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl;
 import com.tokopedia.recentview.view.listener.RecentView;
 import com.tokopedia.recentview.view.presenter.RecentViewPresenter;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
 import com.tokopedia.recentview.view.viewmodel.RecentViewProductViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * @author by nisie on 7/4/17.
@@ -37,9 +41,10 @@ import javax.inject.Inject;
 public class RecentViewFragment extends BaseDaggerFragment
         implements RecentView.View, WishListActionListener {
 
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
+
     private RecyclerView recyclerView;
     private RecentViewDetailAdapter adapter;
-    private TkpdProgressDialog progressDialog;
     private LinearLayoutManager layoutManager;
 
     @Inject
@@ -121,13 +126,18 @@ public class RecentViewFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productId) {
-        if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+    public void onGoToProductDetail(String productId,
+                                    String productName,
+                                    String  productPrice,
+                                    String productImage) {
+        if (getActivity() != null &&
+                getActivity().getApplication() instanceof RecentViewRouter) {
+            ((RecentViewRouter) getActivity().getApplication()).goToProductDetail(
                     getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .build()
+                    productId,
+                    productImage,
+                    productName,
+                    productPrice
             );
         }
     }
@@ -139,11 +149,7 @@ public class RecentViewFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
-        if (getActivity() != null)
-            progressDialog.showDialog();
     }
 
     @Override
@@ -173,6 +179,35 @@ public class RecentViewFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void sendRecentViewClickTracking(RecentViewDetailProductViewModel element) {
+        RecentViewTracking.trackEventClickOnProductRecentView(getActivity(),
+                element.getRecentViewAsObjectDataLayerForClick()
+                );
+    }
+
+    @Override
+    public void sendRecentViewImpressionTracking(List<RecentViewDetailProductViewModel> recentViewModel) {
+        RecentViewTracking.trackEventImpressionOnProductRecentView(getActivity(),
+                getRecentViewAsDataLayerForImpression(recentViewModel));
+    }
+
+    public List<Object> getRecentViewAsDataLayerForImpression(List<RecentViewDetailProductViewModel> recentViewModel) {
+        List<Object> objects = new ArrayList<>();
+        for(RecentViewDetailProductViewModel model : recentViewModel){
+            objects.add(DataLayer.mapOf(
+                    "name", model.getName(),
+                    "id", model.getProductId(),
+                    "price", Integer.toString(convertRupiahToInt(String.valueOf(model.getPrice()))),
+                    "list", "/recent",
+                    "brand", DEFAULT_VALUE_NONE_OTHER,
+                    "category", "",
+                    "position", String.valueOf(model.getPositionForRecentViewTracking())
+            ));
+        }
+        return objects;
+    }
+
+    @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
         dismissLoadingProgress();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
@@ -194,7 +229,7 @@ public class RecentViewFragment extends BaseDaggerFragment
             }
         }
 
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_success_add_wishlist));
     }
 
     @Override
@@ -219,12 +254,11 @@ public class RecentViewFragment extends BaseDaggerFragment
             }
         }
 
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_success_remove_wishlist));
     }
 
     @Override
     public void dismissLoadingProgress() {
-        if (progressDialog != null && progressDialog.isProgress())
-            progressDialog.dismiss();
+
     }
 }

@@ -44,6 +44,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.attachproduct)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

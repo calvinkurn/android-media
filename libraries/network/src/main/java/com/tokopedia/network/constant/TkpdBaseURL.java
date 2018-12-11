@@ -32,6 +32,7 @@ public class TkpdBaseURL {
     public static String INBOX_DOMAIN = "https://inbox.tokopedia.com";
     public static String CHAT_DOMAIN = "https://chat.tokopedia.com";
     public static String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
+    public static String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat.tokopedia.com";
     public static String JS_DOMAIN = "https://js.tokopedia.com/";
     public static String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";
     public static String JS_ALPHA_DOMAIN = "https://ajax-alpha.tokopedia.com/js/";
@@ -58,7 +59,6 @@ public class TkpdBaseURL {
     public static String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
-    public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
@@ -75,6 +75,7 @@ public class TkpdBaseURL {
         public static final String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
 
         public static final String PATH_GET_DETAIL_PRODUCT = "get_detail.pl";
+        public static final String PATH_GET_DETAIL_PRODUCT_REVAMP = "v4/product/get_detail.pl";
         public static final String PATH_GET_OTHER_PRODUCT = "get_other_product.pl";
         public static final String PATH_GET_ADD_PRODUCT_FORM = "get_add_product_form.pl";
         public static final String PATH_GET_EDIT_PRODUCT_FORM = "get_edit_product_form.pl";
@@ -728,28 +729,6 @@ public class TkpdBaseURL {
         public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
         public static final String PATH_COMMENT_RATING = "ws/contact-us/rating";
         public static final String PATH_FEEDBACK = "ws/feedback";
-    }
-
-    public static class TokoCash {
-        public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
-        public static final String PATH_WALLET = "api/v1/wallet/balance";
-        public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
-        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "api/v1/wallet/link";
-        public static final String GET_TOKEN_WALLET = "api/v1/wallet/token";
-    }
-
-    public static class Wallet {
-        public static final String GET_HISTORY = "api/v1/me/history";
-        public static final String POST_COMPLAINT = "api/v1/cs/complaint";
-        public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
-        public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
-        public static final String GET_QR_INFO = "api/v1/qr/{identifier}";
-        public static final String POST_QR_PAYMENT = "api/v1/paymentqr";
-        public static final String GET_BALANCE = "api/v1/wallet/balance";
-        public static final String REQUEST_OTP_LOGIN = "oauth/otp";
-        public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
-        public static final String AUTHORIZE = "oauth/authorize_native";
-        public static final String CHECK_MSISDN = "oauth/check/msisdn";
     }
 
     public static class DigitalApi {

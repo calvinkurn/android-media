@@ -21,9 +21,11 @@ import android.widget.RelativeLayout;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
@@ -31,7 +33,6 @@ import com.tokopedia.checkout.view.di.component.ShipmentAddressListComponent;
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.text.SearchInputView;
@@ -57,10 +58,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         SearchInputView.ResetListener,
         ShipmentAddressListAdapter.ActionListener {
 
-    private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
-
     private static final int ORDER_ASC = 1;
     private static final String PARAMS = "params";
+    private static final String CHOOSE_ADDRESS_TRACE = "choose_another_address_trace";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -77,6 +77,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private boolean isMenuVisible;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
+
+    private PerformanceMonitoring chooseAddressTracePerformance;
+    private boolean isChooseAddressTraceStopped;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
@@ -166,7 +169,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (item.getItemId() == R.id.menu_add_address) {
             checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
-            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(
+            startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
                     getActivity(), null, token, false, false
                     ),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
@@ -189,6 +192,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_shipment_address_list;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
     }
 
     @Override
@@ -279,6 +288,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel) {
         onAddressContainerClicked(recipientAddressModel);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isChooseAddressTraceStopped) {
+            chooseAddressTracePerformance.stopTrace();
+            isChooseAddressTraceStopped = true;
+        }
     }
 
     @Override
@@ -432,7 +449,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(
+        Intent intent = ((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
                 getActivity(), mapper.transform(model), token, true, false
         );
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);

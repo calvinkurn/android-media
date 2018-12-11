@@ -1,5 +1,10 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,10 +16,11 @@ import java.util.List;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class Product {
+public class Product implements Parcelable {
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_WISHLIST = "wishlist";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_URI = "uri";
     private static final String KEY_RELATIVE_URI = "relative_uri";
@@ -36,29 +42,53 @@ public class Product {
     private static final String KEY_APPLINKS = "applinks";
     private static final String KEY_IMAGE_PRODUCT = "image_product";
 
+    @SerializedName(KEY_ID)
     private String id;
     private String adRefKey;
     private String adId;
+    @SerializedName(KEY_NAME)
     private String name;
+    @SerializedName(KEY_WISHLIST)
+    private boolean wishlist;
+    @SerializedName(KEY_IMAGE)
     private ProductImage image;
+    @SerializedName(KEY_URI)
     private String uri;
+    @SerializedName(KEY_RELATIVE_URI)
     private String relativeUri;
+    @SerializedName(KEY_PRICE_FORMAT)
     private String priceFormat;
+    @SerializedName(KEY_COUNT_TALK_FORMAT)
     private String countTalkFormat;
+    @SerializedName(KEY_COUNT_REVIEW_FORMAT)
     private String countReviewFormat;
+    @SerializedName(KEY_CATEGORY)
     private Category category;
+    @SerializedName(KEY_PRODUCT_PREORDER)
     private boolean productPreorder;
+    @SerializedName(KEY_PRODUCT_WHOLESALE)
     private boolean productWholesale;
+    @SerializedName(KEY_FREERETURN)
     private String freeReturn;
+    @SerializedName(KEY_PRODUCT_CASHBACK)
     private boolean productCashback;
+    @SerializedName(KEY_PRODUCT_CASHBACK_RATE)
     private String productCashbackRate;
+    @SerializedName(KEY_PRODUCT_NEW_LABEL)
     private boolean productNewLabel;
+    @SerializedName(KEY_PRODUCT_RATE)
     private int productRating;
+    @SerializedName(KEY_APPLINKS)
     private String applinks;
+    @SerializedName(KEY_WHOLESALE_PRICE)
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
+    @SerializedName(KEY_LABELS)
     private List<Label> labels = new ArrayList<>();
+    @SerializedName(KEY_TOP_LABEL)
     private List<String> topLabels = new ArrayList<>();
+    @SerializedName(KEY_BOTTOM_LABEL)
     private List<String> bottomLabels = new ArrayList<>();
+    @SerializedName(KEY_IMAGE_PRODUCT)
     private ImageProduct imageProduct;
     private boolean loaded;
 
@@ -71,6 +101,9 @@ public class Product {
         }
         if(!object.isNull(KEY_NAME)){
             setName(object.getString(KEY_NAME));
+        }
+        if(!object.isNull(KEY_WISHLIST)){
+            setWishlist(object.getBoolean(KEY_WISHLIST));
         }
         if(!object.isNull(KEY_IMAGE)){
             setImage(new ProductImage(object.getJSONObject(KEY_IMAGE)));
@@ -144,6 +177,88 @@ public class Product {
                 bottomLabels.add(arr.getString(i));
             }
         }
+    }
+
+    protected Product(Parcel in) {
+        id = in.readString();
+        adRefKey = in.readString();
+        adId = in.readString();
+        name = in.readString();
+        wishlist = in.readByte() != 0;
+        image = in.readParcelable(ProductImage.class.getClassLoader());
+        uri = in.readString();
+        relativeUri = in.readString();
+        priceFormat = in.readString();
+        countTalkFormat = in.readString();
+        countReviewFormat = in.readString();
+        category = in.readParcelable(Category.class.getClassLoader());
+        productPreorder = in.readByte() != 0;
+        productWholesale = in.readByte() != 0;
+        freeReturn = in.readString();
+        productCashback = in.readByte() != 0;
+        productCashbackRate = in.readString();
+        productNewLabel = in.readByte() != 0;
+        productRating = in.readInt();
+        applinks = in.readString();
+        wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
+        labels = in.createTypedArrayList(Label.CREATOR);
+        topLabels = in.createStringArrayList();
+        bottomLabels = in.createStringArrayList();
+        imageProduct = in.readParcelable(ImageProduct.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(adRefKey);
+        dest.writeString(adId);
+        dest.writeString(name);
+        dest.writeByte((byte) (wishlist ? 1 : 0));
+        dest.writeParcelable(image, flags);
+        dest.writeString(uri);
+        dest.writeString(relativeUri);
+        dest.writeString(priceFormat);
+        dest.writeString(countTalkFormat);
+        dest.writeString(countReviewFormat);
+        dest.writeParcelable(category, flags);
+        dest.writeByte((byte) (productPreorder ? 1 : 0));
+        dest.writeByte((byte) (productWholesale ? 1 : 0));
+        dest.writeString(freeReturn);
+        dest.writeByte((byte) (productCashback ? 1 : 0));
+        dest.writeString(productCashbackRate);
+        dest.writeByte((byte) (productNewLabel ? 1 : 0));
+        dest.writeInt(productRating);
+        dest.writeString(applinks);
+        dest.writeTypedList(wholesalePrice);
+        dest.writeTypedList(labels);
+        dest.writeStringList(topLabels);
+        dest.writeStringList(bottomLabels);
+        dest.writeParcelable(imageProduct, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
+
+    public boolean isWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        this.wishlist = wishlist;
     }
 
     public List<String> getTopLabels() {

@@ -57,7 +57,15 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_base_list, container, false);
+        if (hasInitialSwipeRefresh()) {
+            return inflater.inflate(R.layout.fragment_base_list_swipe, container, false);
+        } else {
+            return inflater.inflate(R.layout.fragment_base_list, container, false);
+        }
+    }
+
+    protected boolean hasInitialSwipeRefresh (){
+        return false;
     }
 
     public RecyclerView getRecyclerView(View view) {
@@ -66,6 +74,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     @Nullable
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        if (hasInitialSwipeRefresh()) {
+            return view.findViewById(R.id.swipe_refresh_layout);
+        }
         return null;
     }
 

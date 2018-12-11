@@ -12,6 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
+@Deprecated
 public class ProductShopInfo implements Parcelable{
     private static final String TAG = ProductShopInfo.class.getSimpleName();
 
@@ -176,6 +177,10 @@ public class ProductShopInfo implements Parcelable{
 
     public Integer getShopIsOfficial() {
         return shopIsOfficial;
+    }
+
+    public boolean isOfficial() {
+        return shopIsOfficial == SHOP_OFFICIAL_VALUE;
     }
 
     public void setShopIsOfficial(Integer shopIsOfficial) {

@@ -19,9 +19,6 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -56,7 +53,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private ViewFlipper mContainer;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
-    private RemoteConfig mRemoteConfig;
     private long mRefreshTime;
     private Timer mTimer;
     private Handler mHandler = new Handler();
@@ -78,11 +74,12 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Inject
     public CatalogListItemPresenter mPresenter;
 
-    public static Fragment newInstance(int categoryId, int currentSortType) {
+    public static Fragment newInstance(int categoryId, int subCategoryId, boolean isPointsAvailable) {
         Fragment fragment = new CatalogListItemFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_CATEGORY_ID, categoryId);
-        bundle.putInt(ARGS_SORT_TYPE, currentSortType);
+        bundle.putInt(CommonConstant.ARGS_CATEGORY_ID, categoryId);
+        bundle.putInt(CommonConstant.ARGS_SUB_CATEGORY_ID, subCategoryId);
+        bundle.putBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, isPointsAvailable);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -96,6 +93,11 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
+        if(getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
+            mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_membership_and_egg));
+        }else{
+            mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
+        }
         mContainer = rootView.findViewById(R.id.container);
         return rootView;
     }
@@ -111,7 +113,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.text_failed_action) {
-            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSortType());
+            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSubCategoryId());
         } else if (view.getId() == R.id.text_empty_action) {
             openWebView(CommonConstant.WebLink.INFO);
         }
@@ -165,7 +167,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             mAdapter.notifyDataSetChanged();
         } else {
             mAdapter = new CatalogListAdapter(mPresenter, items);
-            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14)));
             mRecyclerViewCatalog.setAdapter(mAdapter);
         }
 
@@ -200,6 +204,22 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         }
 
         return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
+    }
+
+    @Override
+    public int getCurrentSubCategoryId() {
+        if (getArguments() != null) {
+            return getArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID);
+        }
+
+        return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
+    }
+
+    public boolean getPointsAvailability(){
+        if(getArguments()!=null){
+            return getArguments().getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false);
+        }
+        return false;
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
@@ -261,7 +281,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
-
     }
 
     public void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode) {
@@ -329,8 +348,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                            getAppContext()));
+                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -391,7 +409,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                 CatalogsValueEntity item = mAdapter.getItems().get(i);
                 if (each.getCatalogID() == item.getId()) {
                     item.setDisabled(each.isDisabled());
-                    item.setDisabledButton(each.isDisabled());
+                    item.setDisabledButton(each.isDisabledButton());
                     item.setUpperTextDesc(each.getUpperTextDesc());
                     item.setQuota(each.getQuota());
                 }
@@ -435,8 +453,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     private void fetchRemoteConfig() {
-        mRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        mRefreshTime = mRemoteConfig.getLong(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
+        mRefreshTime = ((TokopointRouter) getAppContext())
+                .getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
 
     @Override
@@ -518,3 +536,4 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
     }
 }
+

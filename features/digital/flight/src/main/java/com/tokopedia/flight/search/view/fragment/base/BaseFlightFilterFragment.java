@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightFilterListener;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 /**
  * Created by User on 11/17/2017.

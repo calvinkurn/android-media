@@ -231,6 +231,11 @@ public class ShareSocmedHandler {
         });
     }
 
+    public static void ShareBranchUrl( Activity context, String packageName, String targetType, String branchUrl , String shareContents) {
+        ShareData(context, packageName, targetType, shareContents, branchUrl, null, null);
+
+    }
+
     private static void ShareData(Activity context, String packageName, String targetType, String shareTxt, String ProductUri, Bitmap image, String altUrl) {
         boolean Resolved = false;
         Intent share = new Intent(Intent.ACTION_SEND);

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -44,12 +45,13 @@ public class HomepagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container, container, false);
         ViewFlipper containerInner = view.findViewById(R.id.container);
-
         if (position == 0) {
             if (mCatalogs != null && !mCatalogs.isEmpty()) {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
-                recyclerView.addItemDecoration(new SpacesItemDecoration(recyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_14)));
                 recyclerView.setAdapter(mCatalogsAdapter);
             } else {
                 containerInner.setDisplayedChild(1);
@@ -65,21 +67,12 @@ public class HomepagePagerAdapter extends PagerAdapter {
                         AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
                         "");
             });
-            view.findViewById(R.id.text_link_second).setOnClickListener(v -> {
-                mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
-
-                AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_BANTUAN,
-                        "");
-            });
         } else {
             if (mCoupons == null || mCoupons.isEmpty()) {
                 containerInner.setDisplayedChild(1);
-                ((ImageView) view.findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
-                ((TextView) view.findViewById(R.id.text_title_error)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
-                ((TextView) view.findViewById(R.id.text_label_error)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+                ((ImageView) view.findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
+                ((TextView) view.findViewById(R.id.text_title_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
+                ((TextView) view.findViewById(R.id.text_label_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
                 view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.button_continue).setOnClickListener(view12 -> mPresenter.getView().gotoCatalog());
                 view.findViewById(R.id.text_empty_action).setOnClickListener(v ->
@@ -87,8 +80,13 @@ public class HomepagePagerAdapter extends PagerAdapter {
             } else {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
-                recyclerView.addItemDecoration(new SpacesItemDecoration(recyclerView.getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_16),
+                        container.getResources().getDimensionPixelOffset(R.dimen.dp_16)));
                 recyclerView.setAdapter(mCouponsAdapter);
+
+                LinearLayout.LayoutParams params= (LinearLayout.LayoutParams) view.findViewById(R.id.view_dummy).getLayoutParams();     //margin for bottom view
+                params.height=container.getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg);
             }
 
             view.findViewById(R.id.text_link_first).setOnClickListener(v -> {
@@ -98,15 +96,6 @@ public class HomepagePagerAdapter extends PagerAdapter {
                         AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
-                        "");
-            });
-            view.findViewById(R.id.text_link_second).setOnClickListener(v -> {
-                mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
-
-                AnalyticsTrackerUtil.sendEvent(view.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_BANTUAN,
                         "");
             });
         }

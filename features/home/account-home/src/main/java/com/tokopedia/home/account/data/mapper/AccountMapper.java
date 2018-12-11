@@ -17,12 +17,14 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +33,15 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 
 /**
  * @author okasurya on 7/20/18.
  */
 public class AccountMapper implements Func1<GraphqlResponse, AccountViewModel> {
 
-private static final String NO_SHOP = "-1";
+    private static final String NO_SHOP = "-1";
     private Context context;
 
     @Inject
@@ -52,7 +55,7 @@ private static final String NO_SHOP = "-1";
         return from(context, accountModel);
     }
 
-    public static AccountViewModel from(Context context, AccountModel accountModel){
+    public static AccountViewModel from(Context context, AccountModel accountModel) {
         AccountViewModel accountViewModel = new AccountViewModel();
         accountViewModel.setBuyerViewModel(getBuyerModel(context, accountModel));
         if (accountModel.getShopInfo() != null
@@ -81,7 +84,7 @@ private static final String NO_SHOP = "-1";
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
-        if (!accountModel.getWallet().isLinked()){
+        if (!accountModel.getWallet().isLinked()) {
             tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
@@ -283,6 +286,8 @@ private static final String NO_SHOP = "-1";
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
+        setTickerSeller(context, accountModel, items);
+
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
@@ -416,5 +421,21 @@ private static final String NO_SHOP = "-1";
 
         sellerViewModel.setItems(items);
         return sellerViewModel;
+    }
+
+    private static void setTickerSeller(Context context, AccountModel accountModel, List<ParcelableViewModel> items) {
+        TickerViewModel sellerTickerModel = new TickerViewModel(new ArrayList<>());
+
+        if (accountModel.getKycStatusPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo() != null
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getIsSuccess() == KYCConstant.IS_SUCCESS_GET_STATUS
+                && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
+                .getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
+            sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
+        }
+
+        items.add(sellerTickerModel);
+
     }
 }

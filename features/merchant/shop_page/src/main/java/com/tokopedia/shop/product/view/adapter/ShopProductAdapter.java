@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.adapter;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,10 +13,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
+import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
@@ -29,10 +31,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_HIGHLIGHT_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_FEATURED_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_MERCHANT_VOUCHER_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PROMO_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
@@ -43,6 +47,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     private boolean needToShowEtalase = false;
 
     private ShopProductPromoViewModel shopProductPromoViewModel;
+    private ShopMerchantVoucherViewModel shopMerchantVoucherViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
     private ShopProductFeaturedViewModel shopProductFeaturedViewModel;
     private ShopProductEtalaseListViewModel shopProductEtalaseListViewModel;
@@ -51,6 +56,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
     private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
+    private RecyclerView recyclerView;
 
     // this view holder is to hold the state between the sticky and non-sticky etalase view holder.
     private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListViewHolderWeakReference;
@@ -59,12 +65,14 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     public ShopProductAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
         this.shopProductAdapterTypeFactory = baseListAdapterTypeFactory;
+        shopMerchantVoucherViewModel = new ShopMerchantVoucherViewModel(null);
         shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
         shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null);
         shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
         shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null, null);
+        visitables.add(shopMerchantVoucherViewModel);
         visitables.add(shopProductPromoViewModel);
         visitables.add(shopProductFeaturedViewModel);
         visitables.add(shopProductEtalaseHighlightViewModel);
@@ -82,6 +90,22 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         }
     }
 
+    public String getEtalaseNameHighLight(ShopProductViewModel shopProductViewModel) {
+        ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel = getShopProductEtalaseHighlightViewModel();
+        List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList =
+                shopProductEtalaseHighlightViewModel.getEtalaseHighlightCarouselViewModelList();
+        for (int i = 0, sizei = etalaseHighlightCarouselViewModelList.size(); i < sizei; i++) {
+            List<ShopProductViewModel> shopProductViewModelList = etalaseHighlightCarouselViewModelList.get(i).getShopProductViewModelList();
+            for (int j =0, sizej = shopProductViewModelList.size(); j<sizej; j++) {
+                ShopProductViewModel shopProductViewModelEtalase = shopProductViewModelList.get(j);
+                if (shopProductViewModelEtalase.getId().equals(shopProductViewModel.getId())) {
+                    return etalaseHighlightCarouselViewModelList.get(i).getShopEtalaseViewModel().getEtalaseName();
+                }
+            }
+        }
+        return ALL_ETALASE;
+    }
+
     public boolean isNeedToShowEtalase() {
         return needToShowEtalase;
     }
@@ -93,6 +117,15 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             this.shopProductPromoViewModel = shopProductPromoViewModel;
         }
         setVisitable(DEFAULT_PROMO_POSITION, this.shopProductPromoViewModel);
+    }
+
+    public void setShopMerchantVoucherViewModel(ShopMerchantVoucherViewModel shopMerchantVoucherViewModel) {
+        if (shopMerchantVoucherViewModel == null) {
+            this.shopMerchantVoucherViewModel = new ShopMerchantVoucherViewModel(null);
+        } else {
+            this.shopMerchantVoucherViewModel = shopMerchantVoucherViewModel;
+        }
+        setVisitable(DEFAULT_MERCHANT_VOUCHER_POSITION, this.shopMerchantVoucherViewModel);
     }
 
     public void setShopProductFeaturedViewModel(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
@@ -200,6 +233,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     @Override
     public void clearAllElements() {
         clearPromoData();
+        clearMerchantVoucherData();
         clearFeaturedData();
         clearEtalaseHighlightData();
         clearEtalaseData();
@@ -208,6 +242,10 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     public void clearPromoData() {
         setShopProductPromoViewModel(null);
+    }
+
+    public void clearMerchantVoucherData() {
+        setShopMerchantVoucherViewModel(null);
     }
 
     public void clearFeaturedData() {
@@ -354,8 +392,19 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     public void refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
-            onStickySingleHeaderViewListener.refreshSticky();
+            recyclerView.post(() -> onStickySingleHeaderViewListener.refreshSticky());
         }
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
 }

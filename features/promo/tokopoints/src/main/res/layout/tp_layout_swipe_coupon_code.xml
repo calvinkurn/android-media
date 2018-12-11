@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:visibility="gone"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/text_swipe_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_swipe"
+        tool:text="Redeem 2 hour ago"
+        tool:visibility="visible" />
+
+    <TextView
+        android:id="@+id/btn_barcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@null"
+        android:gravity="end"
+        android:text="@string/tp_label_barcode"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_swipe"
+        tool:text="Bar Code"
+        tool:visibility="visible" />
+
+    <View
+        android:id="@+id/view_code_separator"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="0dp"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@color/white_two"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_barcode"
+        app:layout_constraintRight_toLeftOf="@+id/btn_barcode"
+        app:layout_constraintTop_toTopOf="@+id/btn_barcode" />
+
+    <TextView
+        android:id="@+id/btn_qrcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_10"
+        android:gravity="end"
+        android:text="@string/tp_label_qrcode"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/tp_text_size_xsmall"
+        android:visibility="gone"
+        app:layout_constraintRight_toLeftOf="@+id/view_code_separator"
+        app:layout_constraintTop_toBottomOf="@+id/card_swipe"
+        tool:text="QR Cose"
+        tool:visibility="visible" />
+
+</android.support.constraint.ConstraintLayout>

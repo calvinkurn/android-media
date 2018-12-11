@@ -28,6 +28,18 @@ public class WalletModel {
     @SerializedName("action")
     @Expose
     private WalletAction action;
+    @SerializedName("point_balance")
+    @Expose
+    private String pointBalance;
+    @SerializedName("cash_balance")
+    @Expose
+    private String cashBalance;
+    @SerializedName("wallet_type")
+    @Expose
+    private String walletType;
+
+    private String pendingCashback;
+    private int amountPendingCashback;
 
     public String getText() {
         return text;
@@ -83,5 +95,45 @@ public class WalletModel {
 
     public void setBalance(String balance) {
         this.balance = balance;
+    }
+
+    public String getPointBalance() {
+        return pointBalance;
+    }
+
+    public void setPointBalance(String pointBalance) {
+        this.pointBalance = pointBalance;
+    }
+
+    public String getCashBalance() {
+        return cashBalance;
+    }
+
+    public void setCashBalance(String cashBalance) {
+        this.cashBalance = cashBalance;
+    }
+
+    public String getWalletType() {
+        return walletType;
+    }
+
+    public void setWalletType(String walletType) {
+        this.walletType = walletType;
+    }
+
+    public String getPendingCashback() {
+        return pendingCashback;
+    }
+
+    public void setPendingCashback(String pendingCashback) {
+        this.pendingCashback = pendingCashback;
+    }
+
+    public int getAmountPendingCashback() {
+        return amountPendingCashback;
+    }
+
+    public void setAmountPendingCashback(int amountPendingCashback) {
+        this.amountPendingCashback = amountPendingCashback;
     }
 }

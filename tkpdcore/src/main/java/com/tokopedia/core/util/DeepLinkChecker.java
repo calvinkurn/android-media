@@ -54,9 +54,10 @@ public class DeepLinkChecker {
     public static final int TOKOPOINT = 20;
     public static final int GROUPCHAT = 21;
     public static final int SALE = 22;
+    public static final int WALLET_OVO = 23;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
-    private static final String FLIGHT_SEGMENT = "pesawat";
+    private static final String FLIGHT_SEGMENT = "flight";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
@@ -83,7 +84,7 @@ public class DeepLinkChecker {
                 return FLIGHT;
             else if (isPromo(linkSegment))
                 return PROMO;
-            else if(isSale(linkSegment))
+            else if (isSale(linkSegment))
                 return SALE;
             else if (isInvoice(linkSegment))
                 return INVOICE;
@@ -119,6 +120,8 @@ public class DeepLinkChecker {
                 return REFERRAL;
             else if (isTokoPoint(linkSegment))
                 return TOKOPOINT;
+            else if (isWalletOvo(linkSegment))
+                return WALLET_OVO;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
@@ -163,6 +166,7 @@ public class DeepLinkChecker {
     private static boolean isPromo(List<String> linkSegment) {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO));
     }
+
     private static boolean isSale(List<String> linkSegment) {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_SALE));
     }
@@ -223,7 +227,9 @@ public class DeepLinkChecker {
                 && !isTopPicks(linkSegment))
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
-                && !isMutualFund(linkSegment);
+                && !isMutualFund(linkSegment)
+                && !isWalletOvo(linkSegment)
+                && !isKycTerms(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -254,6 +260,14 @@ public class DeepLinkChecker {
 
     private static boolean isTokoPoint(List<String> linkSegment) {
         return (linkSegment.get(0).equals("tokopoints"));
+    }
+
+    private static boolean isWalletOvo(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("ovo"));
+    }
+
+    private static boolean isKycTerms(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("terms")) && (linkSegment.get(1).equals("merchantkyc"));
     }
 
     public static String getQuery(String url, String q) {

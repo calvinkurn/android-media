@@ -26,6 +26,7 @@
             android:orientation="vertical">
 
             <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -67,17 +68,37 @@
                         app:tabTextColor="@color/black_38" />
                 </android.support.design.widget.AppBarLayout>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/list_chip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="@dimen/tp_margin_regular"
-                    android:layout_marginTop="@dimen/tp_margin_medium" />
+                <include layout="@layout/tp_layout_catalog_flash_timer" />
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/view_pager_sort_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_fab_egg_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/tp_margin_large"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
+
+                <include layout="@layout/tp_layout_floating_token" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bottom_view_membership"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <include layout="@layout/tp_bottomview_membership" />
             </LinearLayout>
 
         </android.support.design.widget.CoordinatorLayout>

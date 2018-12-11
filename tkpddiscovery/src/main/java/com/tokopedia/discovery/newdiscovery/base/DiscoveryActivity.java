@@ -19,11 +19,13 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -34,6 +36,8 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +60,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private static final String FAILURE = "no matching result found";
     private static final String NO_RESPONSE = "no response";
     private static final String SUCCESS = "success match found";
+    private static final String SEARCH_RESULT_TRACE = "search_result_trace";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
@@ -68,11 +73,14 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private TkpdProgressDialog tkpdProgressDialog;
     private boolean fromCamera;
     private String imagePath;
+    private UserSessionInterface userSession;
+    private PerformanceMonitoring performanceMonitoring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
+        userSession = new UserSession(this);
         proceed();
     }
 
@@ -289,13 +297,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         SearchParameter parameter = new SearchParameter();
         parameter.setQueryKey(keyword);
         parameter.setUniqueID(
-                sessionHandler.isV4Login() ?
-                        AuthUtil.md5(sessionHandler.getLoginID()) :
+                userSession.isLoggedIn() ?
+                        AuthUtil.md5(userSession.getUserId()) :
                         AuthUtil.md5(gcmHandler.getRegistrationId())
         );
         parameter.setUserID(
-                sessionHandler.isV4Login() ?
-                        sessionHandler.getLoginID() :
+                userSession.isLoggedIn() ?
+                        userSession.getUserId() :
                         null
         );
         parameter.setDepartmentId(categoryID);
@@ -315,16 +323,17 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         SearchParameter parameter = new SearchParameter();
         parameter.setQueryKey(keyword);
         parameter.setUniqueID(
-                sessionHandler.isV4Login() ?
-                        AuthUtil.md5(sessionHandler.getLoginID()) :
+                userSession.isLoggedIn() ?
+                        AuthUtil.md5(userSession.getUserId()) :
                         AuthUtil.md5(gcmHandler.getRegistrationId())
         );
         parameter.setUserID(
-                sessionHandler.isV4Login() ?
-                        sessionHandler.getLoginID() :
+                userSession.isLoggedIn() ?
+                        userSession.getUserId() :
                         null
         );
         onSearchingStart(keyword);
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
     }
 
@@ -590,5 +599,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    @Override
+    public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        super.onHandleResponseSearch(productViewModel);
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
     }
 }

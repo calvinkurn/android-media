@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
@@ -30,6 +30,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -56,7 +57,10 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -69,8 +73,12 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
     private static final String SHOP_TYPE_REGULER = "reguler";
 
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
+
+    public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
+
     private WishlistAnalytics wishlistAnalytics;
 
     public WishListFragment() {
@@ -97,6 +105,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wishList = new WishListImpl(getActivity(), this);
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
+        wishlistAnalytics = new WishlistAnalytics(getAnalyticTracker());
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
@@ -160,16 +170,22 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         prepareView();
         setListener();
         loadWishlistData();
+        trackingAppshortcut();
         return parentView;
     }
 
     private void initView(View view) {
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
-        wishlistAnalytics = new WishlistAnalytics(getAnalyticTracker());
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
         searchEditText = view.findViewById(R.id.wishlist_search_edittext);
+    }
+
+    private void trackingAppshortcut() {
+        boolean isFromAppShortcut = getArguments() != null && getArguments().getBoolean(FROM_APP_SHORTCUTS);
+        if (isFromAppShortcut) {
+            wishlistAnalytics.eventWishlistShortcut();
+        }
     }
 
     private AnalyticTracker getAnalyticTracker() {
@@ -243,28 +259,24 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult) {
-        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
-                new EnhancedECommerceProductCartMapData();
-        enhancedECommerceProductCartMapData.setProductName(dataDetail.getName());
-        enhancedECommerceProductCartMapData.setProductID(String.valueOf(dataDetail.getId()));
-        enhancedECommerceProductCartMapData.setPrice(String.valueOf(dataDetail.getPrice()));
-        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
-        enhancedECommerceProductCartMapData.setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setQty(String.valueOf(dataDetail.getMinimumOrder()));
-        enhancedECommerceProductCartMapData.setShopId(dataDetail.getShop().getId());
-        enhancedECommerceProductCartMapData.setShopType(generateShopType(dataDetail.getShop()));
-        enhancedECommerceProductCartMapData.setShopName(dataDetail.getShop().getName());
-        enhancedECommerceProductCartMapData.setCategoryId(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setAttribution(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setListName(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
-        enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
-        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
-        enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
-        checkoutAnalyticsAddToCart.enhancedECommerceAddToCartClickBeli(
-                enhancedECommerceCartMapData.getCartMap(), dataDetail.getName());
+        Object object = DataLayer.mapOf(
+                "name", dataDetail.getName(),
+                "id", dataDetail.getId(),
+                "price", convertRupiahToInt(String.valueOf(dataDetail.getPrice())),
+                "brand", DEFAULT_VALUE_NONE_OTHER,
+                "category", DEFAULT_VALUE_NONE_OTHER,
+                "variant", DEFAULT_VALUE_NONE_OTHER,
+                "quantity", dataDetail.getMinimumOrder(),
+                "shopId", dataDetail.getShop().getId(),
+                "shopType", generateShopType(dataDetail.getShop()),
+                "shopName", dataDetail.getShop().getName(),
+                "picture", dataDetail.getImageUrl(),
+                "url", dataDetail.getUrl(),
+                "categoryId", DEFAULT_VALUE_NONE_OTHER,
+                "cartId", addToCartResult.getCartId(),
+                "dimension38", DEFAULT_VALUE_NONE_OTHER
+        );
+        wishlistAnalytics.trackEventAddToCardProductWishlist(object);
     }
 
     private String generateShopType(com.tokopedia.core.network.entity.wishlist.Shop shop) {
@@ -450,7 +462,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void initAdapterWithData(List<RecyclerViewItem> data) {
-        adapter = new WishListProductAdapter(getActivity(), data);
+        adapter = new WishListProductAdapter(getActivity(), data, wishlistAnalytics);
         adapter.setWishlistView(this);
         adapter.setActionButtonClicked(this);
     }
@@ -599,6 +611,30 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 }
             }
         };
+    }
+
+    @Override
+    public void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData, int currentSize) {
+        wishlistAnalytics.trackEventImpressionOnProductWishlist(getProductAsObjectDataLayerForWishlistImpression(wishListData.getWishlistDataList(), currentSize));
+    }
+
+    public List<Object> getProductAsObjectDataLayerForWishlistImpression(List<Wishlist> wishlistDataList, int currentSize) {
+        int position = currentSize+1;
+        List<Object> objects = new ArrayList<>();
+        for (int i = 0; i<wishlistDataList.size() ; i++){
+            Wishlist wishlist = wishlistDataList.get(i);
+            objects.add(DataLayer.mapOf(
+                    "name", wishlist.getName(),
+                    "id", wishlist.getId(),
+                    "price", Integer.toString(convertRupiahToInt(String.valueOf(wishlist.getPrice()))),
+                    "brand", DEFAULT_VALUE_NONE_OTHER,
+                    "category", DEFAULT_VALUE_NONE_OTHER,
+                    "variant", DEFAULT_VALUE_NONE_OTHER,
+                    "list", "/wishlist",
+                    "position", Integer.toString(position++)
+            ));
+        }
+        return objects;
     }
 
 }

@@ -1,14 +1,17 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
@@ -20,8 +23,10 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurati
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.constant.CourierConstant;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +47,17 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
     public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
 
+    private static final String CHOOSE_COURIER_TRACE = "choose_courier_trace";
+
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llContent;
     private RecyclerView rvDuration;
 
     private ShippingDurationBottomsheetListener shippingDurationBottomsheetListener;
+
+    private PerformanceMonitoring chooseCourierTracePerformance;
+    private boolean isChooseCourierTraceStopped;
 
     @Inject
     ShippingDurationContract.Presenter presenter;
@@ -93,6 +103,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     protected String title() {
         return getString(R.string.title_bottomsheet_shipment_duration);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
     }
 
     @Override
@@ -179,23 +195,68 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
         shippingDurationAdapter.notifyDataSetChanged();
         updateHeight();
+        boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);
+        if (hasCourierPromo) {
+            sendAnalyticCourierPromo(shippingDurationViewModelList);
+        }
+    }
+
+    private boolean checkHasCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        boolean hasCourierPromo = false;
+        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
+            if (shippingDurationViewModel.getServiceData().getIsPromo() == 1) {
+                hasCourierPromo = true;
+                break;
+            }
+        }
+
+        return hasCourierPromo;
+    }
+
+    private void sendAnalyticCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
+            shippingDurationBottomsheetListener.onShowDurationListWithCourierPromo(
+                    shippingDurationViewModel.getServiceData().getIsPromo() == 1,
+                    shippingDurationViewModel.getServiceData().getServiceName()
+            );
+        }
+    }
+
+    @Override
+    public void showNoCourierAvailable(String message) {
+        shippingDurationBottomsheetListener.onNoCourierAvailable(message);
+        dismiss();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isChooseCourierTraceStopped) {
+            chooseCourierTracePerformance.stopTrace();
+            isChooseCourierTraceStopped = true;
+        }
     }
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          int cartPosition, String serviceName) {
+                                          int cartPosition, ServiceData serviceData, boolean hasCourierPromo) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
-        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-            shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-            if (shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
-                    shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY) {
+        if (isToogleYearEndPromotionOn()) {
+            if (serviceData.getError() != null && serviceData.getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED) &&
+                    !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
+                flagNeedToSetPinpoint = true;
+                selectedServiceId = serviceData.getServiceId();
+            }
+        } else {
+            for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+                shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
                 if (shippingCourierViewModel.getProductData().getError() != null &&
                         shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
                         shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                     flagNeedToSetPinpoint = true;
                     selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
                     shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
@@ -206,7 +267,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName, flagNeedToSetPinpoint);
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
+                    flagNeedToSetPinpoint, hasCourierPromo);
         }
         dismiss();
     }
@@ -234,5 +296,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
         }
+    }
+
+    @Override
+    public boolean isToogleYearEndPromotionOn() {
+        if (getActivity() != null) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
+        }
+        return false;
     }
 }

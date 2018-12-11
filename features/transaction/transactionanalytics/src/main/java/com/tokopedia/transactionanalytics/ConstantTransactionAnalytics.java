@@ -11,6 +11,7 @@ public interface ConstantTransactionAnalytics {
         String EVENT_ACTION = "eventAction";
         String EVENT_LABEL = "eventLabel";
         String E_COMMERCE = "ecommerce";
+        String PAYMENT_ID = "payment_id";
     }
 
 
@@ -31,15 +32,19 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ORDER = "viewOrder";
         String CLICK_ORDER = "clickOrder";
         String CLICK_ADDRESS = "clickAddress";
+        String PRODUCT_CLICK = "productClick";
+        String PRODUCT_VIEW = "productView";
+        String CLICK_PDP = "clickPDP";
     }
 
     interface EventCategory {
-        String CART = "Cart";
-        String COURIER_SELECTION = "Courier Selection";
+        String CART = "cart";
+        String COURIER_SELECTION = "courier selection";
         String ADD_TO_CART = "add to cart";
-        String CART_CHANGE_ADDRESS = "Cart Change Address";
-        String CART_MULTIPLE_ADDRESS = "Cart Multiple Address";
+        String CART_CHANGE_ADDRESS = "cart change address";
+        String CART_MULTIPLE_ADDRESS = "cart multiple address";
         String ORDER_TRACKING = "order tracking";
+        String PRODUCT_DETAIL_PAGE = "product detail page";
     }
 
     interface EventAction {
@@ -148,6 +153,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_NAMA_PADA_TAMBAH_ADDRESS = "click nama pada + address";
         String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
+        String CLICK_CEK_KERANJANG = "click - cek keranjang";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -185,6 +191,17 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
         String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
         String CLICK_UBAH_DURASI = "click ubah durasi";
+        String VIEW_DURATION = "view duration";
+        String VIEW_COURIER_OPTION = "view courier option";
+
+        //EMPTY CART
+        String CLICK_LIHAT_LAINNYA = "click lihat lainnya on empty cart";
+        String CLICK_LIHAT_SEMUA_WISHLIST = "click lihat semua wishlist on empty cart";
+        String CLICK_LIHAT_SEMUA_LAST_SEEN = "click lihat semua last seen on empty cart";
+        String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
+        String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
+        String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
+        String VIEW_PRODUCT = "view product";
     }
 
     interface EventLabel {
@@ -205,6 +222,10 @@ public interface ConstantTransactionAnalytics {
 
         String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
         String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
+
+        String PRODUCT_WISHLIST = "product wishlist";
+        String PRODUCT_LAST_SEEN = "product last seen";
+        String PRODUCT_RECOMMENDATION = "product recommendation";
     }
 
     interface ScreenName {
@@ -220,5 +241,6 @@ public interface ConstantTransactionAnalytics {
         String ADDRESS_LIST_PAGE = "/cart/address";
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
+        String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import com.tokopedia.navigation_common.model.DepositModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
+import com.tokopedia.navigation_common.model.PendingCashbackModel;
 import com.tokopedia.navigation_common.model.ReputationShop;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -12,6 +13,7 @@ import com.tokopedia.navigation_common.model.ProfileModel;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
 import com.tokopedia.navigation_common.model.TokopointsModel;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.user_identification_common.pojo.KycStatusPojo;
 
 import java.util.List;
 
@@ -55,6 +57,11 @@ public class AccountModel {
 
     @SerializedName("vcc_user_balance")
     private VccUserBalance vccUserBalance;
+
+    @SerializedName("kycStatus")
+    private KycStatusPojo kycStatusPojo;
+
+    private PendingCashbackModel pendingCashbackModel;
 
     public Integer getIsAuthenticated() {
         return isAuthenticated;
@@ -150,5 +157,17 @@ public class AccountModel {
 
     public void setVccUserBalance(VccUserBalance vccUserBalance) {
         this.vccUserBalance = vccUserBalance;
+    }
+
+    public PendingCashbackModel getPendingCashbackModel() {
+        return pendingCashbackModel;
+    }
+
+    public void setPendingCashbackModel(PendingCashbackModel pendingCashbackModel) {
+        this.pendingCashbackModel = pendingCashbackModel;
+    }
+
+    public KycStatusPojo getKycStatusPojo() {
+        return kycStatusPojo;
     }
 }

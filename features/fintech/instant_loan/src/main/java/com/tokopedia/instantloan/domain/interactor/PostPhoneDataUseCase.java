@@ -12,6 +12,7 @@ import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class PostPhoneDataUseCase extends RestRequestSupportInterceptorUseCase{
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
 
         List<RestRequest> restRequestList = new ArrayList<>();
         Type typeOfT = new TypeToken<ResponsePhoneData>() {

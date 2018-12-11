@@ -20,7 +20,6 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,7 +29,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -62,15 +60,16 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -80,13 +79,11 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener {
+        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener {
 
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
-    public static final String ARGS_EXPLORE_CATEGORY = "EXPLORE_CATEGORY";
-    public static final int ONBOARDING_REQUEST = 101;
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
     public static final int INBOX_MENU = 2;
@@ -96,6 +93,9 @@ public class MainParentActivity extends BaseActivity implements
     private static final int EXIT_DELAY_MILLIS = 2000;
     private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     public static final String DEFAULT_NO_SHOP = "0";
+    public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
 
     private static final String SHORTCUT_BELI_ID = "Beli";
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
@@ -103,7 +103,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_SHOP_ID = "Jual";
 
     @Inject
-    com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
+    UserSessionInterface userSession;
     @Inject
     MainParentPresenter presenter;
     @Inject
@@ -117,9 +117,12 @@ public class MainParentActivity extends BaseActivity implements
     private List<String> titles;
     private Notification notification;
     Fragment currentFragment;
+    Fragment cartFragment;
+    Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
+    private BroadcastReceiver newFeedClickedReceiver;
 
     private Handler handler = new Handler();
 
@@ -166,10 +169,11 @@ public class MainParentActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         createView(savedInstanceState);
+        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
     }
 
     @Override
@@ -208,7 +212,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public boolean isFirstTimeUser(){
-        return UserSession.isFirstTimeUser(MainParentActivity.this);
+        return userSession.isFirstTimeUser();
     }
 
     private void createView(Bundle savedInstanceState) {
@@ -236,6 +240,7 @@ public class MainParentActivity extends BaseActivity implements
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
         initHockeyBroadcastReceiver();
+        initNewFeedClickReceiver();
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -267,6 +272,7 @@ public class MainParentActivity extends BaseActivity implements
     protected void onPause() {
         super.onPause();
         unregisterBroadcastHockeyApp();
+        unRegisterNewFeedClickedReceiver();
     }
 
     @Override
@@ -285,7 +291,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void reInitInjector(GlobalNavComponent globalNavComponent){
+    public void reInitInjector(GlobalNavComponent globalNavComponent) {
         globalNavComponent.inject(this);
 
         presenter.setView(this);
@@ -316,7 +322,6 @@ public class MainParentActivity extends BaseActivity implements
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
             if (!presenter.isUserLogin())
                 return false;
-
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
@@ -367,7 +372,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setUserSession(com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+    public void setUserSession(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 
@@ -388,6 +393,11 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
 
         registerBroadcastHockeyApp();
+        registerNewFeedClickedReceiver();
+
+        if(!((BaseMainApplication)getApplication()).checkAppSignature()){
+            finish();
+        }
     }
 
     @Override
@@ -408,7 +418,8 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance());
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
+            cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
+            fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance());
         }
         return fragmentList;
@@ -434,19 +445,29 @@ public class MainParentActivity extends BaseActivity implements
         this.notification = notification;
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-
+        if (notification.getHaveNewFeed()) {
+            bottomNavigation.setNotification(-1, FEED_MENU);
+            Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        } else {
+            bottomNavigation.setNotification(0, FEED_MENU);
+        }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
 
     @Override
-    public void onStartLoading() { }
+    public void onStartLoading() {
+    }
 
     @Override
-    public void onError(String message) { }
+    public void onError(String message) {
+    }
 
     @Override
-    public void onHideLoading() { }
+    public void onHideLoading() {
+    }
 
     @Override
     public Context getContext() {
@@ -492,7 +513,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void saveInstanceState(Bundle outState) {
-        if(getIntent() != null) {
+        if (getIntent() != null) {
             outState.putBoolean(IS_RECURRING_APPLINK, presenter.isRecurringApplink());
         }
     }
@@ -651,9 +672,52 @@ public class MainParentActivity extends BaseActivity implements
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
-    public static class UserSession {
-        public static boolean isFirstTimeUser(Context context) {
-            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
+    private void initNewFeedClickReceiver() {
+        newFeedClickedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
+                    boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, false);
+                    if (isHaveNewFeed) {
+                        bottomNavigation.setNotification(0, FEED_MENU);
+                    }
+                }
+            }
+        };
+    }
+
+    private void registerNewFeedClickedReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BROADCAST_FEED);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(newFeedClickedReceiver, intentFilter);
+    }
+
+    private void unRegisterNewFeedClickedReceiver() {
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
+    }
+
+
+    @Override
+    public void onCartEmpty(String autoApplyMessage) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (emptyCartFragment == null) {
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage);
+            }
+            fragmentList.set(CART_MENU, emptyCartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
+        }
+    }
+
+    @Override
+    public void onCartNotEmpty(Bundle bundle) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (cartFragment == null) {
+                cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
+            } else if (bundle != null) {
+                cartFragment.setArguments(bundle);
+            }
+            fragmentList.set(CART_MENU, cartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
         }
     }
 
@@ -685,23 +749,42 @@ public class MainParentActivity extends BaseActivity implements
 
                     Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
                     productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
-                            .setIntents(new Intent[]{ intentHome, productIntent })
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
+                            .setIntents(new Intent[]{intentHome, productIntent})
+                            .setRank(0)
                             .build();
                     shortcutInfos.add(productShortcut);
 
+                    if (userSession.isLoggedIn()) {
+                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
+                        wishlistIntent.setAction(Intent.ACTION_VIEW);
+                        wishlistIntent.putExtras(args);
+
+                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                                .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
+                                .setIntents(new Intent[]{intentHome, wishlistIntent})
+                                .setRank(1)
+                                .build();
+                        shortcutInfos.add(wishlistShortcut);
+                    }
+
                     Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
                     digitalIntent.setAction(Intent.ACTION_VIEW);
+                    digitalIntent.putExtras(args);
 
                     ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
+                            .setRank(2)
                             .build();
                     shortcutInfos.add(digitalShortcut);
 
@@ -721,24 +804,13 @@ public class MainParentActivity extends BaseActivity implements
                         ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
-                                .setIntents(new Intent[]{ intentHome, shopIntent })
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
+                                .setIntents(new Intent[]{intentHome, shopIntent})
+                                .setRank(3)
                                 .build();
                         shortcutInfos.add(shopShortcut);
-
-                        if (((GlobalNavRouter) getApplication()).getBooleanRemoteConfig(GlobalNavConstant.APP_SHOW_REFERRAL_BUTTON, false)) {
-                            Intent referralIntent = ((GlobalNavRouter) getApplication()).getReferralIntent(this);
-                            referralIntent.setAction(Intent.ACTION_VIEW);
-
-                            ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
-                                    .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                    .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                    .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                                    .setIntents(new Intent[]{ intentHome, referralIntent })
-                                    .build();
-                            shortcutInfos.add(referralShortcut);
-                        }
                     }
+
                     shortcutManager.addDynamicShortcuts(shortcutInfos);
                 }
             } catch (SecurityException e) {

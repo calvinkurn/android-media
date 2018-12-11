@@ -1,0 +1,62 @@
+ext {
+
+    // Sort alphabetically by name
+    tkpdAbstractionVersion = '2.22'
+    tkpdAnalyticsVersion = '2.22'
+    tkpdApplinkVersion = '2.22'
+    tkpdCacheApiVersion = '2.22'
+    tkpdCommonNetworkVersion = '2.22'
+    tkpdDesignVersion = '2.22'
+    tkpdGraphqlVersion = '2.22'
+    tkpdOmsVersion = '2.22'
+    tkpdPaginationVersion = '2.22'
+    tkpdPushNotifVersion = '2.22'
+    tkpdUseCaseVersion = '2.23'
+    tkpdYoutubeUtilVersion = '2.22'
+    tkpdBaseAdapterlVersion = '2.22'
+
+    // Sort alphabetically by package name
+    tkpdInternalLibDependencies = [
+            abstraction           : "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
+            applink               : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
+            cacheapi              : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
+            design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
+            pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
+            usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
+    ]
+
+    // Sort and categorize alphabetically by folder name
+    libraries = [
+            analytics         : ":libraries:analytics",
+            applink           : ":libraries:applink",
+            baseAdapter       : ":libraries:base_adapter",
+            baseListSeller    : ":libraries:base_list_seller",
+            bottomSheetBuilder: ":libraries:bottom_sheet_builder",
+            cacheApi          : ":libraries:cache_api",
+            cameraView        : ":libraries:camera_view",
+            commonNetwork     : ":libraries:common_network",
+            datePickerRange   : ":libraries:date_picker_range",
+            fingerprint       : ":libraries:fingerprint",
+            config            : ":libraries:global_config",
+            graphql           : ":libraries:graphql",
+            imagePicker       : ":libraries:image_picker",
+            imageuploader     : ":libraries:imageuploader",
+            network           : ":libraries:network",
+            omsApi            : ":libraries:oms",
+            pagination        : ":libraries:pagination",
+            pushNotif         : ":libraries:push_notification",
+            reactNative       : ":libraries:react_native",
+            remoteConfig       : ":libraries:remote_config",
+            travelCalendar    : ":libraries:travel_calendar",
+            useCase           : ":libraries:use_case",
+            userSession       : ":libraries:user_session",
+            williamchart      : ":libraries:williamchart",
+            youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
+            youtubeutil       : ":libraries:youtubeutil",
+
+            abstraction       : ":tkpdabstraction",
+            design            : ":tkpddesign",
+    ]
+}

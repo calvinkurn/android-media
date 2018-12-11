@@ -2,8 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-8dp"
-            android:layout_marginRight="-8dp"
             android:layout_marginTop="-8dp"
+            android:layout_marginRight="-8dp"
             app:cardBackgroundColor="@color/white"
             app:cardElevation="@dimen/dp_6"
             app:cardUseCompatPadding="true">
@@ -35,10 +34,9 @@
                 <ImageView
                     android:id="@+id/img_banner"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:maxHeight="@dimen/dp_150"
+                    android:layout_height="0dp"
                     android:scaleType="fitCenter"
+                    app:layout_constraintDimensionRatio="h,3:1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -49,14 +47,14 @@
                     android:id="@+id/text_quota_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginTop="@dimen/tp_margin_small"
                     android:background="@drawable/bg_tp_remaining_exchange"
-                    android:paddingBottom="@dimen/tp_padding_xxsmall"
                     android:paddingLeft="@dimen/tp_margin_small"
-                    android:paddingRight="@dimen/tp_margin_small"
                     android:paddingTop="@dimen/tp_padding_xxsmall"
+                    android:paddingRight="@dimen/tp_margin_small"
+                    android:paddingBottom="@dimen/tp_padding_xxsmall"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/tp_text_size_xxsmall"
                     android:visibility="gone"
@@ -70,10 +68,10 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingLeft="@dimen/tp_margin_medium"
-                    android:paddingRight="@dimen/tp_margin_medium"
                     android:paddingTop="@dimen/tp_padding_small"
+                    android:paddingRight="@dimen/tp_margin_medium"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/tp_text_size_xsmall"
+                    android:textSize="@dimen/tp_text_size_small"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/img_banner" />
 
@@ -81,8 +79,8 @@
                     android:id="@+id/img_min_exchange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_medium"
                     android:layout_marginStart="@dimen/tp_margin_medium"
+                    android:layout_marginLeft="@dimen/tp_margin_medium"
                     android:layout_marginTop="@dimen/tp_padding_regular"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
@@ -93,8 +91,8 @@
                     android:id="@+id/text_min_exchange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:text="@string/tp_label_min_exchange"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/tp_text_size_xsmall"
@@ -107,8 +105,8 @@
                     android:id="@+id/text_min_exchange_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:fontFamily="sans-serif-medium"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/tp_text_size_small"
@@ -121,8 +119,8 @@
                     android:id="@+id/img_points_stack_coupon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_medium"
                     android:layout_marginStart="@dimen/tp_margin_medium"
+                    android:layout_marginLeft="@dimen/tp_margin_medium"
                     android:layout_marginTop="@dimen/tp_padding_regular"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
@@ -133,8 +131,8 @@
                     android:id="@+id/text_point_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/tp_text_size_xsmall"
                     android:visibility="gone"
@@ -145,8 +143,8 @@
                     android:id="@+id/text_point_value_coupon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginTop="2dp"
                     android:fontFamily="sans-serif-medium"
                     android:textColor="@color/medium_green"
@@ -159,15 +157,15 @@
                     android:id="@+id/text_point_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginTop="2dp"
                     android:background="@drawable/bg_round_corner"
                     android:fontFamily="sans-serif-medium"
-                    android:paddingBottom="@dimen/tp_padding_xxsmall"
                     android:paddingLeft="@dimen/tp_padding_xsmall"
-                    android:paddingRight="@dimen/tp_padding_xsmall"
                     android:paddingTop="@dimen/tp_padding_xxsmall"
+                    android:paddingRight="@dimen/tp_padding_xsmall"
+                    android:paddingBottom="@dimen/tp_padding_xxsmall"
                     android:textColor="#ea212d"
                     android:textSize="@dimen/tp_text_size_xsmall"
                     android:visibility="gone"
@@ -180,8 +178,8 @@
                     android:id="@+id/img_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_medium"
                     android:layout_marginStart="@dimen/tp_margin_medium"
+                    android:layout_marginLeft="@dimen/tp_margin_medium"
                     android:layout_marginTop="@dimen/tp_padding_regular"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
@@ -192,8 +190,8 @@
                     android:id="@+id/text_time_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:text="@string/tp_label_valid_for"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/tp_text_size_xsmall"
@@ -219,8 +217,8 @@
                     android:id="@+id/text_time_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginStart="@dimen/tp_margin_small"
+                    android:layout_marginLeft="@dimen/tp_margin_small"
                     android:fontFamily="sans-serif-medium"
                     android:textColor="@color/black_54"
                     android:textSize="@dimen/tp_text_size_small"
@@ -234,8 +232,8 @@
                     android:id="@+id/text_disabled_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/tp_margin_regular"
                     android:layout_marginStart="@dimen/tp_margin_regular"
+                    android:layout_marginLeft="@dimen/tp_margin_regular"
                     android:layout_marginTop="@dimen/tp_margin_small"
                     android:textColor="@color/red_error"
                     android:textSize="@dimen/tp_text_size_small"
@@ -243,49 +241,59 @@
                     app:layout_constraintStart_toEndOf="@+id/img_time"
                     app:layout_constraintTop_toBottomOf="@+id/text_time_label" />
 
-                <LinearLayout
+                <ViewFlipper
                     android:id="@+id/lin_container_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/tp_margin_small"
+                    android:measureAllChildren="false"
                     android:orientation="horizontal"
                     android:padding="@dimen/tp_padding_medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_disabled_error">
 
-                    <Button
-                        android:id="@+id/button_action_1"
-                        android:layout_width="0dp"
-                        android:layout_height="42dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_tp_bg_gift"
-                        android:drawableLeft="@drawable/ic_tp_gift"
-                        android:drawableStart="@drawable/ic_tp_gift"
-                        android:gravity="center"
-                        android:paddingLeft="@dimen/dp_12"
-                        android:paddingRight="@dimen/dp_12"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black_54"
-                        android:textSize="@dimen/tp_text_size_small"
-                        android:visibility="visible" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/button_action_2"
-                        android:layout_width="0dp"
-                        android:layout_height="42dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_button_green"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/tp_text_size_small"
-                        android:visibility="visible" />
+                        <Button
+                            android:id="@+id/button_action_1"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tp_bg_gift"
+                            android:drawableStart="@drawable/ic_tp_gift"
+                            android:drawableLeft="@drawable/ic_tp_gift"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/dp_12"
+                            android:paddingRight="@dimen/dp_12"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black_54"
+                            android:textSize="@dimen/tp_text_size_small"
+                            android:visibility="visible" />
 
-                </LinearLayout>
+                        <Button
+                            android:id="@+id/button_action_2"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_button_green"
+                            android:fontFamily="sans-serif"
+                            android:gravity="center"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/tp_text_size_small"
+                            android:visibility="visible" />
+
+                    </LinearLayout>
+
+                    <include layout="@layout/tp_layput_container_swipe" />
+
+                </ViewFlipper>
 
                 <ProgressBar
                     android:id="@+id/progress_refetch_code"
@@ -333,10 +341,10 @@
             </com.tokopedia.design.component.Tabs>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
+        <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
             android:id="@+id/view_pager_info"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>

@@ -6,10 +6,11 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.tokopedia.flight.airline.data.cloud.model.AirlineData;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB_Table;
 import com.tokopedia.flight.airline.util.FlightAirlineParamUtil;
 import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
+import com.tokopedia.flight.searchV2.data.db.mapper.FlightAirlineDataMapper;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB_Table;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,8 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
                 .flatMap(new Func1<AirlineData, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(AirlineData airlineData) {
-                        FlightAirlineDB flightAirlineDB = new FlightAirlineDB(airlineData);
+                        FlightAirlineDataMapper flightAirlineDataMapper = new FlightAirlineDataMapper();
+                        FlightAirlineDB flightAirlineDB = flightAirlineDataMapper.map(airlineData);
                         flightAirlineDB.insert();
                         return Observable.just(true);
                     }
@@ -62,7 +64,8 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
                 .map(new Func1<AirlineData, Boolean>() {
                     @Override
                     public Boolean call(AirlineData airlineData) {
-                        FlightAirlineDB flightAirlineDB = new FlightAirlineDB(airlineData);
+                        FlightAirlineDataMapper flightAirlineDataMapper = new FlightAirlineDataMapper();
+                        FlightAirlineDB flightAirlineDB = flightAirlineDataMapper.map(airlineData);
                         flightAirlineDB.insert();
                         return true ;
                     }
@@ -104,11 +107,10 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
                 .map(new Func1<String, FlightAirlineDB>() {
                     @Override
                     public FlightAirlineDB call(String airlineId) {
-                        FlightAirlineDB flightAirlineDb = new Select()
+                        return new Select()
                                 .from(FlightAirlineDB.class)
                                 .where(FlightAirlineDB_Table.id.eq(airlineId))
                                 .querySingle();
-                        return flightAirlineDb;
                     }
                 });
     }

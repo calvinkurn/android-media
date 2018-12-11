@@ -31,7 +31,7 @@ public class PostUpdateDealLikesUseCase extends RestRequestUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         LikeUpdateModel requestModel = (LikeUpdateModel) params.getObject(PostUpdateDealLikesUseCase.REQUEST_BODY);

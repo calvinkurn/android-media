@@ -2,11 +2,9 @@ package com.tokopedia.flight.common.data.repository;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
@@ -16,6 +14,7 @@ import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataS
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -29,7 +28,6 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
-import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
@@ -41,10 +39,13 @@ import com.tokopedia.flight.review.domain.verifybooking.model.response.DataRespo
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchMetaParamUtil;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
+import com.tokopedia.flight_dbflow.FlightPassengerDB;
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -386,12 +387,12 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Observable<List<FlightPassengerDb>> getPassengerList(String passengerId) {
+    public Observable<List<FlightPassengerDB>> getPassengerList(String passengerId) {
         return flightPassengerFactorySource.getPassengerList(passengerId);
     }
 
     @Override
-    public Observable<FlightPassengerDb> getSinglePassengerById(String passengerId) {
+    public Observable<FlightPassengerDB> getSinglePassengerById(String passengerId) {
         return flightPassengerFactorySource.getSinglePassenger(passengerId);
     }
 
@@ -428,6 +429,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
         return flightCancellationCloudDataSource.getCancelablePassenger(invoiceId);
+    }
+
+    @Override
+    public Observable<List<Reason>> getCancellationReasons() {
+        return flightCancellationCloudDataSource.getCancellationReasons();
     }
 
     @Override

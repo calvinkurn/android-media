@@ -3,11 +3,11 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.text.TextUtils;
 import android.util.SparseIntArray;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +29,21 @@ public class FlightSearchStatisticModel {
     private List<DepartureStat> departureTimeStatList;
     private List<RefundableStat> refundableTypeStatList;
     private boolean isHaveSpecialPrice;
+
+    public FlightSearchStatisticModel(int minPrice, int maxPrice, int minDuration, int maxDuration,
+                                      List<TransitStat> transitTypeStatList, List<AirlineStat> airlineStatList,
+                                      List<DepartureStat> departureTimeStatList, List<RefundableStat> refundableTypeStatList,
+                                      boolean isHaveSpecialPrice) {
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.minDuration = minDuration;
+        this.maxDuration = maxDuration;
+        this.transitTypeStatList = transitTypeStatList;
+        this.airlineStatList = airlineStatList;
+        this.departureTimeStatList = departureTimeStatList;
+        this.refundableTypeStatList = refundableTypeStatList;
+        this.isHaveSpecialPrice = isHaveSpecialPrice;
+    }
 
     public FlightSearchStatisticModel(List<FlightSearchViewModel> flightSearchViewModelList) {
         minPrice = Integer.MAX_VALUE;

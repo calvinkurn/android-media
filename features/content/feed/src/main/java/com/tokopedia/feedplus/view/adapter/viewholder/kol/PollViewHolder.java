@@ -93,15 +93,20 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
     @Override
     public void onLikeButtonClickListener(BaseKolViewModel element) {
         if (element.isLiked()) {
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getContentId());
         } else {
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onLikeKolClicked(getAdapterPosition(), element.getContentId());
         }
     }
 
     @Override
     public void onCommentClickListener(BaseKolViewModel element) {
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getKolId());
+        viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
+    }
+
+    @Override
+    public void onMenuClickListener(BaseKolViewModel element) {
+
     }
 
     private void goToProfile(final BaseKolViewModel element) {

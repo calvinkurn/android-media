@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -10,7 +9,6 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.List;
 
@@ -28,6 +26,10 @@ public interface ShippingDurationContract {
         void showErrorPage(String message);
 
         void showData(List<ShippingDurationViewModel> serviceDataList);
+
+        void showNoCourierAvailable(String message);
+
+        void stopTrace();
 
         Activity getActivity();
     }

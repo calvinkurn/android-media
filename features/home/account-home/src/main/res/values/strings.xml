@@ -23,6 +23,7 @@
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
+    <string name="title_kyc_setting">Dokumen Data Diri</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="screentitle_account_setting">Atur Akun</string>
     <string name="title_shop_info_setting">Informasi</string>
@@ -179,5 +180,8 @@
     <string name="verified_account">Verified Account</string>
     <string name="error_no_internet_connection">Tidak ada koneksi internet</string>
     <string name="label_total_coupon">%1$d Kupon</string>
+
+    <string name="title_menu_challenge">Tokopedia Challenge</string>
+    <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
 
 </resources>

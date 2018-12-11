@@ -21,7 +21,7 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.presentation.activity.ActivateTokoCashActivity;
 import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.BalanceTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.compoundview.ReceivedTokoCashView;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.HomeTokoCashContract;

@@ -79,4 +79,21 @@
     <color name="tkpd_green_30">#4D42b549</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="bg_corner_yellow">#ffc107</color>
+
+    <color name="shadow_color_1">#00CCCCCC</color>
+    <color name="shadow_color_2">#10CCCCCC</color>
+    <color name="shadow_color_3">#15CCCCCC</color>
+    <color name="shadow_color_4">#20CCCCCC</color>
+    <color name="shadow_color_5">#25CCCCCC</color>
+
+    <color name="tkpd_green_header">#42BD41</color>
+    <color name="orange_red">#ff5722</color>
+
+    <color name="green_nob">#42b549</color>
+    <color name="transparent_green_nob">#a642b549</color>
+    <color name="orange_nob">#f79b21</color>
+    <color name="blue_nob">#00bcd4</color>
+    <color name="grey_hint">#e0e0e0</color>
+    <color name="grey_warm">#9e9e9e</color>
+
 </resources>

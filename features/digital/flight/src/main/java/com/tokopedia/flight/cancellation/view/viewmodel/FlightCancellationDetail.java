@@ -15,9 +15,7 @@ public class FlightCancellationDetail implements Parcelable {
     private long refundId;
     private String createTime;
     private String estimatedRefund;
-    private long estimatedRefundNumeric;
     private String realRefund;
-    private long realRefundNumeric;
     private int status;
     private List<FlightCancellationListPassengerViewModel> passengers;
     private List<FlightOrderJourney> journeys;
@@ -29,30 +27,10 @@ public class FlightCancellationDetail implements Parcelable {
         refundId = in.readLong();
         createTime = in.readString();
         estimatedRefund = in.readString();
-        estimatedRefundNumeric = in.readLong();
         realRefund = in.readString();
-        realRefundNumeric = in.readLong();
         status = in.readInt();
         passengers = in.createTypedArrayList(FlightCancellationListPassengerViewModel.CREATOR);
         journeys = in.createTypedArrayList(FlightOrderJourney.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(refundId);
-        dest.writeString(createTime);
-        dest.writeString(estimatedRefund);
-        dest.writeLong(estimatedRefundNumeric);
-        dest.writeString(realRefund);
-        dest.writeLong(realRefundNumeric);
-        dest.writeInt(status);
-        dest.writeTypedList(passengers);
-        dest.writeTypedList(journeys);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<FlightCancellationDetail> CREATOR = new Creator<FlightCancellationDetail>() {
@@ -91,28 +69,12 @@ public class FlightCancellationDetail implements Parcelable {
         this.estimatedRefund = estimatedRefund;
     }
 
-    public long getEstimatedRefundNumeric() {
-        return estimatedRefundNumeric;
-    }
-
-    public void setEstimatedRefundNumeric(long estimatedRefundNumeric) {
-        this.estimatedRefundNumeric = estimatedRefundNumeric;
-    }
-
     public String getRealRefund() {
         return realRefund;
     }
 
     public void setRealRefund(String realRefund) {
         this.realRefund = realRefund;
-    }
-
-    public long getRealRefundNumeric() {
-        return realRefundNumeric;
-    }
-
-    public void setRealRefundNumeric(long realRefundNumeric) {
-        this.realRefundNumeric = realRefundNumeric;
     }
 
     public int getStatus() {
@@ -137,5 +99,21 @@ public class FlightCancellationDetail implements Parcelable {
 
     public void setJourneys(List<FlightOrderJourney> journeys) {
         this.journeys = journeys;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(refundId);
+        parcel.writeString(createTime);
+        parcel.writeString(estimatedRefund);
+        parcel.writeString(realRefund);
+        parcel.writeInt(status);
+        parcel.writeTypedList(passengers);
+        parcel.writeTypedList(journeys);
     }
 }

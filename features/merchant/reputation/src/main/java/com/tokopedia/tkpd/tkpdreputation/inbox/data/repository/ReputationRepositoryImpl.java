@@ -149,10 +149,14 @@ public class ReputationRepositoryImpl implements ReputationRepository {
     }
 
     @Override
-    public Observable<DataResponseReviewProduct> getReviewProductList(String productId, String page, String perPage, String rating) {
+    public Observable<DataResponseReviewProduct> getReviewProductList(String productId,
+                                                                      String page,
+                                                                      String perPage,
+                                                                      String rating,
+                                                                      String withAttachment) {
         return reputationFactory
                 .createCloudGetReviewProductList()
-                .getReviewProductList(productId, page, perPage, rating);
+                .getReviewProductList(productId, page, perPage, rating, withAttachment);
     }
 
     @Override

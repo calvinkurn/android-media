@@ -3,7 +3,6 @@ package com.tokopedia.tokocash.balance.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.tokocash.qrpayment.data.entity.ActionBalanceEntity;
 
 import java.util.List;
 
@@ -13,66 +12,73 @@ import java.util.List;
 
 public class BalanceTokoCashEntity {
 
-    @SerializedName("text")
+    @SerializedName("linked")
     @Expose
-    private String titleText;
-    @SerializedName("action")
-    @Expose
-    private ActionBalanceEntity actionBalanceEntity;
+    private Boolean linked;
     @SerializedName("balance")
     @Expose
     private String balance;
-    @SerializedName("raw_balance")
+    @SerializedName("rawBalance")
     @Expose
-    private int raw_balance;
+    private Integer rawBalance;
+    @SerializedName("text")
+    @Expose
+    private String text;
     @SerializedName("total_balance")
     @Expose
     private String totalBalance;
     @SerializedName("raw_total_balance")
     @Expose
-    private long rawTotalBalance;
+    private Integer rawTotalBalance;
     @SerializedName("hold_balance")
     @Expose
     private String holdBalance;
     @SerializedName("raw_hold_balance")
     @Expose
-    private long rawHoldBalance;
-    @SerializedName("applinks")
-    @Expose
-    private String applinks;
+    private Integer rawHoldBalance;
     @SerializedName("redirect_url")
     @Expose
     private String redirectUrl;
-    @SerializedName("link")
+    @SerializedName("applinks")
     @Expose
-    private int link;
-    @SerializedName("raw_threshold")
-    @Expose
-    private long rawThreshold;
-    @SerializedName("threshold")
-    @Expose
-    private String threshold;
+    private String applinks;
     @SerializedName("ab_tags")
     @Expose
-    private List<String> abTags;
+    private List<AbTagEntity> abTags = null;
+    @SerializedName("action")
+    @Expose
+    private ActionEntity action;
+    @SerializedName("point_balance")
+    @Expose
+    private String pointBalance;
+    @SerializedName("raw_point_balance")
+    @Expose
+    private int rawPointBalance;
+    @SerializedName("cash_balance")
+    @Expose
+    private String cashBalance;
+    @SerializedName("raw_cash_balance")
+    @Expose
+    private int rawCashBalance;
+    @SerializedName("wallet_type")
+    @Expose
+    private String walletType;
+    @SerializedName("help_applink")
+    @Expose
+    private String helpApplink;
+    @SerializedName("tnc_applink")
+    @Expose
+    private String tncApplink;
+    @SerializedName("show_announcement")
+    @Expose
+    private boolean showAnnouncement;
 
-    public BalanceTokoCashEntity() {
+    public Boolean getLinked() {
+        return linked;
     }
 
-    public String getTitleText() {
-        return titleText;
-    }
-
-    public void setTitleText(String titleText) {
-        this.titleText = titleText;
-    }
-
-    public ActionBalanceEntity getActionBalanceEntity() {
-        return actionBalanceEntity;
-    }
-
-    public void setActionBalanceEntity(ActionBalanceEntity actionBalanceEntity) {
-        this.actionBalanceEntity = actionBalanceEntity;
+    public void setLinked(Boolean linked) {
+        this.linked = linked;
     }
 
     public String getBalance() {
@@ -83,52 +89,20 @@ public class BalanceTokoCashEntity {
         this.balance = balance;
     }
 
-    public int getRaw_balance() {
-        return raw_balance;
+    public Integer getRawBalance() {
+        return rawBalance;
     }
 
-    public void setRaw_balance(int raw_balance) {
-        this.raw_balance = raw_balance;
+    public void setRawBalance(Integer rawBalance) {
+        this.rawBalance = rawBalance;
     }
 
-    public String getTotalBalance() {
-        return totalBalance;
+    public String getText() {
+        return text;
     }
 
-    public void setTotalBalance(String totalBalance) {
-        this.totalBalance = totalBalance;
-    }
-
-    public long getRawTotalBalance() {
-        return rawTotalBalance;
-    }
-
-    public void setRawTotalBalance(long rawTotalBalance) {
-        this.rawTotalBalance = rawTotalBalance;
-    }
-
-    public String getHoldBalance() {
-        return holdBalance;
-    }
-
-    public void setHoldBalance(String holdBalance) {
-        this.holdBalance = holdBalance;
-    }
-
-    public long getRawHoldBalance() {
-        return rawHoldBalance;
-    }
-
-    public void setRawHoldBalance(long rawHoldBalance) {
-        this.rawHoldBalance = rawHoldBalance;
-    }
-
-    public String getApplinks() {
-        return applinks;
-    }
-
-    public void setApplinks(String applinks) {
-        this.applinks = applinks;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getRedirectUrl() {
@@ -139,35 +113,71 @@ public class BalanceTokoCashEntity {
         this.redirectUrl = redirectUrl;
     }
 
-    public int getLink() {
-        return link;
+    public String getApplinks() {
+        return applinks;
     }
 
-    public void setLink(int link) {
-        this.link = link;
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
     }
 
-    public long getRawThreshold() {
-        return rawThreshold;
-    }
-
-    public void setRawThreshold(long rawThreshold) {
-        this.rawThreshold = rawThreshold;
-    }
-
-    public String getThreshold() {
-        return threshold;
-    }
-
-    public void setThreshold(String threshold) {
-        this.threshold = threshold;
-    }
-
-    public List<String> getAbTags() {
+    public List<AbTagEntity> getAbTags() {
         return abTags;
     }
 
-    public void setAbTags(List<String> abTags) {
-        this.abTags = abTags;
+    public ActionEntity getAction() {
+        return action;
+    }
+
+    public void setAction(ActionEntity action) {
+        this.action = action;
+    }
+
+    public String getTotalBalance() {
+        return totalBalance;
+    }
+
+    public Integer getRawTotalBalance() {
+        return rawTotalBalance;
+    }
+
+    public String getHoldBalance() {
+        return holdBalance;
+    }
+
+    public Integer getRawHoldBalance() {
+        return rawHoldBalance;
+    }
+
+    public String getPointBalance() {
+        return pointBalance;
+    }
+
+    public int getRawPointBalance() {
+        return rawPointBalance;
+    }
+
+    public String getCashBalance() {
+        return cashBalance;
+    }
+
+    public int getRawCashBalance() {
+        return rawCashBalance;
+    }
+
+    public String getWalletType() {
+        return walletType;
+    }
+
+    public String getHelpApplink() {
+        return helpApplink;
+    }
+
+    public String getTncApplink() {
+        return tncApplink;
+    }
+
+    public boolean isShowAnnouncement() {
+        return showAnnouncement;
     }
 }

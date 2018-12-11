@@ -15,6 +15,13 @@
 /tkpdhome/          @tokopedia/minion-dave
 /customerapp/       @tokopedia/core-team
 
+/features/common/nps                               @tokopedia/core-team
+
+/features/home/account-home/                       @tokopedia/core-team
+/features/home/navigation/                         @tokopedia/core-team
+/features/home/navigation-common/                  @tokopedia/core-team
+/features/home/searchbar/                          @tokopedia/core-team
+
 /features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
@@ -36,6 +43,10 @@
 /features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digital_browse/         @tokopedia/minion-mark
+/features/digital/digitalproduct        @tokopedia/minion-mark
+/featires/digital/common_travel         @tokopedia/minion-mark
+/features/fintech/tokocash              @nabillasab
+/libraries/travel_calendar              @nabillasab
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
@@ -45,24 +56,40 @@
 /features/transaction/transactiondata/          @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
 /features/logistic/logisticdata/                @tokopedia/minion-bob
+/features/logistic/logisticaddaddress/          @tokopedia/minion-bob
 /features/logistic/logisticuploadawb/           @tokopedia/minion-bob
 /features/logistic/tracking/                    @tokopedia/minion-bob
 
-/features/user/topchat/                 @tokopedia/minion-kevin
-/features/user/groupchat/               @tokopedia/minion-kevin
-/features/user/profile/                 @tokopedia/minion-kevin
-/features/user/vote/                    @tokopedia/minion-kevin
-/features/user/otp/                     @tokopedia/minion-kevin
-/features/user/settingbank/             @tokopedia/minion-kevin
-/features/user/changepassword/          @tokopedia/minion-kevin
-/features/user/logout/                  @tokopedia/minion-kevin
-/features/user/bankdb/                  @tokopedia/minion-kevin
-/features/user/notifcenter/             @tokopedia/minion-kevin
+/features/user/topchat/                         @tokopedia/minion-kevin
+/features/user/groupchat/                       @tokopedia/minion-kevin
+/features/user/profile/                         @tokopedia/minion-kevin
+/features/user/vote/                            @tokopedia/minion-kevin
+/features/user/otp/                             @tokopedia/minion-kevin
+/features/user/settingbank/                     @tokopedia/minion-kevin
+/features/user/changepassword/                  @tokopedia/minion-kevin
+/features/user/logout/                          @tokopedia/minion-kevin
+/features/user/loginregister/                   @tokopedia/minion-kevin
+/features/user/sessioncommon/                   @tokopedia/minion-kevin
+/features/user/loginphone/                      @tokopedia/minion-kevin
+/features/user/bankdb/                          @tokopedia/minion-kevin
+/features/user/notifcenter/                     @tokopedia/minion-kevin
+/features/user/attachproduct/                   @tokopedia/minion-kevin
+/features/user/talk/                            @tokopedia/minion-kevin
+/features/user/changephonenumber                @tokopedia/minion-kevin
+/features/user/phoneverification                @tokopedia/minion-kevin
+/features/user/user_identification/             @tokopedia/minion-kevin
+/features/user/user_identification_common/      @tokopedia/minion-kevin
+/features/user/user_identification_no_op/       @tokopedia/minion-kevin
+
+/features/content/affiliate/            @tokopedia/minion-kevin
+/features/content/affiliate_common/     @tokopedia/minion-kevin
+/features/content/explore/              @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
+/features/content/interest_pick/        @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 /features/content/kol_common/           @tokopedia/minion-kevin
-/features/content/explore/              @tokopedia/minion-kevin
-/features/content/interest_pick/        @tokopedia/minion-kevin
+/features/content/profile/              @tokopedia/minion-kevin
+
 /features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
@@ -91,3 +118,5 @@
 /features/user/updateinactivephone      @tokopedia/india-android-team
 /features/fintech/saldo_details          @tokopedia/india-android-team
 /libraries/oms                          @naveengoyal87
+/features/im/challenges                 @ashwanitp
+/libraries/pagination                   @lavekush-t

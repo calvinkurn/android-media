@@ -3,27 +3,37 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 /**
  * @author Aghny A. Putra on 02/03/18
  */
 
-public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
+public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
 
     private static final int IMAGE_ALPHA_DISABLED = 128;
     private static final int IMAGE_ALPHA_ENABLED = 255;
+
+    private ShipmentItemListener shipmentItemListener;
 
     private ImageView mIvProductImage;
     private TextView mTvProductName;
@@ -37,9 +47,15 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
     private TextView mTvPreOrder;
     private TextView mTvCashback;
     private TextView mTvNoteToSellerLabel;
+    private RelativeLayout mRlPurchaseProtection;
+    private TextView mTvPPPLinkText;
+    private TextView mTvPPPPrice;
+    private TextView mTvPPPMore;
+    private CheckBox mCbPPP;
     private LinearLayout mLlShippingWarningContainer;
-    private TextView mTvShippingWarning;
     private View mSeparatorMultipleProductSameStore;
+    private TextView tvErrorShipmentItemTitle;
+    private TextView tvErrorShipmentItemDescription;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -50,6 +66,11 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         mTvProductCountAndWeight = itemView.findViewById(R.id.tv_item_count_and_weight);
         mLlOptionalNoteToSellerLayout = itemView.findViewById(R.id.ll_optional_note_to_seller_layout);
         mTvOptionalNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
+        mRlPurchaseProtection = itemView.findViewById(R.id.rlayout_purchase_protection);
+        mTvPPPLinkText = itemView.findViewById(R.id.text_link_text);
+        mTvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
+        mTvPPPMore = itemView.findViewById(R.id.text_ppp_more);
+        mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
         mllProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
         mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
@@ -57,14 +78,16 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         mTvCashback = itemView.findViewById(R.id.tv_cashback);
         mTvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
-        mTvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
+        tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
+        tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
 
     }
 
-    public void bindViewHolder(CartItemModel cartItem) {
+    public void bindViewHolder(CartItemModel cartItem, ShipmentItemListener listener) {
+        shipmentItemListener = listener;
         if (cartItem.isError()) {
-            showShipmentWarning(cartItem.getErrorMessage());
+            showShipmentWarning(cartItem);
         } else {
             hideShipmentWarning();
         }
@@ -82,6 +105,26 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
 
+        mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
+        if(cartItem.isProtectionAvailable()) {
+            mTvPPPMore.setText(cartItem.getProtectionLinkText());
+            mTvPPPMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    shipmentItemListener.navigateToWebView(cartItem.getProtectionLinkUrl());
+                }
+            });
+            mTvPPPLinkText.setText(cartItem.getProtectionTitle());
+            mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
+            mCbPPP.setChecked(cartItem.isProtectionOptIn());
+            mCbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1);
+                }
+            });
+        }
+
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
         mTvFreeReturnLabel.setVisibility(View.GONE);
         mTvPreOrder.setVisibility(cartItem.isPreOrder() ? View.VISIBLE : View.GONE);
@@ -97,10 +140,17 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         }
     }
 
-    private void showShipmentWarning(String message) {
-        if (!TextUtils.isEmpty(message)) {
-            mTvShippingWarning.setText(message);
+    private void showShipmentWarning(CartItemModel cartItemModel) {
+        if (!TextUtils.isEmpty(cartItemModel.getErrorMessage())) {
+            tvErrorShipmentItemTitle.setText(cartItemModel.getErrorMessage());
+            tvErrorShipmentItemTitle.setVisibility(View.VISIBLE);
             mLlShippingWarningContainer.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(cartItemModel.getErrorMessageDescription())) {
+                tvErrorShipmentItemDescription.setText(cartItemModel.getErrorMessageDescription());
+                tvErrorShipmentItemDescription.setVisibility(View.VISIBLE);
+            } else {
+                tvErrorShipmentItemDescription.setVisibility(View.GONE);
+            }
         } else {
             mLlShippingWarningContainer.setVisibility(View.GONE);
         }
@@ -152,6 +202,12 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
     private void setImageFilterNormal() {
         mIvProductImage.setColorFilter(null);
         mIvProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
+    }
+
+    public interface ShipmentItemListener {
+        void notifyOnPurchaseProtectionChecked(boolean checked, int position);
+
+        void navigateToWebView(String protectionLinkUrl);
     }
 
 }
