@@ -171,9 +171,9 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
             RouteManager.route(activity, recommendation.applink)
 
             val eventLabel = if (!recommendation.clientNumber.isNullOrEmpty()) {
-                "history - $position - ${recommendation.categoryId} - ${recommendation.title}"
+                "history - $position - ${recommendation.categoryId} - ${recommendation.productName}"
             } else {
-                "recommendation - $position - ${recommendation.categoryId} - ${recommendation.title}"
+                "recommendation - $position - ${recommendation.categoryId} - ${recommendation.categoryName}"
             }
 
             abstractionRouter

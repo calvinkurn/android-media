@@ -10,16 +10,27 @@ public class Recommendation {
     private String clientNumber;
     private String applink;
     private String webLink;
-    private String categoryId;
+    private int categoryId;
+    private String categoryName;
+    private int productId;
+    private String productName;
+    private String type;
+    private int position;
 
     public Recommendation(String iconUrl, String title, String clientNumber, String applink,
-                          String webLink, String categoryId) {
+                          String webLink, int categoryId, String categoryName,
+                          int productId, String productName, String type, int position) {
         this.iconUrl = iconUrl;
         this.title = title;
         this.clientNumber = clientNumber;
         this.applink = applink;
         this.webLink = webLink;
         this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.productId = productId;
+        this.productName = productName;
+        this.type = type;
+        this.position = position;
     }
 
     public String getIconUrl() {
@@ -42,7 +53,28 @@ public class Recommendation {
         return webLink;
     }
 
-    public String getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
 }

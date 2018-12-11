@@ -28,6 +28,30 @@ public class RecommendationItemEntity {
     @Expose
     private String webLink;
 
+    @SerializedName("categoryId")
+    @Expose
+    private int categoryId;
+
+    @SerializedName("categoryName")
+    @Expose
+    private String categoryName;
+
+    @SerializedName("productId")
+    @Expose
+    private int productId;
+
+    @SerializedName("productName")
+    @Expose
+    private String productName;
+
+    @SerializedName("type")
+    @Expose
+    private String type;
+
+    @SerializedName("position")
+    @Expose
+    private int position;
+
     public String getIconUrl() {
         return iconUrl;
     }
@@ -47,4 +71,29 @@ public class RecommendationItemEntity {
     public String getWebLink() {
         return webLink;
     }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
 }
