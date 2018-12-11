@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -41,6 +40,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
@@ -54,7 +54,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -86,10 +85,12 @@ import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -108,9 +109,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.DEFAULT_COUPON_APPLIED;
-import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.DEFAULT_COUPON_NOT_APPLIED;
-import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
 
 /**
@@ -726,11 +724,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         if (SessionHandler.isV4Login(getActivity())) {
             if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                IDigitalModuleRouter digitalModuleRouter =
-                        (IDigitalModuleRouter) getActivity().getApplication();
+                DigitalRouter digitalModuleRouter =
+                        (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
                 );
                 getActivity().overridePendingTransition(0, 0);
             }

@@ -15,7 +15,6 @@ import com.tkpd.library.utils.CommonUtils
 import com.tkpd.library.utils.LocalCacheHandler
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.core.`var`.TkpdCache
-import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.database.manager.GlobalCacheManager
 import com.tokopedia.digital.R
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService
@@ -186,7 +185,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
                 view_pager_widget.setCurrentItem(tab.position, false)
                 rechargeViewPagerAdapter?.notifyDataSetChanged()
                 if (tab.text != null) {
-                    UnifyTracking.eventClickWidgetBar(tab.text!!.toString())
+//                    UnifyTracking.eventClickWidgetBar(tab.text!!.toString())
                 }
             }
 

@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
@@ -39,7 +39,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
             if (oldFragment == null) {
                 fragmentManager.beginTransaction().add(container.getId(), new DigitalChannelFragment()).commit();
             }
-        }, 300);
+        }, 500);
     }
 
 }

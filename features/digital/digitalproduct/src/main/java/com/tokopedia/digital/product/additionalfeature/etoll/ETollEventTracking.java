@@ -7,13 +7,10 @@ public interface ETollEventTracking {
 
     interface Event {
         String CLICK_NFC = "clickNFC";
-        String USER_HOME_INTERACTION_PAGE = "userInteractionHomepage";
     }
 
     interface Category {
         String DIGITAL_NFC = "digital - nfc";
-        String HOMEPAGE_DIGITAL = "homepage digital";
-        String HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
     }
 
     interface Action {
@@ -26,8 +23,6 @@ public interface ETollEventTracking {
         String FAILED_UPDATE_BALANCE = "failed update saldo";
         String CARD_IS_NOT_SUPPORTED = "card not supported";
         String SUCCESS_CHECK_BALANCE = "success check saldo";
-        String CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk";
-        String CLICK_RECOMMENDATION_WIDGET = "click recommendation widget";
     }
 
     interface Label {

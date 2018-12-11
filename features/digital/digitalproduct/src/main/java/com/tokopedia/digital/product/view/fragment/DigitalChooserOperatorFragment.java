@@ -24,6 +24,7 @@ import com.tokopedia.digital.product.view.presenter.OperatorChooserContract;
 import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 import javax.inject.Inject;

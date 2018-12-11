@@ -12,11 +12,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.database.manager.GlobalCacheManager
 import com.tokopedia.digital.R
+import com.tokopedia.digital.common.constant.DigitalEventTracking
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService
 import com.tokopedia.digital.common.data.source.CategoryListDataSource
 import com.tokopedia.digital.common.data.source.StatusDataSource
-import com.tokopedia.digital.product.additionalfeature.etoll.ETollEventTracking
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository
 import com.tokopedia.digital.widget.data.source.RecommendationListDataSource
 import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCase
@@ -75,9 +75,9 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
             abstractionRouter
                     .analyticTracker
                     .sendEventTracking(
-                            ETollEventTracking.Event.USER_HOME_INTERACTION_PAGE,
-                            ETollEventTracking.Category.HOMEPAGE_DIGITAL,
-                            ETollEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
+                            DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                            DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
+                            DigitalEventTracking.Action.CLICK_SEE_ALL_PRODUCTS,
                             ""
                     )
         }
@@ -179,9 +179,9 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
             abstractionRouter
                     .analyticTracker
                     .sendEventTracking(
-                            ETollEventTracking.Event.USER_HOME_INTERACTION_PAGE,
-                            ETollEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
-                            ETollEventTracking.Action.CLICK_RECOMMENDATION_WIDGET,
+                            DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                            DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                            DigitalEventTracking.Action.CLICK_RECOMMENDATION_WIDGET,
                             eventLabel
                     )
         }

@@ -20,7 +20,6 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DigitalUssdActivity extends BasePresenterActivity implements DigitalUssdFragment.ActionListener {
 
     private String titleToolbar;

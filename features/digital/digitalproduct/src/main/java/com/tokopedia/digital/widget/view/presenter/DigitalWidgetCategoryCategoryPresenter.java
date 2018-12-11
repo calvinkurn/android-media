@@ -37,7 +37,7 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
 
     @Inject
     public DigitalWidgetCategoryCategoryPresenter(LocalCacheHandler localCacheHandler,
-                                  GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
+                                                  GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
         super(localCacheHandler);
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }

@@ -78,7 +78,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
     @Inject
-    DigitalWidgetPresenter presenter;
+    DigitalWidgetCategoryCategoryPresenter presenter;
 
     public static WidgetAllStyleRechargeFragment newInstance(Category category, int position) {
         WidgetAllStyleRechargeFragment fragment = new WidgetAllStyleRechargeFragment();

@@ -54,7 +54,6 @@ import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPres
 import com.tokopedia.digital.categorylist.view.presenter.IDigitalCategoryListPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
