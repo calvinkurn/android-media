@@ -118,10 +118,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onTokopediaPayLinkClicked() {
         if (getActivity() != null) {
-
-            sendOVOTracking("fin - android main screen", "ovo - lihat semua click", "");
-
-
             sendTracking(PEMBELI,
                     getString(R.string.title_tkpd_pay_setting),
                     getString(R.string.label_tokopedia_pay_see_all));
