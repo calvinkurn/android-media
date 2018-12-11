@@ -360,25 +360,29 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void showSuccessAddWishlist() {
-        SnackbarManager.makeGreen(recyclerView.getRootView(), getString(R.string.msg_success_add_wishlist),
+        SnackbarManager.makeGreen(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_success_add_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void showErrorAddWishlist() {
-        SnackbarManager.makeRed(recyclerView.getRootView(), getString(R.string.msg_error_add_wishlist),
+        SnackbarManager.makeRed(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_error_add_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void showSuccessRemoveWishlist() {
-        SnackbarManager.makeGreen(recyclerView.getRootView(), getString(R.string.msg_success_remove_wishlist),
+        SnackbarManager.makeGreen(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_success_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void showErrorRemoveWishlist() {
-        SnackbarManager.makeRed(recyclerView.getRootView(), getString(R.string.msg_error_remove_wishlist),
+        SnackbarManager.makeRed(recyclerView.getRootView().findViewById(android.R.id.content),
+                getString(R.string.msg_error_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 }

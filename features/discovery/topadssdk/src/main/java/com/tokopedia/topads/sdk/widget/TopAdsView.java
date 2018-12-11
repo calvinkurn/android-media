@@ -267,25 +267,25 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void showSuccessAddWishlist() {
-        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_success_add_wishlist),
+        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void showErrorAddWishlist() {
-        SnackbarManager.makeRed(getRootView(), getString(R.string.msg_error_add_wishlist),
+        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_add_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void showSuccessRemoveWishlist() {
-        SnackbarManager.makeGreen(getRootView(), getString(R.string.msg_success_remove_wishlist),
+        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void showErrorRemoveWishlist() {
-        SnackbarManager.makeRed(getRootView(), getString(R.string.msg_error_remove_wishlist),
+        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_remove_wishlist),
                 Snackbar.LENGTH_LONG).show();
     }
 }
