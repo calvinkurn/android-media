@@ -86,9 +86,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void initialize() {
-
-    }
+    public void initialize() {}
 
     @Override
     public void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
