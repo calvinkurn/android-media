@@ -3,19 +3,19 @@ package com.tokopedia.kolcomponent.view.adapter.viewholder.post
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kolcomponent.R
 import com.tokopedia.kolcomponent.view.adapter.post.PostPagerAdapter
+import com.tokopedia.kolcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.kolcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(val v: View) : AbstractViewHolder<DynamicPostViewModel>(v) {
+class DynamicPostViewHolder(v: View, private val listener: DynamicPostListener)
+    : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     companion object {
         @LayoutRes
@@ -45,9 +45,11 @@ class DynamicPostViewHolder(val v: View) : AbstractViewHolder<DynamicPostViewMod
         itemView.authorTitle.text = element.authorTitle
         itemView.authorSubtitile.text = element.authorSubtitle
         itemView.caption.text = element.caption
+        itemView.headerAction.setOnClickListener { listener.onHeaderActionClick() }
+        itemView.menu.setOnClickListener { listener.onMenuClick() }
     }
 
-    private fun bindContentList(contentList: MutableList<Any>) {
+    private fun bindContentList(contentList: MutableList<BasePostViewModel>) {
         val adapter = PostPagerAdapter()
         adapter.setList(contentList)
         itemView.contentViewPager.adapter = adapter
@@ -65,6 +67,45 @@ class DynamicPostViewHolder(val v: View) : AbstractViewHolder<DynamicPostViewMod
             itemView.shareSpace.visible()
             itemView.footerAction.gone()
         }
+
+        bindLike(element.isLiked, element.likeCountNumber, element.likeCountText)
+        bindComment(element.commentCountNumber, element.commentCountText)
+    }
+
+    private fun bindLike(isLiked: Boolean, totalLikeNumber: Int, totalLikeText: String) {
+        itemView.likeIcon.setOnClickListener { listener.onLikeClick() }
+        itemView.likeText.setOnClickListener { listener.onLikeClick() }
+        when {
+            isLiked -> {
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
+                itemView.likeText.text = totalLikeText
+                itemView.likeText.setTextColor(
+                        MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
+                )
+            }
+            totalLikeNumber > 0 -> {
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeText.text = totalLikeText
+                itemView.likeText.setTextColor(
+                        MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
+                )
+            }
+            else -> {
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeText.setText(R.string.kol_action_like)
+                itemView.likeText.setTextColor(
+                        MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
+                )
+            }
+        }
+    }
+
+    private fun bindComment(totalCommentNumber: Int, totalCommentText: String) {
+        itemView.commentIcon.setOnClickListener { listener.onCommentClick() }
+        itemView.commentText.setOnClickListener { listener.onCommentClick() }
+        itemView.commentText.text =
+                if (totalCommentNumber == 0) getString(R.string.kol_action_comment)
+                else totalCommentText
     }
 
     interface DynamicPostListener {

@@ -16,8 +16,10 @@ data class DynamicPostViewModel(
         val footerActionLink: String = "",
         val footerActionText: String = "",
         val shareText: String = "",
-        var likeCount: String = "",
-        var commentCount: String = "",
+        var likeCountNumber: Int = 0,
+        var likeCountText: String = "",
+        var commentCountNumber: Int = 0,
+        var commentCountText: String = "",
         var isLiked: Boolean = false,
         var contentList: MutableList<BasePostViewModel>
 

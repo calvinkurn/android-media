@@ -4,11 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kolcomponent.view.viewmodel.post.BasePostViewModel
 
 /**
  * @author by milhamj on 04/12/18.
  */
-abstract class BasePostViewHolder<T> {
+abstract class BasePostViewHolder<T : BasePostViewModel> {
 
     lateinit var itemView: View
     lateinit var context: Context

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.kolcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.kolcomponent.view.adapter.viewholder.post.grid.GridPostViewHolder
 import com.tokopedia.kolcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
+import com.tokopedia.kolcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.kolcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.kolcomponent.view.viewmodel.post.image.ImagePostViewModel
 
@@ -14,7 +15,7 @@ import com.tokopedia.kolcomponent.view.viewmodel.post.image.ImagePostViewModel
  */
 class PostPagerAdapter : PagerAdapter() {
 
-    private val itemList: MutableList<Any> = ArrayList()
+    private val itemList: MutableList<BasePostViewModel> = ArrayList()
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
@@ -22,10 +23,10 @@ class PostPagerAdapter : PagerAdapter() {
 
     @Suppress("UNCHECKED_CAST")
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val element: Any = itemList[position]
-        val viewHolder: BasePostViewHolder<Any> = when (element) {
-            is ImagePostViewModel -> ImagePostViewHolder() as BasePostViewHolder<Any>
-            is GridPostViewModel -> GridPostViewHolder() as BasePostViewHolder<Any>
+        val element: BasePostViewModel = itemList[position]
+        val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
+            is ImagePostViewModel -> ImagePostViewHolder() as BasePostViewHolder<BasePostViewModel>
+            is GridPostViewModel -> GridPostViewHolder() as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support class of this type: ")
                     .plus(element.javaClass.simpleName))
@@ -42,7 +43,7 @@ class PostPagerAdapter : PagerAdapter() {
 
     override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
 
-    fun setList(imageList: MutableList<Any>) {
+    fun setList(imageList: MutableList<BasePostViewModel>) {
         this.itemList.clear()
         this.itemList.addAll(imageList)
         notifyDataSetChanged()
