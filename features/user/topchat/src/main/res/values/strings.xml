@@ -86,7 +86,7 @@ yang ditemukan</string>
     <string name="enable_chat_settings">Kembali Menerima Chat</string>
     <string name="enable_chat_personal_settings">Anda berhenti menerima semua chat dari %s</string>
     <string name="disable_chat_personal_settings">Anda kembali menerima semua chat dari %s</string>
-    <string name="enable_chat_promotion_settings">Anda berhenti menerima chat promosi dar %s</string>
+    <string name="enable_chat_promotion_settings">Anda berhenti menerima chat promosi dari %s</string>
     <string name="disable_chat_promotion_settings">Anda kembali menerima chat promosi dari %s</string>
     <string name="enable_chat_promotion_blocked_settings">Anda wajib mengaktifkan penerimaan chat personal untuk menerima chat promosi</string>
 </resources>
