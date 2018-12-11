@@ -138,8 +138,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject
-    CheckoutAnalyticsPurchaseProtection checkoutAnalyticsPurchaseProtection;
-    @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
@@ -1757,12 +1755,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void navigateToProtectionMore(String url) {
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
+        shipmentPresenter.sendPurchaseProtectionAnalytics(
+                CheckoutAnalyticsPurchaseProtection.Event.CLICK_PELAJARI, url);
         startActivity(intent);
     }
 
     @Override
     public void onPurchaseProtectionShowed() {
-        checkoutAnalyticsPurchaseProtection.eventImpressionOfProduct();
+        shipmentPresenter.sendPurchaseProtectionAnalytics(
+                CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI, null);
     }
 
     public int getResultCode() {

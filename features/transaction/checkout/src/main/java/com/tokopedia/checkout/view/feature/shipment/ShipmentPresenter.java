@@ -54,6 +54,7 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -135,6 +136,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
+    private CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -151,7 +153,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetRatesUseCase getRatesUseCase,
                              GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                              ShippingCourierConverter shippingCourierConverter,
-                             ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener) {
+                             ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
+                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -167,6 +170,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
+        this.analyticsPurchaseProtection = analyticsPurchaseProtection;
     }
 
     @Override
@@ -1334,5 +1338,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean getHasDeletePromoAfterChecKPromoCodeFinal() {
         return hasDeletePromoAfterChecKPromoCodeFinal;
+    }
+
+    @Override
+    public void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label) {
+        switch (type) {
+            case CLICK_PELAJARI:
+                analyticsPurchaseProtection.eventClickOnPelajari(label);
+                break;
+            case CLICK_BAYAR:
+                analyticsPurchaseProtection.eventClickOnBuy(label);
+                break;
+            case IMPRESSION_PELAJARI:
+                analyticsPurchaseProtection.eventImpressionOfProduct();
+                break;
+        }
     }
 }

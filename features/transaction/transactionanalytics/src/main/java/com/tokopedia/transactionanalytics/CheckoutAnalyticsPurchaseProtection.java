@@ -13,6 +13,12 @@ import javax.inject.Inject;
  */
 public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
 
+    public enum Event {
+        CLICK_PELAJARI,
+        CLICK_BAYAR,
+        IMPRESSION_PELAJARI
+    }
+
     @Inject
     CheckoutAnalyticsPurchaseProtection(AnalyticTracker analyticTracker) {
         super(analyticTracker);
@@ -32,10 +38,9 @@ public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
     /**
      * User clicks on bayar successfully. Please capture the tickmark element on purchase
      * protection, whether being check or not
-     * @param isPppTicked tickmark on purchase protection checkbox
+     * @param label tickmark on purchase protection checkbox
      */
-    public void eventClickOnBuy(boolean isPppTicked) {
-        String label = isPppTicked ? EventLabel.SUCCESS_TICKED_PPP : EventLabel.SUCCESS_UNTICKED_PPP;
+    public void eventClickOnBuy(String label) {
         sendEventCategoryActionLabel(EventName.EMPTY,
                 EventCategory.PURCHASE_PROTECTION,
                 EventAction.CLICK_PURCHASE_PROTECTION_PAY,
