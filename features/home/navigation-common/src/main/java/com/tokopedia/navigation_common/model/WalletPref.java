@@ -26,8 +26,8 @@ public class WalletPref {
 
     public void saveVccUserStatus(VccUserStatus vccUserStatus) {
         SharedPreferences.Editor editor = preferences.edit();
-        String jsonWallet = gson.toJson(vccUserStatus);
-        editor.putString(VCC_PREF, jsonWallet).apply();
+        String jsonVccStatus = gson.toJson(vccUserStatus);
+        editor.putString(VCC_PREF, jsonVccStatus).apply();
     }
 
     public WalletModel retrieveWallet() {
