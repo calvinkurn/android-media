@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
 import java.util.Map;
 
 import permissions.dispatcher.PermissionRequest;
@@ -26,11 +24,7 @@ public interface ChallengesModuleRouter {
 
     void onNeverAskAgain(Context context, String permission);
 
-    void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener branchLinkGenerateListener);
-
-    interface BranchLinkGenerateListener {
-        void onGenerateLink(String shareContents, String shareUri);
-    }
+    void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_desc, String og_image, String deepLink, final BranchLinkGenerateListener branchLinkGenerateListener);
 
     void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents);
 
@@ -39,5 +33,9 @@ public interface ChallengesModuleRouter {
     void sendMoengageEvents(String eventName, Map<String, Object> values);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
+    interface BranchLinkGenerateListener {
+        void onGenerateLink(String shareContents, String shareUri);
+    }
 
 }

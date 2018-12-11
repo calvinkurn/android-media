@@ -555,10 +555,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             } else {
                                 productDetailData.getInfo().setHasVariant(false);
-                                viewListener.trackingEnhanceProductDetail();
                                 getProductStock(context
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             }
+                            viewListener.trackingEnhanceProductDetail();
                             validateProductDataWithProductPassAndShowMessage(productDetailData, productPass, context);
 
                             if (campaign.getActive()) {
@@ -1142,10 +1142,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     , Integer.toString(data.getInfo().getProductId()));
                         } else {
                             data.getInfo().setHasVariant(false);
-                            viewListener.trackingEnhanceProductDetail();
                             getProductStock(context
                                     , Integer.toString(data.getInfo().getProductId()));
                         }
+                        viewListener.trackingEnhanceProductDetail();
                         validateProductDataWithProductPassAndShowMessage(data, productPass, context);
                     }
 

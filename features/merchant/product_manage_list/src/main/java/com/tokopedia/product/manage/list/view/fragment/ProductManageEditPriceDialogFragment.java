@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
@@ -173,7 +174,10 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             private void onItemClicked(int position) {
                 if (!isGoldMerchant && spinnerCounterInputViewPrice.getSpinnerValue(position).equalsIgnoreCase(spinnerCounterInputViewPrice.getContext().getString(R.string.product_currency_value_usd))) {
                     spinnerCounterInputViewPrice.setSpinnerValue(spinnerCounterInputViewPrice.getContext().getString(R.string.product_currency_value_idr));
-                    Snackbar.make(spinnerCounterInputViewPrice.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                    Snackbar.make(spinnerCounterInputViewPrice.getRootView().findViewById(android.R.id.content),
+                            getString(R.string.product_error_must_be_gold_merchant,
+                                    getString(GMConstant.getGMTitleResource(getActivity()))),
+                            Snackbar.LENGTH_LONG)
                             .setActionTextColor(ContextCompat.getColor(spinnerCounterInputViewPrice.getContext(), R.color.green_400))
                             .show();
                     return;

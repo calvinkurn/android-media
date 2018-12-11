@@ -3,11 +3,11 @@ package com.tokopedia.topads.group.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSource;
-import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSource;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractorImpl;
 import com.tokopedia.topads.group.data.apiservice.TopAdsGroupAdApi;
 import com.tokopedia.topads.group.data.repository.TopAdsGroupAdRepositoryImpl;
 import com.tokopedia.topads.group.data.source.TopAdsGroupAdDataSource;

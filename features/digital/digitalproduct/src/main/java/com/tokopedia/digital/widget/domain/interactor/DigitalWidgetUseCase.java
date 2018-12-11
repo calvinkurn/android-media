@@ -37,16 +37,13 @@ public class DigitalWidgetUseCase extends UseCase<List<Category>> {
     @Override
     public Observable<List<Category>> createObservable(RequestParams requestParams) {
         return digitalWidgetRepository.getObservableStatus()
-                .flatMap(new Func1<Status, Observable<List<Category>>>() {
-                    @Override
-                    public Observable<List<Category>> call(Status status) {
-                        if (status.isMaintenance() || !isVersionMatch(status)) {
-                            // failed
-                            List<Category> categories = new ArrayList<>();
-                            return Observable.just(categories);
-                        } else {
-                            return digitalWidgetRepository.getObservableCategoryList();
-                        }
+                .flatMap((Func1<Status, Observable<List<Category>>>) status -> {
+                    if (status.isMaintenance() || !isVersionMatch(status)) {
+                        // failed
+                        List<Category> categories = new ArrayList<>();
+                        return Observable.just(categories);
+                    } else {
+                        return digitalWidgetRepository.getObservableCategoryList();
                     }
                 });
     }

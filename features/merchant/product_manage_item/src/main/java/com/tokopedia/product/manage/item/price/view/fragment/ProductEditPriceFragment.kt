@@ -18,6 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.util.GlobalConfig
 import com.tokopedia.design.text.watcher.AfterTextWatcher
+import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
@@ -233,7 +234,9 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
                             UnifyTracking.eventSwitchRpToDollarAddProduct()
                             showDialogGoToGM()
                         } else {
-                            Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                            Snackbar.make(spinnerCounterInputViewPrice.rootView.findViewById(android.R.id.content),
+                                    getString(R.string.product_error_must_be_gold_merchant, getString(GMConstant.getGMTitleResource(context))),
+                                    Snackbar.LENGTH_LONG)
                                     .setActionTextColor(ContextCompat.getColor(context!!, R.color.green_400))
                                     .show()
                         }
@@ -259,8 +262,10 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun showDialogGoToGM(){
         val builder = AlertDialog.Builder(context!!,
                 R.style.AppCompatAlertDialogStyle)
-        builder.setTitle(R.string.add_product_title_alert_dialog_dollar)
-        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video, getString(R.string.product_add_label_alert_dialog_dollar)))
+        val gm = getString(GMConstant.getGMTitleResource(context))
+        builder.setTitle(getString(R.string.add_product_title_alert_dialog_dollar_dynamic, gm))
+        builder.setMessage(getString(R.string.add_product_label_alert_save_as_draft_dollar_and_video,
+                getString(R.string.product_add_label_alert_dialog_dollar, gm)))
         builder.setCancelable(true)
         builder.setPositiveButton(R.string.change) { dialog, _ ->
             dialog.cancel()
