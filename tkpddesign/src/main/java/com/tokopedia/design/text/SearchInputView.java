@@ -55,6 +55,8 @@ public class SearchInputView extends BaseCustomView {
     private Listener listener;
     private ResetListener reset;
 
+    private TextWatcher textWatcher;
+
     public EditText getSearchTextView() {
         return searchTextView;
     }
@@ -100,6 +102,52 @@ public class SearchInputView extends BaseCustomView {
         searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
         closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
+        textWatcher = new TextWatcher() {
+            private Timer timer = new Timer();
+
+            public void afterTextChanged(Editable s) {
+                runTimer(s.toString());
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (TextUtils.isEmpty(searchTextView.getText().toString())) {
+                    closeImageButton.setVisibility(View.GONE);
+                } else {
+                    closeImageButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            private void runTimer(final String text) {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        updateListener(text);
+                    }
+                }, delayTextChanged);
+            }
+
+            private void updateListener(final String text) {
+                if (listener == null) {
+                    return;
+                }
+                Handler mainHandler = new Handler(searchTextView.getContext().getMainLooper());
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onSearchTextChanged(text);
+                    }
+                };
+                mainHandler.post(myRunnable);
+            }
+        };
     }
 
 
@@ -190,52 +238,7 @@ public class SearchInputView extends BaseCustomView {
     }
 
     protected TextWatcher getSearchTextWatcher() {
-        return new TextWatcher() {
-            private Timer timer = new Timer();
-
-            public void afterTextChanged(Editable s) {
-                runTimer(s.toString());
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (timer != null) {
-                    timer.cancel();
-                }
-                if (TextUtils.isEmpty(searchTextView.getText().toString())) {
-                    closeImageButton.setVisibility(View.GONE);
-                } else {
-                    closeImageButton.setVisibility(View.VISIBLE);
-                }
-            }
-
-            private void runTimer(final String text) {
-                timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        updateListener(text);
-                    }
-                }, delayTextChanged);
-            }
-
-            private void updateListener(final String text) {
-                if (listener == null) {
-                    return;
-                }
-                Handler mainHandler = new Handler(searchTextView.getContext().getMainLooper());
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onSearchTextChanged(text);
-                    }
-                };
-                mainHandler.post(myRunnable);
-            }
-        };
+        return textWatcher;
     }
 
 }
