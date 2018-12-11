@@ -270,6 +270,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     public void onSuccessDeletePost(int rowNumber) {
         adapter.removeItem(rowNumber);
         if (isAdapterEmpty()) {
+            adapter.clearData();
             fetchDataFirstTime();
         }
 
