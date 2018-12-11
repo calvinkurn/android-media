@@ -107,4 +107,20 @@ object GMConstant {
             R.drawable.ic_badge_shop_regular
         }
     }
+
+    @JvmStatic
+    fun getGMDrawerDrawable(context: Context?): Drawable? {
+        if (context == null)
+            return null
+        return ContextCompat.getDrawable(context, getGMDrawerDrawableResource(context))
+    }
+
+    @JvmStatic
+    fun getGMDrawerDrawableResource(context: Context): Int {
+        return if (isPowerMerchantEnabled(context)){
+            R.drawable.ic_pm_badge_shop_regular
+        } else {
+            R.drawable.ic_goldmerchant_drawer
+        }
+    }
 }

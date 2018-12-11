@@ -145,8 +145,9 @@
 
                     <ImageView
                         android:id="@+id/image_view_gold_badge"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_60"
+                        android:layout_height="@dimen/dp_60"
+                        android:adjustViewBounds="true"
                         app:srcCompat="@drawable/ic_gm_badge_not_qualified" />
 
                 </FrameLayout>
