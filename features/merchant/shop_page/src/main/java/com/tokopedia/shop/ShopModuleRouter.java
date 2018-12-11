@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+
 import java.util.Map;
 
 /**
@@ -48,4 +50,6 @@ public interface ShopModuleRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     boolean isFeedShopPageEnabled();
+
+    void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed);
 }

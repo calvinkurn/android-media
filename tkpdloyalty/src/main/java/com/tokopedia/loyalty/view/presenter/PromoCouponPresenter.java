@@ -46,6 +46,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     private static final String PARAM_PROMO_CODE = "promo_code";
     private static final String PARAM_SUGGESTED = "suggested";
     private static final String PARAM_LANG = "lang";
+    private static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
     private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
@@ -180,7 +181,8 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     @Override
     public void processCheckMarketPlaceCartListPromoCode(Activity activity, CouponData couponData,
-                                                         String paramUpdateCartString) {
+                                                         String paramUpdateCartString,
+                                                         boolean isOneClickShipment) {
         TKPDMapParam<String, String> paramUpdateCart = null;
         if (!TextUtils.isEmpty(paramUpdateCartString)) {
             paramUpdateCart = new TKPDMapParam<>();
@@ -190,6 +192,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         paramCheckPromo.put(PARAM_PROMO_CODE, couponData.getCode());
         paramCheckPromo.put(PARAM_SUGGESTED, "0");
         paramCheckPromo.put(PARAM_LANG, "id");
+        paramCheckPromo.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
 
         promoCouponInteractor.submitCheckPromoCodeMarketPlace(
                 paramUpdateCart != null ? AuthUtil.generateParamsNetwork(activity, paramUpdateCart) : null,

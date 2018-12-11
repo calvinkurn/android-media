@@ -215,6 +215,8 @@ public class ProductViewModelHelper {
         productItem.setPosition(position);
         productItem.setTopLabel(isContainItems(productModel.getTopLabel()) ? productModel.getTopLabel().get(0) : "");
         productItem.setBottomLabel(isContainItems(productModel.getBottomLabel()) ? productModel.getBottomLabel().get(0) : "");
+        productItem.setCategoryID(productModel.getCategoryId());
+        productItem.setCategoryName(productModel.getCategoryName());
         return productItem;
     }
 

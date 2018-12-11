@@ -25,7 +25,6 @@ import javax.inject.Inject;
 public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseCase {
 
 
-    private RequestParams requestParams;
     public static final String IS_LIKED = "IS_LIKED";
 
     @Inject
@@ -33,12 +32,8 @@ public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseC
         super(interceptor, context);
     }
 
-    public void setRequestParams(RequestParams requestParams) {
-        this.requestParams = requestParams;
-    }
-
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         ChallengesCacheHandler.resetCache(); // it can be called from different -2 screens
         List<RestRequest> tempRequest = new ArrayList<>();
 

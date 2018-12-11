@@ -14,9 +14,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
@@ -43,7 +42,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     public static final String HOTLIST_ADS_SRC = "hotlist";
     private DecimalFormat decimalFormat = new DecimalFormat("#,###,###");
     private final Context context;
-    private final ItemClickListener mItemClickListener;
+    private final HotlistListener mHotlistListener;
 
     private HasTagAdapter hasTagAdapter;
     private final RecyclerView hastagList;
@@ -52,16 +51,16 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final TopAdsBannerView topAdsBannerView;
     private final String searchQuery;
 
-    public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener, String searchQuery) {
+    public HotlistHeaderViewHolder(View parent, HotlistListener mHotlistListener, String searchQuery) {
         super(parent);
         context = parent.getContext();
-        this.mItemClickListener = mItemClickListener;
+        this.mHotlistListener = mHotlistListener;
         this.searchQuery = searchQuery;
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
         this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
         this.hastagList = parent.findViewById(R.id.hastag_list);
         this.productCount = parent.findViewById(R.id.product_counter);
-        hasTagAdapter = new HasTagAdapter(context, mItemClickListener);
+        hasTagAdapter = new HasTagAdapter(context, mHotlistListener);
         hastagList.setNestedScrollingEnabled(false);
         hastagList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         hastagList.setAdapter(hasTagAdapter);
@@ -73,10 +72,10 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         adsParams.getParam().put(TopAdsParams.KEY_SRC, HOTLIST_ADS_SRC);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, searchQuery);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(context));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, mHotlistListener.getUserId());
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(mHotlistListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();
@@ -84,7 +83,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
             public void onBannerAdsClicked(String applink) {
-                mItemClickListener.onBannerAdsClicked(applink);
+                mHotlistListener.onBannerAdsClicked(applink);
             }
         });
         if (!searchQuery.isEmpty()) {
@@ -128,11 +127,11 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
         private final Context context;
         private List<HotlistHashTagViewModel> tags;
-        private final ItemClickListener mItemClickListener;
+        private final HotlistListener mHotlistListener;
 
-        public HasTagAdapter(Context context, ItemClickListener mItemClickListener) {
+        public HasTagAdapter(Context context, HotlistListener mHotlistListener) {
             this.context = context;
-            this.mItemClickListener = mItemClickListener;
+            this.mHotlistListener = mHotlistListener;
             this.tags = new ArrayList<>();
         }
 
@@ -152,7 +151,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mItemClickListener.onHashTagClicked(tags.get(pos).getName(),
+                    mHotlistListener.onHashTagClicked(tags.get(pos).getName(),
                             tags.get(pos).getURL(), tags.get(pos).getDepartmentID());
                 }
             });

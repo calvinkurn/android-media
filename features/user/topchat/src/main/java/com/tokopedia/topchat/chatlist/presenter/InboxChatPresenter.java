@@ -6,13 +6,13 @@ import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.R;
@@ -55,8 +55,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private GetMessageListUseCase getMessageListUseCase;
     private SearchMessageUseCase searchMessageUseCase;
     private DeleteMessageListUseCase deleteMessageListUseCase;
+    private PagingHandler pagingHandler;
     private GetChatBlastSellerMetaDataUseCase getChatBlastSellerMetaDataUseCase;
-    PagingHandler pagingHandler;
     private boolean isRequesting;
     private InboxChatViewModel viewModel;
     private int contactSize;
@@ -67,7 +67,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private ChatWebSocketListenerImpl listener;
     private WebSocket ws;
     private int attempt;
-    boolean inActionMode;
+    private boolean inActionMode;
     private CountDownTimer countDownTimer;
 
     @Inject
@@ -93,6 +93,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     private void initialize() {
         this.pagingHandler = new PagingHandler();
+        this.listFetchCache = new ArrayList<>();
         isRequesting = false;
         inActionMode = false;
         contactSize = 0;
@@ -104,7 +105,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 "?os_type=1" +
                 "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
                 "&user_id=" + SessionHandler.getLoginID(getView().getContext());
-        listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper,true);
+        listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper, true);
 
         countDownTimer = new CountDownTimer(5000, 1000) {
             @Override
@@ -162,13 +163,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             chatSize = 0;
             getView().getAdapter().setList(result.getListReplies());
             chatSize += result.getChatSize();
-//            getView().getAdapter().addList(contactSize, result.getListContact());
-//            contactSize += result.getContactSize();
         } else {
             getView().getAdapter().addList(result.getListReplies());
             chatSize += result.getChatSize();
-//            getView().getAdapter().addList(contactSize, result.getListContact());
-//            contactSize += result.getContactSize();
         }
 
         getView().getAdapter().showEmptyFull(false);
@@ -192,16 +189,18 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         this.listFetchCache.addAll(list);
     }
 
-   public List<Visitable> getListCache(){
+    public List<Visitable> getListCache() {
         return listFetchCache;
-   }
+    }
 
     public void resetSearch() {
-        viewModel.setMode(InboxChatViewModel.GET_CHAT_MODE);
-        viewModel.setKeyword("");
-        getView().getAdapter().setList(listFetchCache);
-        chatSize = listFetchCache.size();
-        contactSize = 0;
+        if (viewModel != null) {
+            viewModel.setMode(InboxChatViewModel.GET_CHAT_MODE);
+            viewModel.setKeyword("");
+            getView().getAdapter().setList(listFetchCache);
+            chatSize = listFetchCache.size();
+            contactSize = 0;
+        }
     }
 
     public void setResultSearch(InboxChatViewModel result) {
@@ -266,7 +265,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         searchMessageUseCase.unsubscribe();
         deleteMessageListUseCase.unsubscribe();
         getChatBlastSellerMetaDataUseCase.unsubscribe();
-        if(countDownTimer != null) countDownTimer.cancel();
+        if (countDownTimer != null) countDownTimer.cancel();
     }
 
 
@@ -286,7 +285,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 
     public void goToDetailMessage(int position, ChatListViewModel listMessage) {
 
-        if(viewModel == null)
+        if (viewModel == null)
             return;
 
         ws.close(1000, "");
@@ -447,6 +446,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                             sessionHandler.getTokenType(getView().getContext())
                                     + " " +
                                     sessionHandler.getAuthAccessToken())
+                    .header("x-app-version",String.valueOf(GlobalConfig.VERSION_CODE))
+                    .header("x-device", "android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-version","android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-name", GlobalConfig.getPackageApplicationName())
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;

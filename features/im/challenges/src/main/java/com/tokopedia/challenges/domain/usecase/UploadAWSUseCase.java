@@ -62,7 +62,7 @@ public class UploadAWSUseCase extends RestRequestSupportInterceptorUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
 
         return null;
     }

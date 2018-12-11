@@ -27,6 +27,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.transactioncommon)
@@ -39,6 +41,7 @@ dependencies {
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation rootProject.ext.playServicesDependencies.perfMon
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps

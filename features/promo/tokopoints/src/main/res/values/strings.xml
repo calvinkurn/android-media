@@ -19,8 +19,9 @@
     <string name="tp_label_know_tokopoints">Apa itu TokoPoints?</string>
     <string name="tp_label_my_membership">Membership Saya</string>
     <string name="tp_label_see_membership">Lihat Status Membership</string>
-    <string name="tp_label_see_loyalty">Loyalty Saya</string>
-    <string name="tp_label_see_point">Points Saya</string>
+    <string name="tp_label_see_loyalty">Loyalty</string>
+    <string name="tp_label_membership">Status membership</string>
+    <string name="tp_label_see_point">Points</string>
     <string name="tp_label_exchange_points">Penukaran Points</string>
     <string name="tp_label_my_coupon">Kupon Milik Saya</string>
     <string name="tp_label_my_coupon_space">Kupon Milik Saya \u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
@@ -41,6 +42,7 @@
     <string name="tp_label_how_to_use">Cara Pakai</string>
     <string name="tp_label_tnc">Ketentuan</string>
     <string name="tp_label_min_exchange">Minimal transaksi:</string>
+    <string name="tp_label_min_exchange_sort">Min. transaksi:</string>
     <string name="tp_label_refresh_repeat">Refresh Ulang</string>
     <string name="tp_label_send">Kirim</string>
     <string name="tp_label_email">Email Penerima</string>
@@ -60,5 +62,6 @@
     <string name="tp_label_copy_code">Salin</string>
     <string name="tp_label_barcode">Barcode</string>
     <string name="tp_label_qrcode">QR Code</string>
+    <string name="tp_label_see_point_saya">Points Saya</string>
 
 </resources>

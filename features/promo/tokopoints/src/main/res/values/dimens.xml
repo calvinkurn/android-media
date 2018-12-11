@@ -18,6 +18,9 @@
     <dimen name="tp_margin_medium">16dp</dimen>
     <dimen name="tp_margin_large">24dp</dimen>
     <dimen name="tp_margin_xlarge">32dp</dimen>
+    <dimen name="tp_margin_xxxlarge">64dp</dimen>
+    <dimen name="tp_margin_bottom_membership_and_egg">118dp</dimen>
+    <dimen name="tp_margin_bottom_egg">80dp</dimen>
 
     <!-- padding values-->
     <dimen name="tp_padding_xxsmall">2dp</dimen>
@@ -32,5 +35,6 @@
     <dimen name="size_progress_bar">24dp</dimen>
     <dimen name="height_submit_button">52dp</dimen>
     <dimen name="tp_height_line_separator">2dp</dimen>
+    <dimen name="tp_height_bottom_membership_view">52dp</dimen>
 
 </resources>

@@ -313,6 +313,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_catalog">Katalog</string>
     <string name="title_preorder">Preorder</string>
     <string name="title_desc">Deskripsi Produk</string>
+    <string name="title_image_from_buyer">Foto Dari Pembeli</string>
     <string name="title_most_helpful">Ulasan Paling Membantu</string>
     <string name="title_all_reviews">Lihat Semua Ulasan</string>
     <string name="title_shop_info">Penjual</string>
@@ -321,6 +322,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_service">Pelayanan</string>
     <string name="title_last_update_price">Perubahan Harga Terakhir :</string>
     <string name="message_add_new_talk">Berhasil menambahkan Diskusi Produk</string>
+    <string name="message_see_all_buyer_image">Lihat Semua</string>
     <string name="title_sending">Sedang mengirim...</string>
     <string name="title_dialog_delete">Apakah Anda ingin menghapus tkpd ini ?</string>
     <string name="title_dialog_follow">Apakah Anda ingin action tkpd ini ?</string>
@@ -820,8 +822,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="msg_tokopedia_indomaret_fee">"Tambahan biaya Rp 2.500,-"</string>
     <string name="title_admin_fee">Biaya administrasi</string>
     <string name="title_gratis">GRATIS</string>
-    <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
-    <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
+    <string name="message_tos_agreement">Dengan mengaktifkan fitur perlindungan, saya menyetujui Syarat dan Ketentuan yang berlaku.</string>
+    <string name="text_tos_agreement">Syarat dan Ketentuan</string>
     <!-- Strings related to add to cart -->
 
 
@@ -2155,11 +2157,6 @@ di Tokopedia Sekarang!</string>
     <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="bri_transfer_info">*) Penarikan dana ke rekening BRI akan dikenakan biaya transfer Rp 1,500.- oleh bank BRI</string>
-
-    <string name="app_rating_button_rate">Beri Rating</string>
-    <string name="app_rating_button_later">Nanti</string>
-    <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
-    <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
 
     <string name="title_app_referral_howitworks">Info lebih lanjut</string>
 

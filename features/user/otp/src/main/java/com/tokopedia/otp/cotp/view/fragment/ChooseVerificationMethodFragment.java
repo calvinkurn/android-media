@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -40,7 +41,7 @@ import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -51,14 +52,18 @@ import javax.inject.Inject;
 public class ChooseVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
-    private static final String PASS_MODEL = "pass_model";
+    protected static final String PASS_MODEL = "pass_model";
+
     private static final int TYPE_HIDE_LINK = 0;
     private static final int TYPE_CHANGE_PHONE_UPLOAD_KTP = 1;
     private static final int TYPE_PROFILE_SETTING = 2;
-    private RecyclerView methodListRecyclerView;
-    TextView changePhoneNumberButton;
 
-
+    protected RecyclerView methodListRecyclerView;
+    protected TextView changePhoneNumberButton;
+    protected VerificationMethodAdapter adapter;
+    protected VerificationPassModel passModel;
+    protected View mainView;
+    protected ProgressBar loadingView;
     @Inject
     ChooseVerificationPresenter presenter;
 
@@ -66,13 +71,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     OTPAnalytics analytics;
 
     @Inject
-    UserSession userSession;
-
-    VerificationMethodAdapter adapter;
-    VerificationPassModel passModel;
-
-    View mainView;
-    ProgressBar loadingView;
+    UserSessionInterface userSession;
 
     @Override
     protected String getScreenName() {
@@ -134,7 +133,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         return view;
     }
 
-    private void prepareView() {
+    protected void prepareView() {
         adapter = VerificationMethodAdapter.createInstance(this);
         methodListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
@@ -144,6 +143,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initList();
+    }
+
+    protected void initList() {
         presenter.getMethodList(passModel.getPhoneNumber(),
                 passModel.getOtpType());
     }
@@ -156,11 +159,12 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 && passModel != null) {
             analytics.eventClickMethodOtp(passModel.getOtpType(), methodItem.getModeName());
         }
-        if (methodItem.isUsingPopUp()
+        if (methodItem != null
+                && methodItem.isUsingPopUp()
                 && !TextUtils.isEmpty(methodItem.getPopUpHeader())
                 && !TextUtils.isEmpty(methodItem.getPopUpBody())) {
             showInterruptDialog(methodItem);
-        } else if (getActivity() instanceof VerificationActivity) {
+        } else if (getActivity()!= null && getActivity() instanceof VerificationActivity) {
             ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
         }
     }
@@ -260,7 +264,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     private void goToRequestChangePhoneNumberUploadKTP() {
         if (getActivity() != null && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
             Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
-                    .getChangePhoneNumberRequestIntent(getActivity());
+                    .getChangePhoneNumberRequestIntent(getActivity(), userSession.getTemporaryUserId(),
+                            userSession.getTempPhoneNumber());
             startActivity(intent);
         }
     }
@@ -276,6 +281,15 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         } else {
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
                     () -> presenter.getMethodList(passModel.getPhoneNumber(), passModel.getOtpType()));
+        }
+    }
+
+    @Override
+    public void logUnknownError(Throwable message) {
+        try {
+            Crashlytics.logException(message);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
     }
 

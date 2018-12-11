@@ -2,8 +2,8 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -15,10 +15,11 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import org.json.JSONObject;
 
@@ -36,7 +37,6 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
-import io.branch.referral.util.ProductCategory;
 
 /**
  * Created by ashwanityagi on 04/10/17.
@@ -56,6 +56,9 @@ public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "$android_url";
     private static final String BRANCH_IOS_DESKTOP_URL_KEY = "$ios_url";
     private static final String ProductCategory = "ProductCategory";
+    private static final String FIREBASE_KEY_INCLUDEMOBILEWEB = "app_branch_include_mobileweb";
+    private static final String CHALLENGES_DESKTOP_URL = "https://m.tokopedia.com/kontes";
+    private static final String REFERRAL_DESKTOP_URL = "https://www.tokopedia.com/referral";
 
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -95,8 +98,21 @@ public class BranchSdkUtils {
 
     private static LinkProperties createLinkProperties(ShareData data, String channel, Activity activity) {
         LinkProperties linkProperties = new LinkProperties();
+
+
+        linkProperties.setCampaign(getCampaignName(data.getType()));
+        linkProperties.setChannel(ShareData.ARG_UTM_SOURCE);
+        linkProperties.setFeature(ShareData.ARG_UTM_MEDIUM);
+        linkProperties.addControlParameter("$og_url", data.getOgUrl());
+        linkProperties.addControlParameter("$og_title", getOgTitle(data));
+        linkProperties.addControlParameter("$og_image_url", getOgImage(data));
+        linkProperties.addControlParameter("$og_description", getOgDesc(data));
+
         String deeplinkPath;
         String desktopUrl = null;
+
+        linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
         } else if (isAppShowReferralButtonActivated(activity) && ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -114,6 +130,13 @@ public class BranchSdkUtils {
                 desktopUrl = ((TkpdCoreRouter) activity.getApplication())
                         .getDesktopLinkGroupChat();
                 linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addTag(String.format("%s - %s", data.getId(), data.getSource()));
+                linkProperties.setFeature(data.getPrice());
+                linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
+                linkProperties.setChannel(String.format("%s - Android", data.getType()));
+                linkProperties.addControlParameter("$uri_redirect_mode", "2");
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
@@ -123,21 +146,52 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
 
-        if (desktopUrl == null) {
+        if (ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, CHALLENGES_DESKTOP_URL);
+        } else if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, REFERRAL_DESKTOP_URL);
+        } else if (desktopUrl == null) {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+        }
+        if (isAndroidIosUrlActivated() && !(ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
+                ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType()) ||
+                ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType()))) {
             linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
             linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
         }
 
-        linkProperties.setCampaign(getCampaignName(data.getType()));
-        linkProperties.setChannel(ShareData.ARG_UTM_SOURCE);
-        linkProperties.setFeature(ShareData.ARG_UTM_MEDIUM);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
-        linkProperties.addControlParameter("$og_url", data.getOgUrl());
-        linkProperties.addControlParameter("$og_title", getOgTitle(data));
-        linkProperties.addControlParameter("$og_image_url", getOgImage(data));
-        linkProperties.addControlParameter("$og_description", getOgDesc(data));
+
+        if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
+            String connector = "";
+            String renderedUrl = "";
+            String tempUri = data.getUri();
+
+            if (tempUri.contains("?")) {
+                connector = "&";
+            } else {
+                connector = "?";
+            }
+            String tags = "";
+            if (linkProperties.getTags().size() > 0) {
+                tags = linkProperties.getTags().get(0);
+            }
+            Uri uri = Uri.parse(String.format("groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                    tempUri, connector, linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags));
+            try {
+                renderedUrl = uri.toString().replace(" ", "%20");
+            } catch (Exception e) {
+                e.printStackTrace();
+                renderedUrl = uri.toString();
+            }
+
+            String temp = String.format("utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                    linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags);
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, String.format("%s%s", desktopUrl, temp));
+            linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, renderedUrl);
+            linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, renderedUrl);
+        }
 
         return linkProperties;
     }
@@ -149,7 +203,7 @@ public class BranchSdkUtils {
             return true;
         } else {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
+            return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
         }
     }
 
@@ -314,7 +368,7 @@ public class BranchSdkUtils {
 
     public static Boolean isAppShowReferralButtonActivated(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
 
     private static String normalizePhoneNumber(String phoneNum) {
@@ -387,5 +441,10 @@ public class BranchSdkUtils {
 
     public interface GenerateShareContents {
         void onCreateShareContents(String shareContents, String shareUri, String branchUrl);
+    }
+
+    public static Boolean isAndroidIosUrlActivated() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        return remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB, true);
     }
 }

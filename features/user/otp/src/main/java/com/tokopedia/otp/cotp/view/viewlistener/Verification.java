@@ -37,6 +37,10 @@ public interface Verification {
         Context getContext();
 
         void trackOnBackPressed();
+
+        void onLimitOTPReached(String errorMessage);
+
+        void logUnknownError(Throwable e);
     }
 
     interface Presenter extends CustomerPresenter<Verification.View> {

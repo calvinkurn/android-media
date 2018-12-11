@@ -13,6 +13,7 @@ public class SettingConstant {
     public static final int SETTING_ACCOUNT_PERSONAL_DATA_ID = 11;
     public static final int SETTING_ACCOUNT_PASS_ID = 12;
     public static final int SETTING_ACCOUNT_ADDRESS_ID = 13;
+    public static final int SETTING_ACCOUNT_KYC_ID = 14;
     public static final int SETTING_SHOP_INFO_ID = 21;
     public static final int SETTING_SHOP_ETALASE_ID = 22;
     public static final int SETTING_SHOP_PRODUCT_ID = 23;
