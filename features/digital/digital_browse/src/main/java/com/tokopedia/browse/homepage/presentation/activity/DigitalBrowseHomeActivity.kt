@@ -34,7 +34,6 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         }
 
         GraphqlClient.init(this)
-
         DaggerDigitalBrowseHomeComponent.builder()
                 .digitalBrowseComponent(DigitalBrowseComponentInstance.getDigitalBrowseComponent(application))
                 .build()
