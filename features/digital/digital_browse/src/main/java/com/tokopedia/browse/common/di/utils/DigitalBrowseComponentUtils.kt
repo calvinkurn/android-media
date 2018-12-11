@@ -3,6 +3,7 @@ package com.tokopedia.browse.common.di.utils
 import android.app.Application
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.browse.common.di.DigitalBrowseComponent
+import com.tokopedia.browse.common.di.DaggerDigitalBrowseComponent
 
 /**
  * @author by furqan on 30/08/18.

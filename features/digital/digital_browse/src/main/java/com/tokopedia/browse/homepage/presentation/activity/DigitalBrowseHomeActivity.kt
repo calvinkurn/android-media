@@ -15,6 +15,7 @@ import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
+import com.tokopedia.browse.homepage.di.DaggerDigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
