@@ -175,7 +175,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 && fragment.isAdded()) {
             if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
                 fragment.getPresenter().setPointRange(mPresenter.getPointRangeId());
-                fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId());
+                fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId(), true);
             }
         }
     }
@@ -297,7 +297,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                             mPresenter.setCurrentCategoryId(filters.getCategories().get(0).getId());
                             mPresenter.setCurrentSubCategoryId(filters.getCategories().get(0).getSubCategory().get(position).getId());
                             fragment.getPresenter().setPointRange(mPresenter.getPointRangeId());
-                            fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId());
+                            fragment.getPresenter().getCatalog(mPresenter.getCurrentCategoryId(), mPresenter.getCurrentSubCategoryId(), true);
                         }
                     }
 
