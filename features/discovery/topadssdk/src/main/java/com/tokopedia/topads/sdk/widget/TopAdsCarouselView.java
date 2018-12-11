@@ -78,7 +78,6 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        adapter.setImpressionOffset(styledAttributes.getDimensionPixelSize(R.styleable.TopAdsCarouselView_ads_offset, 0));
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
                 false);
         btnCta = findViewById(R.id.info_cta);
@@ -88,12 +87,17 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_5)));
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
-        String presetTitle = styledAttributes.getString(R.styleable.TopAdsCarouselView_ads_title);
-        if(presetTitle!=null)
-            title.setText(presetTitle);
+        try {
+            adapter.setImpressionOffset(styledAttributes.getDimensionPixelSize(R.styleable.TopAdsCarouselView_ads_offset, 0));
+            String presetTitle = styledAttributes.getString(R.styleable.TopAdsCarouselView_ads_title);
+            if (presetTitle != null)
+                title.setText(presetTitle);
+        } finally {
+            styledAttributes.recycle();
+        }
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -152,7 +156,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
             for (int i = 0; i < data.getData().size(); i++) {
                 Data d = data.getData().get(i);
                 if (d.getProduct() != null) {
-                    visitables.add(ModelConverter.convertToCarouselListViewModel(d));
+                    visitables.add(ModelConverter.INSTANCE.convertToCarouselListViewModel(d));
                 }
             }
             adapter.setList(visitables);
