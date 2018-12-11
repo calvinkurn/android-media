@@ -87,35 +87,6 @@ public class FCMCacheManager {
     }
 
     private void doResetCache(int code) {
-//        switch (code) {
-//            case TkpdState.GCMServiceState.GCM_PEOPLE_PROFILE:
-//                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, context.getApplicationContext());
-//                break;
-//            case TkpdState.GCMServiceState.GCM_PEOPLE_NOTIF_SETTING:
-//                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTIFICATION, context.getApplicationContext());
-//                break;
-//            case TkpdState.GCMServiceState.GCM_PEOPLE_PRIVACY_SETTING:
-//                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PRIVACY, context.getApplicationContext());
-//                break;
-//            case TkpdState.GCMServiceState.GCM_PEOPLE_ADDRESS_SETTING:
-//
-//                break;
-//            case TkpdState.GCMServiceState.GCM_SHOP_INFO:
-//                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context.getApplicationContext());
-//                break;
-//            case TkpdState.GCMServiceState.GCM_SHOP_PAYMENT:
-//                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PAYMENT, context.getApplicationContext());
-//                break;
-//            case TkpdState.GCMServiceState.GCM_SHOP_ETALASE:
-//                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ETALASE, context.getApplicationContext());
-//                break;
-//            case TkpdState.GCMServiceState.GCM_SHOP_NOTES:
-//                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTES, context.getApplicationContext());
-//                break;
-//            case TkpdState.GCMServiceState.GCM_PRODUCT_LIST:
-//                ManageProductCache.ClearCache(context.getApplicationContext());
-//                break;
-//        }
     }
 
     public boolean isAllowToHandleNotif(Bundle data) {
