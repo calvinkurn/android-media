@@ -44,6 +44,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.features.commonTravel)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.miscDependencies.multiDex
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
@@ -61,4 +64,5 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation project(rootProject.ext.libraries.core_legacy)
 }

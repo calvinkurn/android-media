@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.contactus.createticket.model.GenerateHostPass;
 import com.tokopedia.contactus.createticket.model.ImageUploadResult;

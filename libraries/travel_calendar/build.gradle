@@ -17,7 +17,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.miscDependencies.multiDex
 
-    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

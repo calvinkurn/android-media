@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -85,10 +86,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
-        } else if (applink.equals(AccountConstants.Navigation.MITRA_TOPPERS)
-                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getMitraToppersActivityIntent
-                    (getContext()));
         }
 
         return false;
@@ -142,7 +139,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMainText());
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
+                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
     }
 
@@ -245,7 +243,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onGMInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, AccountHomeUrl.GOLD_MERCHANT));
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, GMConstant.getGMEduUrl(getContext())));
         }
     }
 
