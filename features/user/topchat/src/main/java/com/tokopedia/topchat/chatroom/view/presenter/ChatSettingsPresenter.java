@@ -62,6 +62,9 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
 
     @Override
     public void onPersonalChatSettingChange(boolean state, boolean initialState) {
+        if (!isViewAttached()) {
+            return;
+        }
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked() == state) {
             if (initialState) {
                 getView().showProgressBar();
@@ -69,17 +72,25 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
             getChatSettingResponse(getView().getMessageId(), "1", state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
-
+                    if (!isViewAttached()) {
+                        return;
+                    }
                 }
 
                 @Override
                 public void onError(Throwable e) {
+                    if (!isViewAttached()) {
+                        return;
+                    }
+                    getView().hideProgressBar();
                     CommonUtils.dumper("error occured" + e);
                 }
 
                 @Override
                 public void onNext(GraphqlResponse response) {
-
+                    if (!isViewAttached()) {
+                        return;
+                    }
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
                         chatSettingsResponse = data;
@@ -104,6 +115,9 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
 
     @Override
     public void onPromotionalChatSettingChange(boolean state, boolean initialState) {
+        if (!isViewAttached()) {
+            return;
+        }
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked() == state) {
             if (initialState) {
                 getView().showProgressBar();
@@ -111,17 +125,25 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
             getChatSettingResponse(getView().getMessageId(), "2", state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
-
+                    if (!isViewAttached()) {
+                        return;
+                    }
                 }
 
                 @Override
                 public void onError(Throwable e) {
+                    if (!isViewAttached()) {
+                        return;
+                    }
+                    getView().hideProgressBar();
                     CommonUtils.dumper("error occured" + e);
                 }
 
                 @Override
                 public void onNext(GraphqlResponse response) {
-
+                    if (!isViewAttached()) {
+                        return;
+                    }
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
                         chatSettingsResponse = data;
