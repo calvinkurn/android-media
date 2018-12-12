@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.chat_common.network.CHATBOT_BASE_URL
 import com.tokopedia.chat_common.network.TOPCHAT
@@ -113,4 +114,12 @@ class ChatNetworkModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
+
+    @ChatRoomScope
+    @Provides
+    internal fun provideResources(@ApplicationContext context: Context): Resources {
+        return context.resources
+    }
+
+
 }

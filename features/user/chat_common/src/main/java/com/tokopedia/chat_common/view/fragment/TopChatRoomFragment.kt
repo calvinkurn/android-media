@@ -37,13 +37,16 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
     private lateinit var adapter: BaseChatAdapter
 
 
-    override fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {
-        chatViewState.hideLoading()
+    fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {
+
+//      TODO MOVE THIS TO TOPCHATVIEW STATE
+//        chatViewState.hideLoading()
+//        chatViewState.addList(listChat)
         chatViewState.developmentView()
-        chatViewState.addList(listChat)
+
     }
 
-    override fun developmentView() {
+    fun developmentView() {
         val dummyList = arrayListOf<Visitable<*>>()
 
         dummyList.add(MessageViewModel("1", "1960918", "lawan", "User", "", "", "213123123", "213123123", true, false, false, "hi1"))
@@ -126,11 +129,14 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
         view?.run {
             chatViewState = TopChatViewState(this)
         }
-        chatViewState?.run {
-            chatViewState.showLoading()
-            adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
-            chatViewState.setAdapter(adapter)
-        }
+
+        adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
+
+        chatViewState.onSetupViewFirstTime()
+        //TODO MOVE THIS TO TOPCHATVIEWSTATE
+//        chatViewState.showLoading()
+//        chatViewState.setAdapter(adapter)
+
 
         hideLoading()
         arguments?.run {
