@@ -68,7 +68,6 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     var needLoadData = true
 
-    var submitStatus: Boolean = false
     var pendingCount: Int = 0
     var submittedCount: Int = 0
 
@@ -165,21 +164,21 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun onSuccessLoadSellerStatus(it: SellerStatus) {
         context?.run {
-            submitStatus = it.submitStatus
-            if (submitStatus) {
+            if (it.submitStatus) {
                 btnSubmit.text = getString(R.string.flash_sale_update_submission)
                 btnSubmit.setOnClickListener {
+                    flashSaleTracking.clickProductUpdateCampaign(campaignId.toString())
                     onClickToUpdateSubmission()
                 }
             } else {
                 btnSubmit.text = getString(R.string.flash_sale_list)
                 btnSubmit.setOnClickListener {
-                    onClickFlashSaleList()
+                    flashSaleTracking.clickProductCampaignList(campaignId.toString())
+                    onClickToUpdateSubmission()
                 }
             }
         }
         allowEditProducts = it.isEligible && it.isShopActive && !it.isGodSeller
-        renderBottom()
     }
 
     private fun showProgressDialog() {
@@ -202,7 +201,6 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     private fun onClickToUpdateSubmission() {
         showProgressDialog()
-        flashSaleTracking.clickProductUpdateCampaign(campaignId.toString())
         presenter.submitSubmission(campaignId,
                 onSuccess = {
                     hideProgressDialog()
@@ -376,7 +374,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun needShowChip() = KEY_STATUS_REGISTRATION.equals(statusLabel, true) && submittedCount > 0
-    private fun needShowBottom() = submitStatus && pendingCount > 0
+    private fun needShowBottom() = pendingCount > 0
 
     private fun renderUILabel() {
         if (needShowChip()) {
