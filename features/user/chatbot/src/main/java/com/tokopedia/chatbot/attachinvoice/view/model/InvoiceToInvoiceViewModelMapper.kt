@@ -27,15 +27,15 @@ class InvoiceToInvoiceViewModelMapper : Func1<List<Invoice>, List<InvoiceViewMod
                     invoice.invoiceId,
                     invoice.invoiceTypeInt,
                     invoice.statusInt,
-                    invoiceNumber.toString(),
-                    productTopName.toString(),
-                    productTopImage.toString(),
-                    status.toString(),
-                    date.toString(),
-                    total.toString(),
-                    invoiceType.toString(),
-                    description.toString(),
-                    invoice.url.toString()
+                    invoiceNumber,
+                    productTopName,
+                    productTopImage,
+                    status,
+                    date,
+                    total,
+                    invoiceType,
+                    description,
+                    invoice.url
             ))
         }
         return invoiceViewModels

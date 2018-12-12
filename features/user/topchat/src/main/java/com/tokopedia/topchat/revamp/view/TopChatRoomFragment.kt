@@ -14,34 +14,16 @@ import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
-import com.tokopedia.topchat.revamp.di.DaggerChatComponent
-import com.tokopedia.topchat.revamp.di.TopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
+import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 
 /**
  * @author : Steven 29/11/18
  */
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
-    override fun getNetworkMode(): Int {
-        return 1
-    }
 
-    override fun disableAction() {
-        chatViewState.setActionable(false)
-    }
-
-    override fun showSnackbarError(string: Unit) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun addDummyMessage(visitable: Visitable<*>) {
-        chatViewState.addMessage(visitable)
-    }
-
-    override fun removeDummy(visitable: Visitable<*>) {
-        chatViewState.removeDummy(visitable)
-    }
+    lateinit var presenter: TopChatRoomPresenter
 
     lateinit var chatViewState: TopChatViewState
 
@@ -49,6 +31,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     private lateinit var adapter: BaseChatAdapter
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        presenter.attachView(this)
+        initView(view)
+    }
 
     fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {
 
@@ -59,7 +47,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     }
 
-    fun developmentView() {
+    override fun developmentView() {
         val dummyList = arrayListOf<Visitable<*>>()
 
         dummyList.add(MessageViewModel("1", "1960918", "lawan", "User", "", "", "213123123", "213123123", true, false, false, "hi1"))
@@ -112,34 +100,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         chatViewState.addMessage(visitable)
     }
 
-    override fun clearEditText() {
-        chatViewState.clearEditText()
-    }
-
-    override fun onReceiveStopTypingEvent() {
-        chatViewState.recipientStopTyping()
-    }
-
-    override fun onReceiveReadEvent() {
-        return
-    }
-
-    override fun getMsgId(): String {
-        var messageId = arguments?.getString("message_id")
-        if(messageId == null){
-            messageId = ""
-        }
-        return messageId
-    }
-
-    override fun receiveStopTypingEvent() {
-        chatViewState.recipientStopTyping()
-    }
-
-    override fun receiveReadEvent() {
-        return
-    }
-
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -158,12 +118,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chatroom, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.attachView(this)
-        initView(view)
     }
 
     fun initView(view: View?) {
@@ -185,10 +139,34 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     override fun initInjector() {
 
-        DaggerChatComponent.builder()
-                .topChatRoomComponent(getComponent(TopChatRoomComponent::class.java))
-                .build()
-                .inject(this)
+//        DaggerChatComponent.builder()
+//                .topChatRoomComponent(getComponent(TopChatRoomComponent::class.java))
+//                .build()
+//                .inject(this)
 
+    }
+//
+//    override fun getNetworkMode(): Int {
+//        return 1
+//    }
+//
+//    override fun disableAction() {
+//        chatViewState.setActionable(false)
+//    }
+//
+//    override fun showSnackbarError(string: Unit) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//    }
+//
+//    override fun addDummyMessage(visitable: Visitable<*>) {
+//        chatViewState.addMessage(visitable)
+//    }
+//
+//    override fun removeDummy(visitable: Visitable<*>) {
+//        chatViewState.removeDummy(visitable)
+//    }
+
+    override fun onSendButtonClicked() {
+        //TODO SEND BUTTON CLICK LISTENER
     }
 }

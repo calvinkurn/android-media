@@ -30,7 +30,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 10/12/18.
  */
-class ChatbotWebsocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
+class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
 
     override fun map(pojo: ChatSocketPojo): Visitable<*> {
         return if (pojo.showRating || pojo.ratingStatus != 0) {

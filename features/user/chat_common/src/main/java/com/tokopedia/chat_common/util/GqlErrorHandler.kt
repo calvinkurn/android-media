@@ -10,8 +10,8 @@ import java.lang.reflect.Type
  */
 //TODO benerin error log
 fun handleError(graphqlResponse: GraphqlResponse,
-                type: Type, routingOnNext: (GraphqlResponse) -> Unit,
-                onError: (MessageErrorException) -> Unit = {
+                type: Type, routingOnNext: (GraphqlResponse)-> Unit,
+                onError: (Throwable) -> Unit = {
                     Log.d("ERR", it.toString())
                 }) {
     val graphqlErrorList = graphqlResponse.getError(type)

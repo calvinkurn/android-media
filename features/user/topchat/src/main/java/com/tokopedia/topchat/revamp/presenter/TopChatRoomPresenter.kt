@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.revamp.presenter
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.topchat.revamp.domain.mapper.TopChatRoomWebSocketMapper
@@ -12,10 +13,10 @@ import javax.inject.Inject
  */
 
 class TopChatRoomPresenter @Inject constructor(
-        override var getChatUseCase: GetChatUseCase,
-        override var userSession: UserSessionInterface,
+        var getChatUseCase: GetChatUseCase,
+        var userSession: UserSessionInterface,
         var topChatWebSocketMapper: TopChatRoomWebSocketMapper)
-    : BaseChatPresenter(userSession, getChatUseCase, topChatWebSocketMapper), TopChatContract.Presenter {
+    : BaseDaggerPresenter<TopChatContract.View>(), TopChatContract.Presenter {
 
 
 }

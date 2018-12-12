@@ -17,7 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
-import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -41,8 +40,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         , ImageUploadListener, ProductAttachmentListener
         , BaseChatContract.View {
 
-    @Inject
-    lateinit var presenter: BaseChatPresenter
+//    @Inject
+//    open
+//    lateinit var presenter: BaseChatContract.Presenter
 
     @Inject
     protected lateinit var userSession: UserSessionInterface
@@ -69,7 +69,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun initInjector() {
 
-        presenter.attachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,12 +85,13 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     private fun prepareListener() {
-        send_but.setOnClickListener(View.OnClickListener {
-            val sendMessage = ""
-            presenter.sendMessage(sendMessage)
-        })
+        send_but.setOnClickListener {
+           onSendButtonClicked()
+        }
 
     }
+
+    abstract fun onSendButtonClicked()
 
     private fun prepareView(view: View) {
         getRecyclerView(view).setHasFixedSize(true)
@@ -250,7 +250,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
     }
 
 }

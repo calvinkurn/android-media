@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
@@ -26,6 +27,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
+import com.tokopedia.design.component.ToasterError
 import javax.inject.Inject
 
 /**
@@ -33,50 +35,15 @@ import javax.inject.Inject
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener {
-    override fun getMsgId(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getStringResource(str: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getNetworkMode(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onSuccessGetChat(model: ArrayList<Visitable<*>>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun disableAction() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun showSnackbarError(string: Unit) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun addDummyMessage(visitable: Visitable<*>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun removeDummy(visitable: Visitable<*>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun clearEditText() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
 
     @Inject
-    lateinit var chatBotPresenter: ChatbotPresenter
+    lateinit var presenter: ChatbotPresenter
 
     override fun initInjector() {
 
-        chatBotPresenter.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun getScreenName(): String {
@@ -90,7 +57,25 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadInitialData() {
-       developmentView()
+        developmentView()
+        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChat())
+        presenter.connectWebSocket(messageId)
+
+    }
+
+    private fun onSuccessGetExistingChat(): (list: ArrayList<Visitable<*>>) -> Unit {
+        return {
+            //TODO
+//            onSuccessLoadFirstTime(it)
+        }
+    }
+
+    private fun onError(): (Throwable) -> Unit {
+        return {
+            if (view != null) {
+                ToasterError.make(view, ErrorHandler.getErrorMessage(view!!.context, it)).show()
+            }
+        }
     }
 
 
@@ -120,7 +105,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onSuccessLoadFirstTime(list: ArrayList<Visitable<*>>) {
         getViewState().onSuccessLoadFirstTime(list)
-        chatBotPresenter.connectWebSocket(messageId)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -129,7 +113,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun getViewState(): ChatbotViewState {
-       return viewState as ChatbotViewState
+        return viewState as ChatbotViewState
     }
 
     private fun mapMessageToList(visitable: Visitable<*>) {
@@ -140,15 +124,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
-        val generatedInvoice = chatBotPresenter.generateInvoice(invoiceLinkPojo, senderId)
+        val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, senderId)
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        chatBotPresenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime)
+        presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime)
     }
 
     private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
-        val generatedInvoice = chatBotPresenter.generateInvoice(selectedInvoice, "")
+        val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        chatBotPresenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
+        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
     }
 
     override fun showSearchInvoiceScreen() {
@@ -163,7 +147,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onQuickReplyClicked(quickReplyListViewModel: QuickReplyListViewModel,
                                      model: QuickReplyViewModel) {
 
-        chatBotPresenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime())
+        presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime())
 
     }
 
@@ -220,6 +204,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onDestroy() {
         super.onDestroy()
-        chatBotPresenter.detachView()
+        presenter.detachView()
+    }
+
+    override fun onSendButtonClicked() {
+        //TODO GET FROM VIEW
+        presenter.sendMessage("")
     }
 }

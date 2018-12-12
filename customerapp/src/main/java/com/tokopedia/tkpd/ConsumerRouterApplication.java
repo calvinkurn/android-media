@@ -42,6 +42,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.challenges.ChallengesModuleRouter;
@@ -2661,7 +2662,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getChatBotIntent(Context context, String messageId) {
-        return ChatRoomActivity.getChatBotIntent(context, messageId);
+        RouteManager.route(context, ApplinkConst.CHATBOT
+                .replace(ApplinkConst.Chat.MESSAGE_ID, messageId));
     }
 
     public UseCase<String> setCreditCardSingleAuthentication() {

@@ -9,7 +9,7 @@ import rx.Subscriber
 /**
  * @author by nisie on 10/12/18.
  */
-class GetChatRepliesSubscriber(val onError: (MessageErrorException) -> Unit)
+class GetChatRepliesSubscriber(val onError: (Throwable) -> Unit)
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {

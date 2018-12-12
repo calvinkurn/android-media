@@ -4,25 +4,32 @@ package com.tokopedia.chatbot.attachinvoice.domain.model
  * Created by Hendri on 21/03/18.
  */
 
-class Invoice private constructor(var statusInt: Int, var number: String?, var type: String?,
-                                  var url: String?, var title: String?, var desc: String?,
-                                  var date: String?, var status: String?, var total: String?,
-                                  var imageUrl: String?, var invoiceTypeInt: Int,
-                                  var invoiceId: Long?) {
+class Invoice private constructor(var statusInt: Int,
+                                  var number: String = "",
+                                  var type: String = "",
+                                  var url: String = "",
+                                  var title: String = "",
+                                  var desc: String = "",
+                                  var date: String = "",
+                                  var status: String = "",
+                                  var total: String = "",
+                                  var imageUrl: String = "",
+                                  var invoiceTypeInt: Int,
+                                  var invoiceId: Long = 0) {
 
     class InvoiceBuilder {
         private var statusInt: Int = 0
-        private var number: String? = null
-        private var type: String? = null
-        private var url: String? = null
-        private var title: String? = null
-        private var desc: String? = null
-        private var date: String? = null
-        private var status: String? = null
-        private var total: String? = null
-        private var imageUrl: String? = null
+        private var number: String = ""
+        private var type: String = ""
+        private var url: String = ""
+        private var title: String = ""
+        private var desc: String = ""
+        private var date: String = ""
+        private var status: String = ""
+        private var total: String = ""
+        private var imageUrl: String = ""
         private var invoiceTypeInt: Int = 0
-        private var invoiceId: Long? = null
+        private var invoiceId: Long = 0
 
         fun setStatusInt(statusInt: Int): InvoiceBuilder {
             this.statusInt = statusInt
@@ -79,7 +86,7 @@ class Invoice private constructor(var statusInt: Int, var number: String?, var t
             return this
         }
 
-        fun setInvoiceId(invoiceId: Long?): InvoiceBuilder {
+        fun setInvoiceId(invoiceId: Long): InvoiceBuilder {
             this.invoiceId = invoiceId
             return this
         }

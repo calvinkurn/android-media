@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.subscriber.GetChatRepliesSubscriber
 import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.view.listener.BaseChatContract
@@ -30,8 +29,7 @@ open class BaseChatPresenter @Inject constructor(
         open var userSession: UserSessionInterface,
         open var getChatUseCase: GetChatUseCase,
         open var websocketMessageMapper: WebsocketMessageMapper
-        )
-    : BaseDaggerPresenter<BaseChatContract.View>(), BaseChatContract.Presenter {
+) : BaseDaggerPresenter<BaseChatContract.View>(), BaseChatContract.Presenter<BaseChatContract.View> {
 
     var thisMessageId: String = ""
     var EVENT_REPLY_MESSAGE = 102
@@ -118,13 +116,8 @@ open class BaseChatPresenter @Inject constructor(
 
         val subscription = RxWebSocket.get(webSocketUrl, userSession.accessToken)?.subscribe(subscriber)
 
-
         mSubscription.add(subscription)
 
-    }
-
-    override fun sendMessage(sendMessage: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -140,45 +133,47 @@ open class BaseChatPresenter @Inject constructor(
             }
         }
     }
-
-    private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
-        for (i in 0.. dummyList.size){
-            var temp = (dummyList[i] as MessageViewModel)
-            if(temp.startTime == pojo.startTime
-                    && temp.messageId == pojo.msgId.toString()
-                    && temp.message.equals(pojo.message.originalReply)){
-                return temp
-            }
-        }
-        return null
-    }
+//
+//    private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
+//        for (i in 0.. dummyList.size){
+//            var temp = (dummyList[i] as MessageViewModel)
+//            if(temp.startTime == pojo.startTime
+//                    && temp.messageId == pojo.msgId.toString()
+//                    && temp.message.equals(pojo.message.originalReply)){
+//                return temp
+//            }
+//        }
+//        return null
+//    }
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
         return websocketMessageMapper.map(pojo)
     }
 
-    private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
-        return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
-    }
+//    private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
+//        return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
+//    }
 
     override fun detachView() {
         super.detachView()
         destroyWebSocket()
     }
+//
+//    override fun getChatUseCase(messageId: String, page: Int) {
+//        getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page)
+//                , object : Subscriber<ChatRoomViewModel>() {
+//            override fun onNext(model: ChatRoomViewModel?) {
+//                view.developmentView()
+//                model?.listChat.let { view.onSuccessGetChat(it!!) }
+//            }
+//        }
+//    }
 
-    override fun getChatUseCase(messageId: String, page: Int) {
-        getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page)
-                , object : Subscriber<ChatRoomViewModel>() {
-            override fun onNext(model: ChatRoomViewModel?) {
-                view.developmentView()
-                model?.listChat.let { view.onSuccessGetChat(it!!) }
-            }
-
-    //TODO MOVE THIS TO TOPCHAT PRESENTER
-    override fun getChatUseCase(messageId: String, onError : (Exception) -> Unit ) {
-        getChatUseCase.execute(GetChatUseCase.generateParam(messageId),
-                GetChatRepliesSubscriber(onError))
-    }
+//    //TODO MOVE THIS TO TOPCHAT PRESENTER
+//    override fun getChatUseCase(messageId: String, onError : (Exception) -> Unit ) {
+//        getChatUseCase.execute(GetChatUseCase.generateParam(messageId),
+//                GetChatRepliesSubscriber(onError))
+//    }
 
     fun destroyWebSocket() {
         mSubscription.clear()
@@ -186,23 +181,23 @@ open class BaseChatPresenter @Inject constructor(
     }
 
 
-    fun sendMessage(messageText: String) {
-        if (isValidReply(messageText)) {
-            val startTime = SendableViewModel.generateStartTime()
-            view.clearEditText()
-//            view.disableAction()
-            processDummyMessage(messageText, startTime)
-            when (networkMode) {
-                MODE_WEBSOCKET -> sendMessageWebSocket(messageText, startTime)
-            }
-        }
-    }
-
-    private fun processDummyMessage(messageText: String, startTime: String) {
-        var dummyMessage = mapToDummyMessage(thisMessageId, messageText, startTime)
-        view.addDummyMessage(dummyMessage)
-        dummyList.add(dummyMessage)
-    }
+//    fun sendMessage(messageText: String) {
+//        if (isValidReply(messageText)) {
+//            val startTime = SendableViewModel.generateStartTime()
+//            view.clearEditText()
+////            view.disableAction()
+//            processDummyMessage(messageText, startTime)
+//            when (networkMode) {
+//                MODE_WEBSOCKET -> sendMessageWebSocket(messageText, startTime)
+//            }
+//        }
+//    }
+//
+//    private fun processDummyMessage(messageText: String, startTime: String) {
+//        var dummyMessage = mapToDummyMessage(thisMessageId, messageText, startTime)
+//        view.addDummyMessage(dummyMessage)
+//        dummyList.add(dummyMessage)
+//    }
 
     private fun sendMessageWebSocket(messageText: String, startTime: String) {
         RxWebSocket.send(webSocketUrl, msg = generateParamSendMessage(messageText, startTime))
@@ -219,11 +214,16 @@ open class BaseChatPresenter @Inject constructor(
         return json.toString()
     }
 
-    private fun isValidReply(message: String): Boolean {
-        if (message.trim { it <= ' ' }.isEmpty()) {
-            view.showSnackbarError(view.getStringResource(R.string.error_empty_product))
-            return false
-        }
-        return true
+//
+//    private fun isValidReply(message: String): Boolean {
+//        if (message.trim { it <= ' ' }.isEmpty()) {
+//            view.showSnackbarError(view.getStringResource(R.string.error_empty_product))
+//            return false
+//        }
+//        return true
+//    }
+
+    override fun sendMessage(sendMessage: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

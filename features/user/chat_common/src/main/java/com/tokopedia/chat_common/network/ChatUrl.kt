@@ -11,7 +11,6 @@ var TOPCHAT = "https://chat.tokopedia.com/";
 var TOPCHAT_BASE_URL = TkpdBaseURL.JS_DOMAIN;
 var CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com"
 
-
 class ChatUrl {
 
     companion object {
