@@ -10,7 +10,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
@@ -83,10 +83,11 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
                 searchParameter.getSource()) ? searchParameter.getSource() : BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(BrowseApi.ROWS, (changeParamRow) ? PARAMETER_ROWS : BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
+        requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
         requestParams.putString(BrowseApi.START, Integer.toString(searchParameter.getStartRow()));
         requestParams.putString(BrowseApi.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(BrowseApi.Q, searchParameter.getQueryKey());
+        requestParams.putString(BrowseApi.Q, omitNewline(searchParameter.getQueryKey()));
         requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
         requestParams.putBoolean(BrowseApi.REFINED, forceSearch);
         requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
@@ -102,6 +103,10 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, searchParameter.getDepartmentId());
         }
         return requestParams;
+    }
+
+    private static String omitNewline(String text) {
+        return text.replace("\n", "");
     }
 
     @Override

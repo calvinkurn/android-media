@@ -123,7 +123,7 @@ public class TopPayPresenter implements ITopPayPresenter {
             if (!purchases.isEmpty()) {
                 for (Purchase purchase : purchases) {
                     purchase.setTransactionID(thanksTopPayData.getParameter().getPaymentId());
-                    PaymentTracking.eventTransactionGTM(purchase);
+                    PaymentTracking.eventTransactionGTM(view.getActivityContext(), purchase);
                 }
             }
         }

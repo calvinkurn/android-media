@@ -89,11 +89,11 @@ class ProductEditWeightLogisticFragment : Fragment() {
                 when {
                     !isWeightValid() -> {
                         spinnerCounterInputViewWeight.requestFocus()
-                        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
+                        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
                     }
                     !isPreOrderValid() -> {
                         spinnerCounterInputViewProcessTime.requestFocus()
-                        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER)
+                        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER)
                     }
                     else -> setResult()
                 }

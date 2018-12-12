@@ -60,18 +60,14 @@ public abstract class BaseChatViewHolder<T extends Visitable> extends AbstractVi
                 influencerBadge.setVisibility(View.GONE);
             }
 
-            if (viewModel.isShowHeaderTime()) {
-                headerTime.setVisibility(View.VISIBLE);
-                headerTime.setText(viewModel.getFormattedHeaderTime());
-            } else {
-                headerTime.setVisibility(View.GONE);
-            }
+            headerTime.setVisibility(View.GONE);
+
         }
     }
 
     public void onViewRecycled() {
-        if(avatar != null) {
-           ImageHandler.clearImage(avatar);
+        if (avatar != null) {
+            ImageHandler.clearImage(avatar);
         }
     }
 }

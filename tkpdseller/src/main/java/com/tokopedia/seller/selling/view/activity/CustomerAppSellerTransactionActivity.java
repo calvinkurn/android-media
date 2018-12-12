@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -192,10 +193,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     private void setTrackerWidget() {
         boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
         if (fromWidget) {
-            UnifyTracking.eventAccessAppViewWidget();
+            UnifyTracking.eventAccessAppViewWidget(this);
         }
-
-        TrackingUtils.sendMoEngageOpenSellerScreen();
     }
 
     private void setView() {
@@ -297,12 +296,12 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     private void initVariable() {
         CONTENT = new String[]{
-                getString(com.tokopedia.core.R.string.title_opportunity_list),
-                getString(com.tokopedia.core.R.string.title_tab_new_order),
+                getString(com.tokopedia.core2.R.string.title_opportunity_list),
+                getString(com.tokopedia.core2.R.string.title_tab_new_order),
                 getString(R.string.title_seller_tx_ready_to_ship),
                 getString(R.string.title_seller_tx_shipped),
                 getString(R.string.title_seller_tx_delivered),
-                getString(com.tokopedia.core.R.string.title_transaction_list)
+                getString(com.tokopedia.core2.R.string.title_transaction_list)
         };
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         fragmentList = new ArrayList<>();
@@ -331,7 +330,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
             @Override
             public void onPageSelected(int position) {
                 if (indicator.getTabAt(position) != null) {
-                    UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
+                    UnifyTracking.eventShopTabSelected(CustomerAppSellerTransactionActivity.this,
+                            indicator.getTabAt(position).getText().toString());
                 }
                 initSellerTicker();
             }
@@ -498,7 +498,11 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Bundle bundle = new Bundle();
+        super.onSaveInstanceState(bundle);
+        if (!TooLargeTool.isPotentialCrash(bundle)) {
+            outState.putAll(bundle);
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

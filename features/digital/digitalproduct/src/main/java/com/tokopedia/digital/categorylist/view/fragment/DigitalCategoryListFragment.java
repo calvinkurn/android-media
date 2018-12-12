@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -25,21 +26,19 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -58,7 +57,6 @@ import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPres
 import com.tokopedia.digital.categorylist.view.presenter.IDigitalCategoryListPresenter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +168,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         super.onActivityCreated(savedInstanceState);
 
         if (isFromAppShortcut()) {
-            UnifyTracking.eventBayarLongClick();
+            UnifyTracking.eventBillShortcut(getActivity());
         }
     }
 
@@ -427,7 +425,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
-        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName().toLowerCase());
+        UnifyTracking.eventClickProductOnDigitalHomepage(getActivity(),itemData.getName().toLowerCase());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
                 )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {

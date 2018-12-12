@@ -7,10 +7,16 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.*;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -20,6 +26,18 @@ public class SearchTracking {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
     public static String imageClick = "/imagesearch - p%s";
+
+    private AnalyticTracker tracker;
+    private UserSessionInterface userSessionInterface;
+
+    @Inject
+    public SearchTracking(Context context, UserSessionInterface userSessionInterface) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        this.tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        this.userSessionInterface = userSessionInterface;
+    }
 
     public static String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
@@ -134,6 +152,20 @@ public class SearchTracking {
                 "search result",
                 "click - guided search",
                 String.format("%s - %s - %s", previousKey, nextKey, page)
+        );
+    }
+
+    public static void eventClickRelatedSearch(Context context, String currentKeyword, String relatedKeyword) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
+                "",
+                "search result",
+                "click - related keyword",
+                String.format("%s - %s", currentKeyword, relatedKeyword)
         );
     }
 
@@ -401,4 +433,16 @@ public class SearchTracking {
                 "keyword: " + keyword + " - tab: " + screenName + " - param: " + generateFilterEventLabel(selectedFilter)
         );
     }
+
+    public void eventSearchShortcut() {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(EVENT, LONG_CLICK);
+        eventTracking.put(EVENT_CATEGORY, LONG_PRESS);
+        eventTracking.put(EVENT_ACTION, CLICK_CARI);
+        eventTracking.put(EVENT_LABEL, PRODUCT_SEARCH);
+        eventTracking.put(USER_ID, userSessionInterface.isLoggedIn() ? userSessionInterface.getUserId() : "0");
+
+        tracker.sendEventTracking(eventTracking);
+    }
+
 }

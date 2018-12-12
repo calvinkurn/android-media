@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengesBaseActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -50,6 +51,9 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     private Result challengeItem;
     private boolean isChallenge;
     private boolean showHeading;
+    private final static String SCREEN_NAME = "challenges/share";
+    @Inject
+    public ChallengesGaAnalyticsTracker analytics;
 
     private static ShareBottomSheet newInstance(Object item, boolean showHeading) {
         ShareBottomSheet fragment = new ShareBottomSheet();
@@ -98,10 +102,9 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         }
         View titleView = view.findViewById(R.id.layout_title);
         titleView.setOnClickListener(view1 -> dismiss());
-
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         return view;
     }
-
 
     public void initView(View view) {
         challengesComponent = ((ChallengesBaseActivity) getActivity()).getComponent();

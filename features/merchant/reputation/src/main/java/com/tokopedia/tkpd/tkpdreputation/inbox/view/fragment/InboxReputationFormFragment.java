@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.facebook.CallbackManager;
@@ -99,8 +99,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     TkpdHintTextInputLayout reviewLayout;
     ImageView uploadInfo;
     RecyclerView listImageUpload;
-    SwitchCompat shareFbSwitch;
-    SwitchCompat anomymousSwitch;
+    Switch shareFbSwitch;
+    Switch anomymousSwitch;
     TextView anonymousInfo;
     Button sendButton;
     View tipsHeader;
@@ -155,8 +155,8 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
         reviewLayout = (TkpdHintTextInputLayout) parentView.findViewById(R.id.review_layout);
         uploadInfo = (ImageView) parentView.findViewById(R.id.upload_info);
         listImageUpload = (RecyclerView) parentView.findViewById(R.id.list_image_upload);
-        shareFbSwitch = (SwitchCompat) parentView.findViewById(R.id.switch_facebook);
-        anomymousSwitch = (SwitchCompat) parentView.findViewById(R.id.switch_anonym);
+        shareFbSwitch = (Switch) parentView.findViewById(R.id.switch_facebook);
+        anomymousSwitch = (Switch) parentView.findViewById(R.id.switch_anonym);
         sendButton = (Button) parentView.findViewById(R.id.send_button);
         reviewTips = (RecyclerView) parentView.findViewById(R.id.review_tips);
         tipsHeader = parentView.findViewById(R.id.expand_product_review_tips);
@@ -412,7 +412,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 ,new ImagePickerMultipleSelectionBuilder(
                 new ArrayList<>(),
                 null,
-                com.tokopedia.core.R.string.empty_desc,
+                com.tokopedia.core2.R.string.empty_desc,
                 MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);

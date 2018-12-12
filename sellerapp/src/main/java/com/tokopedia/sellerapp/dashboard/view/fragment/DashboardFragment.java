@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -28,7 +30,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
@@ -36,9 +37,12 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.EmptyCardContentView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.component.ticker.TickerView;
+import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -55,6 +59,9 @@ import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.presenter.SellerDashboardPresenter;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
 import com.tokopedia.sellerapp.dashboard.view.widget.ShopWarningTickerView;
+import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.user_identification_common.KycWidgetUtil;
+import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
 import java.util.ArrayList;
 
@@ -99,6 +106,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private LabelView reviewLabelView;
 
     private ShopWarningTickerView shopWarningTickerView;
+    private WarningTickerView verificationWarningTickerView;
+
     private ProgressDialog progressDialog;
 
     private SnackbarRetry snackBarRetry;
@@ -128,7 +137,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         gmStatusTextView = (TextView) view.findViewById(R.id.text_view_gm_status);
         View ivSettingIcon = view.findViewById(R.id.iv_setting);
         shopWarningTickerView = (ShopWarningTickerView) view.findViewById(R.id.shop_warning_ticker_view);
-
+        verificationWarningTickerView = view.findViewById(R.id.verification_warning_ticker);
         reputationLabelLayout = view.findViewById(R.id.reputation_label_layout);
         reputationPointTextView = (TextView) view.findViewById(R.id.text_view_reputation_point);
         shopReputationView = (ShopReputationView) view.findViewById(R.id.shop_reputation_view);
@@ -189,7 +198,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_TRANSACTION,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_PELUANG);
-                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity(),"");
+                Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(getActivity(), "");
                 startActivity(intent);
             }
         });
@@ -210,8 +219,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_DISKUSI_PRODUK);
-                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
-                startActivity(intent);
+                if (MainApplication.getAppContext() instanceof SellerModuleRouter) {
+                    startActivity(((SellerModuleRouter) MainApplication.getAppContext())
+                            .getInboxTalkCallingIntent(getActivity()));
+                }
             }
         });
         reviewLabelView.setOnClickListener(new View.OnClickListener() {
@@ -219,8 +230,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_ULASAN);
-                if(MainApplication.getAppContext() instanceof SellerModuleRouter){
-                    startActivity(((SellerModuleRouter)MainApplication.getAppContext()).getInboxReputationIntent
+                if (MainApplication.getAppContext() instanceof SellerModuleRouter) {
+                    startActivity(((SellerModuleRouter) MainApplication.getAppContext()).getInboxReputationIntent
                             (getActivity()));
                 }
 
@@ -248,6 +259,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
         sellerDashboardPresenter.getTicker();
+        sellerDashboardPresenter.getVerificationStatus();
     }
 
     void onRefresh() {
@@ -313,7 +325,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         MitraToppersPreApproveLabelFragment mitraToppersPreApproveLabelFragment =
                 (MitraToppersPreApproveLabelFragment) getChildFragmentManager()
                         .findFragmentById(R.id.fragment_preapprove_label);
-        if (mitraToppersPreApproveLabelFragment!=null) {
+        if (mitraToppersPreApproveLabelFragment != null) {
             mitraToppersPreApproveLabelFragment.setUserInfo(shopInfo.isOfficialStore(),
                     shopInfo.isGoldMerchant());
         }
@@ -369,8 +381,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             gmStatusTextView.setText(R.string.dashboard_label_official_store);
         } else if (shopModelInfo.isGoldMerchant()) {
             gmIconImageView.setVisibility(View.VISIBLE);
-            gmIconImageView.setImageResource(R.drawable.ic_shop_gold);
-            gmStatusTextView.setText(R.string.dashboard_label_gold_merchant);
+            gmIconImageView.setImageDrawable(GMConstant.getGMDrawable(getContext()));
+            gmStatusTextView.setText(GMConstant.getGMTitleResource(getContext()));
         } else {
             gmIconImageView.setVisibility(View.GONE);
             gmStatusTextView.setText(R.string.dashboard_label_regular_merchant);
@@ -432,7 +444,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
-        if (tickers.length < 1){
+        if (tickers.length < 1) {
             tickerView.setVisibility(View.GONE);
             return;
         }
@@ -543,6 +555,57 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void setCounterIfNotEmpty(LabelView labelView, int counter) {
         labelView.setContent(counter > 0 ? String.valueOf(counter) : null);
+    }
+
+    @Override
+    public GetApprovalStatusSubscriber.GetApprovalStatusListener getApprovalStatusListener() {
+        return new GetApprovalStatusSubscriber.GetApprovalStatusListener() {
+
+            @Override
+            public void onErrorGetShopVerificationStatusWithErrorCode(String errorCode) {
+                verificationWarningTickerView.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onErrorGetShopVerificationStatus(Throwable errorMessage) {
+                verificationWarningTickerView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onSuccessGetShopVerificationStatus(int status) {
+                verificationWarningTickerView.setVisibility(View.VISIBLE);
+                hideLoading();
+
+                verificationWarningTickerView.setDescriptionWithLink(
+                        KycWidgetUtil.getDescription(getContext(), status),
+                        KycWidgetUtil.getHighlight(getContext(), status),
+                        () -> {
+                            if (getActivity().getApplicationContext() instanceof ApplinkRouter) {
+                                ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
+                                applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
+                            }
+                        });
+
+                if (TextUtils.isEmpty(KycWidgetUtil.getDescription(getContext(), status))) {
+                    verificationWarningTickerView.setVisibility(View.GONE);
+                } else {
+                    verificationWarningTickerView.setVisibility(View.VISIBLE);
+                }
+
+                if (status == KYCConstant.STATUS_NOT_VERIFIED) {
+                    String tickerMessage = getString(R.string.ticker_unverified);
+                    addMessageToTickerView(tickerMessage);
+                }
+
+            }
+        };
+    }
+
+    private void addMessageToTickerView(String tickerMessage) {
+        if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
+            tickerView.addMessage(tickerMessage);
+        }
     }
 
     @Override

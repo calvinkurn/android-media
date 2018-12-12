@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
@@ -223,9 +223,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                     }
                 }else {
                     if (presenter.getSelected() == 0) {
-                        element.setReadStatus(InboxMessageConstant.STATE_CHAT_READ);
-                        element.setUnreadCounter(0);
-                        presenter.goToDetailMessage(position, element);
+                        presenter.goToDetailMessage(mainView.getContext(), position, element);
                     } else if (element.isChecked()) {
                         setReadState();
                         presenter.onDeselect(position);

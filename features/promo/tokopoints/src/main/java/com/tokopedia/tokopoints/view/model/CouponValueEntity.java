@@ -1,10 +1,12 @@
 package com.tokopedia.tokopoints.view.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.library.pagination.PaginationItem;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class CouponValueEntity extends PaginationItem {
+public class CouponValueEntity extends BaseItem {
     @Expose
     @SerializedName(value = "catalog_id", alternate = {"id"})
     private int catalogId;
@@ -68,8 +70,11 @@ public class CouponValueEntity extends PaginationItem {
     @SerializedName(value = "howToUse", alternate = {"how_to_use"})
     private String howToUse;
 
-    @SerializedName(value = "minimumUsage", alternate = {"minimum_usage"})
+    @SerializedName(value = "minimum_usage", alternate = {"minimumUsage"})
     private String minimumUsage;
+
+    @SerializedName(value = "minimum_usage_label", alternate = {"minimumUsageLabel"})
+    private String minimumUsageLabel;
 
     @SerializedName("overview")
     private String overview;
@@ -251,6 +256,19 @@ public class CouponValueEntity extends PaginationItem {
         this.realCode = realCode;
     }
 
+    public String getMinimumUsageLabel() {
+        return minimumUsageLabel;
+    }
+
+    public void setMinimumUsageLabel(String minimumUsageLabel) {
+        this.minimumUsageLabel = minimumUsageLabel;
+    }
+
+    public boolean isEmpty() {
+        return TextUtils.isEmpty(this.title)
+                || TextUtils.isEmpty(this.imageUrlMobile);
+    }
+
     @Override
     public String toString() {
         return "CouponValueEntity{" +
@@ -271,6 +289,7 @@ public class CouponValueEntity extends PaginationItem {
                 ", usage=" + usage +
                 ", howToUse='" + howToUse + '\'' +
                 ", minimumUsage='" + minimumUsage + '\'' +
+                ", minimumUsageLabel='" + minimumUsageLabel + '\'' +
                 ", overview='" + overview + '\'' +
                 ", realCode='" + realCode + '\'' +
                 ", tnc='" + tnc + '\'' +

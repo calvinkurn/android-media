@@ -22,18 +22,22 @@ public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View>
     }
 
     private void slideUp(View child) {
-        Animation bottomUp = AnimationUtils.loadAnimation(child.getContext(),
-                R.animator.tp_bottom_up);
-        child.startAnimation(bottomUp);
-        child.setVisibility(View.VISIBLE);
+        if (child.getVisibility() != View.VISIBLE) {
+            Animation bottomUp = AnimationUtils.loadAnimation(child.getContext(),
+                    R.anim.tp_bottom_up);
+            child.startAnimation(bottomUp);
+            child.setVisibility(View.VISIBLE);
+        }
 
     }
 
     private void slideDown(View child) {
-        Animation slideDown = AnimationUtils.loadAnimation(child.getContext(),
-                R.animator.tp_bottom_down);
-        child.startAnimation(slideDown);
-        child.setVisibility(View.GONE);
+        if (child.getVisibility() != View.GONE) {
+            Animation slideDown = AnimationUtils.loadAnimation(child.getContext(),
+                    R.anim.tp_bottom_down);
+            child.startAnimation(slideDown);
+            child.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -67,4 +71,5 @@ public class QuickReturnFloaterBehavior extends CoordinatorLayout.Behavior<View>
             }
         }, TIME_TO_RETURN_MS);
     }
+
 }

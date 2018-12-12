@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@drawable/bg_line_separator" />
+
+    <com.tokopedia.design.voucher.VoucherCartHachikoView
+        android:id="@+id/voucher_cart_holder_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_minus6"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_4" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@drawable/bg_line_separator" />
+
+    <LinearLayout
+        android:id="@+id/container_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_75"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.Micro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/digital_cart_total_payment_label" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_total_payment"
+                style="@style/TextView.TitleMedium.OrangeRed.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Rp102.500" />
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_checkout"
+            style="@style/Button.Submit.Orange"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_40"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/dp_0"
+            android:layout_weight="1"
+            android:text="@string/digital_cart_checkout_pay_label" />
+    </LinearLayout>
+</LinearLayout>

@@ -25,7 +25,7 @@
             android:id="@+id/bottom_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_1"
+            android:layout_margin="@dimen/dp_5"
             android:background="@drawable/bg_cashback_label"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
@@ -34,7 +34,7 @@
             android:paddingRight="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_3"
             android:textColor="@color/bottom_label_color"
-            android:textSize="@dimen/sp_11"
+            android:textSize="@dimen/sp_8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Cashback 5%" />
@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/ic_toa"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:fontFamily="sans-serif-medium"
         android:textColor="@color/deep_orange_500"
         android:textSize="@dimen/sp_12"
         tools:text="Rp. 1000.000" />

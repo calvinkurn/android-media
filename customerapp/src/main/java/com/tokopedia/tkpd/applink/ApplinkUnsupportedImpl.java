@@ -11,8 +11,8 @@ import android.widget.Button;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.applink.ApplinkUnsupported;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.R;
 
 /**

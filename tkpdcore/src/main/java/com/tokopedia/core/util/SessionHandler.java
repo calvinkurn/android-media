@@ -14,11 +14,10 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.BuildConfig;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
@@ -35,7 +34,6 @@ import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.prototype.ShopCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
-import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
@@ -115,7 +113,7 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, user_id + "");
         editor.putBoolean(IS_LOGIN, isLogin);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
     }
 
     public static void clearUserData(Context context) {
@@ -128,7 +126,6 @@ public class SessionHandler {
         ProductCache.ClearCache(context);
         ShopCache.ClearCache(context);
         ManageProductCache.ClearCache(context);
-        InboxTalkCacheManager.ClearCache();
         CacheInteractorImpl messageCacheInteractor = new CacheInteractorImpl();
         messageCacheInteractor.deleteCache();
         new ProductDetailCacheManager().deleteAll();
@@ -574,7 +571,7 @@ public class SessionHandler {
         editor.putString(SHOP_NAME, shopName);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         BranchSdkUtils.sendIdentityEvent(u_id);
@@ -601,7 +598,7 @@ public class SessionHandler {
 
     public void forceLogout() {
         PasswordGenerator.clearTokenStorage(context);
-        TrackingUtils.eventMoEngageLogoutUser();
+        TrackingUtils.eventMoEngageLogoutUser(context);
         clearUserData();
     }
 

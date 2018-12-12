@@ -1,8 +1,6 @@
 package com.tokopedia.posapp.auth.login.view;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 
 /**
  * @author okasurya on 3/6/18.

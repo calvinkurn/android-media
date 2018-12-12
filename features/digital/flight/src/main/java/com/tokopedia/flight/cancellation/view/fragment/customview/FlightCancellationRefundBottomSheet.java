@@ -51,7 +51,8 @@ public class FlightCancellationRefundBottomSheet extends BottomSheets {
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         if (metrics.heightPixels > 0) {
-            getBottomSheetBehavior().setPeekHeight(metrics.heightPixels / 2);
+            if (getBottomSheetBehavior() != null)
+                getBottomSheetBehavior().setPeekHeight(metrics.heightPixels / 2);
         }
     }
 }

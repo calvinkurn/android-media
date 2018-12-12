@@ -57,7 +57,7 @@ public class DeepLinkChecker {
     public static final int WALLET_OVO = 23;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
-    private static final String FLIGHT_SEGMENT = "pesawat";
+    private static final String FLIGHT_SEGMENT = "flight";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
@@ -228,7 +228,8 @@ public class DeepLinkChecker {
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
-                && !isWalletOvo(linkSegment);
+                && !isWalletOvo(linkSegment)
+                && !isKycTerms(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -263,6 +264,10 @@ public class DeepLinkChecker {
 
     private static boolean isWalletOvo(List<String> linkSegment) {
         return (linkSegment.get(0).equals("ovo"));
+    }
+
+    private static boolean isKycTerms(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("terms")) && (linkSegment.get(1).equals("merchantkyc"));
     }
 
     public static String getQuery(String url, String q) {
@@ -389,8 +394,12 @@ public class DeepLinkChecker {
     }
 
     private static boolean isExcludedUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_URL).split(","));
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(
+                MainApplication.getAppContext(),
+                AppEventTracking.GTM.EXCLUDED_URL))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(
+                    MainApplication.getAppContext(),
+                    AppEventTracking.GTM.EXCLUDED_URL).split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().endsWith(excludedString)) {
                     return true;
@@ -401,8 +410,11 @@ public class DeepLinkChecker {
     }
 
     private static boolean isExcludedHostUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(AppEventTracking.GTM.EXCLUDED_HOST).split(","));
+        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                AppEventTracking.GTM.EXCLUDED_HOST))) {
+            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(
+                    MainApplication.getAppContext(),
+                    AppEventTracking.GTM.EXCLUDED_HOST).split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().startsWith(excludedString)) {
                     return true;

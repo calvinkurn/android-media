@@ -93,7 +93,7 @@
                    android:layout_height="wrap_content"
                    android:layout_marginTop="4dp"
                    android:layout_gravity="center"
-                   android:text="@string/label_tokopedia_pay_wallet"
+                   tools:text="@string/label_tokopedia_pay_wallet"
                    app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
                    app:layout_constraintStart_toStartOf="@+id/text_amount_left"
                    app:layout_constraintTop_toBottomOf="@+id/text_amount_left" />

@@ -12,8 +12,6 @@ import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.session.R;
 import com.tokopedia.session.google.GoogleSignInActivity;
-import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
-import com.tokopedia.session.register.view.presenter.RegisterEmailPresenterImpl;
 import com.tokopedia.tkpd.model.ErrorMessageModel;
 import com.tokopedia.tkpd.model.session.RegisterModel;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;

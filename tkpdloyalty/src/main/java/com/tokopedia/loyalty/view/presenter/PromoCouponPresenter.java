@@ -16,6 +16,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
+import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
@@ -45,33 +46,36 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     private static final String PARAM_PROMO_CODE = "promo_code";
     private static final String PARAM_SUGGESTED = "suggested";
     private static final String PARAM_LANG = "lang";
+    private static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
     private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
+    private TrainCheckVoucherUseCase trainCheckVoucherUseCase;
 
     @Inject
-    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
+    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+                                TrainCheckVoucherUseCase trainCheckVoucherUseCase) {
         this.view = view;
         this.promoCouponInteractor = promoCouponInteractor;
         this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
+        this.trainCheckVoucherUseCase = trainCheckVoucherUseCase;
     }
 
     @Override
     public void processGetCouponList(String platform) {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
         if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
-            param.put("category_id", view.getCategoryId());
+            param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
+        } else if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING)) {
+            platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.KAI;
+            param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
         }
-        ;
-        param.put("type", platform);
+        param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TYPE, platform);
 
-        //TODO Revert Later
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
-                //AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
                 new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
@@ -121,11 +125,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     public void processGetEventCouponList(int categoryId, int productId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         view.disableSwipeRefresh();
-        param.put("category_id", String.valueOf(categoryId));
+        param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, String.valueOf(categoryId));
         param.put("product_id", String.valueOf(productId));
         param.put("page", String.valueOf(1));
         param.put("page_size", String.valueOf(20));
-        param.put("type", IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING);
+        param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TYPE, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING);
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
@@ -177,7 +181,8 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
     @Override
     public void processCheckMarketPlaceCartListPromoCode(Activity activity, CouponData couponData,
-                                                         String paramUpdateCartString) {
+                                                         String paramUpdateCartString,
+                                                         boolean isOneClickShipment) {
         TKPDMapParam<String, String> paramUpdateCart = null;
         if (!TextUtils.isEmpty(paramUpdateCartString)) {
             paramUpdateCart = new TKPDMapParam<>();
@@ -187,6 +192,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         paramCheckPromo.put(PARAM_PROMO_CODE, couponData.getCode());
         paramCheckPromo.put(PARAM_SUGGESTED, "0");
         paramCheckPromo.put(PARAM_LANG, "id");
+        paramCheckPromo.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
 
         promoCouponInteractor.submitCheckPromoCodeMarketPlace(
                 paramUpdateCart != null ? AuthUtil.generateParamsNetwork(activity, paramUpdateCart) : null,
@@ -236,6 +242,14 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param
                 ), makeDigitalCouponSubscriber(couponData));
+    }
+
+    @Override
+    public void submitTrainVoucher(CouponData couponData, String reservationId, String reservationCode) {
+        view.showProgressLoading();
+        trainCheckVoucherUseCase.execute(
+                trainCheckVoucherUseCase.createVoucherRequest(reservationId, reservationCode, couponData.getCode()),
+                checkTrainVoucherSubscriber(couponData));
     }
 
     @Override
@@ -320,7 +334,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
                     couponData.setErrorMessage(failmsg);
                     view.couponError();
-                    UnifyTracking.eventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                    UnifyTracking.eventDigitalEventTracking(view.getContext(),"voucher failed - " + promocode, failmsg);
                 } else {
                     CouponViewModel couponViewModel = new CouponViewModel();
                     couponViewModel.setCode(promocode);
@@ -330,7 +344,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     couponViewModel.setRawCashback(cashback);
                     couponViewModel.setRawDiscount(discount);
                     couponViewModel.setTitle("");
-                    UnifyTracking.eventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                    UnifyTracking.eventDigitalEventTracking(view.getContext(),"voucher success - " + promocode, successMsg);
                     view.receiveDigitalResult(couponViewModel);
                 }
             }
@@ -374,7 +388,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
                     couponData.setErrorMessage(failmsg);
                     view.couponError();
-                    UnifyTracking.eventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                    UnifyTracking.eventDigitalEventTracking(view.getContext(),"voucher failed - " + promocode, failmsg);
                 } else {
                     CouponViewModel couponViewModel = new CouponViewModel();
                     couponViewModel.setCode(promocode);
@@ -384,7 +398,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     couponViewModel.setRawCashback(cashback);
                     couponViewModel.setRawDiscount(discount);
                     couponViewModel.setTitle("");
-                    UnifyTracking.eventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                    UnifyTracking.eventDigitalEventTracking(view.getContext(),"voucher success - " + promocode, successMsg);
                     view.receiveDigitalResult(couponViewModel);
                 }
             }
@@ -453,6 +467,43 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             public void onNext(CouponViewModel couponViewModel) {
                 view.receiveDigitalResult(couponViewModel);
                 view.hideProgressLoading();
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<VoucherViewModel> checkTrainVoucherSubscriber(CouponData couponData) {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
+                    couponData.setErrorMessage(e.getMessage());
+                    view.couponError();
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                view.hideProgressLoading();
+                CouponViewModel couponViewModel = new CouponViewModel();
+                couponViewModel.setAmount(voucherViewModel.getAmount());
+                couponViewModel.setCode(voucherViewModel.getCode());
+                couponViewModel.setMessage(voucherViewModel.getMessage());
+                couponViewModel.setRawCashback(voucherViewModel.getRawCashback());
+                couponViewModel.setRawDiscount(voucherViewModel.getRawDiscount());
+                couponViewModel.setSuccess(voucherViewModel.isSuccess());
+                couponViewModel.setTitle(couponData.getTitle());
+                view.receiveDigitalResult(couponViewModel);
             }
         };
     }

@@ -15,6 +15,7 @@ import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AppNotificationSettingModel;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class GetEmailNotifUseCase extends RestRequestSupportInterceptorUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         String url = SettingConstant.PeopleUrl.BASE_URL+SettingConstant.PeopleUrl.PATH_GET_NOTIF_SETTING;
 
@@ -64,9 +65,9 @@ public class GetEmailNotifUseCase extends RestRequestSupportInterceptorUseCase {
     }
 
     private Map<String,Object> getQueryParams(){
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        Map<String, String> param = new HashMap<>();
         param.put(PARAM_SESSION_ID, userSession.getUserId());
-        HashMap<String, String> tmp = AuthUtil.generateParamsNetwork(userSession.getUserId(),
+        Map<String, String> tmp = AuthUtil.generateParamsNetwork(userSession.getUserId(),
                 userSession.getDeviceId(), param);
         tmp.remove(PARAM_DEVICE_TIME);
 

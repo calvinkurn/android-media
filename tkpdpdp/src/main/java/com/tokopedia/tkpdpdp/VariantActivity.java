@@ -202,7 +202,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private void setUpByConfiguration(Configuration configuration) {
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
-                UnifyTracking.eventPDPOrientationChanged(Integer.toString(productDetailData.getInfo().getProductId()));
+                UnifyTracking.eventPDPOrientationChanged(this, Integer.toString(productDetailData.getInfo().getProductId()));
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
                 localCacheHandler.applyEditor();
             }
@@ -212,18 +212,21 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private void renderHeaderInfo() {
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
-        widgetQty.setNumber(selectedQuantity);
         etNotesSeller.setText(selectedRemarkNotes);
         widgetQty.setOnPickerActionListener(num -> {
             selectedQuantity = num;
             textCartPrice.setText(generateTextCartPrice());
         });
         try {
-            widgetQty.setMinValue(Integer.parseInt(productDetailData.getInfo().getProductMinOrder()));
-            widgetQty.setMaxValue(DEFAULT_MAXIMUM_STOCK_PICKER);
+            widgetQty.setInitialState(
+                    Integer.parseInt(productDetailData.getInfo().getProductMinOrder()),
+                    DEFAULT_MAXIMUM_STOCK_PICKER,
+                    selectedQuantity);
         } catch (NumberFormatException e) {
-            widgetQty.setMinValue(DEFAULT_MINIMUM_STOCK_PICKER);
-            widgetQty.setMaxValue(DEFAULT_MAXIMUM_STOCK_PICKER);
+            widgetQty.setInitialState(
+                    DEFAULT_MINIMUM_STOCK_PICKER,
+                    DEFAULT_MAXIMUM_STOCK_PICKER,
+                    selectedQuantity);
         }
         if(isCampaign()) {
             textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
@@ -340,7 +343,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_STAY_IN_PDP);
             setResult(RESULT_OK, intent);
             finish();
-            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
         };
     }
 
@@ -350,7 +353,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             intent.putExtra(KEY_STATE_RESULT_VARIANT, VariantActivity.SELECTED_VARIANT_RESULT_SKIP_TO_CART);
             setResult(RESULT_OK, intent);
             finish();
-            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
         };
     }
 
@@ -601,9 +604,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         List<String> joinVariant = productVariant.generateVariantValueIntoList(productDetailData.getInfo().getProductId());
 
         if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_SIZE)) {
-            UnifyTracking.eventSelectSizeVariant(option.getValue());
+            UnifyTracking.eventSelectSizeVariant(this, option.getValue());
         } else if (productVariant.getVariant().get(level-1).getIdentifier().equals(IDENTIFIER_COLOUR)) {
-            UnifyTracking.eventSelectColorVariant(option.getValue());
+            UnifyTracking.eventSelectColorVariant(this, option.getValue());
         }
     }
 
@@ -622,7 +625,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
         setResult(RESULT_OK, intent);
         finish();
-        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
     }
 
 }

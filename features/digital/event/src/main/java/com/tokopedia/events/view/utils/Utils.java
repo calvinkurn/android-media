@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
@@ -27,6 +26,7 @@ import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -225,7 +225,7 @@ public class Utils {
             rating.setIsLiked("true");
             model.setLiked(true);
         }
-        rating.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
+        rating.setUserId(Integer.parseInt(Utils.getUserSession(context).getUserId()));
         rating.setProductId(model.getId());
         rating.setFeedback("");
         requestModel.setRating(rating);
@@ -379,7 +379,7 @@ public class Utils {
     }
 
     public static class Constants {
-        public final static String ISSEATINGEVENT = "isseatingevent";
+        public final static String BOOK = "book";
         public final static String EXTRA_EVENT_CALENDAR = "EVENTCALENDAR";
         public final static String THEMEPARK = "hiburan";
         public final static String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
@@ -395,6 +395,8 @@ public class Utils {
         public static final int SELECT_TICKET_REQUEST = 1902;
         public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
         public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
+        public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
+        public static String EXTRA_VERIFY_RESPONSE = "verifyresponse";
         static String PROMOCODE = "promocode";
         static String PROMOCODE_DISCOUNT = "promocode_discount";
         static String PROMO_CASHBACK = "promocode_cashback";
@@ -405,5 +407,10 @@ public class Utils {
         public static final String LIKED_EVENTS = "liked_events";
         public static final String EVENTS_PREFS = "events_prefs";
 
+    }
+
+    public static UserSession getUserSession(Context context) {
+        UserSession userSession = new UserSession(context);
+        return userSession;
     }
 }

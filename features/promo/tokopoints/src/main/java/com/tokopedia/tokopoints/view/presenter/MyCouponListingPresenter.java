@@ -10,6 +10,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.CouponFilterBase;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
@@ -39,52 +40,8 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
     }
 
     @Override
-    public void getCoupons() {
-        mGetCoupon.clearRequest();
-        getView().showLoader();
-        //Adding request for main query
-        Map<String, Object> variablesMain = new HashMap<>();
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, 1); // start with first page
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
-
-        GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_coupon_listing),
-                TokoPointPromosEntity.class,
-                variablesMain);
-        mGetCoupon.addRequest(graphqlRequestMain);
-
-
-        mGetCoupon.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().showError(e.getLocalizedMessage());
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                //handling the catalog listing and tabs
-                TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
-                if (catalogListingOuter != null) {
-                    if (catalogListingOuter.getCoupon().getCoupons() != null &&
-                            catalogListingOuter.getCoupon().getCoupons().size() > 0) {
-                        getView().populateCoupons(catalogListingOuter.getCoupon().getCoupons());
-                    } else {
-                        if(catalogListingOuter.getCoupon().getCoupons() != null) {
-                            getView().emptyCoupons(catalogListingOuter.getCoupon().getEmptyMessage());
-                        }
-                    }
-                } else {
-                    getView().showError(null);
-                }
-            }
-        });
+    public void getCoupons(int categoryID) {
+        getView().populateCoupons(categoryID);
     }
 
     @Override
@@ -132,9 +89,5 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
     @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
-    }
-
-    @Override
-    public void startSendGift(int id, String title, String pointStr) {
     }
 }

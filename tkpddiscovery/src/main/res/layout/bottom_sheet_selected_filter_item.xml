@@ -18,8 +18,7 @@
         android:layout_width="@dimen/chip_rating_icon_size"
         android:layout_height="@dimen/chip_rating_icon_size"
         android:src="@drawable/ic_app_rating_filled"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <com.tokopedia.design.color.ColorSampleView
         android:id="@+id/color_icon"

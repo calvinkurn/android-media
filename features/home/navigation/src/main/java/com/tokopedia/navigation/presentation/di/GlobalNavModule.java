@@ -13,7 +13,9 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
+import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
+import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase;
 import com.tokopedia.navigation.listener.CartListener;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
@@ -30,7 +32,7 @@ import dagger.Provides;
 @Module
 public class GlobalNavModule {
     @Provides
-    MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase, UserSession userSession){
+    MainParentPresenter provideMainParentPresenter(GetBottomNavNotificationUseCase getNotificationUseCase, UserSession userSession){
         return new MainParentPresenter(getNotificationUseCase, userSession);
     }
 
@@ -40,6 +42,20 @@ public class GlobalNavModule {
             return ((AbstractionRouter) context).getAnalyticTracker();
         }
         throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
+    }
+
+    @Provides
+    GetBottomNavNotificationUseCase provideGetBottomNavNotificationUseCase(
+            GetDrawerNotificationUseCase getDrawerNotificationUseCase,
+            GetNewFeedCheckerUseCase getNewFeedCheckerUseCase) {
+        return new GetBottomNavNotificationUseCase(
+                getDrawerNotificationUseCase,
+                getNewFeedCheckerUseCase);
+    }
+
+    @Provides
+    GetNewFeedCheckerUseCase provideGetNewFeedCheckerUseCase(@ApplicationContext Context context) {
+        return new GetNewFeedCheckerUseCase(context);
     }
 
     @Provides

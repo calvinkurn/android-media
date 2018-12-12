@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
 import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -36,6 +37,8 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     private ImageView infoCta;
     private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
     private TopAdsItemClickListener adsItemClickListener;
+    private OpenTopAdsUseCase openTopAdsUseCase;
+    private LinearLayout channelTitleContainer;
 
     @Inject
     TopAdsPresenter presenter;
@@ -63,6 +66,8 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         recyclerView = findViewById(R.id.list);
         infoCta = findViewById(R.id.info_cta);
         titleTxt = findViewById(R.id.channel_title);
+        channelTitleContainer = findViewById(R.id.channel_title_container);
+        openTopAdsUseCase = new OpenTopAdsUseCase(context);
         itemAdapter = new AdsItemAdapter(getContext());
         itemAdapter.setItemClickListener(this);
         recyclerView.setAdapter(itemAdapter);
@@ -91,8 +96,13 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     }
 
     public void setData(String title, List<Item> data) {
-        titleTxt.setText(title);
-        itemAdapter.setList(data);
+        if(!data.isEmpty()){
+            titleTxt.setText(title);
+            itemAdapter.setList(data);
+            setVisibility(VISIBLE);
+        } else {
+            setVisibility(GONE);
+        }
     }
 
     public void setAdsItemClickListener(TopAdsItemClickListener adsItemClickListener) {
@@ -110,8 +120,8 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     public void onProductItemClicked(int position, Data data) {
         if(adsItemClickListener!=null){
             adsItemClickListener.onProductItemClicked(position, data.getProduct());
+            openTopAdsUseCase.execute(data.getProductClickUrl());
         }
-
     }
 
     @Override

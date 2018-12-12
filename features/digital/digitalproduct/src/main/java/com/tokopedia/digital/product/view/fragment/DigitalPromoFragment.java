@@ -17,15 +17,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,6 @@ import java.util.List;
  */
 
 public class DigitalPromoFragment extends Fragment implements BannerAdapter.ActionListener {
-
 
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
@@ -179,7 +178,7 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
         } else if (linkSegment.size() == 1) {
             FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
             boolean remoteConfigEnable = remoteConfig.getBoolean(
-                    TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
+                    RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
             );
             if (remoteConfigEnable) {
                 Intent intent = router.getPromoListIntent(getActivity());

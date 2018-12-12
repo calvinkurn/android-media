@@ -20,18 +20,18 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener,YoutubeViewHolder.YouTubeThumbnailLoadInProcess{
+public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener, YoutubeViewHolder.YouTubeThumbnailLoadInProcess {
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
@@ -47,13 +47,13 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     DiscoverySearchView searchView;
     ProgressBar progressBar;
     FrameLayout frameLayout;
+    private boolean fromNavigation;
 
     @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
     public static Intent getCallingIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle newBundle = new Bundle();
         newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID));
-        newBundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, bundle.getString(BrowseProductRouter.EXTRAS_SEARCH_TERM));
         try {
             newBundle.putString(
                     EXTRA_TRACKER_ATTRIBUTION,
@@ -75,6 +75,12 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
             moveTaskToBack(true);
         }
+        trackMoEngageCategory();
+    }
+
+    private void trackMoEngageCategory() {
+        if (!fromNavigation)
+            MoEngageEventTracking.sendCategory(departmentId, categoryName);
     }
 
     @Override
@@ -102,14 +108,26 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         context.startActivity(intent);
     }
 
-    public static void moveTo(Context context, String depId, String query, boolean isActivityPaused) {
+    public static void moveTo(Context context, String depId, String categoryName, boolean fromNavigation) {
         if (context == null)
             return;
 
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, query);
+        bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+        bundle.putBoolean(BrowseProductRouter.FROM_NAVIGATION, fromNavigation);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void moveTo(Context context, String depId, boolean isActivityPaused) {
+        if (context == null)
+            return;
+
+        Intent intent = new Intent(context, IntermediaryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
         bundle.putBoolean(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
         intent.putExtras(bundle);
         context.startActivity(intent);
@@ -139,8 +157,9 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     protected void setupBundlePass(Bundle extras) {
         departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
         trackerAttribution = extras.getString(EXTRA_TRACKER_ATTRIBUTION, "");
-        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME)!=null
-                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length()>0)
+        fromNavigation = extras.getBoolean(BrowseProductRouter.FROM_NAVIGATION, false);
+        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME) != null
+                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length() > 0)
             categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
     }
 
@@ -174,19 +193,19 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
-            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
         }else {
-            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow);
         }
-        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core2.R.drawable.ic_toolbar_overflow_level_two_black);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core.R.drawable.ic_webview_back_button
+                    com.tokopedia.core2.R.drawable.ic_webview_back_button
             );
-        
+
     }
 
     public void updateTitle(String categoryName) {
@@ -215,8 +234,8 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         if (fragment == null) {
             fragment = IntermediaryFragment.createInstance(departmentId, trackerAttribution);
         } else if (fragment instanceof IntermediaryFragment) {
-            ((IntermediaryFragment)fragment).setDepartmentId(departmentId);
-            ((IntermediaryFragment)fragment).setTrackerAttribution(trackerAttribution);
+            ((IntermediaryFragment) fragment).setDepartmentId(departmentId);
+            ((IntermediaryFragment) fragment).setTrackerAttribution(trackerAttribution);
         }
         inflateFragment(
                 fragment,
@@ -277,31 +296,33 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     // { Work Around IF your press back and
     //      youtube thumbnail doesn't intalized yet
 
-        boolean isBackPressed;
-        @Override
-        public void onBackPressed() {
-            if(!thumbnailIntializing) {
-                super.onBackPressed();
-            } else {
-                isBackPressed = true;
-                return;
-            }
+    boolean isBackPressed;
 
+    @Override
+    public void onBackPressed() {
+        if (!thumbnailIntializing) {
+            super.onBackPressed();
+        } else {
+            isBackPressed = true;
+            return;
         }
 
-        boolean thumbnailIntializing = false;
-        @Override
-        public void onIntializationStart() {
-            thumbnailIntializing = true;
-        }
+    }
 
-        @Override
-        public void onIntializationComplete() {
-            if(isBackPressed) {
-                super.onBackPressed();
-            }
-            thumbnailIntializing = false;
+    boolean thumbnailIntializing = false;
+
+    @Override
+    public void onIntializationStart() {
+        thumbnailIntializing = true;
+    }
+
+    @Override
+    public void onIntializationComplete() {
+        if (isBackPressed) {
+            super.onBackPressed();
         }
+        thumbnailIntializing = false;
+    }
 
     // Work Around IF your press back and youtube thumbnail doesn't intalized yet }
     protected boolean isLightToolbarThemes() {

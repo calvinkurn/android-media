@@ -100,12 +100,17 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_5)));
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
-        String presetTitle = styledAttributes.getString(R.styleable.TopAdsCarouselView_ads_title);
-        if(presetTitle!=null)
-            title.setText(presetTitle);
+        try {
+            adapter.setImpressionOffset(styledAttributes.getDimensionPixelSize(R.styleable.TopAdsCarouselView_ads_offset, 0));
+            String presetTitle = styledAttributes.getString(R.styleable.TopAdsCarouselView_ads_title);
+            if (presetTitle != null)
+                title.setText(presetTitle);
+        } finally {
+            styledAttributes.recycle();
+        }
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

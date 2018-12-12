@@ -98,7 +98,11 @@ public class TopAdsWidgetView extends LinearLayout implements AdsView, LocalAdsC
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
-        adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
+        try {
+            adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
+        } finally {
+            styledAttributes.recycle();
+        }
         gridLayoutManager = new GridLayoutManager(context, GRID_SPAN,
                         GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);

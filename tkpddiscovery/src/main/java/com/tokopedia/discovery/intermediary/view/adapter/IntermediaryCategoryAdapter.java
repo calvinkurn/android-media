@@ -10,13 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by alifa on 3/29/17.
@@ -39,7 +36,7 @@ public class IntermediaryCategoryAdapter extends
     @Override
     public IntermediaryCategoryAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(com.tokopedia.core.R.layout.item_revamp_category, null
+                viewGroup.getContext()).inflate(com.tokopedia.core2.R.layout.item_revamp_category, null
         );
         v.setMinimumWidth(categoryWidth);
         return new IntermediaryCategoryAdapter.ItemRowHolder(v);
@@ -66,18 +63,19 @@ public class IntermediaryCategoryAdapter extends
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.categoryTitle)
-        TextView categoryTitle;
-
-        @BindView(R2.id.linWrapper)
-        LinearLayout container;
-
-        @BindView(R2.id.thumbnail)
-        ImageView thumbnail;
+        private TextView categoryTitle;
+        private LinearLayout container;
+        private ImageView thumbnail;
 
         ItemRowHolder(View view) {
             super(view);
-            ButterKnife.bind(this,view);
+            initView(view);
+        }
+
+        private void initView(View view) {
+            categoryTitle = view.findViewById(R.id.categoryTitle);
+            container = view.findViewById(R.id.linWrapper);
+            thumbnail = view.findViewById(R.id.thumbnail);
         }
     }
 

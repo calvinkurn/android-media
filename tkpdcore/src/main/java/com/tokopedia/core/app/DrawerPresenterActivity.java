@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
@@ -213,8 +213,10 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         if (sessionHandler.isV4Login()) {
             setDataDrawer();
 
-            if (!GlobalConfig.isSellerApp()) {
+            if (GlobalConfig.isCustomerApp()) {
                 getTokoPointData();
+                getDrawerUserAttrUseCase(sessionHandler);
+            } else if(GlobalConfig.isPosApp()) {
                 getDrawerUserAttrUseCase(sessionHandler);
             } else {
                 getDrawerSellerAttrUseCase(sessionHandler);

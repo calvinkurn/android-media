@@ -26,7 +26,7 @@ import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.share.ShareBottomSheet;
@@ -36,7 +36,6 @@ import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
@@ -185,7 +184,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected void screenTrack() {
         if (getUserVisibleHint()) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(getActivity(), getScreenName());
         }
     }
 
@@ -296,7 +295,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
+                UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 reloadData();
@@ -304,7 +303,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
                 setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
                 if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getSelectedFilter());
+                    HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
                 } else {
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }

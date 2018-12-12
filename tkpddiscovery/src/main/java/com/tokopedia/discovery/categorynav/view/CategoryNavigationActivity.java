@@ -14,12 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.applink.DiscoveryAppLink;
-
-import butterknife.BindView;
 
 
 public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
@@ -34,6 +31,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     private String departmentId = "0";
     private String rootDepartementId = "";
     private TextView topBarTitle;
+    private FrameLayout frameLayout;
     View buttonClose;
 
     ProgressBar progressBar;
@@ -42,9 +40,6 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     public static Intent getAppLinkIntent(Context context, Bundle bundle) {
         return new Intent(context, CategoryNavigationActivity.class).putExtras(bundle);
     }
-
-    @BindView(R2.id.container)
-    FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +71,14 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     }
 
     private void initView() {
-        buttonClose = findViewById(com.tokopedia.discovery.R.id.top_bar_close_button);
+        frameLayout = findViewById(R.id.container);
+        buttonClose = findViewById(R.id.top_bar_close_button);
         buttonClose
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         onBackPressed();
-                    CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);}
+                    CategoryNavigationActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);}
                 });topBarTitle = (TextView) findViewById(R.id.top_bar_title);
         topBarTitle.setText(getString(R.string.title_category));
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -122,7 +118,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
             Intent intent = new Intent(fragmentActivity, CategoryNavigationActivity.class);
             intent.putExtra(CategoryNavigationPresenter.EXTRA_DEPARTMENT_ID, departmentId);
             fragmentActivity.startActivityForResult(intent,DESTROY_BROWSE_PARENT);
-            fragmentActivity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
+            fragmentActivity.overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 
@@ -142,7 +138,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core.R.anim.push_down);
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core2.R.anim.push_down);
     }
 
 

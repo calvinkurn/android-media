@@ -14,7 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.tkpdpdp.customview.RatingView;
 
@@ -45,12 +45,12 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     public static final int LAYOUT = R.layout.search_result_product_item_list;
 
     protected Context context;
-    protected ItemClickListener mItemClickListener;
+    protected HotlistListener mHotlistListener;
 
-    public ListProductViewHolder(View parent, ItemClickListener mItemClickListener) {
+    public ListProductViewHolder(View parent, HotlistListener mHotlistListener) {
         super(parent);
         context = parent.getContext();
-        this.mItemClickListener = mItemClickListener;
+        this.mHotlistListener = mHotlistListener;
         title = (TextView) parent.findViewById(R.id.title);
         price = (TextView) parent.findViewById(R.id.price);
         location = (TextView) parent.findViewById(R.id.location);
@@ -109,12 +109,12 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     }
 
     protected void onProductClicked(HotlistProductViewModel element) {
-        mItemClickListener.onProductClicked(element, getAdapterPosition());
+        mHotlistListener.onProductClicked(element, getAdapterPosition());
     }
 
     protected void onWishlistButtonClick(HotlistProductViewModel element) {
         if (element.isWishlistButtonEnabled()) {
-            mItemClickListener.onWishlistClicked(getAdapterPosition(),
+            mHotlistListener.onWishlistClicked(getAdapterPosition(),
                     element.getProductName(), element.getProductID(), element.isWishlist());
         }
     }

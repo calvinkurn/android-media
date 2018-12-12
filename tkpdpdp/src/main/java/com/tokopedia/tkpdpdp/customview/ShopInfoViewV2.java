@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.customview.BaseView;
@@ -53,6 +54,8 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private ImageView lastOnlineImageView;
 
     private boolean isShopFavorite = false;
+
+    private ProductDetailData productDetailData;
 
     public ShopInfoViewV2(Context context) {
         super(context);
@@ -105,10 +108,11 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     @SuppressLint("DefaultLocale")
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
+        this.productDetailData = data;
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
         if (data.getShopInfo().getShopIsOfficial()==SHOP_OFFICIAL_VALUE) {
-            ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
-            tvShopLoc.setText(getResources().getString(com.tokopedia.core.R.string.authorized));
+            ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core2.R.drawable.ic_icon_authorize_grey));
+            tvShopLoc.setText(getResources().getString(com.tokopedia.core2.R.string.authorized));
         } else {
             tvShopLoc.setText(data.getShopInfo().getShopLocation());
         }
@@ -160,8 +164,10 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     public void reverseFavorite() {
         if (isShopFavorite) {
             updateFavoriteStatus(0);
+            TrackingUtils.sendMoEngageFavoriteEvent(getContext(), productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, false);
         } else {
             updateFavoriteStatus(1);
+            TrackingUtils.sendMoEngageFavoriteEvent(getContext(), productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, true);
         }
     }
 

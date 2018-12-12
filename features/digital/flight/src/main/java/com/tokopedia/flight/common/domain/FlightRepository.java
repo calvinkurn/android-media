@@ -1,13 +1,12 @@
 package com.tokopedia.flight.common.domain;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -16,15 +15,14 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
-import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
-import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightPassengerDB;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,23 +47,7 @@ public interface FlightRepository {
 
     Observable<FlightClassEntity> getFlightClassById(int classId);
 
-    Observable<List<FlightAirlineDB>> getAirlineList();
-
-    Observable<List<FlightAirlineDB>> getAirlineList(List<String> distinctSearchResultList);
-
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
-
-    Observable<Boolean> deleteFlightCacheSearch();
-
-    Observable<Boolean> deleteFlightCacheSearch(boolean isReturning);
-
-    Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams);
-
-    Observable<List<FlightMetaDataDB>> getFlightMetaData(RequestParams requestParams);
-
-    Observable<Integer> getFlightSearchCount(RequestParams requestParams);
-
-    Observable<FlightSearchSingleRouteDB> getFlightSearchById(boolean isReturning, String id);
 
     Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey);
 
@@ -95,11 +77,9 @@ public interface FlightRepository {
 
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 
-    Observable<Boolean> isSearchCacheExpired(boolean isReturn);
+    Observable<List<FlightPassengerDB>> getPassengerList(String passengerId);
 
-    Observable<List<FlightPassengerDb>> getPassengerList(String passengerId);
-
-    Observable<FlightPassengerDb> getSinglePassengerById(String passengerId);
+    Observable<FlightPassengerDB> getSinglePassengerById(String passengerId);
 
     Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
 
@@ -109,11 +89,9 @@ public interface FlightRepository {
 
     Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
 
-    Observable<List<FlightAirlineDB>> refreshAirlines();
-
-    Observable<FlightAirlineDB> getAirlineCacheById(String airlineId);
-
     Observable<List<Passenger>> getCancelablePassenger(String invoiceId);
+
+    Observable<List<Reason>> getCancellationReasons();
 
     Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
 

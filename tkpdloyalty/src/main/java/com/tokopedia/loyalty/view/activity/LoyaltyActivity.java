@@ -97,6 +97,7 @@ public class LoyaltyActivity extends BasePresenterActivity
     private String additionalDataString;
     private String trainReservationId;
     private String trainReservationCode;
+    private boolean isOneClickShipment;
 
     public boolean isCouponActive() {
         return isCouponActive;
@@ -140,6 +141,10 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     public String getTrainReservationCode() {
         return trainReservationCode;
+    }
+
+    public boolean isOneClickShipment() {
+        return isOneClickShipment;
     }
 
     private OnTabSelectedForTrackingCheckoutMarketPlace onTabSelectedForTrackingCheckoutMarketPlace;
@@ -187,7 +192,8 @@ public class LoyaltyActivity extends BasePresenterActivity
         this.trainReservationCode = extras.getString(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE, ""
         );
-
+        this.isOneClickShipment = extras.getBoolean(
+                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ONE_CLICK_SHIPMENT);
     }
 
     @Override
@@ -578,11 +584,11 @@ public class LoyaltyActivity extends BasePresenterActivity
         return intent;
     }
 
-    public static Intent newInstanceTrainCouponNotActive(Context context, String platform, String category,
-                                                         String trainReservationId, String trainReservationCode) {
+    public static Intent newInstanceTrainCouponActive(Context context, String platform, String category,
+                                                      String trainReservationId, String trainReservationCode) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, category);
         bundle.putString(EXTRA_TRAIN_RESERVATION_ID, trainReservationId);
@@ -625,7 +631,8 @@ public class LoyaltyActivity extends BasePresenterActivity
         return intent;
     }
 
-    public static Intent newInstanceNewCheckoutCartShipmentCouponNotActive(Context context, String additionalStringData) {
+    public static Intent newInstanceNewCheckoutCartShipmentCouponNotActive(
+            Context context, String additionalStringData, boolean isOneClickShipment) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
@@ -635,12 +642,13 @@ public class LoyaltyActivity extends BasePresenterActivity
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT);
         bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ADDITIONAL_STRING_DATA,
                 additionalStringData);
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ONE_CLICK_SHIPMENT, isOneClickShipment);
         intent.putExtras(bundle);
         return intent;
     }
 
     public static Intent newInstanceNewCheckoutCartShipmentCouponActive(
-            Context context, String additionalStringData, String defaultSelectedTab
+            Context context, String additionalStringData, String defaultSelectedTab, boolean isOneClickShipment
     ) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
@@ -655,6 +663,7 @@ public class LoyaltyActivity extends BasePresenterActivity
             bundle.putInt(EXTRA_SELECTED_TAB,
                     COUPON_TAB);
         }
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_ONE_CLICK_SHIPMENT, isOneClickShipment);
         intent.putExtras(bundle);
         return intent;
     }
@@ -687,7 +696,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         super.onBackPressed();
         if (platformString.equalsIgnoreCase(MARKETPLACE_STRING))
             checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon();
-        UnifyTracking.eventCouponPageClosed();
+        UnifyTracking.eventCouponPageClosed(this);
     }
 
     private class OnTabSelectedForTrackingCheckoutMarketPlace implements

@@ -3,10 +3,11 @@ package com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo;
 
 import java.util.List;
 
-public class FlashSalePojo {
+public class FlashSalePojo extends BaseGroupChatPojo{
 
     @SerializedName("applink")
     @Expose

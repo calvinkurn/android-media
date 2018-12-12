@@ -71,4 +71,13 @@ public class CheckoutAnalyticsAddToCart extends TransactionAnalytics {
                 EventAction.CLICK_LANJUTKAN_BELANJA_ON_ATC_SUCCESS
         );
     }
+
+    public void eventAtcClickLihat(String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_PDP,
+                EventCategory.PRODUCT_DETAIL_PAGE,
+                EventAction.CLICK_CEK_KERANJANG,
+                productId
+        );
+    }
 }

@@ -1,5 +1,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -185,6 +186,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
 
+            <com.tokopedia.tkpdpdp.customview.ImageFromBuyerView
+                android:id="@+id/view_image_from_buyer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:descendantFocusability="blocksDescendants"
+                android:visibility="gone"
+                />
+
             <com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView
                 android:id="@+id/view_most_helpful"
                 android:layout_width="match_parent"
@@ -237,6 +247,16 @@
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:visibility="visible"
+        app:layout_anchorGravity="bottom" />
+
+    <com.tokopedia.tkpdpdp.customview.ButtonAffiliate
+        android:id="@+id/buttonAffiliate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_anchorGravity="bottom" />
 
     <android.support.design.widget.FloatingActionButton

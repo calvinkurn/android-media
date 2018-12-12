@@ -15,6 +15,8 @@ query CouponListing($categoryID: Int, $page: Int, $limit: Int, $serviceID: Strin
         imageUrlMobile
         thumbnailUrl
         thumbnailUrlMobile
+        minimum_usage
+        minimum_usage_label
         imageV2Url
         imageV2UrlMobile
         thumbnailV2Url

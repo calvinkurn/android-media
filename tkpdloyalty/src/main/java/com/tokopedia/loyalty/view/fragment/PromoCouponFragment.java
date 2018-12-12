@@ -24,6 +24,7 @@ import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
 import com.tokopedia.loyalty.di.component.PromoCouponComponent;
 import com.tokopedia.loyalty.di.module.PromoCouponViewModule;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.adapter.CouponListAdapter;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
@@ -36,6 +37,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING;
 
 
 /**
@@ -72,9 +74,15 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     private static final String DIGITAL_PRODUCT_ID = "DIGI_PRODUCT_ID";
 
+    private static final String TRAIN_RESERVATION_ID = "TRAIN_RESERVATION_ID";
+
+    private static final String TRAIN_RESERVATION_CODE = "TRAIN_RESERVATION_CODE";
+
     private static final String CART_ID_KEY = "CART_ID_KEY";
 
     private static final String CHECKOUT = "checkoutdata";
+
+    private static final String ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT";
 
     @Override
     protected boolean isRetainInstance() {
@@ -186,6 +194,14 @@ public class PromoCouponFragment extends BasePresenterFragment
                 null, 0,
                 getRetryGetCouponListErrorHandlerListener()
         );
+    }
+
+    @Override
+    public void sendTrackingOnCheckTrainVoucherError(String errorMessage) {
+        if (getActivity() instanceof LoyaltyModuleRouter) {
+            ((LoyaltyModuleRouter) getActivity())
+                    .trainSendTrackingOnCheckVoucherCodeError(errorMessage);
+        }
     }
 
     @Override
@@ -394,7 +410,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     public static PromoCouponFragment newInstance(
             String platformString, String platformPageString, String additionalDataString,
             String categoryKey, String cartIdString,
-            int categoryId, int productId) {
+            int categoryId, int productId, boolean oneClickShipment) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platformString);
@@ -404,6 +420,7 @@ public class PromoCouponFragment extends BasePresenterFragment
         bundle.putInt(DIGITAL_CATEGORY_ID, categoryId);
         bundle.putInt(DIGITAL_PRODUCT_ID, productId);
         bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
+        bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -422,6 +439,19 @@ public class PromoCouponFragment extends BasePresenterFragment
         return fragment;
     }
 
+    public static PromoCouponFragment newInstanceTrain(
+            String platform, String categoryKey, String reservationId, String reservtionCode
+    ) {
+        PromoCouponFragment fragment = new PromoCouponFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PLATFORM_KEY, platform);
+        bundle.putString(CATEGORY_KEY, categoryKey);
+        bundle.putString(TRAIN_RESERVATION_ID, reservationId);
+        bundle.putString(TRAIN_RESERVATION_CODE, reservtionCode);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     public void onVoucherChosen(CouponData data) {
         switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
@@ -436,22 +466,28 @@ public class PromoCouponFragment extends BasePresenterFragment
         }
 
         adapter.clearError();
-        UnifyTracking.eventCouponChosen(data.getTitle());
-        if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
+        UnifyTracking.eventCouponChosen(getActivity(), data.getTitle());
+        String platformString = getArguments().getString(PLATFORM_KEY, "");
+        if (platformString.equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {
             dPresenter.submitDigitalVoucher(data, getArguments().getString(CATEGORY_KEY, ""));
-        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+        } else if (platformString.equalsIgnoreCase(TRAIN_STRING)) {
+            dPresenter.submitTrainVoucher(data,
+                    getArguments().getString(TRAIN_RESERVATION_ID),
+                    getArguments().getString(TRAIN_RESERVATION_CODE));
+        } else if (platformString.equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING)
-                || getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+                || platformString.equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
             dPresenter.parseAndSubmitEventVoucher(jsonbody, data, getArguments().getString(PLATFORM_KEY));
-        } else if (getArguments().getString(PLATFORM_KEY).equalsIgnoreCase(
+        } else if (platformString.equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
             dPresenter.processCheckMarketPlaceCartListPromoCode(
-                    getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, "")
+                    getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, ""),
+                    getArguments().getBoolean(ONE_CLICK_SHIPMENT)
             );
         }
     }

@@ -506,7 +506,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
         View rootview = getView();
         try {
-            rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
+            rootview.findViewById(com.tokopedia.core2.R.id.main_retry).setVisibility(View.VISIBLE);
         } catch (NullPointerException e) {
             View emptyState = LayoutInflater.from(context).
                     inflate(R.layout.layout_empty_shopping_cart, (ViewGroup) rootview);
@@ -741,27 +741,27 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void trackingCartCheckoutEvent() {
-        UnifyTracking.eventCartCheckout();
+        UnifyTracking.eventCartCheckout(getActivity());
     }
 
     @Override
     public void trackingCartPayment() {
-        UnifyTracking.eventCartPayment();
+        UnifyTracking.eventCartPayment(getActivity());
     }
 
     @Override
     public void trackingCartDepositEvent() {
-        UnifyTracking.eventCartDeposit();
+        UnifyTracking.eventCartDeposit(getActivity());
     }
 
     @Override
     public void trackingCartDropShipperEvent() {
-        UnifyTracking.eventCartDropshipper();
+        UnifyTracking.eventCartDropshipper(getActivity());
     }
 
     @Override
     public void trackingCartCancelEvent() {
-        UnifyTracking.eventATCRemove();
+        UnifyTracking.eventATCRemove(getActivity());
     }
 
     @Override

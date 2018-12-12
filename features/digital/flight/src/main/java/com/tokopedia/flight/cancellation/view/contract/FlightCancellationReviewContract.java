@@ -1,5 +1,6 @@
 package com.tokopedia.flight.cancellation.view.contract;
 
+import android.app.Activity;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -18,6 +19,14 @@ public interface FlightCancellationReviewContract {
 
         void hideLoading();
 
+        void showEstimateValue();
+
+        void hideEstimateValue();
+
+        void showRefundDetail(int resId);
+
+        void hideRefundDetail();
+
         String getInvoiceId();
 
         FlightCancellationWrapperViewModel getCancellationWrapperViewModel();
@@ -25,6 +34,12 @@ public interface FlightCancellationReviewContract {
         void setCancellationWrapperViewModel(FlightCancellationWrapperViewModel viewModel);
 
         void showCancellationError(Throwable throwable);
+
+        Activity getActivity();
+
+        void showErrorFetchEstimateRefund(String messageFromException);
+
+        void renderView();
     }
 
     interface Presenter {
@@ -33,5 +48,6 @@ public interface FlightCancellationReviewContract {
 
         void onViewCreated();
 
+        void onRetryFetchEstimate();
     }
 }

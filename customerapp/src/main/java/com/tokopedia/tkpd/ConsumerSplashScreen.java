@@ -16,11 +16,12 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.firebase.perf.metrics.Trace;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 /**
@@ -29,39 +30,50 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class ConsumerSplashScreen extends SplashScreen {
 
-    public static final String SPLASH_TRACE = "warm_start";
+    public static final String WARM_TRACE = "warm_start";
+    public static final String SPLASH_TRACE = "splash_start";
 
     private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
 
-    private Trace trace;
+    private PerformanceMonitoring warmTrace;
+    private PerformanceMonitoring splashTrace;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         startWarmStart();
+        startSplashTrace();
+
+        super.onCreate(savedInstanceState);
 
         mainLayout = findViewById(R.id.layout_splash);
         renderDynamicImage();
+
+        finishWarmStart();
     }
 
     @Override
     public void finishSplashScreen() {
         Intent homeIntent = MainParentActivity.start(this);
         startActivity(homeIntent);
-        finishWarmStart();
+        finishSplashTrace();
         finish();
     }
 
     private void startWarmStart() {
-        trace = TrackingUtils.startTrace(SPLASH_TRACE);
+        warmTrace = PerformanceMonitoring.start(WARM_TRACE);
     }
 
     private void finishWarmStart() {
-        if (trace != null) {
-            trace.stop();
-        }
+        warmTrace.stopTrace();
+    }
+
+    private void startSplashTrace() {
+        splashTrace = PerformanceMonitoring.start(SPLASH_TRACE);
+    }
+
+    private void finishSplashTrace() {
+        splashTrace.stopTrace();
     }
 
     private void renderDynamicImage() {

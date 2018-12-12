@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.IntentService;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -12,9 +13,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 
-
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -23,7 +24,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -41,9 +42,9 @@ import java.util.List;
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends BaseMainApplication{
+public abstract class MainApplication extends MainRouterApplication{
 
-	public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
     private static final String TAG = "MainApplication";
     public static HUDIntent hudIntent;
@@ -51,13 +52,13 @@ public abstract class MainApplication extends BaseMainApplication{
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private static Context context;
-	private static Activity activity;
-	private static Boolean isResetNotification = false;
-	private static Boolean isResetDrawer = false;
-	private static Boolean isResetCart = false;
+    private static Activity activity;
+    private static Boolean isResetNotification = false;
+    private static Boolean isResetDrawer = false;
+    private static Boolean isResetCart = false;
     private static Boolean isResetTickerState = true;
-	private static int currActivityState;
-	private static String currActivityName;
+    private static int currActivityState;
+    private static String currActivityName;
     private static IntentService RunningService;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
@@ -68,8 +69,7 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
     @Override
-    protected void attachBaseContext(Context base)
-    {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(MainApplication.this);
     }
@@ -255,7 +255,6 @@ public abstract class MainApplication extends BaseMainApplication{
         //CommonUtils.dumper("asdasas");
         MainApplication.context = getApplicationContext();
         init();
-        initFacebook();
         initCrashlytics();
         initStetho();
         PACKAGE_NAME = getPackageName();
@@ -277,9 +276,26 @@ public abstract class MainApplication extends BaseMainApplication{
         initBranch();
         initializeAnalytics();
         NotificationUtils.setNotificationChannel(this);
-
+        upgradeSecurityProvider();
     }
 
+    private void upgradeSecurityProvider() {
+        try {
+            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+                @Override
+                public void onProviderInstalled() {
+                    // Do nothing
+                }
+
+                @Override
+                public void onProviderInstallFailed(int i, Intent intent) {
+                    // Do nothing
+                }
+            });
+        } catch (Throwable t) {
+            // Do nothing
+        }
+    }
 
 
     @Override
@@ -292,22 +308,17 @@ public abstract class MainApplication extends BaseMainApplication{
      * Intialize the request manager and the image cache
      */
     private void init() {
-    }
-
-    /**
-     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
-     */
-
-    private void initFacebook() {
-
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        }
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
-        TrackingUtils.setMoEngageExistingUser();
-        TrackingUtils.enableDebugging(isDebug());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.GTM, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.APPSFLYER, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.MOENGAGE, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.setMoEngageExistingUser(this, getTkpdCoreRouter().legacySessionHandler().isLoggedIn());
+        TrackingUtils.enableDebugging(this, isDebug());
     }
 
     public void initCrashlytics() {
@@ -317,27 +328,27 @@ public abstract class MainApplication extends BaseMainApplication{
         }
     }
 
-	protected void initDbFlow() {
-		if(BuildConfig.DEBUG) {
-			FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
-		}
-		FlowManager.init(new FlowConfig.Builder(this)
+    protected void initDbFlow() {
+        if (BuildConfig.DEBUG) {
+            FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
+        }
+        FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCoreGeneratedDatabaseHolder.class)
                 .build());
-	}
+    }
 
     public AppComponent getApplicationComponent() {
         return getAppComponent();
     }
 
-    public AppComponent getAppComponent(){
+    public AppComponent getAppComponent() {
         if (appComponent == null) {
             appComponent = daggerBuilder.build();
         }
         return appComponent;
     }
 
-    public void setAppComponent(AppComponent appComponent){
+    public void setAppComponent(AppComponent appComponent) {
         this.appComponent = appComponent;
     }
 

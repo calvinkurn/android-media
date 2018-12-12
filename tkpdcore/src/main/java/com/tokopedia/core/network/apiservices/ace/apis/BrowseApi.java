@@ -100,6 +100,7 @@ public interface BrowseApi {
     String RETURNABLES = "returnables";
     String HOT_ID = "hot_id";
     String REFINED = "rf";
+    String RELATED = "related";
     String PAGE = "page";
     String PAGE_SIZE = "page_size";
 
@@ -247,20 +248,5 @@ public interface BrowseApi {
     @GET(GUIDE_V1)
     Observable<Response<GuidedSearchResponse>> getGuidedSearch(
             @Query(Q) String query
-    );
-
-    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH)
-    Observable<Response<String>> getUniverseAutoComplete(
-            @QueryMap TKPDMapParam<String, Object> param
-    );
-
-    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH_V5)
-    Observable<Response<String>> getUniverseAutoCompleteV5(
-            @QueryMap TKPDMapParam<String, Object> param
-    );
-
-    @DELETE(TkpdBaseURL.Ace.PATH_DELETE_SEARCH)
-    Observable<Response<Void>> deleteRecentSearch(
-            @QueryMap TKPDMapParam<String, Object> parameters
     );
 }

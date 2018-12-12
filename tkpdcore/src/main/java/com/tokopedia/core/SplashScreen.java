@@ -21,8 +21,8 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import com.tokopedia.core2.R;
 
 
 /**
@@ -212,7 +213,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             moveToHome();
         } else {
             try {
-                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID(this));
                 branch.initSession(new Branch.BranchReferralInitListener() {
                     @Override
                     public void onInitFinished(JSONObject referringParams, BranchError error) {

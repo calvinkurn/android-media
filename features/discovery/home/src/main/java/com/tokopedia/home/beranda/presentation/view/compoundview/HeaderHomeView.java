@@ -18,10 +18,10 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
@@ -58,6 +58,7 @@ public class HeaderHomeView extends BaseCustomView {
     private LinearLayout tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
     private WalletAnalytics walletAnalytics;
+    private TextView mTextCouponCount;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
         super(context);
@@ -122,6 +123,7 @@ public class HeaderHomeView extends BaseCustomView {
             ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
             tokopointProgressBarLayout = view.findViewById(R.id.progress_bar_tokopoint_layout);
             tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
+            mTextCouponCount = view.findViewById(R.id.text_coupon_count);
         }
         renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
@@ -154,11 +156,17 @@ public class HeaderHomeView extends BaseCustomView {
             //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
             tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
             tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+
+            if (headerViewModel.getTokoPointDrawerData().getSumCoupon() > 0) {
+                mTextCouponCount.setVisibility(VISIBLE);
+                mTextCouponCount.setText(headerViewModel.getTokoPointDrawerData().getSumCouponStr());
+            }
+
             tokoPointHolder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (headerViewModel.getTokoPointDrawerData() != null) {
-                        UnifyTracking.eventUserProfileTokopoints();
+                        HomePageTracking.eventUserProfileTokopoints(getContext());
                         listener.actionTokoPointClicked(
                                 headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
                                 TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
@@ -358,11 +366,10 @@ public class HeaderHomeView extends BaseCustomView {
             public void onClick(View v) {
                 if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
                         !homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashActivateClick();
+                    HomePageTracking.eventTokoCashActivateClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton()
-                );
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton());
             }
         };
     }
@@ -396,11 +403,10 @@ public class HeaderHomeView extends BaseCustomView {
                 if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
                         !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
                         homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashCheckSaldoClick();
+                    HomePageTracking.eventTokoCashCheckSaldoClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance()
-                );
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance());
             }
         };
     }

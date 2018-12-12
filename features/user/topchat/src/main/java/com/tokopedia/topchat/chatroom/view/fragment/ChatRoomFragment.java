@@ -378,7 +378,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 replyColumn.clearFocus();
 
-                UnifyTracking.eventAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                UnifyTracking.eventAttachment(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_ATTACH,
                         TopChatAnalytics.Name.CHAT_DETAIL);
 
@@ -394,7 +394,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventInsertAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+                UnifyTracking.eventInsertAttachment(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_INSERT,
                         TopChatAnalytics.Name.CHAT_DETAIL);
                 presenter.getAttachProductDialog(
@@ -412,12 +412,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 scrollToBottom();
-                rvQuickReply.setVisibility(View.GONE);
                 if (templateAdapter != null && templateAdapter.getList().size() != 0) {
                     templateRecyclerView.setVisibility(View.VISIBLE);
                 }
                 presenter.sendMessage(networkType);
-                UnifyTracking.sendChat(TopChatAnalytics.Category.CHAT_DETAIL,
+                UnifyTracking.sendChat(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_SEND,
                         TopChatAnalytics.Name.CHAT_DETAIL);
 
@@ -456,7 +455,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             }
         }
 
-        UnifyTracking.eventClickTemplate(labelCategory,
+        UnifyTracking.eventClickTemplate(getActivity(),labelCategory,
                 TopChatAnalytics.Action.TEMPLATE_CHAT_CLICK,
                 TopChatAnalytics.Name.INBOX_CHAT);
         String text = replyColumn.getText().toString();
@@ -689,6 +688,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
                     }
                     TrackingUtils.sendGTMEvent(
+                            v.getContext(),
                             new EventTracking(
                                     "clickInboxChat",
                                     "message room",
@@ -754,6 +754,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
             });
         }
+        setResult();
     }
 
     @Override
@@ -906,7 +907,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventSendMessagePage();
+                UnifyTracking.eventSendMessagePage(getActivity());
                 presenter.initMessage(replyColumn.getText().toString(),
                         getArguments().getString(ChatRoomActivity.PARAM_SOURCE),
                         getArguments().getString(ChatRoomActivity.PARAM_SENDER_ID),
@@ -1190,7 +1191,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts) {
-        UnifyTracking.eventSendAttachment(TopChatAnalytics.Category.CHAT_DETAIL,
+        UnifyTracking.eventSendAttachment(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
                 TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
                 TopChatAnalytics.Name.CHAT_DETAIL);
 
@@ -1339,7 +1340,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void processReceiveMessage(BaseChatViewModel message) {
-        rvQuickReply.setVisibility(View.GONE);
         if (templateAdapter != null && templateAdapter.getList().size() != 0) {
             templateRecyclerView.setVisibility(View.VISIBLE);
         }
@@ -1348,14 +1348,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         removeDummyReplyIfExist(message);
         removeIsTyping();
 
-        if (message instanceof QuickReplyListViewModel) {
-            showQuickReplyView((QuickReplyListViewModel) message);
-            if (!TextUtils.isEmpty(message.getMessage())) {
-                addMessageToList(message);
-            }
-        } else {
-            addMessageToList(message);
-        }
+        mapMessageToList(message);
 
         if (isMyMessage(message.getFromUid())) {
             scrollToBottom();
@@ -1365,7 +1358,29 @@ public class ChatRoomFragment extends BaseDaggerFragment
             readMessage(message.getMessageId());
         }
 
+        checkHideQuickReply(message);
         setResult();
+    }
+
+    private void mapMessageToList(BaseChatViewModel message) {
+        if (message instanceof QuickReplyListViewModel) {
+            showQuickReplyView((QuickReplyListViewModel) message);
+            if (!TextUtils.isEmpty(message.getMessage())) {
+                addMessageToList(message);
+            }
+        } else {
+            addMessageToList(message);
+        }
+    }
+
+    private void checkHideQuickReply(BaseChatViewModel message) {
+        if (TextUtils.isEmpty(message.getAttachmentId())
+                && quickReplyAdapter != null
+                && rvQuickReply != null
+                && !isMyMessage(message.getFromUid())) {
+            quickReplyAdapter.clearData();
+            rvQuickReply.setVisibility(View.GONE);
+        }
     }
 
     private void removeDummyReplyIfExist(BaseChatViewModel message) {
@@ -1403,16 +1418,22 @@ public class ChatRoomFragment extends BaseDaggerFragment
             quickReplyAdapter = new QuickReplyAdapter(model, this);
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
+        } else if(quickReplyAdapter != null){
+            quickReplyAdapter.clearData();
+            rvQuickReply.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void onQuickReplyClicked(QuickReplyViewModel quickReply) {
-        rvQuickReply.setVisibility(View.GONE);
-        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
-            templateRecyclerView.setVisibility(View.VISIBLE);
+    public void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply) {
+        if (getArguments() != null) {
+            if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+                templateRecyclerView.setVisibility(View.VISIBLE);
+            }
+            String msgId = getArguments().getString(PARAM_MESSAGE_ID, "");
+
+            presenter.sendQuickReply(msgId, quickReply, SendableViewModel.generateStartTime());
         }
-        presenter.sendMessage(networkType, quickReply.getMessage());
     }
 
     @Override
@@ -1573,6 +1594,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
                     }
                     TrackingUtils.sendGTMEvent(
+                            getActivity(),
                             new EventTracking(
                                     "clickInboxChat",
                                     "message room",
@@ -1585,6 +1607,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
                 } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store))) {
                     TrackingUtils.sendGTMEvent(
+                            getActivity(),
                             new EventTracking(
                                     "clickInboxChat",
                                     "message room",
@@ -1595,6 +1618,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
                 } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
                     TrackingUtils.sendGTMEvent(
+                            getActivity(),
                             new EventTracking(
                                     "clickInboxChat",
                                     "message room",

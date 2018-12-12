@@ -29,5 +29,6 @@
     </declare-styleable>
     <declare-styleable name="TopAdsCarouselView" tools:ignore="MissingDefaultResource">
         <attr name="ads_title" format="string" />
+        <attr name="ads_offset" format="dimension" />
     </declare-styleable>
 </resources>

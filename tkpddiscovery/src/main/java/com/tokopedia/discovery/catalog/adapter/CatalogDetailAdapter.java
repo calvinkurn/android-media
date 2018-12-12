@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +13,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItem;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItemShop;
 import com.tokopedia.discovery.catalog.presenter.ICatalogDetailListPresenter;
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author by alvarisi on 10/18/16.
@@ -111,22 +106,26 @@ public class CatalogDetailAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     class ShopItemHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.seller_img)
-        ImageView shopImage;
-        @BindView(R2.id.seller_name)
-        TextView shopName;
-        @BindView(R2.id.seller_loc)
-        TextView shopLocation;
-        @BindView(R2.id.seller_rating)
-        ImageView shopRating;
-        @BindView(R2.id.list_product)
-        RecyclerView listProduct;
-        @BindView(R2.id.header_seller)
-        RelativeLayout shopContainer;
+
+        private ImageView shopImage;
+        private TextView shopName;
+        private TextView shopLocation;
+        private ImageView shopRating;
+        private RecyclerView listProduct;
+        private RelativeLayout shopContainer;
 
         ShopItemHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+            initView(view);
+        }
+
+        private void initView(View view) {
+            shopImage = view.findViewById(R.id.seller_img);
+            shopName = view.findViewById(R.id.seller_name);
+            shopLocation = view.findViewById(R.id.seller_loc);
+            shopRating = view.findViewById(R.id.seller_rating);
+            listProduct = view.findViewById(R.id.list_product);
+            shopContainer = view.findViewById(R.id.header_seller);
         }
     }
 

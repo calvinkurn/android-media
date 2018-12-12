@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'io.hansel.preprocessor'
 
 def getDpiId(String density) {
 
@@ -61,10 +62,13 @@ def archiveAPK(variant, output) {
 
 buildscript {
     repositories {
+        mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -241,16 +245,18 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.mitraToppers)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.goldMerchant)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
+    implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
-    implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.productDetail)
@@ -264,7 +270,9 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.districtrecommendation)
+    implementation project(rootProject.ext.features.userIdentification)
+    implementation project(rootProject.ext.features.userIdentificationCommon)
+    implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.logisticuploadawb)
@@ -283,12 +291,17 @@ dependencies {
     implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
-
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.phoneVerification)
+    implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
