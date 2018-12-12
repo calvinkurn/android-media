@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -62,7 +63,6 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -121,8 +121,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
 
-    private PerformanceMonitoring performanceMonitoring;
-    private boolean isTraceStopped;
+    private PerformanceMonitoring shipmentTracePerformance;
+    private boolean isShipmentTraceStopped;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -173,7 +173,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shipmentPresenter.attachView(this);
-        performanceMonitoring = PerformanceMonitoring.start(SHIPMENT_TRACE);
+        shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
     }
 
     @Override
@@ -447,9 +447,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp) {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
+        if (!isShipmentTraceStopped) {
+            shipmentTracePerformance.stopTrace();
+            isShipmentTraceStopped = true;
         }
 
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
@@ -1407,7 +1407,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceTncClicked() {
-        startActivity(checkoutModuleRouter.checkoutModuleRouterGetInsuranceTncActivityIntent());
+        startActivity(CheckoutWebViewActivity.newInstance(getContext(), CartConstant.TERM_AND_CONDITION_URL));
     }
 
     @Override
@@ -1518,9 +1518,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (!shipmentAdapter.isCourierPromoStillExist() && shipmentPresenter.getPromoCodeAppliedData() != null &&
                     !TextUtils.isEmpty(shipmentPresenter.getPromoCodeAppliedData().getPromoCode())) {
                 promoCode = shipmentPresenter.getPromoCodeAppliedData().getPromoCode();
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, true);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(
+                        promoCode, itemPosition, true, isOneClickShipment()
+                );
             } else {
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, false);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(
+                        promoCode, itemPosition, false, isOneClickShipment()
+                );
             }
         }
     }

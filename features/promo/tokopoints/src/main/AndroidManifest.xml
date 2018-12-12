@@ -6,23 +6,27 @@
         <activity
             android:name=".view.activity.TokoPointsHomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.CatalogListingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.MyCouponListingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.CouponCatalogDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.CouponDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.SendGiftActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

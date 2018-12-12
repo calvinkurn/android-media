@@ -84,6 +84,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                             e.printStackTrace();
                             if (getView() != null) {
                                 getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
+                                getView().stopTrace();
                             }
                         }
 
@@ -94,12 +95,15 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                 if (shippingRecommendationData.getErrorId() != null &&
                                         shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
                                     getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                    getView().stopTrace();
                                 } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
                                         shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
                                     shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
                                     getView().showData(shippingDurationViewModelList);
+                                    getView().stopTrace();
                                 } else {
                                     getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
+                                    getView().stopTrace();
                                 }
                             }
                         }

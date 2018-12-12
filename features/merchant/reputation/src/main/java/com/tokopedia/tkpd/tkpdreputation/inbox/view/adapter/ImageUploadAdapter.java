@@ -26,9 +26,11 @@ import java.util.List;
 public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.ViewHolder> {
 
     private static final int VIEW_UPLOAD_BUTTON = 100;
+    private static final int VIEW_REVIEW_IMAGE = 97;
     private static final int MAX_IMAGE = 5;
     public static final int RADIUS_CORNER = 4;
     private int canUpload = 0;
+    private boolean isReviewImage;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -46,7 +48,6 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         View.OnClickListener onImageClicked(int position, ImageUpload imageUpload);
     }
 
-
     private ProductImageListener listener;
     private ArrayList<ImageUpload> data;
     private ArrayList<ImageUpload> deletedImage;
@@ -63,10 +64,23 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
         return new ImageUploadAdapter(context);
     }
 
+    public void setReviewImage(boolean isReviewImage){
+        this.isReviewImage = isReviewImage;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_image_upload_review, viewGroup, false));
+        ViewHolder viewHolder;
+        switch (viewType) {
+            case VIEW_REVIEW_IMAGE :
+                viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.listview_image_review_item, viewGroup, false));
+                break;
+            default:
+                viewHolder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.listview_image_upload_review, viewGroup, false));
+        }
+        return viewHolder;
     }
 
     @Override
@@ -144,7 +158,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     public int getItemViewType(int position) {
         if (position == data.size() && data.size() < MAX_IMAGE) {
             return VIEW_UPLOAD_BUTTON;
-        } else {
+        } else if (isReviewImage) {
+            return VIEW_REVIEW_IMAGE;
+        }
+        else {
             return super.getItemViewType(position);
         }
     }

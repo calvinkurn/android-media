@@ -10,9 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:feature_desc="@string/gmsubscribe_feature_gold_badge_desc"
-        app:feature_img="@drawable/ic_gmsubscribe_feature_badge"
         app:feature_title="@string/gmsubscribe_feature_gold_badge"
         />
+
+    <com.tokopedia.gm.subscribe.view.widget.home.GmMainFeatureView
+        android:id="@+id/feature_wawasan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:feature_desc="@string/gmsubscribe_feature_wawasan_desc"
+        app:feature_img="@drawable/ic_gmsubscribe_feature_wawasan_pasar"
+        app:feature_title="@string/gmsubscribe_feature_wawasan_pasar"
+        android:visibility="gone"/>
 
     <com.tokopedia.gm.subscribe.view.widget.home.GmMainFeatureView
         android:id="@+id/feature_topads"
@@ -21,7 +29,7 @@
         app:feature_desc="@string/gmsubscribe_feature_topads_desc"
         app:feature_img="@drawable/ic_gmsubscribe_feature_topads"
         app:feature_title="@string/gmsubscribe_feature_topads"
-        />
+        android:visibility="gone"/>
 
     <com.tokopedia.gm.subscribe.view.widget.home.GmMainFeatureView
         android:id="@+id/feature_stats"
