@@ -39,22 +39,19 @@ public class StatusDataSource {
     public Observable<Status> getStatus() {
         return digitalEndpointService.getApi().getStatus()
                 .map(getFuncTransformStatusEntity())
-                .map(new Func1<StatusEntity, StatusEntity>() {
-                    @Override
-                    public StatusEntity call(StatusEntity status) {
-                        String currentStatusString = cacheManager.get(KEY_STATUS_CURRENT);
-                        String statusString = CacheUtil.convertModelToString(status,
-                                new TypeToken<StatusEntity>() {
-                                }.getType());
-                        if (currentStatusString != null && !currentStatusString.equals(statusString)) {
-                            cacheManager.delete(KEY_CATEGORY_LIST);
+                .map(status -> {
+                    String currentStatusString = cacheManager.get(KEY_STATUS_CURRENT);
+                    String statusString = CacheUtil.convertModelToString(status,
+                            new TypeToken<StatusEntity>() {
+                            }.getType());
+                    if (currentStatusString != null && !currentStatusString.equals(statusString)) {
+                        cacheManager.delete(KEY_CATEGORY_LIST);
 
-                            saveStatusToCache(statusString);
-                        } else if (currentStatusString == null) {
-                            saveStatusToCache(statusString);
-                        }
-                        return status;
+                        saveStatusToCache(statusString);
+                    } else if (currentStatusString == null) {
+                        saveStatusToCache(statusString);
                     }
+                    return status;
                 })
                 .map(statusMapper);
     }

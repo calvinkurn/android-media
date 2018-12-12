@@ -48,19 +48,16 @@ public class CategoryListDataSource {
     private Observable<List<CategoryEntity>> getDataFromCloud() {
         return digitalEndpointService.getApi().getCategoryList()
                 .map(getFuncTransformCategoryEntityList())
-                .doOnNext(new Action1<List<CategoryEntity>>() {
-                    @Override
-                    public void call(List<CategoryEntity> categoryEntities) {
-                        deleteCache(categoryEntities);
-                        if (categoryEntities != null) {
-                            cacheManager.save(
-                                    KEY_CATEGORY_LIST,
-                                    CacheUtil.convertListModelToString(categoryEntities,
-                                            new TypeToken<List<CategoryEntity>>() {
-                                            }.getType()),
-                                    DEFAULT_EXPIRED_TIME
-                            );
-                        }
+                .doOnNext(categoryEntities -> {
+                    deleteCache(categoryEntities);
+                    if (categoryEntities != null) {
+                        cacheManager.save(
+                                KEY_CATEGORY_LIST,
+                                CacheUtil.convertListModelToString(categoryEntities,
+                                        new TypeToken<List<CategoryEntity>>() {
+                                        }.getType()),
+                                DEFAULT_EXPIRED_TIME
+                        );
                     }
                 });
     }
