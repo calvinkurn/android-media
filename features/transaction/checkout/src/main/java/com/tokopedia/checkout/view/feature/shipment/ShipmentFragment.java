@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -125,8 +126,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
 
-    private PerformanceMonitoring performanceMonitoring;
-    private boolean isTraceStopped;
+    private PerformanceMonitoring shipmentTracePerformance;
+    private boolean isShipmentTraceStopped;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -180,7 +181,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shipmentPresenter.attachView(this);
-        performanceMonitoring = PerformanceMonitoring.start(SHIPMENT_TRACE);
+        shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
     }
 
     @Override
@@ -444,9 +445,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp) {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
+        if (!isShipmentTraceStopped) {
+            shipmentTracePerformance.stopTrace();
+            isShipmentTraceStopped = true;
         }
 
         PromoData promoData = shipmentAdapter.getPromoData();
@@ -1401,7 +1402,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceTncClicked() {
-        startActivity(checkoutModuleRouter.checkoutModuleRouterGetInsuranceTncActivityIntent());
+        startActivity(CheckoutWebViewActivity.newInstance(getContext(), CartConstant.TERM_AND_CONDITION_URL));
     }
 
     @Override
@@ -1512,9 +1513,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (!shipmentAdapter.isCourierPromoStillExist() && shipmentAdapter.getPromoData() != null &&
                     !TextUtils.isEmpty(shipmentAdapter.getPromoData().getPromoCodeSafe())) {
                 promoCode = shipmentAdapter.getPromoData().getPromoCodeSafe();
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, true);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, true, isOneClickShipment());
             } else {
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, false);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(
+                        promoCode, itemPosition, false, isOneClickShipment()
+                );
             }
         }
     }

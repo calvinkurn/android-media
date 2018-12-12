@@ -13,8 +13,12 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity;
 import com.tokopedia.design.component.ButtonCompat;
+
+import javax.inject.Inject;
 
 /**
  * @author by milhamj on 10/1/18.
@@ -27,6 +31,7 @@ public class CreatePostExampleFragment extends BaseDaggerFragment {
 
     private String imageUrl = "";
     private String titleText = "";
+
 
     public static CreatePostExampleFragment createInstance(@NonNull Bundle bundle) {
         CreatePostExampleFragment fragment = new CreatePostExampleFragment();
@@ -48,6 +53,11 @@ public class CreatePostExampleFragment extends BaseDaggerFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initVar(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Nullable

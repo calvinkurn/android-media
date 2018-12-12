@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
@@ -13,12 +14,13 @@ import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.mosthelpful.ReviewImageAttachment;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
@@ -38,11 +40,13 @@ public interface ProductDetailView extends ViewListener {
     String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
     String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
 
-    void onByMeClicked(AffiliateInfoViewModel affiliate);
+    void onByMeClicked(AffiliateInfoViewModel affiliate, boolean isRegularPdp);
 
     void renderAffiliateButton(AffiliateInfoViewModel affiliate);
 
     void onWishlistCountLoaded(String wishlistCountText);
+
+    void onImageReviewLoaded(List<ImageReviewItem> data);
 
     /**
      * Saat salah satu kategori product di klik.
@@ -364,4 +368,7 @@ public interface ProductDetailView extends ViewListener {
 
     boolean isFromExploreAffiliate();
 
+    void onImageFromBuyerClick(int viewType, String reviewId);
+
+    void onMostHelpfulImageClicked(List<ReviewImageAttachment> data, int position);
 }

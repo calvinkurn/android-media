@@ -315,7 +315,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             @Override
             public void selectFilter(String typeFilter) {
                 String subCategoryName = getSubCategoryNameById(typeFilter);
-                promoTrackingUtil.eventPromoListClickSubCategory(subCategoryName);
+                promoTrackingUtil.eventPromoListClickSubCategory(getActivity(),subCategoryName);
 
                 actionListener.onChangeFilter(typeFilter);
 
@@ -400,7 +400,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName) {
-        promoTrackingUtil.eventPromoListClickCopyToClipboardPromoCode(promoName);
+        promoTrackingUtil.eventPromoListClickCopyToClipboardPromoCode(getActivity(),promoName);
         ClipboardManager clipboard = (ClipboardManager)
                 getActivityContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
@@ -429,7 +429,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     @Override
     public void onItemPromoCodeTooltipClicked() {
-        promoTrackingUtil.eventPromoTooltipClickOpenTooltip();
+        promoTrackingUtil.eventPromoTooltipClickOpenTooltip(getActivity());
         if (bottomSheetViewInfoPromoCode == null) {
             bottomSheetViewInfoPromoCode = new BottomSheetView(getActivity());
             bottomSheetViewInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
@@ -442,7 +442,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
             bottomSheetViewInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    promoTrackingUtil.eventPromoTooltipClickCloseTooltip();
+                    promoTrackingUtil.eventPromoTooltipClickCloseTooltip(getActivity());
                     bottomSheetViewInfoPromoCode.dismiss();
                 }
             });

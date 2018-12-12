@@ -9,7 +9,7 @@ import android.os.Handler;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.fragment.EmailVerificationDialog;

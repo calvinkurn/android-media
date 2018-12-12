@@ -1,22 +1,14 @@
 package com.tokopedia.challenges.view.fragments;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.AlignmentSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,11 +22,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
@@ -91,6 +83,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private ScrollView scrollView;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
+    private final static String SCREEN_NAME = "challenges/submission_detail";
+
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -179,6 +173,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             if (challengeImage != null)
                 challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
         super.onResume();
 
     }

@@ -1,11 +1,12 @@
 package com.tokopedia.digital.widget.view.presenter;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -14,6 +15,8 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -29,25 +32,26 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     private final String PARAM_VALUE_SORT = "label";
 
-    private Context context;
     private IDigitalWidgetView digitalWidgetView;
-    private GetCategoryByIdUseCase getCategoryByIdUseCase;
+    private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
-    public DigitalWidgetPresenter(Context context,
-                                  LocalCacheHandler localCacheHandler,
-                                  IDigitalWidgetView digitalWidgetView,
-                                  GetCategoryByIdUseCase getCategoryByIdUseCase) {
-        super(context, localCacheHandler);
-        this.context = context;
-        this.digitalWidgetView = digitalWidgetView;
-        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
+    @Inject
+    public DigitalWidgetPresenter(LocalCacheHandler localCacheHandler,
+                                  GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
+        super(localCacheHandler);
+        this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
+    }
+
+    @Override
+    public void attachView(CustomerView view) {
+        this.digitalWidgetView = (IDigitalWidgetView) view;
     }
 
     @Override
     public void fetchCategory(String categoryId) {
         digitalWidgetView.showInitialProgressLoading();
 
-        getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
+        getDigitalCategoryByIdUseCase.execute(getDigitalCategoryByIdUseCase.createRequestParam(
                 categoryId, PARAM_VALUE_SORT, true
         ), new Subscriber<ProductDigitalData>() {
             @Override
@@ -98,7 +102,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
-                    .renderCategoryDataAndBannerToView(context,
+                    .renderCategoryDataAndBannerToView(digitalWidgetView.getContext(),
                             categoryData.getOperatorStyle());
 
             digitalWidgetView.renderCategory(digitalProductView, categoryData, historyClientNumber);
@@ -112,7 +116,19 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     @Override
     public void detachView() {
-        getCategoryByIdUseCase.unsubscribe();
+        getDigitalCategoryByIdUseCase.unsubscribe();
     }
 
+    @Override
+    public DigitalCheckoutPassData generateCheckoutPassData(
+            BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
+            String versionInfoApplication,
+            String userLoginId
+    ) {
+        DigitalCheckoutPassData passData = super.generateCheckoutPassData(preCheckoutProduct,
+                versionInfoApplication,
+                userLoginId);
+        passData.setSource(DigitalCheckoutPassData.PARAM_WIDGET);
+        return passData;
+    }
 }

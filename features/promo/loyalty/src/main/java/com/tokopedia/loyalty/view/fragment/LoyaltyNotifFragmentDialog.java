@@ -59,7 +59,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.fragment_dialog_notify_loyalty, container, false);
         if(promoTrackingUtil!= null){
-            promoTrackingUtil.eventViewTokopointPopup();
+            promoTrackingUtil.eventViewTokopointPopup(getActivity());
         }
         tvTitle = view.findViewById(R.id.tv_tokopoint_notif_title);
         tvDesc = view.findViewById(R.id.tv_tokopoint_notif_desc);
@@ -74,7 +74,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
         tvAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                promoTrackingUtil.eventClickTokoPointPopup();
+                promoTrackingUtil.eventClickTokoPointPopup(getActivity());
                 dismiss();
 
                 if (!TextUtils.isEmpty(popUpNotifData.getAppLink())) {

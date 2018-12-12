@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -12,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -173,6 +171,7 @@ public class MainParentActivity extends BaseActivity implements
             presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         createView(savedInstanceState);
+        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
     }
 
     @Override
@@ -236,7 +235,7 @@ public class MainParentActivity extends BaseActivity implements
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdate();
-        checkIsHaveApplinkComeFromDeeplink(getIntent());
+        checkApplinkCouponCode(getIntent());
 
         initHockeyBroadcastReceiver();
         initNewFeedClickReceiver();
@@ -278,7 +277,7 @@ public class MainParentActivity extends BaseActivity implements
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
-        checkIsHaveApplinkComeFromDeeplink(intent);
+        checkApplinkCouponCode(intent);
     }
 
     private void initInjector() {
@@ -606,7 +605,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
+    private void checkApplinkCouponCode(Intent intent) {
         if (!presenter.isRecurringApplink() && !TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
 
@@ -620,23 +619,6 @@ public class MainParentActivity extends BaseActivity implements
                 }
 
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
-            }
-
-            try {
-                Intent applinkIntent = new Intent(this, MainParentActivity.class);
-                applinkIntent.setData(Uri.parse(applink));
-                if (getIntent() != null && getIntent().getExtras() != null) {
-                    Intent newIntent = getIntent();
-                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
-                    newIntent.removeExtra(DeepLink.REFERRER_URI);
-                    newIntent.removeExtra(DeepLink.URI);
-                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
-                    if (newIntent.getExtras() != null)
-                        applinkIntent.putExtras(newIntent.getExtras());
-                }
-                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
-            } catch (ActivityNotFoundException ex) {
-                ex.printStackTrace();
             }
 
             presenter.setIsRecurringApplink(true);

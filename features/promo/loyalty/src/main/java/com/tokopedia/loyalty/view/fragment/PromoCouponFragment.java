@@ -424,7 +424,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
         }
 
         adapter.clearError();
-        loyaltyModuleRouter.sendEventCouponChosen(data.getTitle());
+        loyaltyModuleRouter.sendEventCouponChosen(getActivity(),data.getTitle());
         String platformString = getArguments().getString(PLATFORM_KEY, "");
         if (platformString.equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {

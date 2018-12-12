@@ -10,6 +10,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.card.TitleCardView;
 import com.tokopedia.design.loading.LoadingStateView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.view.adapter.GMMarketInsightAdapter;
 import com.tokopedia.gm.R;
@@ -47,7 +48,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         notGMView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction(v.getContext());
                 if (listener != null) {
                     listener.onViewNotGmClicked();
                 }
@@ -60,6 +61,10 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
                 titleCardView.getContext(), LinearLayoutManager.VERTICAL, false));
         GMMarketInsightAdapter = new GMMarketInsightAdapter(new ArrayList<GetKeyword.SearchKeyword>());
         recyclerView.setAdapter(GMMarketInsightAdapter);
+
+        TextView titleUpgradeGM = notGMView.findViewById(R.id.market_insight_gmsubscribe_text);
+        titleUpgradeGM.setText(view.getContext().getString(R.string.gm_statistic_upgrade_to_gold_merchant,
+                view.getContext().getString(GMConstant.getGMTitleResource(view.getContext()))));
     }
 
     /**

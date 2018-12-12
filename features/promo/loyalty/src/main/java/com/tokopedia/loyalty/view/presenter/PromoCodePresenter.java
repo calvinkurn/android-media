@@ -122,14 +122,14 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                     couponViewModel.setRawCashback(0);
                     couponViewModel.setRawDiscount(0);
                     view.onPromoCodeError(failmsg);
-                    view.sendEventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                    view.sendEventDigitalEventTracking(view.getContext(),"voucher failed - " + promocode, failmsg);
                 } else {
                     couponViewModel.setMessage(successMsg);
                     couponViewModel.setSuccess(true);
                     couponViewModel.setAmount("");
                     couponViewModel.setRawCashback(cashback);
                     couponViewModel.setRawDiscount(discount);
-                    view.sendEventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                    view.sendEventDigitalEventTracking(view.getContext(),"voucher success - " + promocode, successMsg);
                     view.checkDigitalVoucherSucessful(couponViewModel);
                 }
             }
@@ -187,14 +187,14 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                             couponViewModel.setRawCashback(0);
                             couponViewModel.setRawDiscount(0);
                             view.onPromoCodeError(failmsg);
-                            view.sendEventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                            view.sendEventDigitalEventTracking(view.getContext(),"voucher failed - " + promocode, failmsg);
                         } else {
                             couponViewModel.setMessage(successMsg);
                             couponViewModel.setSuccess(true);
                             couponViewModel.setAmount("");
                             couponViewModel.setRawCashback(cashback);
                             couponViewModel.setRawDiscount(discount);
-                            view.sendEventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                            view.sendEventDigitalEventTracking(view.getContext(),"voucher success - " + promocode, successMsg);
                             view.checkDigitalVoucherSucessful(couponViewModel);
                         }
                     }

@@ -162,7 +162,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
                     ((MenuPromoTab) tab.getCustomView()).renderActiveState();
                     autoSelectedMenuId = String.valueOf(tab.getPosition());
                 }
-                promoTrackingUtil.eventPromoListClickCategory(promoMenuDataList.get(tab.getPosition()).getTitle());
+                promoTrackingUtil.eventPromoListClickCategory(PromoListActivity.this,promoMenuDataList.get(tab.getPosition()).getTitle());
             }
 
             @Override
@@ -185,7 +185,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
         if (firstTab != null) {
             firstTab.select();
             ((MenuPromoTab) firstTab.getCustomView()).renderActiveState();
-            promoTrackingUtil.eventPromoListClickCategory(
+            promoTrackingUtil.eventPromoListClickCategory(PromoListActivity.this,
                     promoMenuDataList.get(firstTab.getPosition()).getTitle()
             );
         }

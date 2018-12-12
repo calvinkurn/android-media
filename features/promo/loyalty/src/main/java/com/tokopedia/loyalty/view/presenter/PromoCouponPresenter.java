@@ -288,7 +288,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
                     couponData.setErrorMessage(failmsg);
                     view.couponError();
-                    view.sendEventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                    view.sendEventDigitalEventTracking(view.getContext(),"voucher failed - " + promocode, failmsg);
                 } else {
                     CouponViewModel couponViewModel = new CouponViewModel();
                     couponViewModel.setCode(promocode);
@@ -298,7 +298,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     couponViewModel.setRawCashback(cashback);
                     couponViewModel.setRawDiscount(discount);
                     couponViewModel.setTitle("");
-                    view.sendEventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                    view.sendEventDigitalEventTracking(view.getContext(),"voucher success - " + promocode, successMsg);
                     view.receiveDigitalResult(couponViewModel);
                 }
             }
@@ -342,7 +342,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
                     couponData.setErrorMessage(failmsg);
                     view.couponError();
-                    view.sendEventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                    view.sendEventDigitalEventTracking(view.getContext(),"voucher failed - " + promocode, failmsg);
                 } else {
                     CouponViewModel couponViewModel = new CouponViewModel();
                     couponViewModel.setCode(promocode);
@@ -352,7 +352,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                     couponViewModel.setRawCashback(cashback);
                     couponViewModel.setRawDiscount(discount);
                     couponViewModel.setTitle("");
-                    view.sendEventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                    view.sendEventDigitalEventTracking(view.getContext(),"voucher success - " + promocode, successMsg);
                     view.receiveDigitalResult(couponViewModel);
                 }
             }

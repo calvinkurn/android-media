@@ -193,7 +193,7 @@ public class AuthUtil {
         return headerMap;
     }
 
-    public static TKPDMapParam<String, String> generateParamsNetwork(String userId, String deviceId, TKPDMapParam<String, String> params) {
+    public static Map<String, String> generateParamsNetwork(String userId, String deviceId, Map<String, String> params) {
         String hash = md5(userId + "~" + deviceId);
         params.put(PARAM_USER_ID, userId);
         params.put(PARAM_DEVICE_ID, deviceId);

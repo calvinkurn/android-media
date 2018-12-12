@@ -15,8 +15,6 @@
     <dimen name="top_ads_refresher_date_offset">50dp</dimen>
     <dimen name="top_ads_refresher_date_offset_end">80dp</dimen>
     <dimen name="size_labelview">56dp</dimen>
-    <dimen name="line_chart_height">200dp</dimen>
-    <dimen name="viewpager_statistics_height">250dp</dimen>
     <dimen name="dp_28">28dp</dimen>
     <dimen name="sp_4">4sp</dimen>
     <dimen name="sp_2">2sp</dimen>

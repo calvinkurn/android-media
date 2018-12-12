@@ -147,6 +147,7 @@ public class CountDownView extends FrameLayout {
     public void stopAutoRefreshCounter() {
         if (refreshCounterHandler != null && runnableRefreshCounter != null) {
             refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
+            this.runnableRefreshCounter = null;
         }
     }
 

@@ -4,18 +4,12 @@
     <string name="promo_not_active_body">Kredit TopAds tidak cukup untuk menampilkan iklan Anda.</string>
     <string name="promo_not_active_url_button">Lihat Detail Iklan Produk</string>
     <string name="promo_not_active_add_top_ads_credit">Tambah Kredit TopAds</string>
-    <string name="label_add_credit">Tambah Kredit</string>
-    <string name="topads_dashboard_label_statistics">Statistik</string>
-    <string name="topads_dashboard_default_statistics_value">Semua Promo</string>
-    <string name="top_ads_desc_credit_label">Kredit TopAds</string>
 
-    <string name="topads_dashboard_all_promo_menu">Semua Iklan</string>
     <string name="label_add_promo">Tambah Iklan</string>
-    <string name="topads_dashboard_empty_usage_desc">TopAds membuat produk Anda muncul di tempat-tempat strategis dan mudah ditemukan calon pembeli.</string>
     <string name="action_more">Atur Bersamaan</string>
     <string name="topads_menu_help">Step Bantuan</string>
     <string name="topads_menu_seller_centre">Seller Center</string>
-    <string name="label_top_ads_sold">Total Terjual</string>
     <string name="see_label">Lihat</string>
-    <string name="top_ads_template_credit_bonus">Bonus kredit TopAds %1$s berlaku hingga %2$s hari lagi</string>
+
+    <string name="top_ads_statistic_info_default_value">-</string>
 </resources>
