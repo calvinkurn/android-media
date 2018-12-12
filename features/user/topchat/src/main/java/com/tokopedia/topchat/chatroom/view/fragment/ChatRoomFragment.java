@@ -38,6 +38,7 @@ import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -1698,6 +1699,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     );
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
                 } else if(itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
+                    if (chatSettingsResponse == null) {
+                        ToasterNormal.show(getActivity(), "Response is Null");
+                    }
+                    AnalyticsLog.printNOTPLog(getContext(), "Open Chat Setting Activity" + chatSettingsResponse);
                     Intent intent = new Intent(getContext(), ChatRoomSettingsActivity.class);
                     intent.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID));
                     intent.putExtra(InboxChatConstant.CHATRESPONSEMODEL, chatSettingsResponse);

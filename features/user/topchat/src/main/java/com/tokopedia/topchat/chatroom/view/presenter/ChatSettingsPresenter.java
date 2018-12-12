@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.presenter;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -75,6 +76,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (!isViewAttached()) {
                         return;
                     }
+                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "on Completed Personal");
                 }
 
                 @Override
@@ -82,6 +84,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (!isViewAttached()) {
                         return;
                     }
+                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "onError personal" +e.getMessage());
                     getView().hideProgressBar();
                     CommonUtils.dumper("error occured" + e);
                 }
@@ -91,9 +94,11 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (!isViewAttached()) {
                         return;
                     }
+
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
                         chatSettingsResponse = data;
+                        AnalyticsLog.printNOTPLog(getView().getAppContext(), "on Next Personal" +data.getChatBlockResponse().getChatBlockStatus().isBlocked());
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPersonalResponse(data);
                         if (initialState) {
@@ -128,6 +133,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (!isViewAttached()) {
                         return;
                     }
+                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "on Completed Promotion");
                 }
 
                 @Override
@@ -136,6 +142,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         return;
                     }
                     getView().hideProgressBar();
+                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "onError Promotion" +e.getMessage());
                     CommonUtils.dumper("error occured" + e);
                 }
 
@@ -146,6 +153,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     }
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
+                        AnalyticsLog.printNOTPLog(getView().getAppContext(), "onNext Promotion" + data.getChatBlockResponse().getChatBlockStatus().isBlocked());
                         chatSettingsResponse = data;
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPromotionResponse(data);
