@@ -143,8 +143,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         GraphqlClient.init(getActivity());
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
