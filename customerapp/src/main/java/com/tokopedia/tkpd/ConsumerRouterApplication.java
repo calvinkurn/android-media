@@ -1122,12 +1122,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title) {
-        TrackingUtils.eventImpressionPromoList(dataLayerSinglePromoCodeList, title);
+        TrackingUtils.eventImpressionPromoList(this,dataLayerSinglePromoCodeList, title);
     }
 
     @Override
     public void eventClickPromoListItem(List<Object> dataLayerSinglePromoCodeList, String title) {
-        TrackingUtils.eventClickPromoListItem(dataLayerSinglePromoCodeList, title);
+        TrackingUtils.eventClickPromoListItem(this, dataLayerSinglePromoCodeList, title);
     }
 
     @Override
@@ -3408,22 +3408,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventCouponPageClosed() {
-        UnifyTracking.eventCouponPageClosed();
+        UnifyTracking.eventCouponPageClosed(this);
     }
 
     @Override
-    public void sendEventMyCouponClicked() {
-        UnifyTracking.eventMyCouponClicked();
+    public void sendEventMyCouponClicked(Context context) {
+        UnifyTracking.eventMyCouponClicked(this);
     }
 
     @Override
-    public void sendEventCouponChosen(String title) {
-        UnifyTracking.eventCouponChosen(title);
+    public void sendEventCouponChosen(Context context, String title) {
+        UnifyTracking.eventCouponChosen(this,title);
     }
 
     @Override
-    public void sendEventDigitalEventTracking(String text, String failmsg) {
-        UnifyTracking.eventDigitalEventTracking(text, failmsg);
+    public void sendEventDigitalEventTracking(Context context,String text, String failmsg) {
+        UnifyTracking.eventDigitalEventTracking(this,text, failmsg);
     }
 
     @Override

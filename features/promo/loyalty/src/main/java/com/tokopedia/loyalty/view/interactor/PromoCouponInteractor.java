@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
-import com.tokopedia.network.utils.TKPDMapParam;
+import java.util.Map;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
@@ -36,7 +36,7 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
 
 
     @Override
-    public void getCouponList(TKPDMapParam<String, String> param,
+    public void getCouponList(Map<String, String> param,
                               Subscriber<CouponsDataWrapper> subscriber) {
         compositeSubscription.add(
                 tokoplusRepository.getCouponList(param)
@@ -49,7 +49,7 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
 
     @Override
     public void submitDigitalVoucher(String couponTitle, String voucherCode,
-                                     TKPDMapParam<String, String> param,
+                                     Map<String, String> param,
                                      Subscriber<CouponViewModel> subscriber) {
         compositeSubscription.add(
                 tokoplusRepository.checkDigitalCouponValidity(param, voucherCode, couponTitle)

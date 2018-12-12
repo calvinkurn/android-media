@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.network.utils.TKPDMapParam;
+import java.util.Map;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
@@ -34,7 +34,7 @@ public class PromoCodeInteractor implements IPromoCodeInteractor {
 
     @Override
     public void submitDigitalVoucher(String voucherCode,
-                                     TKPDMapParam<String, String> param, Subscriber<VoucherViewModel> subscriber) {
+                                     Map<String, String> param, Subscriber<VoucherViewModel> subscriber) {
         compositeSubscription.add(
                 tokoplusRepositoy.checkDigitalVoucherValidity(param, voucherCode)
                         .subscribeOn(Schedulers.newThread())

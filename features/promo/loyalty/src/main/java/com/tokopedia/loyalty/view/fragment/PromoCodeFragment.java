@@ -438,8 +438,8 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
     }
 
     @Override
-    public void sendEventDigitalEventTracking(String text, String failmsg) {
-        loyaltyModuleRouter.sendEventDigitalEventTracking(text, failmsg);
+    public void sendEventDigitalEventTracking(Context context,String text, String failmsg) {
+        loyaltyModuleRouter.sendEventDigitalEventTracking(context,text, failmsg);
     }
 
     @Override

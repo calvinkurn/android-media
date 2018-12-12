@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.view.util;
 
+import android.content.Context;
+
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 
 import java.util.List;
@@ -27,47 +29,47 @@ public class PromoTrackingUtil {
     }
 
 
-    public void eventPromoListClickCategory(String title) {
+    public void eventPromoListClickCategory(Context context, String title) {
         loyaltyModuleRouter.sendEventTracking(CLICK_PROMO_MICRO_SITE, PROMO_MICROSITE_PROMO_LIST, PROMO_CLICK_CATEGORY, title);
     }
 
-    public void eventViewTokopointPopup() {
+    public void eventViewTokopointPopup(Context context) {
         loyaltyModuleRouter.sendEventTracking(EVENT_TOKO_POINT, TOKOPOINTS_POP_UP, TOKOPOINTS_POP_UP_IMPRESSION, LABEL_TOKOPOINTS_POP_UP);
     }
 
-    public void eventClickTokoPointPopup() {
+    public void eventClickTokoPointPopup(Context context) {
         loyaltyModuleRouter.sendEventTracking(EVENT_TOKO_POINT, TOKOPOINTS_POP_UP, TOKOPOINTS_POP_UP_CLICK, TOKOPOINTS_POP_UP_BUTTON);
     }
 
-    public void eventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title) {
+    public void eventImpressionPromoList(Context context, List<Object> dataLayerSinglePromoCodeList, String title) {
         loyaltyModuleRouter.sendEventImpressionPromoList(dataLayerSinglePromoCodeList, title);
     }
 
-    public void eventClickPromoListItem(List<Object> dataLayerSinglePromoCodeList, String title) {
+    public void eventClickPromoListItem(Context context,List<Object> dataLayerSinglePromoCodeList, String title) {
         loyaltyModuleRouter.eventClickPromoListItem(dataLayerSinglePromoCodeList, title);
     }
 
-    public void eventPromoListClickCopyToClipboardPromoCode(String promoName) {
+    public void eventPromoListClickCopyToClipboardPromoCode(Context context,String promoName) {
         loyaltyModuleRouter.sendEventTracking(CLICK_PROMO_MICRO_SITE,
                 PROMO_MICROSITE_PROMO_LIST,
                 PROMO_CLICK_COPY_PROMO_CODE,
                 promoName);
     }
 
-    public void eventPromoTooltipClickOpenTooltip() {
+    public void eventPromoTooltipClickOpenTooltip(Context context) {
         loyaltyModuleRouter.sendEventTracking(CLICK_PROMO_MICRO_SITE,
                 PROMO_MICROSITE_PROMO_TOOLTIP,
                 PROMO_CLICK_OPEN_TOOLTIP,
                 "");
     }
 
-    public void eventPromoTooltipClickCloseTooltip() {
+    public void eventPromoTooltipClickCloseTooltip(Context context) {
         loyaltyModuleRouter.sendEventTracking(CLICK_PROMO_MICRO_SITE,
                 PROMO_MICROSITE_PROMO_TOOLTIP,
                 PROMO_CLICK_CLOSE_TOOLTIP,"");
     }
 
-    public void eventPromoListClickSubCategory(String subCategoryName) {
+    public void eventPromoListClickSubCategory(Context context,String subCategoryName) {
         loyaltyModuleRouter.sendEventTracking(CLICK_PROMO_MICRO_SITE,
                 PROMO_MICROSITE_PROMO_LIST,
                 PROMO_CLICK_SUB_CATEGORY,

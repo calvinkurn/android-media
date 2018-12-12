@@ -17,7 +17,7 @@ import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.network.utils.TKPDMapParam;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -47,7 +47,7 @@ public class TokoPointRepository implements ITokoPointRepository {
     }
 
     @Override
-    public Observable<CouponsDataWrapper> getCouponList(TKPDMapParam<String, String> param) {
+    public Observable<CouponsDataWrapper> getCouponList(Map<String, String> param) {
         return tokoPointApi.getCouponList(param)
                 .map(new Func1<Response<TokoPointResponse>, CouponsDataWrapper>() {
                     @Override
@@ -106,7 +106,7 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<VoucherViewModel> checkDigitalVoucherValidity(
-            TKPDMapParam<String, String> param, final String voucherCode
+            Map<String, String> param, final String voucherCode
     ) {
         return digitalApi.checkVoucher(param)
                 .map(new Func1<Response<TkpdDigitalResponse>, VoucherViewModel>() {
@@ -122,7 +122,7 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<CouponViewModel> checkDigitalCouponValidity(
-            TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle
+            Map<String, String> param, final String voucherCode, final String couponTitle
     ) {
         return digitalApi.checkVoucher(param).
                 map(new Func1<Response<TkpdDigitalResponse>, CouponViewModel>() {

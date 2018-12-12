@@ -22,5 +22,5 @@ public interface IPromoCodeView extends IBaseView {
 
     void sendTrackingOnCheckTrainVoucherError(String errorMessage);
 
-    void sendEventDigitalEventTracking(String text, String failmsg);
+    void sendEventDigitalEventTracking(Context context, String text, String failmsg);
 }
