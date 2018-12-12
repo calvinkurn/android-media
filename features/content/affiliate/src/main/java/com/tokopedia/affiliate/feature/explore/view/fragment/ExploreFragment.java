@@ -205,11 +205,17 @@ public class ExploreFragment
         return AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE;
     }
 
+    private void loadFirstData(boolean isPullToRefresh) {
+        if (!exploreParams.isLoading()) {
+            exploreParams.setLoading(true);
+            presenter.getFirstData(exploreParams, isPullToRefresh);
+        }
+    }
+
     @Override
     public void onRefresh() {
         exploreParams.setFirstData();
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, true);
+        loadFirstData(true);
     }
 
     private RecyclerView.OnScrollListener getScrollListener() {
@@ -239,8 +245,7 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
         exploreParams.setSearchParam(text);
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        loadFirstData(false);
     }
 
     @Override
@@ -267,8 +272,7 @@ public class ExploreFragment
         dropKeyboard();
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, true);
+        loadFirstData(true);
     }
 
     @Override
@@ -355,7 +359,7 @@ public class ExploreFragment
                 error,
                 () -> {
                     layoutEmpty.setVisibility(View.GONE);
-                    presenter.getFirstData(exploreParams, false);
+                    loadFirstData(false);
                 }
         );
         presenter.unsubscribeAutoComplete();
@@ -387,8 +391,7 @@ public class ExploreFragment
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
-        exploreParams.setLoading(true);
-        presenter.getFirstData(exploreParams, false);
+        loadFirstData(false);
     }
 
     @Override
