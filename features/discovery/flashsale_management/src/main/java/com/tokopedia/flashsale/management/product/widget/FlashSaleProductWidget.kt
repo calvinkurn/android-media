@@ -88,7 +88,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 }
             } else { // item is postsubmission.
                 ivCheckMark.visibility = View.GONE
-                if (item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.ON_GOING) {
+                if (item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.IN_REVIEW) {
                     tvStatus.text = context.getString(R.string.flash_sale_waiting)
                     val statusColor = StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
                     tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
