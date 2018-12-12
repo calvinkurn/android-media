@@ -53,4 +53,21 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     private boolean isNative() {
         return ((ContactUsModuleRouter) getApplication()).getBooleanRemoteConfig(ContactUsHomeContract.CONTACT_US_WEB, false);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (!isNative()) {
+            try {
+                SimpleWebViewWithFilePickerFragment webViewFragment = (SimpleWebViewWithFilePickerFragment) getFragment();
+                if (webViewFragment != null && webViewFragment.getWebview().canGoBack()) {
+                    webViewFragment.getWebview().goBack();
+                } else {
+                    super.onBackPressed();
+                }
+            } catch (Exception e) {
+                super.onBackPressed();
+            }
+        }
+        super.onBackPressed();
+    }
 }
