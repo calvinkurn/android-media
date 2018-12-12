@@ -2662,7 +2662,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getChatBotIntent(Context context, String messageId) {
-        RouteManager.route(context, ApplinkConst.CHATBOT
+       return RouteManager.getIntent(context, ApplinkConst.CHATBOT
                 .replace(ApplinkConst.Chat.MESSAGE_ID, messageId));
     }
 
