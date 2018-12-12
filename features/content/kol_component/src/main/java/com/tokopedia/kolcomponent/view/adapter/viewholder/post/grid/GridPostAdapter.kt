@@ -31,6 +31,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
         return GridItemViewHolder(view)
     }
 
+    override fun getItemCount() = gridPostViewModel.itemList.size
+
     override fun onBindViewHolder(holder: GridItemViewHolder, position: Int) {
         holder.bindImage(gridPostViewModel.itemList[position].thumbnail)
 
@@ -55,8 +57,6 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
             holder.bindProduct(gridPostViewModel.itemList[position])
         }
     }
-
-    override fun getItemCount() = gridPostViewModel.itemList.size
 
     class GridItemViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
         fun bindImage(image: String) {

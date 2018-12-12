@@ -28,7 +28,7 @@
             tools:src="@drawable/ic_calendar_grey" />
 
         <RelativeLayout
-            android:id="@+id/shadow_layer"
+            android:id="@+id/shadowLayer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
@@ -38,12 +38,14 @@
             tools:visibility="visible" />
 
         <LinearLayout
-            android:id="@+id/percent_layout"
+            android:id="@+id/percentLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/layout_progress"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:orientation="horizontal">
 
             <TextView
@@ -52,8 +54,6 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="-2sp"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingStart="@dimen/dp_8"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_24"
                 android:textStyle="bold"
@@ -68,7 +68,8 @@
                 android:text="%"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_16"
-                android:textStyle="normal" />
+                android:textStyle="normal"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
 
         <RelativeLayout
@@ -84,17 +85,17 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/text_view"
+                android:layout_alignBottom="@+id/option"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_alignTop="@+id/text_view"
+                android:layout_alignTop="@+id/option"
                 android:alpha="0.8"
                 android:indeterminate="false"
                 android:progress="10"/>
                 <!--android:progressDrawable="@drawable/poll_option_image_default" -->
 
             <TextView
-                android:id="@+id/text_view"
+                android:id="@+id/option"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
