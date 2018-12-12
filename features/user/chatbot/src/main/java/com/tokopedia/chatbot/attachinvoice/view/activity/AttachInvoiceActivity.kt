@@ -4,19 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
-import com.tokopedia.chatbot.attachinvoice.view.activity.AttachInvoiceActivity.Companion.TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY
 import com.tokopedia.chatbot.attachinvoice.view.fragment.AttachInvoiceFragment
 
 /**
  * Created by Hendri on 22/03/18.
  */
 
-class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activity, HasComponent<*> {
+class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activity{
 
     override val userId: String
         get() = intent.getStringExtra(TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY)
@@ -51,12 +47,6 @@ class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activi
         //        toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
     }
 
-    override fun getComponent(): BaseAppComponent? {
-        //TODO NISIE
-        //        DaggerTalkComponent.builder().baseAppComponent(
-        //                (application as BaseMainApplication).baseAppComponent).build()
-        return null
-    }
 
     companion object {
         var TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY = "ATTACH_INVOICE_USER_ID"

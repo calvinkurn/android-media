@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.view.fragment
+package com.tokopedia.topchat.revamp.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,18 +14,15 @@ import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
-import com.tokopedia.chat_common.di.ChatRoomComponent
-import com.tokopedia.chat_common.di.DaggerChatComponent
-import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chat_common.view.TopChatViewState
-import com.tokopedia.chat_common.view.listener.BaseChatContract
-import javax.inject.Inject
+import com.tokopedia.topchat.revamp.di.DaggerChatComponent
+import com.tokopedia.topchat.revamp.di.TopChatRoomComponent
+import com.tokopedia.topchat.revamp.listener.TopChatContract
 
 /**
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
+class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
     override fun getNetworkMode(): Int {
         return 1
     }
@@ -45,10 +42,6 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
     override fun removeDummy(visitable: Visitable<*>) {
         chatViewState.removeDummy(visitable)
     }
-
-
-    @Inject
-    lateinit var presenter: BaseChatPresenter
 
     lateinit var chatViewState: TopChatViewState
 
@@ -115,16 +108,28 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
         }
     }
 
-    override fun onReceiveReadEvent() {
-        return
-    }
-
-    override fun receiveMessageEvent(visitable: Visitable<*>) {
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         chatViewState.addMessage(visitable)
     }
 
     override fun clearEditText() {
         chatViewState.clearEditText()
+    }
+
+    override fun onReceiveStopTypingEvent() {
+        chatViewState.recipientStopTyping()
+    }
+
+    override fun onReceiveReadEvent() {
+        return
+    }
+
+    override fun getMsgId(): String {
+        var messageId = arguments?.getString("message_id")
+        if(messageId == null){
+            messageId = ""
+        }
+        return messageId
     }
 
     override fun receiveStopTypingEvent() {
@@ -163,30 +168,27 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
 
     fun initView(view: View?) {
         view?.run {
-            chatViewState = TopChatViewState(this, presenter)
-        }
+            //            chatViewState = TopChatViewState(this, presenter)
+//        }
+            chatViewState?.run {
+                chatViewState.showLoading()
+                adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
+                chatViewState.setAdapter(adapter)
+            }
 
-        adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
-
-        chatViewState.onSetupViewFirstTime()
-        //TODO MOVE THIS TO TOPCHATVIEWSTATE
-//        chatViewState.showLoading()
-//        chatViewState.setAdapter(adapter)
-
-
-        hideLoading()
-        arguments?.run {
-            presenter.getChatUseCase(this.getString("message_id", ""))
+            hideLoading()
+            arguments?.run {
+                //            presenter.getChatUseCase(this.getString("message_id", ""))
+            }
         }
     }
 
     override fun initInjector() {
 
         DaggerChatComponent.builder()
-                .chatRoomComponent(getComponent(ChatRoomComponent::class.java))
+                .topChatRoomComponent(getComponent(TopChatRoomComponent::class.java))
                 .build()
                 .inject(this)
 
     }
-
 }

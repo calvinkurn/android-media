@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.di
+package com.tokopedia.topchat.revamp.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -10,12 +10,12 @@ import dagger.Component
  * @author : Steven 29/11/18
  */
 
-@ChatRoomScope
+@TopChatRoomScope
 @Component(
-        modules = arrayOf(ChatRoomModule::class),
+        modules = arrayOf(TopChatRoomModule::class),
         dependencies = arrayOf(BaseAppComponent::class)
 )
-interface ChatRoomComponent {
+interface TopChatRoomComponent {
 
     @ApplicationContext
     fun getContext(): Context

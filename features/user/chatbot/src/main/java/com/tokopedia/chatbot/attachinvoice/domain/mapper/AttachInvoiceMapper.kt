@@ -53,16 +53,16 @@ internal constructor() {
 
         fun convertInvoiceToDomainInvoiceModel(selectedInvoice: SelectedInvoice): InvoiceLinkPojo {
             val invoiceLinkAttributePojo = InvoiceLinkAttributePojo()
-            invoiceLinkAttributePojo.code = selectedInvoice.invoiceNo
-            invoiceLinkAttributePojo.createTime = selectedInvoice.date
-            invoiceLinkAttributePojo.description = selectedInvoice.description
-            invoiceLinkAttributePojo.hrefUrl = selectedInvoice.invoiceUrl
+            invoiceLinkAttributePojo.code = selectedInvoice.invoiceNo.toString()
+            invoiceLinkAttributePojo.createTime = selectedInvoice.date.toString()
+            invoiceLinkAttributePojo.description = selectedInvoice.description.toString()
+            invoiceLinkAttributePojo.hrefUrl = selectedInvoice.invoiceUrl.toString()
             invoiceLinkAttributePojo.id = selectedInvoice.invoiceId!!
-            invoiceLinkAttributePojo.imageUrl = selectedInvoice.topProductImage
-            invoiceLinkAttributePojo.status = selectedInvoice.status
+            invoiceLinkAttributePojo.imageUrl = selectedInvoice.topProductImage.toString()
+            invoiceLinkAttributePojo.status = selectedInvoice.status.toString()
             invoiceLinkAttributePojo.statusId = selectedInvoice.statusId
-            invoiceLinkAttributePojo.title = selectedInvoice.topProductName
-            invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount
+            invoiceLinkAttributePojo.title = selectedInvoice.topProductName.toString()
+            invoiceLinkAttributePojo.totalAmount = selectedInvoice.amount.toString()
 
             val invoiceLinkPojo = InvoiceLinkPojo()
             invoiceLinkPojo.type = selectedInvoice.invoiceTypeStr

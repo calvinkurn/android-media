@@ -14,10 +14,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
@@ -33,15 +33,50 @@ import javax.inject.Inject
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener {
+    override fun getMsgId(): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getStringResource(str: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getNetworkMode(): Int {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onSuccessGetChat(model: ArrayList<Visitable<*>>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun disableAction() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showSnackbarError(string: Unit) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun addDummyMessage(visitable: Visitable<*>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun clearEditText() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
 
     @Inject
-    lateinit var presenter: ChatbotPresenter
+    lateinit var chatBotPresenter: ChatbotPresenter
 
     override fun initInjector() {
 
-        presenter.attachView(this)
+        chatBotPresenter.attachView(this)
     }
 
     override fun getScreenName(): String {
@@ -85,7 +120,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onSuccessLoadFirstTime(list: ArrayList<Visitable<*>>) {
         getViewState().onSuccessLoadFirstTime(list)
-        presenter.connectWebSocket(messageId)
+        chatBotPresenter.connectWebSocket(messageId)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -105,15 +140,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
-        val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, senderId)
+        val generatedInvoice = chatBotPresenter.generateInvoice(invoiceLinkPojo, senderId)
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime)
+        chatBotPresenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime)
     }
 
     private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
-        val generatedInvoice = presenter.generateInvoice(selectedInvoice)
+        val generatedInvoice = chatBotPresenter.generateInvoice(selectedInvoice, "")
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
+        chatBotPresenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
     }
 
     override fun showSearchInvoiceScreen() {
@@ -128,7 +163,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onQuickReplyClicked(quickReplyListViewModel: QuickReplyListViewModel,
                                      model: QuickReplyViewModel) {
 
-        presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime())
+        chatBotPresenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime())
 
     }
 
@@ -185,6 +220,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
+        chatBotPresenter.detachView()
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.di
+package com.tokopedia.topchat.revamp.di
 
 import javax.inject.Scope
 
@@ -8,4 +8,4 @@ import javax.inject.Scope
 
 
 @Scope
-annotation class ChatRoomScope
+annotation class TopChatRoomScope

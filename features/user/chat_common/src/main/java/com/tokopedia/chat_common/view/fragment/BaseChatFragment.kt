@@ -42,7 +42,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         , BaseChatContract.View {
 
     @Inject
-    private lateinit var presenter: BaseChatPresenter
+    lateinit var presenter: BaseChatPresenter
 
     @Inject
     protected lateinit var userSession: UserSessionInterface
@@ -79,7 +79,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
         prepareListener()
-        viewState.onSetupViewFirstTime()
     }
 
     override fun callInitialLoadAutomatically(): Boolean {

@@ -1,22 +1,20 @@
 package com.tokopedia.chatbot.view.customview
 
+
 import android.app.Activity
 import android.content.Context
 import android.support.design.widget.BottomSheetDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.View
 import android.widget.ImageView
-
-
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.adapter.ReasonAdapter
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author by nisie on 6/11/18.
  */
-class ReasonBottomSheet(private val context: Context, private val reasonList: ArrayList<String>,
+class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<String>,
                         private val listener: ReasonAdapter.OnReasonClickListener) : BottomSheetDialog(context) {
     private var reasonRecyclerView: RecyclerView? = null
     private var closeIcon: ImageView? = null

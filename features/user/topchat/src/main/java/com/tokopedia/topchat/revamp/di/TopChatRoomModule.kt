@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.di
+package com.tokopedia.topchat.revamp.di
 
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
@@ -16,7 +16,7 @@ import javax.inject.Named
 
 
 @Module(includes = [(ChatNetworkModule::class)])
-class ChatRoomModule {
+class TopChatRoomModule {
 //
 //
 //    @InboxChatRoomScope
@@ -32,26 +32,26 @@ class ChatRoomModule {
 //    }
 //
 //
-//    @ChatRoomScope
+//    @TopChatRoomScope
 //    @Provides
 //    internal fun provideTopChatApi(@RetrofitJsDomainQualifier retrofit: Retrofit): TopChatApi {
 //        return retrofit.create(TopChatApi::class.java)
 //    }
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     internal fun provideChatRoomApi(@Named("retrofit") retrofit: Retrofit): ChatRoomApi {
         return retrofit.create(ChatRoomApi::class.java)
     }
 
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     internal fun provideGetChatUseCase(api: ChatRoomApi, mapper: GetChatMapper): GetChatUseCase {
-        return GetChatUseCase(api, mapper)
+        return GetChatUseCase()
     }
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     fun provideAnalyticTracker(abstractionRouter: AbstractionRouter): AnalyticTracker {
         return abstractionRouter.analyticTracker

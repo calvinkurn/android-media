@@ -7,6 +7,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.model.Invoice;
 import com.tokopedia.chatbot.attachinvoice.domain.usecase.AttachInvoicesUseCase;
 import com.tokopedia.chatbot.data.network.ChatBotApi;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,8 @@ public class AttachInvoicesRepository {
 
     public Observable<List<Invoice>> getUserInvoices(Map<String, String> params) {
         //TODO NISIE
-        return api.getTXOrderList(params, buildRequestBody(params)).map(mapper);
+//        return api.getTXOrderList(params, buildRequestBody(params)).map(mapper);
+        return Observable.just(new ArrayList<>());
     }
 
     private GetInvoicePostRequest buildRequestBody(Map<String, String> params) {
@@ -38,7 +40,8 @@ public class AttachInvoicesRepository {
         int userId = Integer.parseInt(params.get(AttachInvoicesUseCase.Companion.getUSER_ID_KEY()));
         int page = Integer.parseInt(params.get(AttachInvoicesUseCase.Companion.getPAGE_KEY()));
         GetInvoicePostRequest body = new GetInvoicePostRequest(messageId, userId, false, page,
-                AttachInvoicesUseCase.Companion.getDEFAULT_LIMIT());
+//                AttachInvoicesUseCase.Companion
+        10);
         params.remove(AttachInvoicesUseCase.Companion.getMESSAGE_ID_KEY());
         params.remove(AttachInvoicesUseCase.Companion.getUSER_ID_KEY());
         params.remove(AttachInvoicesUseCase.Companion.getPAGE_KEY());

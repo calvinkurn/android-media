@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.di
+package com.tokopedia.topchat.revamp.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

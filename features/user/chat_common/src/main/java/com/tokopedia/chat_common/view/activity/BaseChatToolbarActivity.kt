@@ -11,26 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.di.ChatRoomComponent
-import com.tokopedia.chat_common.di.DaggerChatRoomComponent
-import com.tokopedia.chat_common.view.fragment.TopChatRoomFragment
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 
 /**
  * @author by nisie on 23/11/18.
  */
-class BaseChatToolbarActivity : BaseChatActivity(), HasComponent<ChatRoomComponent> {
-
-
-
-    override fun getComponent(): ChatRoomComponent {
-        return DaggerChatRoomComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
-    }
+open class BaseChatToolbarActivity : BaseChatActivity() {
 
     companion object {
         val PARAM_MESSAGE_ID = "message_id"
@@ -109,9 +97,7 @@ class BaseChatToolbarActivity : BaseChatActivity(), HasComponent<ChatRoomCompone
     }
 
     override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        bundle.putString(PARAM_MESSAGE_ID, intent.getStringExtra(PARAM_MESSAGE_ID))
-        return TopChatRoomFragment.createInstance(bundle)
+        return Fragment()
     }
 
 }

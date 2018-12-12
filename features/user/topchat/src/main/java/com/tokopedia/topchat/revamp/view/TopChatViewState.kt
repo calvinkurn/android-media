@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.view.fragment
+package com.tokopedia.topchat.revamp.view
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView

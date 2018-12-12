@@ -5,7 +5,6 @@ import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.chat_common.BaseChatToolbarActivity;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -27,6 +26,7 @@ import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
+import com.tokopedia.topchat.revamp.view.TopChatRoomActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -281,7 +281,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 //                viewModel.getKeyword(),
 //                listMessage.getImage());
 
-        Intent intent = BaseChatToolbarActivity.Companion.getCallingIntent(getView().getActivity()
+        Intent intent = TopChatRoomActivity.Companion.getCallingIntent(getView().getActivity()
                 , String.valueOf(listMessage.getId())
                 , listMessage.getName(),
                 listMessage.getLabel(),

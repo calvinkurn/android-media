@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.di.qualifier;
+package com.tokopedia.topchat.revamp.di.qualifier;
 
 import javax.inject.Qualifier;
 

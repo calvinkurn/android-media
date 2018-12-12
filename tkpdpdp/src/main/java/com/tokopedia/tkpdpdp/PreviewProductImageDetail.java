@@ -1,8 +1,25 @@
 package com.tokopedia.tkpdpdp;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -10,14 +27,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
@@ -144,13 +180,13 @@ public class PreviewProductImageDetail extends TActivity {
 
     private void setViewListener() {
         tvDownload.setOnClickListener(getDownloadClickListener());
-        closeButton.setOnClickListener(new OnClickListener() {
+        closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        vpImage.addOnPageChangeListener(new OnPageChangeListener() {
+        vpImage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int arg0) {
 
@@ -169,7 +205,7 @@ public class PreviewProductImageDetail extends TActivity {
 
             }
         });
-        adapter.SetonImageStateChangeListener(new OnImageStateChange() {
+        adapter.SetonImageStateChangeListener(new TouchImageAdapter.OnImageStateChange() {
 
             @Override
             public void OnStateZoom() {
@@ -225,8 +261,8 @@ public class PreviewProductImageDetail extends TActivity {
     }
 
 
-    public OnClickListener getDownloadClickListener() {
-        return new OnClickListener() {
+    public View.OnClickListener getDownloadClickListener() {
+        return new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -355,7 +391,7 @@ public class PreviewProductImageDetail extends TActivity {
                     SnackbarManager.make(PreviewProductImageDetail.this,
                             getString(com.tokopedia.core.R.string.download_success),
                             Snackbar.LENGTH_SHORT).setAction(com.tokopedia.core.R.string.preview_picture_open_action,
-                            new OnClickListener() {
+                            new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     openImageDownloaded(path);
@@ -400,7 +436,7 @@ public class PreviewProductImageDetail extends TActivity {
 
     @OnShowRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void showRationaleForWriteExternal(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        RequestPermissionUtil.onShowRationale(this, request, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @OnPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)

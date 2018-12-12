@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  * @author by nisie on 10/12/18.
  */
 interface BaseChatViewState {
-    fun onSetupViewFirstTime()
 
     fun onShowStartTyping()
 

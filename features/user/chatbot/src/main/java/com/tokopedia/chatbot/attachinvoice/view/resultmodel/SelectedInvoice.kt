@@ -96,7 +96,7 @@ class SelectedInvoice : Parcelable {
                 return SelectedInvoice(source)
             }
 
-            override fun newArray(size: Int): Array<SelectedInvoice> {
+            override fun newArray(size: Int): Array<SelectedInvoice?> {
                 return arrayOfNulls(size)
             }
         }

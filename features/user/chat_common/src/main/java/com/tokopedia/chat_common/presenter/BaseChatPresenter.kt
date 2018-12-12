@@ -164,7 +164,6 @@ open class BaseChatPresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         destroyWebSocket()
-
     }
 
     override fun getChatUseCase(messageId: String, page: Int) {

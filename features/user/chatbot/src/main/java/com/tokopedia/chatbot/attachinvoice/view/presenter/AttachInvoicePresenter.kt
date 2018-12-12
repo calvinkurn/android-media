@@ -1,19 +1,17 @@
 package com.tokopedia.chatbot.attachinvoice.view.presenter
 
+
 import android.content.Context
-
-
 import com.tokopedia.chatbot.attachinvoice.domain.usecase.AttachInvoicesUseCase
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
 import com.tokopedia.chatbot.attachinvoice.view.subscriber.AttachInvoicesLoadInvoiceDataSubscriber
-
-import javax.inject.Inject
 
 /**
  * Created by Hendri on 22/03/18.
  */
 
-class AttachInvoicePresenter @Inject
+class AttachInvoicePresenter
+//@Inject
 constructor(private val useCase: AttachInvoicesUseCase?) : AttachInvoiceContract.Presenter {
     internal var activity: AttachInvoiceContract.Activity? = null
     internal var view: AttachInvoiceContract.View? = null

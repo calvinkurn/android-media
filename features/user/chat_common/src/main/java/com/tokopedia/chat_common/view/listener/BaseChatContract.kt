@@ -4,8 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.subscriber.GetChatRepliesSubscriber
-import com.tokopedia.websocket.WebSocketResponse
 
 /**
  * @author : Steven 29/11/18

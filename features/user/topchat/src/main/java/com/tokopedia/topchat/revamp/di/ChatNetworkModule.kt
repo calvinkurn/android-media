@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.di
+package com.tokopedia.topchat.revamp.di
 
 import android.content.Context
 import android.content.res.Resources
@@ -22,7 +22,7 @@ import javax.inject.Named
 @Module
 class ChatNetworkModule {
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     @Named("retrofit")
     internal fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
@@ -40,7 +40,7 @@ class ChatNetworkModule {
         )
     }
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     internal fun provideChatBotRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
@@ -57,7 +57,7 @@ class ChatNetworkModule {
         )
     }
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     internal fun provideChatRetrofitJsDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
@@ -74,7 +74,7 @@ class ChatNetworkModule {
         )
     }
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     internal fun provideWsRetrofitDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
@@ -91,7 +91,7 @@ class ChatNetworkModule {
         )
     }
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     internal fun provideTomeRetrofitDomain(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
@@ -109,7 +109,7 @@ class ChatNetworkModule {
     }
 
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
