@@ -11,7 +11,7 @@ import com.tokopedia.design.text.SearchInputView;
  */
 public class ExploreSearchView extends SearchInputView {
 
-    private TextWatcher mTextWathcer;
+    private TextWatcher mTextWatcher;
     public ExploreSearchView(Context context) {
         super(context);
     }
@@ -26,11 +26,11 @@ public class ExploreSearchView extends SearchInputView {
 
 
     public void addTextWatcherToSearch() {
-        mTextWathcer = getSearchTextWatcher();
-        getSearchTextView().addTextChangedListener(mTextWathcer);
+        mTextWatcher = getSearchTextWatcher();
+        getSearchTextView().addTextChangedListener(mTextWatcher);
     }
 
     public void removeSearchTextWatcher() {
-        getSearchTextView().removeTextChangedListener(mTextWathcer);
+        getSearchTextView().removeTextChangedListener(mTextWatcher);
     }
 }
