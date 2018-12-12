@@ -3,12 +3,12 @@ package com.tokopedia.browse.homepage.presentation.adapter.viewholder
 import android.os.Build
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.AppCompatImageView
+import android.support.v7.widget.AppCompatTextView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.browse.R
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseRowViewModel
-import com.tokopedia.design.component.TextViewCompat
 
 /**
  * @author by furqan on 05/09/18.
@@ -18,8 +18,8 @@ class DigitalBrowseCategoryViewHolder(itemView: View, private val categoryListen
         AbstractViewHolder<DigitalBrowseRowViewModel>(itemView) {
 
     private val ivProduct: AppCompatImageView = itemView.findViewById(R.id.iv_product)
-    private val tvProduct: TextViewCompat = itemView.findViewById(R.id.tv_product)
-    private val tvNewLabel: TextViewCompat = itemView.findViewById(R.id.tv_new_label)
+    private val tvProduct: AppCompatTextView = itemView.findViewById(R.id.tv_product)
+    private val tvNewLabel: AppCompatTextView = itemView.findViewById(R.id.tv_new_label)
 
     init {
 
