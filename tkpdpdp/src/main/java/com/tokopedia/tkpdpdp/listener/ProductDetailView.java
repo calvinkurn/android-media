@@ -358,7 +358,9 @@ public interface ProductDetailView extends ViewListener {
 
     void refreshData();
 
-    void onSuccesLoadRateEstimaion(RatesModel ratesModel);
+    void onSuccesLoadRateEstimation(RatesModel ratesModel);
+
+    void onErrorLoadRateEstimation();
 
     void moveToEstimationDetail();
 

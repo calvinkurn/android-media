@@ -9,7 +9,7 @@
     <string name="installment">Cicilan</string>
     <string name="installment_simulation">Simulasi Cicilan</string>
     <string name="product_variant">Varian Produk</string>
-    <string name="choose_variant">Pilih Warna dan Ukuran</string>
+    <string name="choose_variant">Pilih Warna &amp; Ukuran</string>
     <string name="installment_bank">Cicilan Kartu Kredit Bunga 0% dari 17 Bank</string>
     <string name="stock_produk_kosong">Stok Produk Kosong</string>
     <string name="deksripsi_produk_kosong">Untuk sementara produk ini tidak dijual. Silahkan hubungi toko yang bersangkutan untuk informasi lebih lanjut</string>
@@ -85,4 +85,22 @@
     <string name="label_atc_open_cart">Lihat</string>
     <string name="label_description">Deskripsi</string>
     <string name="default_max_rating">5</string>
+    <string name="label_dilihat">Dilihat</string>
+    <string name="label_transaksi_berhasil">Transaksi Berhasil </string>
+    <string name="label_courier">Kurir \u2022</string>
+    <string name="label_courier_from">dari </string>
+    <string name="label_courier_to">ke </string>
+    <string name="label_cost_est">Ongkir mulai dari</string>
+    <string name="label_preorder">Waktu Preorder</string>
+    <string name="label_min_order">Min. Pemesanan</string>
+    <string name="label_condition">Kondisi</string>
+    <string name="label_insurance">Asuransi</string>
+    <string name="label_storefront">Etalase</string>
+    <string name="label_category">Kategori</string>
+    <string name="label_see_details">Baca Selengkapnya</string>
+    <string name="label_free_return_hint">Belanja Nyaman, Hati Puas. Produk tidak sesuai? Tukar saja! Ongkos kirim GRATIS!</string>
+    <string name="label_info_detail">Info Selengkapnya</string>
+    <string name="value_wholesale_price">Mulai dari %s</string>
+    <string name="value_installment">Bunga mulai dari %s</string>
+    <string name="value_success_rate">%s %</string>
 </resources>

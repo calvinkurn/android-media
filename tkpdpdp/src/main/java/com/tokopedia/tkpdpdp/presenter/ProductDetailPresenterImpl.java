@@ -224,11 +224,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
+                        viewListener.onErrorLoadRateEstimation();
                     }
 
                     @Override
                     public void onNext(RatesEstimationModel ratesEstimationModel) {
-                        viewListener.onSuccesLoadRateEstimaion(ratesEstimationModel.getRates());
+                        viewListener.onSuccesLoadRateEstimation(ratesEstimationModel.getRates());
                     }
                 });
     }

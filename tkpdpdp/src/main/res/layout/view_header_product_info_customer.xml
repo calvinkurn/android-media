@@ -84,18 +84,18 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="80dp"
         android:ellipsize="end"
-        android:paddingBottom="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_16"
         android:textColor="@color/pdp_text_color"
-        android:textSize="@dimen/text_size_l_medium"
+        android:textSize="@dimen/pdp_title_text_size"
         android:textStyle="bold"
         tools:ignore="HardcodedText"
         tools:text="Product Name" />
     <LinearLayout
         android:paddingLeft="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_8"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -121,6 +121,7 @@
         <TextView
             android:paddingLeft="@dimen/dp_10"
             android:layout_gravity="center"
+            android:gravity="center"
             android:id="@+id/text_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -141,6 +142,7 @@
         android:paddingRight="@dimen/dp_16">
 
         <TextView
+            android:paddingTop="@dimen/dp_5"
             android:id="@+id/tv_price_pdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -203,7 +205,7 @@
             android:id="@+id/iv_official"
             android:layout_width="@dimen/med_dp"
             android:layout_height="@dimen/med_dp"
-            android:src="@drawable/ic_official_store_pdp"
+            app:srcCompat="@drawable/ic_official_store_pdp"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 

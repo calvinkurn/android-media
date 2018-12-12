@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/dp_10_header"
     android:background="@drawable/bg_shadow"
     android:orientation="vertical"
-    android:padding="@dimen/dp_10">
+    android:padding="@dimen/pdp_content_padding">
 
     <TextView
         android:id="@+id/label_seller_textview"
@@ -16,7 +16,8 @@
         android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/title_seller"
-        android:textColor="@color/black_70"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/pdp_title_text_size"
         android:textStyle="bold" />
 
     <RelativeLayout

@@ -57,7 +57,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView campaignStockAvailable;
     private LinearLayout linearDiscountTimerHolder;
     private LinearLayout linearStockAvailable;
-    private ImageView ivStockAvailable;
     private CountDownView countDownView;
     private Context context;
     private LinearLayout textOfficialStore;
@@ -80,12 +79,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         super.initView(context);
         tvName = (TextView) findViewById(R.id.tv_name);
         tvPriceFinal = (TextView) findViewById(R.id.tv_price_pdp);
-        cashbackTextView = (TextView) findViewById(R.id.label_cashback);
+        cashbackTextView = (TextView) findViewById(R.id.text_cashback);
         textOriginalPrice = (TextView) findViewById(R.id.text_original_price);
         textDiscount = (TextView) findViewById(R.id.text_discount);
         linearDiscountTimerHolder = (LinearLayout) findViewById(R.id.linear_discount_timer_holder);
         linearStockAvailable = (LinearLayout) findViewById(R.id.linear_stock_available);
-        ivStockAvailable = (ImageView) findViewById(R.id.iv_stock_available);
         textOfficialStore = (LinearLayout) findViewById(R.id.text_official_store);
         textStockAvailable = (TextView) findViewById(R.id.text_stock_available);
         countDownView = findViewById(R.id.count_down);
@@ -209,10 +207,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             } else {
                 linearStockAvailable.setVisibility(VISIBLE);
                 if (data.getLimitedStock()) {
-                    ivStockAvailable.setImageResource(R.drawable.ic_limited_stock);
                     textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
                 } else {
-                    ivStockAvailable.setImageResource(R.drawable.ic_available_stock);
                     textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
                 }
                 textStockAvailable.setText(MethodChecker.fromHtml(data.getProductStockWording()));

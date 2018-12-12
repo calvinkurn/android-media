@@ -116,8 +116,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
 
-            <com.tokopedia.tkpdpdp.customview.PriceSimulationView
-                android:id="@+id/view_price_simulation"
+            <com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView
+                android:id="@+id/view_product_info_attribute"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView
+                android:id="@+id/view_varian_courier_simulation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
@@ -128,6 +133,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_shadow"
                 android:visibility="gone"
+                tools:visibility="visible"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_2">
 
@@ -148,40 +154,34 @@
                         android:textColor="@color/black_70"
                         android:textStyle="bold"
                         app:mvlwTitleString="@string/promo"
-                        app:mvlwTitleTextSize="@dimen/sp_14" />
+                        app:mvlwTitleTextSize="@dimen/pdp_title_text_size" />
                 </LinearLayout>
 
                 <com.tokopedia.tkpdpdp.customview.PromoWidgetView
                     android:id="@+id/view_promo_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
             </FrameLayout>
 
-            <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
-                android:id="@+id/view_shop_info"
+            <com.tokopedia.tkpdpdp.customview.ProductInfoShortView
+                android:id="@+id/view_product_info_short"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_8"
-                android:background="@drawable/bg_shadow_top" />
-
-            <com.tokopedia.tkpdpdp.customview.TransactionDetailView
-                android:id="@+id/view_transaction_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.tokopedia.tkpdpdp.customview.DetailInfoView
-                android:id="@+id/view_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout
                 android:id="@+id/video_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_shadow_bottom"
+                android:layout_marginBottom="@dimen/dp_10"/>
+
+            <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
+                android:id="@+id/view_shop_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
@@ -216,6 +216,7 @@
                 android:visibility="gone" />
 
             <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
+                android:layout_margin="@dimen/dp_6"
                 android:id="@+id/topads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -235,6 +236,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_20"
                 android:visibility="gone" />
+
+            <com.tokopedia.tkpdpdp.customview.TransactionDetailView
+                android:id="@+id/view_transaction_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.tokopedia.tkpdpdp.customview.DetailInfoView
+                android:id="@+id/view_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10" />
+
 
         </LinearLayout>
 

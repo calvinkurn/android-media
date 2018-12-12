@@ -16,20 +16,27 @@ public class RatingBarWithTextView extends BaseCustomView {
 
     public RatingBarWithTextView(@NonNull Context context) {
         super(context);
+        initView(context);
     }
 
     public RatingBarWithTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        initView(context);
     }
 
     public RatingBarWithTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initView(context);
     }
 
     public void setRating(int rating) {
         String ratingText = String.valueOf(rating);
         tv_rating.setText(ratingText);
     }
+    public void setRating(String rating) {
+        tv_rating.setText(rating);
+    }
+
 
     public void setMaxRating(int maxRating) {
         String maxRatingText = String.valueOf(maxRating);

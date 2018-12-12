@@ -51,6 +51,9 @@ import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
+import com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView;
+import com.tokopedia.tkpdpdp.customview.ProductInfoShortView;
+import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
@@ -290,9 +293,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
     private DetailInfoView detailInfoView;
+    private ProductInfoAttributeView productInfoAttributeView;
     private PictureView pictureView;
     private RatingTalkCourierView ratingTalkCourierView;
-    private PriceSimulationView priceSimulationView;
+    private VarianCourierSimulationView varianCourierSimulationView;
     private PromoWidgetView promoWidgetView;
     private ImageFromBuyerView imageFromBuyerView;
 
@@ -300,6 +304,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private MerchantVoucherListWidget merchantVoucherListWidget;
     private View promoContainer;
 
+    private ProductInfoShortView productInfoShortView;
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
@@ -468,6 +473,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
         tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
         headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
+        productInfoAttributeView = view.findViewById(R.id.view_product_info_attribute);
         pictureView = (PictureView) view.findViewById(R.id.view_picture);
         ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
         detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
@@ -492,11 +498,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         transactionDetailView
                 = (TransactionDetailView) view.findViewById(R.id.view_transaction_detail);
-        priceSimulationView
-                = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
+        varianCourierSimulationView
+                = view.findViewById(R.id.view_varian_courier_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
         rootView = (LinearLayout) view.findViewById(R.id.root_view);
         buttonAffiliate = view.findViewById(R.id.buttonAffiliate);
+        productInfoShortView = view.findViewById(R.id.view_product_info_short);
 
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
@@ -662,7 +669,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         promoWidgetView.setListener(this);
         mostHelpfulReviewView.setListener(this);
         transactionDetailView.setListener(this);
-        priceSimulationView.setListener(this);
+        varianCourierSimulationView.setListener(this);
         latestTalkView.setListener(this);
         buttonAffiliate.setListener(this);
         imageFromBuyerView.setListener(this);
@@ -1159,6 +1166,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onWishlistCountLoaded(@NonNull String wishlistCountText) {
+        productInfoAttributeView.renderWishlistCount(wishlistCountText);
         transactionDetailView.renderWishlistCount(wishlistCountText);
     }
 
@@ -1187,6 +1195,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (!isFromExploreAffiliate()) {
             this.buttonBuyView.renderData(successResult);
         }
+        this.productInfoShortView.renderProductData(productData);
+        this.varianCourierSimulationView.setProductDetailData(productData);
+        this.productInfoAttributeView.renderData(successResult);
         this.ratingTalkCourierView.renderData(successResult, viewData);
         this.transactionDetailView.renderData(successResult);
         this.detailInfoView.renderData(successResult);
@@ -1195,7 +1206,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.otherProductsView.renderData(successResult);
         this.newShopView.renderData(successResult);
         this.videoDescriptionLayout.renderData(successResult);
-        this.priceSimulationView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(getActivity(), successResult, AFInAppEventType.CONTENT_VIEW);
@@ -1669,7 +1679,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         if (data.getParcelableExtra(KEY_LEVEL2_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
                             variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
                         }
-                        priceSimulationView.updateVariant(generateVariantString());
+                        varianCourierSimulationView.updateVariant(generateVariantString());
                         if (productVariant != null) {
                             pictureView.renderData(productData);
                             headerInfoView.renderData(productData);
@@ -1944,9 +1954,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void addProductVariant(ProductVariant productVariant) {
         if (productData != null) {
             this.productVariant = productVariant;
-            this.priceSimulationView.addProductVariant(productVariant, productData);
+            this.varianCourierSimulationView.addProductVariant(productVariant, productData);
             if (variantLevel1 != null && variantLevel1 instanceof Option) {
-                priceSimulationView.updateVariant(generateVariantString());
+                varianCourierSimulationView.updateVariant(generateVariantString());
             }
             int defaultChild = productVariant.getParentId() == productData.getInfo().getProductId()
                     ? productVariant.getDefaultChild() : productData.getInfo().getProductId();
@@ -2551,8 +2561,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onSuccesLoadRateEstimaion(RatesModel ratesModel) {
-        priceSimulationView.updateRateEstimation(ratesModel);
+    public void onErrorLoadRateEstimation() {
+        varianCourierSimulationView.renderRateEstimation();
+    }
+
+    @Override
+    public void onSuccesLoadRateEstimation(RatesModel ratesModel) {
+        varianCourierSimulationView.renderRateEstimation(ratesModel);
     }
 
     @Override

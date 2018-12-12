@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         tools:text="4,7"
         android:textStyle="bold"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_24"
         android:textColor="@color/pdp_text_color"/>
     <ImageView
         android:layout_marginLeft="@dimen/dp_2"
@@ -23,9 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_4"
-        tools:text="/"
+        android:text="/"
         android:layout_gravity="center"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/sp_16"
         android:textColor="@color/pdp_text_color"/>
     <TextView
         android:id="@+id/tv_max_rating"
@@ -34,6 +34,6 @@
         tools:text="5"
         android:text="@string/default_max_rating"
         android:layout_gravity="center"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/sp_16"
         android:textColor="@color/pdp_text_color"/>
 </LinearLayout>

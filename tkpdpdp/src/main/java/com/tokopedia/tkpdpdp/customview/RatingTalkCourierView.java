@@ -76,12 +76,8 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
 
     public void renderData(@NonNull ProductDetailData data, @NonNull ProductViewData viewData) {
         productRating.setRating(
-                data.getRating().getProductRatingStarPoint()
+                data.getRating().getProductRatingPoint()
         );
-        int courierCount = 0;
-        if (data.getShopInfo().getShopShipments() != null) {
-            courierCount = data.getShopInfo().getShopShipments().size();
-        }
         tvReview.setText(String.format("%1$s %2$s", data.getStatistic().getProductReviewCount(), getContext().getString(R.string.ulasan)));
         tvTalk.setText(String.format("%1$s %2$s",data.getStatistic().getProductTalkCount(), getContext().getString(R.string.diskusi)));
         courierContainer.setOnClickListener(new OnClickListener() {

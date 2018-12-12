@@ -99,8 +99,10 @@
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
 
-    <color name="pdp_text_color">#b3000000</color>
+    <color name="pdp_text_color">@color/black_70</color>
     <color name="pdp_line_color">#e0e0e0</color>
     <color name="pdp_cashback_bg_color">#daf5db</color>
     <color name="pdp_cashback_text_color">#42b549</color>
+    <color name="pdp_text_sub_title_color">#61000000</color>
+    <color name="pdp_bg_gray">#f6f6f6</color>
 </resources>
