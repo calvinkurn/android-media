@@ -2,7 +2,7 @@ package com.tokopedia.flight.search.domain.usecase
 
 import android.text.TextUtils
 import android.util.SparseIntArray
-import com.tokopedia.common.travel.constant.FlightSortOption
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.model.resultstatistics.*

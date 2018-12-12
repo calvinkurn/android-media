@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
-import com.tokopedia.common.travel.presentation.adapter.viewholder.TravelSearchShimmeringViewHolder;
+import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 

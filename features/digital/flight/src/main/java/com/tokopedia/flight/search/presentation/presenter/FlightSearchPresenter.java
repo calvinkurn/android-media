@@ -11,7 +11,6 @@ import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
-import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightSearchCombinedUseCase;
