@@ -1,7 +1,7 @@
 package com.tokopedia.digital.product.view.presenter;
 
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 /**

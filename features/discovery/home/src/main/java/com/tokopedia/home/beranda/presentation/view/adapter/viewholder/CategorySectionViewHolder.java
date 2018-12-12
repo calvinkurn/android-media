@@ -22,8 +22,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
-import butterknife.ButterKnife;
-
 /**
  * @author by errysuprayogi on 11/28/17.
  */
@@ -39,7 +37,6 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
     public CategorySectionViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         this.listener = listener;
         adapter = new SectionItemAdapter(itemView.getContext(), listener);
         recyclerView = itemView.findViewById(R.id.list);
@@ -84,14 +81,14 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    eventClickUseCase(sectionViewModel.getSectionList().get(position), position);
+                    eventClickUseCase(view.getContext(), sectionViewModel.getSectionList().get(position), position);
                     listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.getSectionList().get(position)));
 
                 }
             });
         }
 
-        private void eventClickUseCase(LayoutSections layoutSections, int position) {
+        private void eventClickUseCase(Context context, LayoutSections layoutSections, int position) {
             if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
                 HomePageTracking.eventClickHomeUseCase(context, layoutSections.getTitle());
             } else {

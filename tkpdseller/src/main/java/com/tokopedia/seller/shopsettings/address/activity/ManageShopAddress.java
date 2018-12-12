@@ -142,7 +142,7 @@ public class ManageShopAddress extends TActivity {
                 .setCancelable(true)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        UnifyTracking.eventShopDeleteAddress();
+                        UnifyTracking.eventShopDeleteAddress(ManageShopAddress.this);
                         compositeSubscription.add(new MyShopAddressActService().getApi().deleteLocation(
                                 AuthUtil.generateParams(ManageShopAddress.this, PrepareParamDeleteLocation(LocationId.get(position)))
                         ).subscribeOn(Schedulers.newThread())

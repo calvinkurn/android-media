@@ -1,4 +1,4 @@
-.gradle
+.gradle 
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -49,6 +49,8 @@ gradlew.bat
 # react native
 node_modules/
 jsconfig.json
+reactnative-apps/
+
 
 # buck
 .buckconfig.local
