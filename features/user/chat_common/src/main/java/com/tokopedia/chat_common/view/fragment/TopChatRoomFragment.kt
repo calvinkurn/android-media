@@ -26,6 +26,26 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
+    override fun getNetworkMode(): Int {
+        return 1
+    }
+
+    override fun disableAction() {
+        chatViewState.setActionable(false)
+    }
+
+    override fun showSnackbarError(string: Unit) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun addDummyMessage(visitable: Visitable<*>) {
+        chatViewState.addMessage(visitable)
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        chatViewState.removeDummy(visitable)
+    }
+
 
     @Inject
     lateinit var presenter: BaseChatPresenter
@@ -99,6 +119,22 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
         return
     }
 
+    override fun receiveMessageEvent(visitable: Visitable<*>) {
+        chatViewState.addMessage(visitable)
+    }
+
+    override fun clearEditText() {
+        chatViewState.clearEditText()
+    }
+
+    override fun receiveStopTypingEvent() {
+        chatViewState.recipientStopTyping()
+    }
+
+    override fun receiveReadEvent() {
+        return
+    }
+
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -127,7 +163,7 @@ class TopChatRoomFragment : BaseChatFragment(), BaseChatContract.View {
 
     fun initView(view: View?) {
         view?.run {
-            chatViewState = TopChatViewState(this)
+            chatViewState = TopChatViewState(this, presenter)
         }
 
         adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
