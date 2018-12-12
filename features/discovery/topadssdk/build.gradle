@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.libraries.design)
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.network)
