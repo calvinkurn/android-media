@@ -1,45 +1,40 @@
 package com.tokopedia.chat_common.domain
 
-import com.tokopedia.chat_common.data.api.ChatRoomApi
-import com.tokopedia.chat_common.domain.mapper.GetChatMapper
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomViewModel
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Observable
+import rx.Subscriber
 import javax.inject.Inject
+
 
 /**
  * @author : Steven 30/11/18
  */
 
-class GetChatUseCase @Inject constructor(val api: ChatRoomApi, val mapper: GetChatMapper)
-    : UseCase<ChatRoomViewModel>() {
-    
-    override fun createObservable(requestParams: RequestParams): Observable<ChatRoomViewModel> {
-            return api.getReply(requestParams.parameters
-                    .get("msg_id").toString(), requestParams.parameters)
-                    .map(mapper)
-                    
+class GetChatUseCase @Inject constructor(
+//        val resources: Resources,
+//        private val graphqlUseCase: GraphqlUseCase
+) {
+
+    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>):
+            Observable<ChatRoomViewModel> {
+//        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_chat_replies)
+//        val graphqlRequest = GraphqlRequest(query,
+//                GetChatRepliesPojo::class.java, requestParams)
+//
+//        graphqlUseCase.clearRequest()
+//        graphqlUseCase.addRequest(graphqlRequest)
+//        graphqlUseCase.execute(subscriber)
+        return Observable.just(ChatRoomViewModel())
     }
 
     companion object {
 
-        val PARAM_GET_ALL = "GET_ALL"
+        private val PARAM_MESSAGE_ID: String = "msgId"
 
-        fun generateParam(messageId: String, page: Int): RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putString("msg_id", messageId)
-            requestParams.putString("page", page.toString())
-            requestParams.putString("platform", "android")
-            requestParams.putString("per_page", "10")
-            return requestParams
-        }
-
-        fun generateParamSearch(messageId: String): RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putString("msg_id", messageId)
-            requestParams.putString("page", "0")
-            requestParams.putString("platform", "android")
+        fun generateParam(messageId: String): Map<String, Any> {
+            val requestParams = HashMap<String, Any>()
+            requestParams.put(PARAM_MESSAGE_ID, messageId)
             return requestParams
         }
     }

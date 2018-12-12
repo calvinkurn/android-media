@@ -37,19 +37,6 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
 
         view.setOnClickListener(view -> listener.onImageAnnouncementClicked(viewModel));
 
-//TODO MOVE THIS TO TOPCHAT
-//        TrackingUtils.sendGTMEvent(
-//                new EventTracking(
-//                        "clickInboxChat",
-//                        "inbox-chat",
-//                        "click on thumbnail",
-//                        viewModel.getBlastId() + " - " + viewModel.getAttachmentId()
-//                ).getEvent()
-//        );
-//        if (!TextUtils.isEmpty(viewModel.getRedirectUrl())) {
-//            viewListener.onGoToWebView(viewModel.getRedirectUrl(),
-//                    viewModel.getAttachmentId());
-//        }
     }
 
     @Override

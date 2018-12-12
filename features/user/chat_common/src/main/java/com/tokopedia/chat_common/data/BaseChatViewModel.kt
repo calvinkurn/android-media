@@ -27,7 +27,7 @@ open class BaseChatViewModel
  val attachmentId: String,
  val attachmentType: String,
  var replyTime: String?,
- val message: String) {
+ var message: String) {
 
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
@@ -46,5 +46,4 @@ open class BaseChatViewModel
      * @param showTime set true to show time in chat
      */
     var isShowTime = true
-
 }

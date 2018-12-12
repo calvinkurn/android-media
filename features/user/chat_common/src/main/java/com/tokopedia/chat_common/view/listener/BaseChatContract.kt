@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.view.listener
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 
 /**
  * @author : Steven 29/11/18
@@ -11,7 +12,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
 interface BaseChatContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun getMessageId(): String
+        fun getMsgId(): String
 
         fun getStringResource(str: Int)
 
@@ -19,15 +20,13 @@ interface BaseChatContract {
 
         fun onSuccessGetChat(model: ArrayList<Visitable<*>>)
 
-        fun developmentView()
+        fun onReceiveStartTypingEvent()
 
-        fun receiveStartTypingEvent()
+        fun onReceiveStopTypingEvent()
 
-        fun receiveStopTypingEvent()
+        fun onReceiveReadEvent()
 
-        fun receiveReadEvent()
-
-        fun receiveMessageEvent(visitable: Visitable<*>)
+        fun onReceiveMessageEvent(visitable: Visitable<*>)
 
         fun disableAction()
 
@@ -41,9 +40,12 @@ interface BaseChatContract {
 
     }
     interface Presenter : CustomerPresenter<View> {
-        fun getChatUseCase(messageId : String)
 
-        fun getChatUseCase(messageId : String, page: Int)
+        fun getChatUseCase(messageId : String, onError : (Exception) -> Unit)
+
+        fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*>
+
+        fun sendMessage(sendMessage: String)
 
     }
 }

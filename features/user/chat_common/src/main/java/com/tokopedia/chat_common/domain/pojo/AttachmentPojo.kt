@@ -17,5 +17,5 @@ class AttachmentPojo {
     var attributes: JsonObject? = null
     @SerializedName("fallback_attachment")
     @Expose
-    var fallbackAttachment: FallbackAttachmentPojo? = null
+    var fallbackAttachment: FallbackAttachmentPojo = FallbackAttachmentPojo()
 }

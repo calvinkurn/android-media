@@ -2,10 +2,8 @@ package com.tokopedia.chatbot.attachinvoice.view.model
 
 
 import com.tokopedia.chatbot.attachinvoice.domain.model.Invoice
-
-import java.util.ArrayList
-
 import rx.functions.Func1
+import java.util.*
 
 /**
  * Created by Hendri on 22/03/18.
@@ -29,15 +27,15 @@ class InvoiceToInvoiceViewModelMapper : Func1<List<Invoice>, List<InvoiceViewMod
                     invoice.invoiceId,
                     invoice.invoiceTypeInt,
                     invoice.statusInt,
-                    invoiceNumber,
-                    productTopName,
-                    productTopImage,
-                    status,
-                    date,
-                    total,
-                    invoiceType,
-                    description,
-                    invoice.url
+                    invoiceNumber.toString(),
+                    productTopName.toString(),
+                    productTopImage.toString(),
+                    status.toString(),
+                    date.toString(),
+                    total.toString(),
+                    invoiceType.toString(),
+                    description.toString(),
+                    invoice.url.toString()
             ))
         }
         return invoiceViewModels

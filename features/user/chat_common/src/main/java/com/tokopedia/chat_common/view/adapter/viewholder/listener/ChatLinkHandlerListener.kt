@@ -7,7 +7,7 @@ interface ChatLinkHandlerListener{
 
     fun shouldHandleUrlManually(url: String): Boolean
 
-    fun onGoToWebView(attachment: String, id: String)
+    fun onGoToWebView(url: String, id: String)
 
     fun handleBranchIOLinkClick(url: String)
 

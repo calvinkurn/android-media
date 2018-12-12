@@ -1,9 +1,11 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.listener
 
+import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+
 /**
  * @author by nisie on 06/12/18.
  */
-class interface AttachedInvoiceSelectionListener{
-    fun onInvoiceSelected()
+interface AttachedInvoiceSelectionListener{
+    fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo)
     fun showSearchInvoiceScreen()
 }

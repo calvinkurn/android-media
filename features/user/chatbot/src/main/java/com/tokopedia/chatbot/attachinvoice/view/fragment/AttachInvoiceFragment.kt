@@ -1,26 +1,23 @@
 package com.tokopedia.chatbot.attachinvoice.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
-import com.tokopedia.chatbot.attachinvoice.view.activity.AttachInvoiceActivity
 import com.tokopedia.chatbot.attachinvoice.view.adapter.AttachInvoiceListAdapter
 import com.tokopedia.chatbot.attachinvoice.view.adapter.AttachInvoiceListAdapterTypeFactory
 import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.chatbot.attachinvoice.view.presenter.AttachInvoicePresenter
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
-
-import javax.inject.Inject
+import com.tokopedia.chatbot.view.ChatbotInternalRouter
 
 /**
  * Created by Hendri on 22/03/18.
@@ -28,10 +25,10 @@ import javax.inject.Inject
 
 class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceListAdapterTypeFactory>(), AttachInvoiceContract.View {
 
-    @Inject
-    internal var presenter: AttachInvoicePresenter? = null
+//    @Inject
+    var presenter: AttachInvoicePresenter? = null
 
-    internal var activity: AttachInvoiceContract.Activity
+    lateinit var activity: AttachInvoiceContract.Activity
     private val swipeRefreshLayout: SwipeRefreshLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,18 +55,19 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
     override fun initInjector() {
         val appComponent = getComponent(BaseAppComponent::class.java)
-        val daggerInboxChatComponent = DaggerAttachInvoiceComponent.builder()
-                .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
-        daggerInboxChatComponent.inject(this)
+//        val daggerInboxChatComponent = DaggerAttachInvoiceComponent.builder()
+//                .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
+//        daggerInboxChatComponent.inject(this)
         presenter!!.attachView(this)
         presenter!!.attachActivityContract(activity)
     }
 
     override fun onItemClicked(invoiceViewModel: InvoiceViewModel) {
         val data = Intent()
-        data.putExtra(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, SelectedInvoice(invoiceViewModel))
-        getActivity()!!.setResult(AttachInvoiceActivity.TOKOPEDIA_ATTACH_INVOICE_RESULT_CODE_OK,
-                data)
+        data.putExtra(ChatbotInternalRouter.Companion
+                .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY, SelectedInvoice
+        (invoiceViewModel))
+        getActivity()!!.setResult(Activity.RESULT_OK, data)
         getActivity()!!.finish()
     }
 
@@ -87,7 +85,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
         return AttachInvoiceListAdapter(adapterTypeFactory, this)
     }
 
-    fun addInvoicesToList(invoices: List<InvoiceViewModel>, hasNextPage: Boolean) {
+    override fun addInvoicesToList(invoices: List<InvoiceViewModel>, hasNextPage: Boolean) {
         renderList(invoices, hasNextPage)
     }
 

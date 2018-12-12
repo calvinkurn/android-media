@@ -2,7 +2,6 @@ package com.tokopedia.tkpdpdp;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
@@ -44,7 +44,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         DeepLinkWebViewHandleListener,
         ProductInfoView,
         DetailFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
+        ProductInfoResultReceiver.Receiver, YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
         BottomSheets.BottomSheetDismissListener {
 
     public static final String SHARE_DATA = "SHARE_DATA";
@@ -70,9 +70,27 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
                 .putExtras(extras);
     }
 
+    /**
+     * To add lazy load, make sure to add PDP query parameter from {@link ApplinkConst.Query}
+     *
+     * @param context
+     * @param extras
+     * @return
+     */
     @DeepLink(Constants.Applinks.PRODUCT_INFO)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
+        if (!TextUtils.isEmpty(extras.getString(ApplinkConst.Query.PDP_ID))) {
+            ProductPass productPass = ProductPass.Builder.aProductPass()
+                    .setProductId(extras.getString(ApplinkConst.Query.PDP_ID, ""))
+                    .setProductPrice(extras.getString(ApplinkConst.Query.PDP_PRICE, ""))
+                    .setProductName(extras.getString(ApplinkConst.Query.PDP_NAME, ""))
+                    .setDateTimeInMilis(Long.parseLong(extras.getString(ApplinkConst.Query.PDP_DATE, "0")))
+                    .setProductImage(extras.getString(ApplinkConst.Query.PDP_IMAGE, ""))
+                    .build();
+            extras.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS, productPass);
+        }
         return new Intent(context, ProductInfoActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
@@ -284,10 +302,10 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void onBackPressed() {
-            if(thumbnailIntializing) {
-                isBackPressed = true;
-                return;
-            }
+        if (thumbnailIntializing) {
+            isBackPressed = true;
+            return;
+        }
 
 
         if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -325,7 +343,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void onSaveInstanceState(Bundle stateBundle) {
         int osVersion = android.os.Build.VERSION.SDK_INT;
-        if ( osVersion < Build.VERSION_CODES.N) {
+        if (osVersion < Build.VERSION_CODES.N) {
             super.onSaveInstanceState(stateBundle);
         }
     }
@@ -351,6 +369,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     boolean isBackPressed;
 
     boolean thumbnailIntializing = false;
+
     @Override
     public void onIntializationStart() {
         thumbnailIntializing = true;
@@ -360,7 +379,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     public void onIntializationComplete() {
 
         thumbnailIntializing = false;
-        if(isBackPressed) {
+        if (isBackPressed) {
             onBackPressed();
         }
     }
