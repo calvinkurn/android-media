@@ -502,13 +502,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ScanQrCodeRouter,
         UnifiedOrderListRouter,
         RecentViewRouter,
+        MerchantVoucherModuleRouter,
         LoginRegisterRouter,
         LoginPhoneNumberRouter,
         TopAdsDashboardRouter,
         NpsRouter,
-        DigitalRouter {
-        TopAdsRouter,
-        MerchantVoucherModuleRouter {
+        DigitalRouter,
+        TopAdsRouter {
 
 
     private static final String EXTRA = "extra";
