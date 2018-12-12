@@ -94,9 +94,8 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
         recyclerViewHoliday.setAdapter(holidayAdapter);
 
         //date selected from outside
-        CellDate cellDate = new CellDate();
-        cellDate.setDate((Date) getArguments().getSerializable(TravelCalendarActivity.EXTRA_INITAL_DATE));
-        cellDate.setSelected(true);
+        CellDate cellDate = new CellDate((Date) getArguments().getSerializable(TravelCalendarActivity.EXTRA_INITAL_DATE),
+                true);
         calendarPickerView.setDateRange(
                 cellDate, getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH),
                 getArguments().getInt(TravelCalendarActivity.EXTRA_YEAR),

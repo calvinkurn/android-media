@@ -73,13 +73,12 @@ public class CalendarPickerView extends LinearLayout {
         mCal.add(Calendar.DAY_OF_MONTH, -firstDayOfTheMonth);
 
         while (cells.size() < DAYS_COUNT) {
-            CellDate cellDate = new CellDate();
+            CellDate cellDate = null;
             if (DateCalendarUtil.getZeroTimeDate(calendarDateUser.getTime()).compareTo(
                     DateCalendarUtil.getZeroTimeDate(mCal.getTime())) == 0) {
                 cellDate = cellDateUser;
             } else {
-                cellDate.setDate(mCal.getTime());
-                cellDate.setSelected(false);
+                cellDate = new CellDate(mCal.getTime(), false);
             }
             cells.add(cellDate);
             mCal.add(Calendar.DAY_OF_MONTH, 1);
