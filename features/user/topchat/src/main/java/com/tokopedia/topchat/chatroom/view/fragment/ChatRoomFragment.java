@@ -748,6 +748,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
         }
         TrackingUtils.sendGTMEvent(
+                getActivity(),
                 new EventTracking(
                         "clickInboxChat",
                         "message room",
