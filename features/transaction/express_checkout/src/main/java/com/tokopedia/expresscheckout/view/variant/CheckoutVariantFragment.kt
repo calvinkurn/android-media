@@ -39,7 +39,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_detail_product_page, container)
+        return inflater.inflate(R.layout.fragment_detail_product_page, container, false)
     }
 
     override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypefactory {
@@ -102,7 +102,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showData(arrayList: ArrayList<Visitable<*>>) {
-        getRecyclerView(view).layoutManager
         (adapter as CheckoutVariantAdapter).addDataViewModel(arrayList)
         adapter.notifyDataSetChanged()
     }

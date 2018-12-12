@@ -11,7 +11,7 @@
         android:layout_above="@+id/rl_bottom_action_container">
 
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/rv_product_detail"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

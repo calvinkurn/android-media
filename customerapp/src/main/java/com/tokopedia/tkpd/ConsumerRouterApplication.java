@@ -111,6 +111,8 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.expresscheckout.router.ExpressCheckoutRouter;
+import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActivity;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.nps.NpsRouter;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -500,7 +502,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
         LoginPhoneNumberRouter,
-        NpsRouter {
+        NpsRouter,
+        ExpressCheckoutRouter {
 
     private static final String EXTRA = "extra";
 
@@ -1042,6 +1045,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent checkoutModuleRouterGetHomeIntent(Context context) {
         return MainParentActivity.getApplinkIntent(context, null);
+    }
+
+    @Override
+    public Intent getExpressCheckoutIntent(Activity activity) {
+        return CheckoutVariantActivity.Companion.createIntent(activity);
     }
 
     @Override

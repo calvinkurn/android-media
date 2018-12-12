@@ -54,6 +54,8 @@ public interface PdpRouter {
 
     Intent getCheckoutIntent(Activity activity);
 
+    Intent getExpressCheckoutIntent(Activity activity);
+
     Intent getLoginIntent(Context context);
 
     Intent getShopPageIntent(Context context, String shopId);

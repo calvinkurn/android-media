@@ -776,6 +776,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
+        if (getActivity() != null) {
+            Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                    .getExpressCheckoutIntent(getActivity());
+            startActivity(intent);
+        }
+
+/*
         if (productData.getInfo().getHasVariant()) {
             if (!onClickBuyWhileRequestingVariant && productVariant != null) {
                 openVariantPage(generateStateVariant(source));
@@ -791,6 +798,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else {
             openProductModalActivity(generateStateVariant(source));
         }
+*/
     }
 
     @Override
