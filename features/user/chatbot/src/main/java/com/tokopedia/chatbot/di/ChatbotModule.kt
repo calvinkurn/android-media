@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,5 +21,10 @@ class ChatbotModule {
         return UserSession(context)
     }
 
+    @ChatbotScope
+    @Provides
+    fun provideResource(@ApplicationContext context: Context): Resources {
+        return context.resources
+    }
 
 }
