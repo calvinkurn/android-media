@@ -198,7 +198,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
         this.refreshHandler.finishRefresh();
 
-        View errorView = this.rlContainerLayout.findViewById(com.tokopedia.core.R.id.main_retry);
+        View errorView = this.rlContainerLayout.findViewById(com.tokopedia.core2.R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
 
         this.promoDetailAdapter.setPromoDetail(promoDataMapper.convert(promoData));

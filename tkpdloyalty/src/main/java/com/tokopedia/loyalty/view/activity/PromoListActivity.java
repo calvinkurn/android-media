@@ -143,7 +143,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         if (isLightToolbarThemes())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 toolbar.setElevation(0);
-                toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+                toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
             } else {
                 toolbar.setBackgroundColor(getResources().getColor(R.color.white));
             }
@@ -192,6 +192,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
                     autoSelectedMenuId = String.valueOf(tab.getPosition());
                 }
                 UnifyTracking.eventPromoListClickCategory(
+                        PromoListActivity.this,
                         promoMenuDataList.get(tab.getPosition()).getTitle()
                 );
             }
@@ -217,6 +218,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
             firstTab.select();
             ((MenuPromoTab) firstTab.getCustomView()).renderActiveState();
             UnifyTracking.eventPromoListClickCategory(
+                    PromoListActivity.this,
                     promoMenuDataList.get(firstTab.getPosition()).getTitle()
             );
         }

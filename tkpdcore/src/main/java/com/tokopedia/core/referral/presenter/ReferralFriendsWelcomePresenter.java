@@ -1,7 +1,7 @@
 package com.tokopedia.core.referral.presenter;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.referral.listener.FriendsWelcomeView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
