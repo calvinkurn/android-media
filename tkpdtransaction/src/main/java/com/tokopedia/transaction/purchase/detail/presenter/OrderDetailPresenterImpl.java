@@ -42,7 +42,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     public static final String QUANTITY = "Quantity";
     public static final String NOTES = "Notes";
     public static final String SHOP_ID = "shop_id";
-    public static final String CUSTOMER_ID = "customer_id";
     public static final String PARAM = "param";
 
     private OrderDetailView mainView;
@@ -384,7 +383,6 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             passenger.addProperty(QUANTITY, dataOrder.getItemQuantity());
             passenger.addProperty(NOTES, dataOrder.getNotes());
             passenger.addProperty(SHOP_ID, data.getShopId());
-            passenger.addProperty(CUSTOMER_ID, data.getBuyerId());
             jsonArray.add(passenger);
         }
         return jsonArray;
