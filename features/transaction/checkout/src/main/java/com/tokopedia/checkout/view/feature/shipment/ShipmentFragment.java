@@ -124,7 +124,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
-    private boolean isPurchaseProtectionPage = false;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -1537,11 +1536,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public boolean checkIfPurchaseProtectionPage() {
-        return isPurchaseProtectionPage;
-    }
-
-    @Override
     public void onNoCourierAvailable(String message) {
         if (getActivity() != null) {
             Tooltip tooltip = new Tooltip(getActivity());
@@ -1764,13 +1758,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 CheckoutAnalyticsPurchaseProtection.Event.CLICK_PELAJARI, url);
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
         startActivity(intent);
-    }
-
-    @Override
-    public void onPurchaseProtectionShown() {
-        isPurchaseProtectionPage = true;
-        shipmentPresenter.sendPurchaseProtectionAnalytics(
-                CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI, null);
     }
 
     public int getResultCode() {

@@ -1,12 +1,10 @@
 package com.tokopedia.transactionanalytics;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
-
-import javax.inject.Inject;
 
 /**
  * Created by fajarnuha on 11/12/18.
@@ -19,8 +17,7 @@ public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
         IMPRESSION_PELAJARI
     }
 
-    @Inject
-    CheckoutAnalyticsPurchaseProtection(AnalyticTracker analyticTracker) {
+    public CheckoutAnalyticsPurchaseProtection(AnalyticTracker analyticTracker) {
         super(analyticTracker);
     }
 

@@ -510,7 +510,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItemModel.isProtectionAvailable()) {
-            mActionListener.onPurchaseProtectionShown();
             tvPPPMore.setText(cartItemModel.getProtectionLinkText());
             tvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override

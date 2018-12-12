@@ -18,6 +18,9 @@ import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
@@ -135,6 +138,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean couponStateChanged;
     private boolean hasDeletePromoAfterChecKPromoCodeFinal;
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
+    private boolean isPurchaseProtectionPage = false;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection;
@@ -368,6 +372,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         setShipmentCartItemModelList(getView()
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
+
+        checkIsPurchaseProtectionPage(cartShipmentAddressFormData.getGroupAddress());
     }
 
     @Override
@@ -771,23 +777,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         };
-    }
-
-    private void checkForPppAnalytics(List<DataCheckoutRequest> data) {
-        if (!getView().checkIfPurchaseProtectionPage()) return;
-        for (DataCheckoutRequest datum : data) {
-            for (ShopProductCheckoutRequest shopProduct : datum.shopProducts) {
-                for (ProductDataCheckoutRequest productDatum : shopProduct.productData) {
-                    if (productDatum.isPurchaseProtection()) {
-                        analyticsPurchaseProtection.eventClickOnBuy(
-                                productDatum.isPurchaseProtection() ?
-                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
-                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
-                        return;
-                    }
-                }
-            }
-        }
     }
 
     private Map<String, Object> generateCheckoutAnalyticsStep2DataLayer(CheckoutRequest checkoutRequest) {
@@ -1371,6 +1360,39 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             case IMPRESSION_PELAJARI:
                 analyticsPurchaseProtection.eventImpressionOfProduct();
                 break;
+        }
+    }
+
+    private void checkIsPurchaseProtectionPage(List<GroupAddress> groupAddress) {
+        for (GroupAddress address : groupAddress) {
+            for (GroupShop groupShop : address.getGroupShop()) {
+                for (Product product : groupShop.getProducts()) {
+                    if(product.getPurchaseProtectionPlanData() != null &&
+                            product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
+                        isPurchaseProtectionPage = true;
+                        sendPurchaseProtectionAnalytics(
+                                CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI,
+                                null);
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkForPppAnalytics(List<DataCheckoutRequest> data) {
+        if (!isPurchaseProtectionPage) return;
+        for (DataCheckoutRequest datum : data) {
+            for (ShopProductCheckoutRequest shopProduct : datum.shopProducts) {
+                for (ProductDataCheckoutRequest productDatum : shopProduct.productData) {
+                    if (productDatum.isPurchaseProtection()) {
+                        analyticsPurchaseProtection.eventClickOnBuy(
+                                productDatum.isPurchaseProtection() ?
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
+                        return;
+                    }
+                }
+            }
         }
     }
 }
