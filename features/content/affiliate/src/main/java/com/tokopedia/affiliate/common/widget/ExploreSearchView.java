@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.common.widget;
 
 import android.content.Context;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 
 import com.tokopedia.design.text.SearchInputView;
@@ -9,6 +10,8 @@ import com.tokopedia.design.text.SearchInputView;
  * @author by yfsx on 06/12/18.
  */
 public class ExploreSearchView extends SearchInputView {
+
+    private TextWatcher mTextWathcer;
     public ExploreSearchView(Context context) {
         super(context);
     }
@@ -23,10 +26,11 @@ public class ExploreSearchView extends SearchInputView {
 
 
     public void addTextWatcherToSearch() {
-        getSearchTextView().addTextChangedListener(getSearchTextWatcher());
+        mTextWathcer = getSearchTextWatcher();
+        getSearchTextView().addTextChangedListener(mTextWathcer);
     }
 
     public void removeSearchTextWatcher() {
-        getSearchTextView().removeTextChangedListener(getSearchTextWatcher());
+        getSearchTextView().removeTextChangedListener(mTextWathcer);
     }
 }
