@@ -67,7 +67,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
             } catch (Exception e) {
                 super.onBackPressed();
             }
-        }
-        super.onBackPressed();
+        } else
+            super.onBackPressed();
     }
 }
