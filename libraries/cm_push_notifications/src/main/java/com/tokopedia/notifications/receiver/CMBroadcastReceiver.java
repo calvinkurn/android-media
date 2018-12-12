@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.tokopedia.applink.RouteManager;
@@ -93,12 +94,13 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
             String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
-            copyToClipboard(context, coupon);
+            if (!TextUtils.isEmpty(coupon))
+                copyToClipboard(context, coupon);
         }
     }
 
     private void handleActionButtonClick(Context context, Intent intent, int notificationId) {
-        if(!intent.hasExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK))
+        if (!intent.hasExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK))
             return;
         String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
         Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
