@@ -115,7 +115,7 @@ class ChatNetworkModule {
         return UserSession(context)
     }
 
-    @ChatRoomScope
+    @TopChatRoomScope
     @Provides
     internal fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
