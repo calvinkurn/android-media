@@ -29,6 +29,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
@@ -157,6 +158,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
+        GraphqlClient.init(getApplicationContext());
         InstabugInitalize.init(this);
     }
 
