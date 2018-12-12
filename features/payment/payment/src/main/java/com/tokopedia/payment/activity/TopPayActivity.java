@@ -413,19 +413,26 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     else callbackPaymentCanceled();
                     return true;
                 } else if (RouteManager.isSupportApplink(TopPayActivity.this, url)) {
-                    RouteManager.route(TopPayActivity.this, url);
+                    //  RouteManager.route(TopPayActivity.this, url);
+                    Intent intent = RouteManager.getIntent(TopPayActivity.this, url);
+                    intent.setData(Uri.parse(url));
+                    navigateToActivity(intent);
                     return true;
                 } else {
                     if (paymentModuleRouter != null) {
                         String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
-                        if (urlFinal == null)
+                        if (urlFinal == null) {
                             return super.shouldOverrideUrlLoading(view, url);
-                        view.loadUrl(
-                                urlFinal,
-                                paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
-                        );
+                        } else {
+                            view.loadUrl(
+                                    urlFinal,
+                                    paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
+                            );
+                            return true;
+                        }
+                    } else {
+                        return super.shouldOverrideUrlLoading(view, url);
                     }
-                    return super.shouldOverrideUrlLoading(view, url);
                 }
             }
         }

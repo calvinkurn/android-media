@@ -172,7 +172,9 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
                 return true;
             } else {
                 if (RouteManager.isSupportApplink(InstantCheckoutActivity.this, url)) {
-                    RouteManager.route(InstantCheckoutActivity.this, url);
+                    Intent intent = RouteManager.getIntent(InstantCheckoutActivity.this, url);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
                     finish();
                     return true;
                 } else {
