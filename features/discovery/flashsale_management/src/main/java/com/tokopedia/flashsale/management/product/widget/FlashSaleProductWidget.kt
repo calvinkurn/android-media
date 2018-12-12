@@ -88,14 +88,23 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 }
             } else { // item is postsubmission.
                 ivCheckMark.visibility = View.GONE
-                if (shouldShowStatisticPostSubmission(item)) {
-                    tvStatus.visibility = View.GONE
-                } else {
-                    tvStatus.text = item.getCampaignAdminStatusId().getAdminStatusString(context)
-                    val statusColor = item.getCampaignAdminStatusId().getAdminStatusColor()
+                if (item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.ON_GOING) {
+                    tvStatus.text = context.getString(R.string.flash_sale_waiting)
+                    val statusColor = StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
                     tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
                     tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
                     tvStatus.visibility = View.VISIBLE
+                } else {
+                    val statusText = item.getCampaignAdminStatusId().getAdminStatusString(context)
+                    if (statusText.isEmpty()) {
+                        tvStatus.visibility = View.GONE
+                    } else {
+                        tvStatus.text = statusText
+                        val statusColor = item.getCampaignAdminStatusId().getAdminStatusColor()
+                        tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
+                        tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
+                        tvStatus.visibility = View.VISIBLE
+                    }
                 }
             }
             tvProductName.text = item.getProductName()

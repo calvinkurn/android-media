@@ -78,7 +78,7 @@ data class FlashSalePostProductItem(
     override fun isEligible() = false //no operation edit is needed for post submission
     override fun getMessage() = ""
     override fun getProductStatus() = FlashSaleProductStatusTypeDef.NOTHING
-    override fun getCampaignStatusId() = FlashSaleCampaignStatusIdTypeDef.ON_GOING
+    override fun getCampaignStatusId() = campaign.statusId
     override fun getCampaignAdminStatusId() = campaign.adminStatus
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
