@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,7 +47,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
 
     public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener, int clickPosition,
                                          TopAdsItemImpressionListener impressionListener,
-                                         boolean enableWishlist, offset) {
+                                         boolean enableWishlist, int offset) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
