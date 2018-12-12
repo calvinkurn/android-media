@@ -160,10 +160,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(mAdapter!=null) {
-                    mAdapter.setCurrentPageIndex(1);
-                    mAdapter.loadData(1);
-                }
+                mPresenter.getCoupons(mPresenter.getCategoryId());
             }
         });
     }
