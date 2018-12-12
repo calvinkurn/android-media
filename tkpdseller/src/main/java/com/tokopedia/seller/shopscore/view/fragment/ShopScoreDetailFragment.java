@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopscore.di.ShopScoreDetailDependencyInjector;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
@@ -159,7 +160,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         switch (shopScoreDetailStateEnum) {
             case GOLD_MERCHANT_QUALIFIED_BADGE:
             case GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                icon = R.drawable.ic_gm_badge_qualified;
+                icon = GMConstant.getGMDrawableResource(getContext());
                 break;
             case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
             case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:

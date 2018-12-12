@@ -19,4 +19,6 @@ interface ShopSettingRouter {
     fun goToMerchantRedirect(context: Context)
 
     fun goToGmSubscribeMembershipRedirect(context: Context)
+
+    fun goToGMSubscribe(activity: Activity)
 }

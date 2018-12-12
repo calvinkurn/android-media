@@ -34,6 +34,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
@@ -86,6 +87,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
+    public int type(TopAdsDynamicChannelModel topAdsDynamicChannelModel) {
+        return TopAdsDynamicChannelViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(SellViewModel sellViewModel) {
         return SellViewHolder.LAYOUT;
     }
@@ -118,8 +124,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             return SixGridChannelViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return SprintSaleCarouselViewHolder.LAYOUT;
-        } else if (DynamicHomeChannel.Channels.LAYOUT_TOPADS.equals(dynamicChannelViewModel.getChannel().getLayout())) {
-            return TopAdsDynamicChannelViewHolder.LAYOUT;
         } else {
             return EmptyBlankViewHolder.LAYOUT;
         }

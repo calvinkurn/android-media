@@ -108,7 +108,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                     // go to empty state if all data has been deleted
                                     resetPageAndSearch();
                                 }
-                                UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
+                                UnifyTracking.eventDraftProductClicked(ProductDraftListFragment.this.getActivity(), AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
                         }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -202,7 +202,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         } else {
             intent = ProductDraftAddActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
         }
-        UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
+        UnifyTracking.eventDraftProductClicked(getActivity(), AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivity(intent);
     }
 
@@ -311,7 +311,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onEmptyButtonClicked() {
-        UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
+        UnifyTracking.eventDraftProductClicked(getActivity(), AppEventTracking.EventLabel.ADD_PRODUCT);
         startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
     }
 

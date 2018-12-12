@@ -1,15 +1,16 @@
 package com.tokopedia.digital.common.view.presenter;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ContactData;
@@ -19,18 +20,15 @@ import com.tokopedia.digital.product.view.model.ContactData;
  * Modified by rizkyfadillah at 10/6/17.
  */
 
-public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
+public abstract class BaseDigitalPresenter extends BaseDaggerPresenter<CustomerView> implements IBaseDigitalPresenter {
 
     private final String IDN_CALLING_CODE = "62";
     private final String IDN_CALLING_CODE_WITH_PLUS = "+62";
 
-    private final Context context;
-
     private LocalCacheHandler localCacheHandlerLastClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
-    public BaseDigitalPresenter(Context context, LocalCacheHandler localCacheHandlerLastClientNumber) {
-        this.context = context;
+    public BaseDigitalPresenter(LocalCacheHandler localCacheHandlerLastClientNumber) {
         this.localCacheHandlerLastClientNumber = localCacheHandlerLastClientNumber;
     }
 

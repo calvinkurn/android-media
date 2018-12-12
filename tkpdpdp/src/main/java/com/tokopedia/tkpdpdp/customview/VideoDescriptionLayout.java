@@ -147,7 +147,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
             bundle.putString(EXTRA_PRODUCT_ID, productId);
             if (videoData != null) bundle.putParcelable(DescriptionActivity.KEY_VIDEO, videoData);
             listener.onDescriptionClicked(bundle);
-            UnifyTracking.eventPDPExpandDescription();
+            UnifyTracking.eventPDPExpandDescription(getContext());
         }
     }
 }

@@ -51,4 +51,6 @@ public interface GlobalNavRouter {
     Intent gotoWishlistPage(Context context);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
+    void sendOpenHomeEvent();
 }

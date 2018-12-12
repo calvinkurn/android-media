@@ -18,7 +18,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +79,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getDynamicHomeChannel().getChannels() != null
                     && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 int position = 1;
+                List<Object> legoAndCuratedAndSprintSaleBannerList = new ArrayList<>();
+
                 for (DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
                     if (channel.getLayout() != null) {
                         if(!homeData.isCache()) {
@@ -87,34 +93,38 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
-                                        context,
-                                        channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination()
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        context,
-                                        channel.getEnhanceImpressionLegoBannerHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
                                 );
                             } else {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
-                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
-                                        context,
-                                        channel.getEnhanceImpressionDynamicChannelHomePage(position)
+                                legoAndCuratedAndSprintSaleBannerList.addAll(
+                                        channel.convertPromoEnhanceDynamicChannelDataLayerForCombination()
                                 );
                             }
                         }
+
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
                             list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
+                        } else if(channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)) {
+                            list.add(mappingDynamicTopAds(channel));
                         } else {
                             list.add(mappingDynamicChannel(channel));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                     list.size(),channel);
                         }
                     }
+                }
+
+                if (!legoAndCuratedAndSprintSaleBannerList.isEmpty()){
+                    HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(context, legoAndCuratedAndSprintSaleBannerList);
                 }
             }
 
@@ -127,6 +137,28 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                 throw new RuntimeException(String.valueOf(response.code()));
             }
         }
+    }
+
+    private Visitable mappingDynamicTopAds(DynamicHomeChannel.Channels channel) {
+        TopAdsDynamicChannelModel visitable = new TopAdsDynamicChannelModel();
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < channel.getGrids().length; i++) {
+            DynamicHomeChannel.Grid grid = channel.getGrids()[i];
+            ProductDynamicChannelViewModel model = new ProductDynamicChannelViewModel();
+            model.setProductId(grid.getId());
+            model.setProductPrice(grid.getPrice());
+            model.setProductName(grid.getName());
+            model.setProductCashback(grid.getCashback());
+            ProductImage productImage = new ProductImage();
+            productImage.setM_url(grid.getImpression());
+            productImage.setM_ecs(grid.getImageUrl());
+            model.setProductImage(productImage);
+            model.setProductClickUrl(grid.getProductClickUrl());
+            items.add(model);
+        }
+        visitable.setTitle(channel.getHeader().getName());
+        visitable.setItems(items);
+        return visitable;
     }
 
     private Visitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {

@@ -64,7 +64,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
 
     @Override
     protected void submitButtonClicked() {
-        UnifyTracking.eventSavePickFeaturedProduct(String.valueOf(getCacheListSize()));
+        UnifyTracking.eventSavePickFeaturedProduct(this, String.valueOf(getCacheListSize()));
         super.submitButtonClicked();
     }
 
@@ -98,7 +98,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     private void showEmptyImageNotAllowedMessage() {
-        UnifyTracking.eventTickErrorFeaturedProduct();
+        UnifyTracking.eventTickErrorFeaturedProduct(this);
         NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_list_picker_empty_stock_cannot_picked));
     }
 
@@ -126,7 +126,7 @@ public class ProductListPickerActivity extends BasePickerMultipleItemActivity<Pr
     }
 
     private void showMaxVariantReachedMessage(){
-        UnifyTracking.eventTickErrorFeaturedProduct();
+        UnifyTracking.eventTickErrorFeaturedProduct(this);
         NetworkErrorHelper.showCloseSnackbar(this,getString(R.string.product_list_picker_max_has_been_reached));
     }
 

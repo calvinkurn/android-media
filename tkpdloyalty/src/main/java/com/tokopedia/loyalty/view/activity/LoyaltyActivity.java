@@ -696,7 +696,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         super.onBackPressed();
         if (platformString.equalsIgnoreCase(MARKETPLACE_STRING))
             checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon();
-        UnifyTracking.eventCouponPageClosed();
+        UnifyTracking.eventCouponPageClosed(this);
     }
 
     private class OnTabSelectedForTrackingCheckoutMarketPlace implements

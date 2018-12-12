@@ -37,7 +37,7 @@ public class SimilarSearchManager {
     }
     public void startSimilarSearchIfEnable(String queryKey,ProductItem item) {
         if (isSimilarSearchEnable()) {
-            SimilarSearchTracking.eventProductLongPress(queryKey, item.getProductID());
+            SimilarSearchTracking.eventProductLongPress(context, queryKey, item.getProductID());
             context.startActivity(SimilarSearchActivity.getIntent(context, item.getProductID()));
         }
     }

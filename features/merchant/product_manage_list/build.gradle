@@ -22,6 +22,7 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
@@ -41,6 +42,9 @@ dependencies {
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.shopCommon)
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -53,6 +57,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../../../publish_local.gradle'
