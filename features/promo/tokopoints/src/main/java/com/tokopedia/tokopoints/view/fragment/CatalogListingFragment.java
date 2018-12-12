@@ -345,7 +345,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     private void setUpFilters(List<CatalogFilterPointRange> pointRanges) {
-        if (pointRanges != null && pointRanges.size() != 0) {
+        if (pointRanges != null && pointRanges.size() != 0 && isSeeAllPage()) {
             if (menuItemFilter != null)
                 menuItemFilter.setVisible(true);
             filtersBottomSheet = new FiltersBottomSheet();
@@ -629,8 +629,15 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     @Override
-    public void onSaveFilter(CatalogFilterPointRange filter) {
+    public void onSaveFilter(CatalogFilterPointRange filter, int selectedPosition) {
         if (filter != null) {
+            if (menuItemFilter != null) {
+                if (selectedPosition == 0) {
+                    menuItemFilter.setIcon(R.drawable.ic_filter_button_unselected);
+                } else {
+                    menuItemFilter.setIcon(R.drawable.ic_filter_button_selected);
+                }
+            }
             if (mPresenter.getPointRangeId() != filter.getId()) {
                 mPresenter.setPointRangeId(filter.getId());
                 refreshTab();
