@@ -14,7 +14,7 @@ interface TopChatContract {
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
     }
 
-    interface Presenter : BaseChatContract.Presenter {
+    interface Presenter : BaseChatContract.Presenter<View> {
 
     }
 }
