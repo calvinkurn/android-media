@@ -22,7 +22,7 @@ public class GeneralNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createMainPendingIntent(baseNotificationModel.getAppLink(), getRequestCode()));
+        builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
         builder.setAutoCancel(true);
         if (!baseNotificationModel.getDetailMessage().isEmpty())

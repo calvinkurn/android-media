@@ -4,11 +4,14 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
@@ -30,7 +33,7 @@ public class ActionNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createMainPendingIntent(baseNotificationModel.getAppLink(), getRequestCode()));
+        builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
         builder.setAutoCancel(true);
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
         if (baseNotificationModel.getActionButton() == null || baseNotificationModel.getActionButton().size() == 0)
@@ -40,7 +43,9 @@ public class ActionNotification extends BaseNotification {
     }
 
     private void addActionButton(List<ActionButton> actionButtonList, NotificationCompat.Builder builder) {
-        if (!baseNotificationModel.getDetailMessage().isEmpty())
+        if(TextUtils.isEmpty(baseNotificationModel.getMedia().getMediumQuality())){
+            setBigPictureNotification(builder, baseNotificationModel);
+        }else if (!baseNotificationModel.getDetailMessage().isEmpty())
             builder.setStyle(new NotificationCompat.BigTextStyle().bigText(baseNotificationModel.getDetailMessage()));
 
         for (ActionButton actionButton : actionButtonList) {
@@ -71,6 +76,29 @@ public class ActionNotification extends BaseNotification {
             );
         }
         return resultPendingIntent;
+    }
+
+
+    private void setBigPictureNotification(NotificationCompat.Builder builder, BaseNotificationModel baseNotificationModel) {
+        Bitmap bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getMedia().getMediumQuality());
+        if (null != bitmap) {
+            builder.setLargeIcon(bitmap);
+            NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle()
+                    .setSummaryText(baseNotificationModel.getDetailMessage())
+                    .bigLargeIcon(getBlankBitmap())
+                    .bigPicture(bitmap);
+            if (!TextUtils.isEmpty(baseNotificationModel.getMessage()))
+                bigPictureStyle.setSummaryText(baseNotificationModel.getMessage());
+            builder.setStyle(bigPictureStyle);
+        } else {
+            //TODO use fallbackUrl
+        }
+    }
+
+    private Bitmap getBlankBitmap() {
+        int w = 72, h = 72;
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        return Bitmap.createBitmap(w, h, conf);
     }
 
 }

@@ -3361,7 +3361,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
-        CMPushNotificationManager.getInstance().setFcmTokenCMNotif(FCMCacheManager.getRegistrationId(this));
+        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
     }
 }
 

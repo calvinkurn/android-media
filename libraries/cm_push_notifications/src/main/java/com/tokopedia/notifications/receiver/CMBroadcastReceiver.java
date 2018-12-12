@@ -42,8 +42,8 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                 case CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS:
                     NotificationManagerCompat.from(context).cancel(notificationId);
                     break;
-                case CMConstant.ReceiverAction.ACTION_ON_COPY_COUPON_CODE:
-                    handleCopyCouponCode(context, intent, notificationId);
+                case CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK:
+                    handleNotificationClick(context, intent, notificationId);
                     break;
             }
         }
@@ -70,6 +70,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             }
 
             Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), persistentButton.getAppLink());
+            appLinkIntent.putExtras(intent.getExtras());
             context.startActivity(appLinkIntent);
         }
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
@@ -82,16 +83,18 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         Toast.makeText(context, "Coupon code copied " + contents, Toast.LENGTH_LONG).show();
     }
 
-    private void handleCopyCouponCode(Context context, Intent intent, int notificationId) {
-        if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
-            String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
-            String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
-            Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
-            context.startActivity(appLinkIntent);
-            copyToClipboard(context, coupon);
-        }
+    private void handleNotificationClick(Context context, Intent intent, int notificationId) {
+
+        String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK);
+        Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+        appLinkIntent.putExtras(intent.getExtras());
+        context.startActivity(appLinkIntent);
         NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
+            String coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE);
+            copyToClipboard(context, coupon);
+        }
     }
 
     private void handleActionButtonClick(Context context, Intent intent, int notificationId) {
@@ -99,6 +102,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             return;
         String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
         Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+        appLinkIntent.putExtras(intent.getExtras());
         context.startActivity(appLinkIntent);
         NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));

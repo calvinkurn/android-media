@@ -46,8 +46,8 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.DELETE_NOTIFICATION:
                 cancelNotification(context, baseNotificationModel.getNotificationId());
                 return null;
-            case CMConstant.NotificationType.COUPON_CODE_NOTIFICATION:
-                return (new CouponCodeNotification(context.getApplicationContext(), baseNotificationModel));
+//            case CMConstant.NotificationType.COUPON_CODE_NOTIFICATION:
+//                return (new CouponCodeNotification(context.getApplicationContext(), baseNotificationModel));
         }
         return null;
     }
@@ -73,6 +73,7 @@ public class CMNotificationFactory {
         model.setAppLink(data.getString(CMConstant.PayloadKeys.APP_LINK, ApplinkConst.HOME));
         model.setActionButton(getActionButtons(data));
         model.setPersistentButtonList(getPersistentNotificationData(data));
+        model.setVideoPushModel(getVideoNotificationData(data));
         model.setCustomValues(getCustomValues(data));
         return model;
     }
@@ -128,6 +129,20 @@ public class CMNotificationFactory {
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
             Log.e("getActions", e.getMessage());
+        }
+        return null;
+    }
+
+    private static JSONObject getVideoNotificationData(Bundle bundle) {
+
+        String values = bundle.getString(CMConstant.PayloadKeys.VIDEO_DATA);
+        if (TextUtils.isEmpty(values)) {
+            return null;
+        }
+        try {
+            return new JSONObject(values);
+        } catch (Exception e) {
+            Log.e("getVideoData", e.getMessage());
         }
         return null;
     }

@@ -1,5 +1,7 @@
 package com.tokopedia.notifications.model;
 
+import com.google.gson.JsonObject;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ public class BaseNotificationModel {
     private String channelName;
 
     private List<PersistentButton> persistentButtonList;
+
+    private JSONObject videoPushModel;
 
     public int getNotificationId() {
         return notificationId;
@@ -140,5 +144,13 @@ public class BaseNotificationModel {
 
     public void setMedia(Media media) {
         this.media = media;
+    }
+
+    public JSONObject getVideoPushModel() {
+        return videoPushModel;
+    }
+
+    public void setVideoPushModel(JSONObject videoPushModel) {
+        this.videoPushModel = videoPushModel;
     }
 }

@@ -13,8 +13,10 @@ import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.applink.RouteManager;
@@ -22,10 +24,13 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationCacheHandler;
-import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -178,23 +183,23 @@ public abstract class BaseNotification {
         return context.getResources().getDimensionPixelSize(R.dimen.notif_height);
     }
 
-    PendingIntent createMainPendingIntent(String appLinks, int requestCode) {
+    PendingIntent createMainPendingIntent(BaseNotificationModel baseNotificationModel, int requestCode) {
         PendingIntent resultPendingIntent;
-        Intent intent = RouteManager.getIntent(context, appLinks);
-        /*Bundle bundle = new Bundle();
-        //bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
-        //bundle.putInt(Constant.EXTRA_NOTIFICATION_TYPE, notificationType);
-        //bundle.putInt(Constant.EXTRA_NOTIFICATION_ID, notificationId);
-        intent.putExtras(bundle);*/
+        Intent intent = new Intent(context, CMBroadcastReceiver.class);
+        intent.setAction(CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK);
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
+        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.getAppLink());
+        intent.putExtras(getBundle(baseNotificationModel));
+        intent = getCouponCode(intent);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getActivity(
+            resultPendingIntent = PendingIntent.getBroadcast(
                     context,
                     requestCode,
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
         } else {
-            resultPendingIntent = PendingIntent.getActivity(
+            resultPendingIntent = PendingIntent.getBroadcast(
                     context,
                     getRequestCode(),
                     intent,
@@ -238,6 +243,38 @@ public abstract class BaseNotification {
         }
         cacheHandler.saveIntValue(context, CM_REQUEST_CODE, requestCode + 1);
         return requestCode;
+    }
+
+    private Bundle getBundle(BaseNotificationModel baseNotificationModel) {
+        Bundle bundle = new Bundle();
+        if (baseNotificationModel.getVideoPushModel() != null) {
+            bundle = jsonToBundle(bundle, baseNotificationModel.getVideoPushModel());
+        }
+        if (baseNotificationModel.getCustomValues() != null) {
+            bundle = jsonToBundle(bundle, baseNotificationModel.getCustomValues());
+        }
+        return bundle;
+    }
+
+    private Bundle jsonToBundle(Bundle bundle, JSONObject jsonObject) {
+        try {
+            Iterator iterator = jsonObject.keys();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                String value = jsonObject.getString(key);
+                bundle.putString(key, value);
+            }
+        } catch (Exception e) {
+
+        }
+        return bundle;
+    }
+
+    private Intent getCouponCode(Intent intent) {
+
+        if (baseNotificationModel.getCustomValues() != null)
+            intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, baseNotificationModel.getCustomValues().optString(CMConstant.CustomValuesKeys.COUPON_CODE));
+        return intent;
     }
 }
 

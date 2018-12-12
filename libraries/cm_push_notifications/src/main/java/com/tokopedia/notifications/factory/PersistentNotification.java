@@ -32,7 +32,7 @@ public class PersistentNotification extends BaseNotification {
         NotificationCompat.Builder builder = getBuilder();
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createMainPendingIntent(baseNotificationModel.getAppLink(), getRequestCode()));
+        builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
         builder.setAutoCancel(false);
         builder.setOngoing(true);
         if (baseNotificationModel.getPersistentButtonList() == null || baseNotificationModel.getPersistentButtonList().size() == 0)

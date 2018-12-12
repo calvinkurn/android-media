@@ -24,7 +24,7 @@ public class ImageNotification extends BaseNotification {
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setContentText(baseNotificationModel.getMessage());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createMainPendingIntent(baseNotificationModel.getAppLink(), getRequestCode()));
+        builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
         builder.setAutoCancel(true);
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
         setBigPictureNotification(builder, baseNotificationModel);

@@ -21,7 +21,7 @@ public interface CMConstant {
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
-        String COUPON_CODE_NOTIFICATION = "coupon";
+       // String COUPON_CODE_NOTIFICATION = "coupon";
     }
 
 
@@ -48,11 +48,16 @@ public interface CMConstant {
         String TEXT = "text";
 
         String CUSTOM_VALUE = "customValues";
+
+        String VIDEO_DATA = "videoData";
+
     }
 
     interface ReceiverExtraData {
         String ACTION_BUTTON_APP_LINK = "action_button_app_link";
         String PERSISTENT_BUTTON_DATA = "persistent_data";
+        String ACTION_APP_LINK = "action_app_link";
+
 
     }
 
@@ -70,6 +75,7 @@ public interface CMConstant {
         String ACTION_ON_NOTIFICATION_DISMISS = "com.tokopedia.notification.ACTION_ON_NOTIFICATION_DISMISS";
         String ACTION_ON_COPY_COUPON_CODE = "com.tokopedia.notification.ACTION_ON_COPY_COUPON_CODE";
         String ACTION_PERSISTENT_CLICK = "com.tokopedia.notification.ACTION_PERSISTENT_CLICK";
+        String ACTION_NOTIFICATION_CLICK = "com.tokopedia.notification.ACTION_NOTIFICATION_CLICK";
 
     }
 
