@@ -5,6 +5,7 @@ import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
@@ -51,12 +52,12 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData)));
-                    BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(orderData));
+                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData)));
+                    BranchSdkUtils.sendCommerceEvent(MainApplication.getAppContext(), getTrackignBranchIOData(orderData));
                     indexOrdersData++;
                 }
 
-                PurchaseTracking.appsFlyerPurchaseEvent(getAppsFlyerTrackingData(paymentData.getOrders()),"MarketPlace");
+                PurchaseTracking.appsFlyerPurchaseEvent(MainApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()),"MarketPlace");
 
             }
             return true;

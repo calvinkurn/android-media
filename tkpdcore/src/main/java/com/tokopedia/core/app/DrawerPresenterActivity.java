@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;

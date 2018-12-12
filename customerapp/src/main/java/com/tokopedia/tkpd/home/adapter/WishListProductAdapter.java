@@ -207,10 +207,10 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
             if (product.getOfficial()) {
-                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
-                viewHolder.location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
+                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
+                viewHolder.location.setText(context.getResources().getString(com.tokopedia.core2.R.string.authorized));
             } else {
-                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
+                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
                 viewHolder.location.setText(product.getShopLocation());
             }
             setProductImage(viewHolder, product.getImgUri());
@@ -236,10 +236,10 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
         if (product.getOfficial()) {
-            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
-            viewHolder.location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
+            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
+            viewHolder.location.setText(context.getResources().getString(com.tokopedia.core2.R.string.authorized));
         } else {
-            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
+            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core2.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
             viewHolder.location.setText(product.getShopLocation());
         }
         setProductImage(viewHolder, product.getImgUri());
@@ -268,10 +268,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View view) {
                 if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
-
-                    UnifyTracking.eventWishlistView(product.getName());
-                    wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position + 1), product.getProductAsObjectDataLayerForWishlistClick(position + 1));
-
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getName());
+                    wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position+1), product.getProductAsObjectDataLayerForWishlistClick(position+1));
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
@@ -279,7 +277,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
-                    UnifyTracking.eventWishlistView(product.getProductName());
+                    UnifyTracking.eventWishlistView(view.getContext(), product.getProductName());
                     context.startActivity(
                             ProductDetailRouter.createInstanceProductDetailInfoActivity(
                                     context, getProductDataToPass((RecentView) data.get(position))
@@ -408,7 +406,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventWishlistBuy();
+                UnifyTracking.eventWishlistBuy(v.getContext());
                 if (wishlistView != null) wishlistView.displayAddToCart(productId);
             }
         };

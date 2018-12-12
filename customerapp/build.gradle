@@ -273,6 +273,7 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)

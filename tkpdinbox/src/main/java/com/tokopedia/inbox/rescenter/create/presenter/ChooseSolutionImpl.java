@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.facade.NetworkParam;
