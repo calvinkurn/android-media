@@ -31,7 +31,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.seller)
-    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.logisticdata)
 

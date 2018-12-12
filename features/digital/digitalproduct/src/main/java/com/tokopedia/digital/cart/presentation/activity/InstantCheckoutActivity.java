@@ -20,12 +20,14 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.presentation.model.InstantCheckoutData;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 
 import butterknife.BindView;
@@ -169,24 +171,20 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
                 finish();
                 return true;
             } else {
-                if (paymentModuleRouter != null
-                        && paymentModuleRouter.isSupportedDelegateDeepLink(url)
-                        && paymentModuleRouter.getIntentDeepLinkHandlerActivity() != null) {
-                    Intent intent = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
-                    intent.setData(Uri.parse(url));
-                    startActivity(intent);
+                if (RouteManager.isSupportApplink(InstantCheckoutActivity.this, url)) {
+                    RouteManager.route(InstantCheckoutActivity.this, url);
                     finish();
                     return true;
-                } else if (paymentModuleRouter != null) {
-                    String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
-                    if (urlFinal == null)
-                        return super.shouldOverrideUrlLoading(view, url);
-                    view.loadUrl(
-                            urlFinal,
-                            paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
-                    );
-                    return true;
                 } else {
+                    if (paymentModuleRouter != null) {
+                        String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
+                        if (urlFinal == null)
+                            return super.shouldOverrideUrlLoading(view, url);
+                        view.loadUrl(
+                                urlFinal,
+                                paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
+                        );
+                    }
                     return super.shouldOverrideUrlLoading(view, url);
                 }
             }

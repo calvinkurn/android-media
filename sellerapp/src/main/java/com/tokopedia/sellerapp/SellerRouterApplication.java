@@ -46,7 +46,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
@@ -663,11 +662,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public String getSchemeAppLinkCancelPayment() {
-        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
-    }
-
-    @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
     }
@@ -698,7 +692,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return deepLinkDelegate.supportsUri(appLinks);
     }
 
-    @Override
     public Intent getIntentDeepLinkHandlerActivity() {
         return new Intent(this, DeepLinkHandlerActivity.class);
     }
@@ -887,16 +880,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getFlavor() {
         return BuildConfig.FLAVOR;
-    }
-
-    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
-        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
-                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
-            actionApplink(activity, Constants.Applinks.SellerApp.SELLER_APP_HOME);
-        } else {
-            actionApplink(activity, appLinkScheme);
-        }
-
     }
 
     @Override

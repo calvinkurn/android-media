@@ -793,7 +793,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return isSupportApplink(appLinks);
     }
 
-    @Override
     public Intent getIntentDeepLinkHandlerActivity() {
         return new Intent(this, DeeplinkHandlerActivity.class);
     }
@@ -1292,11 +1291,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getSchemeAppLinkCancelPayment() {
-        return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
-    }
-
-    @Override
     public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
         return CartDigitalActivity.newInstance(this, bundle);
     }
@@ -1475,16 +1469,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GMFeaturedProductDomainModel gmFeaturedProductDomainModel = new GMFeaturedProductDomainModel();
         gmFeaturedProductDomainModel.setData(new ArrayList<GMFeaturedProductDomainModel.Datum>());
         return Observable.just(gmFeaturedProductDomainModel);
-    }
-
-    @Override
-    public void actionAppLinkPaymentModule(Activity activity, String appLinkScheme) {
-        if (appLinkScheme.equalsIgnoreCase(Constants.Applinks.HOME)
-                || appLinkScheme.contains(Constants.Applinks.SellerApp.SELLER_APP_HOME)) {
-            actionApplink(activity, Constants.Applinks.HOME);
-        } else {
-            actionApplink(activity, appLinkScheme);
-        }
     }
 
     @Override

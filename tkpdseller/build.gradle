@@ -53,7 +53,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
 
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

@@ -78,7 +78,7 @@ include "features:merchant:shop_settings"
 include "features:operational:contact_us"
 
 include "features:payment:payment"
-include "features:payment:payment"
+//include "features:payment:payment_no_op"
 include "features:payment:pms"
 //include "features:payment:pms_no_op"
 include "features:payment:withdraw"

@@ -34,6 +34,8 @@ import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
@@ -375,9 +377,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
                 String deepLinkUrl = Constant.TempRedirectPayment.APP_LINK_SCHEME_WEB_VIEW
                         + "?url=" + URLEncoder.encode(url);
-                paymentModuleRouter.actionAppLinkPaymentModule(
-                        TopPayActivity.this, deepLinkUrl
-                );
+                RouteManager.route(TopPayActivity.this, deepLinkUrl);
                 return true;
             } else {
 //                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
@@ -408,29 +408,23 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
-                if (paymentModuleRouter != null
-                        && paymentModuleRouter.getSchemeAppLinkCancelPayment() != null
-                        && paymentModuleRouter.getSchemeAppLinkCancelPayment().equalsIgnoreCase(url)) {
+                if (ApplinkConst.PAYMENT_BACK_TO_DEFAULT.equalsIgnoreCase(url)) {
                     if (isEndThanksPage()) callbackPaymentSucceed();
                     else callbackPaymentCanceled();
                     return true;
-                } else if (paymentModuleRouter != null
-                        && paymentModuleRouter.isSupportedDelegateDeepLink(url)
-                        && paymentModuleRouter.getIntentDeepLinkHandlerActivity() != null) {
-                    Intent intent = paymentModuleRouter.getIntentDeepLinkHandlerActivity();
-                    intent.setData(Uri.parse(url));
-                    navigateToActivity(intent);
-                    return true;
-                } else if (paymentModuleRouter != null) {
-                    String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
-                    if (urlFinal == null)
-                        return super.shouldOverrideUrlLoading(view, url);
-                    view.loadUrl(
-                            urlFinal,
-                            paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
-                    );
+                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url)) {
+                    RouteManager.route(TopPayActivity.this, url);
                     return true;
                 } else {
+                    if (paymentModuleRouter != null) {
+                        String urlFinal = paymentModuleRouter.getGeneratedOverrideRedirectUrlPayment(url);
+                        if (urlFinal == null)
+                            return super.shouldOverrideUrlLoading(view, url);
+                        view.loadUrl(
+                                urlFinal,
+                                paymentModuleRouter.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal)
+                        );
+                    }
                     return super.shouldOverrideUrlLoading(view, url);
                 }
             }
@@ -498,7 +492,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                showError(view, WebViewClient.ERROR_TIMEOUT);
+                                showErrorTimeout(view);
                             }
                         });
                     }
@@ -507,18 +501,9 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
         }
 
-        private void showError(WebView view, int errorCode) {
-            String message;
-            switch (errorCode) {
-                case WebViewClient.ERROR_TIMEOUT:
-                    message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
-                    break;
-                default:
-                    message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
-                    break;
-            }
+        private void showErrorTimeout(WebView view) {
             view.stopLoading();
-            showToastMessageWithForceCloseView(message);
+            showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
         }
     }
 
