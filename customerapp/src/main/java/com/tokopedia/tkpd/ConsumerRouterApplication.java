@@ -2663,7 +2663,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChatBotIntent(Context context, String messageId) {
        return RouteManager.getIntent(context, ApplinkConst.CHATBOT
-                .replace(ApplinkConst.Chat.MESSAGE_ID, messageId));
+                .replace(String.format("{%s}",ApplinkConst.Chat.MESSAGE_ID), messageId));
     }
 
     public UseCase<String> setCreditCardSingleAuthentication() {

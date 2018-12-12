@@ -70,7 +70,7 @@ public interface ApplinkConst {
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
-    String CHATBOT = "tokopedia://topchat/{message_id}?is_chat_bot=true";
+    String CHATBOT = "tokopedia://chatbot/{message_id}";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
     String REFERRAL = "tokopedia://referral";
     String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
