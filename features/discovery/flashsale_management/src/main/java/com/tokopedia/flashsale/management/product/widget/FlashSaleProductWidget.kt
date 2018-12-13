@@ -42,6 +42,9 @@ class FlashSaleProductWidget @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Only show the stock statistics only if the product is accepted and outside the inReview and Ready State
+     */
     fun shouldShowStatisticPostSubmission(item: FlashSaleProductItem?): Boolean {
         return item is FlashSalePostProductItem &&
                 item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.IN_REVIEW &&
@@ -88,6 +91,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 }
             } else { // item is postsubmission.
                 ivCheckMark.visibility = View.GONE
+                // When campaign is "inReview", all product status become "Waiting", so we ignore the real status.
                 if (item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.IN_REVIEW) {
                     tvStatus.text = context.getString(R.string.flash_sale_waiting)
                     val statusColor = StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
@@ -95,7 +99,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                     tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
                     tvStatus.visibility = View.VISIBLE
                 } else {
-                    val statusText = item.getCampaignAdminStatusId().getAdminStatusString(context)
+                    val statusText = item.getCampaignAdminStatusId().getAdminStatusStringAfterReview(context)
                     if (statusText.isEmpty()) {
                         tvStatus.visibility = View.GONE
                     } else {
