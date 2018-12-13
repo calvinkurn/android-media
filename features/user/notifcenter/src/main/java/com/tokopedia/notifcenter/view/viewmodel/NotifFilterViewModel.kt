@@ -32,6 +32,6 @@ data class NotifFilterViewModel(
         const val FILTER_FEATURE_UPDATE_TEXT = "Feature Update"
 
         const val FILTER_EVENT_ID = 8
-        const val FILTER_EVENT_TEXT = "EVENT"
+        const val FILTER_EVENT_TEXT = "Event"
     }
 }
