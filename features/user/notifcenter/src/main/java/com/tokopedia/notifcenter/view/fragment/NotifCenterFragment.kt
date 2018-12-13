@@ -233,8 +233,6 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
             menuList = ArrayList<Menus.ItemMenus>()
             menuList.add(filterAllMenu)
-            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_BUYER_TEXT))
-            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_SELLER_TEXT))
             menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_FOR_YOU_TEXT))
             menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_PROMO_TEXT))
             menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_INSIGHT_TEXT))
