@@ -16,6 +16,8 @@ import com.tokopedia.common.travel.database.TravelPassengerDb_Table;
 import com.tokopedia.common.travel.domain.TravelPassengerMapper;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import rx.Observable;
@@ -88,7 +90,7 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
         travelPassengerDb.setPassportExpiry(travelPassengerEntity.getPassportExpiry());
         travelPassengerDb.setTitle(travelPassengerEntity.getTitle());
         travelPassengerDb.setIdNumber(travelPassengerEntity.getIdNumber());
-        travelPassengerDb.setIsBuyer(travelPassengerEntity.getIsBuyer());
+        travelPassengerDb.setIsBuyer(travelPassengerEntity.isBuyer());
         travelPassengerDb.setPaxType(travelPassengerEntity.getPaxType());
         travelPassengerDb.setTravelId(travelPassengerEntity.getTravelId());
         travelPassengerDb.setUserId(travelPassengerEntity.getUserId());
