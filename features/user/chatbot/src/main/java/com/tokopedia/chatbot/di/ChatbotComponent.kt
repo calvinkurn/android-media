@@ -11,6 +11,6 @@ import dagger.Component
 @Component(modules = arrayOf(ChatbotModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface ChatbotComponent {
 
-    fun inject(inboxTalkFragment: ChatbotFragment)
+    fun inject(chatbotFragment: ChatbotFragment)
 
 }
