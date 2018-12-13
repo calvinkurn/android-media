@@ -6,6 +6,7 @@ import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
@@ -33,15 +34,15 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
     public static final String DEFAULT_SHOP_TYPE = "default";
-    
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
-
     private PaymentData paymentData;
+    private RequestParams requestParams;
 
-    public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes) {
+    public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes, RequestParams requestParams) {
         this.sessionHandler = sessionHandler;
         this.shopTypes = shopTypes;
+        this.requestParams = requestParams;
     }
 
     @Override
@@ -108,7 +109,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
-//        purchase.setCoupon(couponCode);
+        purchase.setCurrentSite(checkCurrentSite(requestParams));
+
 
         for (Product product : getProductList(orderData)) {
             purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
@@ -162,6 +164,28 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         return "";
     }
+
+    private String checkCurrentSite(RequestParams requestParams) {
+        String platform = requestParams.getString(ThanksTrackerConst.Key.PLATFORM, "");
+        String currentSite = "";
+
+        if (platform.equals("marketplace")) {
+            currentSite = "tokopediamarketplace";
+        } else {
+            currentSite = "tokopediadigital";
+        }
+
+        return currentSite;
+    }
+
+//    private String getCurrentSite(OrderData orderData) {
+//        String platform =
+//        if (orderData.) {
+//
+//        } else {
+//
+//        }
+//    }
 
     private String getPaymentType(PaymentMethod paymentMethod) {
         if (paymentMethod != null && paymentMethod.getMethod() != null) {
