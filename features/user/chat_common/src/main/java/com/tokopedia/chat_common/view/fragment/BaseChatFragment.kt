@@ -42,7 +42,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         , ImageUploadListener, ProductAttachmentListener
         , BaseChatContract.View {
 
-    protected lateinit var viewState: BaseChatViewState
+    open lateinit var viewState: BaseChatViewState
 
     protected var messageId: String = ""
     protected var senderId = ""
@@ -65,6 +65,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewState = BaseChatViewStateImpl(view)
+        viewState.init()
 
         setupViewData(arguments, savedInstanceState)
         prepareView(view)

@@ -1,9 +1,13 @@
 package com.tokopedia.chat_common.view
 
+import android.support.annotation.NonNull
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.chat_common.BaseChatAdapter
@@ -11,63 +15,43 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
-import rx.functions.Func1
 import java.util.concurrent.TimeUnit
 
 /**
  * @author : Steven 29/11/18
  */
+open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewState {
 
-open class BaseChatViewStateImpl(open var view: View) : BaseChatViewState {
+    protected lateinit var recyclerView: RecyclerView
+    protected lateinit var mainLoading: ProgressBar
+    protected lateinit var replyEditText: EditText
+    protected lateinit var replyBox: RelativeLayout
+    protected lateinit var actionBox: LinearLayout
+    protected lateinit var sendButton: View
+    protected lateinit var notifier: View
 
-    protected var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-    protected var replyBox: RelativeLayout = view.findViewById(R.id.reply_box)
-    protected var actionBox: LinearLayout = view.findViewById(R.id.add_comment_area)
-    protected var mainLoading: ProgressBar = view.findViewById(R.id.progress)
+    protected lateinit var replyWatcher: Observable<String>
+    protected lateinit var replyIsTyping: Observable<Boolean>
 
-    protected var sendButton: View = view.findViewById(R.id.send_but)
-    protected var replyEditText: EditText = view.findViewById(R.id.new_comment)
-    protected var attachButton: ImageView = view.findViewById(R.id.add_url)
-    protected var pickerButton: View = view.findViewById(R.id.image_picker)
-    protected var maximize: View = view.findViewById(R.id.maximize)
-    protected var notifier: View = view.findViewById(R.id.notifier)
+    open fun init(){
+        recyclerView = view.findViewById(R.id.recycler_view)
+        mainLoading = view.findViewById(R.id.progress)
+        replyEditText = view.findViewById(R.id.new_comment)
+        replyBox = view.findViewById(R.id.reply_box)
+        actionBox = view.findViewById(R.id.add_comment_area)
+        sendButton = view.findViewById(R.id.send_but)
+        notifier = view.findViewById(R.id.notifier)
 
-    protected var replyWatcher: Observable<String>
-    protected var replyIsTyping: Observable<Boolean>
-
-    init {
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
-        replyEditText.setOnFocusChangeListener { v, hasFocus ->
+        replyEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 scrollDownWhenInBottom()
             }
         }
         replyWatcher = EventsWatcher.text(replyEditText)
 
-        replyIsTyping = replyWatcher.map(Func1 { t -> t.length > 0 })
-
-        replyIsTyping.subscribe(Action1 {
-            if (it) {
-                minimizeTools()
-            }
-        })
-
-        maximize.setOnClickListener { maximizeTools() }
-//        sendButton.setOnClickListener { presenter.sendMessage(replyEditText.text.toString()) }
-    }
-
-    private fun minimizeTools() {
-        maximize.visibility = View.VISIBLE
-        pickerButton.visibility = View.GONE
-        attachButton.visibility = View.GONE
-    }
-
-    private fun maximizeTools() {
-        maximize.visibility = View.GONE
-        pickerButton.visibility = View.VISIBLE
-        attachButton.visibility = View.VISIBLE
+        replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
     }
 
     private fun scrollDownWhenInBottom() {
@@ -88,29 +72,12 @@ open class BaseChatViewStateImpl(open var view: View) : BaseChatViewState {
         return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
 
-    fun developmentView() {
-        actionBox?.visibility = View.VISIBLE
-    }
-
-    fun setDefault() {
-        sendButton.requestFocus()
-    }
-
-    fun setNonReplyable() {
-        actionBox?.visibility = View.GONE
-
-    }
-
-    fun setReplyable() {
-        actionBox?.visibility = View.VISIBLE
-    }
-
     fun showLoading() {
-        mainLoading?.visibility = View.VISIBLE
+        mainLoading.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        mainLoading?.visibility = View.GONE
+        mainLoading.visibility = View.GONE
     }
 
     fun setAdapter(adapter: BaseChatAdapter) {
@@ -147,14 +114,6 @@ open class BaseChatViewStateImpl(open var view: View) : BaseChatViewState {
         scrollDownWhenInBottom()
     }
 
-    fun setActionable(actionable: Boolean) {
-        val count = actionBox.childCount
-        for (i in 0 until count) {
-            actionBox.getChildAt(i).isEnabled = actionable
-
-        }
-    }
-
     override fun onShowStartTyping() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -171,7 +130,7 @@ open class BaseChatViewStateImpl(open var view: View) : BaseChatViewState {
         replyEditText.setText("")
     }
 
-    protected fun showReplyBox(){
+    protected fun showReplyBox() {
         //TODO SHOW REPLY BOX
 
     }

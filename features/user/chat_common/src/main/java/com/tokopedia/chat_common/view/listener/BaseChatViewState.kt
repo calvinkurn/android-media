@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 interface BaseChatViewState {
 
+    fun init()
+
     fun onShowStartTyping()
 
     fun onShowStopTyping()

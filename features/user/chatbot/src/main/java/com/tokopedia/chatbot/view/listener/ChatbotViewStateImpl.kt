@@ -1,11 +1,13 @@
 package com.tokopedia.chatbot.view.listener
 
+import android.support.annotation.NonNull
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
@@ -16,23 +18,28 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * @author by nisie on 07/12/18.
  */
-class ChatbotViewStateImpl(override var view: View,
-                           private val userSession: UserSessionInterface)
-    : BaseChatViewStateImpl(view), ChatbotViewState {
+class ChatbotViewStateImpl(@NonNull override val view: View,
+                           @NonNull private val userSession: UserSessionInterface
+) : BaseChatViewStateImpl(view), ChatbotViewState {
 
+    private lateinit var pickerButton: View
 
     private lateinit var adapter: ChatbotAdapter
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView
-
     private lateinit var reasonBottomSheet: ReasonBottomSheet
+
+
+    override fun init() {
+        pickerButton = view.findViewById(R.id.image_picker)
+    }
 
     override fun onSuccessLoadFirstTime(list: ArrayList<Visitable<*>>) {
         hideLoading()
         adapter.addElement(list)
         scrollToBottom()
         showReplyBox()
-        showAttachButton()
+        showPickerButton()
     }
 
     override fun onCheckToHideQuickReply(visitable: Visitable<*>) {
@@ -70,8 +77,8 @@ class ChatbotViewStateImpl(override var view: View,
         rvQuickReply.visibility = View.GONE
     }
 
-    private fun showAttachButton() {
-        attachButton.visibility = View.VISIBLE
+    private fun showPickerButton() {
+        pickerButton.visibility = View.VISIBLE
     }
 
 }
