@@ -1645,7 +1645,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
 //        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
         if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_chat_add_grey));
-        listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
+        listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_chat_delete));
         if (showChatSettingMenu) {
             listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
         }
@@ -1807,11 +1807,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private void setBlockedLayout() {
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
             if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
-                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), "chat promosi", senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), InboxChatConstant.CHAT_PROMOTION, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
             } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
-                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), "semua chat", senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), InboxChatConstant.CHAT_BOTH, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
             } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
-                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), "chat personal", senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), InboxChatConstant.CHAT_PERSONAL, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
             }
         }
     }
@@ -1821,11 +1821,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         String toastMessage = "";
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
             if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
-                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), "chat promosi", senderName);
+                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), InboxChatConstant.CHAT_PROMOTION, senderName);
             } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
-                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), "semua chat", senderName);
+                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), InboxChatConstant.CHAT_BOTH, senderName);
             } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
-                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), "chat personal", senderName);
+                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), InboxChatConstant.CHAT_PERSONAL, senderName);
             }
             ToasterNormal.show(getActivity(), toastMessage);
         }

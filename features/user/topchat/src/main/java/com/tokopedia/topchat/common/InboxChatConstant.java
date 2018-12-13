@@ -25,5 +25,8 @@ public interface InboxChatConstant {
     String MSG_ID = "messageID";
     String BLOCK_TYPE = "blockType";
     String BLOKCED = "isBlocked";
+    String CHAT_PROMOTION = "chat promosi";
+    String CHAT_PERSONAL = "chat personal";
+    String CHAT_BOTH = "semua chat";
 
 }
