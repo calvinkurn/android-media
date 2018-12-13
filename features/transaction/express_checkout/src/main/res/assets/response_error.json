@@ -1,0 +1,74 @@
+{
+  "header":{
+    "process_time":62.82082,
+    "messages":[
+      "Invalid ATC Express Checkout"
+    ],
+    "reason":"",
+    "error_code":"200"
+  },
+  "data":{
+    "errors":[
+      "Barang tidak aktif.",
+      "Toko tidak valid.",
+      "Produk tidak tersedia."
+    ],
+    "error_code":0,
+    "success":0,
+    "max_quantity":0,
+    "max_char_note":0,
+    "messages":{
+    },
+    "cart":{
+      "errors":[
+      ],
+      "group_shop":[
+      ]
+    },
+    "is_coupon_active":0,
+    "kero_token":"",
+    "kero_discom_token":"",
+    "kero_unix_time":0,
+    "enable_partial_cancel":false,
+    "donation":{
+      "Title":"",
+      "Nominal":0,
+      "Description":""
+    },
+    "promo_suggestion":{
+      "cta":"",
+      "cta_color":"",
+      "is_visible":0,
+      "promo_code":"",
+      "text":""
+    },
+    "autoapply":{
+      "success":false,
+      "code":"",
+      "is_coupon":0,
+      "discount_amount":0,
+      "title_description":"",
+      "message_success":"",
+      "promo_id":0
+    },
+    "user_profile_default":{
+      "profile_id":0,
+      "status":0,
+      "address_id":0,
+      "address_name":"",
+      "receiver_name":"",
+      "address_street":"",
+      "district_name":"",
+      "city_name":"",
+      "province_name":"",
+      "phone_no":"",
+      "gateway_code":"",
+      "checkout_param":"",
+      "image":"",
+      "description":"",
+      "url":"",
+      "service_id":0
+    }
+  },
+  "status":"OK"
+}

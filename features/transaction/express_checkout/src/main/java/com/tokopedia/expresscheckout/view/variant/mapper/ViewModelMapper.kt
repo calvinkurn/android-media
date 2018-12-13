@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
 import com.tokopedia.expresscheckout.domain.entity.UserProfile
-import com.tokopedia.expresscheckout.domain.entity.variant.Child
-import com.tokopedia.expresscheckout.domain.entity.variant.Option
-import com.tokopedia.expresscheckout.domain.entity.variant.ProductVariant
-import com.tokopedia.expresscheckout.domain.entity.variant.Variant
+import com.tokopedia.transactiondata.entity.response.variant.Child
+import com.tokopedia.transactiondata.entity.response.variant.Option
+import com.tokopedia.transactiondata.entity.response.variant.ProductVariant
+import com.tokopedia.transactiondata.entity.response.variant.Variant
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Product
 
@@ -24,9 +24,9 @@ class ViewModelMapper : DataMapper {
         }
         dataList.add(convertToProductViewModel(expressCheckoutFormData))
         dataList.add(convertToQuantityViewModel(expressCheckoutFormData))
-        if (validateVariantCombination(expressCheckoutFormData.cart.productVariants[0]) &&
-                validateVariantChildren(expressCheckoutFormData.cart.productVariants[0])) {
-            for (variant: Variant in expressCheckoutFormData.cart.productVariants[0].variants) {
+        if (validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariants[0]) &&
+                validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariants[0])) {
+            for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariants[0].variants) {
                 dataList.add(convertToTypeVariantViewModel(variant))
             }
         }
