@@ -1,5 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
@@ -18,6 +19,7 @@ interface CheckoutVariantContract {
 
         fun showGetListError(t: Throwable?)
 
+        fun getActivityContext(): Context?
     }
 
     interface Presenter : CustomerPresenter<View> {

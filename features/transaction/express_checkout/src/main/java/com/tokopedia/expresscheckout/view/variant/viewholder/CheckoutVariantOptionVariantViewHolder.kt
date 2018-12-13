@@ -7,17 +7,17 @@ import android.view.View
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.VariantChangeListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
-import kotlinx.android.synthetic.main.item_variant_option.view.*
+import kotlinx.android.synthetic.main.item_checkout_variant_option.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantOptionVariantViewHolder(val view: View, val listener: VariantChangeListener) :
+class CheckoutVariantOptionVariantViewHolder( view: View?, val listener: VariantChangeListener) :
         RecyclerView.ViewHolder(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_variant_option
+        val LAYOUT = R.layout.item_checkout_variant_option
     }
 
     fun bind(viewModel: CheckoutVariantOptionVariantViewModel?) {

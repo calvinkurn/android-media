@@ -8,7 +8,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/rl_bottom_action_container">
+        android:layout_above="@+id/rl_bottom_action_container"
+        android:background="@color/white">
 
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/recycler_view"
@@ -29,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         android:orientation="horizontal"
         android:padding="@dimen/dp_16">
 
@@ -46,10 +48,10 @@
                 android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
+                android:text="Total Tagihan"
                 android:textColor="#8a000000"
                 android:textSize="14sp"
-                android:textStyle="normal"
-                android:text="Total Tagihan" />
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/tv_total_payment_value"
@@ -76,11 +78,11 @@
             android:background="@drawable/bg_button_orange_enabled"
             android:fontFamily="sans-serif"
             android:gravity="center"
+            android:text="Beli"
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:text="Beli" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 

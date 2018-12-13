@@ -3,6 +3,7 @@ package com.tokopedia.expresscheckout.domain.entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply
+import com.tokopedia.transactiondata.entity.response.cartlist.Messages
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Donation
 
@@ -62,6 +63,18 @@ data class ExpressCheckoutFormData(
 
         @SerializedName("user_profile_default")
         @Expose
-        val userProfileDefault: UserProfile?
+        val userProfileDefault: UserProfile?,
+
+        @SerializedName("messages")
+        @Expose
+        val messages: Messages?,
+
+        @SerializedName("max_quantity")
+        @Expose
+        val maxQuantity: Int?,
+
+        @SerializedName("max_char_note")
+        @Expose
+        val maxCharNote: Int?
 
 )

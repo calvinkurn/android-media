@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
@@ -24,6 +25,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     val contextView: Context get() = activity!!
     lateinit var list: List<Visitable<*>>
     lateinit var presenter: CheckoutVariantPresenter
+    lateinit var adapter: CheckoutVariantAdapter
+    var isDataLoaded = false
 
     companion object {
         fun createInstance(): CheckoutVariantFragment {
@@ -39,7 +42,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_detail_product_page, container, false)
+        val view = inflater.inflate(R.layout.fragment_detail_product_page, container, false)
+        getRecyclerView(view).addItemDecoration(CheckoutVariantItemDecorator())
+
+        return view
     }
 
     override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypefactory {
@@ -93,7 +99,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun loadData(page: Int) {
-        presenter.loadData()
+        if (!isDataLoaded) {
+            presenter.loadData()
+        }
     }
 
     override fun showToasterError(message: String?) {
@@ -102,11 +110,22 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showData(arrayList: ArrayList<Visitable<*>>) {
-        (adapter as CheckoutVariantAdapter).addDataViewModel(arrayList)
+        hideLoading()
+        adapter.clearAllElements()
+        adapter.addDataViewModel(arrayList)
         adapter.notifyDataSetChanged()
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypefactory> {
+        adapter = CheckoutVariantAdapter(adapterTypeFactory)
+        return adapter
     }
 
     override fun showGetListError(t: Throwable?) {
         super.showGetListError(t)
+    }
+
+    override fun getActivityContext(): Context? {
+        return activity
     }
 }

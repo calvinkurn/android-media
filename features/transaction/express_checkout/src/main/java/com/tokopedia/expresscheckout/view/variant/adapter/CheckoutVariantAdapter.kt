@@ -9,9 +9,8 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantAdapter(
-        var adapterTypefactory: CheckoutVariantAdapterTypefactory
-) : BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypefactory>(adapterTypefactory) {
+class CheckoutVariantAdapter(adapterTypefactory: CheckoutVariantAdapterTypefactory) :
+        BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypefactory>(adapterTypefactory) {
 
     fun addDataViewModel(visitableList: ArrayList<Visitable<*>>) {
         visitables.addAll(visitableList)

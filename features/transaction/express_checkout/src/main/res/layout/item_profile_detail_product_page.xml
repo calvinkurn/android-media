@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_4">
 
     <LinearLayout
@@ -53,8 +54,8 @@
                         style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp_27"
-                        android:layout_marginLeft="@dimen/dp_8"
                         android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
                         android:ellipsize="end"
                         android:gravity="center_vertical"
                         android:lineSpacingExtra="6sp"
@@ -80,8 +81,8 @@
             android:id="@+id/v_profile_separator_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/bg_line_separator" />
 
         <LinearLayout
@@ -104,8 +105,8 @@
                 style="@style/TextSmallNormalBlack70"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
                 android:layout_weight="1"
                 android:lineSpacingExtra="4sp"
                 tools:text="1 hari" />
@@ -159,8 +160,8 @@
             android:id="@+id/v_profile_separator_bottom"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_8"
             android:background="@drawable/bg_line_separator" />
 
         <LinearLayout
@@ -183,7 +184,7 @@
                 android:textColor="#8a000000"
                 android:textSize="14sp"
                 android:textStyle="normal"
-                tools:text="Jadikan Template Utama" />
+                android:text="Jadikan Template Utama" />
 
         </LinearLayout>
 

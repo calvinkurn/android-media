@@ -24,8 +24,9 @@ class ViewModelMapper : DataMapper {
         }
         dataList.add(convertToProductViewModel(expressCheckoutFormData))
         dataList.add(convertToQuantityViewModel(expressCheckoutFormData))
-        if (validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0]) &&
-                validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])) {
+        val variantCombinationValidation = validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
+        val variantChildrenValidation = validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
+        if (variantCombinationValidation && variantChildrenValidation) {
             for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
                 dataList.add(convertToTypeVariantViewModel(variant))
             }
@@ -123,7 +124,7 @@ class ViewModelMapper : DataMapper {
     fun validateVariantChildren(productVariantData: ProductVariantData): Boolean {
 
         for (child: Child in productVariantData.children) {
-            if (child.optionIds.size == productVariantData.variants.size) {
+            if (child.optionIds.size != productVariantData.variants.size) {
                 return false
             }
         }

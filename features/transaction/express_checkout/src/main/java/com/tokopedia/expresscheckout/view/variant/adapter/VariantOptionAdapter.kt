@@ -23,6 +23,10 @@ class VariantOptionAdapter(var dataList: ArrayList<CheckoutVariantOptionVariantV
         return dataList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return CheckoutVariantOptionVariantViewHolder.LAYOUT
+    }
+
     override fun onBindViewHolder(holder: CheckoutVariantOptionVariantViewHolder, position: Int) {
         holder.bind(dataList[position])
     }

@@ -35,7 +35,7 @@
             android:textColor="#61000000"
             android:textSize="14sp"
             android:textStyle="normal"
-            tools:text="Jumlah" />
+            android:text="Jumlah" />
 
         <LinearLayout
             android:layout_width="wrap_content"
