@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
@@ -19,8 +20,6 @@ import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.di.ChatbotComponent
-import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
@@ -44,11 +43,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var presenter: ChatbotPresenter
 
     override fun initInjector() {
-        val chatbotComponent = DaggerChatbotComponent.builder()
-                .chatbotComponent(getComponent(ChatbotComponent::class.java))
-                .build()
-        chatbotComponent.inject(this)
-        presenter.attachView(this)
+        if (activity != null && (activity as Activity).application != null) {
+            val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+
+            chatbotComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 
     override fun getScreenName(): String {
