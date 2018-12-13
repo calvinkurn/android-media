@@ -17,13 +17,13 @@ query getMojitoPostProductList($cid: Int!, $source: String!,
          id
          name
          image_url
-         price
+         price_float
          department_id
          campaign{
            campaign_id
-           original_price
+           original_price_float
            discount_percentage
-           discounted_price
+           discounted_price_float
            custom_stock
            original_custom_stock
            stock_sold_percentage
