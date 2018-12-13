@@ -155,7 +155,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun showSearchInvoiceScreen() {
         activity?.run {
             val intent = ChatbotInternalRouter.Companion.getAttachInvoiceIntent(this,
-                    userSession.userId,
+                    session.userId,
                     messageId.toInt())
             startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
         }
@@ -202,8 +202,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         ("%s?url=%s", ApplinkConst.WEBVIEW, url))) {
 
                     RouteManager.route(activity, URLGenerator.generateURLSessionLogin(url,
-                            userSession.deviceId,
-                            userSession.userId))
+                            session.deviceId,
+                            session.userId))
                 } else {
                     super.onGoToWebView(url, id)
                 }

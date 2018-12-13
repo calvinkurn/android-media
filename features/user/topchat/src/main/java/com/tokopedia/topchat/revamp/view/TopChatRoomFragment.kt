@@ -34,13 +34,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     private lateinit var adapter: BaseChatAdapter
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         initView(view)
     }
 
+    override fun getScreenName(): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun getUserSession(): UserSessionInterface {
         return session
