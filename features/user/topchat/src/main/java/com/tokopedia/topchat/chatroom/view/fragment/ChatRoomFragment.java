@@ -114,6 +114,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
 import com.tokopedia.topchat.common.util.Events;
 import com.tokopedia.topchat.common.util.ImageUploadHandlerChat;
+import com.tokopedia.topchat.common.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -215,9 +216,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private boolean isChatBot;
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
-    private String role= "";
-    private String senderName= "";
+    private String role = "";
+    private String senderName = "";
     private boolean showChatSettingMenu = false;
+    private TextView blockedText;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -281,10 +283,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         sendMessageLayout = rootView.findViewById(R.id.send_message_layout);
         chatBlockLayout = rootView.findViewById(R.id.chat_blocked_layout);
         enableChatTextView = rootView.findViewById(R.id.enable_chat_textView);
+        blockedText = rootView.findViewById(R.id.anda);
         enableChatTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onPersonalChatSettingChange(getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID), true );
+                presenter.onPersonalChatSettingChange(getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID), true);
             }
         });
         headerMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -307,7 +310,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         isChatEnabled = true;
         sendMessageLayout.setVisibility(View.VISIBLE);
         chatBlockLayout.setVisibility(View.GONE);
-        ToasterNormal.show(getActivity(), "Anda berhasil menerima semua chat dari Modo Store");
+        disableChatSettingst();
         chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
     }
 
@@ -424,7 +427,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             public void onClick(View view) {
                 replyColumn.clearFocus();
 
-                UnifyTracking.eventAttachment(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
+                UnifyTracking.eventAttachment(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_ATTACH,
                         TopChatAnalytics.Name.CHAT_DETAIL);
 
@@ -440,7 +443,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventInsertAttachment(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
+                UnifyTracking.eventInsertAttachment(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_INSERT,
                         TopChatAnalytics.Name.CHAT_DETAIL);
                 presenter.getAttachProductDialog(
@@ -462,7 +465,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     templateRecyclerView.setVisibility(View.VISIBLE);
                 }
                 presenter.sendMessage(networkType);
-                UnifyTracking.sendChat(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
+                UnifyTracking.sendChat(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
                         TopChatAnalytics.Action.CHAT_DETAIL_SEND,
                         TopChatAnalytics.Name.CHAT_DETAIL);
 
@@ -501,7 +504,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             }
         }
 
-        UnifyTracking.eventClickTemplate(getActivity(),labelCategory,
+        UnifyTracking.eventClickTemplate(getActivity(), labelCategory,
                 TopChatAnalytics.Action.TEMPLATE_CHAT_CLICK,
                 TopChatAnalytics.Name.INBOX_CHAT);
         String text = replyColumn.getText().toString();
@@ -1035,14 +1038,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 presenter.getFollowStatus(getArguments().getString(ChatRoomActivity
                         .PARAM_SENDER_ID, ""));
             case REQUEST_CODE_CHAT_SETTINGS:
-                if(resultCode == RESULT_CODE_CHAT_SETTINGS_ENABLED){
+                if (resultCode == RESULT_CODE_CHAT_SETTINGS_ENABLED) {
                     sendMessageLayout.setVisibility(View.VISIBLE);
                     templateRecyclerView.setVisibility(View.VISIBLE);
                     chatBlockLayout.setVisibility(View.GONE);
-                }else if(resultCode == RESULT_CODE_CHAT_SETTINGS_DISABLED) {
+                } else if (resultCode == RESULT_CODE_CHAT_SETTINGS_DISABLED) {
                     sendMessageLayout.setVisibility(View.GONE);
                     templateRecyclerView.setVisibility(View.GONE);
                     chatBlockLayout.setVisibility(View.VISIBLE);
+                    setBlockedLayout();
                 }
                 presenter.initialChatSettings();
                 break;
@@ -1259,7 +1263,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public void attachProductRetrieved(ArrayList<ResultProduct> resultProducts) {
-        UnifyTracking.eventSendAttachment(getActivity(),TopChatAnalytics.Category.CHAT_DETAIL,
+        UnifyTracking.eventSendAttachment(getActivity(), TopChatAnalytics.Category.CHAT_DETAIL,
                 TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
                 TopChatAnalytics.Name.CHAT_DETAIL);
 
@@ -1486,7 +1490,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             quickReplyAdapter = new QuickReplyAdapter(model, this);
             rvQuickReply.setAdapter(quickReplyAdapter);
             rvQuickReply.getAdapter().notifyDataSetChanged();
-        } else if(quickReplyAdapter != null){
+        } else if (quickReplyAdapter != null) {
             quickReplyAdapter.clearData();
             rvQuickReply.setVisibility(View.GONE);
         }
@@ -1698,7 +1702,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             ).getEvent()
                     );
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
-                } else if(itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
                     if (chatSettingsResponse == null) {
                         ToasterNormal.show(getActivity(), "Response is Null");
                     }
@@ -1782,6 +1786,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             sendMessageLayout.setVisibility(View.GONE);
             templateRecyclerView.setVisibility(View.GONE);
             chatBlockLayout.setVisibility(View.VISIBLE);
+            setBlockedLayout();
         } else {
             sendMessageLayout.setVisibility(View.VISIBLE);
             templateRecyclerView.setVisibility(View.VISIBLE);
@@ -1797,5 +1802,32 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void shouldShowChatSettingsMenu(boolean showChatSettingMenu) {
         this.showChatSettingMenu = showChatSettingMenu;
+    }
+
+    private void setBlockedLayout() {
+        if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
+            if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
+                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), "chat promosi", senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+            } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
+                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), "semua chat", senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+            } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
+                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), "chat personal", senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+            }
+        }
+    }
+
+
+    private void disableChatSettingst() {
+        String toastMessage = "";
+        if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
+            if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
+                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), "chat promosi", senderName);
+            } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
+                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), "semua chat", senderName);
+            } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
+                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), "chat personal", senderName);
+            }
+            ToasterNormal.show(getActivity(), toastMessage);
+        }
     }
 }

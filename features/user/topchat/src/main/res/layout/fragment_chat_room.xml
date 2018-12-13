@@ -201,7 +201,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="@color/black_70"
-                android:text="Anda berhenti menerima chat promosi dari Modo Store hingga 31 Juli 2018."
+                android:text="@string/chat_blocked_text"
                 />
 
             <TextView

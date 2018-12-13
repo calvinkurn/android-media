@@ -26,6 +26,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsR
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.di.DaggerChatRoomComponent;
+import com.tokopedia.topchat.common.util.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,17 +37,12 @@ import javax.inject.Inject;
 
 public class ChatRoomSettingsActivity extends BaseSimpleActivity implements ChatSettingsInterface.View, CompoundButton.OnCheckedChangeListener {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSXXX";
-    private static final String LANGUAGE_CODE = "in";
-    private static final String COUNTRY_CODE = "ID";
-
     private Switch chatPromotionSwitch, chatPersonalSwitch;
     private ConstraintLayout chatPromotionInfoView, chatPersonalInfoView;
     private CardView chatPersonalCardView, chatPromotionalcardView;
     private TextView chatPromotionInfoText, chatPersonalInfoText;
     public static final int RESULT_CODE_CHAT_SETTINGS_ENABLED = 1;
     public static final int RESULT_CODE_CHAT_SETTINGS_DISABLED = 2;
-    private Locale mLocale;
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
     private String chatRole, senderName;
@@ -173,7 +169,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
             chatPersonalSwitch.setChecked(false);
             chatPersonalInfoView.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())) {
-                SpannableString str = getInformationText(String.format(getString(R.string.chat_personal_blocked_validity), senderName, getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
+                SpannableString str = getInformationText(String.format(getString(R.string.chat_personal_blocked_validity), senderName, Utils.getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
                 chatPersonalInfoText.setText(str);
             }
         }
@@ -188,7 +184,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
             chatPromotionSwitch.setChecked(false);
             chatPromotionInfoView.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())) {
-                SpannableString str = getInformationText(String.format(getString(R.string.chat_promotion_blocked_validity), senderName, getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
+                SpannableString str = getInformationText(String.format(getString(R.string.chat_promotion_blocked_validity), senderName, Utils.getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
 
                 chatPromotionInfoText.setText(str);
             }
@@ -250,26 +246,6 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
             chatSettingsPresenter.onPromotionalChatSettingChange(isChecked, true);
 //            showPromotionToast(isChecked);
         }
-    }
-
-    public String getDateTime(String isoTime) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat(DATE_FORMAT, getLocale());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM YYYY", getLocale());
-        try {
-            Date date = inputFormat.parse(isoTime);
-            return dateFormat.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return e.getLocalizedMessage();
-        }
-
-    }
-
-
-    private Locale getLocale() {
-        if (mLocale == null)
-            mLocale = new Locale(LANGUAGE_CODE, COUNTRY_CODE, "");
-        return mLocale;
     }
 
     private SpannableString getInformationText(String text, String senderName) {
