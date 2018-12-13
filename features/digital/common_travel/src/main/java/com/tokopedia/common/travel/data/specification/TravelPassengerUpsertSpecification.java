@@ -1,7 +1,6 @@
 package com.tokopedia.common.travel.data.specification;
 
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.tokopedia.common.travel.data.specification.DbFlowSpecification;
 import com.tokopedia.common.travel.database.TravelPassengerDb_Table;
 
 /**
