@@ -55,6 +55,8 @@ import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCa
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.product.manage.list.R;
+import com.tokopedia.product.share.ProductData;
+import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -98,6 +100,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
@@ -778,50 +782,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     public void downloadBitmap(final ProductManageViewModel productManageViewModel){
-        showLoadingProgress();
-        ImageHandler.loadImageWithTargetCenterCrop(getActivity(), productManageViewModel.getImageFullUrl(), new SimpleTarget<Bitmap>(2048, 2048) {
-            @Override
-            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
-                String cashback = (productManageViewModel.getProductCashback() > 0) ? getString(R.string.pml_sticker_cashback, productManageViewModel.getProductCashback()) : "";
-                ProductManageImageSticker productManageImageSticker = new ProductManageImageSticker.Builder()
-                        .setName(productManageViewModel.getProductName() )
-                        .setPrice(productManageViewModel.getProductCurrencySymbol() + " " + price)
-                        .setShop_link(getString(R.string.pml_sticker_shop_link, shopDomain))
-                        .setCashback(cashback)
-                        .build();
+        ProductShare productShare = new ProductShare(getActivity());
 
-                try {
-                    Bitmap newImage = productManageImageSticker.processStickerToImage(bitmap, getActivity());
-                    File file = FileUtils.writeImageToTkpdPath(newImage);
+        String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
+        ProductData data = new ProductData();
+        data.setPriceText(productManageViewModel.getProductCurrencySymbol() + " " + price);
+        data.setCashbacktext((productManageViewModel.getProductCashback() > 0) ? getString(R.string.pml_sticker_cashback, productManageViewModel.getProductCashback()) : "");
+        data.setCurrencySymbol(productManageViewModel.getProductCurrencySymbol());
+        data.setProductId(productManageViewModel.getProductId());
+        data.setProductName(productManageViewModel.getProductName());
+        data.setProductUrl(productManageViewModel.getProductUrl());
+        data.setProductImageUrl(productManageViewModel.getImageFullUrl());
+        data.setShopUrl(getString(R.string.pml_sticker_shop_link, shopDomain));
 
-                    ShareData shareData = ShareData.Builder.aShareData()
-                            .setName(productManageViewModel.getProductName())
-                            .setTextContent(productManageViewModel.getProductName())
-                            .setDescription(productManageViewModel.getProductName())
-                            .setImgUri(productManageViewModel.getImageFullUrl())
-                            .setPrice(productManageViewModel.getProductPrice())
-                            .setUri(productManageViewModel.getProductUrl())
-                            .setType(ShareData.PRODUCT_TYPE)
-                            .setId(productManageViewModel.getProductId())
-                            .setPathSticker(file.getAbsolutePath())
-                            .build();
-
-                    newImage.recycle();
-                    goToShareProduct(shareData);
-                } catch (Throwable e) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
-                }
-
-                hideLoadingProgress();
-            }
-
-            @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
-                hideLoadingProgress();
-                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
-            }
+        productShare.share(data, () -> {
+            showLoadingProgress();
+            return Unit.INSTANCE;
+        }, () -> {
+            hideLoadingProgress();
+            return Unit.INSTANCE;
         });
     }
 

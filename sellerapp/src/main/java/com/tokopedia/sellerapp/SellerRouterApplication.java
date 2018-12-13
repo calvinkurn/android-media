@@ -1869,4 +1869,34 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openTopAdsDashboardApplink(Context context) {}
+
+    @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
+        return false;
+    }
+
+    @Override
+    public void eventClickFilterReview(Context context, String filterName, String productId) {
+
+    }
+
+    @Override
+    public void eventImageClickOnReview(Context context, String productId, String reviewId) {
+
+    }
+
+    @Override
+    public String getBranchAutoApply(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public String getTrackingClientId() {
+        return null;
+    }
+
+    @Override
+    public Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation, boolean enableShare, boolean enableLike) {
+        return null;
+    }
 }

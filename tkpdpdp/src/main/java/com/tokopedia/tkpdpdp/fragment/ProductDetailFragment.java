@@ -50,6 +50,8 @@ import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.product.share.ProductData;
+import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.user.session.UserSession;
@@ -201,6 +203,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -944,8 +947,25 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductShareClicked(@NonNull ShareData data) {
-        new DefaultShare(getActivity(), data).show();
+    public void onProductShareClicked(@NonNull ProductDetailData data) {
+        ProductShare productShare = new ProductShare(getActivity());
+
+        ProductData productData = new ProductData();
+        productData.setPriceText(data.getInfo().getProductPrice());
+        productData.setCashbacktext(data.getCashBack().getProductCashback());
+        productData.setProductId(data.getInfo().getProductId().toString());
+        productData.setProductName(com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(data.getInfo().getProductName()).toString());
+        productData.setProductUrl(data.getInfo().getProductUrl());
+        productData.setProductImageUrl(data.getProductImages().get(0).getImageSrc());
+        productData.setShopUrl(data.getShopInfo().getShopUrl());
+
+        productShare.share(productData, ()->{
+            showProgressLoading();
+            return Unit.INSTANCE;
+        }, () -> {
+            hideProgressLoading();
+            return Unit.INSTANCE;
+        });
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -1562,19 +1582,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             return true;
         } else if (i == R.id.action_share) {
             if (productData != null) {
-                String productName = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductName()).toString();
-                String productDesc = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductDescription()).toString();
-                ShareData shareData = ShareData.Builder.aShareData()
-                        .setName(productName)
-                        .setTextContent(productName)
-                        .setDescription(productDesc)
-                        .setImgUri(productData.getProductImages().get(0).getImageSrc())
-                        .setPrice(productData.getInfo().getProductPrice())
-                        .setUri(productData.getInfo().getProductUrl())
-                        .setType(ShareData.PRODUCT_TYPE)
-                        .setId(productData.getInfo().getProductId().toString())
-                        .build();
-                onProductShareClicked(shareData);
+                onProductShareClicked(productData);
             }
             return true;
         } else if (i == R.id.action_cart) {
