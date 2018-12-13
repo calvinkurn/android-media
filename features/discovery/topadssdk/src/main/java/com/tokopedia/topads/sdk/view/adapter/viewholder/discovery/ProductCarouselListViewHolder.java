@@ -110,7 +110,6 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
             }
             if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
-                data.getProduct().setWishlist(!data.getProduct().isWishlist());
             }
         }
     }
