@@ -21,12 +21,17 @@ import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
@@ -40,7 +45,7 @@ import javax.inject.Inject
  * @author by nisie on 23/11/18.
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
-        AttachedInvoiceSelectionListener, QuickReplyListener {
+        AttachedInvoiceSelectionListener, QuickReplyListener, ChatActionListBubbleListener, ChatRatingListener {
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
 
@@ -75,7 +80,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(view, session)
+        super.viewState = ChatbotViewStateImpl(view, session, this, this,
+                this, this, this,
+                this, this)
         viewState.initView()
         loadInitialData()
     }
@@ -233,5 +240,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onSendButtonClicked() {
         //TODO GET FROM VIEW
         presenter.sendMessage("")
+    }
+
+    override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
