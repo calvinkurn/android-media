@@ -6,7 +6,6 @@ import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
@@ -16,6 +15,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
