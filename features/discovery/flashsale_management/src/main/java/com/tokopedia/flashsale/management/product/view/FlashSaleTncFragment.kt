@@ -11,9 +11,11 @@ import kotlinx.android.synthetic.main.fragment_flash_sale_tnc.*
 class FlashSaleTncFragment : BaseDaggerFragment() {
 
     var tncString = ""
+    var tncLastUpdated = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         tncString = arguments?.getString(EXTRA_TNC) ?: ""
+        tncLastUpdated = arguments?.getString(EXTRA_TNC_LAST_UPDATED) ?: ""
         super.onCreate(savedInstanceState)
     }
 
@@ -24,6 +26,12 @@ class FlashSaleTncFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webViewTnc.loadData(processWebViewHtmlStyle(tncString), "text/html; charset=utf-8", "UTF-8")
+        if (tncLastUpdated.isEmpty()) {
+            label_last_updated.visibility = View.GONE
+        } else {
+            label_last_updated.text = tncLastUpdated
+            label_last_updated.visibility = View.GONE
+        }
     }
 
     fun processWebViewHtmlStyle(html_string: String): String {
@@ -40,13 +48,15 @@ class FlashSaleTncFragment : BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(tncString:String): FlashSaleTncFragment {
+        fun newInstance(tncString:String, tncLastUpdated:String): FlashSaleTncFragment {
             val f = FlashSaleTncFragment()
             f.arguments = Bundle().apply {
                 putString(EXTRA_TNC, tncString)
+                putString(EXTRA_TNC_LAST_UPDATED, tncLastUpdated)
             }
             return f
         }
         private const val EXTRA_TNC = "tnc"
+        private const val EXTRA_TNC_LAST_UPDATED = "tnc_last_updated"
     }
 }

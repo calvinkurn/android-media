@@ -252,7 +252,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     flashSaleTracking.clickProductTnc(campaignId.toString())
-                    val intent = FlashSaleTncActivity.createIntent(context!!, flashSaleTncContent.tnc)
+                    val intent = FlashSaleTncActivity.createIntent(context!!, flashSaleTncContent.tnc, flashSaleTncContent.tncLastUpdated)
                     startActivity(intent)
                 }
 

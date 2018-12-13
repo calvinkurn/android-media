@@ -42,6 +42,14 @@ class CampaignInfoTnCViewHolder(view: View): AbstractViewHolder<CampaignInfoTnCV
             webview_tnc.addJavascriptInterface(this@CampaignInfoTnCViewHolder, TAG)
 
             see_full_tnc.setOnClickListener { expandView() }
+
+            if (element.tncLastUpdated.isEmpty()) {
+                label_last_updated.visibility = View.GONE
+            } else {
+                label_last_updated.text = element.tncLastUpdated
+                label_last_updated.visibility = View.VISIBLE
+            }
+
         }
     }
 
