@@ -15,9 +15,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.widget.WarningTickerView;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.common.data.model.FreeDeposit;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
@@ -183,7 +187,11 @@ public class ShopCardView extends BaseCustomView {
         if (freeDeposit.getStatus() == 1 && freeDeposit.getNominal() > 0){
             topadsSaldoAmountTextView.setVisibility(GONE);
             topadsClaimTextView.setVisibility(VISIBLE);
-            topadsClaimTextView.setOnClickListener(v -> {});
+            topadsClaimTextView.setOnClickListener(v -> {
+                if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+                    openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_FREE_CLAIM_URL));
+                }
+            });
             topadsSaldoTextView.setText(getContext().getString(R.string.top_ads_credit_label, freeDeposit.getNominalFmt()));
             topadsClaimDescrTextView.setVisibility(VISIBLE);
             topadsClaimDescrTextView.setText(getContext().getString(R.string.claim_expired, freeDeposit.getRemainingDays()));
@@ -201,6 +209,12 @@ public class ShopCardView extends BaseCustomView {
                 topadsCreditDescrTextView.setVisibility(GONE);
             }
             topadsClaimDescrTextView.setVisibility(GONE);
+        }
+    }
+
+    private void openApplink(String applinkUrl) {
+        if (getContext() != null && !TextUtils.isEmpty(applinkUrl)) {
+            RouteManager.route(getContext(), applinkUrl);
         }
     }
 }
