@@ -10,7 +10,7 @@ import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
 interface InstantLoanContractor {
 
     interface View : CustomerView {
-        fun getAppContext(): Context
+        fun getAppContext(): Context?
 
         fun getActivityContext(): Context?
 

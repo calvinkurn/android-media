@@ -30,7 +30,7 @@ class InstantLoanPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         return searchSectionItemList[position].fragment
     }
 
-    override fun getItemPosition(`object`: Any): Int {
+    override fun getItemPosition(any: Any): Int {
         return PagerAdapter.POSITION_NONE
     }
 
@@ -42,15 +42,15 @@ class InstantLoanPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         return searchSectionItemList[position].title
     }
 
-    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
-        super.setPrimaryItem(container, position, `object`)
+    override fun setPrimaryItem(container: ViewGroup, position: Int, any: Any) {
+        super.setPrimaryItem(container, position, any)
 
         if (container !is HeightWrappingViewPager) {
             throw UnsupportedOperationException("ViewPager is not a WrappingViewPager")
         }
 
         if (position != mCurrentPosition) {
-            val fragment = `object` as Fragment
+            val fragment = any  as Fragment
             val pager = container as HeightWrappingViewPager?
             if (fragment != null && fragment.view != null) {
                 mCurrentPosition = position

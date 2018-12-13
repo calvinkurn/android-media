@@ -113,8 +113,8 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         super.onAttachActivity(context)
     }
 
-    override fun getAppContext(): Context {
-        return getContext()!!.applicationContext
+    override fun getAppContext(): Context? {
+        return getContext()?.applicationContext
     }
 
     override fun getActivityContext(): Context? {
@@ -187,7 +187,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         val layouts = intArrayOf(R.layout.intro_instant_loan_slide_1, R.layout.intro_instant_loan_slide_2, R.layout.intro_instant_loan_slide_3)
 
         pager.adapter = InstantLoanIntroViewPagerAdapter(activity as InstantLoanActivity,
-                layouts, presenter!!)
+                layouts, presenter)
         pageIndicator.fillColor = ContextCompat.getColor(getContext()!!, R.color.tkpd_main_green)
         pageIndicator.pageColor = ContextCompat.getColor(getContext()!!, R.color.black_38)
         pageIndicator.setViewPager(pager, 0)
@@ -255,7 +255,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     }
 
     private fun sendIntroSliderScrollEvent(label: String) {
-        instantLoanAnalytics!!.eventIntroSliderScrollEvent(label)
+        instantLoanAnalytics.eventIntroSliderScrollEvent(label)
     }
 
     override fun showToastMessage(message: String, duration: Int) {
@@ -267,9 +267,9 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     }
 
     override fun searchLoanOnline() {
-        if (presenter!!.isUserLoggedIn()) {
+        if (presenter.isUserLoggedIn()) {
             sendCariPinjamanClickEvent()
-            presenter!!.getLoanProfileStatus()
+            presenter.getLoanProfileStatus()
         } else {
             navigateToLoginPage()
         }
@@ -333,8 +333,8 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (userSession != null && userSession!!.isLoggedIn) {
-                presenter!!.getLoanProfileStatus()
+            if (userSession != null && userSession.isLoggedIn) {
+                presenter.getLoanProfileStatus()
             } else {
                 NetworkErrorHelper.showSnackbar(activity,
                         resources.getString(R.string.login_to_proceed))
@@ -344,7 +344,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter!!.detachView()
+        presenter.detachView()
     }
 
     override fun getScreenName(): String {
@@ -353,7 +353,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     private fun sendCariPinjamanClickEvent() {
         val eventLabel = screenName
-        instantLoanAnalytics!!.eventCariPinjamanClick(eventLabel)
+        instantLoanAnalytics.eventCariPinjamanClick(eventLabel)
     }
 
     interface ActivityInteractor {

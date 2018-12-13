@@ -1,12 +1,6 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.tokopedia.instantloan.ddcollector
 
 import android.content.ContentResolver
-import android.database.Cursor
 import android.net.Uri
 import android.provider.BaseColumns
 
@@ -30,7 +24,7 @@ abstract class BaseContentCollector(private val mContentResolver: ContentResolve
         val phoneInfoColumn = ArrayList<Map<String, String>>()
         var sortOrder: String? = null
 
-        if (this.getLimit()> 0) {
+        if (this.getLimit() > 0) {
             sortOrder = String.format("%s limit ${getLimit()}", BaseColumns._ID)
         }
 

@@ -51,13 +51,13 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter!!.attachView(this)
+        presenter.attachView(this)
         mCurrentTab = arguments!!.getInt(TAB_POSITION)
     }
 
     override fun onResume() {
         super.onResume()
-        presenter!!.attachView(this)
+        presenter.attachView(this)
     }
 
     override fun onAttachActivity(context: Context) {
@@ -92,7 +92,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     private fun initView(view: View) {
 
         mSpinnerLoanAmount = view.findViewById(R.id.spinner_value_nominal)
-        val mBtnInstantFund = view.findViewById<Button>(R.id.button_instant_fund)
         val mTextAmount = view.findViewById<TextView>(R.id.text_value_amount)
         val mTextDuration = view.findViewById<TextView>(R.id.text_value_duration)
         val mTextProcessingTime = view.findViewById<TextView>(R.id.text_value_processing_time)
@@ -111,7 +110,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
                             .equals(getString(R.string.label_select_nominal), ignoreCase = true)) {
                 val errorText = mSpinnerLoanAmount!!.selectedView as TextView
                 errorText.setTextColor(Color.RED)
-//                return@view.findViewById(R.id.button_search_pinjaman).setOnClickListener
             }
 
             sendCariPinjamanClickEvent()
@@ -123,17 +121,13 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     private fun sendCariPinjamanClickEvent() {
         val eventLabel = screenName + " - " + mSpinnerLoanAmount!!.selectedItem.toString()
-        instantLoanAnalytics!!.eventCariPinjamanClick(eventLabel)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        instantLoanAnalytics.eventCariPinjamanClick(eventLabel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (userSession != null && userSession!!.isLoggedIn) {
+            if (userSession != null && userSession.isLoggedIn) {
                 showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
             } else {
                 openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
@@ -144,15 +138,15 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter!!.detachView()
+        presenter.detachView()
     }
 
     override fun getScreenName(): String {
         return InstantLoanEventConstants.Screen.TANPA_AGUNAN_SCREEN_NAME
     }
 
-    override fun getAppContext(): Context {
-        return getContext()!!.applicationContext
+    override fun getAppContext(): Context? {
+        return getContext()?.applicationContext
     }
 
     override fun getActivityContext(): Context? {
@@ -163,7 +157,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     }
 
-    override fun setUserOnGoingLoanStatus(status: Boolean, id: Int) {
+    override fun setUserOnGoingLoanStatus(status: Boolean, loanId: Int) {
 
     }
 
