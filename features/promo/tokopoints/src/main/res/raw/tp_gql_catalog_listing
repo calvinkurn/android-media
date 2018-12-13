@@ -1,5 +1,5 @@
-query CatalogListing($categoryID: Int, $pointRange: Int, $sortID: Int, $page: Int, $limit: Int){
-  catalog : tokopointsCatalogList(input: {categoryID: $categoryID, pointRange: $pointRange, sortID: $sortID, page: $page, limit: $limit}) {
+query CatalogListing($subCategoryID: Int, $categoryID: Int, $pointRange: Int, $sortID: Int, $page: Int, $limit: Int){
+  catalog : tokopointsCatalogList(input: {subCategoryID: $subCategoryID, categoryID: $categoryID, pointRange: $pointRange, sortID: $sortID, page: $page, limit: $limit}) {
     catalogs : catalogList {
       id
       promoID
