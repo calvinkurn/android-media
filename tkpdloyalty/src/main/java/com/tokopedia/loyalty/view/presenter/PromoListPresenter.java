@@ -98,7 +98,7 @@ public class PromoListPresenter implements IPromoListPresenter {
                     "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
             );
         }
-        TrackingUtils.eventImpressionPromoList(dataLayerSinglePromoCodeList, "");
+        TrackingUtils.eventImpressionPromoList(view.getActivityContext(), dataLayerSinglePromoCodeList, "");
         Log.d("TOTOT", "sendImpressionTrackingData: ");
     }
 
@@ -112,7 +112,7 @@ public class PromoListPresenter implements IPromoListPresenter {
                 "promo_id", "0",
                 "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
         );
-        TrackingUtils.eventClickPromoListItem(dataLayerSinglePromoCodeList, promoData.getTitle());
+        TrackingUtils.eventClickPromoListItem(view.getActivityContext(), dataLayerSinglePromoCodeList, promoData.getTitle());
     }
 
 

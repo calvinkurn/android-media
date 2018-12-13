@@ -146,7 +146,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             bundle.putString("product_price", data.getInfo().getProductPrice());
             listener.onProductTalkClicked(bundle);
             if(data != null) {
-                TrackingUtils.sendMoEngageClickDiskusi(data);
+                TrackingUtils.sendMoEngageClickDiskusi(getContext(), data);
             }
         }
     }
@@ -166,7 +166,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
                 String productName = data.getInfo().getProductName();
                 listener.onProductReviewClicked(productId, shopId, productName);
 
-                TrackingUtils.sendMoEngageClickUlasan(data);
+                TrackingUtils.sendMoEngageClickUlasan(getContext(), data);
             }
         }
     }

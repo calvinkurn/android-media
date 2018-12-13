@@ -701,7 +701,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
         String isInstant = isInstantCheckoutChecked ? "instant" : "no instant";
-        UnifyTracking.eventClickBuyOnNative(categoryDataState.getName(), isInstant);
+        UnifyTracking.eventClickBuyOnNative(getActivity(),categoryDataState.getName(), isInstant);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -834,13 +834,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorSelected(String categoryName, String operatorName) {
-        UnifyTracking.eventSelectOperatorOnNativePage(categoryName,
+        UnifyTracking.eventSelectOperatorOnNativePage(getActivity(),categoryName,
                 operatorName);
     }
 
     @Override
     public void onProductSelected(String categoryName, String productDesc) {
-        UnifyTracking.eventSelectProductOnNativePage(categoryName,
+        UnifyTracking.eventSelectProductOnNativePage(getActivity(),categoryName,
                 productDesc);
     }
 
@@ -942,7 +942,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             if (categoryDataState != null) {
-                UnifyTracking.eventClickDaftarTransaksiEvent(categoryDataState.getName(), categoryDataState.getName());
+                UnifyTracking.eventClickDaftarTransaksiEvent(getActivity(),categoryDataState.getName(), categoryDataState.getName());
             }
             RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
             return true;
@@ -1000,20 +1000,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
-        UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
-        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_allowed_label));
+        UnifyTracking.eventUssd(getActivity(),AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
+        UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.ussd_permission_allowed_label));
     }
 
     @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showDeniedForPhone() {
         RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CALL_PHONE);
-        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_denied_label));
+        UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.ussd_permission_denied_label));
     }
 
     @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     void showNeverAskForPhone() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
-        UnifyTracking.eventUssdAttempt(getString(R.string.ussd_permission_denied_label));
+        UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.ussd_permission_denied_label));
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
@@ -1022,7 +1022,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
         if (orderClientNumber != null) {
-            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+            UnifyTracking.eventSelectNumberOnUserProfileNative(getActivity(),categoryDataState.getName());
         }
 
         if (categoryDataState.isSupportedStyle()) {
@@ -1172,13 +1172,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             }
             if (pulsaBalance != null && pulsaBalance.isSuccess()) {
                 pulsaBalance.setMobileNumber(number);
-                UnifyTracking.eventUssdAttempt(getString(R.string.status_success_label));
+                UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.status_success_label));
                 startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
                         categoryDataState.getClientNumberList().get(0).getValidation(),
                         categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
             } else {
                 showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
-                UnifyTracking.eventUssdAttempt(getString(R.string.status_failed_label) + getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                UnifyTracking.eventUssdAttempt(getActivity(),getString(R.string.status_failed_label) + getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }
     }
