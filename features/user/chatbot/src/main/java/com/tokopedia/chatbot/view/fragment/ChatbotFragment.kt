@@ -76,7 +76,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         super.viewState = ChatbotViewStateImpl(view, session)
-        viewState.init()
+        viewState.initView()
         loadInitialData()
     }
 
