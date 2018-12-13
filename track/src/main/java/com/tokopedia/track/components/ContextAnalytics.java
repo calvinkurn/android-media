@@ -12,4 +12,12 @@ public abstract class ContextAnalytics {
     public Context getContext() {
         return context;
     }
+
+    public void initialize(){
+
+    }
+
+    public String TAG(){
+        return "TEST";
+    }
 }
