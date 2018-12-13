@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Irfan Khoirul on 28/11/18.
  */
 
-data class ProductVariant(
+data class ProductVariantData(
 
         @SerializedName("parent_id")
         @Expose

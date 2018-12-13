@@ -6,7 +6,7 @@ import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
 import com.tokopedia.expresscheckout.domain.entity.UserProfile
 import com.tokopedia.transactiondata.entity.response.variant.Child
 import com.tokopedia.transactiondata.entity.response.variant.Option
-import com.tokopedia.transactiondata.entity.response.variant.ProductVariant
+import com.tokopedia.transactiondata.entity.response.variant.ProductVariantData
 import com.tokopedia.transactiondata.entity.response.variant.Variant
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Product
@@ -24,9 +24,9 @@ class ViewModelMapper : DataMapper {
         }
         dataList.add(convertToProductViewModel(expressCheckoutFormData))
         dataList.add(convertToQuantityViewModel(expressCheckoutFormData))
-        if (validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariants[0]) &&
-                validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariants[0])) {
-            for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariants[0].variants) {
+        if (validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0]) &&
+                validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])) {
+            for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
                 dataList.add(convertToTypeVariantViewModel(variant))
             }
         }
@@ -106,9 +106,9 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantOptionVariantViewModel
     }
 
-    fun validateVariantCombination(productVariant: ProductVariant): Boolean {
+    fun validateVariantCombination(productVariantData: ProductVariantData): Boolean {
         var variantOptionSizeList: ArrayList<Int> = ArrayList()
-        for (variant: Variant in productVariant.variants) {
+        for (variant: Variant in productVariantData.variants) {
             variantOptionSizeList.add(variant.options.size)
         }
 
@@ -117,13 +117,13 @@ class ViewModelMapper : DataMapper {
             variantCombinationSize *= optionSize
         }
 
-        return variantCombinationSize == productVariant.children.size
+        return variantCombinationSize == productVariantData.children.size
     }
 
-    fun validateVariantChildren(productVariant: ProductVariant): Boolean {
+    fun validateVariantChildren(productVariantData: ProductVariantData): Boolean {
 
-        for (child: Child in productVariant.children) {
-            if (child.optionIds.size == productVariant.variants.size) {
+        for (child: Child in productVariantData.children) {
+            if (child.optionIds.size == productVariantData.variants.size) {
                 return false
             }
         }

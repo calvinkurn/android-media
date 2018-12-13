@@ -3,7 +3,7 @@ package com.tokopedia.transactiondata.entity.response.shippingaddressform;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transactiondata.entity.response.cartlist.FreeReturns;
-import com.tokopedia.transactiondata.entity.response.variant.ProductVariant;
+import com.tokopedia.transactiondata.entity.response.variant.ProductVariantData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +120,7 @@ public class Product {
     private ProductPreorder productPreorder;
     @SerializedName("product_variants")
     @Expose
-    private ArrayList<ProductVariant> productVariants;
+    private ArrayList<ProductVariantData> productVariantData;
 
     public String getProductCategory() {
         return productCategory;
@@ -262,7 +262,7 @@ public class Product {
         return purchaseProtectionPlanData;
     }
 
-    public ArrayList<ProductVariant> getProductVariants() {
-        return productVariants;
+    public ArrayList<ProductVariantData> getProductVariantData() {
+        return productVariantData;
     }
 }
