@@ -3,12 +3,12 @@ package com.tokopedia.tkpd.thankyou.data.source;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.source.api.MarketplaceTrackerApi;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
