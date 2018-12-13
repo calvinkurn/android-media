@@ -3412,7 +3412,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventMyCouponClicked(Context context) {
+    public void sendEventMyCouponClicked() {
         UnifyTracking.eventMyCouponClicked(this);
     }
 

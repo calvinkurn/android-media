@@ -23,7 +23,7 @@ public class LoyaltyActivityTabSelectedListener extends GlobalMainTabSelectedLis
     public void onTabSelected(TabLayout.Tab tab) {
         super.onTabSelected(tab);
         if(tab.getPosition() == 1) {
-            loyaltyModuleRouter.sendEventMyCouponClicked(tab.getCustomView().getContext());
+            loyaltyModuleRouter.sendEventMyCouponClicked();
         }
     }
 }

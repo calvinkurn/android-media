@@ -38,7 +38,7 @@ public interface LoyaltyModuleRouter {
 
     void sendEventCouponPageClosed();
 
-    void sendEventMyCouponClicked(Context context);
+    void sendEventMyCouponClicked();
 
     void sendEventCouponChosen(Context context, String title);
 
