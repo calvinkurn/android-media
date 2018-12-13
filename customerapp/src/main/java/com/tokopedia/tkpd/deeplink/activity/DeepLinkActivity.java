@@ -32,7 +32,7 @@ import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -150,9 +150,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void actionChangeToolbarWithBackToNative() {
         isNeedToUseToolbarWithOptions = true;
-        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
-        toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core2.R.drawable.ic_webview_back_button);
+        toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
     }
@@ -217,7 +217,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public boolean onCreateOptionsMenu(Menu menu) {
         if (isNeedToUseToolbarWithOptions) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
+            inflater.inflate(com.tokopedia.core2.R.menu.menu_web_view, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -275,10 +275,10 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (id == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (id == com.tokopedia.core.R.id.menu_home) {
+        } else if (id == com.tokopedia.core2.R.id.menu_home) {
             onBackPressed();
             return true;
-        } else if (id == com.tokopedia.core.R.id.menu_help) {
+        } else if (id == com.tokopedia.core2.R.id.menu_help) {
             Intent intent = InboxRouter.getContactUsActivityIntent(this);
             startActivity(intent);
         }

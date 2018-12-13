@@ -8,7 +8,7 @@ import android.os.Build;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.util.BranchSdkUtils;
 
 /**
@@ -73,22 +73,22 @@ public class DefaultShare {
     private void shareCategory(ShareData data) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(shareParam[0], shareParam[1] + "-" + KEY_OTHER);
+            UnifyTracking.eventShareCategory(activity, shareParam[0], shareParam[1] + "-" + KEY_OTHER);
         }
     }
 
     private void sendAnalyticsToGtm(String type) {
         switch (type) {
             case ShareData.REFERRAL_TYPE:
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, KEY_OTHER);
-                TrackingUtils.sendMoEngageReferralShareEvent(KEY_OTHER);
+                UnifyTracking.eventReferralAndShare(activity, AppEventTracking.Action.SELECT_CHANNEL, KEY_OTHER);
+                TrackingUtils.sendMoEngageReferralShareEvent(activity, KEY_OTHER);
                 break;
             case ShareData.APP_SHARE_TYPE:
-                UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL,
+                UnifyTracking.eventAppShareWhenReferralOff(activity, AppEventTracking.Action.SELECT_CHANNEL,
                         KEY_OTHER);
                 break;
             default:
-                UnifyTracking.eventShare(KEY_OTHER);
+                UnifyTracking.eventShare(activity, KEY_OTHER);
                 break;
         }
     }

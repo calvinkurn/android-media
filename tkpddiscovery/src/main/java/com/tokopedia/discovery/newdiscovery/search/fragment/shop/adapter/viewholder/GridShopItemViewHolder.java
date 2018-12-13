@@ -64,7 +64,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
         if(shopItem.isOfficial() || shopItem.getShopGoldShop().equals("1")){
             itemShopBadge.setVisibility(View.VISIBLE);
             if(shopItem.isOfficial()) {
-                itemShopBadge.setImageResource(com.tokopedia.core.R.drawable.ic_badge_official);
+                itemShopBadge.setImageResource(com.tokopedia.core2.R.drawable.ic_badge_official);
             } else if(shopItem.getShopGoldShop().equals("1")){
                 itemShopBadge.setImageDrawable(GMConstant.getGMDrawable(context));
             }
@@ -115,15 +115,15 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
 
     private void adjustFavoriteButtonAppearance(Context context, boolean isFavorited) {
         if (isFavorited) {
-            favoriteButton.setBackgroundResource(com.tokopedia.core.R.drawable.white_button_rounded);
+            favoriteButton.setBackgroundResource(com.tokopedia.core2.R.drawable.white_button_rounded);
             favoriteButtonText.setText("Favorit");
-            favoriteButtonText.setTextColor(context.getResources().getColor(com.tokopedia.core.R.color.black_54));
-            favoriteButtonIcon.setImageResource(com.tokopedia.core.R.drawable.shop_list_favorite_check);
+            favoriteButtonText.setTextColor(context.getResources().getColor(com.tokopedia.core2.R.color.black_54));
+            favoriteButtonIcon.setImageResource(com.tokopedia.core2.R.drawable.shop_list_favorite_check);
         } else {
-            favoriteButton.setBackgroundResource(com.tokopedia.core.R.drawable.green_button_rounded);
+            favoriteButton.setBackgroundResource(com.tokopedia.core2.R.drawable.green_button_rounded);
             favoriteButtonText.setText("Favoritkan");
-            favoriteButtonText.setTextColor(context.getResources().getColor(com.tokopedia.core.R.color.white));
-            favoriteButtonIcon.setImageResource(com.tokopedia.core.R.drawable.ic_add);
+            favoriteButtonText.setTextColor(context.getResources().getColor(com.tokopedia.core2.R.color.white));
+            favoriteButtonIcon.setImageResource(com.tokopedia.core2.R.drawable.ic_add);
         }
     }
 }

@@ -64,7 +64,7 @@ public class WholesaleActivity extends TActivity {
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
                 String productId = getIntent().getParcelableExtra(EXTRA_PRODUCT_ID);
-                UnifyTracking.eventPDPOrientationChanged(productId);
+                UnifyTracking.eventPDPOrientationChanged(this, productId);
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
                 localCacheHandler.applyEditor();
             }
@@ -79,7 +79,7 @@ public class WholesaleActivity extends TActivity {
                     @Override
                     public void onClick(View v) {
                         finish();
-                        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+                        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
                     }
                 });
         setUpByConfiguration(getResources().getConfiguration());
@@ -108,6 +108,6 @@ public class WholesaleActivity extends TActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        WholesaleActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
     }
 }
