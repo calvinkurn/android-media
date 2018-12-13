@@ -8,13 +8,11 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight_dbflow.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -29,7 +27,8 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
-import com.tokopedia.flight.searchV2.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
+import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -69,7 +68,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
-    private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase;
     private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
@@ -87,7 +85,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Inject
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
                                     FlightDashboardValidator validator,
-                                    DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase,
                                     GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
@@ -101,7 +98,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
-        this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightAirportWithParamUseCase = getFlightAirportWithParamUseCase;
         this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;

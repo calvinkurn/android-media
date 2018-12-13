@@ -229,7 +229,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     val isMoveToGm: Boolean = data.getBooleanExtra(EXTRA_IS_MOVE_TO_GM, false)
                     if (isMoveToGm) {
                         saveDraft(false)
-                        UnifyTracking.eventClickYesGoldMerchantAddProduct()
+                        UnifyTracking.eventClickYesGoldMerchantAddProduct(activity)
                         goToGoldMerchantPage()
                         activity?.finish()
                     }
@@ -493,9 +493,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         )
         for (labelAnalytics in listLabelAnalytics) {
             if (isAddStatus()) {
-                UnifyTracking.eventAddProductAdd(labelAnalytics)
+                UnifyTracking.eventAddProductAdd(activity, labelAnalytics)
             } else if (isEditStatus()) {
-                UnifyTracking.eventAddProductEdit(labelAnalytics)
+                UnifyTracking.eventAddProductEdit(activity, labelAnalytics)
             }
         }
     }
@@ -516,33 +516,33 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         showWarning(getString(R.string.product_error_product_category_empty), View.OnClickListener {
             startCatalogActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
     }
 
     override fun onErrorEtalase() {
         showWarning(getString(R.string.product_error_product_etalase_empty), View.OnClickListener {
             startProductEtalaseActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE)
     }
 
     override fun onErrorPrice() {
         showWarning(getString(R.string.error_empty_price), View.OnClickListener {
             startPriceActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
     }
 
     override fun onErrorWeight() {
         showWarning(getString(R.string.error_empty_weight), View.OnClickListener {
             startLogisticActivity()
         })
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT)
     }
 
     override fun onErrorImage() {
         NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_picture_empty))
-        UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE)
+        UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE)
     }
 
     @SuppressLint("Range")

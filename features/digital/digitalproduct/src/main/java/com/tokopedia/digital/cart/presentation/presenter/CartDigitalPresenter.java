@@ -649,7 +649,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setDealsIds(new ArrayList<>());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
-        attributes.setClientId(TrackingUtils.getClientID());
+        attributes.setClientId(TrackingUtils.getClientID(getView().getApplicationContext()));
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(

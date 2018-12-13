@@ -1,5 +1,7 @@
 package com.tokopedia.topads.common.constant;
 
+import android.text.format.DateUtils;
+
 /**
  * Created by hadi.putra on 23/04/18.
  */
@@ -13,4 +15,9 @@ public class TopAdsCommonConstant {
     public static final String PATH_CHECK_PROMO = "v1/promo/check";
 
     public static final String PARAM_SHOP_ID = "shop_id";
+
+    public static final String REQUEST_DATE_FORMAT = "yyyy-MM-dd";
+    public static final int CACHE_EXPIRED_TIME = (int) (DateUtils.HOUR_IN_MILLIS / DateUtils.SECOND_IN_MILLIS);
+
+    public static final int MAX_DATE_RANGE = 60;
 }

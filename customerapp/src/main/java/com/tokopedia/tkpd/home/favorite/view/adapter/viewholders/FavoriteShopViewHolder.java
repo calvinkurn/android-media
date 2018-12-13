@@ -76,7 +76,7 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
     }
 
     void onShopLayoutClicked() {
-        UnifyTracking.eventFavoriteShop();
+        UnifyTracking.eventFavoriteShop(context);
         Intent intent = ShopPageActivity.createIntent(context, favoriteShop.getShopId());
         context.startActivity(intent);
     }

@@ -114,6 +114,7 @@ ext {
             reactNative             : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             tokocash                : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
             topads                  : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
+            topAdsDashboard         : "com.tokopedia.topads:top_ads_dashboard:${tkpdTopAdsSDKVersion}",
             topAdsManagement        : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
@@ -174,7 +175,9 @@ ext {
 
             goldMerchant            : ":features:merchant:gold_merchant",
             goldMerchantCommon      : ":features:merchant:gold_merchant_common",
+            goldMerchantResource    : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe   : ":features:merchant:gold_merchant_subscribe",
+//            goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe_no_op",
             productDraftDatabase    : ":features:merchant:product_draft_database",
             productManageItem       : ":features:merchant:product_manage_item",
             productManageList       : ":features:merchant:product_manage_list",
@@ -203,8 +206,11 @@ ext {
             merchantVoucher        : ":features:promo:merchant_voucher",
             tokopoints             : ":features:promo:tokopoints",
 
+            topAdsDashboard         : ":features:top_ads:top_ads_dashboard",
+            //topAdsDashboard         : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim         : ":features:top_ads:top_ads_free_claim",
             topAdsManagement        : ":features:top_ads:top_ads_management",
+            //topAdsManagement        : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon  : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging     : ":features:top_ads:top_ads_management_sourcetagging",
 

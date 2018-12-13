@@ -61,6 +61,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -71,7 +72,8 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -119,8 +121,6 @@ import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.GmSubscribeModuleRouter;
-import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipActivity;
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -209,8 +209,12 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
+import com.tokopedia.topads.TopAdsManagementInternalRouter;
+import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
+import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
+import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
@@ -257,7 +261,9 @@ public abstract class SellerRouterApplication extends MainApplication
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
         com.tokopedia.tkpdpdp.ProductDetailRouter,
-        MerchantVoucherModuleRouter, LoginRegisterRouter {
+        MerchantVoucherModuleRouter, LoginRegisterRouter, TopAdsDashboardRouter, TopAdsManagementRouter,
+        DigitalRouter{
+
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -362,13 +368,13 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToMerchantRedirect(Context context) {
-        Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
+        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goToGmSubscribeMembershipRedirect(Context context) {
-        Intent intent = GmMembershipActivity.createIntent(context);
+        Intent intent = GMSubscribeInternalRouter.getGMMembershipIntent(context);
         context.startActivity(intent);
     }
 
@@ -891,8 +897,13 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToGMSubscribe(Activity activity) {
-        Intent intent = new Intent(activity, GmSubscribeHomeActivity.class);
+        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(activity);
         activity.startActivity(intent);
+    }
+
+    @Override
+    public Intent getGMHomeIntent(Context context) {
+        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
     }
 
     @Override
@@ -1332,7 +1343,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void gotoTopAdsDashboard(Context context) {
-        context.startActivity(TopAdsDashboardActivity.getCallingIntent(context));
+        context.startActivity(TopAdsDashboardActivity.Companion.getCallingIntent(context));
     }
 
     @Override
@@ -1743,9 +1754,97 @@ public abstract class SellerRouterApplication extends MainApplication
         return null;
     }
 
+    @NonNull
     @Override
-    public Fragment getFavoritedShopFragment(String userId) {
+    public Fragment getFavoritedShopFragment(@NonNull String userId) {
         return PeopleFavoritedShopFragment.createInstance(userId);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsDetailShopIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsDetailShopIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsKeywordListIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsKeywordListIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsAddingPromoOptionIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsProductAdListIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsProductAdListIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsGroupAdListIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsGroupAdListIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsGroupNewPromoIntent(@NonNull Context context) {
+        return TopAdsManagementInternalRouter.getTopAdsGroupNewPromoIntent(context);
+    }
+
+    @NonNull
+    @Override
+    public Intent getTopAdsKeywordNewChooseGroupIntent(@NonNull Context context, boolean isPositive, String groupId) {
+        return TopAdsManagementInternalRouter.getTopAdsKeywordNewChooseGroupIntent(context, isPositive, groupId);
+    }
+
+    @Override
+    public void eventTopAdsProductClickProductDashboard() {
+        UnifyTracking.eventTopAdsProductClickKeywordDashboard();
+    }
+
+    @Override
+    public void eventTopAdsProductClickGroupDashboard() {
+        UnifyTracking.eventTopAdsProductClickGroupDashboard();
+    }
+
+    @Override
+    public void eventTopAdsProductAddBalance() {
+        UnifyTracking.eventTopAdsProductAddBalance();
+    }
+
+    @Override
+    public void eventTopAdsShopChooseDateCustom() {
+        UnifyTracking.eventTopAdsShopChooseDateCustom();
+    }
+
+    @Override
+    public void eventTopAdsShopDatePeriod(@NonNull String label) {
+        UnifyTracking.eventTopAdsShopDatePeriod(label);
+    }
+
+    @Override
+    public void eventTopAdsProductStatisticBar(@NonNull String label) {
+        UnifyTracking.eventTopAdsProductStatisticBar(label);
+    }
+
+    @Override
+    public void eventTopAdsShopStatisticBar(@NonNull String label) {
+        UnifyTracking.eventTopAdsShopStatisticBar(label);
+    }
+
+    @Override
+    public void eventTopAdsProductClickKeywordDashboard() {
+        UnifyTracking.eventTopAdsProductClickKeywordDashboard();
+    }
+
+    @Override
+    public void eventOpenTopadsPushNotification(@NonNull String label) {
+        UnifyTracking.eventOpenTopadsPushNotification(label);
     }
 
     @Override
@@ -1757,4 +1856,19 @@ public abstract class SellerRouterApplication extends MainApplication
     public void showSimpleAppRatingDialog(Activity activity) {
 
     }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsDashboardIntent(@NonNull Context context) {
+        return TopAdsDashboardInternalRouter.getTopAdsdashboardIntent(context);
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
+        return TopAdsDashboardInternalRouter.getTopAdsAddCreditIntent(context);
+    }
+
+    @Override
+    public void openTopAdsDashboardApplink(Context context) {}
 }

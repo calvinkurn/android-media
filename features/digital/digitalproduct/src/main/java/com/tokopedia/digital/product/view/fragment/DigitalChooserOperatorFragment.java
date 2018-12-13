@@ -228,7 +228,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    UnifyTracking.eventClickSearchBar(categoryName, categoryName);
+                    UnifyTracking.eventClickSearchBar(getActivity(),categoryName, categoryName);
                 }
             }
         };
