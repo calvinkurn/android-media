@@ -16,6 +16,7 @@ import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author : Steven 29/11/18
@@ -27,6 +28,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     lateinit var chatViewState: TopChatViewState
 
+    lateinit var session : UserSessionInterface
+
     private lateinit var actionBox: View
 
     private lateinit var adapter: BaseChatAdapter
@@ -36,6 +39,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         initView(view)
+    }
+
+
+    override fun getUserSession(): UserSessionInterface {
+        return session
     }
 
     fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {

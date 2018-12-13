@@ -40,13 +40,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         , ImageUploadListener, ProductAttachmentListener
         , BaseChatContract.View {
 
-//    @Inject
-//    open
-//    lateinit var presenter: BaseChatContract.Presenter
-
-    @Inject
-    protected lateinit var userSession: UserSessionInterface
-
     protected lateinit var viewState: BaseChatViewState
 
     protected var messageId: String = ""
@@ -61,14 +54,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onItemClicked(t: Visitable<*>?) {
         return
-    }
-
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    override fun initInjector() {
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,10 +73,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         send_but.setOnClickListener {
            onSendButtonClicked()
         }
-
     }
-
-    abstract fun onSendButtonClicked()
 
     private fun prepareView(view: View) {
         getRecyclerView(view).setHasFixedSize(true)
@@ -116,16 +98,10 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun loadData(page: Int) {
-        return
-    }
-
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-
         if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
             onGoToWebView(viewModel.redirectUrl, viewModel.attachmentId)
         }
-
     }
 
     override fun shouldHandleUrlManually(url: String): Boolean {
@@ -146,8 +122,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                     val intent = RouteManager.getIntent(activity, url)
                     intent.putExtra(PARAM_URL, URLGenerator.generateURLSessionLogin(
                             if (TextUtils.isEmpty(url)) TkpdBaseURL.BASE_CONTACT_US else url,
-                            userSession.deviceId,
-                            userSession.userId))
+                            getUserSession().deviceId,
+                            getUserSession().userId))
                     intent.putExtra(IS_CHAT_BOT, true)
                     startActivity(intent)
                 }
@@ -248,8 +224,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
+    abstract fun onSendButtonClicked()
+
+    abstract fun getUserSession(): UserSessionInterface
+
 
 }

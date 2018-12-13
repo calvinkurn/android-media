@@ -31,6 +31,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -44,6 +45,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     @Inject
     lateinit var presenter: ChatbotPresenter
 
+    @Inject
+    lateinit var session : UserSessionInterface
+
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
             val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
@@ -55,12 +59,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    override fun getUserSession(): UserSessionInterface {
+        return session
+    }
+
     override fun getScreenName(): String {
         return ""
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewState = ChatbotViewStateImpl(view, userSession)
+        viewState = ChatbotViewStateImpl(view, session)
         super.onViewCreated(view, savedInstanceState)
         loadInitialData()
     }
