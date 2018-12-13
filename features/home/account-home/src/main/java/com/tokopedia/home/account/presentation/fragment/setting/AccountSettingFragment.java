@@ -207,6 +207,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToTokopediaCorner() {
         if (getActivity() != null) {
+            accountAnalytics.eventClickTokopediaCornerSetting();
             Intent intent = RouteManager.getIntent(getActivity(), AccountHomeUrl.APPLINK_TOKOPEDIA_CORNER);
             getActivity().startActivity(intent);
         }

@@ -151,6 +151,18 @@ public class AccountAnalytics {
         analyticTracker.sendEventTracking(eventTracking);
     }
 
+    public void eventClickTokopediaCornerSetting() {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                AccountConstants.Analytics.EVENT_CLICK_SAMPAI,
+                AccountConstants.Analytics.EVENT_CATEGORY_SAMPAI,
+                AccountConstants.Analytics.EVENT_ACTION_SAMPAI,
+                ""
+        );
+    }
+
     public void setUserAttributes(UserAttributeData data) {
         ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
     }

@@ -79,6 +79,9 @@ public class AccountConstants {
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
         public static final String EVENT_SALDO_OVO = "clickSaldo";
+        public static final String EVENT_CLICK_SAMPAI = "clickRegister";
+        public static final String EVENT_CATEGORY_SAMPAI = "register tokopedia corner";
+        public static final String EVENT_ACTION_SAMPAI = "click button daftar";
     }
 
     public class ImageUrl {
