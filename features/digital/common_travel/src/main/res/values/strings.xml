@@ -15,8 +15,8 @@
     <string name="travel_passenger_error_identity_alphanumeric">Nomor Identitas harus alphanumeric</string>
     <string name="travel_passenger_contact_phone_max_length_error">Telepon Kontak maksimal 15 digit</string>
     <string name="travel_passenger_choose_salutation">Sapaan</string>
-    <string name="travel_buyer_first_name">Nama Depan (sesuai KTP/SIM/Passport)</string>
-    <string name="travel_buyer_last_name">Nama Belakang (sesuai KTP/SIM/Passport)</string>
+    <string name="travel_buyer_first_name">Nama Depan (sesuai KTP/SIM/Paspor)</string>
+    <string name="travel_buyer_last_name">Nama Belakang (sesuai KTP/SIM/Paspor)</string>
     <string name="travel_buyer_first_name_hint">Isi Nama Depan</string>
     <string name="travel_buyer_last_name_hint">Isi Nama Belakang</string>
     <string name="travel_passenger_identity_number">Nomor Identitas (KTP/SIM/Paspor)</string>
