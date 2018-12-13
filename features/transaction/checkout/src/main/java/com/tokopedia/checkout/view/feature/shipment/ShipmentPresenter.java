@@ -373,7 +373,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setShipmentCartItemModelList(getView()
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
 
-        checkIsPurchaseProtectionPage(cartShipmentAddressFormData.getGroupAddress());
+        if(cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
+            isPurchaseProtectionPage = true;
+            sendPurchaseProtectionAnalytics(
+                    CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI,
+                    null);
+        }
     }
 
     @Override
@@ -769,7 +774,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
                     analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest), checkoutData.getTransactionId());
-                    checkForPppAnalytics(checkoutRequest.data);
+                    if(isPurchaseProtectionPage) {
+                        analyticsPurchaseProtection.eventClickOnBuy(
+                                checkoutRequest.isHavingPurchaseProtectionEnabled() ?
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
+                    }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
@@ -1360,39 +1370,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             case IMPRESSION_PELAJARI:
                 analyticsPurchaseProtection.eventImpressionOfProduct();
                 break;
-        }
-    }
-
-    private void checkIsPurchaseProtectionPage(List<GroupAddress> groupAddress) {
-        for (GroupAddress address : groupAddress) {
-            for (GroupShop groupShop : address.getGroupShop()) {
-                for (Product product : groupShop.getProducts()) {
-                    if(product.getPurchaseProtectionPlanData() != null &&
-                            product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
-                        isPurchaseProtectionPage = true;
-                        sendPurchaseProtectionAnalytics(
-                                CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI,
-                                null);
-                    }
-                }
-            }
-        }
-    }
-
-    private void checkForPppAnalytics(List<DataCheckoutRequest> data) {
-        if (!isPurchaseProtectionPage) return;
-        for (DataCheckoutRequest datum : data) {
-            for (ShopProductCheckoutRequest shopProduct : datum.shopProducts) {
-                for (ProductDataCheckoutRequest productDatum : shopProduct.productData) {
-                    if (productDatum.isPurchaseProtection()) {
-                        analyticsPurchaseProtection.eventClickOnBuy(
-                                productDatum.isPurchaseProtection() ?
-                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
-                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
-                        return;
-                    }
-                }
-            }
         }
     }
 }
