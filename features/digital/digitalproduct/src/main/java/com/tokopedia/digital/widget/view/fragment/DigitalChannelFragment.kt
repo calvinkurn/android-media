@@ -48,6 +48,8 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
     private lateinit var text_see_more: TextView
     private lateinit var button_try_again: Button
 
+    private val APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2"
+
     private val DIGITAL_CHANNEL_RECOMMENDATION = "mainapp_digital_channel_recommendation"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,7 +72,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         }
 
         text_see_more.setOnClickListener {
-            RouteManager.route(activity, "tokopedia://category-explore?type=2")
+            RouteManager.route(activity, APPLINK_DIGITAL_BROWSE_PAGE)
 
             abstractionRouter
                     .analyticTracker
