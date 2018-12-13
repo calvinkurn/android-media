@@ -19,7 +19,7 @@ public class LoyaltyActivityTabSelectedListener extends GlobalMainTabSelectedLis
     public void onTabSelected(TabLayout.Tab tab) {
         super.onTabSelected(tab);
         if(tab.getPosition() == 1) {
-            UnifyTracking.eventMyCouponClicked();
+            UnifyTracking.eventMyCouponClicked(tab.getCustomView().getContext());
         }
     }
 }

@@ -86,9 +86,9 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
 
     private void trackingEditCostTopads() {
         if(detailAd.isBudget()) {
-            UnifyTracking.eventTopAdsProductEditGrupCost(AppEventTracking.EventLabel.BUDGET_PER_DAY);
+            UnifyTracking.eventTopAdsProductEditGrupCost(getActivity(), AppEventTracking.EventLabel.BUDGET_PER_DAY);
         }else{
-            UnifyTracking.eventTopAdsProductEditGrupCost(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
+            UnifyTracking.eventTopAdsProductEditGrupCost(getActivity(), AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
 

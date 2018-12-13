@@ -216,7 +216,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
             @Override
             public void onClick(View v) {
                 showVerifyUssdOperatorDialogFragment(true);
-                UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_EDIT_NUMBER, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
+                UnifyTracking.eventUssd(getActivity(),AppEventTracking.Action.CLICK_USSD_EDIT_NUMBER, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
 
             }
         });
@@ -262,7 +262,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                     showToastMessage(getActivity().getString(R.string.error_message_ussd_operator_not_matched));
                     tvUnknownNumber.setVisibility(View.VISIBLE);
                 }
-                UnifyTracking.eventUssd(AppEventTracking.Action.CLICK_USSD_BUY_PULSA, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
+                UnifyTracking.eventUssd(getActivity(),AppEventTracking.Action.CLICK_USSD_BUY_PULSA, selectedOperator.getName() + " - " + pulsaBalance.getPulsaBalance() + " - " + productSelected.getPrice() + " - " + pulsaBalance.getMobileNumber());
             }
         };
     }

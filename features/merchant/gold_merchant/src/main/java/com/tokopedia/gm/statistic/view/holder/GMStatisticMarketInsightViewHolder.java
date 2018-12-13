@@ -48,7 +48,7 @@ public class GMStatisticMarketInsightViewHolder implements GMStatisticViewHolder
         notGMView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickGMStatBuyGMDetailTransaction();
+                UnifyTracking.eventClickGMStatBuyGMDetailTransaction(v.getContext());
                 if (listener != null) {
                     listener.onViewNotGmClicked();
                 }

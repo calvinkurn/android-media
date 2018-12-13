@@ -336,7 +336,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 voucherCartHachikoView.setVisibility(View.GONE);
             }
 
-            UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),
+            UnifyTracking.eventClickVoucher(getActivity(),cartDigitalInfoDataState.getAttributes().getCategoryName(),
                     cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
                     cartDigitalInfoDataState.getAttributes().getOperatorName());
 
@@ -404,13 +404,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
-        UnifyTracking.eventViewCheckoutPage(ec, el);
+        UnifyTracking.eventViewCheckoutPage(getActivity(),ec, el);
 
         if (analyticsKind) {
-            UnifyTracking.eventClickBeliInstantSaldoWidget(ec, el);
+            UnifyTracking.eventClickBeliInstantSaldoWidget(getActivity(),ec, el);
         }
         {
-            UnifyTracking.eventClickBeliWidget(ec, el);
+            UnifyTracking.eventClickBeliWidget(getActivity(),ec, el);
         }
     }
 
@@ -675,6 +675,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onClickButtonNext() {
         UnifyTracking.eventClickLanjutCheckoutPage(
+                getActivity(),
                 cartDigitalInfoDataState.getAttributes().getCategoryName(),
                 cartDigitalInfoDataState.getAttributes().getOperatorName()
                         + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain()
@@ -735,12 +736,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void trackingSuccessVoucher(String voucherCode) {
-        UnifyTracking.eventVoucherSuccess(voucherCode, "");
+        UnifyTracking.eventVoucherSuccess(getActivity(),voucherCode, "");
     }
 
     @Override
     public void trackingCancelledVoucher() {
-        UnifyTracking.eventClickCancelVoucher("", "");
+        UnifyTracking.eventClickCancelVoucher(getActivity(),"", "");
     }
 
     @Override
