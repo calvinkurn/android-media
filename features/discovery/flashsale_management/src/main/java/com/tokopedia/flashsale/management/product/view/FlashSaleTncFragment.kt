@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.flashsale.management.R
 import kotlinx.android.synthetic.main.fragment_flash_sale_tnc.*
+import kotlinx.coroutines.experimental.CoroutineScope
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 
 class FlashSaleTncFragment : BaseDaggerFragment() {
 
@@ -26,11 +30,14 @@ class FlashSaleTncFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webViewTnc.loadData(processWebViewHtmlStyle(tncString), "text/html; charset=utf-8", "UTF-8")
-        if (tncLastUpdated.isEmpty()) {
-            label_last_updated.visibility = View.GONE
-        } else {
-            label_last_updated.text = tncLastUpdated
-            label_last_updated.visibility = View.GONE
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            if (tncLastUpdated.isEmpty()) {
+                label_last_updated.visibility = View.GONE
+            } else {
+                label_last_updated.text = tncLastUpdated
+                label_last_updated.visibility = View.VISIBLE
+            }
         }
     }
 
