@@ -1,3 +1,6 @@
 <resources>
-
+    <string name="topads_claim_label">Klaim</string>
+    <string name="top_ads_credit_label">Kredit TopAds %1$s</string>
+    <string name="claim_expired">Batas klaim %1$d hari lagi</string>
+    <string name="bonus_expired">Bonus TopAds %1$s berlaku %2$d hari lagi</string>
 </resources>
