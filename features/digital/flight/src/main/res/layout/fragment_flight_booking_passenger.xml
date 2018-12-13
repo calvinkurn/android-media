@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_5"
-                app:spinner_hint="@string/flight_passenger_choose_salutation" />
+                app:spinner_hint="@string/flight_passenger_choose_salutation_title" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_first_name"

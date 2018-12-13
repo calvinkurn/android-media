@@ -1,11 +1,14 @@
 package com.tokopedia.core.network.retrofit.utils;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.GCMHandler;
 
 /**
  * @author anggaprasetiyo on 5/23/17.
@@ -33,11 +36,19 @@ public class ServerErrorHandler {
     }
 
     public static void sendForceLogoutAnalytics(String url) {
-        AnalyticsLog.logForceLogout(url);
+        AnalyticsLog.logForceLogout(
+                MainApplication.getAppContext(),
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                url);
     }
 
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {
-        AnalyticsLog.logNetworkError(url, errorCode);
+        AnalyticsLog.logNetworkError(
+                MainApplication.getAppContext(),
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                url, errorCode);
     }
 
     public static void showServerErrorSnackbar() {
@@ -59,6 +70,10 @@ public class ServerErrorHandler {
     }
 
     public static void sendForceLogoutTokenAnalytics(String url) {
-        AnalyticsLog.logForceLogoutToken(url);
+        Context appContext = MainApplication.getAppContext();
+        AnalyticsLog.logForceLogoutToken(appContext,
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                url);
     }
 }

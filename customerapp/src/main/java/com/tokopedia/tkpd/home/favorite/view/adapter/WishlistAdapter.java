@@ -64,7 +64,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventFavoriteView(item.getName());
+                UnifyTracking.eventFavoriteView(view.getContext(), item.getName());
                 Context context = view.getContext();
                 Intent intent
                         = ProductDetailRouter

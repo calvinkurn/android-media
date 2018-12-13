@@ -80,11 +80,11 @@ public class SolutionDetailActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         if (editAppealSolutionModel != null) {
             if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
+                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatCloseSolutionEditDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
             } else {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
+                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatCloseSolutionAppealDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
             }

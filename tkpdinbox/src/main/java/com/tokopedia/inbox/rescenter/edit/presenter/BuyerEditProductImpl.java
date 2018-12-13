@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.inbox.rescenter.edit.customadapter.ProductAdapter;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditProductListener;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;

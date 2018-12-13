@@ -15,12 +15,16 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.miscDependencies.rxAndroid
-    implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.testDependencies.androidAnnotation
-    implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation project(rootProject.ext.libraries.abstraction)
+
+    implementation rootProject.ext.networkDependencies.retrofit
+
+    implementation rootProject.ext.testDependencies.androidAnnotation
+
+    implementation rootProject.ext.miscDependencies.rxJavaComputation
+    implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }

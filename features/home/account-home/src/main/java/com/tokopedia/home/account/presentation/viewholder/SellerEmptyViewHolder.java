@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.InfoCardView;
@@ -42,8 +43,8 @@ public class SellerEmptyViewHolder extends AbstractViewHolder<SellerEmptyViewMod
         topadsInfo.setMainText(R.string.title_menu_topads);
         topadsInfo.setSecondaryText(R.string.topads_desc);
 
-        gmInfo.setImage(R.drawable.ic_badge_shop_gm);
-        gmInfo.setMainText(R.string.gold_merchant);
+        gmInfo.setImage(GMConstant.getGMDrawableResource(itemView.getContext()));
+        gmInfo.setMainText(GMConstant.getGMTitleResource(itemView.getContext()));
         gmInfo.setSecondaryText(R.string.gold_merchant_desc);
 
         sellerCenterInfo.setImage(R.drawable.ic_seller_center);

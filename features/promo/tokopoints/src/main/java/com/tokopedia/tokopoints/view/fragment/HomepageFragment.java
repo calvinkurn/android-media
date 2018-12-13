@@ -137,7 +137,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_up);
+                    R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
             bottomViewMembership.setVisibility(View.VISIBLE);
         }
@@ -149,7 +149,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_large));
             Animation slideDown = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_down);
+                    R.anim.tp_bottom_down);
             bottomViewMembership.startAnimation(slideDown);
             bottomViewMembership.setVisibility(View.GONE);
         }
@@ -363,13 +363,17 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
         if (tokenDetail != null) {
             try {
+                if (tokenDetail.isOffFlag()) {
+                    return;
+                }
+
                 containerEgg.setVisibility(View.VISIBLE);
                 TextView textCount = getView().findViewById(R.id.text_token_count);
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
                 ImageView imgToken = getView().findViewById(R.id.img_token);
                 textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
-                textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
+                textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
                 if(tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")){
                     ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
                 }else{
