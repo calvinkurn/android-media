@@ -177,16 +177,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         return currentSite;
     }
-
-//    private String getCurrentSite(OrderData orderData) {
-//        String platform =
-//        if (orderData.) {
-//
-//        } else {
-//
-//        }
-//    }
-
+    
     private String getPaymentType(PaymentMethod paymentMethod) {
         if (paymentMethod != null && paymentMethod.getMethod() != null) {
             switch (paymentMethod.getMethod()) {
