@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
@@ -12,7 +11,6 @@ import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.database.DBOperation;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.CategoryDB_Table;
 
 import java.util.List;
 

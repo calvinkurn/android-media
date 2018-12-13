@@ -134,6 +134,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
 
     public void onActionConfirmClicked() {
         UnifyTracking.eventOpportunity(
+                getActivity(),
                 OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_YES,
                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                 AppEventTracking.Action.CLICK,

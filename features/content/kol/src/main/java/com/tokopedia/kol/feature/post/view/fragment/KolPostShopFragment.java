@@ -129,7 +129,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     }
 
     private void goToCreatePost() {
-        if (!TextUtils.isEmpty(createPostUrl)) {
+        if (getActivity() != null && !TextUtils.isEmpty(createPostUrl)) {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
                             getActivity(),

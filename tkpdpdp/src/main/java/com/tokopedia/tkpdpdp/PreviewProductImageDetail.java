@@ -174,7 +174,7 @@ public class PreviewProductImageDetail extends TActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(com.tokopedia.core.R.menu.action_save_button_img, menu);
+        getMenuInflater().inflate(com.tokopedia.core2.R.menu.action_save_button_img, menu);
         return false;
     }
 
@@ -226,9 +226,9 @@ public class PreviewProductImageDetail extends TActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 PreviewProductImageDetail.this,
                 AlertDialog.THEME_HOLO_LIGHT);
-        builder.setMessage(getString(com.tokopedia.core.R.string.dialog_save_preview_product_image));
+        builder.setMessage(getString(com.tokopedia.core2.R.string.dialog_save_preview_product_image));
         builder.setPositiveButton(
-                getString(com.tokopedia.core.R.string.title_yes),
+                getString(com.tokopedia.core2.R.string.title_yes),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog,
@@ -236,7 +236,7 @@ public class PreviewProductImageDetail extends TActivity {
                         PreviewProductImageDetailPermissionsDispatcher.actionDownloadAndSavePictureWithCheck(PreviewProductImageDetail.this);
                     }
                 });
-        builder.setNegativeButton(getString(com.tokopedia.core.R.string.title_no),
+        builder.setNegativeButton(getString(com.tokopedia.core2.R.string.title_no),
                 null);
         Dialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -274,9 +274,9 @@ public class PreviewProductImageDetail extends TActivity {
         final NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(PreviewProductImageDetail.this, NotificationChannelId.GENERAL);
         notificationBuilder.setContentTitle(filenameParam)
-                .setContentText(getString(com.tokopedia.core.R.string.download_in_process))
-                .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify_white)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), com.tokopedia.core.R.drawable.ic_stat_notify))
+                .setContentText(getString(com.tokopedia.core2.R.string.download_in_process))
+                .setSmallIcon(com.tokopedia.core2.R.drawable.ic_stat_notify_white)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), com.tokopedia.core2.R.drawable.ic_stat_notify))
                 .setAutoCancel(true)
         ;
         notificationBuilder.setProgress(0, 0, true);
@@ -302,12 +302,12 @@ public class PreviewProductImageDetail extends TActivity {
                 }
 
                 if (path == null) {
-                    notificationBuilder.setContentText(getString(com.tokopedia.core.R.string.download_failed))
+                    notificationBuilder.setContentText(getString(com.tokopedia.core2.R.string.download_failed))
                             .setProgress(0, 0, false);
                     notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
                     notificationManager.notify(randomNotificationId, notificationBuilder.build());
                     SnackbarManager.make(PreviewProductImageDetail.this,
-                            getString(com.tokopedia.core.R.string.download_failed),
+                            getString(com.tokopedia.core2.R.string.download_failed),
                             Snackbar.LENGTH_SHORT)
                             .setCallback(new Snackbar.Callback() {
                                 @Override
@@ -329,7 +329,7 @@ public class PreviewProductImageDetail extends TActivity {
 
                     PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImageDetail.this, 0, intent, 0);
 
-                    notificationBuilder.setContentText(getString(com.tokopedia.core.R.string.download_success))
+                    notificationBuilder.setContentText(getString(com.tokopedia.core2.R.string.download_success))
                             .setProgress(0, 0, false)
                             .setContentIntent(pIntent);
 
@@ -340,8 +340,8 @@ public class PreviewProductImageDetail extends TActivity {
                             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
                     SnackbarManager.make(PreviewProductImageDetail.this,
-                            getString(com.tokopedia.core.R.string.download_success),
-                            Snackbar.LENGTH_SHORT).setAction(com.tokopedia.core.R.string.preview_picture_open_action,
+                            getString(com.tokopedia.core2.R.string.download_success),
+                            Snackbar.LENGTH_SHORT).setAction(com.tokopedia.core2.R.string.preview_picture_open_action,
                             new OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -361,7 +361,7 @@ public class PreviewProductImageDetail extends TActivity {
             @Override
             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                 super.onLoadFailed(e, errorDrawable);
-                notificationBuilder.setContentText(getString(com.tokopedia.core.R.string.download_failed))
+                notificationBuilder.setContentText(getString(com.tokopedia.core2.R.string.download_failed))
                         .setProgress(0, 0, false);
                 notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
                 notificationManager.notify(randomNotificationId, notificationBuilder.build());
@@ -369,7 +369,7 @@ public class PreviewProductImageDetail extends TActivity {
                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
                 SnackbarManager.make(PreviewProductImageDetail.this,
-                        getString(com.tokopedia.core.R.string.download_failed),
+                        getString(com.tokopedia.core2.R.string.download_failed),
                         Snackbar.LENGTH_SHORT)
                         .setCallback(new Snackbar.Callback() {
                             @Override

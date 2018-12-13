@@ -4,7 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;

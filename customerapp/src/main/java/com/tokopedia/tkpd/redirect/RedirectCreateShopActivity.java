@@ -54,7 +54,7 @@ public class RedirectCreateShopActivity extends TActivity {
                             );
                         }
 
-                        UnifyTracking.eventDownloadFromSwitcher();
+                        UnifyTracking.eventDownloadFromSwitcher(view.getContext());
                     }
                 });
     }

@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import com.tokopedia.core2.R;
 
 /**
  * A simple {@link Fragment} subclass. Use the

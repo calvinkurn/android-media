@@ -38,13 +38,13 @@ class BasicDeviceData(private val mContext: Context, private val mLocationManage
             basicInfoMap[IMEI] = AppInfo.getDefaultAcceptLanguage(mContext)
 
             try {
-                basicInfoMap[LATITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString() //TODO @lavekush-t impl require
+                basicInfoMap[LATITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString()
             } catch (npe: NullPointerException) {
                 basicInfoMap[LATITUDE] = "0.0"
             }
 
             try {
-                basicInfoMap[LONGITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString() //TODO @lavekush-t impl require
+                basicInfoMap[LONGITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString()
             } catch (npe: NullPointerException) {
                 basicInfoMap[LONGITUDE] = "0.0"
             }

@@ -16,12 +16,12 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
@@ -115,7 +115,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
     @Override
     protected void deleteAd() {
         super.deleteAd();
-        UnifyTracking.eventTopAdsProductDeleteGrup();
+        UnifyTracking.eventTopAdsProductDeleteGrup(getActivity());
         presenter.deleteAd(ad.getId());
     }
 
@@ -164,7 +164,8 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
                 public void onClick(View view) {
                     bottomSheetView.dismiss();
 
-                    Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
+                    Intent intent = ((TopAdsManagementRouter)getActivity().getApplication())
+                            .getTopAdsAddCreditIntent(getActivity());
                     TopAdsDetailGroupFragment.this.startActivity(intent);
 
                     isDismissToTopUp = true;
@@ -258,23 +259,23 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     private void trackingDateTopAds(int lastSelection, int selectionType) {
         if(selectionType == DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE){
-            UnifyTracking.eventTopAdsProductDetailGroupPageDateCustom();
+            UnifyTracking.eventTopAdsProductDetailGroupPageDateCustom(getActivity());
         }else if(selectionType == DatePickerConstant.SELECTION_TYPE_PERIOD_DATE) {
             switch (lastSelection){
                 case 0:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_TODAY);
                     break;
                 case 1:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_YESTERDAY);
                     break;
                 case 2:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_7_DAY);
                     break;
                 case 3:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_LAST_1_MONTH);
                     break;
                 case 4:
-                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
+                    UnifyTracking.eventTopAdsProductDetailGroupPageDatePeriod(getActivity(),AppEventTracking.EventLabel.PERIOD_OPTION_THIS_MONTH);
                     break;
                 default:
                     break;

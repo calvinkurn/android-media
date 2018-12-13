@@ -81,14 +81,14 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    eventClickUseCase(sectionViewModel.getSectionList().get(position), position);
+                    eventClickUseCase(view.getContext(), sectionViewModel.getSectionList().get(position), position);
                     listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.getSectionList().get(position)));
 
                 }
             });
         }
 
-        private void eventClickUseCase(LayoutSections layoutSections, int position) {
+        private void eventClickUseCase(Context context, LayoutSections layoutSections, int position) {
             if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
                 HomePageTracking.eventClickHomeUseCase(context, layoutSections.getTitle());
             } else {
