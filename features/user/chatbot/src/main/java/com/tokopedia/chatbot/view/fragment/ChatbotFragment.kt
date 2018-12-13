@@ -97,7 +97,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
 
     override fun loadData(page: Int) {
-        super.loadData(page)
         developmentView()
     }
 
