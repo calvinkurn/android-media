@@ -21,20 +21,20 @@ import java.util.concurrent.TimeUnit
 
 open class BaseChatViewStateImpl(open var view: View) : BaseChatViewState {
 
-    private var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-    private var replyBox: RelativeLayout = view.findViewById(R.id.reply_box)
-    private var actionBox: LinearLayout = view.findViewById(R.id.add_comment_area)
-    private var mainLoading: ProgressBar = view.findViewById(R.id.progress)
+    protected var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
+    protected var replyBox: RelativeLayout = view.findViewById(R.id.reply_box)
+    protected var actionBox: LinearLayout = view.findViewById(R.id.add_comment_area)
+    protected var mainLoading: ProgressBar = view.findViewById(R.id.progress)
 
-    private var sendButton: View = view.findViewById(R.id.send_but)
-    private var replyEditText: EditText = view.findViewById(R.id.new_comment)
+    protected var sendButton: View = view.findViewById(R.id.send_but)
+    protected var replyEditText: EditText = view.findViewById(R.id.new_comment)
     protected var attachButton: ImageView = view.findViewById(R.id.add_url)
-    private var pickerButton: View = view.findViewById(R.id.image_picker)
-    private var maximize: View = view.findViewById(R.id.maximize)
-    private var notifier: View = view.findViewById(R.id.notifier)
+    protected var pickerButton: View = view.findViewById(R.id.image_picker)
+    protected var maximize: View = view.findViewById(R.id.maximize)
+    protected var notifier: View = view.findViewById(R.id.notifier)
 
-    private var replyWatcher: Observable<String>
-    private var replyIsTyping: Observable<Boolean>
+    protected var replyWatcher: Observable<String>
+    protected var replyIsTyping: Observable<Boolean>
 
     init {
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
