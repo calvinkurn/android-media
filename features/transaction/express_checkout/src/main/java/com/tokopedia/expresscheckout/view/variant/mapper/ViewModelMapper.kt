@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
 import com.tokopedia.expresscheckout.domain.entity.UserProfile
-import com.tokopedia.transactiondata.entity.response.variant.Child
-import com.tokopedia.transactiondata.entity.response.variant.Option
-import com.tokopedia.transactiondata.entity.response.variant.ProductVariantData
-import com.tokopedia.transactiondata.entity.response.variant.Variant
+import com.tokopedia.transactiondata.entity.response.variantdata.Child
+import com.tokopedia.transactiondata.entity.response.variantdata.Option
+import com.tokopedia.transactiondata.entity.response.variantdata.ProductVariantData
+import com.tokopedia.transactiondata.entity.response.variantdata.Variant
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Product
 

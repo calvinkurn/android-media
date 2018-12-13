@@ -3,7 +3,7 @@ package com.tokopedia.transactiondata.entity.response.shippingaddressform;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transactiondata.entity.response.cartlist.FreeReturns;
-import com.tokopedia.transactiondata.entity.response.variant.ProductVariantData;
+import com.tokopedia.transactiondata.entity.response.variantdata.ProductVariantData;
 
 import java.util.ArrayList;
 import java.util.List;

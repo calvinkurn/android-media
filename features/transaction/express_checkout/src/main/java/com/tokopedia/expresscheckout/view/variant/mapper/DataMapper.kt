@@ -2,8 +2,8 @@ package com.tokopedia.expresscheckout.view.variant.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
-import com.tokopedia.transactiondata.entity.response.variant.Option
-import com.tokopedia.transactiondata.entity.response.variant.Variant
+import com.tokopedia.transactiondata.entity.response.variantdata.Option
+import com.tokopedia.transactiondata.entity.response.variantdata.Variant
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.transactiondata.entity.response.variant
+package com.tokopedia.transactiondata.entity.response.variantdata
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
