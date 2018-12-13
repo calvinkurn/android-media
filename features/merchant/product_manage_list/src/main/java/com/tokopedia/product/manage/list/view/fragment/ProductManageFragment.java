@@ -776,11 +776,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    private void goToShareProduct(ShareData shareData) {
-        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
-        startActivity(intent);
-    }
-
     public void downloadBitmap(final ProductManageViewModel productManageViewModel){
         ProductShare productShare = new ProductShare(getActivity());
 
