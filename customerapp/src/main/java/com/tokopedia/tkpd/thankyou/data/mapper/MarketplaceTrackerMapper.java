@@ -167,14 +167,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
     private String checkCurrentSite(RequestParams requestParams) {
         String platform = requestParams.getString(ThanksTrackerConst.Key.PLATFORM, "");
-        String currentSite = "";
-
-        if (platform.equals("marketplace")) {
-            currentSite = "tokopediamarketplace";
-        } else {
-            currentSite = "tokopediadigital";
-        }
-
+        String currentSite = "tokopedia" + platform;
         return currentSite;
     }
     
