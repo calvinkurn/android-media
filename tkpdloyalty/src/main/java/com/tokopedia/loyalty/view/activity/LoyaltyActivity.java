@@ -247,7 +247,7 @@ public class LoyaltyActivity extends BasePresenterActivity
         loyaltyPagerAdapter.addAllItem(loyaltyPagerItemListCouponActive);
         viewPager.setAdapter(loyaltyPagerAdapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(indicator));
-        indicator.setOnTabSelectedListener(new LoyaltyActivityTabSelectedListener(viewPager));
+        indicator.setOnTabSelectedListener(new LoyaltyActivityTabSelectedListener(this, viewPager));
         if (IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING.equalsIgnoreCase(platformString))
             indicator.addOnTabSelectedListener(onTabSelectedForTrackingCheckoutMarketPlace);
         setShowCase();
