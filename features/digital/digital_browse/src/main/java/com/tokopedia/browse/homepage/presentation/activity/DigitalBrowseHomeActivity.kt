@@ -14,8 +14,8 @@ import com.tokopedia.browse.common.applink.ApplinkConstant
 import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
-import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.di.DaggerDigitalBrowseHomeComponent
+import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
@@ -55,11 +55,11 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
             fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
         } else if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
-            if (intent.hasExtra(EXTRA_TAB)) {
-                fragmentDigital = DigitalBrowseServiceFragment.getFragmentInstance(
+            fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
+                DigitalBrowseServiceFragment.getFragmentInstance(
                         Integer.parseInt(intent.getStringExtra(EXTRA_TAB)))
             } else {
-                fragmentDigital = DigitalBrowseServiceFragment.fragmentInstance
+                DigitalBrowseServiceFragment.fragmentInstance
             }
         }
 
@@ -80,9 +80,9 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 
         if (fragmentDigital != null) {
             if (fragmentDigital is DigitalBrowseMarketplaceFragment) {
-                digitalBrowseAnalytics!!.eventClickBackOnBelanjaPage()
+                digitalBrowseAnalytics.eventClickBackOnBelanjaPage()
             } else if (fragmentDigital is DigitalBrowseServiceFragment) {
-                digitalBrowseAnalytics!!.eventClickBackOnLayananPage()
+                digitalBrowseAnalytics.eventClickBackOnLayananPage()
             }
         }
     }
