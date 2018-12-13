@@ -33,7 +33,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
 
-    open fun init(){
+    override fun initView(){
         recyclerView = view.findViewById(R.id.recycler_view)
         mainLoading = view.findViewById(R.id.progress)
         replyEditText = view.findViewById(R.id.new_comment)

@@ -29,8 +29,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private lateinit var rvQuickReply: RecyclerView
     private lateinit var reasonBottomSheet: ReasonBottomSheet
 
-
-    override fun init() {
+    override fun initView() {
         pickerButton = view.findViewById(R.id.image_picker)
     }
 
