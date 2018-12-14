@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/poll_list"
+        android:id="@+id/optionRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -16,16 +16,16 @@
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
         app:spanCount="2"
         tools:itemCount="2"
-        tools:listitem="@layout/item_poll_option"/>
+        tools:listitem="@layout/item_poll_option" />
 
     <TextView
-        android:id="@+id/total_voter"
+        android:id="@+id/totalVoter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
-        android:paddingEnd="@dimen/dp_10"
         android:paddingStart="@dimen/dp_10"
         android:paddingTop="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_10"
         android:textColor="@color/black_54"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"

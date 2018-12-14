@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.partial_loading_layout.view.*
  */
 class PollAdapter : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
 
-    val optionList: MutableList<PollOptionViewModel> = ArrayList()
+    private val optionList: MutableList<PollOptionViewModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poll_option, parent, false)
@@ -32,6 +32,12 @@ class PollAdapter : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
     override fun getItemCount() = optionList.size
 
     override fun onBindViewHolder(holder: OptionViewHolder, position: Int) {
+    }
+
+    fun setList(list: MutableList<PollOptionViewModel>) {
+        optionList.clear()
+        optionList.addAll(list)
+        notifyDataSetChanged()
     }
 
     class OptionViewHolder(v: View) : RecyclerView.ViewHolder(v) {
