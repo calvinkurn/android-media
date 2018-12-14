@@ -321,6 +321,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 data.getCartItemData().getOriginData().isPreOrder() ? View.VISIBLE : View.GONE
         );
 
+        this.tvCodBadge.setVisibility(
+                data.getCartItemData().getOriginData().isCod() ? View.VISIBLE : View.GONE
+        );
+
         this.tvInfoCashBack.setVisibility(
                 data.getCartItemData().getOriginData().isCashBack() ? View.VISIBLE : View.GONE
         );
@@ -329,7 +333,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
         if (data.getCartItemData().getOriginData().isCashBack() ||
                 data.getCartItemData().getOriginData().isPreOrder() ||
-                data.getCartItemData().getOriginData().isFreeReturn()) {
+                data.getCartItemData().getOriginData().isFreeReturn() ||
+                data.getCartItemData().getOriginData().isCod()) {
             productProperties.setVisibility(View.VISIBLE);
         } else {
             productProperties.setVisibility(View.GONE);
