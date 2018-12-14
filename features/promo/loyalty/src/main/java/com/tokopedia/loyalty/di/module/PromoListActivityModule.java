@@ -56,6 +56,6 @@ public class PromoListActivityModule {
         if(context instanceof LoyaltyModuleRouter) {
             return new PromoTrackingUtil((LoyaltyModuleRouter) context);
         }
-        return null;
+        throw new RuntimeException("application must implement LoyaltyModuleRouter");
     }
 }
