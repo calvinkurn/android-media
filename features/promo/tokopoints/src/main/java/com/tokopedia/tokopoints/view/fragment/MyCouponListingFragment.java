@@ -281,7 +281,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void onFinishPageLoad(int itemCount, int pageNumber, @Nullable Object rawObject) {
-//        mSwipeToRefresh.setRefreshing(false);
+        mSwipeToRefresh.setRefreshing(false);
     }
 
     @Override
