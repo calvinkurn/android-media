@@ -69,6 +69,7 @@ public class HomePageTracking {
 
     // GA request
     // replaced by eventPromoImpression(Context context, List<Promotion>promotions) to cater one shot GA.
+    @Deprecated
     public static void eventPromoImpression(Context context,
                                             Promotion promotion) {
         AnalyticTracker tracker = getTracker(context);
