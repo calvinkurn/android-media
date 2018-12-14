@@ -78,9 +78,6 @@ public class CMUserHandler {
                     @Override
                     public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                         RestResponse restResponse = typeRestResponseMap.get(String.class);
-                        Log.e(TAG, "Code:" + restResponse.getCode());
-                        Log.e(TAG, "Data:" + restResponse.getData());
-                        Log.e(TAG, "Error:" + restResponse.getErrorBody());
                         if (restResponse.getCode() == 200) {
                             CMNotificationUtils.saveToken(mContext, token);
                             CMNotificationUtils.saveUserId(mContext, userId);

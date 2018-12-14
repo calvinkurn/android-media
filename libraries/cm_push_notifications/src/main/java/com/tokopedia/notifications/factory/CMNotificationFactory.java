@@ -14,6 +14,7 @@ import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.CmEventPost;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
+import com.tokopedia.notifications.model.Carousal;
 import com.tokopedia.notifications.model.Media;
 import com.tokopedia.notifications.model.PersistentButton;
 
@@ -46,8 +47,8 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.DELETE_NOTIFICATION:
                 cancelNotification(context, baseNotificationModel.getNotificationId());
                 return null;
-//            case CMConstant.NotificationType.COUPON_CODE_NOTIFICATION:
-//                return (new CouponCodeNotification(context.getApplicationContext(), baseNotificationModel));
+            case CMConstant.NotificationType.CAROUSAL_NOTIFICATION:
+                return (new CarousalNotification(context.getApplicationContext(), baseNotificationModel));
         }
         return null;
     }
@@ -75,6 +76,11 @@ public class CMNotificationFactory {
         model.setPersistentButtonList(getPersistentNotificationData(data));
         model.setVideoPushModel(getVideoNotificationData(data));
         model.setCustomValues(getCustomValues(data));
+        model.setCarousalList(getCarousalList(data));
+        model.setCarousalIndex(data.getInt(CMConstant.PayloadKeys.CAROUSAL_INDEX, 0));
+        model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
+        model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
+
         return model;
     }
 
@@ -146,4 +152,23 @@ public class CMNotificationFactory {
         }
         return null;
     }
+
+    private static List<Carousal> getCarousalList(Bundle extras) {
+        String carousalData = extras.getString(CMConstant.PayloadKeys.CAROUSAL_DATA);
+        if (TextUtils.isEmpty(carousalData)) {
+            List<Carousal> carousalList = extras.getParcelableArrayList(CMConstant.ReceiverExtraData.CAROUSAL_DATA);
+            if (carousalList != null)
+                return carousalList;
+            return null;
+        }
+        try {
+            Type listType = new TypeToken<ArrayList<Carousal>>() {
+            }.getType();
+            return new Gson().fromJson(carousalData, listType);
+        } catch (Exception e) {
+            Log.e("getCarousalList", e.getMessage());
+        }
+        return null;
+    }
+
 }

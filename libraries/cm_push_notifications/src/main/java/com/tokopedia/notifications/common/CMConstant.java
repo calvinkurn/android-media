@@ -21,7 +21,7 @@ public interface CMConstant {
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
-       // String COUPON_CODE_NOTIFICATION = "coupon";
+        String CAROUSAL_NOTIFICATION = "Carousal";
     }
 
 
@@ -50,6 +50,12 @@ public interface CMConstant {
         String CUSTOM_VALUE = "customValues";
 
         String VIDEO_DATA = "videoData";
+        String CAROUSAL_DATA =  "carousal";
+        String CAROUSAL_INDEX =  "carousalIndex";
+        String IMG =  "img";
+        String VIBRATE = "vibrate";
+        String UPDATE = "update";
+
 
     }
 
@@ -57,6 +63,8 @@ public interface CMConstant {
         String ACTION_BUTTON_APP_LINK = "action_button_app_link";
         String PERSISTENT_BUTTON_DATA = "persistent_data";
         String ACTION_APP_LINK = "action_app_link";
+        String CAROUSAL_DATA = "carousal_data";
+        String CAROUSAL_DATA_ITEM = "carousal_data_item";
 
 
     }
@@ -76,6 +84,9 @@ public interface CMConstant {
         String ACTION_ON_COPY_COUPON_CODE = "com.tokopedia.notification.ACTION_ON_COPY_COUPON_CODE";
         String ACTION_PERSISTENT_CLICK = "com.tokopedia.notification.ACTION_PERSISTENT_CLICK";
         String ACTION_NOTIFICATION_CLICK = "com.tokopedia.notification.ACTION_NOTIFICATION_CLICK";
+        String ACTION_RIGHT_ARROW_CLICK = "com.tokopedia.notification.ACTION_RIGHT_ARROW_CLICK";
+        String ACTION_LEFT_ARROW_CLICK = "com.tokopedia.notification.ACTION_LEFT_ARROW_CLICK";
+        String ACTION_CAROUSAL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSAL_IMAGE_CLICK";
 
     }
 

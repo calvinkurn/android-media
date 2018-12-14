@@ -59,26 +59,54 @@ public abstract class BaseNotification {
 
     protected NotificationCompat.Builder getBuilder() {
         NotificationCompat.Builder builder;
+        if (!baseNotificationModel.isUpdateExisting()) {
+
+        }
         if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
             builder = new NotificationCompat.Builder(context, baseNotificationModel.getChannelName());
         } else {
             builder = new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
         }
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannelGroup();
-            createNotificationChannel();
-            builder.setBadgeIconType(BADGE_ICON_SMALL);
-            builder.setNumber(1);
-        } else {
-            setNotificationSound(builder);
+        if (!baseNotificationModel.isUpdateExisting()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createChannelGroup();
+                createNotificationChannel();
+                builder.setBadgeIconType(BADGE_ICON_SMALL);
+                builder.setNumber(1);
+            } else {
+                setNotificationSound(builder);
+            }
+        }else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                silentChannel();
+            }
         }
-        if (!baseNotificationModel.getIcon().isEmpty()) {
-            builder.setLargeIcon(getBitmap(baseNotificationModel.getIcon()));
-        } else {
+        if (baseNotificationModel.getIcon().isEmpty()) {
             builder.setLargeIcon(getBitmapLargeIcon());
+        } else {
+            builder.setLargeIcon(getBitmap(baseNotificationModel.getIcon()));
+
         }
         return builder;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void silentChannel(){
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        NotificationChannel channel = new NotificationChannel("SILENT_01)",
+                "App channel",
+                importance);
+        AudioAttributes att = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build();
+        channel.setSound(null, null);
+       // channel.setShowBadge(true);
+        channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
+        //channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
+        //channel.setVibrationPattern(getVibratePattern());
+        notificationManager.createNotificationChannel(channel);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -97,7 +125,9 @@ public abstract class BaseNotification {
                 channel.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" +
                         "/raw/" + baseNotificationModel.getSoundFileName()), att);
             }
+
             channel.setVibrationPattern(getVibratePattern());
+
             channel.setShowBadge(true);
             channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
             notificationManager.createNotificationChannel(channel);
@@ -160,7 +190,7 @@ public abstract class BaseNotification {
             return R.mipmap.ic_launcher;
     }
 
-    private Bitmap getBitmapLargeIcon() {
+    protected Bitmap getBitmapLargeIcon() {
         return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
     }
 
@@ -245,7 +275,7 @@ public abstract class BaseNotification {
         return requestCode;
     }
 
-    private Bundle getBundle(BaseNotificationModel baseNotificationModel) {
+    protected Bundle getBundle(BaseNotificationModel baseNotificationModel) {
         Bundle bundle = new Bundle();
         if (baseNotificationModel.getVideoPushModel() != null) {
             bundle = jsonToBundle(bundle, baseNotificationModel.getVideoPushModel());

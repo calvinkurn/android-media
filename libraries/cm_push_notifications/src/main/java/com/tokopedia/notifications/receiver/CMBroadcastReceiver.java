@@ -1,11 +1,14 @@
 package com.tokopedia.notifications.receiver;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -13,8 +16,14 @@ import android.widget.Toast;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
+import com.tokopedia.notifications.common.CarousalUtilities;
 import com.tokopedia.notifications.common.CmEventPost;
+import com.tokopedia.notifications.factory.BaseNotification;
+import com.tokopedia.notifications.factory.CMNotificationFactory;
+import com.tokopedia.notifications.model.Carousal;
 import com.tokopedia.notifications.model.PersistentButton;
+
+import java.util.List;
 
 /**
  * @author lalit.singh
@@ -45,6 +54,15 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                     break;
                 case CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK:
                     handleNotificationClick(context, intent, notificationId);
+                    break;
+                case CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK:
+                    handleCarousalButtonClick(context, intent, notificationId, true);
+                    break;
+                case CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK:
+                    handleCarousalButtonClick(context, intent, notificationId, false);
+                    break;
+                case CMConstant.ReceiverAction.ACTION_CAROUSAL_IMAGE_CLICK:
+                    handleCarousalImageClick(context, intent, notificationId);
                     break;
             }
         }
@@ -108,6 +126,47 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         context.startActivity(appLinkIntent);
         NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+    }
+
+    private void handleCarousalButtonClick(Context context, Intent intent, int notificationId, boolean isNext) {
+        try {
+            List<Carousal> carousalList = intent.getParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA);
+            int index = intent.getIntExtra(CMConstant.PayloadKeys.CAROUSAL_INDEX, 0);
+            if (null == carousalList || carousalList.size() == 0)
+                return;
+            index = isNext ? index + 1 : index - 1;
+            Bundle bundle = intent.getExtras();
+            bundle.putString(CMConstant.PayloadKeys.NOTIFICATION_ID, String.valueOf(notificationId));
+            bundle.putInt(CMConstant.PayloadKeys.CAROUSAL_INDEX, index);
+            bundle.putString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, CMConstant.NotificationType.CAROUSAL_NOTIFICATION);
+            BaseNotification baseNotification = CMNotificationFactory.getNotification(context.getApplicationContext(), bundle);
+            postNotification(context, baseNotification);
+        } catch (Exception e) {
+        }
+
+    }
+
+    private void handleCarousalImageClick(Context context, Intent intent, int notificationId) {
+        try {
+            Carousal carousal = intent.getParcelableExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA_ITEM);
+            Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), carousal.getAppLink());
+            appLinkIntent.putExtras(intent.getExtras());
+            context.startActivity(appLinkIntent);
+            NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
+            context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+            CarousalUtilities.deleteCarousalImageDirectory(context);
+
+        } catch (Exception e) {
+        }
+
+    }
+
+    private void postNotification(Context context, BaseNotification baseNotification) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = baseNotification.createNotification();
+        if (null != notificationManager)
+            notificationManager.notify(baseNotification.baseNotificationModel.getNotificationId(), notification);
     }
 
 }

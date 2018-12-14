@@ -34,6 +34,14 @@ public class BaseNotificationModel {
 
     private JSONObject videoPushModel;
 
+    private List<Carousal> carousalList = new ArrayList<>();
+
+    private int carousalIndex = 0;
+    private boolean vibration = true;
+    private boolean sound = true;
+    private boolean updateExisting;
+
+
     public int getNotificationId() {
         return notificationId;
     }
@@ -152,5 +160,45 @@ public class BaseNotificationModel {
 
     public void setVideoPushModel(JSONObject videoPushModel) {
         this.videoPushModel = videoPushModel;
+    }
+
+    public List<Carousal> getCarousalList() {
+        return carousalList;
+    }
+
+    public void setCarousalList(List<Carousal> carousalList) {
+        this.carousalList = carousalList;
+    }
+
+    public int getCarousalIndex() {
+        return carousalIndex;
+    }
+
+    public void setCarousalIndex(int carousalIndex) {
+        this.carousalIndex = carousalIndex;
+    }
+
+    public boolean isVibration() {
+        return vibration;
+    }
+
+    public void setVibration(boolean vibration) {
+        this.vibration = vibration;
+    }
+
+    public boolean isSound() {
+        return sound;
+    }
+
+    public void setSound(boolean sound) {
+        this.sound = sound;
+    }
+
+    public boolean isUpdateExisting() {
+        return updateExisting;
+    }
+
+    public void setUpdateExisting(boolean updateExisting) {
+        this.updateExisting = updateExisting;
     }
 }
