@@ -1,14 +1,18 @@
 package com.tokopedia.home.account.presentation.view;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
@@ -30,22 +35,14 @@ import com.tokopedia.user_identification_common.KycWidgetUtil;
  * @author okasurya on 7/26/18.
  */
 public class ShopCardView extends BaseCustomView {
-    private LinearLayout layoutDeposit;
     private ImageView imageShop;
     private ImageView badge;
     private TextView textShopName;
     private ImageView shopReputation;
-    private TextView textSaldoAmount;
+    private LabelView labelViewDeposit;
     private WarningTickerView warningTickerView;
     private TextView shopStatus;
-
-    // topads widget
-    private ImageView topadsIcon;
-    private TextView topadsSaldoTextView;
-    private TextView topadsSaldoAmountTextView;
-    private TextView topadsClaimTextView;
-    private TextView topadsClaimDescrTextView;
-    private TextView topadsCreditDescrTextView;
+    private LabelView labelViewTopAds;
 
     public ShopCardView(@NonNull Context context) {
         super(context);
@@ -64,31 +61,15 @@ public class ShopCardView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_shop_card, this);
-        layoutDeposit = view.findViewById(R.id.layout_deposit);
+        labelViewDeposit = view.findViewById(R.id.label_view_saldo);
         imageShop = view.findViewById(R.id.image_shop);
         badge = view.findViewById(R.id.image_badge);
         textShopName = view.findViewById(R.id.text_shop_name);
         shopReputation = view.findViewById(R.id.shop_reputation);
-        textSaldoAmount = view.findViewById(R.id.text_saldo_amount);
         warningTickerView = view.findViewById(R.id.verification_warning_ticker);
         shopStatus = view.findViewById(R.id.text_shop_verification_status);
-
-        topadsIcon = view.findViewById(R.id.image_topads);
-        topadsSaldoTextView = view.findViewById(R.id.text_topads_credit);
-        topadsSaldoAmountTextView = view.findViewById(R.id.text_topads_saldo);
-        topadsClaimTextView = view.findViewById(R.id.text_topads_claim);
-        topadsClaimDescrTextView = view.findViewById(R.id.text_topads_claim_descr);
-        topadsCreditDescrTextView = view.findViewById(R.id.text_topads_credit_descr);
-        iniGoneTopads();
-    }
-
-    private void iniGoneTopads() {
-        getRootView().findViewById(R.id.separator_2).setVisibility(GONE);
-        topadsIcon.setVisibility(GONE);
-        topadsSaldoTextView.setVisibility(GONE);
-        getRootView().findViewById(R.id.topads_right_content).setVisibility(GONE);
-        topadsCreditDescrTextView.setVisibility(GONE);
-        topadsClaimDescrTextView.setVisibility(GONE);
+        labelViewTopAds = view.findViewById(R.id.label_view_topads);
+        labelViewTopAds.setVisibility(GONE);
     }
 
     public void setShopImage(String url) {
@@ -121,7 +102,7 @@ public class ShopCardView extends BaseCustomView {
     }
 
     public void setBalance(String balance) {
-        textSaldoAmount.setText(balance);
+        labelViewDeposit.setContent(balance);
     }
 
     public void setShopReputation(String url) {
@@ -146,7 +127,7 @@ public class ShopCardView extends BaseCustomView {
     }
 
     public void setOnClickDeposit(View.OnClickListener listener) {
-        layoutDeposit.setOnClickListener(listener);
+        labelViewDeposit.setOnClickListener(listener);
     }
 
     public void setKyc(int verificationStatus, String verificationStatusName,
@@ -179,37 +160,42 @@ public class ShopCardView extends BaseCustomView {
         if (dataDeposit == null)
             return;
 
-        getRootView().findViewById(R.id.separator_2).setVisibility(VISIBLE);
-        topadsIcon.setVisibility(VISIBLE);
-        topadsSaldoTextView.setVisibility(VISIBLE);
-        getRootView().findViewById(R.id.topads_right_content).setVisibility(VISIBLE);
         FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
         if (freeDeposit.getStatus() == 1 && freeDeposit.getNominal() > 0){
-            topadsSaldoAmountTextView.setVisibility(GONE);
-            topadsClaimTextView.setVisibility(VISIBLE);
-            topadsClaimTextView.setOnClickListener(v -> {
+            labelViewTopAds.setContentClick(v -> {
                 if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                     openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_FREE_CLAIM_URL));
                 }
             });
-            topadsSaldoTextView.setText(getContext().getString(R.string.top_ads_credit_label, freeDeposit.getNominalFmt()));
-            topadsClaimDescrTextView.setVisibility(VISIBLE);
-            topadsClaimDescrTextView.setText(getContext().getString(R.string.claim_expired, freeDeposit.getRemainingDays()));
-            topadsCreditDescrTextView.setVisibility(GONE);
+            SpannableString claimKredits = new SpannableString(getContext().getString(R.string.top_ads_free_claim_label, freeDeposit.getNominalFmt()));
+            claimKredits.setSpan(new StyleSpan(Typeface.BOLD), claimKredits.length() - freeDeposit.getNominalFmt().length(), claimKredits.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            labelViewTopAds.setTitle(claimKredits);
+            labelViewTopAds.setContent(getContext().getString(R.string.topads_claim_label));
+            labelViewTopAds.setContentColorValue(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            String nDays = getContext().getString(R.string.template_claim_n_days, freeDeposit.getRemainingDays());
+            SpannableString subtitle = new SpannableString(getContext().getString(R.string.claim_expired)+" "+nDays);
+            subtitle.setSpan(new StyleSpan(Typeface.BOLD), getContext().getString(R.string.claim_expired).length()+1,
+                    subtitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            labelViewTopAds.setSubTitle(subtitle);
         } else {
-            topadsSaldoAmountTextView.setVisibility(VISIBLE);
-            topadsClaimTextView.setVisibility(GONE);
-            topadsSaldoTextView.setText(getContext().getString(R.string.top_ads_credit_label, ""));
-            topadsSaldoAmountTextView.setText(dataDeposit.getAmountFmt());
+            labelViewTopAds.setTitle(getContext().getString(R.string.top_ads_credit_label));
+            labelViewTopAds.setContent(dataDeposit.getAmountFmt());
             if (freeDeposit.getStatus() == 2 && freeDeposit.getUsage() > 0){
-                topadsCreditDescrTextView.setVisibility(VISIBLE);
-                topadsCreditDescrTextView.setText(getContext().getString(R.string.bonus_expired, freeDeposit.getUsageFmt(),
-                        freeDeposit.getRemainingDays()));
+                String bonusTopAds = getContext().getString(R.string.bonus_expired, freeDeposit.getUsageFmt());
+                String nDays = getContext().getString(R.string.template_claim_n_days, freeDeposit.getRemainingDays());
+                SpannableString subtitle = new SpannableString(bonusTopAds+" berlaku "+nDays);
+                subtitle.setSpan(new StyleSpan(Typeface.BOLD), bonusTopAds.length() - freeDeposit.getUsageFmt().length(),
+                        bonusTopAds.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                subtitle.setSpan(new StyleSpan(Typeface.BOLD), subtitle.length() - nDays.length(),
+                        subtitle.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                labelViewTopAds.setSubTitle(subtitle);
             } else {
-                topadsCreditDescrTextView.setVisibility(GONE);
+                labelViewTopAds.setSubTitle("");
             }
-            topadsClaimDescrTextView.setVisibility(GONE);
         }
+        labelViewTopAds.setVisibility(VISIBLE);
     }
 
     private void openApplink(String applinkUrl) {

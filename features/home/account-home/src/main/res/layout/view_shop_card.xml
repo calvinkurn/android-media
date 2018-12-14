@@ -87,43 +87,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/verification_warning_ticker"/>
 
-        <LinearLayout
-            android:id="@+id/layout_deposit"
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_saldo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_8"
+            app:lv_image="@drawable/ic_saldo_green"
+            app:lv_image_width="@dimen/dp_24"
+            app:lv_image_height="@dimen/dp_24"
+            app:lv_image_margin_right="@dimen/dp_8"
+            app:lv_title="@string/title_saldo_setting"
+            app:lv_title_text_size="@dimen/sp_12"
+            app:lv_title_color="@color/light_secondary"
+            app:lv_content="Rp 2.000.000"
+            app:lv_content_text_size="@dimen/sp_14"
+            app:lv_content_text_style="bold"
+            app:lv_content_color="@color/light_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/separator">
-
-            <ImageView
-                android:id="@+id/image_saldo"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:src="@drawable/ic_saldo_green"/>
-
-            <TextView
-                android:id="@+id/text_saldo_label"
-                style="@style/TextView.Micro.BlackDisabled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:text="@string/title_saldo_setting"/>
-
-            <TextView
-                android:id="@+id/text_saldo_amount"
-                style="@style/TextView.Small.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:textAlignment="viewEnd"
-                tools:text="Rp 2.000.000"/>
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/separator"/>
 
         <View
             android:id="@+id/separator_2"
@@ -133,116 +115,29 @@
             android:background="@color/grey_300"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_deposit"/>
+            app:layout_constraintTop_toBottomOf="@+id/label_view_saldo"/>
 
-        <ImageView android:id="@+id/image_topads"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:src="@drawable/ic_top_ads_speaker_green"
+        <com.tokopedia.design.label.LabelView
+            android:id="@+id/label_view_topads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
+            app:lv_image="@drawable/ic_top_ads_speaker_green"
+            app:lv_image_width="@dimen/dp_24"
+            app:lv_image_height="@dimen/dp_24"
+            app:lv_image_margin_right="@dimen/dp_8"
+            app:lv_title="@string/title_saldo_setting"
+            app:lv_title_text_size="@dimen/sp_12"
+            app:lv_title_color="@color/light_secondary"
+            app:lv_sub_title_color="@color/light_disabled"
+            app:lv_sub_title_text_size="@dimen/sp_10"
+            app:lv_content="Rp 2.000.000"
+            app:lv_content_text_size="@dimen/sp_14"
+            app:lv_content_text_style="bold"
+            app:lv_content_color="@color/light_primary"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separator_2"/>
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/text_topads_credit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:text="@string/title_saldo_setting"
-            app:fontSize="micro"
-            app:textViewTheme="lightDisabled"
-            app:layout_constraintTop_toTopOf="@+id/image_topads"
-            app:layout_constraintBottom_toBottomOf="@+id/image_topads"
-            app:layout_constraintLeft_toRightOf="@+id/image_topads"
-            app:layout_constraintStart_toEndOf="@+id/image_topads"
-            app:layout_constraintRight_toLeftOf="@+id/topads_right_content"
-            app:layout_constraintEnd_toStartOf="@+id/topads_right_content"/>
-
-        <FrameLayout android:id="@+id/topads_right_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="@+id/image_topads"
-            app:layout_constraintBottom_toBottomOf="@+id/image_topads"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/text_topads_saldo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:textAlignment="viewEnd"
-                android:visibility="gone"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium"
-                app:fontSize="small"
-                tools:text="Rp 2.000.000"
-                tools:visibility="gone"/>
-
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/text_topads_claim"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:textAlignment="viewEnd"
-                android:visibility="gone"
-                tools:visibility="visible"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium"
-                app:fontSize="micro"
-                android:textColor="@color/tkpd_main_green"
-                android:text="@string/topads_claim_label"/>
-        </FrameLayout>
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/text_topads_credit_descr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textAlignment="viewEnd"
-            android:layout_marginTop="@dimen/dp_4"
-            app:textViewTheme="lightDisabled"
-            app:weight="regular"
-            app:fontSize="micro"
-            android:text="@string/topads_claim_label"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="@+id/text_topads_credit"
-            app:layout_constraintStart_toStartOf="@+id/text_topads_credit"
-            app:layout_constraintRight_toRightOf="@+id/text_topads_credit"
-            app:layout_constraintEnd_toEndOf="@+id/text_topads_credit"
-            app:layout_constraintTop_toBottomOf="@+id/text_topads_credit"
-            app:layout_constraintHorizontal_bias="0"/>
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/text_topads_claim_descr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textAlignment="viewEnd"
-            android:layout_marginTop="@dimen/dp_4"
-            android:background="@drawable/bg_round_orange"
-            android:paddingTop="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            app:textViewTheme="darkPrimary"
-            app:weight="regular"
-            app:fontSize="micro"
-            android:text="@string/topads_claim_label"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="@+id/text_topads_credit"
-            app:layout_constraintStart_toStartOf="@+id/text_topads_credit"
-            app:layout_constraintRight_toRightOf="@+id/text_topads_credit"
-            app:layout_constraintEnd_toEndOf="@+id/text_topads_credit"
-            app:layout_constraintTop_toBottomOf="@+id/text_topads_credit"
-            app:layout_constraintHorizontal_bias="0"/>
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

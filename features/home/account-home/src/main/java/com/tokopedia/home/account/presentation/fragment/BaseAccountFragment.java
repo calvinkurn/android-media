@@ -310,4 +310,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onTickerClosed() {
 
     }
+
+    @Override
+    public void onTopAdsMenuClicked() {
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).
+                    gotoTopAdsDashboard(getContext());
+        }
+    }
 }
