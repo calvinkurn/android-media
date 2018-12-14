@@ -166,13 +166,21 @@ public class AccountAnalytics {
 
         switch (status){
             case KYCConstant.STATUS_REJECTED:
+                analyticTracker.sendEventTracking(
+                        AccountConstants.Analytics.CLICK_ACCOUNT,
+                        String.format("%s %s", ACCOUNT, SETTING),
+                        AccountConstants.Analytics.CLICK_KYC_REJECTED,
+                        ""
+                );
+                break;
             case KYCConstant.STATUS_EXPIRED:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
-                        AccountConstants.Analytics.CLICK_KYC_EXPIRED,
+                        AccountConstants.Analytics.CLICK_KYC_REJECTED,
                         ""
                 );
+                break;
             case KYCConstant.STATUS_PENDING:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
@@ -180,6 +188,7 @@ public class AccountAnalytics {
                         AccountConstants.Analytics.CLICK_KYC_PENDING,
                         ""
                 );
+                break;
             case KYCConstant.STATUS_NOT_VERIFIED:
                 analyticTracker.sendEventTracking(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
@@ -187,6 +196,7 @@ public class AccountAnalytics {
                         AccountConstants.Analytics.CLICK_KYC_NOT_VERIFIED,
                         ""
                 );
+                break;
             default:
                 break;
         }
