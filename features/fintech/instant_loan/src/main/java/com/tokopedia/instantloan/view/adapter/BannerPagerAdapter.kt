@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.BannerEntity
 
-class BannerPagerAdapter(context: Context, bannerEntities: List<BannerEntity>, private val bannerClick: BannerClick) : PagerAdapter() {
+class BannerPagerAdapter(private val context: Context, val bannerEntities: List<BannerEntity>, private val bannerClick: BannerClick) : PagerAdapter() {
 
     var bannerEntityList: List<BannerEntity> = bannerEntities
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
