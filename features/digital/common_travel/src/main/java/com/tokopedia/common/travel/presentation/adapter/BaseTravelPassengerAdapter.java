@@ -57,10 +57,13 @@ public abstract class BaseTravelPassengerAdapter extends RecyclerView.Adapter {
         }
 
         String statusPassenger = context.getString(R.string.account_default);
+        int colorStatus = R.color.font_black_disabled_38;
         if (travelPassenger.isSelected()) {
             statusPassenger = context.getString(R.string.account_chosen);
+            colorStatus = R.color.black_24;
         }
         itemViewHolder.passengerStatus.setText(statusPassenger);
+        itemViewHolder.passengerStatus.setTextColor(context.getResources().getColor(colorStatus));
     }
 
     protected int getColorPassenger(boolean isSelected) {
