@@ -11,7 +11,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 
 data class CheckoutVariantNoteViewModel(
         var note: String,
-        var noteCharMax: Int
+        var noteCharMax: Int = 144
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(

@@ -41,7 +41,7 @@ class ViewModelMapper : DataMapper {
 
     override fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantNoteViewModel {
         var checkoutVariantNoteViewModel = CheckoutVariantNoteViewModel()
-        checkoutVariantNoteViewModel.noteCharMax = 144
+        checkoutVariantNoteViewModel.noteCharMax = expressCheckoutFormData.maxCharNote ?: 144
         checkoutVariantNoteViewModel.note = ""
 
         return checkoutVariantNoteViewModel

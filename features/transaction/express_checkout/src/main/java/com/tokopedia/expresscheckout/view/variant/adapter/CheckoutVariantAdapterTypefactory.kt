@@ -40,7 +40,7 @@ class CheckoutVariantAdapterTypefactory(val listener: CheckoutVariantActionListe
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
-            CheckoutVariantNoteViewHolder.LAYOUT -> CheckoutVariantNoteViewHolder(view)
+            CheckoutVariantNoteViewHolder.LAYOUT -> CheckoutVariantNoteViewHolder(view, listener)
             CheckoutVariantProductViewHolder.LAYOUT -> CheckoutVariantProductViewHolder(view)
             CheckoutVariantProfileViewHolder.LAYOUT -> CheckoutVariantProfileViewHolder(view, listener)
             CheckoutVariantQuantityViewHolder.LAYOUT -> CheckoutVariantQuantityViewHolder(view, listener)
