@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -375,7 +376,9 @@ public class ExploreFragment
     }
 
     private List<Visitable> getLocalFirstData() {
-        return persistentCacheManager.get(KEY_DATA_FIRST_QUERY, List.class, new ArrayList<>());
+        return persistentCacheManager.get(KEY_DATA_FIRST_QUERY,
+                (new TypeToken<ArrayList<Visitable>>() {}).getType(),
+                new ArrayList<>());
     }
 
     @Override
