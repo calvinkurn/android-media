@@ -26,7 +26,7 @@ public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
      * @param url destination <em>Pelajari</em> url
      */
     public void eventClickOnPelajari(String url) {
-        sendEventCategoryActionLabel(EventName.EMPTY,
+        sendEventCategoryActionLabel(EventName.PURCHASE_PROTECTION,
                 EventCategory.PURCHASE_PROTECTION,
                 EventAction.CLICK_PELAJARI,
                 url);
@@ -38,7 +38,7 @@ public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
      * @param label tickmark on purchase protection checkbox
      */
     public void eventClickOnBuy(String label) {
-        sendEventCategoryActionLabel(EventName.EMPTY,
+        sendEventCategoryActionLabel(EventName.PURCHASE_PROTECTION,
                 EventCategory.PURCHASE_PROTECTION,
                 EventAction.CLICK_PURCHASE_PROTECTION_PAY,
                 label);
@@ -48,7 +48,7 @@ public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
      * Impression of product with pelajari appears AS not all product has the pelajari impression
      */
     public void eventImpressionOfProduct() {
-        sendEventCategoryActionLabel(EventName.EMPTY,
+        sendEventCategoryActionLabel(EventName.PURCHASE_PROTECTION,
                 EventCategory.PURCHASE_PROTECTION,
                 EventAction.IMPRESSION_PELAJARI,
                 EventLabel.APPEAR);

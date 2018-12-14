@@ -35,7 +35,7 @@ public interface ConstantTransactionAnalytics {
         String PRODUCT_CLICK = "productClick";
         String PRODUCT_VIEW = "productView";
         String CLICK_PDP = "clickPDP";
-        String EMPTY = "";
+        String PURCHASE_PROTECTION = "fintechppandroid";
     }
 
     interface EventCategory {
