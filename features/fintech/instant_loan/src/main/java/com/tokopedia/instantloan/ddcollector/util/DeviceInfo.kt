@@ -8,7 +8,7 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
-import com.tokopedia.instantloan.ddcollector.DDConstants.Companion.NOT_AVAILABLE
+import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.NOT_AVAILABLE
 
 
 /**

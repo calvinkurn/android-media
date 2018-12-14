@@ -1,8 +1,11 @@
 package com.tokopedia.instantloan.ddcollector
 
 import android.Manifest
+import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.NOT_REQUIRE
+import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.PERMISSION_ENUM_SEPARATOR
+import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.REQUIRE
 
-interface DDConstants {
+object DDConstants {
 
     enum class DDComponents private constructor(private val component: String) {
         READ_SMS(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.READ_SMS),
@@ -21,7 +24,7 @@ interface DDConstants {
         }
     }
 
-    companion object {
+    object Constant {
 
         val REQUIRE = "dd_yes"
         val NOT_REQUIRE = "dd_no"

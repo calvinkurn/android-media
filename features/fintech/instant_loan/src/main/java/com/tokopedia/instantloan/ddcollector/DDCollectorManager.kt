@@ -4,6 +4,8 @@ package com.tokopedia.instantloan.ddcollector
 import android.accounts.AccountManager
 import android.content.Context
 import android.location.LocationManager
+import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.REQUIRE
+import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.RGEX_PERMISSION_ENUM_SEPARATOR
 
 import com.tokopedia.instantloan.ddcollector.account.Account
 import com.tokopedia.instantloan.ddcollector.app.Application
@@ -48,8 +50,8 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
         get() {
             val permissions = ArrayList<String>()
             for (permission in mComponents) {
-                if (permission.contains(DDConstants.REQUIRE)) {
-                    permissions.add(permission.split(DDConstants.RGEX_PERMISSION_ENUM_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])
+                if (permission.contains(REQUIRE)) {
+                    permissions.add(permission.split(RGEX_PERMISSION_ENUM_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])
                 }
             }
             return permissions
