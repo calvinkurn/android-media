@@ -57,8 +57,8 @@ object GMConstant {
         POWER_MERCHANT_URL else GOLD_MERCHANT_URL
 
     @JvmStatic
-    fun isPowerMerchantEnabled(context: Context) = FirebaseRemoteConfigImpl(context)
-            .getBoolean(GMConstant.GM_REMOTE_CONFIG_KEY, GMConstant.DEFAULT_IS_POWER_ACTIVE)
+    fun isPowerMerchantEnabled(context: Context) = true /*FirebaseRemoteConfigImpl(context)
+            .getBoolean(GMConstant.GM_REMOTE_CONFIG_KEY, GMConstant.DEFAULT_IS_POWER_ACTIVE)*/
 
     @JvmStatic
     fun getGMPointerDrawable(context: Context?): Drawable? {
