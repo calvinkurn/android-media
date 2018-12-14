@@ -60,7 +60,8 @@ public class DigitalAnalytics {
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
                                 )
-                        )
+                        ),
+                        "currentSite", "tokopediadigital"
                 )
         );
 
@@ -98,7 +99,8 @@ public class DigitalAnalytics {
                                         "products", DataLayer.listOf(
                                                 products.toArray(new Object[products.size()]))
                                 )
-                        )
+                        ),
+                        "currentSite", "tokopediadigital"
                 )
         );
     }
