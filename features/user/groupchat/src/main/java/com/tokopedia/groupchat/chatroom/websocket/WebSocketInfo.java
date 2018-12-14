@@ -127,7 +127,7 @@ public class WebSocketInfo {
             case ParticipantViewModel.TYPE:
                 return mapToParticipant(data);
             case OverlayViewModel.TYPE:
-                return mapToOverlay();
+                return mapToOverlay(data);
             default:
                 return null;
         }
