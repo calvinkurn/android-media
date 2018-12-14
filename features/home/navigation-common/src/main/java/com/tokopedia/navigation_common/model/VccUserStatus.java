@@ -1,7 +1,6 @@
-package com.tokopedia.home.account.data.model;
+package com.tokopedia.navigation_common.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.home.account.AccountConstants;
 
 public class VccUserStatus {
     @SerializedName("status")
