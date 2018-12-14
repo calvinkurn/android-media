@@ -1,5 +1,5 @@
-mutation add_product_cart_multi($param:[ItemDetailCart]){
-   add_product_cart_multi(param: $param){
+mutation add_to_cart_multi($param:[AddToCartMultiParam]){
+   add_to_cart_multi(param: $param){
       data{
          success
          message
@@ -9,7 +9,6 @@ mutation add_product_cart_multi($param:[ItemDetailCart]){
             quantity
             notes
             shop_id
-            customer_id
          }
       }
    }
