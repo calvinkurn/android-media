@@ -54,7 +54,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
     private var selectedCategoryId = -1
 
-    private var viewModel: DigitalBrowseServiceViewModel? = null
+    private lateinit var viewModel: DigitalBrowseServiceViewModel
     private lateinit var serviceAdapter: DigitalBrowseServiceAdapter
 
     override val fragmentContext: Context?
@@ -110,7 +110,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
             override fun getSpanSize(position: Int): Int {
                 return when {
                     serviceAdapter.isLoadingObject(position) -> 4
-                    viewModel!!.categoryViewModelList!![position].isTitle -> 4
+                    viewModel.categoryViewModelList!![position].isTitle -> 4
                     else -> 1
                 }
             }
@@ -128,11 +128,11 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
                     rvCategory.removeOnScrollListener(scrollSelected)
 
-                    currentScrollIndex = viewModel!!.titleMap!![tab.text]!!.indexPositionInList
+                    currentScrollIndex = viewModel.titleMap!![tab.text]!!.indexPositionInList
                     currentTitlePosition = currentScrollIndex
                     oldTitlePosition = currentTitlePosition
 
-                    smoothScroller.targetPosition = viewModel!!.titleMap!![tab.text]!!
+                    smoothScroller.targetPosition = viewModel.titleMap!![tab.text]!!
                             .indexPositionInList
                     layoutManager.startSmoothScroll(smoothScroller)
                 }
@@ -209,13 +209,13 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
                 super.onScrolled(recyclerView, dx, dy)
 
                 currentScrollIndex = layoutManager.findFirstVisibleItemPosition()
-                if (currentScrollIndex > -1 && viewModel != null &&
-                        viewModel!!.categoryViewModelList != null &&
-                        viewModel!!.categoryViewModelList!!.isNotEmpty()) {
+                if (currentScrollIndex > -1 &&
+                        viewModel.categoryViewModelList != null &&
+                        viewModel.categoryViewModelList!!.isNotEmpty()) {
 
-                    if (viewModel!!.categoryViewModelList!![currentScrollIndex].isTitle) {
+                    if (viewModel.categoryViewModelList!![currentScrollIndex].isTitle) {
                         currentTitlePosition = currentScrollIndex
-                        val indexTab = viewModel!!.titleMap!![viewModel!!.categoryViewModelList!![currentScrollIndex].name]!!.indexPositionInTab
+                        val indexTab = viewModel.titleMap!![viewModel.categoryViewModelList!![currentScrollIndex].name]!!.indexPositionInTab
                         tabLayout.removeOnTabSelectedListener(tabSelectedListener!!)
                         tabLayout.getTabAt(indexTab)!!.select()
                         tabLayout.addOnTabSelectedListener(tabSelectedListener!!)
@@ -226,13 +226,13 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
                             tabLayout.getTabAt(tabLayout.selectedTabPosition - 1)!!.select()
                             tabLayout.addOnTabSelectedListener(tabSelectedListener!!)
 
-                            val indexList = viewModel!!.titleMap!![tabLayout.getTabAt(tabLayout.selectedTabPosition)!!.text]!!.indexPositionInList
+                            val indexList = viewModel.titleMap!![tabLayout.getTabAt(tabLayout.selectedTabPosition)!!.text]!!.indexPositionInList
                             oldTitlePosition = indexList
                             currentTitlePosition = oldTitlePosition
                         } else {
                             val indexTab = tabLayout.selectedTabPosition + 1
                             if (indexTab < tabLayout.tabCount) {
-                                val indexList = viewModel!!.titleMap!![tabLayout.getTabAt(indexTab)!!.text]!!.indexPositionInList
+                                val indexList = viewModel.titleMap!![tabLayout.getTabAt(indexTab)!!.text]!!.indexPositionInList
                                 if (currentScrollIndex > indexList) {
                                     tabLayout.removeOnTabSelectedListener(tabSelectedListener!!)
                                     tabLayout.getTabAt(indexTab)!!.select()
@@ -263,7 +263,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     }
 
     override fun onCategoryItemClicked(viewModel: DigitalBrowseServiceCategoryViewModel?, itemPosition: Int) {
-        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel!!.titleMap!!, itemPosition)
+        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel.titleMap!!, itemPosition)
         analyticsModel.iconName = viewModel!!.name!!
 
         digitalBrowseAnalytics.eventClickIconLayanan(analyticsModel)
@@ -279,7 +279,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     }
 
     override fun sendImpressionAnalytics(viewModel: DigitalBrowseServiceCategoryViewModel, itemPosition: Int) {
-        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel!!.titleMap!!, itemPosition)
+        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel.titleMap!!, itemPosition)
         analyticsModel.iconName = viewModel.name!!
 
         digitalBrowseAnalytics.eventImpressionIconLayanan(analyticsModel)

@@ -8,7 +8,7 @@ import android.os.Parcelable
  */
 
 class DigitalBrowseServiceViewModel(
-        var categoryViewModelList: List<DigitalBrowseServiceCategoryViewModel>? = null,
+        val categoryViewModelList: List<DigitalBrowseServiceCategoryViewModel>?,
         var titleMap: Map<String, IndexPositionModel>? = null) : Parcelable {
 
     constructor(parcel: Parcel) : this(

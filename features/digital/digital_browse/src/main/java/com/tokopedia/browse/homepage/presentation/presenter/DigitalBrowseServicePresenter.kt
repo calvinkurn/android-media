@@ -116,7 +116,7 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
 
                             override fun onSuccessGetDigitalCategory(digitalBrowseServiceViewModel: DigitalBrowseServiceViewModel) {
                                 if (digitalBrowseServiceViewModel.categoryViewModelList != null &&
-                                        digitalBrowseServiceViewModel.categoryViewModelList!!.isNotEmpty()) {
+                                        digitalBrowseServiceViewModel.categoryViewModelList.isNotEmpty()) {
                                     view.renderData(digitalBrowseServiceViewModel)
                                 }
 
