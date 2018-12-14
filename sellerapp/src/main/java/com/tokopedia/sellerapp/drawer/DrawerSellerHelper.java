@@ -286,7 +286,7 @@ public class DrawerSellerHelper extends DrawerHelper
     private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
         String gm = context.getString(GMConstant.getGMTitleResource(context));
         DrawerGroup gmMenu = new DrawerGroup(gm,
-                R.drawable.ic_goldmerchant_drawer,
+                GMConstant.getGMDrawerDrawableResource(context),
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0);
