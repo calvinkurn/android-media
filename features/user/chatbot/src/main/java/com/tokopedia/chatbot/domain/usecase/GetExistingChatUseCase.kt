@@ -39,4 +39,9 @@ class GetExistingChatUseCase @Inject constructor(
             return requestParams
         }
     }
+
+    fun unsubscribe() {
+        graphqlUseCase.unsubscribe()
+    }
+
 }
