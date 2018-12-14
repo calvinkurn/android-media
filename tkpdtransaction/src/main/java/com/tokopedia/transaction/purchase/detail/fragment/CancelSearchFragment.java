@@ -225,7 +225,7 @@ public class CancelSearchFragment extends TkpdFragment {
                 } else if (otherReasonRadioButton.isChecked()) {
                     if (otherReasonField.getText().toString().isEmpty()) {
                         otherReasonField.setError(getActivity()
-                                .getString(com.tokopedia.core.R.string.error_note_empty));
+                                .getString(com.tokopedia.core2.R.string.error_note_empty));
                     } else {
                         listener.cancelSearch(
                                 getArguments().getString(ORDER_ID_ARGUMENT),

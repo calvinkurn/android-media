@@ -63,7 +63,6 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -76,6 +75,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -122,8 +122,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private ShippingDurationBottomsheet shippingDurationBottomsheet;
     private ShippingCourierBottomsheet shippingCourierBottomsheet;
 
-    private PerformanceMonitoring performanceMonitoring;
-    private boolean isTraceStopped;
+    private PerformanceMonitoring shipmentTracePerformance;
+    private boolean isShipmentTraceStopped;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -174,7 +174,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shipmentPresenter.attachView(this);
-        performanceMonitoring = PerformanceMonitoring.start(SHIPMENT_TRACE);
+        shipmentTracePerformance = PerformanceMonitoring.start(SHIPMENT_TRACE);
     }
 
     @Override
@@ -448,9 +448,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp) {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
+        if (!isShipmentTraceStopped) {
+            shipmentTracePerformance.stopTrace();
+            isShipmentTraceStopped = true;
         }
 
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
@@ -1519,9 +1519,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (!shipmentAdapter.isCourierPromoStillExist() && shipmentPresenter.getPromoCodeAppliedData() != null &&
                     !TextUtils.isEmpty(shipmentPresenter.getPromoCodeAppliedData().getPromoCode())) {
                 promoCode = shipmentPresenter.getPromoCodeAppliedData().getPromoCode();
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, true);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(
+                        promoCode, itemPosition, true, isOneClickShipment()
+                );
             } else {
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, false);
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(
+                        promoCode, itemPosition, false, isOneClickShipment()
+                );
             }
         }
     }
@@ -1750,6 +1754,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToProtectionMore(String url) {
+        shipmentPresenter.sendPurchaseProtectionAnalytics(
+                CheckoutAnalyticsPurchaseProtection.Event.CLICK_PELAJARI, url);
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
         startActivity(intent);
     }

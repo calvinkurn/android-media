@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.RadioGroup;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditResCenterListener;

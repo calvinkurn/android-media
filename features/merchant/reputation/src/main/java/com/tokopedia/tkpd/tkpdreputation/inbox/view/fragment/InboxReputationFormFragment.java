@@ -412,7 +412,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 ,new ImagePickerMultipleSelectionBuilder(
                 new ArrayList<>(),
                 null,
-                com.tokopedia.core.R.string.empty_desc,
+                com.tokopedia.core2.R.string.empty_desc,
                 MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);

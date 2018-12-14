@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;

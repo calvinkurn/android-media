@@ -186,6 +186,20 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                         NotifFilterViewModel.FILTER_SELLER_TEXT -> presenter
                                 .updateFilterId(NotifFilterViewModel.FILTER_SELLER_ID)
 
+                        NotifFilterViewModel.FILTER_FOR_YOU_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_FOR_YOU_ID)
+
+                        NotifFilterViewModel.FILTER_PROMO_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_PROMO_ID)
+
+                        NotifFilterViewModel.FILTER_INSIGHT_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_INSIGHT_ID)
+
+                        NotifFilterViewModel.FILTER_FEATURE_UPDATE_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_FEATURE_UPDATE_ID)
+
+                        NotifFilterViewModel.FILTER_EVENT_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_EVENT_ID)
                         else -> presenter
                                 .updateFilterId(NotifFilterViewModel.FILTER_ALL_ID)
                     }
@@ -219,9 +233,11 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
             menuList = ArrayList<Menus.ItemMenus>()
             menuList.add(filterAllMenu)
-            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_BUYER_TEXT))
-            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_SELLER_TEXT))
-
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_FOR_YOU_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_PROMO_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_INSIGHT_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_FEATURE_UPDATE_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_EVENT_TEXT))
         }
         return menuList
     }

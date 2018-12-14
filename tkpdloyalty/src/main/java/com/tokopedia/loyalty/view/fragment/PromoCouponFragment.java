@@ -466,7 +466,7 @@ public class PromoCouponFragment extends BasePresenterFragment
         }
 
         adapter.clearError();
-        UnifyTracking.eventCouponChosen(data.getTitle());
+        UnifyTracking.eventCouponChosen(getActivity(), data.getTitle());
         String platformString = getArguments().getString(PLATFORM_KEY, "");
         if (platformString.equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {

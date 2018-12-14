@@ -4,8 +4,6 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 
-import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
@@ -42,12 +40,7 @@ public class CategoryListDataSource {
 
     public Observable<List<Category>> getCategoryList() {
         return Observable.concat(getDataFromDb(), getDataFromCloud())
-                .first(new Func1<List<CategoryEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<CategoryEntity> categoryEntities) {
-                        return categoryEntities != null;
-                    }
-                })
+                .first(categoryEntities -> categoryEntities != null)
                 .map(categoryMapper);
     }
 
@@ -92,13 +85,8 @@ public class CategoryListDataSource {
         }
     }
 
-    private Func1<Response<TkpdDigitalResponse>, List<CategoryEntity>> getFuncTransformCategoryEntityList() {
-        return new Func1<Response<TkpdDigitalResponse>, List<CategoryEntity>>() {
-            @Override
-            public List<CategoryEntity> call(Response<TkpdDigitalResponse> response) {
-                return response.body().convertDataList(CategoryEntity[].class);
-            }
-        };
+    private Func1<Response<com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse>, List<CategoryEntity>> getFuncTransformCategoryEntityList() {
+        return response -> response.body().convertDataList(CategoryEntity[].class);
     }
 
 }

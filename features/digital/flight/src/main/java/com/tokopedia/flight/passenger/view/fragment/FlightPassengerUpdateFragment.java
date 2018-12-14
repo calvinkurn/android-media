@@ -176,7 +176,7 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
     @Override
     public String getPassengerTitle() {
         return spPassengerTitle.getSpinnerValue().equalsIgnoreCase(
-                String.valueOf(SpinnerTextView.DEFAULT_INDEX_NOT_SELECTED)) ? "" :
+                getString(R.string.flight_passenger_choose_salutation)) ? "" :
                 spPassengerTitle.getSpinnerValue();
     }
 

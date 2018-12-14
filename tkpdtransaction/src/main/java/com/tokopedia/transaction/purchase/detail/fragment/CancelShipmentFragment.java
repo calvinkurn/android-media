@@ -72,7 +72,7 @@ public class CancelShipmentFragment extends TkpdFragment{
                 if (notesField.getText().toString().isEmpty()) {
                     notesTextInputLayout.setError(
                             getActivity()
-                                    .getString(com.tokopedia.core.R.string.error_note_empty)
+                                    .getString(com.tokopedia.core2.R.string.error_note_empty)
                     );
                 } else {
                     if (getArguments() != null) {

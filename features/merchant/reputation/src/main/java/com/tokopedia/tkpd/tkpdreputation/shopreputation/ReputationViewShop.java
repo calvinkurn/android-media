@@ -28,7 +28,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;

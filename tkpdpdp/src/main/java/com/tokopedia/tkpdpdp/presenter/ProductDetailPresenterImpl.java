@@ -260,7 +260,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         Subscriber subscriber = skipToCart ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc());
         boolean isOneClickShipment = skipToCart && !data.isBigPromo();
         routeToNewCheckout(context, data, subscriber, isOneClickShipment);
-        UnifyTracking.eventPDPCart();
+        UnifyTracking.eventPDPCart(context);
     }
 
     private Subscriber getCartSubscriber(String sourceAtc) {
@@ -391,7 +391,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToTalk(@NonNull Context context, @NonNull Bundle bundle) {
-        UnifyTracking.eventPDPTalk();
+        UnifyTracking.eventPDPTalk(context);
         Intent intent = ((PdpRouter) context.getApplicationContext()).getProductTalk(context,
                 bundle.getString("product_id", ""));
         viewListener.navigateToActivityRequest(intent,
@@ -400,7 +400,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processToReputation(@NonNull Context context, String productId, String productName) {
-        UnifyTracking.eventPDPReputation();
+        UnifyTracking.eventPDPReputation(context);
         if (context.getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) context.getApplicationContext())
                     .getProductReputationIntent(context, productId, productName);
@@ -446,10 +446,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void reportProduct(@NonNull Context context) {
         if (SessionHandler.isV4Login(context)) {
-            UnifyTracking.eventPDPReport();
+            UnifyTracking.eventPDPReport(context);
             viewListener.showReportDialog();
         } else {
-            UnifyTracking.eventPDPReportNotLogin();
+            UnifyTracking.eventPDPReportNotLogin(context);
             Intent intent = ((PdpRouter) MainApplication.getAppContext()).getLoginIntent(context);
             viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
@@ -457,8 +457,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void processGetGTMTicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_PDP).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_PDP_TEXT);
+        if (TrackingUtils.getGtmString(viewListener.getActivityContext(), AppEventTracking.GTM.TICKER_PDP).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(viewListener.getActivityContext(), AppEventTracking.GTM.TICKER_PDP_TEXT);
             viewListener.showTickerGTM(message);
         } else {
             viewListener.hideTickerGTM();
@@ -475,8 +475,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.navigateToActivityRequest(intent,
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
-        UnifyTracking.eventPDPSendMessage();
-        UnifyTracking.eventPDPSendChat();
+        UnifyTracking.eventPDPSendMessage(context);
+        UnifyTracking.eventPDPSendChat(context);
     }
 
     @Override
@@ -487,7 +487,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void sendAppsFlyerCheckout(@NonNull final Context context, @NonNull final ProductCartPass param) {
-        PaymentTracking.checkoutEventAppsflyer(param);
+        PaymentTracking.checkoutEventAppsflyer(context, param);
     }
 
     @Override
@@ -501,16 +501,16 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         ProductDetail pdt = new ProductDetail();
         pdt.addProduct(product.getProduct());
 
-        UnifyTracking.eventPDPDetail(pdt);
-        TrackingUtils.sendMoEngageOpenProductEvent(successResult);
+        UnifyTracking.eventPDPDetail(viewListener.getActivityContext(), pdt);
+        TrackingUtils.sendMoEngageOpenProductEvent(viewListener.getActivityContext(), successResult);
 
         try {
             if (successResult.getShopInfo().getShopIsOfficial() == 1) {
-                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "official_store", "/product", String.valueOf(successResult.getInfo().getProductId()));
+                ScreenTracking.eventOfficialStoreScreenAuth(viewListener.getActivityContext(), successResult.getShopInfo().getShopId(), "official_store", "/product", String.valueOf(successResult.getInfo().getProductId()));
             } else if (successResult.getShopInfo().getShopIsGold() == 1) {
-                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "gold_merchant", "/product", String.valueOf(successResult.getInfo().getProductId()));
+                ScreenTracking.eventOfficialStoreScreenAuth(viewListener.getActivityContext(), successResult.getShopInfo().getShopId(), "gold_merchant", "/product", String.valueOf(successResult.getInfo().getProductId()));
             } else {
-                ScreenTracking.eventOfficialStoreScreenAuth(successResult.getShopInfo().getShopId(), "regular", "/product", String.valueOf(successResult.getInfo().getProductId()));
+                ScreenTracking.eventOfficialStoreScreenAuth(viewListener.getActivityContext(), successResult.getShopInfo().getShopId(), "regular", "/product", String.valueOf(successResult.getInfo().getProductId()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -617,7 +617,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.navigateToActivityRequest(intent,
                     ProductDetailFragment.REQUEST_CODE_LOGIN);
         }
-        UnifyTracking.eventPDPFavorite();
+        UnifyTracking.eventPDPFavorite(context);
     }
 
     @Override
@@ -1088,7 +1088,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private void requestAddWishList(final Context context, final Integer productId) {
         viewListener.loadingWishList();
-        UnifyTracking.eventPDPWishlit();
+        UnifyTracking.eventPDPWishlit(context);
 
         AddWishListUseCase addWishListUseCase = new AddWishListUseCase(context);
         addWishListUseCase.createObservable(String.valueOf(productId),
@@ -1223,12 +1223,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void sendAppsFlyerData(@NonNull final Context context, @NonNull final ProductDetailData successResult, @NonNull final String eventName) {
-        ScreenTracking.sendAFPDPEvent(successResult, eventName);
+        ScreenTracking.sendAFPDPEvent(context, successResult, eventName);
     }
 
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
-        UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+        UnifyTracking.eventPDPAddToWishlist(context, successResult.getInfo().getProductName());
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {
@@ -1357,7 +1357,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             context.startActivity(topadsIntent);
         } else if (context.getApplicationContext() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) context.getApplicationContext()).goToCreateMerchantRedirect(context);
-            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
+            UnifyTracking.eventTopAdsSwitcher(context, AppEventTracking.Category.SWITCHER);
         }
     }
 

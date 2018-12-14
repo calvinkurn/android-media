@@ -18,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,8 +31,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -50,6 +51,7 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
+import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.SlidingImageAdapterDealDetails;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
@@ -71,6 +73,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.DEFAULT_PARAM_ENABLE;
+import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PARAM_DEAL_PASSDATA;
 
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
@@ -108,6 +113,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView tvOff;
     private TextView tvRecommendedDeals;
     private ImageView ivBrandLogo;
+    private NestedScrollView svDetails;
     private TextView buyDealNow;
     private Menu mMenu;
     private ConstraintLayout clHeader;
@@ -189,6 +195,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         baseMainContent = view.findViewById(R.id.base_main_content);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         cardView = view.findViewById(R.id.cv_checkout);
+        svDetails = view.findViewById(R.id.nestedScroll);
         setCardViewElevation();
         progBar = view.findViewById(R.id.prog_bar);
         clRedeemInstuctns = view.findViewById(R.id.cl_redeem_instructions);
@@ -555,6 +562,72 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void removeFooter() {
         ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).removeFooter();
 
+    }
+
+    @Override
+    public boolean isEnableBuyFromArguments() {
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableBuy();
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
+    }
+
+    private DealDetailPassData getDealPassData() {
+        if (getArguments() != null && getArguments().getParcelable(PARAM_DEAL_PASSDATA) != null) {
+            return getArguments().getParcelable(PARAM_DEAL_PASSDATA);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isRecommendationEnableFromArguments() {
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableRecommendation();
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
+    }
+
+    @Override
+    public void hideRecomendationDealsView() {
+        recyclerViewDeals.setVisibility(View.GONE);
+        tvRecommendedDeals.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean isEnableLikeFromArguments() {
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableLike();
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
+    }
+
+    @Override
+    public void hideLikeButtonView() {
+        ivFavourite.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean isEnableShareFromArguments() {
+        if (getDealPassData() != null) {
+            return getDealPassData().isEnableShare();
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
+    }
+
+    @Override
+    public void hideCheckoutView() {
+        cardView.setVisibility(View.GONE);
+        CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams(
+                CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                CoordinatorLayout.LayoutParams.MATCH_PARENT
+        );
+        layoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+        svDetails.setLayoutParams(layoutParams);
+        svDetails.setClipToPadding(true);
     }
 
     @Override

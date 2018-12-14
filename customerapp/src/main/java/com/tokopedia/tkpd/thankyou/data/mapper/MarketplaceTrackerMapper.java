@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
+
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
@@ -17,9 +19,12 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.functions.Func1;
+
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_COUPON;
 
 /**
  * Created by okasurya on 12/7/17.
@@ -47,12 +52,12 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             if (paymentData.getOrders() != null) {
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(getTrackignData(orderData, indexOrdersData));
-                    BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(orderData));
+                    PurchaseTracking.marketplace(MainApplication.getAppContext(), getTrackignData(orderData, indexOrdersData, getCouponCode(paymentData)));
+                    BranchSdkUtils.sendCommerceEvent(MainApplication.getAppContext(), getTrackignBranchIOData(orderData));
                     indexOrdersData++;
                 }
 
-                PurchaseTracking.appsFlyerPurchaseEvent(getAppsFlyerTrackingData(paymentData.getOrders()),"MarketPlace");
+                PurchaseTracking.appsFlyerPurchaseEvent(MainApplication.getAppContext(), getAppsFlyerTrackingData(paymentData.getOrders()),"MarketPlace");
 
             }
             return true;
@@ -86,7 +91,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return purchase;
     }
 
-    private Purchase getTrackignData(OrderData orderData, Integer position) {
+    private Purchase getTrackignData(OrderData orderData, Integer position, String couponCode) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
@@ -100,14 +105,22 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
+//        purchase.setCoupon(couponCode);
 
         for (Product product : getProductList(orderData)) {
-            purchase.addProduct(product.getProduct());
+            purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
         }
 
         return purchase;
+    }
+
+
+    private Map<String, Object> addCouponToProduct(Map<String, Object> product, String coupon){
+        product.put(KEY_COUPON, coupon);
+        return product;
     }
 
     private String checkShopTypeForMarketplace(String s){
@@ -128,6 +141,15 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private String getShopId(OrderData orderData) {
         if (orderData.getShop() != null) {
             return String.valueOf(orderData.getShop().getShopId());
+        }
+
+        return "";
+    }
+
+
+    private String getCouponCode(PaymentData paymentDatas) {
+        if (paymentDatas.getVoucher() != null){
+            return paymentDatas.getVoucher().getVoucherCode();
         }
 
         return "";
