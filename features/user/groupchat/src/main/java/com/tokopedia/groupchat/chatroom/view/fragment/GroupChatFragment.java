@@ -50,7 +50,6 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.InteruptViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
@@ -62,6 +61,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
@@ -446,8 +447,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                 channelInfoViewModel.getChannelId());
                     }
 
-//                    showPinnedMessageBottomSheet(pinnedMessage);
-                    onShowInterupt();
+                    showPinnedMessageBottomSheet(pinnedMessage);
                 });
             } else {
                 pinnedMessageView.setVisibility(View.GONE);
@@ -516,7 +516,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         return view;
     }
 
-    private void showInteruptDialog(InteruptViewModel model) {
+    private void showInteruptDialog(OverlayViewModel model) {
         if (interuptDialog == null) {
             createInteruptDialog(model);
         } else {
@@ -526,43 +526,49 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
-    private void createInteruptDialog(InteruptViewModel model) {
+    private void createInteruptDialog(OverlayViewModel model) {
         interuptDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         View view = createInteruptView(model);
-        interuptDialog.setCustomContentView(view, model.getBubbleTitle(), model.isCloseable());
+        interuptDialog.setCustomContentView(view, model.getInteruptViewModel().getTitle(), model.isCloseable());
         interuptDialog.show();
     }
 
 
-    private View createInteruptView(final InteruptViewModel model) {
+    private View createInteruptView(final OverlayViewModel model) {
         View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
-
-        if (!TextUtils.isEmpty(model.getImageUrl()))
-            ImageHandler.loadImageRounded2(getActivity(),(ImageView) view.findViewById(R.id.ivImage), model.getImageUrl());
-        else
+        InteruptViewModel interuptViewModel = model.getInteruptViewModel();
+        if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
+            ImageHandler.loadImageRounded2(getActivity(), (ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl());
+            view.findViewById(R.id.ivImage).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    routeOverlayApplink(interuptViewModel.getImageLink());
+                }
+            });
+        } else
             ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(model.getTitle()))
-            ((TextView) view.findViewById(R.id.tvTitle)).setText(MethodChecker.fromHtml(model.getTitle()));
+        if (!TextUtils.isEmpty(interuptViewModel.getTitle()))
+            ((TextView) view.findViewById(R.id.tvTitle)).setText(MethodChecker.fromHtml(interuptViewModel.getTitle()));
         else
             ((TextView) view.findViewById(R.id.tvTitle)).setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(model.getDescription()))
-            ((TextView) view.findViewById(R.id.tvDesc)).setText(MethodChecker.fromHtml(model.getDescription()));
+        if (!TextUtils.isEmpty(interuptViewModel.getDescription()))
+            ((TextView) view.findViewById(R.id.tvDesc)).setText(MethodChecker.fromHtml(interuptViewModel.getDescription()));
         else
             ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(model.getCtaButton())) {
-            ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(model.getCtaButton()));
+        if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
+            ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
-                routeInteruptButtonApplink(model.getCtaUrl());
+                routeOverlayApplink(interuptViewModel.getBtnLink());
             });
         } else
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
         return view;
     }
 
-    private void routeInteruptButtonApplink(String applink) {
+    private void routeOverlayApplink(String applink) {
         RouteManager.route(getActivity(), applink);
     }
 
@@ -813,6 +819,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (messageItem instanceof ImageAnnouncementViewModel) {
             analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel) messageItem);
+        }
+
+        if (messageItem instanceof OverlayViewModel) {
+            showInteruptDialog((OverlayViewModel)messageItem);
         }
 
         if (!hideMessage) {
@@ -1084,15 +1094,4 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         return adapter.getList();
     }
 
-    public void onShowInterupt() {
-        showInteruptDialog(
-                new InteruptViewModel(
-                        "Bubble Title",
-                        "title",
-                        "https://vignette.wikia.nocookie.net/swordartonline/images/6/67/Kirito_SAO.png/revision/latest?cb=20140228021241",
-                        "description",
-                        "Start Vote",
-                        "tokopedia://affiliate/explore",
-                        true));
-    }
 }
