@@ -47,6 +47,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
 import java.util.concurrent.TimeUnit;
@@ -326,7 +327,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
+        updateViewFromServer();
         requestOtp();
+    }
+
+    private void updateViewFromServer() {
+        presenter.updateViewFromServer(viewModel);
     }
 
     protected void requestOtp() {
@@ -334,16 +340,20 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void initData() {
+        setData();
+        verifyButton.setEnabled(false);
+    }
+
+    private void setData() {
         int imageId = viewModel.getIconResId();
-        if (imageId != 0)
-            ImageHandler.loadImageWithId(icon, imageId);
-        else if (!TextUtils.isEmpty(viewModel.getImageUrl())) {
+        if (!TextUtils.isEmpty(viewModel.getImageUrl())) {
             ImageHandler.LoadImage(icon, viewModel.getImageUrl());
-        } else {
+        } else if (imageId != 0)
+            ImageHandler.loadImageWithId(icon, imageId);
+        else {
             icon.setVisibility(View.GONE);
         }
         message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
-        verifyButton.setEnabled(false);
     }
 
     @Override
@@ -591,6 +601,13 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onReceiveOTP(String otpCode) {
         processOTPSMS(otpCode);
+    }
+
+    @Override
+    public void onSuccessGetModelFromServer(MethodItem methodItem) {
+        this.viewModel.setImageUrl(methodItem.getImageUrl());
+        this.viewModel.setMessage(methodItem.getVerificationText());
+        setData();
     }
 
     @NeedsPermission(Manifest.permission.RECEIVE_SMS)
