@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -41,20 +40,17 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         DigitalBrowseCategoryViewHolder.CategoryListener, DigitalBrowsePopularViewHolder.PopularBrandListener {
 
     @Inject lateinit var presenter: DigitalBrowseMarketplacePresenter
-    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
+    @Inject private lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
-    private var containerPopularBrand: LinearLayout? = null
-    private var tvAllPopularBrand: TextViewCompat? = null
-    private var rvPopularBrand: RecyclerView? = null
-    private var rvCategory: RecyclerView? = null
+    private lateinit var containerPopularBrand: LinearLayout
+    private lateinit var tvAllPopularBrand: TextViewCompat
+    private lateinit var rvPopularBrand: RecyclerView
+    private lateinit var rvCategory: RecyclerView
 
-    private var categoryAdapter: DigitalBrowseMarketplaceAdapter? = null
-    private var popularAdapter: DigitalBrowseMarketplaceAdapter? = null
+    private lateinit var categoryAdapter: DigitalBrowseMarketplaceAdapter
+    private lateinit var popularAdapter: DigitalBrowseMarketplaceAdapter
 
     private var digitalBrowseMarketplaceViewModel: DigitalBrowseMarketplaceViewModel? = null
-
-    override val categoryItemCount: Int
-        get() = categoryAdapter!!.itemCount
 
     override val fragmentContext: Context?
         get() = context
@@ -67,9 +63,9 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         rvPopularBrand = view.findViewById(R.id.rv_popular_brand)
         rvCategory = view.findViewById(R.id.rv_category)
 
-        tvAllPopularBrand!!.setOnClickListener {
-            digitalBrowseAnalytics!!.eventClickViewAllOnBelanjaPage()
-            RouteManager.route(getContext(), OFFICIAL_STORES)
+        tvAllPopularBrand.setOnClickListener {
+            digitalBrowseAnalytics.eventClickViewAllOnBelanjaPage()
+            RouteManager.route(context, OFFICIAL_STORES)
         }
 
         return view
@@ -78,8 +74,8 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter!!.attachView(this)
-        presenter!!.onInit()
+        presenter.attachView(this)
+        presenter.onInit()
 
         initializeCategoryView()
         initializePopularView()
@@ -116,32 +112,32 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
     }
 
     override fun showGetDataError(e: Throwable) {
-        categoryAdapter!!.hideLoading()
+        categoryAdapter.hideLoading()
         NetworkErrorHelper.showEmptyState(activity, activity!!.window.decorView.rootView,
-                ErrorHandler.getErrorMessage(getContext(), e)
+                ErrorHandler.getErrorMessage(context, e)
         ) {
-            categoryAdapter!!.showLoading()
-            presenter!!.getMarketplaceDataCloud()
+            categoryAdapter.showLoading()
+            presenter.getMarketplaceDataCloud()
         }
     }
 
     override fun sendPopularImpressionAnalytics(analyticsModelList: List<DigitalBrowsePopularAnalyticsModel>) {
-        digitalBrowseAnalytics!!.eventPromoImpressionPopularBrand(analyticsModelList)
+        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(analyticsModelList)
     }
 
     private fun initializeCategoryView() {
-        tvAllPopularBrand!!.visibility = View.GONE
-        containerPopularBrand!!.visibility = View.GONE
-        rvPopularBrand!!.visibility = View.GONE
+        tvAllPopularBrand.visibility = View.GONE
+        containerPopularBrand.visibility = View.GONE
+        rvPopularBrand.visibility = View.GONE
 
         val digitalBrowseMarketplaceAdapterTypeFactory = DigitalBrowseMarketplaceAdapterTypeFactory(this, this)
-        categoryAdapter = DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, ArrayList<Visitable<*>>())
-        popularAdapter = DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, ArrayList<Visitable<*>>())
+        categoryAdapter = DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, ArrayList())
+        popularAdapter = DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, ArrayList())
 
-        val layoutManager = GridLayoutManager(getContext(), COLUMN_NUMBER)
+        val layoutManager = GridLayoutManager(context, COLUMN_NUMBER)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (categoryAdapter!!.isLoadingObject(position)) {
+                return if (categoryAdapter.isLoadingObject(position)) {
                     4
                 } else {
                     1
@@ -149,53 +145,53 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
             }
         }
 
-        rvCategory!!.layoutManager = layoutManager
-        rvCategory!!.setHasFixedSize(true)
-        rvCategory!!.adapter = categoryAdapter
+        rvCategory.layoutManager = layoutManager
+        rvCategory.setHasFixedSize(true)
+        rvCategory.adapter = categoryAdapter
 
-        categoryAdapter!!.showLoading()
+        categoryAdapter.showLoading()
     }
 
     private fun initializePopularView() {
         hidePopularBrand()
-        val layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        rvPopularBrand!!.layoutManager = layoutManager
-        rvPopularBrand!!.setHasFixedSize(false)
-        rvPopularBrand!!.adapter = popularAdapter
+        rvPopularBrand.layoutManager = layoutManager
+        rvPopularBrand.setHasFixedSize(false)
+        rvPopularBrand.adapter = popularAdapter
     }
 
     private fun renderCategory(digitalBrowseRowViewModels: List<DigitalBrowseRowViewModel>?) {
-        categoryAdapter!!.hideLoading()
-        categoryAdapter!!.clearAllElements()
-        categoryAdapter!!.addElement(digitalBrowseRowViewModels)
+        categoryAdapter.hideLoading()
+        categoryAdapter.clearAllElements()
+        categoryAdapter.addElement(digitalBrowseRowViewModels)
     }
 
     private fun renderPopularBrands(digitalBrowsePopularBrandsViewModels: List<DigitalBrowsePopularBrandsViewModel>?) {
         showPopularBrand()
 
-        popularAdapter!!.clearAllElements()
-        popularAdapter!!.addElement(digitalBrowsePopularBrandsViewModels)
+        popularAdapter.clearAllElements()
+        popularAdapter.addElement(digitalBrowsePopularBrandsViewModels)
     }
 
     private fun showPopularBrand() {
-        containerPopularBrand!!.visibility = View.VISIBLE
-        tvAllPopularBrand!!.visibility = View.VISIBLE
-        rvPopularBrand!!.visibility = View.VISIBLE
+        containerPopularBrand.visibility = View.VISIBLE
+        tvAllPopularBrand.visibility = View.VISIBLE
+        rvPopularBrand.visibility = View.VISIBLE
     }
 
     private fun hidePopularBrand() {
-        containerPopularBrand!!.visibility = View.GONE
-        tvAllPopularBrand!!.visibility = View.GONE
-        rvPopularBrand!!.visibility = View.GONE
+        containerPopularBrand.visibility = View.GONE
+        tvAllPopularBrand.visibility = View.GONE
+        rvPopularBrand.visibility = View.GONE
     }
 
     override fun onPopularItemClicked(viewModel: DigitalBrowsePopularBrandsViewModel, position: Int) {
-        digitalBrowseAnalytics!!.eventPromoClickPopularBrand(
-                presenter!!.getPopularAnalyticsModel(viewModel, position))
+        digitalBrowseAnalytics.eventPromoClickPopularBrand(
+                presenter.getPopularAnalyticsModel(viewModel, position))
 
-        if (viewModel.url != null && RouteManager.isSupportApplink(getContext(), viewModel.url)) {
-            RouteManager.route(getContext(), viewModel.url)
+        if (viewModel.url != null && RouteManager.isSupportApplink(context, viewModel.url)) {
+            RouteManager.route(context, viewModel.url)
         } else {
             if (activity!!.application is DigitalBrowseRouter) {
                 (activity!!.application as DigitalBrowseRouter)
@@ -206,12 +202,12 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
 
     override fun onCategoryItemClicked(viewModel: DigitalBrowseRowViewModel, itemPosition: Int) {
 
-        digitalBrowseAnalytics!!.eventClickOnCategoryBelanja(viewModel.name!!, itemPosition + 1)
+        digitalBrowseAnalytics.eventClickOnCategoryBelanja(viewModel.name!!, itemPosition + 1)
 
-        if (viewModel.appLinks != null && RouteManager.isSupportApplink(getContext(), viewModel.appLinks)) {
-            RouteManager.route(getContext(), viewModel.appLinks)
-        } else if (RouteManager.isSupportApplink(getContext(), viewModel.url)) {
-            RouteManager.route(getContext(), viewModel.url)
+        if (viewModel.appLinks != null && RouteManager.isSupportApplink(context, viewModel.appLinks)) {
+            RouteManager.route(context, viewModel.appLinks)
+        } else if (RouteManager.isSupportApplink(context, viewModel.url)) {
+            RouteManager.route(context, viewModel.url)
         } else if (activity!!.application is DigitalBrowseRouter) {
             (activity!!.application as DigitalBrowseRouter)
                     .goToWebview(activity!!, viewModel.url!!)
@@ -219,13 +215,15 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
     }
 
     override fun sendImpressionAnalytics(iconName: String?, iconPosition: Int) {
-        digitalBrowseAnalytics!!.eventImpressionHomePage(iconName!!, iconPosition)
+        digitalBrowseAnalytics.eventImpressionHomePage(iconName!!, iconPosition)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter!!.onDestroyView()
+        presenter.onDestroyView()
     }
+
+    override fun getCategoryItemCount(): Int = categoryAdapter.itemCount
 
     companion object {
 

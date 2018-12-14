@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -40,11 +39,11 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     @Inject lateinit var presenter: DigitalBrowseServicePresenter
     @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
-    private var tabLayout: TabLayout? = null
-    private var rvCategory: RecyclerView? = null
-    private var smoothScroller: LinearSmoothScroller? = null
-    private var layoutManager: GridLayoutManager? = null
-    private var containerData: LinearLayout? = null
+    private lateinit var tabLayout: TabLayout
+    private lateinit var rvCategory: RecyclerView
+    private lateinit var smoothScroller: LinearSmoothScroller
+    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var containerData: LinearLayout
 
     private var scrollSelected: RecyclerView.OnScrollListener? = null
     private var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
@@ -56,10 +55,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private var selectedCategoryId = -1
 
     private var viewModel: DigitalBrowseServiceViewModel? = null
-    private var serviceAdapter: DigitalBrowseServiceAdapter? = null
-
-    override val itemCount: Int
-        get() = serviceAdapter!!.itemCount
+    private lateinit var serviceAdapter: DigitalBrowseServiceAdapter
 
     override val fragmentContext: Context?
         get() = context
@@ -79,8 +75,8 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         initView()
 
-        presenter!!.attachView(this)
-        presenter!!.onInit()
+        presenter.attachView(this)
+        presenter.onInit()
 
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(KEY_SERVICE_DATA)
@@ -107,17 +103,15 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private fun initView() {
 
         val adapterTypeFactory = DigitalBrowseServiceAdapterTypeFactory(this)
-        serviceAdapter = DigitalBrowseServiceAdapter(adapterTypeFactory, ArrayList<Visitable<*>>())
+        serviceAdapter = DigitalBrowseServiceAdapter(adapterTypeFactory, ArrayList())
 
         layoutManager = GridLayoutManager(context, COLUMN_NUMBER)
-        layoutManager!!.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (serviceAdapter!!.isLoadingObject(position)) {
-                    4
-                } else if (viewModel!!.categoryViewModelList!![position].isTitle) {
-                    4
-                } else {
-                    1
+                return when {
+                    serviceAdapter.isLoadingObject(position) -> 4
+                    viewModel!!.categoryViewModelList!![position].isTitle -> 4
+                    else -> 1
                 }
             }
         }
@@ -130,17 +124,17 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.text != "") {
-                    digitalBrowseAnalytics!!.eventClickHeaderTabLayanan(tab.text!!.toString())
+                    digitalBrowseAnalytics.eventClickHeaderTabLayanan(tab.text!!.toString())
 
-                    rvCategory!!.removeOnScrollListener(scrollSelected)
+                    rvCategory.removeOnScrollListener(scrollSelected)
 
                     currentScrollIndex = viewModel!!.titleMap!![tab.text]!!.indexPositionInList
                     currentTitlePosition = currentScrollIndex
                     oldTitlePosition = currentTitlePosition
 
-                    smoothScroller!!.targetPosition = viewModel!!.titleMap!![tab.text]!!
+                    smoothScroller.targetPosition = viewModel!!.titleMap!![tab.text]!!
                             .indexPositionInList
-                    layoutManager!!.startSmoothScroll(smoothScroller)
+                    layoutManager.startSmoothScroll(smoothScroller)
                 }
             }
 
@@ -153,58 +147,58 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
             }
         }
 
-        rvCategory!!.layoutManager = layoutManager
-        rvCategory!!.setHasFixedSize(true)
-        rvCategory!!.adapter = serviceAdapter
+        rvCategory.layoutManager = layoutManager
+        rvCategory.setHasFixedSize(true)
+        rvCategory.adapter = serviceAdapter
 
-        serviceAdapter!!.showLoading()
+        serviceAdapter.showLoading()
 
     }
 
     override fun renderData(viewModel: DigitalBrowseServiceViewModel) {
-        serviceAdapter!!.clearAllElements()
-        tabLayout!!.removeAllTabs()
+        serviceAdapter.clearAllElements()
+        tabLayout.removeAllTabs()
 
         this.viewModel = viewModel
 
-        serviceAdapter!!.hideLoading()
+        serviceAdapter.hideLoading()
 
-        presenter!!.processTabData(viewModel.titleMap!!, viewModel, selectedCategoryId)
+        presenter.processTabData(viewModel.titleMap!!, viewModel, selectedCategoryId)
 
         renderDataList(viewModel.categoryViewModelList)
         setRecyclerViewListener()
     }
 
     override fun showTab() {
-        tabLayout!!.visibility = View.VISIBLE
+        tabLayout.visibility = View.VISIBLE
     }
 
     override fun hideTab() {
-        tabLayout!!.visibility = View.GONE
+        tabLayout.visibility = View.GONE
     }
 
     override fun addTab(key: String) {
-        tabLayout!!.addTab(tabLayout!!.newTab().setText(key))
+        tabLayout.addTab(tabLayout.newTab().setText(key))
     }
 
     private fun renderDataList(dataList: List<DigitalBrowseServiceCategoryViewModel>?) {
-        serviceAdapter!!.addElement(dataList)
+        serviceAdapter.addElement(dataList)
     }
 
     override fun renderTab(selectedTabIndex: Int) {
-        tabLayout!!.addOnTabSelectedListener(tabSelectedListener!!)
-        tabLayout!!.getTabAt(selectedTabIndex)!!.select()
+        tabLayout.addOnTabSelectedListener(tabSelectedListener!!)
+        tabLayout.getTabAt(selectedTabIndex)!!.select()
     }
 
     override fun showGetDataError(e: Throwable) {
-        serviceAdapter!!.hideLoading()
-        containerData!!.visibility = View.GONE
+        serviceAdapter.hideLoading()
+        containerData.visibility = View.GONE
         NetworkErrorHelper.showEmptyState(activity, activity!!.window.decorView.rootView,
                 ErrorHandler.getErrorMessage(context, e)
         ) {
-            containerData!!.visibility = View.VISIBLE
-            serviceAdapter!!.showLoading()
-            presenter!!.getDigitalCategoryCloud()
+            containerData.visibility = View.VISIBLE
+            serviceAdapter.showLoading()
+            presenter.getDigitalCategoryCloud()
         }
     }
 
@@ -214,35 +208,35 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                currentScrollIndex = layoutManager!!.findFirstVisibleItemPosition()
+                currentScrollIndex = layoutManager.findFirstVisibleItemPosition()
                 if (currentScrollIndex > -1 && viewModel != null &&
                         viewModel!!.categoryViewModelList != null &&
-                        viewModel!!.categoryViewModelList!!.size > 0) {
+                        viewModel!!.categoryViewModelList!!.isNotEmpty()) {
 
                     if (viewModel!!.categoryViewModelList!![currentScrollIndex].isTitle) {
                         currentTitlePosition = currentScrollIndex
                         val indexTab = viewModel!!.titleMap!![viewModel!!.categoryViewModelList!![currentScrollIndex].name]!!.indexPositionInTab
-                        tabLayout!!.removeOnTabSelectedListener(tabSelectedListener!!)
-                        tabLayout!!.getTabAt(indexTab)!!.select()
-                        tabLayout!!.addOnTabSelectedListener(tabSelectedListener!!)
+                        tabLayout.removeOnTabSelectedListener(tabSelectedListener!!)
+                        tabLayout.getTabAt(indexTab)!!.select()
+                        tabLayout.addOnTabSelectedListener(tabSelectedListener!!)
                         oldTitlePosition = currentTitlePosition
                     } else {
                         if (currentScrollIndex < oldTitlePosition) {
-                            tabLayout!!.removeOnTabSelectedListener(tabSelectedListener!!)
-                            tabLayout!!.getTabAt(tabLayout!!.selectedTabPosition - 1)!!.select()
-                            tabLayout!!.addOnTabSelectedListener(tabSelectedListener!!)
+                            tabLayout.removeOnTabSelectedListener(tabSelectedListener!!)
+                            tabLayout.getTabAt(tabLayout.selectedTabPosition - 1)!!.select()
+                            tabLayout.addOnTabSelectedListener(tabSelectedListener!!)
 
-                            val indexList = viewModel!!.titleMap!![tabLayout!!.getTabAt(tabLayout!!.selectedTabPosition)!!.text]!!.indexPositionInList
+                            val indexList = viewModel!!.titleMap!![tabLayout.getTabAt(tabLayout.selectedTabPosition)!!.text]!!.indexPositionInList
                             oldTitlePosition = indexList
                             currentTitlePosition = oldTitlePosition
                         } else {
-                            val indexTab = tabLayout!!.selectedTabPosition + 1
-                            if (indexTab < tabLayout!!.tabCount) {
-                                val indexList = viewModel!!.titleMap!![tabLayout!!.getTabAt(indexTab)!!.text]!!.indexPositionInList
+                            val indexTab = tabLayout.selectedTabPosition + 1
+                            if (indexTab < tabLayout.tabCount) {
+                                val indexList = viewModel!!.titleMap!![tabLayout.getTabAt(indexTab)!!.text]!!.indexPositionInList
                                 if (currentScrollIndex > indexList) {
-                                    tabLayout!!.removeOnTabSelectedListener(tabSelectedListener!!)
-                                    tabLayout!!.getTabAt(indexTab)!!.select()
-                                    tabLayout!!.addOnTabSelectedListener(tabSelectedListener!!)
+                                    tabLayout.removeOnTabSelectedListener(tabSelectedListener!!)
+                                    tabLayout.getTabAt(indexTab)!!.select()
+                                    tabLayout.addOnTabSelectedListener(tabSelectedListener!!)
 
                                     oldTitlePosition = indexList
                                     currentTitlePosition = oldTitlePosition
@@ -254,25 +248,25 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
             }
         }
 
-        rvCategory!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvCategory.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (currentTitlePosition == layoutManager!!.findFirstVisibleItemPosition()) {
-                    rvCategory!!.removeOnScrollListener(scrollSelected)
-                    rvCategory!!.addOnScrollListener(scrollSelected)
+                if (currentTitlePosition == layoutManager.findFirstVisibleItemPosition()) {
+                    rvCategory.removeOnScrollListener(scrollSelected)
+                    rvCategory.addOnScrollListener(scrollSelected)
                 }
             }
         })
 
-        rvCategory!!.addOnScrollListener(scrollSelected)
+        rvCategory.addOnScrollListener(scrollSelected)
     }
 
     override fun onCategoryItemClicked(viewModel: DigitalBrowseServiceCategoryViewModel?, itemPosition: Int) {
-        val analyticsModel = presenter!!.getItemPositionInGroup(this.viewModel!!.titleMap!!, itemPosition)
+        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel!!.titleMap!!, itemPosition)
         analyticsModel.iconName = viewModel!!.name!!
 
-        digitalBrowseAnalytics!!.eventClickIconLayanan(analyticsModel)
+        digitalBrowseAnalytics.eventClickIconLayanan(analyticsModel)
 
         if (viewModel.appLinks != null && RouteManager.isSupportApplink(context, viewModel.appLinks)) {
             RouteManager.route(context, viewModel.appLinks)
@@ -285,16 +279,18 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     }
 
     override fun sendImpressionAnalytics(viewModel: DigitalBrowseServiceCategoryViewModel, itemPosition: Int) {
-        val analyticsModel = presenter!!.getItemPositionInGroup(this.viewModel!!.titleMap!!, itemPosition)
+        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel!!.titleMap!!, itemPosition)
         analyticsModel.iconName = viewModel.name!!
 
-        digitalBrowseAnalytics!!.eventImpressionIconLayanan(analyticsModel)
+        digitalBrowseAnalytics.eventImpressionIconLayanan(analyticsModel)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter!!.onDestroyView()
+        presenter.onDestroyView()
     }
+
+    override fun getItemCount(): Int = serviceAdapter.itemCount
 
     companion object {
 

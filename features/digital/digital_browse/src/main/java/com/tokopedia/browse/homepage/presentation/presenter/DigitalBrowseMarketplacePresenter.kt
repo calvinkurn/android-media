@@ -42,7 +42,8 @@ constructor(private val digitalBrowseMarketplaceUseCase: DigitalBrowseMarketplac
                             }
 
                             override fun onSuccessGetMarketplace(digitalBrowseMarketplaceData: DigitalBrowseMarketplaceViewModel) {
-                                if (digitalBrowseMarketplaceData.rowViewModelList!!.size > 0 && digitalBrowseMarketplaceData.popularBrandsList!!.size > 0) {
+                                if (digitalBrowseMarketplaceData.rowViewModelList!!.isNotEmpty() &&
+                                        digitalBrowseMarketplaceData.popularBrandsList!!.isNotEmpty()) {
                                     view.renderData(digitalBrowseMarketplaceData)
                                 }
 
@@ -93,7 +94,7 @@ constructor(private val digitalBrowseMarketplaceUseCase: DigitalBrowseMarketplac
 
     override fun onErrorGetMarketplace(throwable: Throwable) {
         if (isViewAttached) {
-            if (view.categoryItemCount < 2) {
+            if (view.getCategoryItemCount() < 2) {
                 view.showGetDataError(throwable)
             }
         }

@@ -45,15 +45,12 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
     override fun processTabData(titleMap: Map<String, IndexPositionModel>, viewModel: DigitalBrowseServiceViewModel, categoryId: Int) {
         view.showTab()
 
-        var selectedTab: String? = ""
         var selectedTabIndex = 0
 
-        for (item in viewModel.categoryViewModelList!!) {
-            if (item.isTitle && item.id == categoryId) {
-                selectedTab = item.name
-                break
-            }
-        }
+        val selectedTab: String? = viewModel.categoryViewModelList!!
+                .firstOrNull { it.isTitle && it.id == categoryId }
+                ?.name
+                ?: ""
 
         val titleList = ArrayList<String>()
         for (i in 0 until titleMap.size) {
@@ -68,11 +65,9 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
             }
         }
 
-        for (title in titleList) {
-            if (title != "") {
-                view.addTab(title)
-            }
-        }
+        titleList
+                .filter { it != "" }
+                .forEach { view.addTab(it) }
 
         view.renderTab(selectedTabIndex)
     }
@@ -82,7 +77,7 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
         var lastTitlePosition = 0
 
         for ((key, value) in titleMap) {
-            if (lastTitlePosition <= value.indexPositionInList && value.indexPositionInList < itemPositionInList) {
+            if (value.indexPositionInList in lastTitlePosition..(itemPositionInList - 1)) {
 
                 lastTitlePosition = value.indexPositionInList
 
@@ -98,7 +93,7 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
 
     override fun onErrorGetDigitalCategory(throwable: Throwable) {
         if (isViewAttached) {
-            if (view.itemCount < 2) {
+            if (view.getItemCount() < 2) {
                 view.showGetDataError(throwable)
             }
         }
