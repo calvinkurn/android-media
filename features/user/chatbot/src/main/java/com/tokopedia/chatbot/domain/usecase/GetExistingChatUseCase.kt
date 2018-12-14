@@ -2,8 +2,8 @@ package com.tokopedia.chatbot.domain.usecase
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.domain.pojo.GetChatRepliesPojo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -22,7 +22,7 @@ class GetExistingChatUseCase @Inject constructor(
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_chat_replies)
         val graphqlRequest = GraphqlRequest(query,
-                GetChatRepliesPojo::class.java, requestParams)
+                GetExistingChatPojo::class.java, requestParams)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

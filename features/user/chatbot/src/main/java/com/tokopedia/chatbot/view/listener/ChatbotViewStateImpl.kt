@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -57,12 +58,21 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     }
 
-    override fun onSuccessLoadFirstTime(list: ArrayList<Visitable<*>>) {
+    override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
         hideLoading()
-        adapter.addElement(list)
+        adapter.addElement(chatroomViewModel.listChat)
         scrollToBottom()
+        updateHeader(chatroomViewModel)
         showReplyBox()
         showPickerButton()
+        checkShowQuickReply(chatroomViewModel)
+    }
+
+    private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
+        if (chatroomViewModel.listChat.isNotEmpty()
+                && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
+            showQuickReply(chatroomViewModel.listChat[0] as QuickReplyListViewModel)
+        }
     }
 
     override fun onCheckToHideQuickReply(visitable: Visitable<*>) {
@@ -75,7 +85,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel) {
-        showQuickReply()
+        showQuickReply(visitable)
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
@@ -87,8 +97,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         return fromUid != null && userSession.userId == fromUid
     }
 
-    private fun showQuickReply() {
-
+    private fun showQuickReply(quickReplyListViewModel: QuickReplyListViewModel) {
+        //TODO SHOW QUICK REPLY
     }
 
     private fun hasQuickReply(): Boolean {

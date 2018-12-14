@@ -3,15 +3,15 @@ package com.tokopedia.chat_common.view
 import android.support.annotation.NonNull
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
+import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -29,6 +29,8 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
+    protected lateinit var toolbar: Toolbar
+
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -41,6 +43,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
         actionBox = view.findViewById(R.id.add_comment_area)
         sendButton = view.findViewById(R.id.send_but)
         notifier = view.findViewById(R.id.notifier)
+        toolbar = view.findViewById(R.id.app_bar)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -52,6 +55,26 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
         replyWatcher = EventsWatcher.text(replyEditText)
 
         replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
+    }
+
+    override fun updateHeader(chatroomViewModel: ChatroomViewModel) {
+        val title = toolbar.findViewById<TextView>(R.id.title)
+        title.text = chatroomViewModel.title
+
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
+        ImageHandler.loadImageCircle2(avatar.context, avatar, chatroomViewModel.avatar,
+                R.drawable.ic_default_avatar)
+
+        val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
+        val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
+
+        onlineDesc.text = chatroomViewModel.onlineStatus
+
+        if (chatroomViewModel.isOnline)
+            onlineStatus.setImageResource(R.drawable.status_indicator_online)
+        else
+            onlineStatus.setImageResource(R.drawable.status_indicator_offline)
+
     }
 
     private fun scrollDownWhenInBottom() {
@@ -71,6 +94,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
     private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
         return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
+
 
     fun showLoading() {
         mainLoading.visibility = View.VISIBLE

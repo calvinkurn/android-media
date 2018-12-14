@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chatbot.R
@@ -94,10 +95,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     }
 
-    private fun onSuccessGetExistingChat(): (list: ArrayList<Visitable<*>>) -> Unit {
+    private fun onSuccessGetExistingChat(): (ChatroomViewModel) -> Unit {
         return {
             //TODO
-//            onSuccessLoadFirstTime(it)
+            getViewState().onSuccessLoadFirstTime(it)
         }
     }
 
@@ -130,11 +131,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         dummyList.add(MessageViewModel("51", "1960918", "lawan", "User", "", "", "213123127", "213123123", true, false, false, "hi51"))
         dummyList.add(MessageViewModel("61", "7977933", "lawan", "User", "", "", "213123128", "213123123", true, false, true, "hi61"))
 
-        onSuccessLoadFirstTime(dummyList)
-    }
+        getViewState().onSuccessLoadFirstTime(ChatroomViewModel(dummyList))
 
-    override fun onSuccessLoadFirstTime(list: ArrayList<Visitable<*>>) {
-        getViewState().onSuccessLoadFirstTime(list)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {

@@ -5,11 +5,13 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_TYPING
+import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -38,7 +40,7 @@ class ChatbotPresenter @Inject constructor(
 
     private var mSubscription: CompositeSubscription
 
-    init{
+    init {
         mSubscription = CompositeSubscription()
     }
 
@@ -104,15 +106,17 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun destroyWebSocket() {
-            mSubscription.clear()
-            mSubscription.unsubscribe()
+        mSubscription.clear()
+        mSubscription.unsubscribe()
     }
 
     override fun getExistingChat(messageId: String,
                                  onError: (Throwable) -> Unit,
-                                 onSuccess: (ArrayList<Visitable<*>>) -> Unit) {
-        getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId),
-                GetExistingChatSubscriber(onError, onSuccess))
+                                 onSuccess: (ChatroomViewModel) -> Unit) {
+        if (messageId.isNotEmpty()) {
+            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId),
+                    GetExistingChatSubscriber(onError, onSuccess))
+        }
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -164,6 +168,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
+        getExistingChatUseCase.unsubscribe()
         super.detachView()
     }
 }

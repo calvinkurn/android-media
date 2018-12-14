@@ -1,7 +1,6 @@
 package com.tokopedia.chat_common.domain.subscriber
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.chat_common.domain.pojo.GetChatRepliesPojo
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
@@ -13,7 +12,7 @@ class GetChatRepliesSubscriber(val onError: (Throwable) -> Unit)
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
-        handleError(graphqlResponse, GetChatRepliesPojo::class.java, routingOnNext
+        handleError(graphqlResponse, GetExistingChatPojo::class.java, routingOnNext
         (graphqlResponse), onError)
     }
 

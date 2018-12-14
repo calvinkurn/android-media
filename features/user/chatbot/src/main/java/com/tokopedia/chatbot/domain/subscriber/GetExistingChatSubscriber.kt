@@ -1,8 +1,10 @@
 package com.tokopedia.chatbot.domain.subscriber
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.util.handleError
-import com.tokopedia.chatbot.domain.pojo.GetChatRepliesPojo
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
@@ -10,18 +12,20 @@ import rx.Subscriber
  * @author by nisie on 12/12/18.
  */
 class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
-                                val onSuccessGetChat: (ArrayList<Visitable<*>>) -> Unit)
+                                val onSuccessGetChat: (ChatroomViewModel) -> Unit,
+                                val mapper : GetExistingChatMapper =  GetExistingChatMapper())
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
-        handleError(graphqlResponse, GetChatRepliesPojo::class.java,
+        handleError(graphqlResponse, GetExistingChatPojo::class.java,
                 routingOnNext(graphqlResponse), onErrorGetChat)
     }
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
         return {
-            //TODO MAPPING
-            onSuccessGetChat(arrayListOf())
+            val pojo = graphqlResponse.getData<GetExistingChatPojo>(GetExistingChatPojo::class.java)
+
+            onSuccessGetChat(mapper.map(pojo))
         }
     }
 
