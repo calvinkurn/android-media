@@ -36,7 +36,11 @@ class ChatbotPresenter @Inject constructor(
         private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper)
     : BaseDaggerPresenter<ChatbotContract.View>(), ChatbotContract.Presenter {
 
-    private lateinit var mSubscription: CompositeSubscription
+    private var mSubscription: CompositeSubscription
+
+    init{
+        mSubscription = CompositeSubscription()
+    }
 
     override fun connectWebSocket(messageId: String) {
         val webSocketUrl = "wss://chat.tokopedia.com/connect?os_type=1" +
@@ -45,7 +49,7 @@ class ChatbotPresenter @Inject constructor(
 
         destroyWebSocket()
 
-        if (mSubscription == null || mSubscription.isUnsubscribed) {
+        if (mSubscription.isUnsubscribed) {
             mSubscription = CompositeSubscription()
         }
 
@@ -100,10 +104,8 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun destroyWebSocket() {
-        if (mSubscription != null) {
             mSubscription.clear()
             mSubscription.unsubscribe()
-        }
     }
 
     override fun getExistingChat(messageId: String,
