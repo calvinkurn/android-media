@@ -116,16 +116,18 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
                         .querySingle();
 
                 boolean isSelected = false;
-                String idPassengerPrevious = "";
                 if (result != null) {
-                    idPassengerPrevious = result.getIdPassenger();
+                    String idPassengerPrevious = result.getIdPassenger();
                     isSelected = result.isSelected();
+
                     result.delete();
+                    result = mapTravelPassengerToDb(travelPassengerEntity);
+                    result.setIdPassenger(idPassengerPrevious);
+                } else {
+                    result = mapTravelPassengerToDb(travelPassengerEntity);
                 }
-                result = mapTravelPassengerToDb(travelPassengerEntity);
-                result.setIdPassenger(idPassengerPrevious);
                 result.setSelected(isSelected);
-                result.insert();
+                result.save();
             }
         });
     }
