@@ -323,8 +323,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
             );
         }
-//        TODO : if(isCodAvailable())
-        shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
+
+        if(shipmentPresenter.getCodData().isCod()) shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
+
         shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
         shipmentPresenter.setCartItemPromoHolderData(cartItemPromoHolderData);
         if (promoCodeAppliedData != null) {

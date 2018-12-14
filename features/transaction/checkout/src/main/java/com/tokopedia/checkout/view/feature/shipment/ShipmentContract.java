@@ -25,6 +25,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -290,6 +291,8 @@ public interface ShipmentContract {
         void setHasDeletePromoAfterChecKPromoCodeFinal(boolean state);
 
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
+
+        Cod getCodData();
     }
 
 }
