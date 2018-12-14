@@ -21,6 +21,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemMo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -288,6 +289,8 @@ public interface ShipmentContract {
         void setHasDeletePromoAfterChecKPromoCodeFinal(boolean state);
 
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
+
+        void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label);
     }
 
 }
