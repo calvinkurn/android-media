@@ -10,27 +10,27 @@ import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseServiceAd
  * @author by furqan on 04/09/18.
  */
 
-class DigitalBrowseServiceCategoryViewModel(val id: Int,
-                                            val name: String?,
-                                            val url: String?,
-                                            val imageUrl: String?,
-                                            val type: String?,
-                                            val categoryId: Int,
-                                            val appLinks: String?,
-                                            val categoryLabel: String?,
-                                            val isTitle: Boolean) :
+class DigitalBrowseServiceCategoryViewModel(val id: Int = 0,
+                                            val name: String? = null,
+                                            val url: String? = null,
+                                            val imageUrl: String? = null,
+                                            val type: String? = null,
+                                            val categoryId: Int = 0,
+                                            val appLinks: String? = null,
+                                            val categoryLabel: String? = null,
+                                            val isTitle: Boolean = false) :
         Visitable<DigitalBrowseServiceAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte()
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readByte() != 0.toByte()
     )
 
     override fun type(typeFactory: DigitalBrowseServiceAdapterTypeFactory): Int {
