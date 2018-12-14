@@ -43,7 +43,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
         actionBox = view.findViewById(R.id.add_comment_area)
         sendButton = view.findViewById(R.id.send_but)
         notifier = view.findViewById(R.id.notifier)
-        toolbar = view.findViewById(R.id.app_bar)
+        toolbar = view.findViewById(R.id.toolbar)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
