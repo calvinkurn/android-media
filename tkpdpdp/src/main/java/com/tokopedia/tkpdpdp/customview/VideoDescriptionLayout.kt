@@ -1,9 +1,11 @@
 package com.tokopedia.tkpdpdp.customview
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.util.Linkify
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 
 import com.tokopedia.core.analytics.UnifyTracking
@@ -16,55 +18,56 @@ import com.tokopedia.tkpdpdp.R
 import com.tokopedia.tkpdpdp.listener.ProductDetailView
 
 import com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID
+import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.tkpdpdp.DescriptionActivityNew
 import kotlinx.android.synthetic.main.youtube_video_list_place_holder.view.*
 
 /**
  * @author kris on 11/3/16. Tokopedia
  */
 
-class VideoDescriptionLayout : BaseView<ProductDetailData, ProductDetailView> {
+class VideoDescriptionLayout : BaseCustomView {
 
     internal var description: String? = ""
     internal var productId = ""
     internal var videoData: VideoData? = null
+    internal var listener: ProductDetailView? = null
 
     constructor(context: Context) : super(context) {
-        initView(context)
+        initView()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        initView(context)
+        initView()
     }
 
-    override fun setListener(listener: ProductDetailView) {
+    fun initView() {
+        val inflater = context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        inflater.inflate(getLayoutView(), this, true)
+    }
+
+    fun setListener(listener: ProductDetailView) {
         this.listener = listener
     }
 
-    override fun getLayoutView(): Int {
+    fun getLayoutView(): Int {
         return R.layout.youtube_video_list_place_holder
     }
 
-    override fun initView(context: Context) {
-        super.initView(context)
-    }
-
-    override fun parseAttribute(context: Context, attrs: AttributeSet) {
-
-    }
-
-    override fun setViewListener() {
+    fun setViewListener() {
         visibility = View.GONE
     }
 
-    override fun renderData(data: ProductDetailData) {
+    fun renderData(data: ProductDetailData) {
         description = if (data.info.productDescription == null)
             ""
         else
             data.info.productDescription
 
         productId = Integer.toString(data.info.productId!!)
-        ll_wrapper.setOnClickListener(ClickToggle())
-        tv_description.setOnClickListener(ClickToggle())
+        ll_wrapper.setOnClickListener(ClickToggle(data))
+        tv_description.setOnClickListener(ClickToggle(data))
         tv_description.text = if (description == null
                 || description == ""
                 || description == "0")
@@ -103,13 +106,20 @@ class VideoDescriptionLayout : BaseView<ProductDetailData, ProductDetailView> {
         product_video_horizontal_scroll.clearYoutubeVideo()
     }
 
-    private inner class ClickToggle : View.OnClickListener {
+    private inner class ClickToggle(val data : ProductDetailData) : View.OnClickListener {
         override fun onClick(v: View) {
-            val bundle = Bundle()
-            bundle.putString(DescriptionActivity.KEY_DESCRIPTION, description)
-            bundle.putString(EXTRA_PRODUCT_ID, productId)
-            if (videoData != null) bundle.putParcelable(DescriptionActivity.KEY_VIDEO, videoData)
-            listener.onDescriptionClicked(bundle)
+            val intent = Intent()
+            with(DescriptionActivityNew.IntentOptions){
+                intent.video = videoData
+                intent.description = description
+                intent.name = data.info.productName
+                intent.price = data.info.productPrice
+                intent.isOfficialStore = data.shopInfo.isOfficial
+                intent.shopName = data.shopInfo.shopName
+                intent.imgUrl = data.productImages[0].imageSrc300
+            }
+
+            listener?.onDescriptionClicked(intent)
             UnifyTracking.eventPDPExpandDescription()
         }
     }

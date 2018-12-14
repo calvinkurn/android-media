@@ -36,8 +36,9 @@ class ProductInfoAttributeView : BaseCustomView {
     fun renderData(productDetailData: ProductDetailData) {
         view_attribute.visibility = View.VISIBLE;
         tv_seen.setText(productDetailData.statistic.productViewCount)
-        tv_success_rate.text = String.format(resources.getString(R.string.value_success_rate),
-                productDetailData.statistic.productSuccessRate)
+        tv_success_rate.text =
+                productDetailData.statistic.productSuccessRate + "% ("+
+                productDetailData.statistic.productSoldCount+" produk)"
     }
 
     fun renderWishlistCount(wishlistCount : String){

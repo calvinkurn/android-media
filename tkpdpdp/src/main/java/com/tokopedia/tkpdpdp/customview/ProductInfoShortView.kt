@@ -1,12 +1,17 @@
 package com.tokopedia.tkpdpdp.customview
 
 import android.content.Context
+import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 
 import com.tokopedia.core.product.model.productdetail.ProductDetailData
+import com.tokopedia.core.util.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.tkpdpdp.ProductInfoActivity
+import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity
 import com.tokopedia.tkpdpdp.R
 import com.tokopedia.tkpdpdp.listener.ProductDetailView
 import kotlinx.android.synthetic.main.view_detail_product_info_short.view.*
@@ -45,8 +50,19 @@ class ProductInfoShortView : BaseCustomView {
             showPreorder(true)
         }
 
+        this.productDetailData = data
+
         tv_minimum.text = data.info.productMinOrder
         tv_condition.text = data.info.productCondition
+
+        view_detail_product_info_short.setOnClickListener {
+            val intent = Intent()
+            with(ProductInfoShortDetailActivity.IntentOptions){
+                intent.productDetailData = data
+            }
+
+            listener?.onProductInfoShortClicked(intent)
+        }
     }
 
     fun showPreorder(show : Boolean){

@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@id/review_container"
+            android:id="@+id/review_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -29,7 +29,7 @@
                 android:layout_height="40dp" />
 
             <TextView
-                android:id="@id/tv_review"
+                android:id="@+id/tv_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -42,7 +42,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@id/talk_container"
+            android:id="@+id/talk_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -59,7 +59,7 @@
 
 
             <TextView
-                android:id="@id/tv_talk"
+                android:id="@+id/tv_talk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -72,7 +72,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@id/courier_container"
+            android:id="@+id/description_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -89,7 +89,7 @@
 
 
             <TextView
-                android:id="@id/tv_description"
+                android:id="@+id/tv_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"

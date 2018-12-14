@@ -16,7 +16,7 @@
     <string name="courier_page_title">Kurir</string>
     <string name="wholesale_page_title">Harga Grosir</string>
     <string name="installment_page_title">Cicilan</string>
-    <string name="fave">Follow</string>
+    <string name="fave">Favoritkan</string>
     <string name="favorited">Following</string>
     <string name="title_installment">\"Bunga 0% mulai dari ...\"</string>
     <string name="title_grosir">Mulai dari Rp</string>
@@ -102,5 +102,10 @@
     <string name="label_info_detail">Info Selengkapnya</string>
     <string name="value_wholesale_price">Mulai dari %s</string>
     <string name="value_installment">Bunga mulai dari %s</string>
-    <string name="value_success_rate">%s %</string>
+    <string name="value_success_rate">%1$s persen %2$s </string>
+    <string name="value_shop_last_online">\u2022 %s</string>
+    <string name="title_product_info_detail">Informasi Produk</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_button_chat">Chat Penjual</string>
 </resources>

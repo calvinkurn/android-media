@@ -114,15 +114,10 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
-            cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
-            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
+            cashbackTextView.setBackgroundResource(R.drawable.pdp_cashback_bg);
             ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
-                    ((TintableBackgroundView) cashbackTextView).setSupportBackgroundTintList(tint);
-            } else {
-                ViewCompat.setBackgroundTintList(cashbackTextView, tint);
             }
             cashbackTextView.setVisibility(VISIBLE);
         }
@@ -131,6 +126,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textOfficialStore.setVisibility(VISIBLE);
         }
         setVisibility(VISIBLE);
+
+        if(data.getInfo().getProductStockWording() != null){
+            textStockAvailable.setText(MethodChecker.fromHtml(data.getInfo().getProductStockWording()));
+        } else{
+            textStockAvailable.setVisibility(GONE);
+        }
     }
 
     public void renderTempData(ProductPass productPass) {
@@ -153,16 +154,13 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
         if (!TextUtils.isEmpty(productPass.getCashback())) {
             cashbackTextView.setText(productPass.getCashback());
-            cashbackTextView.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
+            cashbackTextView.setBackgroundResource(R.drawable.bg_cashback_label);
             cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
             ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && cashbackTextView instanceof TintableBackgroundView) {
-                ((TintableBackgroundView) cashbackTextView).setSupportBackgroundTintList(tint);
-            } else {
-                ViewCompat.setBackgroundTintList(cashbackTextView, tint);
             }
+
             cashbackTextView.setVisibility(VISIBLE);
         }
         if(productPass.isOfficial()) {
@@ -211,7 +209,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 } else {
                     textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.black_70));
                 }
-                textStockAvailable.setText(MethodChecker.fromHtml(data.getProductStockWording()));
             }
         }
     }

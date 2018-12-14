@@ -13,13 +13,14 @@
         android:layout_height="24dp"
         android:layout_marginLeft="16dp"
         android:background="@null"
-        app:srcCompat="@drawable/icon_close_black" />
+        app:srcCompat="@drawable/ic_close_pdp" />
 
     <TextView
         android:id="@+id/simple_top_bar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
+        android:textStyle="bold"
         android:textSize="18sp"
         android:textColor="@color/black_70"
         android:layout_marginLeft="32dp"

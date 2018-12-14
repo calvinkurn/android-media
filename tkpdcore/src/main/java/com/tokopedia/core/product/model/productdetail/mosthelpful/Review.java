@@ -178,7 +178,7 @@ public class Review implements Parcelable {
         this.reviewCreateTime = in.readParcelable(ReviewCreateTime.class.getClassLoader());
         this.reviewUpdateTime = in.readParcelable(ReviewUpdateTime.class.getClassLoader());
         this.reviewImageAttachment = new ArrayList<ReviewImageAttachment>();
-        in.readList(this.reviewImageAttachment, Object.class.getClassLoader());
+        in.readList(this.reviewImageAttachment, ReviewImageAttachment.class.getClassLoader());
         this.reviewAnonymous = in.readInt();
         this.reviewResponse = in.readParcelable(ReviewResponse.class.getClassLoader());
         this.user = in.readParcelable(User.class.getClassLoader());

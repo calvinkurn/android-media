@@ -48,6 +48,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onImageReviewLoaded(List<ImageReviewItem> data);
 
+    void onProductInfoShortClicked(Intent intent);
     /**
      * Saat salah satu kategori product di klik.
      *
@@ -163,6 +164,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onDescriptionClicked(@NonNull Bundle bundle);
 
+    void onDescriptionClicked(@NonNull Intent intent);
     /**
      * Pada saat ada error pada toko
      */

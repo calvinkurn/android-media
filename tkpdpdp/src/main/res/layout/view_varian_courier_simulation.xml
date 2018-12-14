@@ -13,6 +13,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/view_variant_field"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +66,7 @@
         android:id="@+id/view_courier_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -115,6 +118,8 @@
 
         <TextView
             android:id="@+id/tv_destination_label"
+            tools:visibility="visible"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginStart="@dimen/dp_8"
@@ -128,6 +133,8 @@
 
         <TextView
             android:id="@+id/tv_destination"
+            tools:visibility="visible"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
@@ -170,6 +177,8 @@
 
         <ImageView
             android:id="@+id/img_courier"
+            tools:visibility="visible"
+            android:visibility="gone"
             android:layout_width="@dimen/med_dp"
             android:layout_height="@dimen/med_dp"
             android:layout_marginTop="@dimen/dp_8"
