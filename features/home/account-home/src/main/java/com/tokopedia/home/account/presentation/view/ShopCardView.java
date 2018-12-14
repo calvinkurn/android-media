@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -77,7 +78,7 @@ public class ShopCardView extends BaseCustomView {
 
     public void setBadgeImage(@DrawableRes int resource) {
         if (resource != 0) {
-            badge.setImageResource(resource);
+            badge.setImageDrawable(ContextCompat.getDrawable(getContext(), resource));
             badge.setVisibility(VISIBLE);
         } else {
             badge.setVisibility(GONE);
