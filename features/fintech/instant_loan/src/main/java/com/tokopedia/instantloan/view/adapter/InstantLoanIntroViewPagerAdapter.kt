@@ -20,12 +20,10 @@ import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_TNC
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
 
-/**
- * View pager adapter
- */
+
 class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivity, private val mLayouts: IntArray, private val mPresenter: InstantLoanPresenter) : PagerAdapter() {
     private val mLayoutInflater: LayoutInflater
-    private val link = "syarat dan ketentuan"
+    private val link = mActivity.resources.getString(R.string.instant_loan_clickable_link)
     internal var instantLoanAnalytics: InstantLoanAnalytics? = null
 
     init {
