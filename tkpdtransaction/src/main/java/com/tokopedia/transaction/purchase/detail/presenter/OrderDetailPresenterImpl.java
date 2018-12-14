@@ -379,10 +379,21 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         JsonArray jsonArray = new JsonArray();
         for (OrderDetailItemData dataOrder : orderDetailItemData) {
             JsonObject passenger = new JsonObject();
-            passenger.addProperty(PRODUCT_ID, dataOrder.getProductId());
-            passenger.addProperty(QUANTITY, dataOrder.getItemQuantity());
+
+            int productId = 0;
+            int quantity = 0;
+            int shopId = 0;
+            try {
+                productId = Integer.parseInt(dataOrder.getProductId());
+                quantity = Integer.parseInt(dataOrder.getItemQuantity());
+                shopId = Integer.parseInt(data.getShopId());
+            }catch (Exception e){
+
+            }
+            passenger.addProperty(PRODUCT_ID, productId);
+            passenger.addProperty(QUANTITY, quantity);
             passenger.addProperty(NOTES, dataOrder.getNotes());
-            passenger.addProperty(SHOP_ID, data.getShopId());
+            passenger.addProperty(SHOP_ID, shopId);
             jsonArray.add(passenger);
         }
         return jsonArray;
