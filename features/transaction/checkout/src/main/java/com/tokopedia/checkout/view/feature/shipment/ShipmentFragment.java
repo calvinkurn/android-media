@@ -118,6 +118,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private CardView cardFooter;
     private TextView tvTotalPayment;
     private TextView tvSelectPaymentMethod;
+    private TextView tvSelectCodPayment;
     private TkpdProgressDialog progressDialogNormal;
     // For regular shipment
     private CourierBottomsheet courierBottomsheet;
@@ -237,6 +238,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cardFooter = view.findViewById(R.id.card_footer);
         tvTotalPayment = view.findViewById(R.id.tv_total_payment);
         tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
+        tvSelectCodPayment = view.findViewById(R.id.tv_select_cod);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
 
@@ -324,7 +326,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
         }
 
-        if(shipmentPresenter.getCodData().isCod()) shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
+        if(shipmentPresenter.getCodData().isCod()) {
+            shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
+            tvSelectCodPayment.setVisibility(View.VISIBLE);
+            tvSelectCodPayment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), "cod clicked", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
         shipmentPresenter.setCartItemPromoHolderData(cartItemPromoHolderData);
