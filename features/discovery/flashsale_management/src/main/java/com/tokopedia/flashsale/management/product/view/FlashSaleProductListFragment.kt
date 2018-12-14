@@ -32,6 +32,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.common.data.SellerStatus
+import com.tokopedia.flashsale.management.data.FlashSaleCampaignStatusIdTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleConstant.KEY_STATUS_REGISTRATION
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
@@ -44,7 +45,6 @@ import com.tokopedia.flashsale.management.product.data.FlashSaleTncContent
 import com.tokopedia.flashsale.management.product.data.GetMojitoPostProduct
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
 import com.tokopedia.flashsale.management.tracking.FlashSaleTracking
-import com.tokopedia.flashsale.management.view.activity.CampaignActivity
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
 import javax.inject.Inject
@@ -70,6 +70,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     var pendingCount: Int = 0
     var submittedCount: Int = 0
+    var isFlashSaleCancelled: Boolean = false
 
     var statusLabel: String = ""
     var statusId: Int = 0
@@ -218,15 +219,6 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 })
     }
 
-    private fun onClickFlashSaleList() {
-        flashSaleTracking.clickProductCampaignList(campaignId.toString())
-
-        val campaignActivityIntent = Intent(context, CampaignActivity::class.java)
-        campaignActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        this.activity?.finish()
-        startActivity(campaignActivityIntent)
-    }
-
     private fun loadCampaignInfoAndTnc() {
         presenter.getFlashSaleInfoAndTnc(campaignSlug,
                 onSuccess = { onSuccessLoadTnc(it) },
@@ -277,32 +269,45 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     // status = other ==> getPost
     // when status is loaded, page will always from start
     override fun loadData(page: Int) {
-        if (KEY_STATUS_REGISTRATION.equals(statusLabel, true)) {
-            // in submission
-            presenter.getEligibleProductList(campaignId,
-                    campaignSlug,
-                    (page - 1) * PER_PAGE, PER_PAGE,
-                    searchInputView.searchText,
-                    getFilterId(),
-                    onSuccess = {
-                        onSuccessGetEligibleList(it)
-                    },
-                    onError = {
-                        super.showGetListError(it)
-                    })
-        } else {
-            // post submission
-            presenter.getPostProductList(campaignId,
-                    campaignSlug,
-                    (page - 1) * PER_PAGE, PER_PAGE,
-                    searchInputView.searchText,
-                    statusId,
-                    onSuccess = {
-                        onSuccessGetPostList(it)
-                    },
-                    onError = {
-                        super.showGetListError(it)
-                    })
+        when (statusId) {
+            FlashSaleCampaignStatusIdTypeDef.PUBLISH_CANCELLED,
+            FlashSaleCampaignStatusIdTypeDef.SUBMISSION_CANCELLED,
+            FlashSaleCampaignStatusIdTypeDef.REVIEW_CANCELLED,
+            FlashSaleCampaignStatusIdTypeDef.READY_CANCELLED,
+            FlashSaleCampaignStatusIdTypeDef.READY_LOCKED_CANCELLED -> {
+                adapter.clearAllElements()
+                isFlashSaleCancelled = true
+                showEmpty()
+            }
+            else -> {
+                if (KEY_STATUS_REGISTRATION.equals(statusLabel, true)) {
+                    // in submission
+                    presenter.getEligibleProductList(campaignId,
+                            campaignSlug,
+                            (page - 1) * PER_PAGE, PER_PAGE,
+                            searchInputView.searchText,
+                            getFilterId(),
+                            onSuccess = {
+                                onSuccessGetEligibleList(it)
+                            },
+                            onError = {
+                                super.showGetListError(it)
+                            })
+                } else {
+                    // post submission
+                    presenter.getPostProductList(campaignId,
+                            campaignSlug,
+                            (page - 1) * PER_PAGE, PER_PAGE,
+                            searchInputView.searchText,
+                            statusId,
+                            onSuccess = {
+                                onSuccessGetPostList(it)
+                            },
+                            onError = {
+                                super.showGetListError(it)
+                            })
+                }
+            }
         }
     }
 
@@ -315,7 +320,11 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_empty_box
-        if (getFilterId() == FlashSaleFilterProductListTypeDef.TYPE_ALL.id &&
+        if (isFlashSaleCancelled) {
+            hideSearchInputView()
+            emptyModel.title = getString(R.string.sorry_flash_sale_is_canceled)
+            emptyModel.content = ""
+        } else if (getFilterId() == FlashSaleFilterProductListTypeDef.TYPE_ALL.id &&
                 searchInputView.searchText.isEmpty()) {
             emptyModel.title = getString(R.string.no_eligible_product_in_this_flash_sale)
             emptyModel.content = getString(R.string.no_worry_you_can_join_next_flash_sale)
