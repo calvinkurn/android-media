@@ -9,7 +9,7 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
 import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor
-import com.tokopedia.instantloan.network.InstantLoanUrl
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PATH_USER_PROFILE_STATUS
 import com.tokopedia.usecase.RequestParams
 import java.util.*
 
@@ -25,7 +25,7 @@ class GetLoanProfileStatusUseCase(interceptor: InstantLoanAuthInterceptor, conte
         }.type
 
         val restCacheStrategy = RestCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val restRequest = RestRequest.Builder(InstantLoanUrl.PATH_USER_PROFILE_STATUS, typeOfT)
+        val restRequest = RestRequest.Builder(PATH_USER_PROFILE_STATUS, typeOfT)
                 .setRequestType(RequestType.GET)
                 .setCacheStrategy(restCacheStrategy)
                 .build()

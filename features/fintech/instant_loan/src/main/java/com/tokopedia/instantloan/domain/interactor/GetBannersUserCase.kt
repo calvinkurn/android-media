@@ -27,7 +27,7 @@ class GetBannersUserCase(interceptor: Interceptor, context: Context) : RestReque
         }.type
 
         val restCacheStrategy = RestCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-        val restRequest = RestRequest.Builder(InstantLoanUrl.PATH_BANNER_OFFER, typeOfT)
+        val restRequest = RestRequest.Builder(InstantLoanUrl.COMMON_URL.PATH_BANNER_OFFER, typeOfT)
                 .setCacheStrategy(restCacheStrategy)
                 .build()
 

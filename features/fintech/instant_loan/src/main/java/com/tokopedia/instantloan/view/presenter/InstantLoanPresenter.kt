@@ -132,16 +132,16 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
         val data = JsonObject()
 
-        data.addProperty(DeviceDataKeys.BRAND, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.BRAND])
-        data.addProperty(DeviceDataKeys.DEVICE_ID, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_ID])
-        data.addProperty(DeviceDataKeys.DEVICE_SDK_VERSION, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SDK_VERSION])
-        data.addProperty(DeviceDataKeys.DEVICE_SYSTEM_VERSION, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SYSTEM_VERSION])
-        data.addProperty(DeviceDataKeys.GOOGLE_GAID, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.GOOGLE_GAID])
-        data.addProperty(DeviceDataKeys.IMEI, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.IMEI])
-        data.addProperty(DeviceDataKeys.LATITUDE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LATITUDE])
-        data.addProperty(DeviceDataKeys.LONGITUDE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LONGITUDE])
-        data.addProperty(DeviceDataKeys.MODEL, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.MODEL])
-        data.addProperty(DeviceDataKeys.SYSTEM_LANGUAGE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.SYSTEM_LANGUAGE])
+        data.addProperty(DeviceDataKeys.Common.BRAND, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.BRAND])
+        data.addProperty(DeviceDataKeys.Common.DEVICE_ID, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_ID])
+        data.addProperty(DeviceDataKeys.Common.DEVICE_SDK_VERSION, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SDK_VERSION])
+        data.addProperty(DeviceDataKeys.Common.DEVICE_SYSTEM_VERSION, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SYSTEM_VERSION])
+        data.addProperty(DeviceDataKeys.Common.GOOGLE_GAID, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.GOOGLE_GAID])
+        data.addProperty(DeviceDataKeys.Common.IMEI, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.IMEI])
+        data.addProperty(DeviceDataKeys.Common.LATITUDE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LATITUDE])
+        data.addProperty(DeviceDataKeys.Common.LONGITUDE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LONGITUDE])
+        data.addProperty(DeviceDataKeys.Common.MODEL, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.MODEL])
+        data.addProperty(DeviceDataKeys.Common.SYSTEM_LANGUAGE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.SYSTEM_LANGUAGE])
 
         val messages = JsonArray()
         var message: JsonObject
@@ -163,7 +163,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
             }
 
         }
-        data.addProperty(DeviceDataKeys.SMS, messages.toString())
+        data.addProperty(DeviceDataKeys.Common.SMS, messages.toString())
 
         val contacts = JsonArray()
         var contact: JsonObject
@@ -182,7 +182,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
                 contacts.add(contact)
             }
         }
-        data.addProperty(DeviceDataKeys.CONTACT, contacts.toString())
+        data.addProperty(DeviceDataKeys.Common.CONTACT, contacts.toString())
 
         val callLogs = JsonArray()
         var callLog: JsonObject
@@ -201,7 +201,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
             }
         }
 
-        data.addProperty(DeviceDataKeys.CALL, callLogs.toString())
+        data.addProperty(DeviceDataKeys.Common.CALL, callLogs.toString())
 
         val accounts = JsonArray()
         var account: JsonObject
@@ -218,7 +218,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
             }
         }
 
-        data.addProperty(DeviceDataKeys.ACCOUNTS, accounts.toString())
+        data.addProperty(DeviceDataKeys.Common.ACCOUNTS, accounts.toString())
 
         val apps = JsonArray()
         var app: JsonObject
@@ -238,7 +238,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
             }
         }
 
-        data.addProperty(DeviceDataKeys.APPS, apps.toString())
+        data.addProperty(DeviceDataKeys.Common.APPS, apps.toString())
         return data
     }
 }

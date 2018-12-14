@@ -27,6 +27,9 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.BannerEntity
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
 import com.tokopedia.instantloan.network.InstantLoanUrl
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHODS_URL
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter
 import com.tokopedia.instantloan.view.adapter.InstantLoanPagerAdapter
@@ -225,13 +228,13 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         val id = item.itemId
 
         if (id == R.id.submission_history) {
-            openWebView(InstantLoanUrl.SUBMISSION_HISTORY_URL)
+            openWebView(SUBMISSION_HISTORY_URL)
             return true
         } else if (id == R.id.payment_method) {
-            openWebView(String.format(InstantLoanUrl.PAYMENT_METHODS_URL, onGoingLoanId.toString()))
+            openWebView(String.format(PAYMENT_METHODS_URL, onGoingLoanId.toString()))
             return true
         } else if (id == R.id.help) {
-            openWebView(InstantLoanUrl.HELP_URL)
+            openWebView(HELP_URL)
             return true
         }
         return super.onOptionsItemSelected(item)

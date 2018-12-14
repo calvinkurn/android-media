@@ -7,33 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.BannerEntity
 
-import java.util.ArrayList
-
 class BannerPagerAdapter(context: Context, bannerEntities: List<BannerEntity>, private val bannerClick: BannerClick) : PagerAdapter() {
 
-    var bannerEntityList: List<BannerEntity> = ArrayList()
-    private val mInflater: LayoutInflater
+    var bannerEntityList: List<BannerEntity> = bannerEntities
+    private val mInflater: LayoutInflater = LayoutInflater.from(context)
 
-    init {
-        this.bannerEntityList = bannerEntities
-        mInflater = LayoutInflater.from(context)
-    }
-
-    override fun destroyItem(container: View, position: Int, `object`: Any) {
-        (container as ViewPager).removeView(`object` as View)
+    override fun destroyItem(container: View, position: Int, any: Any) {
+        (container as ViewPager).removeView(any as View)
     }
 
     override fun getCount(): Int {
         return bannerEntityList.size
     }
 
-    override fun isViewFromObject(view: View, `object`: Any): Boolean {
-        return view == `object`
+    override fun isViewFromObject(view: View, any: Any): Boolean {
+        return view == any
     }
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {

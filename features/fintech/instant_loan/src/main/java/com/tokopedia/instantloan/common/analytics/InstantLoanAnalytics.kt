@@ -14,16 +14,14 @@ constructor(@ApplicationContext context: Context?) {
     private var tracker: AnalyticTracker? = null
 
     init {
-        if (context != null && context.applicationContext is AbstractionRouter) {
-            tracker = (context.applicationContext as AbstractionRouter).analyticTracker
-        }
+        tracker = (context?.applicationContext as? AbstractionRouter)?.analyticTracker
     }
 
     fun eventLoanBannerImpression(eventLabel: String) {
         if (tracker == null) {
             return
         }
-        tracker!!.sendEventTracking(InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
+        tracker?.sendEventTracking(InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_BANNER_IMPRESSION,
                 eventLabel)
@@ -33,7 +31,7 @@ constructor(@ApplicationContext context: Context?) {
         if (tracker == null) {
             return
         }
-        tracker!!.sendEventTracking(
+        tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_BANNER_CLICK,
@@ -45,7 +43,7 @@ constructor(@ApplicationContext context: Context?) {
         if (tracker == null) {
             return
         }
-        tracker!!.sendEventTracking(
+        tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_CARI_PINJAMAN_CLICK,
@@ -57,7 +55,7 @@ constructor(@ApplicationContext context: Context?) {
         if (tracker == null) {
             return
         }
-        tracker!!.sendEventTracking(
+        tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,
@@ -69,7 +67,7 @@ constructor(@ApplicationContext context: Context?) {
         if (tracker == null) {
             return
         }
-        tracker!!.sendEventTracking(
+        tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,
@@ -81,7 +79,7 @@ constructor(@ApplicationContext context: Context?) {
         if (tracker == null) {
             return
         }
-        tracker!!.sendEventTracking(
+        tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,

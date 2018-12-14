@@ -15,8 +15,8 @@ import android.widget.TextView
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
-import com.tokopedia.instantloan.network.InstantLoanUrl.Companion.WEB_LINK_LEARN_MORE
-import com.tokopedia.instantloan.network.InstantLoanUrl.Companion.WEB_LINK_TNC
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_LEARN_MORE
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_TNC
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
 

@@ -9,8 +9,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
 import android.view.*
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -23,19 +21,19 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
-import com.tokopedia.instantloan.network.InstantLoanUrl.Companion.WEB_LINK_OTP
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_OTP
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.content_instant_loan_home_page.*
 import javax.inject.Inject
 
 
 class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
-    private var mProgressBar: ProgressBar? = null
     private var mDialogIntro: Dialog? = null
 
     private var activityInteractor: ActivityInteractor? = null
@@ -55,7 +53,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments!!.getInt(TAB_POSITION)
+        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun onResume() {
@@ -80,20 +78,13 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     private fun initView(view: View) {
 
-        val mTextAmount = view.findViewById<TextView>(R.id.text_value_amount)
-        val mTextDuration = view.findViewById<TextView>(R.id.text_value_duration)
-        val mTextProcessingTime = view.findViewById<TextView>(R.id.text_value_processing_time)
-        val mTextInterestRate = view.findViewById<TextView>(R.id.text_value_interest_rate)
-        val mTextFormDescription = view.findViewById<TextView>(R.id.text_form_description)
-        mProgressBar = view.findViewById(R.id.progress_bar_status)
+        text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
+        text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
+        text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
+        text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
+        text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
 
-        mTextAmount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
-        mTextDuration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
-        mTextProcessingTime.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
-        mTextInterestRate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
-        mTextFormDescription.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
-
-        view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 -> searchLoanOnline() }
+        button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
     }
 
 
@@ -276,13 +267,13 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     }
 
     override fun showLoader() {
-        mProgressBar!!.visibility = View.VISIBLE
+        progress_bar_status!!.visibility = View.VISIBLE
         activity!!.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun hideLoader() {
-        mProgressBar!!.visibility = View.GONE
+        progress_bar_status!!.visibility = View.GONE
         activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 

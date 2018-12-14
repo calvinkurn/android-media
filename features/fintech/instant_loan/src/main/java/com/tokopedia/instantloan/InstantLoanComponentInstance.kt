@@ -9,7 +9,7 @@ import com.tokopedia.instantloan.di.module.InstantLoanModule
 
 class InstantLoanComponentInstance {
 
-    object Companion {
+    companion object {
         var instantLoanComponent: InstantLoanComponent? = null
 
         fun get(application: Application): InstantLoanComponent? {

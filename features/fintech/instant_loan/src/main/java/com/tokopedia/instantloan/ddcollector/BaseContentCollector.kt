@@ -13,15 +13,12 @@ abstract class BaseContentCollector(private val mContentResolver: ContentResolve
 
     abstract fun getLimit(): Int
 
-    override fun getData(): Any {
-        return this.collect(this.buildUri())
-    }
-
+    override fun getData() = this.collect(this.buildUri())
 
     abstract fun buildUri(): Uri
 
     fun collect(uri: Uri): List<Map<String, String>> {
-        val phoneInfoColumn = ArrayList<Map<String, String>>()
+        val phoneInfoColumn = mutableListOf<Map<String, String>>()
         var sortOrder: String? = null
 
         if (this.getLimit() > 0) {

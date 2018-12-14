@@ -22,7 +22,6 @@ object DeviceInfo {
                 val fields = Build.VERSION_CODES::class.java.fields
                 return fields[Build.VERSION.SDK_INT + 1].name
             } catch (e: Exception) {
-                Log.e("Exception", "Error while retrieving os name ", e)
             }
 
             return NOT_AVAILABLE
@@ -58,9 +57,8 @@ object DeviceInfo {
 
     }
 
-    fun getDeviceId(context: Context): String {
-        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-    }
+    fun getDeviceId(context: Context): String = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+
 
     @SuppressLint("MissingPermission")
     fun getImei(context: Context): String {
@@ -68,7 +66,6 @@ object DeviceInfo {
             val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             return telephonyManager.deviceId
         } catch (e: Exception) {
-            e.printStackTrace()
             return NOT_AVAILABLE
         }
 

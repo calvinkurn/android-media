@@ -1,12 +1,6 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package com.tokopedia.instantloan.ddcollector
 
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 import java.util.concurrent.ExecutionException
 
 class InfoCollectServiceImpl : InfoCollectService {
@@ -16,18 +10,15 @@ class InfoCollectServiceImpl : InfoCollectService {
         @Throws(ExecutionException::class, InterruptedException::class)
         get() {
             val phoneInfoMap = HashMap<String, Any>()
-            for (infoCollector in infoCollectorList) {
-                if (infoCollector == null) {
-                    continue
-                }
-                phoneInfoMap.putAll(infoCollector.buildPhoneInfo())
-            }
+
+            infoCollectorList.filter { true }
+                    .forEach { it.buildPhoneInfo()?.let { it1 -> phoneInfoMap.putAll(it1) } }
 
             return phoneInfoMap
         }
 
     @Throws(ExecutionException::class, InterruptedException::class)
-    override fun getData(): Map<String, Any> {
+    override fun getData(): Map<String, Any>? {
         return this.phoneInfo
     }
 

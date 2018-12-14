@@ -2,13 +2,13 @@ package com.tokopedia.instantloan.network
 
 import com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAIN
 
-interface InstantLoanUrl {
+object InstantLoanUrl {
 
     object BaseUrl {
         var WEB_DOMAIN = "https://www.tokpedia.com/"
     }
 
-    companion object {
+    object COMMON_URL{
 
         val PATH_USER_STATUS = "dana-instant/api/user/ismobiledevice"
         val PATH_USER_PROFILE_STATUS = WEB_DOMAIN + "dana-instant/api/user/mobile/status"

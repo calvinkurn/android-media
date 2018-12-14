@@ -8,11 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,21 +19,18 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
-import com.tokopedia.instantloan.di.component.InstantLoanComponent
-import com.tokopedia.instantloan.network.InstantLoanUrl.Companion.LOAN_AMOUNT_QUERY_PARAM
-import com.tokopedia.instantloan.network.InstantLoanUrl.Companion.WEB_LINK_NO_COLLATERAL
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
+import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_NO_COLLATERAL
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
+import com.tokopedia.instantloan.view.fragment.DanaInstantFragment.Companion.LOGIN_REQUEST_CODE
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
 import com.tokopedia.user.session.UserSession
-
+import kotlinx.android.synthetic.main.content_tanpa_agunan.*
 import javax.inject.Inject
-
-import com.tokopedia.instantloan.view.fragment.DanaInstantFragment.Companion.LOGIN_REQUEST_CODE
 
 
 class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
-    private var mSpinnerLoanAmount: Spinner? = null
 
     @Inject
     lateinit var presenter: InstantLoanPresenter
@@ -52,7 +46,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments!!.getInt(TAB_POSITION)
+        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun onResume() {
@@ -86,41 +80,33 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         val adapter = ArrayAdapter.createFromResource(getContext()!!,
                 R.array.values_amount_array, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        mSpinnerLoanAmount!!.adapter = adapter
+        spinner_value_nominal!!.adapter = adapter
     }
 
     private fun initView(view: View) {
-
-        mSpinnerLoanAmount = view.findViewById(R.id.spinner_value_nominal)
-        val mTextAmount = view.findViewById<TextView>(R.id.text_value_amount)
-        val mTextDuration = view.findViewById<TextView>(R.id.text_value_duration)
-        val mTextProcessingTime = view.findViewById<TextView>(R.id.text_value_processing_time)
-        val mTextInterestRate = view.findViewById<TextView>(R.id.text_value_interest_rate)
-        val mTextFormDescription = view.findViewById<TextView>(R.id.text_form_description)
-
-        mTextAmount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
-        mTextDuration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
-        mTextProcessingTime.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
-        mTextInterestRate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
-        mTextFormDescription.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
+        text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
+        text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
+        text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
+        text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
+        text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
 
         view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 ->
 
-            if (mSpinnerLoanAmount!!.selectedItem.toString()
+            if (spinner_value_nominal!!.selectedItem.toString()
                             .equals(getString(R.string.label_select_nominal), ignoreCase = true)) {
-                val errorText = mSpinnerLoanAmount!!.selectedView as TextView
+                val errorText = spinner_value_nominal!!.selectedView as TextView
                 errorText.setTextColor(Color.RED)
+            } else {
+                sendCariPinjamanClickEvent()
+                openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
+                        spinner_value_nominal!!.selectedItem.toString()
+                                .split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].replace(".", ""))
             }
-
-            sendCariPinjamanClickEvent()
-            openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
-                    mSpinnerLoanAmount!!.selectedItem.toString()
-                            .split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].replace(".", ""))
         }
     }
 
     private fun sendCariPinjamanClickEvent() {
-        val eventLabel = screenName + " - " + mSpinnerLoanAmount!!.selectedItem.toString()
+        val eventLabel = screenName + " - " + spinner_value_nominal!!.selectedItem.toString()
         instantLoanAnalytics.eventCariPinjamanClick(eventLabel)
     }
 
@@ -131,7 +117,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
                 showToastMessage(resources.getString(R.string.login_to_proceed), Toast.LENGTH_SHORT)
             } else {
                 openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
-                        mSpinnerLoanAmount!!.selectedItem.toString().split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])
+                        spinner_value_nominal!!.selectedItem.toString().split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])
             }
         }
     }

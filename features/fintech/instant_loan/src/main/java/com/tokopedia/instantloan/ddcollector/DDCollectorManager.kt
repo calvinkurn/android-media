@@ -26,8 +26,8 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     private var mContext: Context? = null
     private val mExecutorService: ExecutorService
     private var mCallback: OnDeviceDataReady? = null
-    private var mPermissionUtils: PermissionUtils? = null
-    private var permissionResultCallback: PermissionResultCallback? = null
+    private lateinit var mPermissionUtils: PermissionUtils
+    private lateinit var permissionResultCallback: PermissionResultCallback
 
     private val defaultsComponents: Set<String>
         get() {
@@ -76,19 +76,18 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
 
         this.mCallback = callback
 
-        if (mPermissionUtils!!.isPermissionsGranted(mDangerousComponents!!)) {
+        if (mPermissionUtils.isPermissionsGranted(mDangerousComponents!!)) {
             loadDeviceData()
         } else {
-            mPermissionUtils!!.checkPermission(mDangerousComponents!!, PermissionUtils.PERMISSION_REQUEST_CODE)
+            mPermissionUtils.checkPermission(mDangerousComponents!!, PermissionUtils.PERMISSION_REQUEST_CODE)
         }
     }
 
     private fun loadDeviceData() {
         val callable = Callable<Map<String, Any>> {
             val data = collectDD()
-            if (mCallback != null) {
-                mCallback!!.callback(data!!)
-            }
+
+            data?.let { mCallback?.callback(it) }
             data
         }
 
@@ -143,20 +142,20 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        mPermissionUtils!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        mPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun permissionGranted(requestCode: Int) {
         loadDeviceData()
-        permissionResultCallback!!.permissionGranted(requestCode)
+        permissionResultCallback.permissionGranted(requestCode)
     }
 
     override fun permissionDenied(requestCode: Int) {
-        permissionResultCallback!!.permissionDenied(requestCode)
+        permissionResultCallback.permissionDenied(requestCode)
     }
 
     override fun neverAskAgain(requestCode: Int) {
-        permissionResultCallback!!.neverAskAgain(requestCode)
+        permissionResultCallback.neverAskAgain(requestCode)
     }
 
     companion object {
