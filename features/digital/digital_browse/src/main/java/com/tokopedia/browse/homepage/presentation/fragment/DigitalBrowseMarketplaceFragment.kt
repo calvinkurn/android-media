@@ -40,7 +40,7 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         DigitalBrowseCategoryViewHolder.CategoryListener, DigitalBrowsePopularViewHolder.PopularBrandListener {
 
     @Inject lateinit var presenter: DigitalBrowseMarketplacePresenter
-    @Inject private lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
+    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private lateinit var containerPopularBrand: LinearLayout
     private lateinit var tvAllPopularBrand: TextViewCompat
