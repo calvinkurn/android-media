@@ -38,6 +38,7 @@ public interface DigitalEventTracking {
     interface Label {
         String DEFAULT_EMPTY_VALUE = "";
         String NO_PROMO = "no promo";
+        String SITE = "tokopediadigital";
     }
 
 }

@@ -61,7 +61,7 @@ public class DigitalAnalytics {
                                                 products.toArray(new Object[products.size()]))
                                 )
                         ),
-                        "currentSite", "tokopediadigital"
+                        "currentSite", DigitalEventTracking.Label.SITE
                 )
         );
 
@@ -100,7 +100,7 @@ public class DigitalAnalytics {
                                                 products.toArray(new Object[products.size()]))
                                 )
                         ),
-                        "currentSite", "tokopediadigital"
+                        "currentSite", DigitalEventTracking.Label.SITE
                 )
         );
     }
