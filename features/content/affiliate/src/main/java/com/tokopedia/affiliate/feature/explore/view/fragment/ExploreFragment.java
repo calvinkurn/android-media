@@ -40,6 +40,8 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
@@ -63,6 +65,8 @@ public class ExploreFragment
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
     private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
+    private static final String KEY_DATA_FIRST_QUERY = "KEY_DATA_FIRST_QUERY";
+
     private static final int ITEM_COUNT = 10;
     private static final int IMAGE_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
@@ -82,6 +86,8 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
+    private SaveInstanceCacheManager cacheManager;
+    private PersistentCacheManager persistentCacheManager;
 
     private boolean isCanDoAction;
 
@@ -121,6 +127,8 @@ public class ExploreFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        persistentCacheManager = new PersistentCacheManager(getActivity(), true);
         presenter.attachView(this);
         initView();
         initListener();
@@ -343,6 +351,15 @@ public class ExploreFragment
         adapter.addElement(itemList);
         if (autoCompleteLayout.getVisibility() == View.VISIBLE)
             autoCompleteLayout.setVisibility(View.GONE);
+        saveFirstDataToLocal(itemList);
+    }
+
+    private void saveFirstDataToLocal(List<Visitable> itemList) {
+        persistentCacheManager.put(KEY_DATA_FIRST_QUERY, itemList);
+    }
+
+    private List<Visitable> getLocalFirstData() {
+        return persistentCacheManager.get(KEY_DATA_FIRST_QUERY, List.class, new ArrayList<>());
     }
 
     @Override
