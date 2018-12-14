@@ -33,6 +33,7 @@ data class CheckoutVariantTypeVariantViewModel(
         parcel.writeString(variantName)
         parcel.writeString(variantSelectedValue)
         parcel.writeString(variantGuideline)
+        parcel.writeList(variantOptions)
     }
 
     override fun describeContents(): Int {

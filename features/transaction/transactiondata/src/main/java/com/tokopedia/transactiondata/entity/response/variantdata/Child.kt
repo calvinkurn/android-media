@@ -51,6 +51,11 @@ data class Child(
 
         @SerializedName("is_buyable")
         @Expose
-        val isBuyable: Boolean
+        val isBuyable: Boolean,
+
+        @SerializedName("stock_wording")
+        @Expose
+        val stockWording: String
+
 
 )

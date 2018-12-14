@@ -19,18 +19,23 @@ class ViewModelMapper : DataMapper {
 
     override fun convertToViewModels(expressCheckoutFormData: ExpressCheckoutFormData): ArrayList<Visitable<*>> {
         var dataList: ArrayList<Visitable<*>> = ArrayList()
+
+        val variantCombinationValidation = validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
+        val variantChildrenValidation = validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
+        var hasVariant = variantCombinationValidation && variantChildrenValidation
+        var variantViewModelList = ArrayList<CheckoutVariantTypeVariantViewModel>()
+        if (hasVariant) {
+            for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
+                variantViewModelList.add(convertToTypeVariantViewModel(variant))
+            }
+        }
+
         if (expressCheckoutFormData.userProfileDefault != null) {
             dataList.add(convertToProfileViewModel(expressCheckoutFormData))
         }
-        dataList.add(convertToProductViewModel(expressCheckoutFormData))
+        dataList.add(convertToProductViewModel(expressCheckoutFormData, variantViewModelList))
         dataList.add(convertToQuantityViewModel(expressCheckoutFormData))
-        val variantCombinationValidation = validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
-        val variantChildrenValidation = validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
-        if (variantCombinationValidation && variantChildrenValidation) {
-            for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
-                dataList.add(convertToTypeVariantViewModel(variant))
-            }
-        }
+        dataList.addAll(variantViewModelList)
         dataList.add(convertToNoteViewModel(expressCheckoutFormData))
         if (expressCheckoutFormData.userProfileDefault != null) {
             dataList.add(convertToSummaryViewModel(expressCheckoutFormData))
@@ -47,12 +52,45 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantNoteViewModel
     }
 
-    override fun convertToProductViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantProductViewModel {
+    override fun convertToProductViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
+                                           checkoutVariantTypeVariantViewModels: ArrayList<CheckoutVariantTypeVariantViewModel>): CheckoutVariantProductViewModel {
         val product: Product = expressCheckoutFormData.cart.groupShops[0].products[0]
         var checkoutVariantProductViewModel = CheckoutVariantProductViewModel()
         checkoutVariantProductViewModel.productImageUrl = product.productImageSrc200Square
         checkoutVariantProductViewModel.productName = product.productName
         checkoutVariantProductViewModel.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.productPrice, false)
+        var productChildMap = HashMap<String, ProductChild>()
+        if (checkoutVariantTypeVariantViewModels.size > 0) {
+            var hasSetDefaultVariant = false
+            for (child: Child in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].children) {
+                var key = child.optionIds.joinToString()
+                var productChild = ProductChild()
+                productChild.productId = child.productId
+                productChild.productName = child.name
+                productChild.isAvailable = child.isBuyable
+                productChild.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(child.price, false)
+                productChild.stockWording = child.stockWording
+                productChild.minOrder = child.minOrder
+                productChild.maxOrder = child.maxOrder
+                productChild.isSelected = !hasSetDefaultVariant && productChild.isAvailable
+
+                for (checkoutVariantTypeVariantViewModel: CheckoutVariantTypeVariantViewModel in checkoutVariantTypeVariantViewModels) {
+                    for (variantOption: CheckoutVariantOptionVariantViewModel in checkoutVariantTypeVariantViewModel.variantOptions) {
+                        when {
+                            productChild.isSelected && child.optionIds.contains(variantOption.id) -> {
+                                variantOption.currentState = variantOption.STATE_SELECTED
+                                checkoutVariantTypeVariantViewModel.variantSelectedValue = variantOption.variantName
+                            }
+                            !productChild.isAvailable -> variantOption.currentState = variantOption.STATE_NOT_AVAILABLE
+                            else -> variantOption.currentState = variantOption.STATE_NOT_SELECTED
+                        }
+                    }
+                }
+
+                productChildMap.put(key, productChild)
+            }
+        }
+        checkoutVariantProductViewModel.productChildrenMap = productChildMap
 
         return checkoutVariantProductViewModel
     }
@@ -89,18 +127,13 @@ class ViewModelMapper : DataMapper {
         }
         checkoutVariantTypeVariantViewModel.variantOptions = checkoutVariantOptionVariantViewModels
         checkoutVariantTypeVariantViewModel.variantName = variant.variantName
-        for (variantOption: CheckoutVariantOptionVariantViewModel in checkoutVariantTypeVariantViewModel.variantOptions) {
-            if (variantOption.currentState == variantOption.STATE_SELECTED) {
-                checkoutVariantTypeVariantViewModel.variantSelectedValue = variantOption.variantName
-                break
-            }
-        }
 
         return checkoutVariantTypeVariantViewModel
     }
 
     override fun convertToOptionVariantViewModel(option: Option): CheckoutVariantOptionVariantViewModel {
         var checkoutVariantOptionVariantViewModel = CheckoutVariantOptionVariantViewModel(null)
+        checkoutVariantOptionVariantViewModel.id = option.id
         checkoutVariantOptionVariantViewModel.variantHex = option.hex
         checkoutVariantOptionVariantViewModel.variantName = option.value
 
@@ -129,7 +162,15 @@ class ViewModelMapper : DataMapper {
             }
         }
 
-        return true
+        var hasValidVariant = false
+        for (child: Child in productVariantData.children) {
+            if (child.isBuyable) {
+                hasValidVariant = true
+                break
+            }
+        }
+
+        return hasValidVariant
     }
 
 }

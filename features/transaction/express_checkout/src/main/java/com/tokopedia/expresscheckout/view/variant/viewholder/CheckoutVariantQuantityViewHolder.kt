@@ -22,6 +22,7 @@ class CheckoutVariantQuantityViewHolder(val view: View, val listener: CheckoutVa
 
     override fun bind(element: CheckoutVariantQuantityViewModel?) {
         if (element != null) {
+            itemView.et_qty.setText(element.minOrderQuantity.toString())
             itemView.et_qty.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
 

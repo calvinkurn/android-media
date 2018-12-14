@@ -16,7 +16,9 @@ interface DataMapper {
 
     fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantNoteViewModel
 
-    fun convertToProductViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantProductViewModel
+    fun convertToProductViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
+                                  checkoutVariantTypeVariantViewModels: ArrayList<CheckoutVariantTypeVariantViewModel>):
+            CheckoutVariantProductViewModel
 
     fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantProfileViewModel
 

@@ -12,13 +12,18 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 data class CheckoutVariantProductViewModel(
         var productName: String,
         var productPrice: String,
-        var productImageUrl: String
+        var productImageUrl: String,
+        var productChildrenMap: HashMap<String, ProductChild>
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
-            parcel?.readString() ?: "")
+            parcel?.readString() ?: "",
+            hashMapOf<String, ProductChild>().apply {
+                parcel?.readMap(this, ProductChild::class.java.classLoader)
+            }
+    )
 
     override fun type(typeFactory: CheckoutVariantAdapterTypefactory): Int {
         return typeFactory.type(this)
@@ -28,6 +33,7 @@ data class CheckoutVariantProductViewModel(
         parcel.writeString(productName)
         parcel.writeString(productPrice)
         parcel.writeString(productImageUrl)
+        parcel.writeMap(productChildrenMap)
     }
 
     override fun describeContents(): Int {

@@ -1,4 +1,56 @@
 package com.tokopedia.expresscheckout.view.variant.viewmodel
 
-class ProductChild {
+import android.os.Parcel
+import android.os.Parcelable
+
+data class ProductChild(
+        var productId: Int,
+        var productName: String,
+        var productPrice: String,
+        var productImageUrl: String,
+        var isAvailable: Boolean,
+        var isSelected: Boolean,
+        var stockWording: String,
+        var minOrder: Int,
+        var maxOrder: Int
+) : Parcelable {
+
+    constructor(parcel: Parcel? = null) : this(
+            parcel?.readInt() ?: 0,
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readByte() != 0.toByte(),
+            parcel?.readByte() != 0.toByte(),
+            parcel?.readString() ?: "",
+            parcel?.readInt() ?: 0,
+            parcel?.readInt() ?: 0
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(productId)
+        parcel.writeString(productName)
+        parcel.writeString(productPrice)
+        parcel.writeString(productImageUrl)
+        parcel.writeByte(if (isAvailable) 1 else 0)
+        parcel.writeByte(if (isSelected) 1 else 0)
+        parcel.writeString(stockWording)
+        parcel.writeInt(minOrder)
+        parcel.writeInt(maxOrder)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ProductChild> {
+        override fun createFromParcel(parcel: Parcel): ProductChild {
+            return ProductChild(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ProductChild?> {
+            return arrayOfNulls(size)
+        }
+    }
+
 }

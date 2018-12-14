@@ -8,6 +8,7 @@ import android.os.Parcelable
  */
 
 class CheckoutVariantOptionVariantViewModel(
+        var id: Int,
         var currentState: Int,
         var variantHex: String,
         var variantName: String
@@ -19,10 +20,12 @@ class CheckoutVariantOptionVariantViewModel(
 
     constructor(parcel: Parcel?) : this(
             parcel?.readInt() ?: 0,
+            parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             parcel?.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
         parcel.writeInt(currentState)
         parcel.writeString(variantHex)
         parcel.writeString(variantName)
