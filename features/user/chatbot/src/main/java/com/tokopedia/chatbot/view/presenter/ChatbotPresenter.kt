@@ -45,7 +45,7 @@ class ChatbotPresenter @Inject constructor(
 
         destroyWebSocket()
 
-        if (mSubscription.isUnsubscribed) {
+        if (mSubscription == null || mSubscription.isUnsubscribed) {
             mSubscription = CompositeSubscription()
         }
 
@@ -100,8 +100,10 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun destroyWebSocket() {
-        mSubscription.clear()
-        mSubscription.unsubscribe()
+        if (mSubscription != null) {
+            mSubscription.clear()
+            mSubscription.unsubscribe()
+        }
     }
 
     override fun getExistingChat(messageId: String,
@@ -119,7 +121,8 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_TYPING -> view.onReceiveStartTypingEvent()
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
-            EVENT_TOPCHAT_REPLY_MESSAGE -> { view.onReceiveMessageEvent(mapToVisitable(pojo))
+            EVENT_TOPCHAT_REPLY_MESSAGE -> {
+                view.onReceiveMessageEvent(mapToVisitable(pojo))
             }
         }
     }
