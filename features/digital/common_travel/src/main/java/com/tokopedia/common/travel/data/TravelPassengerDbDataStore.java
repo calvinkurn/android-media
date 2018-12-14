@@ -171,7 +171,6 @@ public class TravelPassengerDbDataStore implements TravelPassengerDataDbSource<T
             public void call(Subscriber<? super List<TravelPassengerDb>> subscriber) {
                 List<TravelPassengerDb> travelPassengerDbList = new Select()
                         .from(TravelPassengerDb.class)
-                        .orderBy(OrderBy.fromProperty(TravelPassengerDb_Table.name).ascending())
                         .queryList();
 
                 subscriber.onNext(travelPassengerDbList);
