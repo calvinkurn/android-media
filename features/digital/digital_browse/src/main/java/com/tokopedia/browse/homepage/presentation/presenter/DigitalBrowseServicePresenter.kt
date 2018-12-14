@@ -105,7 +105,7 @@ constructor(private val digitalBrowseServiceUseCase: DigitalBrowseServiceUseCase
 
     private fun getCategoryDataFromCache() {
         compositeSubscription.add(
-                digitalBrowseServiceUseCase.categoryDataFromCache
+                digitalBrowseServiceUseCase.getCategoryDataFromCache()
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

@@ -7,14 +7,13 @@ import android.os.Parcelable
  * @author by furqan on 07/09/18.
  */
 
-class DigitalBrowseServiceViewModel() : Parcelable {
+class DigitalBrowseServiceViewModel(
+        var categoryViewModelList: List<DigitalBrowseServiceCategoryViewModel>? = null,
+        var titleMap: Map<String, IndexPositionModel>? = null) : Parcelable {
 
-    var categoryViewModelList: List<DigitalBrowseServiceCategoryViewModel>? = null
-    var titleMap: Map<String, IndexPositionModel>? = null
-
-    constructor(parcel: Parcel) : this() {
+    constructor(parcel: Parcel) : this(
         categoryViewModelList = parcel.createTypedArrayList(DigitalBrowseServiceCategoryViewModel)
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeTypedList(categoryViewModelList)

@@ -10,29 +10,28 @@ import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseServiceAd
  * @author by furqan on 04/09/18.
  */
 
-class DigitalBrowseServiceCategoryViewModel() : Visitable<DigitalBrowseServiceAdapterTypeFactory>, Parcelable {
+class DigitalBrowseServiceCategoryViewModel(val id: Int,
+                                            val name: String?,
+                                            val url: String?,
+                                            val imageUrl: String?,
+                                            val type: String?,
+                                            val categoryId: Int,
+                                            val appLinks: String?,
+                                            val categoryLabel: String?,
+                                            val isTitle: Boolean) :
+        Visitable<DigitalBrowseServiceAdapterTypeFactory>, Parcelable {
 
-    var id: Int = 0
-    var name: String? = null
-    var url: String? = null
-    var imageUrl: String? = null
-    var type: String? = null
-    var categoryId: Int = 0
-    var appLinks: String? = null
-    var categoryLabel: String? = null
-    var isTitle: Boolean = false
-
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readInt()
-        name = parcel.readString()
-        url = parcel.readString()
-        imageUrl = parcel.readString()
-        type = parcel.readString()
-        categoryId = parcel.readInt()
-        appLinks = parcel.readString()
-        categoryLabel = parcel.readString()
-        isTitle = parcel.readByte() != 0.toByte()
-    }
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte()
+    )
 
     override fun type(typeFactory: DigitalBrowseServiceAdapterTypeFactory): Int {
         return typeFactory.type(this)

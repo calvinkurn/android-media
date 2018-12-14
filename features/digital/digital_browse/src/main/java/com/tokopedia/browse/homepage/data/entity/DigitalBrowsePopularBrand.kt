@@ -10,17 +10,17 @@ import com.google.gson.annotations.SerializedName
 class DigitalBrowsePopularBrand(
         @SerializedName("id")
         @Expose
-        var id: Int,
+        val id: Int,
         @SerializedName("name")
         @Expose
-        var name: String?,
+        val name: String,
         @SerializedName("isNew")
         @Expose
-        var isNew: Boolean,
+        val isNew: Boolean,
         @SerializedName("logoUrl")
         @Expose
-        var logoUrl: String?,
+        val logoUrl: String,
         @SerializedName("url")
         @Expose
-        var url: String?
+        val url: String
 )

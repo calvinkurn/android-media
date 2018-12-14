@@ -7,15 +7,13 @@ import android.os.Parcelable
  * @author by furqan on 03/09/18.
  */
 
-class DigitalBrowseMarketplaceViewModel() : Parcelable {
+class DigitalBrowseMarketplaceViewModel(
+        val popularBrandsList: List<DigitalBrowsePopularBrandsViewModel>?,
+        val rowViewModelList: List<DigitalBrowseRowViewModel>?) : Parcelable {
 
-    var popularBrandsList: List<DigitalBrowsePopularBrandsViewModel>? = null
-    var rowViewModelList: List<DigitalBrowseRowViewModel>? = null
-
-    constructor(parcel: Parcel) : this() {
-        popularBrandsList = parcel.createTypedArrayList(DigitalBrowsePopularBrandsViewModel.CREATOR)
-        rowViewModelList = parcel.createTypedArrayList(DigitalBrowseRowViewModel.CREATOR)
-    }
+    constructor(parcel: Parcel) : this(
+        parcel.createTypedArrayList(DigitalBrowsePopularBrandsViewModel.CREATOR),
+        parcel.createTypedArrayList(DigitalBrowseRowViewModel.CREATOR))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeTypedList(popularBrandsList)

@@ -19,17 +19,6 @@ class DigitalBrowseServiceUseCase @Inject
 constructor(private val digitalBrowseServiceCacheSource: DigitalBrowseServiceCacheSource,
             private val serviceViewModelMapper: ServiceViewModelMapper) : GraphqlUseCase() {
 
-    val categoryDataFromCache: Observable<DigitalBrowseServiceViewModel>
-        get() = digitalBrowseServiceCacheSource.cache
-                .flatMap { digitalBrowseMarketplaceData ->
-                    if (digitalBrowseMarketplaceData != null) {
-                        Observable.just(serviceViewModelMapper.transform(
-                                digitalBrowseMarketplaceData))
-                    } else {
-                        Observable.just(null)
-                    }
-                }
-
     fun createObservable(queryCategory: String): Observable<DigitalBrowseServiceViewModel> {
 
         val variablesCategory = HashMap<String, Any>()
@@ -53,6 +42,16 @@ constructor(private val digitalBrowseServiceCacheSource: DigitalBrowseServiceCac
                     Observable.just(serviceViewModelMapper.transform(digitalBrowseMarketplaceData))
                 }
     }
+
+    fun getCategoryDataFromCache(): Observable<DigitalBrowseServiceViewModel> = digitalBrowseServiceCacheSource.getCache()
+            .flatMap { digitalBrowseMarketplaceData ->
+                if (digitalBrowseMarketplaceData != null) {
+                    Observable.just(serviceViewModelMapper.transform(
+                            digitalBrowseMarketplaceData))
+                } else {
+                    Observable.just(null)
+                }
+            }
 
     companion object {
 

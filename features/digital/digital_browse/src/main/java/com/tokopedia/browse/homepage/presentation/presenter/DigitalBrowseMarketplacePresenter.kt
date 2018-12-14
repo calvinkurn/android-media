@@ -32,7 +32,7 @@ constructor(private val digitalBrowseMarketplaceUseCase: DigitalBrowseMarketplac
 
     private fun getMarketplaceDataCache() {
         compositeSubscription.add(
-                digitalBrowseMarketplaceUseCase.marketplaceDataFromCache
+                digitalBrowseMarketplaceUseCase.getCache()
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -75,9 +75,8 @@ constructor(private val digitalBrowseMarketplaceUseCase: DigitalBrowseMarketplac
         detachView()
     }
 
-    override fun getPopularAnalyticsModel(viewModel: DigitalBrowsePopularBrandsViewModel, position: Int): DigitalBrowsePopularAnalyticsModel {
-        return DigitalBrowsePopularAnalyticsModel(viewModel.id, viewModel.name!!, position + 1)
-    }
+    override fun getPopularAnalyticsModel(viewModel: DigitalBrowsePopularBrandsViewModel, position: Int): DigitalBrowsePopularAnalyticsModel =
+            DigitalBrowsePopularAnalyticsModel(viewModel.id, viewModel.name!!, position + 1)
 
     override fun getPopularAnalyticsModelList(popularBrandsList: List<DigitalBrowsePopularBrandsViewModel>): List<DigitalBrowsePopularAnalyticsModel> {
         var position = 0

@@ -15,17 +15,6 @@ import javax.inject.Inject
 class DigitalBrowseMarketplaceCacheSource @Inject
 constructor(private val cacheManager: CacheManager) {
 
-    val cache: Observable<DigitalBrowseMarketplaceData>
-        get() {
-            val jsonString = cacheManager.get(DIGITAL_BROWSE_MARKETPLACE_CACHE_KEY)
-
-            val type = object : TypeToken<DigitalBrowseMarketplaceData>() {
-
-            }.type
-            val data = CacheUtil.convertStringToModel<DigitalBrowseMarketplaceData>(jsonString, type)
-            return Observable.just(data)
-        }
-
     fun saveCache(orderEntity: DigitalBrowseMarketplaceData) {
         cacheManager.delete(DIGITAL_BROWSE_MARKETPLACE_CACHE_KEY)
 
@@ -36,6 +25,16 @@ constructor(private val cacheManager: CacheManager) {
         cacheManager.save(DIGITAL_BROWSE_MARKETPLACE_CACHE_KEY,
                 CacheUtil.convertModelToString(orderEntity, type),
                 DIGITAL_BROWSE_MARKETPLACE_CACHE_TIMEOUT)
+    }
+
+    fun getCache(): Observable<DigitalBrowseMarketplaceData> {
+        val jsonString = cacheManager.get(DIGITAL_BROWSE_MARKETPLACE_CACHE_KEY)
+
+        val type = object : TypeToken<DigitalBrowseMarketplaceData>() {
+
+        }.type
+        val data = CacheUtil.convertStringToModel<DigitalBrowseMarketplaceData>(jsonString, type)
+        return Observable.just(data)
     }
 
     companion object {

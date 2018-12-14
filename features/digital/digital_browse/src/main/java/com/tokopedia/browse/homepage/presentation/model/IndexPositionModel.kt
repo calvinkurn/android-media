@@ -7,15 +7,14 @@ import android.os.Parcelable
  * @author by furqan on 07/09/18.
  */
 
-class IndexPositionModel() : Parcelable {
+class IndexPositionModel(var indexPositionInTab: Int = 0,
+                         var indexPositionInList: Int = 0) :
+        Parcelable {
 
-    var indexPositionInTab: Int = 0
-    var indexPositionInList: Int = 0
-
-    constructor(parcel: Parcel) : this() {
-        indexPositionInTab = parcel.readInt()
-        indexPositionInList = parcel.readInt()
-    }
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readInt()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(indexPositionInTab)

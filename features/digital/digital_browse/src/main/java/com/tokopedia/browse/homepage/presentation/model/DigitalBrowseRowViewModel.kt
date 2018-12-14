@@ -10,27 +10,22 @@ import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketpla
  * @author by furqan on 05/09/18.
  */
 
-class DigitalBrowseRowViewModel() : Parcelable, Visitable<DigitalBrowseMarketplaceAdapterTypeFactory> {
+class DigitalBrowseRowViewModel(val id: Int, val name: String?, val url: String?,
+                                val imageUrl: String?, val type: String?,
+                                val categoryId: Int, val appLinks: String?,
+                                val categoryLabel: String?) :
+        Parcelable, Visitable<DigitalBrowseMarketplaceAdapterTypeFactory> {
 
-    var id: Int = 0
-    var name: String? = null
-    var url: String? = null
-    var imageUrl: String? = null
-    var type: String? = null
-    var categoryId: Int = 0
-    var appLinks: String? = null
-    var categoryLabel: String? = null
-
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readInt()
-        name = parcel.readString()
-        url = parcel.readString()
-        imageUrl = parcel.readString()
-        type = parcel.readString()
-        categoryId = parcel.readInt()
-        appLinks = parcel.readString()
-        categoryLabel = parcel.readString()
-    }
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.readString()
+    )
 
     override fun type(typeFactory: DigitalBrowseMarketplaceAdapterTypeFactory): Int {
         return typeFactory.type(this)

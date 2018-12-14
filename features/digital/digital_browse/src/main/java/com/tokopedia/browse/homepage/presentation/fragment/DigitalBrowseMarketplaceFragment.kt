@@ -80,14 +80,10 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
         initializeCategoryView()
         initializePopularView()
 
-        if (savedInstanceState != null) {
-            digitalBrowseMarketplaceViewModel = savedInstanceState.getParcelable(KEY_MARKETPLACE_DATA)
+        digitalBrowseMarketplaceViewModel = savedInstanceState?.getParcelable(KEY_MARKETPLACE_DATA)
 
-            if (digitalBrowseMarketplaceViewModel != null) {
-                renderCategory(digitalBrowseMarketplaceViewModel!!.rowViewModelList)
-                renderPopularBrands(digitalBrowseMarketplaceViewModel!!.popularBrandsList)
-            }
-        }
+        renderCategory(digitalBrowseMarketplaceViewModel!!.rowViewModelList)
+        renderPopularBrands(digitalBrowseMarketplaceViewModel!!.popularBrandsList)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

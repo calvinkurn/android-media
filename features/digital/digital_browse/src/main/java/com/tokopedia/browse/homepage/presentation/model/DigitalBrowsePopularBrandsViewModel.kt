@@ -10,21 +10,20 @@ import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketpla
  * @author by furqan on 05/09/18.
  */
 
-class DigitalBrowsePopularBrandsViewModel() : Parcelable, Visitable<DigitalBrowseMarketplaceAdapterTypeFactory> {
+class DigitalBrowsePopularBrandsViewModel(val id: Long,
+                                          val name: String,
+                                          val isNew: Boolean,
+                                          val logoUrl: String?,
+                                          val url: String?) :
+        Parcelable, Visitable<DigitalBrowseMarketplaceAdapterTypeFactory> {
 
-    var id: Long = 0
-    var name: String? = null
-    var isNew: Boolean = false
-    var logoUrl: String? = null
-    var url: String? = null
-
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readLong()
-        name = parcel.readString()
-        isNew = parcel.readByte() != 0.toByte()
-        logoUrl = parcel.readString()
-        url = parcel.readString()
-    }
+    constructor(parcel: Parcel) : this(
+            parcel.readLong(),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readString()
+    )
 
 
     override fun type(typeFactory: DigitalBrowseMarketplaceAdapterTypeFactory): Int {

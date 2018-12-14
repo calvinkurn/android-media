@@ -13,22 +13,22 @@ class DigitalBrowseCategoryRowEntity(
         val id: Int,
         @SerializedName("name")
         @Expose
-        val name: String?,
+        val name: String,
         @SerializedName("url")
         @Expose
-        val url: String?,
+        val url: String,
         @SerializedName("imageUrl")
         @Expose
-        val imageUrl: String?,
+        val imageUrl: String,
         @SerializedName("type")
         @Expose
-        val type: String?,
+        val type: String,
         @SerializedName("categoryId")
         @Expose
         val categoryId: Int,
         @SerializedName("applinks")
         @Expose
-        val appLinks: String?,
+        val appLinks: String,
         @SerializedName("categoryLabel")
         @Expose
-        val categoryLabel: String?)
+        val categoryLabel: String)

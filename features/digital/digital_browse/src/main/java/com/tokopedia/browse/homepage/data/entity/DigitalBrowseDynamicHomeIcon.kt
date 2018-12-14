@@ -10,4 +10,4 @@ import com.google.gson.annotations.SerializedName
 class DigitalBrowseDynamicHomeIcon(
         @SerializedName("categoryGroup")
         @Expose
-        var dynamicHomeCategoryGroupEntities: List<DigitalBrowseCategoryGroupEntity>?)
+        val dynamicHomeCategoryGroupEntities: List<DigitalBrowseCategoryGroupEntity>)

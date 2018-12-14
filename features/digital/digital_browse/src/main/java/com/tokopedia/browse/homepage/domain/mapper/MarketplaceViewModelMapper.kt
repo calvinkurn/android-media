@@ -17,49 +17,27 @@ class MarketplaceViewModelMapper @Inject
 constructor() {
 
     fun transform(data: DigitalBrowseMarketplaceData): DigitalBrowseMarketplaceViewModel {
-        val returnData = DigitalBrowseMarketplaceViewModel()
-
-        returnData.rowViewModelList = transformRow(data.categoryGroups!!
-                .dynamicHomeCategoryGroupEntities!![0].categoryRow)
-        returnData.popularBrandsList = transformPopular(data.popularBrandDatas)
-
-        return returnData
+        return DigitalBrowseMarketplaceViewModel(transformPopular(data.popularBrandDatas),
+                transformRow(data.categoryGroups!!.dynamicHomeCategoryGroupEntities!![0].categoryRow))
     }
 
-    fun transformRow(categoryRowEntityList: List<DigitalBrowseCategoryRowEntity>?): List<DigitalBrowseRowViewModel> {
+    private fun transformRow(categoryRowEntityList: List<DigitalBrowseCategoryRowEntity>?): List<DigitalBrowseRowViewModel> {
         val returnDataList = ArrayList<DigitalBrowseRowViewModel>()
 
-        for (row in categoryRowEntityList!!) {
-            val returnRow = DigitalBrowseRowViewModel()
-
-            returnRow.appLinks = row.appLinks
-            returnRow.categoryId = row.categoryId
-            returnRow.categoryLabel = row.categoryLabel
-            returnRow.id = row.id
-            returnRow.imageUrl = row.imageUrl
-            returnRow.name = row.name
-            returnRow.type = row.type
-            returnRow.url = row.url
-
-            returnDataList.add(returnRow)
+        categoryRowEntityList!!.map {
+            returnDataList.add(DigitalBrowseRowViewModel(it.id, it.name, it.url, it.imageUrl,
+                    it.type, it.categoryId, it.appLinks, it.categoryLabel))
         }
 
         return returnDataList
     }
 
-    fun transformPopular(popularBrandsEntityList: List<DigitalBrowsePopularBrand>?): List<DigitalBrowsePopularBrandsViewModel> {
+    private fun transformPopular(popularBrandsEntityList: List<DigitalBrowsePopularBrand>?): List<DigitalBrowsePopularBrandsViewModel> {
         val returnDataList = ArrayList<DigitalBrowsePopularBrandsViewModel>()
 
-        for (row in popularBrandsEntityList!!) {
-            val returnRow = DigitalBrowsePopularBrandsViewModel()
-
-            returnRow.id = row.id.toLong()
-            returnRow.logoUrl = row.logoUrl
-            returnRow.name = row.name
-            returnRow.isNew = row.isNew
-            returnRow.url = row.url
-
-            returnDataList.add(returnRow)
+        popularBrandsEntityList!!.map {
+            returnDataList.add(DigitalBrowsePopularBrandsViewModel(it.id.toLong(), it.name, it.isNew,
+                    it.logoUrl, it.url))
         }
 
         return returnDataList

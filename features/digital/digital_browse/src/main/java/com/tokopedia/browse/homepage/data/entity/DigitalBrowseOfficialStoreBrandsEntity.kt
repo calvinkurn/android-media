@@ -10,5 +10,5 @@ import com.google.gson.annotations.SerializedName
 class DigitalBrowseOfficialStoreBrandsEntity(
         @SerializedName("officialStoreBrands")
         @Expose
-        var officialStoreBrandList: List<DigitalBrowsePopularBrandsEntity>?
+        val officialStoreBrandList: List<DigitalBrowsePopularBrandsEntity>
 )

@@ -17,50 +17,26 @@ constructor() {
 
     fun transform(data: DigitalBrowseMarketplaceData): DigitalBrowseServiceViewModel {
         var titleIndex = 0
-        val returnData = DigitalBrowseServiceViewModel()
-
         val categoryViewModelList = ArrayList<DigitalBrowseServiceCategoryViewModel>()
         val titleMap = HashMap<String, IndexPositionModel>()
 
-        for (row in data.categoryGroups!!.dynamicHomeCategoryGroupEntities!!) {
-            val indexPositionModel = IndexPositionModel()
-            indexPositionModel.indexPositionInTab = titleIndex
-            indexPositionModel.indexPositionInList = categoryViewModelList.size
-            titleMap.put(row.title, indexPositionModel)
-
-            val returnRow = DigitalBrowseServiceCategoryViewModel()
-
-            returnRow.id = row.id
-            returnRow.name = row.title
-            returnRow.isTitle = true
-
-            categoryViewModelList.add(returnRow)
-            categoryViewModelList.addAll(transform(row.categoryRow))
+        data.categoryGroups!!.dynamicHomeCategoryGroupEntities!!.map {
+            titleMap.put(it.title, IndexPositionModel(titleIndex, categoryViewModelList.size))
+            categoryViewModelList.add(DigitalBrowseServiceCategoryViewModel(id = it.id, name = it.title, isTitle = true))
+            categoryViewModelList.addAll(transform(it.categoryRow))
 
             titleIndex++
         }
 
-        returnData.categoryViewModelList = categoryViewModelList
-        returnData.titleMap = titleMap
-        return returnData
+        return DigitalBrowseServiceViewModel(categoryViewModelList, titleMap)
     }
 
     private fun transform(categoryRow: List<DigitalBrowseCategoryRowEntity>?): List<DigitalBrowseServiceCategoryViewModel> {
         val returnData = ArrayList<DigitalBrowseServiceCategoryViewModel>()
 
-        for (row in categoryRow!!) {
-            val data = DigitalBrowseServiceCategoryViewModel()
-            data.id = row.id
-            data.name = row.name
-            data.appLinks = row.appLinks
-            data.categoryId = row.categoryId
-            data.categoryLabel = row.categoryLabel
-            data.imageUrl = row.imageUrl
-            data.type = row.type
-            data.url = row.url
-            data.isTitle = false
-
-            returnData.add(data)
+        categoryRow!!.map {
+            returnData.add(DigitalBrowseServiceCategoryViewModel(it.id, it.name, it.url, it.imageUrl,
+                    it.type, it.categoryId, it.appLinks, it.categoryLabel, false))
         }
 
         return returnData

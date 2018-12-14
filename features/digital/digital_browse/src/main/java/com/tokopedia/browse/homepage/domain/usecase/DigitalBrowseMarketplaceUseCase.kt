@@ -20,17 +20,6 @@ class DigitalBrowseMarketplaceUseCase @Inject
 constructor(private val marketplaceViewModelMapper: MarketplaceViewModelMapper,
             private val digitalBrowseMarketplaceCacheSource: DigitalBrowseMarketplaceCacheSource) : GraphqlUseCase() {
 
-    val marketplaceDataFromCache: Observable<DigitalBrowseMarketplaceViewModel>
-        get() = digitalBrowseMarketplaceCacheSource.cache
-                .flatMap { digitalBrowseMarketplaceData ->
-                    if (digitalBrowseMarketplaceData != null) {
-                        Observable.just(marketplaceViewModelMapper.transform(
-                                digitalBrowseMarketplaceData))
-                    } else {
-                        Observable.just(null)
-                    }
-                }
-
     fun createObservable(queryCategory: String, queryOfficial: String): Observable<DigitalBrowseMarketplaceViewModel> {
 
         val variablesCategory = HashMap<String, Any>()
@@ -55,7 +44,7 @@ constructor(private val marketplaceViewModelMapper: MarketplaceViewModelMapper,
                     if (graphqlResponse != null) {
                         digitalBrowseMarketplaceData = graphqlResponse.getData(DigitalBrowseMarketplaceData::class.java)
                         val officialStoreBrandsEntity = graphqlResponse.getData<DigitalBrowseOfficialStoreBrandsEntity>(DigitalBrowseOfficialStoreBrandsEntity::class.java)
-                        digitalBrowseMarketplaceData.popularBrandDatas = officialStoreBrandsEntity.officialStoreBrandList!![0].data
+                        digitalBrowseMarketplaceData.popularBrandDatas = officialStoreBrandsEntity.officialStoreBrandList[0].data
                     }
 
                     digitalBrowseMarketplaceCacheSource.saveCache(digitalBrowseMarketplaceData)
@@ -63,6 +52,16 @@ constructor(private val marketplaceViewModelMapper: MarketplaceViewModelMapper,
                     Observable.just(marketplaceViewModelMapper.transform(digitalBrowseMarketplaceData))
                 }
     }
+
+    fun getCache(): Observable<DigitalBrowseMarketplaceViewModel> = digitalBrowseMarketplaceCacheSource.getCache()
+            .flatMap { digitalBrowseMarketplaceData ->
+                if (digitalBrowseMarketplaceData != null) {
+                    Observable.just(marketplaceViewModelMapper.transform(
+                            digitalBrowseMarketplaceData))
+                } else {
+                    Observable.just(null)
+                }
+            }
 
     companion object {
 
