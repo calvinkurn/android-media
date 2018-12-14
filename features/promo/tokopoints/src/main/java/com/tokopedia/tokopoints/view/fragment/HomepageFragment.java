@@ -650,9 +650,19 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             public void onPageSelected(int position) {
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_PENUKARAN_POINTS,
+                            "");
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_SAYA,
+                            "");
                 }
             }
 

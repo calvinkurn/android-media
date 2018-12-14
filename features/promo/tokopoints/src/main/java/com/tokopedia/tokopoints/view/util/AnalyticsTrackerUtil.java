@@ -80,6 +80,12 @@ public class AnalyticsTrackerUtil {
         String VIEW_MY_COUPON_DETAIL = "view my coupon detail";
         String VIEW_MY_COUPON = "view my coupon";
         String CLICK_COUPON = "click coupon";
+        String CLICK_PENUKARAN_POINTS = "click penukaran point";
+        String CLICK_COUPON_SAYA = "click coupon saya";
+        String CLICK_KIRIM_SEKARANG = "click kirim sekarang";
+        String CLICK_OK_ON_SUCCESS = "click ok on success";
+        String CLICK_OK_ON_FAILED = "click ok on failed";
+        String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
     }
 
     public static void sendEvent(Context context, String event, String category,

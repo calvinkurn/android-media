@@ -17,6 +17,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 public class PopupNotificationBottomSheet extends BottomSheets {
 
     PopupNotification mData;
+    private String couponTitle;
 
     @Override
     public int getLayoutResourceId() {
@@ -46,10 +47,11 @@ public class PopupNotificationBottomSheet extends BottomSheets {
         action.setText(mData.getButtonText());
 
         if (mData.getCatalog() != null && mData.getCatalog().getTitle() != null) {
-            title.setText(mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle());
+            couponTitle=mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle();
         } else {
-            title.setText(mData.getText());
+            couponTitle=mData.getText();
         }
+        title.setText(couponTitle);
 
         if (mData.getNotes() != null && !mData.getNotes().isEmpty()) {
             notes.setVisibility(View.VISIBLE);
@@ -80,7 +82,14 @@ public class PopupNotificationBottomSheet extends BottomSheets {
             }
         }
 
-        action.setOnClickListener(view1 -> RouteManager.route(action.getContext(), mData.getAppLink()));
+        action.setOnClickListener(view1 -> {
+            RouteManager.route(action.getContext(), mData.getAppLink());
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN_KUPON,
+                    couponTitle);
+        });
     }
 
     @Override
@@ -97,9 +106,9 @@ public class PopupNotificationBottomSheet extends BottomSheets {
         super.onCloseButtonClick();
 
         AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_CLOSE_BUTTON,
-                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LUCKY_EGG_CLOSE_LABEL);
+                couponTitle);
     }
 }
