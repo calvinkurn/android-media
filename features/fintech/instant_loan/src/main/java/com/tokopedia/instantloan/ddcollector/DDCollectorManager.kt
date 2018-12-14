@@ -61,7 +61,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
         mComponents.addAll(defaultsComponents)
     }
 
-    fun init(context: Context, permissionResultCallback: PermissionResultCallback) {
+    fun init(context: Context?, permissionResultCallback: PermissionResultCallback) {
         this.mContext = context
         this.permissionResultCallback = permissionResultCallback
         mPermissionUtils = PermissionUtils(mContext!!, this)

@@ -97,7 +97,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
     }
 
     override fun isUserLoggedIn(): Boolean {
-        return userSession != null && userSession!!.isLoggedIn
+        return userSession != null && userSession.isLoggedIn
     }
 
     override fun startDataCollection() {
