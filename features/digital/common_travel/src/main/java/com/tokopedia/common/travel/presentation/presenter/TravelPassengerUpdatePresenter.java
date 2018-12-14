@@ -147,12 +147,12 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
         } else if (travelPassengerValidator.isNameEmpty(getView().getLastName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_last_name);
-        } else if (travelPassengerValidator.isNameContainSpace(getView().getLastName())) {
-            allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_last_name_word);
         } else if (travelPassengerValidator.isNameMoreThanMax(getView().getLastName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_max);
+        } else if (travelPassengerValidator.isNameMoreThanTwoWords(getView().getLastName())) {
+            allDataValid = false;
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_last_name_word);
         } else if (travelPassengerValidator.isNameUseSpecialCharacter(getView().getLastName())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
