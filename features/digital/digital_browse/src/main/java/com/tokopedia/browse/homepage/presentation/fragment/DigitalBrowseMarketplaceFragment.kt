@@ -158,16 +158,20 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
     }
 
     private fun renderCategory(digitalBrowseRowViewModels: List<DigitalBrowseRowViewModel>?) {
-        categoryAdapter.hideLoading()
-        categoryAdapter.clearAllElements()
-        categoryAdapter.addElement(digitalBrowseRowViewModels)
+        if (digitalBrowseRowViewModels != null) {
+            categoryAdapter.hideLoading()
+            categoryAdapter.clearAllElements()
+            categoryAdapter.addElement(digitalBrowseRowViewModels)
+        }
     }
 
     private fun renderPopularBrands(digitalBrowsePopularBrandsViewModels: List<DigitalBrowsePopularBrandsViewModel>?) {
-        showPopularBrand()
+        if (digitalBrowsePopularBrandsViewModels != null) {
+            showPopularBrand()
 
-        popularAdapter.clearAllElements()
-        popularAdapter.addElement(digitalBrowsePopularBrandsViewModels)
+            popularAdapter.clearAllElements()
+            popularAdapter.addElement(digitalBrowsePopularBrandsViewModels)
+        }
     }
 
     private fun showPopularBrand() {
