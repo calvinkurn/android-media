@@ -2,6 +2,7 @@ package com.tokopedia.common_digital.cart.data.entity.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.common_digital.product.data.response.PostPaidPopup;
 
 import java.util.List;
 
@@ -74,6 +75,9 @@ public class AttributesCart {
     @SerializedName("cross_selling_config")
     @Expose
     private CrossSellingConfig crossSellingConfig;
+    @SerializedName("pop_up")
+    @Expose
+    private PostPaidPopup postPaidPopUp;
 
     public String getClientNumber() {
         return clientNumber;
@@ -157,5 +161,9 @@ public class AttributesCart {
 
     public CrossSellingConfig getCrossSellingConfig() {
         return crossSellingConfig;
+    }
+
+    public PostPaidPopup getPostPaidPopUp() {
+        return postPaidPopUp;
     }
 }
