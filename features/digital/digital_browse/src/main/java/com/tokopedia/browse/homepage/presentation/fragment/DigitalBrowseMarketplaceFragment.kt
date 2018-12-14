@@ -82,8 +82,10 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
 
         digitalBrowseMarketplaceViewModel = savedInstanceState?.getParcelable(KEY_MARKETPLACE_DATA)
 
-        renderCategory(digitalBrowseMarketplaceViewModel?.rowViewModelList)
-        renderPopularBrands(digitalBrowseMarketplaceViewModel!!.popularBrandsList)
+        if (digitalBrowseMarketplaceViewModel != null) {
+            renderCategory(digitalBrowseMarketplaceViewModel!!.rowViewModelList)
+            renderPopularBrands(digitalBrowseMarketplaceViewModel!!.popularBrandsList)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -158,20 +160,16 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
     }
 
     private fun renderCategory(digitalBrowseRowViewModels: List<DigitalBrowseRowViewModel>?) {
-        if (digitalBrowseRowViewModels != null) {
-            categoryAdapter.hideLoading()
-            categoryAdapter.clearAllElements()
-            categoryAdapter.addElement(digitalBrowseRowViewModels)
-        }
+        categoryAdapter.hideLoading()
+        categoryAdapter.clearAllElements()
+        categoryAdapter.addElement(digitalBrowseRowViewModels)
     }
 
     private fun renderPopularBrands(digitalBrowsePopularBrandsViewModels: List<DigitalBrowsePopularBrandsViewModel>?) {
-        if (digitalBrowsePopularBrandsViewModels != null) {
-            showPopularBrand()
+        showPopularBrand()
 
-            popularAdapter.clearAllElements()
-            popularAdapter.addElement(digitalBrowsePopularBrandsViewModels)
-        }
+        popularAdapter.clearAllElements()
+        popularAdapter.addElement(digitalBrowsePopularBrandsViewModels)
     }
 
     private fun showPopularBrand() {

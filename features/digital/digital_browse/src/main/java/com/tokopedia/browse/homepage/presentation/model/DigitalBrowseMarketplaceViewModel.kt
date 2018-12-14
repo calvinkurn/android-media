@@ -8,12 +8,13 @@ import android.os.Parcelable
  */
 
 class DigitalBrowseMarketplaceViewModel(
-        val popularBrandsList: List<DigitalBrowsePopularBrandsViewModel>?,
-        val rowViewModelList: List<DigitalBrowseRowViewModel>?) : Parcelable {
+        var popularBrandsList: List<DigitalBrowsePopularBrandsViewModel>? = null,
+        var rowViewModelList: List<DigitalBrowseRowViewModel>? = null) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.createTypedArrayList(DigitalBrowsePopularBrandsViewModel.CREATOR),
-        parcel.createTypedArrayList(DigitalBrowseRowViewModel.CREATOR))
+        parcel.createTypedArrayList(DigitalBrowseRowViewModel.CREATOR)
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeTypedList(popularBrandsList)
