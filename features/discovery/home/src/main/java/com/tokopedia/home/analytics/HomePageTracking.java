@@ -440,7 +440,7 @@ public class HomePageTracking {
                                 )
                         )
                 ),
-                "attribution", null
+                "attribution", "2 - homeBanner"
         );
         tracker.sendEnhancedEcommerce(data);
     }
