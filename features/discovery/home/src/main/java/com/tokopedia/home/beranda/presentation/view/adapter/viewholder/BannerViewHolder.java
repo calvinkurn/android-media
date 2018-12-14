@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implements BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoAllClickListener {
+        BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
@@ -31,6 +31,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     private final HomeCategoryListener listener;
     private final Context context;
     private List<BannerSlidesModel> slidesList;
+    private boolean hasSendBannerImpression = false;
 
     public BannerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -40,6 +41,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         bannerView.setOnPromoAllClickListener(this);
         bannerView.setOnPromoClickListener(this);
         bannerView.setOnPromoScrolledListener(this);
+        bannerView.setOnPromoLoadedListener(this);
     }
 
     @Override
@@ -72,7 +74,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoClick(int position) {
         Promotion promotion = getPromotion(position);
-        HomePageTracking.eventPromoImpression(context, getPromotion(position));
+        HomePageTracking.eventPromoClick(context, promotion);
         listener.onPromoClick(position, slidesList.get(position),
                 String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
         HomeTrackingUtils.homeSlidingBannerClick(context, slidesList.get(position), position);
@@ -90,5 +92,18 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoAllClick() {
         listener.onPromoAllClick();
+    }
+
+    @Override
+    public void onPromoLoaded() {
+        if (listener.isHomeFragment() && slidesList != null && slidesList.size() > 0 &&
+                !hasSendBannerImpression) {
+            List<Promotion> promotionList = new ArrayList<>();
+            for (int i = 0, sizei = slidesList.size(); i < sizei; i++) {
+                promotionList.add(getPromotion(i));
+            }
+            HomePageTracking.eventPromoImpression(context, promotionList);
+            hasSendBannerImpression = true;
+        }
     }
 }
