@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.text.TextUtils
@@ -14,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
@@ -29,6 +27,7 @@ import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_instant_loan_home_page.*
+import kotlinx.android.synthetic.main.dialog_intro_instnat_loan.*
 import javax.inject.Inject
 
 
@@ -171,28 +170,24 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
 
     override fun startIntroSlider() {
-        val view = layoutInflater.inflate(R.layout.dialog_intro_instnat_loan, null)
-        val pager = view.findViewById<ViewPager>(R.id.view_pager_il_intro)
-        val pageIndicator = view.findViewById<CirclePageIndicator>(R.id.page_indicator_il_intro)
-        val btnNext = view.findViewById<FloatingActionButton>(R.id.button_next)
         val layouts = intArrayOf(R.layout.intro_instant_loan_slide_1, R.layout.intro_instant_loan_slide_2, R.layout.intro_instant_loan_slide_3)
 
-        pager.adapter = InstantLoanIntroViewPagerAdapter(activity as InstantLoanActivity,
+        view_pager_il_intro.adapter = InstantLoanIntroViewPagerAdapter(activity as InstantLoanActivity,
                 layouts, presenter)
-        pageIndicator.fillColor = ContextCompat.getColor(getContext()!!, R.color.tkpd_main_green)
-        pageIndicator.pageColor = ContextCompat.getColor(getContext()!!, R.color.black_38)
-        pageIndicator.setViewPager(pager, 0)
-        btnNext.show()
-        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        page_indicator_il_intro.fillColor = ContextCompat.getColor(getContext()!!, R.color.tkpd_main_green)
+        page_indicator_il_intro.pageColor = ContextCompat.getColor(getContext()!!, R.color.black_38)
+        page_indicator_il_intro.setViewPager(view_pager_il_intro, 0)
+        button_next.show()
+        view_pager_il_intro.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
                 if (position == layouts.size - 1) {
-                    pageIndicator.visibility = View.INVISIBLE
-                    btnNext.hide()
+                    page_indicator_il_intro.visibility = View.INVISIBLE
+                    button_next.hide()
                 } else {
-                    pageIndicator.visibility = View.VISIBLE
-                    btnNext.show()
+                    page_indicator_il_intro.visibility = View.VISIBLE
+                    button_next.show()
                 }
 
                 val right = mCurrentPagePosition < position
@@ -215,10 +210,10 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
             }
         })
 
-        btnNext.setOnClickListener { v ->
-            if (pager.currentItem != layouts.size) {
+        button_next.setOnClickListener { v ->
+            if (view_pager_il_intro.currentItem != layouts.size) {
 
-                val position = pager.currentItem
+                val position = view_pager_il_intro.currentItem
 
                 if (position == 0) {
                     sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT)
@@ -226,7 +221,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
                     sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT)
                 }
 
-                pager.setCurrentItem(pager.currentItem + 1, true)
+                view_pager_il_intro.setCurrentItem(view_pager_il_intro.currentItem + 1, true)
             }
         }
 
