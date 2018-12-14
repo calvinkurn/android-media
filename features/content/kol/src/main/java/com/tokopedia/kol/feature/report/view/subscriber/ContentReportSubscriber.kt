@@ -15,9 +15,11 @@ import rx.Subscriber
 class ContentReportSubscriber(val view: ContentReportContract.View?)
     : Subscriber<SendReportResponse>() {
     override fun onNext(response: SendReportResponse) {
-        if (response.feedReportSubmit.errorMessage.isEmpty().not()) {
+        if (response.feedReportSubmit.errorMessage.isNotEmpty()) {
             if (response.feedReportSubmit.errorType == SendReportUseCase.ERROR_REPORT_DUPLICATE) {
-                view?.onErrorSendReportDuplicate(response.feedReportSubmit.errorMessage)
+                view?.run {
+                    onErrorSendReportDuplicate(response.feedReportSubmit.errorMessage)
+                }
             } else {
                 onError(MessageErrorException(response.feedReportSubmit.errorMessage))
             }
@@ -25,9 +27,13 @@ class ContentReportSubscriber(val view: ContentReportContract.View?)
         }
 
         if (response.feedReportSubmit.data.success == SendReportUseCase.REPORT_SUCCESS) {
-            view?.onSuccessSendReport()
+            view?.run {
+                onSuccessSendReport()
+            }
         } else {
-            onError(MessageErrorException(view?.getContext()!!.getString(R.string.kol_report_error)))
+            view?.run {
+                onError(MessageErrorException(getContext()?.getString(R.string.kol_report_error)))
+            }
         }
     }
 
@@ -37,7 +43,9 @@ class ContentReportSubscriber(val view: ContentReportContract.View?)
     override fun onError(e: Throwable?) {
         e?.debugTrace()
 
-        view?.hideLoading()
-        view?.onErrorSendReport(ErrorHandler.getErrorMessage(view.getContext(), e))
+        view?.run {
+            hideLoading()
+            onErrorSendReport(ErrorHandler.getErrorMessage(view.getContext(), e))
+        }
     }
 }
