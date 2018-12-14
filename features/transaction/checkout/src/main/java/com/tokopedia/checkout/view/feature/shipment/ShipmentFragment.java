@@ -242,7 +242,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
 
-        view.findViewById(R.id.tv_select_cod).setOnClickListener(this::proceedCod);
         tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -329,12 +328,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if(shipmentPresenter.getCodData().isCod()) {
             shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
             tvSelectCodPayment.setVisibility(View.VISIBLE);
-            tvSelectCodPayment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getContext(), "cod clicked", Toast.LENGTH_SHORT).show();
-                }
-            });
+            tvSelectCodPayment.setOnClickListener(this::proceedCod);
         }
 
         shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
