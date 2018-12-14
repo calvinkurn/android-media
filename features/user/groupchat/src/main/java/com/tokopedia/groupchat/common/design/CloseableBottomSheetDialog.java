@@ -71,38 +71,35 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     @Override
     public void setContentView(View view) {
-        View contentView = inflateCustomView(view,true, "", true);
+        View contentView = inflateCustomView(view, "", true);
         super.setContentView(contentView);
     }
 
     public void setContentView(View view, String title) {
-        View contentView = inflateCustomView(view, true, title, true);
+        View contentView = inflateCustomView(view, title, true);
         super.setContentView(contentView);
     }
 
-    public void setCustomContentView(View view, boolean hasHeader, String title, boolean hasCloseButton) {
-        View contentView = inflateCustomView(view, hasHeader, title, hasCloseButton);
+    public void setCustomContentView(View view, String title, boolean isCloseable) {
+        View contentView = inflateCustomView(view, title, isCloseable);
         super.setContentView(contentView);
     }
 
-    private View inflateCustomView(View view, boolean hasHeader, String title, boolean hasCloseButton) {
+    private View inflateCustomView(View view, String title, boolean isCloseable) {
         View contentView = inflateBasicView(view, title);
         ImageView closeButton = contentView.findViewById(R.id.close_button);
-        if (!hasHeader) {
+        if (!isCloseable) {
             closeButton.setVisibility(View.GONE);
             contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
             ((TextView)closeButton.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
         } else {
-            if (hasCloseButton) {
-                closeButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dismiss();
-                        closeListener.onCloseDialog();
-                    }
-                });
-            } else
-                closeButton.setVisibility(View.GONE);
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    closeListener.onCloseDialog();
+                }
+            });
         }
 
         return contentView;

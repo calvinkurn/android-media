@@ -15,26 +15,16 @@ public class InteruptViewModel implements Parcelable {
     String description;
     String ctaButton;
     String ctaUrl;
-    boolean hasCloseButton;
-    boolean hasHeader;
+    boolean isCloseable;
 
-    public InteruptViewModel(String bubbleTitle, String title, String imageUrl, String description, String ctaButton, String ctaUrl, boolean hasCloseButton, boolean hasHeader) {
+    public InteruptViewModel(String bubbleTitle, String title, String imageUrl, String description, String ctaButton, String ctaUrl, boolean isCloseable) {
         this.bubbleTitle = bubbleTitle;
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
         this.ctaButton = ctaButton;
         this.ctaUrl = ctaUrl;
-        this.hasCloseButton = hasCloseButton;
-        this.hasHeader = hasHeader;
-    }
-
-    public boolean isHasHeader() {
-        return hasHeader;
-    }
-
-    public void setHasHeader(boolean hasHeader) {
-        this.hasHeader = hasHeader;
+        this.isCloseable = isCloseable;
     }
 
     public String getBubbleTitle() {
@@ -61,14 +51,6 @@ public class InteruptViewModel implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public String getCtaUrl() {
-        return ctaUrl;
-    }
-
-    public void setCtaUrl(String ctaUrl) {
-        this.ctaUrl = ctaUrl;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -85,12 +67,20 @@ public class InteruptViewModel implements Parcelable {
         this.ctaButton = ctaButton;
     }
 
-    public boolean isHasCloseButton() {
-        return hasCloseButton;
+    public String getCtaUrl() {
+        return ctaUrl;
     }
 
-    public void setHasCloseButton(boolean hasCloseButton) {
-        this.hasCloseButton = hasCloseButton;
+    public void setCtaUrl(String ctaUrl) {
+        this.ctaUrl = ctaUrl;
+    }
+
+    public boolean isCloseable() {
+        return isCloseable;
+    }
+
+    public void setCloseable(boolean closeable) {
+        isCloseable = closeable;
     }
 
     @Override
@@ -106,8 +96,7 @@ public class InteruptViewModel implements Parcelable {
         dest.writeString(this.description);
         dest.writeString(this.ctaButton);
         dest.writeString(this.ctaUrl);
-        dest.writeByte(this.hasCloseButton ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.hasHeader ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isCloseable ? (byte) 1 : (byte) 0);
     }
 
     protected InteruptViewModel(Parcel in) {
@@ -117,8 +106,7 @@ public class InteruptViewModel implements Parcelable {
         this.description = in.readString();
         this.ctaButton = in.readString();
         this.ctaUrl = in.readString();
-        this.hasCloseButton = in.readByte() != 0;
-        this.hasHeader = in.readByte() != 0;
+        this.isCloseable = in.readByte() != 0;
     }
 
     public static final Creator<InteruptViewModel> CREATOR = new Creator<InteruptViewModel>() {

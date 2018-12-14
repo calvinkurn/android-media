@@ -529,7 +529,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void createInteruptDialog(InteruptViewModel model) {
         interuptDialog = CloseableBottomSheetDialog.createInstance(getActivity());
         View view = createInteruptView(model);
-        interuptDialog.setCustomContentView(view, model.isHasHeader(), model.getBubbleTitle(), model.isHasCloseButton());
+        interuptDialog.setCustomContentView(view, model.getBubbleTitle(), model.isCloseable());
         interuptDialog.show();
     }
 
@@ -555,11 +555,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (!TextUtils.isEmpty(model.getCtaButton())) {
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(model.getCtaButton()));
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
-                RouteManager.route(getActivity(), model.getCtaUrl());
+                routeInteruptButtonApplink(model.getCtaUrl());
             });
         } else
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
         return view;
+    }
+
+    private void routeInteruptButtonApplink(String applink) {
+        RouteManager.route(getActivity(), applink);
     }
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
@@ -1089,7 +1093,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         "description",
                         "Start Vote",
                         "tokopedia://affiliate/explore",
-                        true,
                         true));
     }
 }
