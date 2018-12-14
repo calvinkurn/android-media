@@ -82,7 +82,7 @@ class DigitalBrowseMarketplaceFragment : BaseDaggerFragment(), DigitalBrowseMark
 
         digitalBrowseMarketplaceViewModel = savedInstanceState?.getParcelable(KEY_MARKETPLACE_DATA)
 
-        renderCategory(digitalBrowseMarketplaceViewModel!!.rowViewModelList)
+        renderCategory(digitalBrowseMarketplaceViewModel?.rowViewModelList)
         renderPopularBrands(digitalBrowseMarketplaceViewModel!!.popularBrandsList)
     }
 
