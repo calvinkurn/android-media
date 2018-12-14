@@ -1967,6 +1967,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isToggleBuyAgainOn() {
+        return remoteConfig.getBoolean("main_app_enable_buy_again", true);
+    }
+
+    @Override
     public Intent getCheckoutIntent(Activity activity) {
         return ShipmentActivity.createInstanceFromPdp(activity);
     }

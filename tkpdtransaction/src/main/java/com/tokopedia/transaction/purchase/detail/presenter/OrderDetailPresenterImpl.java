@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.detail.presenter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -365,7 +366,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
                 mainView.dismissProgressDialog();
                 DataResponseBuyAgain dataBuyAgain = objects.getData(DataResponseBuyAgain.class);
                 if(dataBuyAgain.getSuccess() == 1){
-                    mainView.onSuccessBuyAgain(StringUtils.convertListToStringDelimiter(dataBuyAgain.getMessage(), ","));
+                    mainView.onSuccessBuyAgain(StringUtils.convertListToStringDelimiter(dataBuyAgain.getMessage(), ","), data);
                 }else{
                     mainView.onErrorBuyAgain( new MessageErrorException(StringUtils.convertListToStringDelimiter(dataBuyAgain.getMessage(),",")));
                 }
@@ -388,7 +389,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
                 quantity = Integer.parseInt(dataOrder.getItemQuantity());
                 shopId = Integer.parseInt(data.getShopId());
             }catch (Exception e){
-
+                Log.e("error parse", e.getMessage());
             }
             passenger.addProperty(PRODUCT_ID, productId);
             passenger.addProperty(QUANTITY, quantity);
@@ -411,6 +412,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             orderDetailInteractor.confirmFinishConfirm(confirmShipmentSubscriber(),
                     AuthUtil.generateParamsNetwork(context, orderDetailParams));
         }
+    }
+
+    @Override
+    public boolean isToggleBuyAgainOn() {
+        return mainView.isToggleBuyAgainOn();
     }
 
     @Override

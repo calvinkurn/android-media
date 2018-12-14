@@ -15,4 +15,6 @@ public interface ITransactionOrderDetailRouter {
     void sendEventTracking(String event, String category, String action, String label);
 
     Intent getCartIntent(Activity activity);
+
+    boolean isToggleBuyAgainOn();
 }

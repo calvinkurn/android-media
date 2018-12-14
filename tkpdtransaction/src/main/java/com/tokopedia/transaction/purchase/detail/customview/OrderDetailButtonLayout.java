@@ -95,7 +95,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button buyAgain = mainView.findViewById(R.id.buy_again);
         buyAgain.setOnClickListener(onBuyAgain(context, presenter, data));
-        if(buttonData.getBuyAgainVisibility() == BUY_AGAIN_VISIBLE){
+        if(buttonData.getBuyAgainVisibility() == BUY_AGAIN_VISIBLE && presenter.isToggleBuyAgainOn()){
             buyAgain.setVisibility(VISIBLE);
         }else{
             buyAgain.setVisibility(GONE);

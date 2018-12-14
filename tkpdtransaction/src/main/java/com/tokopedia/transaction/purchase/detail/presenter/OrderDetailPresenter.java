@@ -139,4 +139,6 @@ public interface OrderDetailPresenter {
     String CHANGE_PRODUCT_CODE = "3";
 
     String CONFIRM_SHIPPING_CONSTANT = "confirm";
+
+    boolean isToggleBuyAgainOn();
 }

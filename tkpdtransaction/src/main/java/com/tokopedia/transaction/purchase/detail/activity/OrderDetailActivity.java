@@ -71,6 +71,7 @@ import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -834,13 +835,22 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onSuccessBuyAgain(String message) {
+    public void onSuccessBuyAgain(String message, OrderDetailData data) {
         showSnackbar(message);
+        orderDetailAnalytics.sendAnalyticBuyAgain(data);
         if (getApplication() instanceof ITransactionOrderDetailRouter) {
             Intent intent = ((ITransactionOrderDetailRouter) getApplication())
                     .getCartIntent(this);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public boolean isToggleBuyAgainOn() {
+        if (getApplication() instanceof ITransactionOrderDetailRouter) {
+            return  ((ITransactionOrderDetailRouter) getApplication()).isToggleBuyAgainOn();
+        }
+        return true;
     }
 
     @Override
