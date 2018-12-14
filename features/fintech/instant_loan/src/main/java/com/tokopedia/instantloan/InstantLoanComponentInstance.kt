@@ -7,20 +7,16 @@ import com.tokopedia.instantloan.di.component.DaggerInstantLoanComponent
 import com.tokopedia.instantloan.di.component.InstantLoanComponent
 import com.tokopedia.instantloan.di.module.InstantLoanModule
 
-class InstantLoanComponentInstance {
+object InstantLoanComponentInstance {
 
-    companion object {
-        var instantLoanComponent: InstantLoanComponent? = null
+    var instantLoanComponent: InstantLoanComponent? = null
 
-        fun get(application: Application): InstantLoanComponent? {
-            if (instantLoanComponent == null) {
-                instantLoanComponent = DaggerInstantLoanComponent.builder()
-                        .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                        .instantLoanModule(InstantLoanModule()).build()
-            }
-            return instantLoanComponent
+    @JvmStatic fun get(application: Application): InstantLoanComponent? {
+        if (instantLoanComponent == null) {
+            instantLoanComponent = DaggerInstantLoanComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .instantLoanModule(InstantLoanModule()).build()
         }
+        return instantLoanComponent
     }
-
-
 }

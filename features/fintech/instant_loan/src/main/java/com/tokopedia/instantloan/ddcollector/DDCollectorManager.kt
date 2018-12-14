@@ -86,21 +86,21 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     }
 
     private fun loadDeviceData() {
-        val callable = Callable<Map<String, Any>> {
+        val callable = Callable<Map<String, Any?>> {
             val data = collectDD()
 
-            data?.let { mCallback?.callback(it) }
+            data.let { mCallback?.callback(it) }
             data
         }
 
         addTaskInExecutor(callable)
     }
 
-    private fun addTaskInExecutor(callable: Callable<Map<String, Any>>): Future<Map<String, Any>> {
+    private fun addTaskInExecutor(callable: Callable<Map<String, Any?>>): Future<Map<String, Any?>> {
         return mExecutorService.submit(callable)
     }
 
-    private fun collectDD(): Map<String, Any>? {
+    private fun collectDD(): Map<String, Any?>? {
         try {
             val info = InfoCollectServiceImpl()
             if (mComponents.contains(DDConstants.DDComponents.APP.`val`())) {

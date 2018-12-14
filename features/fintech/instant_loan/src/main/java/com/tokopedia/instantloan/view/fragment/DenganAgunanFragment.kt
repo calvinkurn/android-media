@@ -48,7 +48,7 @@ class DenganAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     }
 
     override fun initInjector() {
-        val daggerInstantLoanComponent = InstantLoanComponentInstance.Companion.get(activity!!.application)
+        val daggerInstantLoanComponent = InstantLoanComponentInstance.get(activity!!.application)
         daggerInstantLoanComponent!!.inject(this)
     }
 
@@ -76,16 +76,13 @@ class DenganAgunanFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     }
 
     private fun initView(view: View) {
-
-//        mSpinnerLoanAmount = view.findViewById(R.id.spinner_value_nominal)
-
         text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
         text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
         text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
         text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
         text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
 
-        view.findViewById<View>(R.id.button_search_pinjaman).setOnClickListener { view1 ->
+        button_search_pinjaman.setOnClickListener { view1 ->
 
             if (spinner_value_nominal!!.selectedItem.toString().equals(getString(R.string.label_select_nominal), ignoreCase = true)) {
                 val errorText = spinner_value_nominal!!.selectedView as TextView

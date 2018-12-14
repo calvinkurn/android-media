@@ -311,7 +311,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun initInjector() {
-        val daggerInstantLoanComponent = InstantLoanComponentInstance.Companion.get(application)
+        val daggerInstantLoanComponent = InstantLoanComponentInstance.get(application)
         daggerInstantLoanComponent!!.inject(this)
     }
 
@@ -350,10 +350,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         sendPermissionDeniedGTMEvent(permissions, grantResults)
         DDCollectorManager.getsInstance()!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun sendBannerImpressionEvent(position: Int) {

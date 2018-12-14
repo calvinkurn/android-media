@@ -5,7 +5,7 @@ import com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAIN
 object InstantLoanUrl {
 
     object BaseUrl {
-        var WEB_DOMAIN = "https://www.tokpedia.com/"
+        lateinit var WEB_DOMAIN : String
     }
 
     object COMMON_URL{

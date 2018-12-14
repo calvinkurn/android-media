@@ -105,7 +105,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         DDCollectorManager.getsInstance()?.init(view.getAppContext(), mPermissionRequestCallback)
 
         DDCollectorManager.getsInstance()!!.process(object : OnDeviceDataReady {
-            override fun callback(data: Map<String, Any>) {
+            override fun callback(data: Map<String, Any?>?) {
                 mPostPhoneDataUseCase.setBody(getPhoneDataPayload(data))
                 mPostPhoneDataUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
                     override fun onCompleted() {
@@ -128,29 +128,26 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         })
     }
 
-    private fun getPhoneDataPayload(map: Map<String, Any>): JsonObject {
+    private fun getPhoneDataPayload(map: Map<String, Any?>?): JsonObject {
 
         val data = JsonObject()
 
-        data.addProperty(DeviceDataKeys.Common.BRAND, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.BRAND])
-        data.addProperty(DeviceDataKeys.Common.DEVICE_ID, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_ID])
-        data.addProperty(DeviceDataKeys.Common.DEVICE_SDK_VERSION, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SDK_VERSION])
-        data.addProperty(DeviceDataKeys.Common.DEVICE_SYSTEM_VERSION, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SYSTEM_VERSION])
-        data.addProperty(DeviceDataKeys.Common.GOOGLE_GAID, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.GOOGLE_GAID])
-        data.addProperty(DeviceDataKeys.Common.IMEI, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.IMEI])
-        data.addProperty(DeviceDataKeys.Common.LATITUDE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LATITUDE])
-        data.addProperty(DeviceDataKeys.Common.LONGITUDE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LONGITUDE])
-        data.addProperty(DeviceDataKeys.Common.MODEL, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.MODEL])
-        data.addProperty(DeviceDataKeys.Common.SYSTEM_LANGUAGE, (map[BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.SYSTEM_LANGUAGE])
+        data.addProperty(DeviceDataKeys.Common.BRAND, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.BRAND])
+        data.addProperty(DeviceDataKeys.Common.DEVICE_ID, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_ID])
+        data.addProperty(DeviceDataKeys.Common.DEVICE_SDK_VERSION, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SDK_VERSION])
+        data.addProperty(DeviceDataKeys.Common.DEVICE_SYSTEM_VERSION, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SYSTEM_VERSION])
+        data.addProperty(DeviceDataKeys.Common.GOOGLE_GAID, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.GOOGLE_GAID])
+        data.addProperty(DeviceDataKeys.Common.IMEI, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.IMEI])
+        data.addProperty(DeviceDataKeys.Common.LATITUDE, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LATITUDE])
+        data.addProperty(DeviceDataKeys.Common.LONGITUDE, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.LONGITUDE])
+        data.addProperty(DeviceDataKeys.Common.MODEL, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.MODEL])
+        data.addProperty(DeviceDataKeys.Common.SYSTEM_LANGUAGE, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.SYSTEM_LANGUAGE])
 
         val messages = JsonArray()
         var message: JsonObject
 
-        if (map[Sms.DD_SMS] != null) {
+        if (map!![Sms.DD_SMS] != null) {
             for (entry in map[Sms.DD_SMS] as List<HashMap<String, String>>) {
-                if (entry == null) {
-                    continue
-                }
                 message = JsonObject()
                 message.addProperty(DeviceDataKeys.Sms.PHONE, entry[Telephony.Sms.Inbox.ADDRESS])
                 message.addProperty(DeviceDataKeys.Sms.CONTENT, entry[Telephony.Sms.Inbox.BODY])

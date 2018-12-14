@@ -5,14 +5,14 @@ abstract class BaseCollector : InfoCollector {
 
     abstract fun getData(): Any
 
-    override fun buildPhoneInfo(): MutableMap<String, Any> {
+    override fun buildPhoneInfo(): MutableMap<String, Any?> {
         val type = this.getInfoType()
-        val phoneInfo = mutableMapOf<String, Any>()
+        val phoneInfo = mutableMapOf<String, Any?>()
 
         try {
             phoneInfo[type] = this.getData()
         } catch (e: Exception) {
-            phoneInfo[type] = null as Any
+            phoneInfo[type] = null as? Any?
         }
 
         return phoneInfo

@@ -61,7 +61,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     }
 
     override fun initInjector() {
-        val daggerInstantLoanComponent = InstantLoanComponentInstance.Companion.get(activity!!.application)
+        val daggerInstantLoanComponent = InstantLoanComponentInstance.get(activity!!.application)
         daggerInstantLoanComponent!!.inject(this)
     }
 

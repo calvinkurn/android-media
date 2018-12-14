@@ -11,16 +11,9 @@ import javax.inject.Inject
 class InstantLoanAnalytics @Inject
 constructor(@ApplicationContext context: Context?) {
 
-    private var tracker: AnalyticTracker? = null
-
-    init {
-        tracker = (context?.applicationContext as? AbstractionRouter)?.analyticTracker
-    }
+    private var tracker: AnalyticTracker? = (context?.applicationContext as? AbstractionRouter)?.analyticTracker
 
     fun eventLoanBannerImpression(eventLabel: String) {
-        if (tracker == null) {
-            return
-        }
         tracker?.sendEventTracking(InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_BANNER_IMPRESSION,
@@ -28,9 +21,6 @@ constructor(@ApplicationContext context: Context?) {
     }
 
     fun eventLoanBannerClick(eventLabel: String) {
-        if (tracker == null) {
-            return
-        }
         tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
@@ -40,9 +30,6 @@ constructor(@ApplicationContext context: Context?) {
     }
 
     fun eventCariPinjamanClick(eventLabel: String) {
-        if (tracker == null) {
-            return
-        }
         tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
@@ -52,9 +39,6 @@ constructor(@ApplicationContext context: Context?) {
     }
 
     fun eventLoanPopupClick(eventLabel: String) {
-        if (tracker == null) {
-            return
-        }
         tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
@@ -64,9 +48,6 @@ constructor(@ApplicationContext context: Context?) {
     }
 
     fun eventIntroSliderScrollEvent(eventLabel: String) {
-        if (tracker == null) {
-            return
-        }
         tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
@@ -76,9 +57,6 @@ constructor(@ApplicationContext context: Context?) {
     }
 
     fun eventInstantLoanPermissionStatus(eventLabel: String) {
-        if (tracker == null) {
-            return
-        }
         tracker?.sendEventTracking(
                 InstantLoanEventConstants.Event.EVENT_CLICK_FINTECH_MICROSITE,
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
