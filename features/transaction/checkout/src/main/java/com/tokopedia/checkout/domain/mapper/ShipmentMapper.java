@@ -153,6 +153,11 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setGold(groupShop.getShop().getIsGold() == 1);
                             shopResult.setGoldBadge(groupShop.getShop().isGoldBadge());
                             shopResult.setOfficial(groupShop.getShop().getIsOfficial() == 1);
+                            if (groupShop.getShop().getIsOfficial() == 1) {
+                                shopResult.setShopBadge(groupShop.getShop().getOfficialStore().getOsLogoUrl());
+                            } else if (groupShop.getShop().getIsGold() == 1) {
+                                shopResult.setShopBadge(groupShop.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
+                            }
                             shopResult.setFreeReturns(groupShop.getShop().getIsFreeReturns() == 1);
                             shopResult.setAddressId(groupShop.getShop().getAddressId());
                             shopResult.setPostalCode(groupShop.getShop().getPostalCode());
@@ -208,7 +213,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 AnalyticsProductCheckoutData analyticsProductCheckoutData = new AnalyticsProductCheckoutData();
                                 analyticsProductCheckoutData.setProductId(String.valueOf(product.getProductId()));
 
-                                if(product.getProductTrackerData() != null) {
+                                if (product.getProductTrackerData() != null) {
                                     analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
                                     analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
                                 }

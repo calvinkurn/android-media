@@ -95,6 +95,11 @@ public class CartMapper implements ICartMapper {
             shopGroupData.setShopType(generateShopType(shopGroup.getShop()));
             shopGroupData.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
             shopGroupData.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
+            if (shopGroup.getShop().getIsOfficial() == 1) {
+                shopGroupData.setShopBadge(shopGroup.getShop().getOfficialStore().getOsLogoUrl());
+            } else if (shopGroup.getShop().getIsGold() == 1) {
+                shopGroupData.setShopBadge(shopGroup.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
+            }
 
             List<CartItemData> cartItemDataList = new ArrayList<>();
             for (CartDetail data : shopGroup.getCartDetails()) {

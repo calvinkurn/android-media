@@ -12,6 +12,7 @@ include "features:content:kol_common"
 include "features:content:profile"
 include "features:content:interest_pick"
 
+include "features:digital:common_digital"
 include "features:digital:flight_no_op"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"

@@ -80,6 +80,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -1746,6 +1747,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToProtectionMore(String url) {
+        shipmentPresenter.sendPurchaseProtectionAnalytics(
+                CheckoutAnalyticsPurchaseProtection.Event.CLICK_PELAJARI, url);
         Intent intent = CheckoutWebViewActivity.newInstance(getContext(), url);
         startActivity(intent);
     }

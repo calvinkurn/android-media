@@ -45,6 +45,7 @@ import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 
@@ -182,13 +183,14 @@ public class ShipmentModule {
                                                         GetRatesUseCase getRatesUseCase,
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                                                         ShippingCourierConverter shippingCourierConverter,
-                                                        IVoucherCouponMapper voucherCouponMapper) {
+                                                        IVoucherCouponMapper voucherCouponMapper,
+                                                        CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
         return new ShipmentPresenter(checkPromoCodeFinalUseCase,
                 compositeSubscription, checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-                shippingCourierConverter, voucherCouponMapper, shipmentAnalyticsActionListener);
+                shippingCourierConverter, voucherCouponMapper, shipmentAnalyticsActionListener, analyticsPurchaseProtection);
     }
 
     @Provides

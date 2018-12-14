@@ -3,6 +3,8 @@ package com.tokopedia.common_digital.cart.view.model.cart;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.common_digital.cart.domain.model.PostPaidPopupAttribute;
+
 /**
  * @author by Nabilla Sabbaha on 3/1/2017.
  */
@@ -41,6 +43,8 @@ public class AttributesDigital implements Parcelable {
 
     private String defaultPromoTab;
 
+    private PostPaidPopupAttribute postPaidPopupAttribute;
+
     protected AttributesDigital(Parcel in) {
         userId = in.readString();
         clientNumber = in.readString();
@@ -58,6 +62,7 @@ public class AttributesDigital implements Parcelable {
         userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
         autoApplyVoucher = in.readParcelable(CartAutoApplyVoucher.class.getClassLoader());
         defaultPromoTab = in.readString();
+        postPaidPopupAttribute = in.readParcelable(PostPaidPopupAttribute.class.getClassLoader());
     }
 
     public static final Creator<AttributesDigital> CREATOR = new Creator<AttributesDigital>() {
@@ -184,6 +189,14 @@ public class AttributesDigital implements Parcelable {
         this.voucherAutoCode = voucherAutoCode;
     }
 
+    public PostPaidPopupAttribute getPostPaidPopupAttribute() {
+        return postPaidPopupAttribute;
+    }
+
+    public void setPostPaidPopupAttribute(PostPaidPopupAttribute postPaidPopupAttribute) {
+        this.postPaidPopupAttribute = postPaidPopupAttribute;
+    }
+
     public AttributesDigital() {
     }
 
@@ -209,22 +222,23 @@ public class AttributesDigital implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(userId);
-        dest.writeString(clientNumber);
-        dest.writeString(icon);
-        dest.writeString(price);
-        dest.writeString(categoryName);
-        dest.writeString(operatorName);
-        dest.writeLong(pricePlain);
-        dest.writeByte((byte) (instantCheckout ? 1 : 0));
-        dest.writeByte((byte) (needOtp ? 1 : 0));
-        dest.writeString(smsState);
-        dest.writeByte((byte) (enableVoucher ? 1 : 0));
-        dest.writeString(voucherAutoCode);
-        dest.writeInt(isCouponActive);
-        dest.writeParcelable(userInputPrice, flags);
-        dest.writeParcelable(autoApplyVoucher, flags);
-        dest.writeString(defaultPromoTab);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(userId);
+        parcel.writeString(clientNumber);
+        parcel.writeString(icon);
+        parcel.writeString(price);
+        parcel.writeString(categoryName);
+        parcel.writeString(operatorName);
+        parcel.writeLong(pricePlain);
+        parcel.writeByte((byte) (instantCheckout ? 1 : 0));
+        parcel.writeByte((byte) (needOtp ? 1 : 0));
+        parcel.writeString(smsState);
+        parcel.writeByte((byte) (enableVoucher ? 1 : 0));
+        parcel.writeString(voucherAutoCode);
+        parcel.writeInt(isCouponActive);
+        parcel.writeParcelable(userInputPrice, i);
+        parcel.writeParcelable(autoApplyVoucher, i);
+        parcel.writeString(defaultPromoTab);
+        parcel.writeParcelable(postPaidPopupAttribute, i);
     }
 }
