@@ -98,17 +98,21 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                     tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
                     tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
                     tvStatus.visibility = View.VISIBLE
-                } else {
+                } else if (item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.READY ||
+                        item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.READY_LOCKED) {
+                    // only show status when campaign status is ready and ready locked
                     val statusText = item.getCampaignAdminStatusId().getAdminStatusStringAfterReview(context)
                     if (statusText.isEmpty()) {
                         tvStatus.visibility = View.GONE
                     } else {
                         tvStatus.text = statusText
-                        val statusColor = item.getCampaignAdminStatusId().getAdminStatusColor()
+                        val statusColor = item.getCampaignAdminStatusId().getAdminStatusColorAfterReview()
                         tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
                         tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
                         tvStatus.visibility = View.VISIBLE
                     }
+                } else {
+                    tvStatus.visibility = View.GONE
                 }
             }
             tvProductName.text = item.getProductName()

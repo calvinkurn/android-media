@@ -40,6 +40,30 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     var canEdit: Boolean = false
     var campaignId: Int = 0
     var currencyTextWatcher: CurrencyTextWatcher? = null
+    val stockTextWatcher: AfterTextWatcher by lazy {
+        object : AfterTextWatcher() {
+            override fun afterTextChanged(s: Editable?) {
+                //modify 0123 to 123, remove first 0
+                etStock.removeTextChangedListener(stockTextWatcher)
+                var stockStr = etStock.text.toString()
+                var isEdit = false
+                if (stockStr.isNotEmpty() && stockStr.startsWith(ZERO)) {
+                    stockStr = stockStr.replaceFirst(ZERO, "")
+                    isEdit = true
+                }
+                if (stockStr.isEmpty()) {
+                    stockStr = ZERO
+                    isEdit = true
+                }
+                if (isEdit) {
+                    etStock.setText(stockStr)
+                    etStock.setSelection(etStock.text.length)
+                }
+                etStock.addTextChangedListener(stockTextWatcher)
+                isStockValid()
+            }
+        }
+    }
 
     @Inject
     lateinit var presenter: FlashSaleProductDetailPresenter
@@ -53,8 +77,9 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     companion object {
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
         private const val EXTRA_CAN_SUBMIT = "can_edit"
+        private const val ZERO = "0"
 
-        public const val RESULT_IS_CATEGORY_FULL = "is_category_full"
+        const val RESULT_IS_CATEGORY_FULL = "is_category_full"
 
         @JvmStatic
         fun createInstance(campaignId: Int, canSubmit: Boolean): Fragment {
@@ -72,6 +97,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         canSubmit = arguments!!.getBoolean(EXTRA_CAN_SUBMIT)
         campaignId = arguments!!.getInt(EXTRA_PARAM_CAMPAIGN_ID)
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -196,7 +222,9 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
         val discount: Double = if (canSubmit) {
             var productPrice = flashSaleProductItem.getCampOriginalPrice()
-            if (productPrice == 0) {productPrice = flashSaleProductItem.getProductPrice() }
+            if (productPrice == 0) {
+                productPrice = flashSaleProductItem.getProductPrice()
+            }
             (productPrice - getFinalPrice()) * 100 / productPrice
         } else {
             flashSaleProductItem.getDiscountPercentage().toDouble()
@@ -234,11 +262,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         } else {
             tilStock.setHelper(null)
         }
-        etStock.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                isStockValid()
-            }
-        })
+        etStock.addTextChangedListener(stockTextWatcher)
         if (canEdit) {
             etStock.isEnabled = true
         } else {

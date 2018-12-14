@@ -373,7 +373,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         }
     }
 
-    private fun needShowChip() = KEY_STATUS_REGISTRATION.equals(statusLabel, true) && submittedCount > 0
+    // will change to KEY_STATUS_REGISTRATION.equals(statusLabel, true) && submittedCount > 0 in next release
+    private fun needShowChip() = false // bug in backend, currently set as false
     private fun needShowBottom() = pendingCount > 0
 
     private fun renderUILabel() {
