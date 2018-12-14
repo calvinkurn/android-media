@@ -30,6 +30,9 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.bankdb)
 

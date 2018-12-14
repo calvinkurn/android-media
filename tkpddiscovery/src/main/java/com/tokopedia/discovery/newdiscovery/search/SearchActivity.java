@@ -289,7 +289,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void sendImageSearchFromGalleryGTM(String label) {
-        UnifyTracking.eventDiscoveryExternalImageSearch(label);
+        UnifyTracking.eventDiscoveryExternalImageSearch(this, label);
     }
 
     private void initInjector() {

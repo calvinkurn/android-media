@@ -578,7 +578,7 @@ public class ProductListFragment extends SearchSectionFragment
         getSelectedFilter().put(option.getKey(), mapValue);
         clearDataFilterSort();
         reloadData();
-        UnifyTracking.eventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelected);
+        UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
     }
 
     @Override
@@ -599,7 +599,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),true, getQueryKey());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
@@ -613,7 +613,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),false, getQueryKey());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));

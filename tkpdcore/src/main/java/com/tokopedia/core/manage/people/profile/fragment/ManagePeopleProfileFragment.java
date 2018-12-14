@@ -15,8 +15,8 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -340,7 +340,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                 getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
                 renderData();
                 NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
-                UnifyTracking.eventSuccessChangePhoneNumber();
+                UnifyTracking.eventSuccessChangePhoneNumber(getActivity());
             }
 
             if (resultCode == RESULT_EMAIL_SENT) {
