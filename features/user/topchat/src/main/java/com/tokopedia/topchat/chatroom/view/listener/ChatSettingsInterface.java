@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.listener;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -30,6 +31,8 @@ public interface ChatSettingsInterface {
 
         void showToastMessage();
 
+        Activity getActivity();
+
         void showProgressBar();
 
         void hideProgressBar();
@@ -37,6 +40,8 @@ public interface ChatSettingsInterface {
         void showPersonalToast(boolean enable);
 
         void showPromotionToast(boolean enable);
+
+        void setPromotionViewOpacity(boolean enable);
     }
 
     interface Presenter extends CustomerPresenter<View> {

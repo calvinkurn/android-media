@@ -104,7 +104,7 @@
             android:paddingLeft="@dimen/dp_5"
             android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_5"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
             <ImageView
@@ -188,7 +188,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:padding="@dimen/dp_8"
             android:visibility="gone"

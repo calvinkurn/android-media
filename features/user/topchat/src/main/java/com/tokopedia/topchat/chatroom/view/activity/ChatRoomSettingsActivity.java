@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -143,6 +144,8 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     @Override
     public void updateChatSettingResponse(ChatSettingsResponse chatSettingsResponse) {
         this.chatSettingsResponse = chatSettingsResponse;
+        setPersoanlSwitchState(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+        setPromotionSwitchState(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
     }
 
     @Override
@@ -201,7 +204,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
                 setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
             } else if (chatRole.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
-                layoutParams.setMargins(0, (int)getResources().getDimension(R.dimen.dp_24), 0, 0);
+                layoutParams.setMargins(0, (int) getResources().getDimension(R.dimen.dp_24), 0, 0);
                 chatPromotionalcardView.requestLayout();
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
                 chatPersonalCardView.setVisibility(View.VISIBLE);
@@ -217,6 +220,11 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     @Override
     public void showToastMessage() {
         shouldShowToast = true;
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 
     @Override
@@ -280,6 +288,26 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
                 ToasterNormal.show(this, String.format(getString(R.string.disable_chat_promotion_settings), senderName));
             }
         }
+    }
+
+    @Override
+    public void setPromotionViewOpacity(boolean enable) {
+        if (chatPromotionalcardView.getVisibility() == View.VISIBLE) {
+            if (enable) {
+                chatPromotionalcardView.setAlpha(0.7f);
+            } else {
+                chatPromotionalcardView.setAlpha(1.0f);
+            }
+        }
+    }
+
+    private void setPersoanlSwitchState(boolean enable) {
+        chatPersonalSwitch.setChecked(!enable);
+    }
+
+
+    private void setPromotionSwitchState(boolean enable) {
+        chatPromotionSwitch.setChecked(!enable);
     }
 }
 

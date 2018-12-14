@@ -4,6 +4,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -86,6 +87,8 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     }
                     AnalyticsLog.printNOTPLog(getView().getAppContext(), "onError personal" +e.getMessage());
                     getView().hideProgressBar();
+                    ToasterNormal.show(getView().getActivity(), "Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi");
+                    getView().updateChatSettingResponse(chatSettingsResponse);
                     CommonUtils.dumper("error occured" + e);
                 }
 
@@ -101,6 +104,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         AnalyticsLog.printNOTPLog(getView().getAppContext(), "on Next Personal" +data.getChatBlockResponse().getChatBlockStatus().isBlocked());
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPersonalResponse(data);
+                        getView().setPromotionViewOpacity(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
                         if (initialState) {
                             getView().showToastMessage();
                             getView().hideProgressBar();
@@ -142,6 +146,8 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         return;
                     }
                     getView().hideProgressBar();
+                    getView().updateChatSettingResponse(chatSettingsResponse);
+                    ToasterNormal.show(getView().getActivity(), "Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi");
                     AnalyticsLog.printNOTPLog(getView().getAppContext(), "onError Promotion" +e.getMessage());
                     CommonUtils.dumper("error occured" + e);
                 }
