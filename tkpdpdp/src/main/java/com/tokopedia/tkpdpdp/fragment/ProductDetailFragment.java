@@ -1027,6 +1027,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onDescriptionClicked(Intent intent) {
         intent.setClass(getActivityContext(), DescriptionActivityNew.class);
+        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
         startActivity(intent);
     }
 
