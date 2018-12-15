@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.BaseChatToolbarActivity.Companion.PARAM_HEADER
 import com.tokopedia.chat_common.BaseChatToolbarActivity.Companion.PARAM_MESSAGE_ID
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
@@ -16,7 +17,7 @@ import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 /**
  * @author by nisie on 23/11/18.
  */
-class ChatbotActivity : BaseSimpleActivity() {
+class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()

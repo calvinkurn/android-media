@@ -30,7 +30,7 @@ open class BaseChatToolbarActivity : BaseChatActivity() {
         @JvmStatic
         fun getCallingIntent(context: Context, messageId: String, name: String,
                              label: String, senderId: String, role: String, mode: Int,
-                             keyword: String, image: String): Intent{
+                             keyword: String, image: String): Intent {
             val intent = Intent(context, BaseChatToolbarActivity::class.java)
             intent.putExtra(PARAM_MESSAGE_ID, messageId)
             val model = ChatRoomHeaderViewModel()
@@ -98,6 +98,10 @@ open class BaseChatToolbarActivity : BaseChatActivity() {
 
     override fun getNewFragment(): Fragment {
         return Fragment()
+    }
+
+    fun getToolbar(): Toolbar {
+        return toolbar
     }
 
 }

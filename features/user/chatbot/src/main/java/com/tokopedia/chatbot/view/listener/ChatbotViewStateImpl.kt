@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.listener
 
 import android.support.annotation.NonNull
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -35,8 +36,9 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            private val productAttachmentListener: ProductAttachmentListener,
                            private val attachedInvoiceSelectionListener: AttachedInvoiceSelectionListener,
                            private val chatRatingListener: ChatRatingListener,
-                           private val chatActionListBubbleListener: ChatActionListBubbleListener
-) : BaseChatViewStateImpl(view), ChatbotViewState {
+                           private val chatActionListBubbleListener: ChatActionListBubbleListener,
+                           private val toolbar: Toolbar
+) : BaseChatViewStateImpl(view, toolbar), ChatbotViewState {
 
     private lateinit var pickerButton: View
 

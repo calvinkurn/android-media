@@ -5,6 +5,6 @@ import android.view.View
 /**
  * @author by nisie on 07/12/18.
  */
-class TopChatViewState(override var view : View) : BaseChatViewStateImpl(view){
+class TopChatViewState(override var view : View) : BaseChatViewStateImpl(view, toolbar){
 
 }

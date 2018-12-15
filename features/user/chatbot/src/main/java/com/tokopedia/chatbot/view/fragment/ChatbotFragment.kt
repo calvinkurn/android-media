@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
+import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
@@ -83,7 +84,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         super.viewState = ChatbotViewStateImpl(view, session, this, this,
                 this, this, this,
-                this, this)
+                this, this, (activity as BaseChatToolbarActivity).getToolbar())
         viewState.initView()
         loadInitialData()
     }

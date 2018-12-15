@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit
 /**
  * @author : Steven 29/11/18
  */
-open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewState {
+open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar: Toolbar) :
+        BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var mainLoading: ProgressBar
@@ -29,8 +30,6 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
-    protected lateinit var toolbar: Toolbar
-
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -43,7 +42,6 @@ open class BaseChatViewStateImpl(@NonNull open val view: View) : BaseChatViewSta
         actionBox = view.findViewById(R.id.add_comment_area)
         sendButton = view.findViewById(R.id.send_but)
         notifier = view.findViewById(R.id.notifier)
-        toolbar = view.findViewById(R.id.toolbar)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
