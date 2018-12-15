@@ -71,7 +71,7 @@ class WholesaleInstallmentView : BaseCustomView {
     }
 
     fun showWholesale(show : Boolean){
-        isWholesaleVisible = true
+        isWholesaleVisible = show
         when(show) {
             true -> {
                 tv_title_wholesale.visibility = View.VISIBLE
