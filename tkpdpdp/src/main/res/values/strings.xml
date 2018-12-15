@@ -100,6 +100,7 @@
     <string name="label_see_details">Baca Selengkapnya</string>
     <string name="label_free_return_hint">Belanja Nyaman, Hati Puas. Produk tidak sesuai? Tukar saja! Ongkos kirim GRATIS!</string>
     <string name="label_info_detail">Info Selengkapnya</string>
+    <string name="label_product_installment">Cicilan</string>
     <string name="value_wholesale_price">Mulai dari %s</string>
     <string name="value_installment">Bunga mulai dari %s</string>
     <string name="value_success_rate">%1$s persen %2$s </string>
@@ -108,4 +109,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="label_button_chat">Chat Penjual</string>
+    <string name="description_transition_name">description_transition</string>
+    <string name="short_info_transition_name">short_view_transition</string>
 </resources>

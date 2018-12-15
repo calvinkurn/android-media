@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -56,6 +57,7 @@ import com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView;
 import com.tokopedia.tkpdpdp.customview.ProductInfoShortView;
 import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
+import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
@@ -301,6 +303,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private View promoContainer;
 
     private ProductInfoShortView productInfoShortView;
+    private WholesaleInstallmentView wholesaleInstallmentView;
     private ShopInfoViewV2 shopInfoView;
     private VideoDescriptionLayout videoDescriptionLayout;
     private MostHelpfulReviewView mostHelpfulReviewView;
@@ -496,7 +499,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         rootView = (LinearLayout) view.findViewById(R.id.root_view);
         buttonAffiliate = view.findViewById(R.id.buttonAffiliate);
         productInfoShortView = view.findViewById(R.id.view_product_info_short);
-
+        wholesaleInstallmentView = view.findViewById(R.id.view_wholesale_installment);
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
@@ -653,6 +656,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         buttonBuyView.setListener(this);
         ratingTalkDescriptionView.setListener(this);
         productInfoShortView.setListener(this);
+        wholesaleInstallmentView.setListener(this);
         lastUpdateView.setListener(this);
         otherProductsView.setListener(this);
         newShopView.setListener(this);
@@ -1024,16 +1028,40 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onDescriptionClicked(Intent intent) {
         intent.setClass(getActivityContext(), DescriptionActivityNew.class);
         startActivity(intent);
-        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
+    }
+
+    @Override
+    public void onDescriptionClicked(Intent intent, View textDescription) {
+        intent.setClass(getActivityContext(), DescriptionActivityNew.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(getActivity(), textDescription, textDescription.getTransitionName());
+            getActivity().overridePendingTransition(0,0);
+            startActivity(intent,options.toBundle());
+        } else {
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onProductInfoShortClicked(Intent intent){
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
         startActivity(intent);
-        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
     }
 
+    @Override
+    public void onProductInfoShortClicked(Intent intent, View shortView){
+        intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(getActivity(), shortView, shortView.getTransitionName());
+            getActivity().overridePendingTransition(0,0);
+            startActivity(intent,options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+    }
 
     @Override
     public void onInstallmentClicked(@NonNull Bundle bundle) {
@@ -1198,6 +1226,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             this.buttonBuyView.renderData(successResult);
         }
         this.productInfoShortView.renderProductData(productData);
+        this.wholesaleInstallmentView.renderProductData(productData);
         this.varianCourierSimulationView.setProductDetailData(productData);
         this.productInfoAttributeView.renderData(successResult);
         this.ratingTalkDescriptionView.renderData(successResult, viewData);

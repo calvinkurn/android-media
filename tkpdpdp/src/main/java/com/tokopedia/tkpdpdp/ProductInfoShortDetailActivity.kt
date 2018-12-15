@@ -62,6 +62,14 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
         showData()
     }
 
+    fun close() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition()
+        } else {
+            finish()
+        }
+    }
+
     fun getLayout(): Int {
         return R.layout.activity_detail_info;
     }
@@ -142,8 +150,7 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
 
     override fun onClick(v: View?) {
         if (v!!.id == R.id.simple_top_bar_close_button) {
-            finish()
-            overridePendingTransition(0, R.anim.push_down)
+            close()
         }
     }
 
@@ -154,7 +161,7 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
 
     override fun onBackPressed() {
         if (!thumbnailIntializing) {
-            super.onBackPressed()
+            close()
         } else {
             isBackPressed = true
             return

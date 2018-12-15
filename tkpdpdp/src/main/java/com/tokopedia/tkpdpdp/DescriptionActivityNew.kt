@@ -115,6 +115,8 @@ class DescriptionActivityNew : AppCompatActivity(),
     }
 
     fun showData() {
+        supportPostponeEnterTransition()
+
         val productDescription = intent.getStringExtra(KEY_DESCRIPTION)
         tv_description.text =
                 if (productDescription == null
@@ -146,12 +148,21 @@ class DescriptionActivityNew : AppCompatActivity(),
             false -> iv_official.visibility = View.GONE
         }
         tv_shop_name.text = intent.shopName
+
+        supportStartPostponedEnterTransition()
     }
 
     override fun onClick(v: View?) {
         if (v!!.id == R.id.simple_top_bar_close_button) {
+            close()
+        }
+    }
+
+    fun close() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition()
+        } else {
             finish()
-            overridePendingTransition(0, R.anim.push_down)
         }
     }
 
@@ -162,7 +173,7 @@ class DescriptionActivityNew : AppCompatActivity(),
 
     override fun onBackPressed() {
         if (!thumbnailIntializing) {
-            super.onBackPressed()
+            close()
         } else {
             isBackPressed = true
             return

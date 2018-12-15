@@ -128,7 +128,7 @@
 
             <FrameLayout
                 android:id="@+id/promoContainer"
-                android:paddingLeft="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_shadow"
@@ -161,6 +161,13 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"/>
             </FrameLayout>
+
+            <com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView
+                android:id="@+id/view_wholesale_installment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView>
 
             <com.tokopedia.tkpdpdp.customview.ProductInfoShortView
                 android:id="@+id/view_product_info_short"

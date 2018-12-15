@@ -25,6 +25,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.tkpdpdp.customview.ProductVideoHorizontalScroll
+        android:visibility="gone"
+        tools:visibility="visible"
         android:id="@+id/product_video_horizontal_scroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,6 +50,7 @@
         android:maxLines="@integer/default_description_lines"
         tools:text="Descriptions"
         android:textColor="@color/pdp_text_color"
+        android:transitionName="@string/description_transition_name"
         android:textIsSelectable="false"
         android:textSize="@dimen/fonts"
         app:layout_constraintBottom_toTopOf="@+id/label_see_more"

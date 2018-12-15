@@ -96,6 +96,7 @@ class VideoDescriptionLayout : BaseCustomView {
 
     fun renderVideoData(data: VideoData, youTubeThumbnailLoadInProcess: YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) {
         product_video_horizontal_scroll.renderData(data, youTubeThumbnailLoadInProcess)
+        product_video_horizontal_scroll.visibility = View.VISIBLE
         videoData = data
     }
 
@@ -120,7 +121,7 @@ class VideoDescriptionLayout : BaseCustomView {
                 intent.imgUrl = data.productImages[0].imageSrc300
             }
 
-            listener?.onDescriptionClicked(intent)
+            listener?.onDescriptionClicked(intent, tv_description)
             UnifyTracking.eventPDPExpandDescription(this@VideoDescriptionLayout.context)
         }
     }

@@ -58,7 +58,7 @@ class ProductInfoShortView : BaseCustomView {
                 intent.productDetailData = data
             }
 
-            listener?.onProductInfoShortClicked(intent)
+            listener?.onProductInfoShortClicked(intent, view_detail_product_info_short)
         }
 
         view_detail_product_info_short.visibility = View.VISIBLE

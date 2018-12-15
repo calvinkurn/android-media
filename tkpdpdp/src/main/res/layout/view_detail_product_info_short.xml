@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_shadow_top"
     android:id="@+id/view_detail_product_info_short"
+    android:transitionName="@string/short_info_transition_name"
     tools:visibility="visible"
     android:visibility="gone"
     android:layout_width="match_parent"

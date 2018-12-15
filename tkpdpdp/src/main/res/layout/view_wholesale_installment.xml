@@ -2,9 +2,12 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_wholesale_installment"
+    tools:visibility="visible"
+    android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shadow_bottom"
+    android:background="@drawable/bg_shadow"
     android:divider="@drawable/bg_line_separator"
     android:dividerPadding="@dimen/dp_10"
     android:paddingLeft="@dimen/dp_16"
@@ -14,6 +17,8 @@
     android:orientation="vertical">
 
     <TextView
+        tools:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/tv_title_wholesale"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,6 +38,8 @@
         app:layout_constraintVertical_bias="0.015" />
 
     <TextView
+        tools:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/tv_wholesale_price"
         android:layout_width="match_parent"
         android:layout_height="15dp"
@@ -46,6 +53,8 @@
         tools:text="Mulai dari Rp 12.000" />
 
     <View
+        tools:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
@@ -56,11 +65,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_wholesale_price" />
 
     <TextView
+        tools:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/tv_title_installment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="@string/product_variant"
+        android:text="@string/label_product_installment"
         android:textColor="@color/black_54"
         android:textSize="@dimen/font_medium"
         app:layout_constraintEnd_toEndOf="@+id/line"
@@ -69,6 +80,8 @@
         app:layout_constraintTop_toBottomOf="@+id/line" />
 
     <TextView
+        tools:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/tv_installment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

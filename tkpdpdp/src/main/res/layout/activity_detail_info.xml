@@ -3,181 +3,201 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <include layout="@layout/simple_top_bar_layout" />
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
+        android:transitionName="@string/short_info_transition_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:background="@color/white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_label_preorder"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/label_preorder"
-            android:textColor="@color/pdp_text_sub_title_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toTopOf="@+id/tv_label_min_order"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_label_preorder"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/label_preorder"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/fonts" />
 
-        <TextView
-            android:id="@+id/tv_preorder"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="end"
-            android:textColor="@color/pdp_text_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_label_preorder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_label_preorder"
-            tools:text='4 Hari' />
+            <TextView
+                android:id="@+id/tv_preorder"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="end"
+                android:paddingTop="@dimen/dp_16"
+                android:textColor="@color/pdp_text_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteX="316dp"
+                tools:text='4 Hari' />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_label_min_order"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_16"
-            android:text="@string/label_min_order"
-            android:textColor="@color/pdp_text_sub_title_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toTopOf="@+id/tv_label_condition"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_preorder" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_label_min_order"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/label_min_order"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteY="34dp" />
 
-        <TextView
-            android:id="@+id/tv_minimum"
-            android:layout_width="0dp"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textColor="@color/pdp_text_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_label_min_order"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_label_min_order"
-            tools:text="1 Buah" />
+            <TextView
+                android:id="@+id/tv_minimum"
+                android:layout_weight="1"
 
-        <TextView
-            android:id="@+id/tv_label_condition"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/label_condition"
-            android:textColor="@color/pdp_text_sub_title_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toTopOf="@+id/tv_label_insurance"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_min_order" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingTop="@dimen/dp_16"
+                android:textColor="@color/pdp_text_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteX="310dp"
+                tools:layout_editor_absoluteY="34dp"
+                tools:text="1 Buah" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_condition"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:paddingTop="@dimen/dp_16"
-            android:textColor="@color/pdp_text_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_label_condition"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_label_condition"
-            tools:text="Baru" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_label_condition"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/label_condition"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteY="68dp" />
 
-        <TextView
-            android:id="@+id/tv_label_insurance"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/label_insurance"
-            android:textColor="@color/pdp_text_sub_title_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toTopOf="@+id/tv_label_storefront"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_condition" />
+            <TextView
+                android:id="@+id/tv_condition"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingTop="@dimen/dp_16"
+                android:textColor="@color/pdp_text_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteX="324dp"
+                tools:layout_editor_absoluteY="68dp"
+                tools:text="Baru" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_insurance"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textColor="@color/pdp_text_color"
-            android:textSize="@dimen/fonts"
-            android:paddingTop="@dimen/dp_16"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_label_insurance"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_label_insurance"
-            tools:text="Opsional" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_label_insurance"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/label_insurance"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteY="102dp" />
 
-        <TextView
-            android:id="@+id/tv_label_storefront"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/label_storefront"
+            <TextView
+                android:id="@+id/tv_insurance"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingTop="@dimen/dp_16"
+                android:textColor="@color/pdp_text_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteX="298dp"
+                tools:layout_editor_absoluteY="102dp"
+                tools:text="Opsional" />
+        </LinearLayout>
 
-            android:textColor="@color/pdp_text_sub_title_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toTopOf="@+id/tv_label_category"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_insurance" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_label_storefront"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/label_storefront"
+                android:layout_weight="1"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteY="136dp" />
 
-        <TextView
-            android:id="@+id/tv_storefront"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fonts"
-            android:paddingTop="@dimen/dp_16"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_label_storefront"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_label_storefront"
-            tools:text="Furnitur" />
+            <TextView
+                android:id="@+id/tv_storefront"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingTop="@dimen/dp_16"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteX="304dp"
+                tools:layout_editor_absoluteY="136dp"
+                tools:text="Furnitur" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_label_category"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_label_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_16"
+                android:layout_weight="1"
+                android:text="@string/label_category"
+                android:textColor="@color/pdp_text_sub_title_color"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteY="170dp" />
 
-            android:text="@string/label_category"
-            android:textColor="@color/pdp_text_sub_title_color"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toBottomOf="@id/view_free_return"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_label_storefront" />
-
-        <TextView
-            android:id="@+id/tv_category"
-            android:layout_width="0dp"
-            android:paddingTop="@dimen/dp_16"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textColor="@color/tkpd_main_green"
-            android:textSize="@dimen/fonts"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_label_category"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_label_category"
-            tools:text="Rumah Tangga" />
+            <TextView
+                android:id="@+id/tv_category"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingTop="@dimen/dp_16"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/fonts"
+                tools:layout_editor_absoluteX="260dp"
+                tools:layout_editor_absoluteY="170dp"
+                tools:text="Rumah Tangga" />
+        </LinearLayout>
 
         <com.tokopedia.tkpdpdp.customview.FreeReturnView
             android:layout_marginTop="@dimen/dp_16"
             android:id="@+id/view_free_return"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="0dp"
+            tools:layout_editor_absoluteX="1dp"
+            tools:layout_editor_absoluteY="239dp"
+            tools:layout_height="100dp" />
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </LinearLayout>
