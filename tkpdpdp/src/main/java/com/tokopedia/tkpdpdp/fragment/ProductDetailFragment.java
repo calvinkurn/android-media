@@ -1024,7 +1024,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onDescriptionClicked(Intent intent) {
         intent.setClass(getActivityContext(), DescriptionActivityNew.class);
         startActivity(intent);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
     }
 
     @Override
@@ -1084,9 +1084,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.pictureView.renderTempData(productPass);
         this.ratingTalkDescriptionView.renderTempdata(productPass);
         if (productPass.isWishlist()) {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_pdp));
-        } else {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red_pdp));
+        } else {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_pdp));
         }
         fabWishlist.setVisibility(View.VISIBLE);
     }

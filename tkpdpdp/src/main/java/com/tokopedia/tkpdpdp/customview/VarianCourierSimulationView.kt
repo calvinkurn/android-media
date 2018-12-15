@@ -1,7 +1,6 @@
 package com.tokopedia.tkpdpdp.customview
 
 import android.content.Context
-import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel
 import com.tokopedia.tkpdpdp.listener.ProductDetailView
 
 
-import com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID
 import kotlinx.android.synthetic.main.view_varian_courier_simulation.view.*
 
 class VarianCourierSimulationView : BaseCustomView {
@@ -61,10 +59,12 @@ class VarianCourierSimulationView : BaseCustomView {
 
     fun renderRateEstimation(ratesModel: RatesModel?) {
         if (ratesModel == null) {
-            showCourierRate(false)
+            showCourierRate(true)
+            showShopDestination(false)
         } else {
             showCourierRate(true)
             showShopLocationView(true)
+            showShopDestination(true)
             tv_courier_count.text = ratesModel.attributes.size.toString()
             tv_courier_est_cost.text = MethodChecker.fromHtml(ratesModel.texts.textMinPrice)
             tv_destination.text = ratesModel.texts.textDestination
@@ -76,6 +76,8 @@ class VarianCourierSimulationView : BaseCustomView {
 
     fun renderRateEstimation() {
         showCourierRate(true)
+        showShopLocationView(true)
+        showShopDestination(false)
         tv_shop_location.text = productDetailData!!.shopInfo.shopLocation;
         view_courier_field.setOnClickListener({ view -> listener!!.moveToEstimationDetail() })
     }
@@ -98,6 +100,31 @@ class VarianCourierSimulationView : BaseCustomView {
                 img_shop_location.visibility = View.GONE
                 tv_shop_location_label.visibility = View.GONE
                 tv_shop_location.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun showShopDestination(show : Boolean){
+        when(show){
+            true -> {
+                img_courier.visibility = View.VISIBLE
+                tv_destination.visibility = View.VISIBLE
+                tv_destination_label.visibility = View.VISIBLE
+
+                tv_courier_label.visibility = View.VISIBLE
+                tv_courier_est_cost.visibility = View.VISIBLE
+                tv_courier_est_cost_label.visibility = View.VISIBLE
+                tv_courier_count.visibility = View.VISIBLE
+            }
+            false -> {
+                img_courier.visibility = View.GONE
+                tv_destination.visibility = View.GONE
+                tv_destination_label.visibility = View.GONE
+
+                tv_courier_label.visibility = View.GONE
+                tv_courier_est_cost.visibility = View.GONE
+                tv_courier_est_cost_label.visibility = View.GONE
+                tv_courier_count.visibility = View.GONE
             }
         }
     }

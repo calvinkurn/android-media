@@ -79,23 +79,25 @@
     </LinearLayout>
 
     <TextView
+        android:paddingTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_120"
+        android:layout_marginLeft="@dimen/dp_16"
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="80dp"
         android:ellipsize="end"
-        android:paddingBottom="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
         android:textColor="@color/pdp_text_color"
         android:textSize="@dimen/pdp_title_text_size"
         android:textStyle="bold"
         tools:ignore="HardcodedText"
         tools:text="Product Name" />
     <LinearLayout
+        android:id="@+id/linear_discount_price"
+        tools:visibility="visible"
+        android:visibility="gone"
         android:paddingLeft="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -133,6 +135,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:paddingTop="@dimen/dp_5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -142,7 +145,6 @@
         android:paddingRight="@dimen/dp_16">
 
         <TextView
-            android:paddingTop="@dimen/dp_5"
             android:id="@+id/tv_price_pdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -164,7 +166,6 @@
             android:paddingBottom="@dimen/dp_2"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_2"
             tools:text="Cashback 3%"
             android:textStyle="bold"
             tools:visibility="visible"

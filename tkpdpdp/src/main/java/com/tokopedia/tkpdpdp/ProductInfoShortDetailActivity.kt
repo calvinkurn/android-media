@@ -50,10 +50,10 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(com.tokopedia.core.R.style.Theme_Tokopedia3)
+        setTheme(R.style.Theme_Tokopedia3)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = resources.getColor(com.tokopedia.core.R.color.green_600)
+            window.statusBarColor = resources.getColor(R.color.green_600)
         }
         localCacheHandler = LocalCacheHandler(this,  PRODUCT_DETAIL)
         setContentView(getLayout())
@@ -74,7 +74,7 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED)) {
                 val productId : String = intent.getParcelableExtra<Parcelable>(EXTRA_PRODUCT_ID).toString()
-                UnifyTracking.eventPDPOrientationChanged(productId)
+                UnifyTracking.eventPDPOrientationChanged(this, productId)
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, java.lang.Boolean.TRUE)
                 localCacheHandler.applyEditor()
             }
@@ -143,7 +143,7 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
     override fun onClick(v: View?) {
         if (v!!.id == R.id.simple_top_bar_close_button) {
             finish()
-            overridePendingTransition(0, com.tokopedia.core.R.anim.push_down)
+            overridePendingTransition(0, R.anim.push_down)
         }
     }
 

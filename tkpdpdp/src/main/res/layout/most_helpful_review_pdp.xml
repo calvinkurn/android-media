@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow"
-    android:padding="@dimen/pdp_content_padding">
+    android:paddingLeft="@dimen/pdp_content_padding"
+    android:paddingRight="@dimen/pdp_content_padding"
+    android:paddingBottom="@dimen/pdp_content_padding">
 
     <TextView
         android:layout_width="match_parent"

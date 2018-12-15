@@ -91,6 +91,7 @@ class VideoDescriptionLayout : BaseCustomView {
 
         tv_description.visibility = View.VISIBLE
         visibility = View.VISIBLE
+        ll_wrapper.visibility = View.VISIBLE
     }
 
     fun renderVideoData(data: VideoData, youTubeThumbnailLoadInProcess: YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess) {
@@ -120,7 +121,7 @@ class VideoDescriptionLayout : BaseCustomView {
             }
 
             listener?.onDescriptionClicked(intent)
-            UnifyTracking.eventPDPExpandDescription()
+            UnifyTracking.eventPDPExpandDescription(this@VideoDescriptionLayout.context)
         }
     }
 

@@ -7,7 +7,6 @@
     android:layout_marginTop="@dimen/dp_10_header"
     android:background="@drawable/bg_shadow"
     android:orientation="vertical"
-    android:paddingTop="@dimen/pdp_content_padding"
     android:paddingRight="@dimen/pdp_content_padding"
     android:paddingLeft="@dimen/pdp_content_padding"
     android:paddingBottom="@dimen/dp_25">
@@ -102,6 +101,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:paddingTop="@dimen/dp_4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -109,7 +109,7 @@
                         android:id="@id/l_medal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_5"
+                        android:layout_marginTop="@dimen/dp_8"
                         android:layout_gravity="start"
                         android:gravity="start"
                         android:orientation="horizontal" />

@@ -6,20 +6,15 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.TintableBackgroundView;
-import android.support.v4.view.ViewCompat;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.entity.variant.Campaign;
@@ -27,7 +22,6 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductInfo;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tkpdpdp.R;
@@ -35,10 +29,6 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.util.ServerTimeOffsetUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,6 +47,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView campaignStockAvailable;
     private LinearLayout linearDiscountTimerHolder;
     private LinearLayout linearStockAvailable;
+    private LinearLayout linearDiscountPrice;
     private CountDownView countDownView;
     private Context context;
     private LinearLayout textOfficialStore;
@@ -89,6 +80,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         countDownView = findViewById(R.id.count_down);
         campaignStockAvailable = findViewById(R.id.sale_text_stock_available);
         textTimerTitle = findViewById(R.id.text_title_discount_timer);
+        linearDiscountPrice = findViewById(R.id.linear_discount_price);
         this.context = context;
     }
 
@@ -115,7 +107,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
             cashbackTextView.setBackgroundResource(R.drawable.pdp_cashback_bg);
-            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core2.R.color.tkpd_main_green));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
             }
@@ -129,8 +121,9 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
         if(data.getInfo().getProductStockWording() != null){
             textStockAvailable.setText(MethodChecker.fromHtml(data.getInfo().getProductStockWording()));
+            linearStockAvailable.setVisibility(VISIBLE);
         } else{
-            textStockAvailable.setVisibility(GONE);
+            linearStockAvailable.setVisibility(GONE);
         }
     }
 
@@ -155,8 +148,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if (!TextUtils.isEmpty(productPass.getCashback())) {
             cashbackTextView.setText(productPass.getCashback());
             cashbackTextView.setBackgroundResource(R.drawable.bg_cashback_label);
-            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
-            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core.R.color.tkpd_main_green));
+            cashbackTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.core2.R.color.white));
+            ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context,com.tokopedia.core2.R.color.tkpd_main_green));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 cashbackTextView.setBackgroundTintList(tint);
             }
@@ -184,6 +177,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     campaign.getDiscountedPercentage()
             ));
 
+            linearDiscountPrice.setVisibility(VISIBLE);
             tvPriceFinal.setVisibility(VISIBLE);
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
@@ -194,6 +188,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textDiscount.setVisibility(GONE);
             textOriginalPrice.setVisibility(GONE);
             tvPriceFinal.setText(data.getInfo().getProductPrice());
+            linearDiscountPrice.setVisibility(GONE);
         }
     }
 
@@ -201,9 +196,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         if(!TextUtils.isEmpty(data.getProductStockWording())) {
             if(campaignActive){
                 campaignStockAvailable.setVisibility(VISIBLE);
+                linearStockAvailable.setVisibility(GONE);
                 campaignStockAvailable.setText(MethodChecker.fromHtml(data.getProductStockWording()));
             } else {
                 linearStockAvailable.setVisibility(VISIBLE);
+                textStockAvailable.setText(MethodChecker.fromHtml(data.getProductStockWording()));
                 if (data.getLimitedStock()) {
                     textStockAvailable.setTextColor(getContext().getResources().getColor(R.color.tkpd_dark_red));
                 } else {
