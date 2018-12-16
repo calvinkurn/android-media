@@ -9,7 +9,6 @@
     <include layout="@layout/simple_top_bar_layout" />
 
     <LinearLayout
-        android:transitionName="@string/short_info_transition_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/dp_16"
@@ -18,6 +17,8 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/view_preorder"
+            android:transitionName="@string/transition_preorder_view"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -45,6 +46,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/view_min_order"
+            android:transitionName="@string/transition_min_order_view"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -75,6 +78,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/view_condition"
+            android:transitionName="@string/transition_condition_view"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

@@ -109,6 +109,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="label_button_chat">Chat Penjual</string>
-    <string name="description_transition_name">description_transition</string>
+    <string name="transition_description">description_transition</string>
     <string name="short_info_transition_name">short_view_transition</string>
+    <string name="transition_preorder_view">transition_preorder_view</string>
+    <string name="transition_min_order_view">transition_min_order</string>
+    <string name="transition_condition_view">transition_condition_view</string>
+    <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
 </resources>

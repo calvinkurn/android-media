@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -1032,11 +1033,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onDescriptionClicked(Intent intent, View textDescription) {
+    public void onDescriptionClicked(Intent intent, View textDescription, View videoView) {
         intent.setClass(getActivityContext(), DescriptionActivityNew.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(getActivity(), textDescription, textDescription.getTransitionName());
+                    .makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(textDescription, textDescription.getTransitionName()),
+                            Pair.create(videoView, videoView.getTransitionName()));
             getActivity().overridePendingTransition(0,0);
             startActivity(intent,options.toBundle());
         } else {
@@ -1051,14 +1054,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductInfoShortClicked(Intent intent, View shortView){
+    public void onProductInfoShortClicked(Intent intent, View preorderView, View minOrderView, View conditionView){
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptions options = ActivityOptions
-                    .makeSceneTransitionAnimation(getActivity(), shortView, shortView.getTransitionName());
+            ActivityOptions activityOptions = ActivityOptions
+                    .makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(preorderView, preorderView.getTransitionName()),
+                            Pair.create(minOrderView, minOrderView.getTransitionName()),
+                            Pair.create(conditionView, conditionView.getTransitionName()));
             getActivity().overridePendingTransition(0,0);
-            startActivity(intent,options.toBundle());
+            startActivity(intent,activityOptions.toBundle());
         } else {
             startActivity(intent);
         }

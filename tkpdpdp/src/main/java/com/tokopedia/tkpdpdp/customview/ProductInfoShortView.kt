@@ -1,8 +1,11 @@
 package com.tokopedia.tkpdpdp.customview
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.AttributeSet
+import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 
@@ -58,7 +61,11 @@ class ProductInfoShortView : BaseCustomView {
                 intent.productDetailData = data
             }
 
-            listener?.onProductInfoShortClicked(intent, view_detail_product_info_short)
+            listener?.onProductInfoShortClicked(intent,
+                    view_preorder,
+                    view_min_order,
+                    view_condition
+                    )
         }
 
         view_detail_product_info_short.visibility = View.VISIBLE

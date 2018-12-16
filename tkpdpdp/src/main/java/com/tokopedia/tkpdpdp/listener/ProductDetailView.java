@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.listener;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onImageReviewLoaded(List<ImageReviewItem> data);
 
-    void onProductInfoShortClicked(Intent intent, View shortInfo);
+    void onProductInfoShortClicked(Intent intent, View preorderView, View minOrderView, View conditionView);
 
     void onProductInfoShortClicked(Intent intent);
     /**
@@ -169,7 +170,7 @@ public interface ProductDetailView extends ViewListener {
 
     void onDescriptionClicked(@NonNull Intent intent);
 
-    void onDescriptionClicked(@NonNull Intent intent, View descriptionView);
+    void onDescriptionClicked(@NonNull Intent intent, View descriptionView, View videoView);
     /**
      * Pada saat ada error pada toko
      */
