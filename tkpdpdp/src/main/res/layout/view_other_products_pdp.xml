@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:fadeScrollbars="false"
         android:fillViewport="true"
+        android:scrollbars="none"
         android:background="@color/white"
         android:measureAllChildren="false"
         android:scrollbarSize="3dp">
