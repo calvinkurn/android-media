@@ -63,7 +63,7 @@ public class VariantActivity extends TActivity  implements
     public static final int STATE_BUTTON_BUY = 1123;
     public static final int STATE_BUTTON_CART = 2234;
     public static final int STATE_VARIANT_DEFAULT = 0;
-    public static final int DEFAULT_MAXIMUM_STOCK_PICKER = 99999;
+    public static final int DEFAULT_MAXIMUM_STOCK_PICKER = 10000;
     public static final int DEFAULT_MINIMUM_STOCK_PICKER = 1;
 
     private TextView topBarTitle;
@@ -269,10 +269,13 @@ public class VariantActivity extends TActivity  implements
         } else {
             for (ProductWholesalePrice item : productDetailData.getWholesalePrice()) {
                 if (selectedQuantity >= item.getWholesaleMinRaw() && selectedQuantity <= item.getWholesaleMaxRaw()) {
-                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getWholesalePriceRaw() * selectedQuantity, true);
+                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            (long) item.getWholesalePriceRaw() * (long) selectedQuantity, true);
                 }
             }
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * selectedQuantity, true);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    (long) productDetailData.getInfo().getProductPriceUnformatted() *
+                            (long) selectedQuantity, true);
         }
     }
 

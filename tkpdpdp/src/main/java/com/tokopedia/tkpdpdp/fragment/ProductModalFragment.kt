@@ -27,7 +27,7 @@ class ProductModalFragment : BaseDaggerFragment() {
 
     companion object {
 
-        private const val DEFAULT_MAXIMUM_STOCK_PICKER = 99999
+        private const val DEFAULT_MAXIMUM_STOCK_PICKER = 10000
 
         private const val ARGS_PRODUCT_VARIANT = "VARIANT_DATA"
         private const val ARGS_PRODUCT_DETAIL = "PRODUCT_DETAIL_DATA"
@@ -117,10 +117,15 @@ class ProductModalFragment : BaseDaggerFragment() {
         } else {
             for (item in productData!!.wholesalePrice) {
                 if (selectedQuantity!! >= item.wholesaleMinRaw && selectedQuantity!! <= item.wholesaleMaxRaw) {
-                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(item.wholesalePriceRaw * selectedQuantity!!, true)
+                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                            item.wholesalePriceRaw.toLong() *
+                                    selectedQuantity!!.toLong(), true)
                 }
             }
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productData?.info?.productPriceUnformatted!! * selectedQuantity!!, true)
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    productData?.info?.productPriceUnformatted!!.toLong() *
+                            selectedQuantity!!.toLong(),
+                    true)
         }
     }
 
