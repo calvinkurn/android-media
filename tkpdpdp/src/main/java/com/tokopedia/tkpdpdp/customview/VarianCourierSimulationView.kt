@@ -79,7 +79,6 @@ class VarianCourierSimulationView : BaseCustomView {
         showShopLocationView(true)
         showShopDestination(false)
         tv_shop_location.text = productDetailData!!.shopInfo.shopLocation;
-        view_courier_field.setOnClickListener({ view -> listener!!.moveToEstimationDetail() })
     }
 
     private fun showCourierRate(show : Boolean) {

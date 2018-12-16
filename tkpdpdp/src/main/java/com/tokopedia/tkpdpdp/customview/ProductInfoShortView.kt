@@ -48,6 +48,8 @@ class ProductInfoShortView : BaseCustomView {
                     data.preOrder.preorderProcessTime,
                     data.preOrder.preorderProcessTimeTypeString))
             showPreorder(true)
+        } else {
+            showPreorder(false)
         }
 
         this.productDetailData = data
@@ -74,13 +76,11 @@ class ProductInfoShortView : BaseCustomView {
     fun showPreorder(show : Boolean){
         when(show) {
             true -> {
-                tv_label_preorder.visibility = View.VISIBLE
-                tv_preorder.visibility = View.VISIBLE
+                view_preorder.visibility = View.VISIBLE
             }
 
             false -> {
-                tv_label_preorder.visibility = View.GONE
-                tv_preorder.visibility = View.GONE
+                view_preorder.visibility = View.GONE
             }
         }
     }

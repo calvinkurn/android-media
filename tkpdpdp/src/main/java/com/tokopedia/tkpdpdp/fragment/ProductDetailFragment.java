@@ -1036,13 +1036,22 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onDescriptionClicked(Intent intent, View textDescription, View videoView) {
         intent.setClass(getActivityContext(), DescriptionActivityNew.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            List<Pair> pairList = new ArrayList<>();
+            if (textDescription.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(textDescription, textDescription.getTransitionName()));
+            }
+            if (videoView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(videoView, videoView.getTransitionName()));
+            }
+
+            Pair[] pairs = new Pair[pairList.size()];
             ActivityOptions options = ActivityOptions
                     .makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(textDescription, textDescription.getTransitionName()),
-                            Pair.create(videoView, videoView.getTransitionName()));
+                            pairList.toArray(pairs));
             getActivity().overridePendingTransition(0,0);
             startActivity(intent,options.toBundle());
         } else {
+            getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
             startActivity(intent);
         }
     }
@@ -1058,14 +1067,24 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            List<Pair> pairList = new ArrayList<>();
+            if (preorderView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(preorderView, preorderView.getTransitionName()));
+            }
+            if (minOrderView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(minOrderView, minOrderView.getTransitionName()));
+            }
+            if (conditionView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(conditionView, conditionView.getTransitionName()));
+            }
+
+            Pair[] pairs = new Pair[pairList.size()];
             ActivityOptions activityOptions = ActivityOptions
-                    .makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(preorderView, preorderView.getTransitionName()),
-                            Pair.create(minOrderView, minOrderView.getTransitionName()),
-                            Pair.create(conditionView, conditionView.getTransitionName()));
+                    .makeSceneTransitionAnimation(getActivity(), pairList.toArray(pairs));
             getActivity().overridePendingTransition(0,0);
             startActivity(intent,activityOptions.toBundle());
         } else {
+            getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
             startActivity(intent);
         }
     }

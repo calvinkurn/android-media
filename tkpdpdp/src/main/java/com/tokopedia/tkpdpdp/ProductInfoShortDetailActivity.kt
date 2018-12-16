@@ -107,21 +107,21 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
                     data?.preOrder?.preorderProcessTime,
                     data?.preOrder?.preorderProcessTimeTypeString)
             false -> {
-                tv_preorder.visibility = View.GONE
-                tv_label_preorder.visibility = View.GONE
+                view_preorder.visibility = View.GONE
+                view_preorder.visibility = View.GONE
             }
         }
         when(data?.info?.productMinOrder != null){
             true -> tv_minimum.text = data?.info?.productMinOrder?.replace(".","")
-            false -> tv_minimum.visibility = View.GONE
+            false -> view_min_order.visibility = View.GONE
         }
         when(data?.info?.productCondition != null){
             true -> tv_condition.text = data?.info?.productCondition
-            false -> tv_condition.visibility = View.GONE
+            false -> view_condition.visibility = View.GONE
         }
         when(data?.info?.productInsurance != null){
             true -> tv_insurance.text = data?.info?.productInsurance
-            false -> tv_insurance.visibility = View.GONE
+            false -> view_insurance.visibility = View.GONE
         }
         when(data?.info?.productEtalase != null){
             true -> {tv_storefront.text = MethodChecker.fromHtml(data?.info?.productEtalase).toString()
@@ -132,17 +132,21 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
                         this
                 ))
             }
-            false -> tv_storefront.visibility = View.GONE
+            false -> view_storefront.visibility = View.GONE
         }
 
         val productDepartments = data?.breadcrumb
-        if (productDepartments!!.size > 0) {
-            val productBreadcrumb = productDepartments[productDepartments.size - 1]
-            tv_category.text = MethodChecker.fromHtml(productBreadcrumb.departmentName).toString()
-            tv_category.setOnClickListener(CategoryClick(
-                    productBreadcrumb.departmentId,
-                    this
-            ))
+        when (productDepartments!!.size > 0) {
+            true -> {
+                val productBreadcrumb = productDepartments[productDepartments.size - 1]
+                tv_category.text = MethodChecker.fromHtml(productBreadcrumb.departmentName).toString()
+                tv_category.setOnClickListener(CategoryClick(
+                        productBreadcrumb.departmentId,
+                        this
+                ))
+            }
+            false -> view_category.visibility = View.GONE
+
         }
 
         view_free_return.renderData(data)

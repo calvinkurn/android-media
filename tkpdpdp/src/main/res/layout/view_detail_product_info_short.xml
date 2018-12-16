@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingTop="@dimen/dp_16"
     android:paddingLeft="@dimen/pdp_content_padding"
     android:paddingRight="@dimen/pdp_content_padding">
 
@@ -113,6 +114,7 @@
     </LinearLayout>
 
     <TextView
+        android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_16"
         android:id="@+id/label_see_more"
         android:layout_width="match_parent"

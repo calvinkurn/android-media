@@ -121,8 +121,9 @@ class VideoDescriptionLayout : BaseCustomView {
                 intent.imgUrl = data.productImages[0].imageSrc300
             }
 
-            listener?.onDescriptionClicked(intent, tv_description)
-            UnifyTracking.eventPDPExpandDescription(this@VideoDescriptionLayout.context)
+            listener?.onDescriptionClicked(intent, tv_description, product_video_horizontal_scroll)
+            UnifyTracking.eventPDPExpandDescription(
+                    this@VideoDescriptionLayout.context)
         }
     }
 
