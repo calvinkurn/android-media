@@ -8,6 +8,7 @@ ext {
     tkpdContactUsVersion = '2.22'
     tkpdCoreVersion = '2.23'
     tkpdDealsVersion = '2.22'
+    tkpdDeveloperOptions = '2.22'
     tkpdDigitalVersion = '2.22'
     tkpdDiscoveryVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
@@ -113,6 +114,7 @@ ext {
             reactNative             : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             tokocash                : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
             topads                  : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
+            topAdsDashboard         : "com.tokopedia.topads:top_ads_dashboard:${tkpdTopAdsSDKVersion}",
             topAdsManagement        : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
@@ -125,6 +127,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     features = [
             nps                     : ":features:common:nps",
+            developerOptions       : ":features:common:developer_options",
 
             feed                    : ":features:content:feed",
             explore                 : ":features:content:explore",
@@ -138,6 +141,7 @@ ext {
 
             browse                  : ":features:digital:digital_browse",
             digitalDeals            : ":features:digital:digital_deals",
+            commonDigital           : ":features:digital:common_digital",
             digitalproduct          : ":features:digital:digitalproduct",
             event                   : ":features:digital:event",
             flight                  : ":features:digital:flight",
@@ -171,7 +175,9 @@ ext {
 
             goldMerchant            : ":features:merchant:gold_merchant",
             goldMerchantCommon      : ":features:merchant:gold_merchant_common",
+            goldMerchantResource    : ":features:merchant:gold_merchant_resource",
             goldMerchantSubscribe   : ":features:merchant:gold_merchant_subscribe",
+//            goldMerchantSubscribe  : ":features:merchant:gold_merchant_subscribe_no_op",
             productDraftDatabase    : ":features:merchant:product_draft_database",
             productManageItem       : ":features:merchant:product_manage_item",
             productManageList       : ":features:merchant:product_manage_list",
@@ -189,15 +195,22 @@ ext {
 
             payment                 : ":features:payment:payment",
             paymentSetting          : ":features:payment:payment_setting",
+//            paymentSetting          : ":features:payment:payment_setting_no_op",
             paymentManagementSystem : ":features:payment:pms",
+//            paymentManagementSystem : ":features:payment:pms_no_op",
             withdraw                : ":features:payment:withdraw",
 
-            gamification            : ":features:promo:gamification",
-            merchantVoucher         : ":features:promo:merchant_voucher",
-            tokopoints              : ":features:promo:tokopoints",
+            gallery                : ":features:product:gallery",
 
+            gamification           : ":features:promo:gamification",
+            merchantVoucher        : ":features:promo:merchant_voucher",
+            tokopoints             : ":features:promo:tokopoints",
+
+            topAdsDashboard         : ":features:top_ads:top_ads_dashboard",
+            //topAdsDashboard         : ":features:top_ads:top_ads_dashboard_no_op",
             topAdsFreeClaim         : ":features:top_ads:top_ads_free_claim",
             topAdsManagement        : ":features:top_ads:top_ads_management",
+            //topAdsManagement        : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon  : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging     : ":features:top_ads:top_ads_management_sourcetagging",
 
@@ -208,8 +221,10 @@ ext {
             attachproduct           : ":features:user:attachproduct",
             bankdb                  : ":features:user:bankdb",
             changepassword          : ":features:user:changepassword",
+//            changepassword              : ":features:user:changepassword_no_op",
             changePhoneNumber       : ":features:user:changephonenumber",
             groupchat               : ":features:user:groupchat",
+//            groupchat                   : ":features:user:groupchat_no_op",
             logout                  : ":features:user:logout",
             loginphone              : ":features:user:loginphone",
             loginregister           : ":features:user:loginregister",

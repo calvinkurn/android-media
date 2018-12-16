@@ -87,6 +87,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     public void onActionConfirmClicked() {
         UnifyTracking.eventOpportunity(
+                getActivity(),
                 OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE,
                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                 AppEventTracking.Action.CLICK,
@@ -99,6 +100,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     UnifyTracking.eventOpportunity(
+                            getActivity(),
                             OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_YES,
                             OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                             AppEventTracking.Action.CLICK,
@@ -112,6 +114,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     UnifyTracking.eventOpportunity(
+                            getActivity(),
                             OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_TAKE_NO,
                             OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                             AppEventTracking.Action.CLICK,
@@ -144,6 +147,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     @Override
     public void onActionSeeDetailProduct(String productId) {
         UnifyTracking.eventOpportunity(
+                getActivity(),
                 OpportunityTrackingEventLabel.EventName.CLICK_OPPORTUNITY_PRODUCT,
                 OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                 AppEventTracking.Action.CLICK,

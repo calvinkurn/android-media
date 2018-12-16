@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_shadow_top"
+    android:id="@+id/view_detail_product_info_short"
+    android:transitionName="@string/short_info_transition_name"
+    tools:visibility="visible"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/pdp_content_padding"
+    android:paddingRight="@dimen/pdp_content_padding"
+    tools:layout_editor_absoluteY="81dp">
+
+    <TextView
+        android:id="@+id/label_seller_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/informasi_produk"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/pdp_title_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_label_preorder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:id="@+id/tv_label_preorder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/label_preorder"
+        android:textColor="#868686"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintBottom_toTopOf="@+id/tv_label_min_order"
+        app:layout_constraintEnd_toStartOf="@+id/tv_preorder"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_seller_textview" />
+
+    <TextView
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:id="@id/tv_preorder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="#464646"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_label_preorder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_label_preorder"
+        app:layout_constraintTop_toTopOf="@+id/tv_label_preorder"
+        tools:text='4 Hari' />
+
+    <TextView
+        android:id="@+id/tv_label_min_order"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/label_min_order"
+        android:textColor="#868686"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintBottom_toTopOf="@+id/tv_label_condition"
+        app:layout_constraintEnd_toStartOf="@+id/tv_minimum"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_label_preorder" />
+
+    <TextView
+        android:id="@id/tv_minimum"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="#464646"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_label_min_order"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_label_min_order"
+        app:layout_constraintTop_toTopOf="@+id/tv_label_min_order"
+        tools:text="1 Buah" />
+
+    <TextView
+        android:id="@+id/tv_label_condition"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/label_condition"
+        android:textColor="#868686"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintBottom_toTopOf="@+id/label_see_more"
+        app:layout_constraintEnd_toStartOf="@+id/tv_condition"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_label_min_order" />
+
+    <TextView
+        android:id="@id/tv_condition"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="#464646"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_label_condition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_label_condition"
+        app:layout_constraintTop_toTopOf="@+id/tv_label_condition"
+        tools:layout_editor_absoluteY="93dp"
+        tools:text="Baru" />
+
+    <TextView
+        android:id="@+id/label_see_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_see_details"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/fonts"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_label_condition" />
+</android.support.constraint.ConstraintLayout>

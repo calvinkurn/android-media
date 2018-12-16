@@ -5,13 +5,30 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
+import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EMAIL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME_ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TOP_NAV;
+import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
 
 /**
  * Created by meta on 04/08/18.
@@ -42,6 +59,18 @@ public class AccountAnalytics {
                 String.format("%s %s", AKUN_SAYA, title),
                 String.format("%s - %s - %s", CLICK, section, item),
                 ""
+        );
+    }
+
+    public void eventClickOVOPayLater(String category, String action, String label) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                category,
+                action,
+                label
         );
     }
 
@@ -128,6 +157,51 @@ public class AccountAnalytics {
                 String.format("%s %s", CLICK, item),
                 ""
         );
+    }
+
+    public void eventClickKycSetting() {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                AccountConstants.Analytics.CLICK_ACCOUNT,
+                String.format("%s %s", ACCOUNT, SETTING),
+                AccountConstants.Analytics.CLICK_KYC_SETTING,
+                ""
+        );
+    }
+
+    public void eventClickKYCSellerAccountPage(int status) {
+        if (analyticTracker == null) {
+            return;
+        }
+
+        switch (status){
+            case KYCConstant.STATUS_REJECTED:
+            case KYCConstant.STATUS_EXPIRED:
+                analyticTracker.sendEventTracking(
+                        AccountConstants.Analytics.CLICK_ACCOUNT,
+                        String.format("%s %s", ACCOUNT, SETTING),
+                        AccountConstants.Analytics.CLICK_KYC_EXPIRED,
+                        ""
+                );
+            case KYCConstant.STATUS_PENDING:
+                analyticTracker.sendEventTracking(
+                        AccountConstants.Analytics.CLICK_ACCOUNT,
+                        String.format("%s %s", ACCOUNT, SETTING),
+                        AccountConstants.Analytics.CLICK_KYC_PENDING,
+                        ""
+                );
+            case KYCConstant.STATUS_NOT_VERIFIED:
+                analyticTracker.sendEventTracking(
+                        AccountConstants.Analytics.CLICK_ACCOUNT,
+                        String.format("%s %s", ACCOUNT, SETTING),
+                        AccountConstants.Analytics.CLICK_KYC_NOT_VERIFIED,
+                        ""
+                );
+            default:
+                break;
+        }
     }
 
     public void eventClickActivationOvoMyAccount() {

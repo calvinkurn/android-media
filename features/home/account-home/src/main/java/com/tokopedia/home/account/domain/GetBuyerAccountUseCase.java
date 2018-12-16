@@ -59,6 +59,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     return accountModel;
                 })
                 .doOnNext(this::saveLocallyWallet)
+                .doOnNext(this::saveLocallyVccUserStatus)
                 .doOnNext(this::savePhoneVerified)
                 .map(mapper);
     }
@@ -86,6 +87,12 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
         walletPref.saveWallet(accountModel.getWallet());
         if (accountModel.getVccUserStatus() != null) {
             walletPref.setTokoSwipeUrl(accountModel.getVccUserStatus().getRedirectionUrl());
+        }
+    }
+
+    private void saveLocallyVccUserStatus(AccountModel accountModel) {
+        if (accountModel.getVccUserStatus() != null) {
+            walletPref.saveVccUserStatus(accountModel.getVccUserStatus());
         }
     }
 

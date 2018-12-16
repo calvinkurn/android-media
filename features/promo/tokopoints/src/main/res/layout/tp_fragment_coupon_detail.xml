@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:measureAllChildren="false">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/tp_margin_large" />
+
+    <include layout="@layout/tp_content_coupon_detail" />
+
+    <include layout="@layout/layout_tp_network_error_large" />
+
+</ViewFlipper>

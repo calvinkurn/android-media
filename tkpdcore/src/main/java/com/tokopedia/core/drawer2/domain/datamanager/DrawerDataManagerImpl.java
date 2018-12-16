@@ -3,7 +3,7 @@ package com.tokopedia.core.drawer2.domain.datamanager;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.pojo.Notifications;
 import com.tokopedia.core.drawer2.data.pojo.UserData;

@@ -8,14 +8,14 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
 
@@ -133,7 +133,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
                 else onInstantCheckoutUnChecked();
 
                 if (data instanceof CategoryData)
-                    UnifyTracking.eventCheckInstantSaldo(((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
+                    UnifyTracking.eventCheckInstantSaldo(getContext(), ((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
             }
         };
     }

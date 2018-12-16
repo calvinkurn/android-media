@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+
 /**
  * @author by alvarisi on 2/20/18.
  */
@@ -19,4 +21,17 @@ public interface DigitalModuleRouter {
 
     void showAdvancedAppRatingDialog(Activity activity,
                                      DialogInterface.OnDismissListener dismissListener);
+
+    String getBranchAutoApply(Activity activity);
+
+    String getTrackingClientId();
+
+    CacheManager getGlobalCacheManager();
+
+    Intent getDealDetailIntent(Activity activity,
+                               String slug,
+                               boolean enableBuy,
+                               boolean enableRecommendation,
+                               boolean enableShare,
+                               boolean enableLike);
 }

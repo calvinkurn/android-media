@@ -10,7 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Window;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
 import com.tokopedia.core.invoice.model.InvoiceRenderParam;
 

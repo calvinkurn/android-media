@@ -18,6 +18,9 @@ import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupAddress;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
@@ -54,6 +57,8 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -133,8 +138,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean couponStateChanged;
     private boolean hasDeletePromoAfterChecKPromoCodeFinal;
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
+    private boolean isPurchaseProtectionPage = false;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
+    private CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -151,7 +158,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetRatesUseCase getRatesUseCase,
                              GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                              ShippingCourierConverter shippingCourierConverter,
-                             ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener) {
+                             ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
+                             CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
         this.getThanksToppayUseCase = getThanksToppayUseCase;
@@ -167,6 +175,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
+        this.analyticsPurchaseProtection = analyticsPurchaseProtection;
     }
 
     @Override
@@ -363,6 +372,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         setShipmentCartItemModelList(getView()
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
+
+        if(cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
+            isPurchaseProtectionPage = true;
+            sendPurchaseProtectionAnalytics(
+                    CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI,
+                    null);
+        }
     }
 
     @Override
@@ -758,6 +774,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
                     analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest), checkoutData.getTransactionId());
+                    if(isPurchaseProtectionPage) {
+                        analyticsPurchaseProtection.eventClickOnBuy(
+                                checkoutRequest.isHavingPurchaseProtectionEnabled() ?
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
+                                        ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
+                    }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
@@ -868,10 +890,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
+    public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition,
+                                                         boolean noToast, boolean isOneClickShipment) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("promo_code", promoCode);
-        param.put("lang", "id");
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG, CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
@@ -1332,5 +1356,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean getHasDeletePromoAfterChecKPromoCodeFinal() {
         return hasDeletePromoAfterChecKPromoCodeFinal;
+    }
+
+    @Override
+    public void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label) {
+        switch (type) {
+            case CLICK_PELAJARI:
+                analyticsPurchaseProtection.eventClickOnPelajari(label);
+                break;
+            case CLICK_BAYAR:
+                analyticsPurchaseProtection.eventClickOnBuy(label);
+                break;
+            case IMPRESSION_PELAJARI:
+                analyticsPurchaseProtection.eventImpressionOfProduct();
+                break;
+        }
     }
 }
