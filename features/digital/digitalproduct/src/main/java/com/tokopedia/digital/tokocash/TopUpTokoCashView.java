@@ -9,14 +9,14 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
 

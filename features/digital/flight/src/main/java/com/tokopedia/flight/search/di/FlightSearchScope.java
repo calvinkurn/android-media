@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Scope;
 
 /**
- * Created by zulfikarrahman on 10/24/17.
+ * @author by furqan on 01/10/18.
  */
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-@interface FlightSearchScope {
+public @interface FlightSearchScope {
 }

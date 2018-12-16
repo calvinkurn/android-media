@@ -319,7 +319,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     @Override
     public void notifyOnPurchaseProtectionChecked(boolean checked, int position) {
-        if(shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel){
+        if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
             ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
             data.getCartItemModels().get(position).setProtectionOptIn(checked);
             if (checked && (cbDropshipper.isChecked() && data.getSelectedShipmentDetailData().getUseDropshipper())) {
@@ -476,15 +476,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderShop(ShipmentCartItemModel shipmentCartItemModel) {
-        if (shipmentCartItemModel.isOfficialStore()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
-            imgShopBadge.setVisibility(View.VISIBLE);
-        } else if (shipmentCartItemModel.isGoldMerchant()) {
-            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
+        if (shipmentCartItemModel.isOfficialStore() || shipmentCartItemModel.isGoldMerchant()) {
+            ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
             imgShopBadge.setVisibility(View.VISIBLE);
         } else {
             imgShopBadge.setVisibility(View.GONE);
         }
+
         tvShopName.setText(shipmentCartItemModel.getShopName());
     }
 
@@ -787,7 +785,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             totalItemPrice += (cartItemModel.getQuantity() * cartItemModel.getPrice());
             totalItem += cartItemModel.getQuantity();
             totalWeight += cartItemModel.getWeight();
-            if(cartItemModel.isProtectionOptIn()) {
+            if (cartItemModel.isProtectionOptIn()) {
                 totalPurchaseProtectionItem += cartItemModel.getQuantity();
                 totalPurchaseProtectionPrice += cartItemModel.getProtectionPrice();
             }
@@ -844,7 +842,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                         mActionListener.hideSoftKeyboard();
 
-                        if(checked && isHavingPurchaseProtectionChecked()) {
+                        if (checked && isHavingPurchaseProtectionChecked()) {
                             compoundButton.setChecked(false);
                             mActionListener.onPurchaseProtectionLogicError();
                             return;
@@ -1318,8 +1316,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private boolean isHavingPurchaseProtectionChecked() {
         ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
-        for(CartItemModel item :data.getCartItemModels()) {
-            if(item.isProtectionOptIn()) return true;
+        for (CartItemModel item : data.getCartItemModels()) {
+            if (item.isProtectionOptIn()) return true;
         }
         return false;
     }

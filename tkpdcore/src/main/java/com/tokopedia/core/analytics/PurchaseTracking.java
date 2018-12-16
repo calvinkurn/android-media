@@ -36,6 +36,7 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String USER_ID = "userId";
 
     public static void marketplace(Purchase purchase) {
+        getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventPurchaseMarketplace(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearEnhanceEcommerce();
