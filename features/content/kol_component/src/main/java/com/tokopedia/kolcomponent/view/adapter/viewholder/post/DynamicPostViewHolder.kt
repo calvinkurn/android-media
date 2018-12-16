@@ -14,8 +14,10 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(v: View, private val listener: DynamicPostListener)
+class DynamicPostViewHolder(v: View)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
+
+    lateinit var listener: DynamicPostListener
 
     companion object {
         @LayoutRes

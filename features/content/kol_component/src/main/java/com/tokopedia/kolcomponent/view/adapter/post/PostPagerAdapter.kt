@@ -6,9 +6,13 @@ import android.view.ViewGroup
 import com.tokopedia.kolcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.kolcomponent.view.adapter.viewholder.post.grid.GridPostViewHolder
 import com.tokopedia.kolcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
+import com.tokopedia.kolcomponent.view.adapter.viewholder.post.poll.PollViewHolder
+import com.tokopedia.kolcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.kolcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.kolcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.kolcomponent.view.viewmodel.post.image.ImagePostViewModel
+import com.tokopedia.kolcomponent.view.viewmodel.post.poll.PollViewModel
+import com.tokopedia.kolcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 
 /**
  * @author by milhamj on 9/21/18.
@@ -27,8 +31,10 @@ class PostPagerAdapter : PagerAdapter() {
         val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
             is ImagePostViewModel -> ImagePostViewHolder() as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder() as BasePostViewHolder<BasePostViewModel>
+            is PollViewModel -> PollViewHolder() as BasePostViewHolder<BasePostViewModel>
+            is YoutubeViewModel -> YoutubeViewHolder() as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
-                    .plus(" doesn't support class of this type: ")
+                    .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))
         }
 

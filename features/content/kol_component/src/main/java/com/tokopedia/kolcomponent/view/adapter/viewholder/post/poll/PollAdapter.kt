@@ -15,7 +15,6 @@ import com.tokopedia.kolcomponent.view.viewmodel.post.poll.PollOptionViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_poll_option.view.*
-import kotlinx.android.synthetic.main.partial_loading_layout.view.*
 
 /**
  * @author by milhamj on 12/12/18.
