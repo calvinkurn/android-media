@@ -57,7 +57,6 @@ import com.tokopedia.digital.cart.presentation.presenter.CartDigitalContract;
 import com.tokopedia.digital.cart.presentation.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presentation.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -739,26 +738,29 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onClickUseVoucher() {
         if (cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
-            Intent intent;
-            if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
-                if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
-                        cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
-                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
-                    intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(
-                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
-                    );
+            if(getApplicationContext() instanceof DigitalModuleRouter) {
+                DigitalModuleRouter digitalModuleRouter = ((DigitalModuleRouter)getApplicationContext());
+                Intent intent;
+                if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                    if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
+                            cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
+                                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
+                        intent = digitalModuleRouter.getLoyaltyActivitySelectedCoupon(
+                                context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                        );
+                    } else {
+                        intent = digitalModuleRouter.getLoyaltyActivity(
+                                context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                        );
+                    }
                 } else {
-                    intent = LoyaltyActivity.newInstanceCouponActive(
-                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                    intent = digitalModuleRouter.getLoyaltyActivityNoCouponActive(
+                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
+                            passData.getCategoryId()
                     );
                 }
-            } else {
-                intent = LoyaltyActivity.newInstanceCouponNotActive(
-                        context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
-                        passData.getCategoryId()
-                );
+                navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
             }
-            navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             voucherCartHachikoView.setVisibility(View.GONE);
         }

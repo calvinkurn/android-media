@@ -59,6 +59,7 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     transactionCheckoutVersion = '2.22'
+    promoCheckoutVersion = '2.22'
     tkpdUserIdentification = '2.22'
     tkpdUserIdentificationCommon = '2.22'
 
@@ -90,7 +91,8 @@ ext {
             loginphone              : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister           : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon           : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
-            loyalty                 : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            loyalty                     : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            loyaltyCommon               : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
             mitraToppers            : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             payment                 : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             paymentSetting          : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
@@ -100,6 +102,8 @@ ext {
             productManageList       : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
             productDraftDatabase    : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             profile                 : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
+            promoCheckout           : "com.tokopedia.promocheckout:promo_checkout:${promoCheckoutVersion}",
+            promoCheckoutCommon     : "com.tokopedia.promocheckout:promo_checkout_common:${promoCheckoutVersion}",
             reputation              : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon        : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             ride                    : "com.tokopedia.ride:ride:${tkpdRideVersion}",
@@ -205,6 +209,8 @@ ext {
             gamification           : ":features:promo:gamification",
             merchantVoucher        : ":features:promo:merchant_voucher",
             tokopoints             : ":features:promo:tokopoints",
+            promoCheckout           : ":features:promo:promo_checkout",
+            promoCheckoutCommon     : ":features:promo:promo_checkout_common",
 
             topAdsDashboard         : ":features:top_ads:top_ads_dashboard",
             //topAdsDashboard         : ":features:top_ads:top_ads_dashboard_no_op",
@@ -217,6 +223,8 @@ ext {
             checkout                : ":features:transaction:checkout",
             transactiondata         : ":features:transaction:transactiondata",
             transactionanalytics    : ":features:transaction:transactionanalytics",
+            loyalty                     : ":features:promo:loyalty",
+            loyaltyCommon               : ":features:promo:loyalty_common",
 
             attachproduct           : ":features:user:attachproduct",
             bankdb                  : ":features:user:bankdb",
@@ -244,7 +252,6 @@ ext {
             core                    : ":tkpdcore",
             discovery               : ":tkpddiscovery",
             inbox                   : ":tkpdinbox",
-            loyalty                 : ":tkpdloyalty",
             productDetail           : ":tkpdpdp",
             seller                  : ":tkpdseller",
             session                 : ":tkpdsession",

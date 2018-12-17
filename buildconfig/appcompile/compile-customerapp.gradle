@@ -80,6 +80,10 @@ include "features:product:gallery"
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"
 include "features:promo:tokopoints"
+include "features:promo:promo_checkout"
+include "features:promo:promo_checkout_common"
+include "features:promo:loyalty"
+include "features:promo:loyalty_common"
 
 include "features:top_ads:top_ads_dashboard"
 //include "features:top_ads:top_ads_dashboard_no_op"
@@ -113,7 +117,6 @@ include "features:user:user_identification"
 include "features:user:user_identification_common"
 
 include 'logisticanalytics'
-include 'tkpdloyalty'
 include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
