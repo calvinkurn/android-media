@@ -32,11 +32,17 @@ public class CMJobIntentService extends JobIntentService {
         try {
             Bundle bundle = intent.getBundleExtra(CMConstant.EXTRA_NOTIFICATION_BUNDLE);
             if (null != bundle) {
-                BaseNotification baseNotification = CMNotificationFactory.getNotification(this.getApplicationContext(), bundle);
-                if (null != baseNotification)
-                    postNotification(baseNotification);
+                if (bundle.getString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, "")
+                        .equals(CMConstant.NotificationType.SILENT_PUSH)) {
+                    handleSilentPush(bundle);
+                } else {
+                    BaseNotification baseNotification = CMNotificationFactory.getNotification(this.getApplicationContext(), bundle);
+                    if (null != baseNotification)
+                        postNotification(baseNotification);
+                }
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     private void postNotification(BaseNotification baseNotification) {
@@ -45,6 +51,10 @@ public class CMJobIntentService extends JobIntentService {
         Notification notification = baseNotification.createNotification();
         if (null != notificationManager)
             notificationManager.notify(baseNotification.baseNotificationModel.getNotificationId(), notification);
+    }
+
+    private void handleSilentPush(Bundle data){
+        //TODO handle Silent Push...
     }
 
 }
