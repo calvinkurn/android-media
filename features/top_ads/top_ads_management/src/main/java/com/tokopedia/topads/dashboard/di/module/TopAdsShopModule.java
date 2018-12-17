@@ -8,12 +8,12 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
 import com.tokopedia.topads.dashboard.di.qualifier.ShopWsQualifier;
-import com.tokopedia.topads.dashboard.di.scope.TopAdsDashboardScope;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsScope;
 
 import dagger.Module;
@@ -25,7 +25,8 @@ import retrofit2.Retrofit;
 /**
  * Created by hadi.putra on 24/04/18.
  */
-@TopAdsDashboardScope
+
+@TopAdsScope
 @Module
 public class TopAdsShopModule {
 
@@ -80,5 +81,11 @@ public class TopAdsShopModule {
     public Retrofit provideWSRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
+    }
+
+    @TopAdsScope
+    @Provides
+    public ShopApi provideShopApi(@ShopWsQualifier Retrofit retrofit){
+        return retrofit.create(ShopApi.class);
     }
 }

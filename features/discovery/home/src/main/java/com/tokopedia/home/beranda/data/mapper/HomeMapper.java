@@ -102,6 +102,12 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                 legoAndCuratedAndSprintSaleBannerList.addAll(
                                         channel.convertPromoEnhanceLegoBannerDataLayerForCombination()
                                 );
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)) {
+                                channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
+                                channel.setHomeAttribution(String.format("%s - sprintSaleProduct - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
+                                HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(context,
+                                        channel.getEnhanceImpressionDynamicSprintLegoHomePage(position)
+                                );
                             } else {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));

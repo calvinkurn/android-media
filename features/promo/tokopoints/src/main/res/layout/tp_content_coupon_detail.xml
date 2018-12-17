@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <ScrollView
@@ -13,21 +14,31 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/white"
             android:orientation="vertical">
 
-            <LinearLayout
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@color/white"
+                android:orientation="vertical"
+                app:elevation="@dimen/dp_0">
 
-                <ImageView
-                    android:adjustViewBounds="true"
-                    android:id="@+id/img_banner_coupon"
+                <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitCenter" />
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/img_banner_coupon"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="fitCenter"
+                        app:layout_constraintDimensionRatio="h,3:1"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </android.support.constraint.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -41,6 +52,7 @@
                     android:layout_marginBottom="@dimen/dp_12"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/text_size_14"
+                    android:fontFamily="sans-serif-medium"
                     tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
 
                 <android.support.constraint.ConstraintLayout
@@ -83,7 +95,6 @@
                             android:id="@+id/text_time_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/tp_label_valid_for"
                             android:textColor="@color/black_38"
                             android:textSize="@dimen/tp_text_size_xxsmall"
                             android:visibility="visible"
@@ -119,11 +130,9 @@
                         android:id="@+id/iv_rp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_100"
-                        android:layout_marginLeft="@dimen/dp_100"
+                        android:layout_marginRight="@dimen/dp_8"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/ll_min_txn_container"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_tp_rp" />
 
@@ -137,7 +146,6 @@
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/iv_rp"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
@@ -148,8 +156,7 @@
                             android:layout_marginRight="@dimen/dp_6"
                             android:textColor="@color/black_38"
                             android:textSize="@dimen/tp_text_size_xxsmall"
-                            android:visibility="visible"
-                            tool:text="tanpa minimum transaksi" />
+                            tool:text="Minimum Transaksi" />
 
                         <TextView
                             android:id="@+id/tv_min_txn_value"
@@ -163,47 +170,56 @@
                     </LinearLayout>
 
                 </android.support.constraint.ConstraintLayout>
-            </LinearLayout>
-
-            <android.support.design.widget.AppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white">
-
-                <com.tokopedia.design.component.Tabs
-                    android:id="@+id/tab_layout_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tabIndicatorColor="@color/tkpd_main_green"
-                    app:tabMode="scrollable"
-                    app:tabSelectedTextColor="@color/tkpd_main_green"
-                    app:tabTextAppearance="@style/TokoPointsTabs"
-                    app:tabTextColor="@color/black_38">
-
-                    <android.support.design.widget.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/tp_label_tnc" />
-
-                    <android.support.design.widget.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/tp_label_how_to_use" />
-
-                </com.tokopedia.design.component.Tabs>
             </android.support.design.widget.AppBarLayout>
 
-            <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
-                android:id="@+id/view_pager_info"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:orientation="vertical">
+
+                <android.support.design.widget.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white">
+
+                    <com.tokopedia.design.component.Tabs
+                        android:id="@+id/tab_layout_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tabIndicatorColor="@color/tkpd_main_green"
+                        app:tabMode="scrollable"
+                        app:tabSelectedTextColor="@color/tkpd_main_green"
+                        app:tabTextAppearance="@style/TokoPointsTabs"
+                        app:tabTextColor="@color/black_38">
+
+                        <android.support.design.widget.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tp_label_tnc" />
+
+                        <android.support.design.widget.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tp_label_how_to_use" />
+
+                    </com.tokopedia.design.component.Tabs>
+                </android.support.design.widget.AppBarLayout>
+
+                <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
+                    android:id="@+id/view_pager_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <include layout="@layout/tp_layout_coupon_detail_button" />
+    <include
+        android:id="@+id/ll_bottom_button"
+        layout="@layout/tp_layout_coupon_detail_button"
+        android:visibility="invisible" />
 
 </LinearLayout>

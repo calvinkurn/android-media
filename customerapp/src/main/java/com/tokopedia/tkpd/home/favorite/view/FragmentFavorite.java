@@ -164,7 +164,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 } else {
                     favoritePresenter.loadInitialData();
                 }
-                ScreenTracking.screen(getScreenName());
+                ScreenTracking.screen(getActivity(), getScreenName());
             } else {
                 if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
@@ -236,7 +236,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
-        TrackingUtils.sendMoEngageOpenFavoriteEvent(dataFavorite.size());
+        TrackingUtils.sendMoEngageOpenFavoriteEvent(getActivity(), dataFavorite.size());
     }
 
     @Override

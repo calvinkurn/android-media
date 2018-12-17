@@ -154,7 +154,7 @@ public class CreditCardDetailActivity extends TActivity
 
     @Override
     protected void setupToolbar() {
-        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
+        toolbar = findViewById(com.tokopedia.core2.R.id.app_bar);
         toolbar.setTitle(getToolbarTitle());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -172,13 +172,13 @@ public class CreditCardDetailActivity extends TActivity
     protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
-            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white);
         } else {
-            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow);
         }
 
         Drawable drawable = ContextCompat.getDrawable(
-                this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+                this, com.tokopedia.core2.R.drawable.ic_toolbar_overflow_level_two_black);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 
@@ -186,8 +186,8 @@ public class CreditCardDetailActivity extends TActivity
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
         }
 
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style
                 .WebViewToolbarSubtitleText);
     }
 

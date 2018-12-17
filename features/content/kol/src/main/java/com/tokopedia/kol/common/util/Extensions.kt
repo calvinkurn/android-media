@@ -1,6 +1,7 @@
 package com.tokopedia.kol.common.util
 
 import android.content.Context
+import android.support.annotation.StringRes
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
@@ -10,6 +11,10 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kol.R
 
 /**
@@ -36,6 +41,52 @@ fun View.hideLoading() {
         this.findViewById<View>(R.id.loadingView)!!.hide()
     } catch (e: NullPointerException) {
         e.debugTrace()
+    }
+}
+
+fun View.showErrorToaster(errorMessage: String) {
+    this.showErrorToaster(errorMessage, null as String?) { }
+}
+
+fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int, action: () -> Unit) {
+    this.showErrorToaster(errorMessage, context.getString(actionMessage), action)
+}
+
+fun View.showErrorToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
+    val toaster = ToasterError.make(this, errorMessage, BaseToaster.LENGTH_LONG)
+    actionMessage?.let { message ->
+        toaster.setAction(message) {
+            action()
+        }
+    }
+    toaster.show()
+}
+
+fun View.showNormalToaster(errorMessage: String) {
+    this.showNormalToaster(errorMessage, null as String?) { }
+}
+
+fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int, action: () -> Unit) {
+    this.showNormalToaster(errorMessage, context.getString(actionMessage), action)
+}
+
+fun View.showNormalToaster(errorMessage: String, actionMessage: String?, action: () -> Unit) {
+    val toaster = ToasterNormal.make(this, errorMessage, BaseToaster.LENGTH_LONG)
+    actionMessage?.let { message ->
+        toaster.setAction(message) {
+            action()
+        }
+    }
+    toaster.show()
+}
+
+fun View.showEmptyState(@StringRes errorMessage: Int, action: () -> Unit) {
+    this.showEmptyState(context.getString(errorMessage), action)
+}
+
+fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
+    NetworkErrorHelper.showEmptyState(this.context, this, errorMessage) {
+        action()
     }
 }
 

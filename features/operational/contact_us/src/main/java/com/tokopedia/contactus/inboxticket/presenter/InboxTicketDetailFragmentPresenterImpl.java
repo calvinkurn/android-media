@@ -19,7 +19,7 @@ import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.InboxTicketDe
 import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReply;
 import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.contactus.inboxticket.model.replyticket.ReplyResult;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;

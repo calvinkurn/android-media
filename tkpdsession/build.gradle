@@ -31,6 +31,7 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.updateinactivephone)
@@ -48,7 +49,7 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.plus
-    implementation rootProject.ext.playServicesDependencies.maps
+
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
