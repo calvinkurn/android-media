@@ -56,11 +56,7 @@ fun View.showErrorToaster(errorMessage: String) {
     this.showErrorToaster(errorMessage, null as String?) { }
 }
 
-fun View.showErrorToaster(errorMessage: String, action: () -> Unit) {
-    this.showErrorToaster(errorMessage, context.getString(R.string.title_try_again), action)
-}
-
-fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int, action: () -> Unit) {
+fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_try_again, action: () -> Unit) {
     this.showErrorToaster(errorMessage, context.getString(actionMessage), action)
 }
 
@@ -78,11 +74,7 @@ fun View.showNormalToaster(errorMessage: String) {
     this.showNormalToaster(errorMessage, null as String?) { }
 }
 
-fun View.showNormalToaster(errorMessage: String, action: () -> Unit) {
-    this.showNormalToaster(errorMessage, context.getString(R.string.title_ok), action)
-}
-
-fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int, action: () -> Unit) {
+fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
     this.showNormalToaster(errorMessage, context.getString(actionMessage), action)
 }
 
