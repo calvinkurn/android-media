@@ -107,14 +107,6 @@ public class DDCollectorManager implements PermissionResultCallback {
                 info.add(new Contact(mContext.getContentResolver()));
             }
 
-            /*if (mComponents.contains(DDConstants.DDComponents.READ_CALL_LOG.val())) {
-                info.add(new Call(mContext.getContentResolver()));
-            }
-
-            if (mComponents.contains(DDConstants.DDComponents.READ_SMS.val())) {
-                info.add(new Sms(mContext.getContentResolver()));
-            }*/
-
             if (mComponents.contains(DDConstants.DDComponents.BASIC_DEVICE_DATA.val())) {
                 info.add(new BasicDeviceData(mContext, (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE)));
             }
@@ -135,9 +127,7 @@ public class DDCollectorManager implements PermissionResultCallback {
 
     private Set<String> getDefaultsComponents() {
         Set<String> components = new HashSet<>();
-//        components.add(DDConstants.DDComponents.READ_SMS.val());
         components.add(DDConstants.DDComponents.READ_CONTACTS.val());
-//        components.add(DDConstants.DDComponents.READ_CALL_LOG.val());
         components.add(DDConstants.DDComponents.GET_ACCOUNTS.val());
         components.add(DDConstants.DDComponents.APP.val());
         components.add(DDConstants.DDComponents.BASIC_DEVICE_DATA.val());
