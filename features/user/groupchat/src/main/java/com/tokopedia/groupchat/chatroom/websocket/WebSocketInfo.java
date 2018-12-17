@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.AdminMsg;
 import com.tokopedia.groupchat.chatroom.domain.pojo.EventHandlerPojo;
@@ -493,7 +492,7 @@ public class WebSocketInfo {
             return true;
         } else if (mappedMessage instanceof ParticipantViewModel) {
             return true;
-        } else if (mappedMessage instanceof InteruptViewModel) {
+        } else if (mappedMessage instanceof OverlayViewModel) {
             return true;
         }else {
             return false;
