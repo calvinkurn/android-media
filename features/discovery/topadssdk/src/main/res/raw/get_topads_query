@@ -1,59 +1,14 @@
-query wishlist($page: Int, $count: Int, $params: String){
-  wishlist(page: $page, count: $count){
-
-      has_next_page
-      total_data
-      items {
-        id
-        name
-        url
-        image_url
-        raw_price
-        condition
-        available
-        status
-        price
-        minimum_order
-        wholesale_price {
-          minimum
-          maximum
-          price
-        }
-        shop {
-          id
-          name
-          url
-          gold_merchant
-          official_store
-          status
-          location
-
-        }
-        preorder
-        badges {
-          title
-          image_url
-        }
-        labels {
-          title
-          color
-        }
-      }
-      pagination {
-        next_url
-      }
-  }
-
-  productAds: displayAdsV3(displayParams: $params) {
-      status {
-        error_code
-        message
-      }
+query ($params: String){
+  displayAdsV3(displayParams: $params) {
+    status {
+      error_code
+      message
+    }
     header {
       process_time
       total_data
     }
-    data{
+    data {
       id
       ad_ref_key
       redirect
@@ -62,10 +17,11 @@ query wishlist($page: Int, $count: Int, $params: String){
       product_click_url
       product_wishlist_url
       shop_click_url
-      product{
+      product {
         id
         name
-        image{
+        wishlist
+        image {
           m_url
           s_url
           xs_url
@@ -96,7 +52,7 @@ query wishlist($page: Int, $count: Int, $params: String){
         top_label
         bottom_label
       }
-      shop{
+      shop {
         id
         name
         domain
@@ -108,7 +64,7 @@ query wishlist($page: Int, $count: Int, $params: String){
         uri
         owner_id
         is_owner
-        badges{
+        badges {
           title
           image_url
           show
@@ -116,5 +72,5 @@ query wishlist($page: Int, $count: Int, $params: String){
       }
       applinks
     }
-  }
+    }
 }
