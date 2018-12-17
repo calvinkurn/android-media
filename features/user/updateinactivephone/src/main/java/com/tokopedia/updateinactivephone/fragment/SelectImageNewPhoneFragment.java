@@ -60,8 +60,8 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
-        UpdateInactivePhoneEventTracking.eventViewPhotoUploadScreen();
+        ScreenTracking.screen(getActivity(),getScreenName());
+        UpdateInactivePhoneEventTracking.eventViewPhotoUploadScreen(getActivity());
     }
 
     @Override
@@ -122,7 +122,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
 
         continueButton.setOnClickListener(view -> {
 
-            UpdateInactivePhoneEventTracking.eventClickPhotoProceed();
+            UpdateInactivePhoneEventTracking.eventClickPhotoProceed(view.getContext());
             selectImageInterface.onContinueButtonClick();
         });
     }

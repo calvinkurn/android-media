@@ -35,6 +35,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataReques
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 
@@ -170,13 +171,14 @@ public class ShipmentModule {
                                                         SaveShipmentStateUseCase saveShipmentStateUseCase,
                                                         GetRatesUseCase getRatesUseCase,
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
-                                                        ShippingCourierConverter shippingCourierConverter) {
+                                                        ShippingCourierConverter shippingCourierConverter,
+                                                        CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
                 checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-                shippingCourierConverter, shipmentAnalyticsActionListener);
+                shippingCourierConverter, shipmentAnalyticsActionListener, analyticsPurchaseProtection);
     }
 
     @Provides

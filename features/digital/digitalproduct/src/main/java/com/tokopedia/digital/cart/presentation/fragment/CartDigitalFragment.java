@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
@@ -34,11 +35,14 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.digital.cart.fragment.DigitalPostPaidDialog;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
@@ -114,6 +118,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private DigitalCheckoutPassData passData;
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
+    private boolean isAlreadyShowPostPaidPopUp;
 
     @Inject
     CartDigitalPresenter presenter;
@@ -279,6 +284,34 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void showPostPaidDialog(String title,
+                                   String content,
+                                   String confirmButtonTitle) {
+        isAlreadyShowPostPaidPopUp = true;
+        DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
+                getActivity(),
+                Dialog.Type.RETORIC,
+                DigitalPostPaidLocalCache.newInstance(getActivity()),
+                getUserId()
+        );
+        dialog.setTitle(title);
+        dialog.setDesc(MethodChecker.fromHtml(content));
+        dialog.setBtnOk(confirmButtonTitle);
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public boolean isAlreadyShowPostPaid() {
+        return isAlreadyShowPostPaidPopUp;
+    }
+
+    @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
     }
@@ -339,7 +372,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 voucherCartHachikoView.setVisibility(View.GONE);
             }
 
-            UnifyTracking.eventClickVoucher(cartDigitalInfoDataState.getAttributes().getCategoryName(),
+            UnifyTracking.eventClickVoucher(getActivity(),cartDigitalInfoDataState.getAttributes().getCategoryName(),
                     cartDigitalInfoData.getAttributes().getVoucherAutoCode(),
                     cartDigitalInfoDataState.getAttributes().getOperatorName());
 
@@ -407,13 +440,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
-        UnifyTracking.eventViewCheckoutPage(ec, el);
+        UnifyTracking.eventViewCheckoutPage(getActivity(),ec, el);
 
         if (analyticsKind) {
-            UnifyTracking.eventClickBeliInstantSaldoWidget(ec, el);
+            UnifyTracking.eventClickBeliInstantSaldoWidget(getActivity(),ec, el);
         }
         {
-            UnifyTracking.eventClickBeliWidget(ec, el);
+            UnifyTracking.eventClickBeliWidget(getActivity(),ec, el);
         }
     }
 
@@ -679,6 +712,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onClickButtonNext() {
         UnifyTracking.eventClickLanjutCheckoutPage(
+                getActivity(),
                 cartDigitalInfoDataState.getAttributes().getCategoryName(),
                 cartDigitalInfoDataState.getAttributes().getOperatorName()
                         + " - " + cartDigitalInfoDataState.getAttributes().getPricePlain()
@@ -739,12 +773,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void trackingSuccessVoucher(String voucherCode) {
-        UnifyTracking.eventVoucherSuccess(voucherCode, "");
+        UnifyTracking.eventVoucherSuccess(getActivity(),voucherCode, "");
     }
 
     @Override
     public void trackingCancelledVoucher() {
-        UnifyTracking.eventClickCancelVoucher("", "");
+        UnifyTracking.eventClickCancelVoucher(getActivity(),"", "");
     }
 
     @Override
@@ -766,11 +800,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
                     if (getApplicationContext() instanceof DigitalModuleRouter) {
-                        ((DigitalModuleRouter)getApplicationContext()).
+                        ((DigitalModuleRouter) getApplicationContext()).
                                 showAdvancedAppRatingDialog(getActivity(), dialog -> {
-                            getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                            closeView();
-                        });
+                                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                                    closeView();
+                                });
                     }
                     presenter.onPaymentSuccess(passData.getCategoryId());
 

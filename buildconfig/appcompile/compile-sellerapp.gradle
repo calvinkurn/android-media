@@ -5,6 +5,7 @@ include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
 
+include "features:digital:common_digital"
 include "features:digital:digitalproduct"
 
 include "features:discovery:wishlist_common"

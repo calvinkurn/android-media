@@ -20,6 +20,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.SpinnerWithImage;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
 
 import java.util.ArrayList;
 

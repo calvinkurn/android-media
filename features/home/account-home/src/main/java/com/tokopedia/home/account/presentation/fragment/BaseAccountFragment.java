@@ -191,8 +191,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTokopediaPayRightItemClicked(String label, String applink, TokopediaPayBSModel bsData) {
+    public void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
+
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
+        sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
+                AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
+                String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
 
         if (applink != null && applink.startsWith("http")) {
             openApplink(String.format("%s?url=%s",
@@ -284,6 +288,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             applinkRouter.goToApplinkActivity(getActivity(),
                     String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
         }
+    }
+
+    private void sendOVOTracking(String title, String section, String item) {
+        if (accountAnalytics == null)
+            return;
+
+        if (title == null || section == null || item == null)
+            return;
+
+        accountAnalytics.eventClickOVOPayLater(
+                title.toLowerCase(),
+                section.toLowerCase(),
+                item.toLowerCase());
     }
 
     private void sendTracking(String title, String section, String item) {

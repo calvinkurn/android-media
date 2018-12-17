@@ -89,7 +89,7 @@ public class ShopCardView extends BaseCustomView {
 
     public void setBadgeImage(@DrawableRes int resource) {
         if (resource != 0) {
-            badge.setImageResource(resource);
+            badge.setImageDrawable(ContextCompat.getDrawable(getContext(), resource));
             badge.setVisibility(VISIBLE);
         } else {
             badge.setVisibility(GONE);

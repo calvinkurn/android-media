@@ -15,7 +15,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -60,12 +60,14 @@ import java.util.Map;
 public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartNetInteractor addToCartNetInteractor;
     private final AddToCartViewListener viewListener;
+    private final AddToCartActivity addToCartActivity;
     private final KeroNetInteractorImpl keroNetInteractor;
     private static final String GOJEK_ID = "10";
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
         this.viewListener = addToCartActivity;
+        this.addToCartActivity = addToCartActivity;
         keroNetInteractor = new KeroNetInteractorImpl();
     }
 
@@ -452,7 +454,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         gtmCart.addProduct(product.getProduct());
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.ADD_ACTION);
-        UnifyTracking.eventATCSuccess(gtmCart);
+        UnifyTracking.eventATCSuccess(context, gtmCart);
     }
 
     @Override
@@ -491,7 +493,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.ADD_ACTION);
 
-        UnifyTracking.eventATCSuccess(gtmCart);
+        UnifyTracking.eventATCSuccess(context, gtmCart);
     }
 
     @Override
@@ -508,7 +510,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void sendToGTM(@NonNull Context context) {
-        UnifyTracking.eventATCAddAddress();
+        UnifyTracking.eventATCAddAddress(context);
     }
 
     @Override
@@ -553,9 +555,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 CurrencyFormatHelper.convertRupiahToInt(orderData.getPriceItem()));
         values.put(AFInAppEventParameterName.QUANTITY, orderData.getQuantity());
 
-        PaymentTracking.atcAF(values);
+        PaymentTracking.atcAF(context, values);
 
-        UnifyTracking.eventATCBuy();
+        UnifyTracking.eventATCBuy(context);
     }
 
     @Override
@@ -565,8 +567,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void processGetGTMTicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_ATC).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_ATC_TEXT);
+        if (TrackingUtils.getGtmString(addToCartActivity, AppEventTracking.GTM.TICKER_ATC).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(addToCartActivity, AppEventTracking.GTM.TICKER_ATC_TEXT);
             viewListener.showTickerGTM(message);
         } else {
             viewListener.hideTickerGTM();

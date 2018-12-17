@@ -300,12 +300,12 @@ class ProductEditPriceFragment : Fragment(), ProductChangeVariantPriceDialogFrag
     private fun isDataValid(): Boolean{
         if(!isPriceValid()){
             counterEditText.requestFocus()
-            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
+            UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
             return false
         }
         if(!isMinOrderValid()){
             editTextMinOrder.requestFocus()
-            UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
+            UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE)
             return false
         }
         return true
