@@ -45,5 +45,6 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
                 () -> listener.onKycLinkClicked(element.getVerificationStatus()));
 
         shopCardView.setTopAdsDeposit(element.getDataDeposit());
+        shopCardView.setOnClickTopAdsView(v-> listener.onTopAdsMenuClicked());
     }
 }

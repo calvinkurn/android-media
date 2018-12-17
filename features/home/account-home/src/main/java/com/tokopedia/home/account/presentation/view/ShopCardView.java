@@ -70,6 +70,7 @@ public class ShopCardView extends BaseCustomView {
         shopStatus = view.findViewById(R.id.text_shop_verification_status);
         labelViewTopAds = view.findViewById(R.id.label_view_topads);
         labelViewTopAds.setVisibility(GONE);
+        view.findViewById(R.id.separator_2).setVisibility(GONE);
     }
 
     public void setShopImage(String url) {
@@ -130,6 +131,10 @@ public class ShopCardView extends BaseCustomView {
         labelViewDeposit.setOnClickListener(listener);
     }
 
+    public void setOnClickTopAdsView(View.OnClickListener listener){
+        labelViewTopAds.setOnClickListener(listener);
+    }
+
     public void setKyc(int verificationStatus, String verificationStatusName,
                        WarningTickerView.LinkClickListener listener) {
 
@@ -182,6 +187,7 @@ public class ShopCardView extends BaseCustomView {
         } else {
             labelViewTopAds.setTitle(getContext().getString(R.string.top_ads_credit_label));
             labelViewTopAds.setContent(dataDeposit.getAmountFmt());
+            labelViewTopAds.setContentColorValue(ContextCompat.getColor(getContext(), R.color.light_primary));
             if (freeDeposit.getStatus() == 2 && freeDeposit.getUsage() > 0){
                 String bonusTopAds = getContext().getString(R.string.bonus_expired, freeDeposit.getUsageFmt());
                 String nDays = getContext().getString(R.string.template_claim_n_days, freeDeposit.getRemainingDays());
@@ -195,6 +201,7 @@ public class ShopCardView extends BaseCustomView {
                 labelViewTopAds.setSubTitle("");
             }
         }
+        getRootView().findViewById(R.id.separator_2).setVisibility(VISIBLE);
         labelViewTopAds.setVisibility(VISIBLE);
     }
 
