@@ -2753,8 +2753,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void setDrawableCount(Context context, int count) {
         MenuItem menuItem = menu.findItem(R.id.action_cart);
         if (menuItem.getIcon() instanceof LayerDrawable) {
-            LayerDrawable icon = (LayerDrawable)
-                    getResources().getDrawable(R.drawable.ic_cart_counter_light_pdp);
+            LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
             CountDrawable badge = new CountDrawable(context);
             if (count > 99) {
                 badge.setCount(getString(R.string.pdp_label_cart_count_max));
