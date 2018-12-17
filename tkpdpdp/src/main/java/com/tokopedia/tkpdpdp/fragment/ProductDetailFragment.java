@@ -2133,7 +2133,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (menu != null && menu.size() > 2) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_dark));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_dark));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_dark_pdp));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
@@ -2151,7 +2151,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (menu != null && menu.size() > 1) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_light));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_light));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_light_pdp));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
@@ -2754,7 +2754,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         MenuItem menuItem = menu.findItem(R.id.action_cart);
         if (menuItem.getIcon() instanceof LayerDrawable) {
             LayerDrawable icon = (LayerDrawable)
-                    getResources().getDrawable(R.drawable.ic_cart_counter_light);
+                    getResources().getDrawable(R.drawable.ic_cart_counter_light_pdp);
             CountDrawable badge = new CountDrawable(context);
             if (count > 99) {
                 badge.setCount(getString(R.string.pdp_label_cart_count_max));
