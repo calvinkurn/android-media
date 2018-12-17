@@ -39,9 +39,9 @@ import rx.Subscriber;
 
 public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
-    public static final String PRODUCT_ID = "ProductID";
-    public static final String QUANTITY = "Quantity";
-    public static final String NOTES = "Notes";
+    public static final String PRODUCT_ID = "product_id";
+    public static final String QUANTITY = "quantity";
+    public static final String NOTES = "notes";
     public static final String SHOP_ID = "shop_id";
     public static final String PARAM = "param";
 
