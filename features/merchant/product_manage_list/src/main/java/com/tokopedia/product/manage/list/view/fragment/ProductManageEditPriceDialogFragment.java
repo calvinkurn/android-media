@@ -47,7 +47,6 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private boolean isOfficialStore;
     private ListenerDialogEditPrice listenerDialogEditPrice;
 
-    //private SpinnerCounterInputView spinnerCounterInputViewPrice;
     private CounterInputView counterInputView;
     private TextView saveButton;
     private TextView cancelButton;
