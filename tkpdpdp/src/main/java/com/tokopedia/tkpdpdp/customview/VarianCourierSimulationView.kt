@@ -103,9 +103,11 @@ class VarianCourierSimulationView : BaseCustomView {
         when(show){
             true -> {
                 view_destination.visibility = View.VISIBLE
+                view_courier.visibility = View.VISIBLE
             }
             false -> {
                 view_destination.visibility = View.GONE
+                view_courier.visibility = View.GONE
             }
         }
     }

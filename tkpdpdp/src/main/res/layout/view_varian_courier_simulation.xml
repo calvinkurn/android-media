@@ -68,6 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:visibility="visible"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:orientation="vertical"
@@ -77,6 +78,7 @@
         app:layout_constraintTop_toBottomOf="@+id/view_variant_field">
 
         <LinearLayout
+            android:id="@+id/view_courier"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -124,6 +126,42 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/view_shop_address"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_shop_location"
+                android:layout_width="@dimen/med_dp"
+                android:layout_height="@dimen/med_dp"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                app:srcCompat="@drawable/ic_shop_location_pdp"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_shop_location_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_courier_from"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_small" />
+
+            <TextView
+                android:id="@+id/tv_shop_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/font_small"
+                android:textStyle="bold"
+                tools:text="Kota Depok" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/view_destination"
             android:layout_marginTop="@dimen/dp_14"
             android:gravity="center_vertical"
@@ -159,42 +197,6 @@
                 android:textSize="@dimen/font_small"
                 android:textStyle="bold"
                 tools:text="Kab. Bolaang Mongondow Selatan" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/view_shop_address"
-            android:layout_marginTop="@dimen/dp_16"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/img_shop_location"
-                android:layout_width="@dimen/med_dp"
-                android:layout_height="@dimen/med_dp"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                app:srcCompat="@drawable/ic_shop_location_pdp"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/tv_shop_location_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_courier_from"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/font_small" />
-
-            <TextView
-                android:id="@+id/tv_shop_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/font_small"
-                android:textStyle="bold"
-                tools:text="Kota Depok" />
         </LinearLayout>
 
     </LinearLayout>
