@@ -89,8 +89,6 @@ public class CartDigitalContract {
 
         String getIdemPotencyKey();
 
-        void checkCallPermissionForNOTP();
-
         Context getApplicationContext();
 
         Activity getActivity();
@@ -127,10 +125,6 @@ public class CartDigitalContract {
         void processPatchOtpCart(String digitalCategoryId);
 
         void autoApplyCouponIfAvailable(String digitalCategoryId);
-
-        void callPermissionCheckSuccess();
-
-        void callPermissionCheckFail();
 
         void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData,  int extraComeFrom);
 
