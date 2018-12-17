@@ -42,7 +42,7 @@ public class AuthUtil {
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     public static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
-    private static final String HEADER_PATH = "x-tkpd-path";
+    private static final String HEADER_PATH = "X-Tkpd-Path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
@@ -155,8 +155,45 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    public static Map<String, String> generateHeadersWithPath(
+            String path, String strParam, String method, String authKey, String contentType, String userId
+    ) {
+        Map<String, String> finalHeader = getDefaultHeaderMapOld(
+                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
+                authKey, DATE_FORMAT, userId
+        );
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_PATH, path);
+        return finalHeader;
+    }
 
-    public static TKPDMapParam<String, String> generateParamsNetwork(String userId, String deviceId, TKPDMapParam<String, String> params) {
+    public static Map<String, String> getDefaultHeaderMapOld(String path, String strParam, String method,
+                                                          String contentType, String authKey,
+                                                          String dateFormat, String userId) {
+        String date = generateDate(dateFormat);
+        String contentMD5 = generateContentMd5(strParam);
+
+        String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, contentType);
+        headerMap.put(HEADER_X_METHOD, method);
+        headerMap.put(HEADER_REQUEST_METHOD, method);
+        headerMap.put(HEADER_CONTENT_MD5, contentMD5);
+        headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
+
+        headerMap.put(HEADER_USER_ID, userId);
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        return headerMap;
+    }
+
+    public static Map<String, String> generateParamsNetwork(String userId, String deviceId, Map<String, String> params) {
         String hash = md5(userId + "~" + deviceId);
         params.put(PARAM_USER_ID, userId);
         params.put(PARAM_DEVICE_ID, deviceId);

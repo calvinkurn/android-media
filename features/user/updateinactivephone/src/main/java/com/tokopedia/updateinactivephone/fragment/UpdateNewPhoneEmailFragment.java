@@ -47,8 +47,8 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
-        UpdateInactivePhoneEventTracking.eventViewKirimPengajuan();
+        ScreenTracking.screen(getActivity(),getScreenName());
+        UpdateInactivePhoneEventTracking.eventViewKirimPengajuan(getActivity());
     }
 
     @Override
@@ -132,7 +132,7 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
 
         submissionButton.setOnClickListener(view1 ->
         {
-            UpdateInactivePhoneEventTracking.eventClickKirimPengajuan();
+            UpdateInactivePhoneEventTracking.eventClickKirimPengajuan(getActivity());
             updateNewPhoneEmailInteractor.onSubmissionButtonClicked(
                     newEmailEditText.getText().toString(),
                     newPhoneEditText.getText().toString(),

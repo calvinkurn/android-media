@@ -45,6 +45,18 @@ public class CartMultipleAddressDataListResponse {
     @Expose
     private List<CartList> cartList = new ArrayList<>();
 
+    @SerializedName("autoapply_v2")
+    @Expose
+    private AutoapplyV2 autoapplyV2;
+
+    public AutoapplyV2 getAutoapplyV2() {
+        return autoapplyV2;
+    }
+
+    public void setAutoapplyV2(AutoapplyV2 autoapplyV2) {
+        this.autoapplyV2 = autoapplyV2;
+    }
+
     public int getIsCouponActive() {
         return isCouponActive;
     }

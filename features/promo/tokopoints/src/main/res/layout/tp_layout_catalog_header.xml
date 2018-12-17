@@ -8,6 +8,7 @@
     android:paddingEnd="@dimen/tp_padding_medium"
     android:paddingLeft="@dimen/tp_padding_medium"
     android:paddingRight="@dimen/tp_padding_medium"
+    android:visibility="gone"
     android:paddingStart="@dimen/tp_padding_medium"
     android:paddingTop="@dimen/tp_padding_regular">
 

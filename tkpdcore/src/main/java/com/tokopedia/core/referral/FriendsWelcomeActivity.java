@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -19,6 +19,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
+
+    private static final String WELCOME_SCREEN = "/referral/friends";
 
     @DeepLink(Constants.Applinks.REFERRAL_WELCOME)
     public static Intent getCallingReferral(Context context, Bundle extras) {
@@ -39,6 +41,11 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
         if(!isappShowReferralButtonActivated(this)){
             finish();
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return WELCOME_SCREEN;
     }
 
     @Override
@@ -64,7 +71,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
             getFragmentManager().beginTransaction().replace(R.id.container,
                     FragmentReferralFriendsWelcome.newInstance()).commit();
 
-        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_friend_welcome_screen_name));
+        TrackingUtils.sendMoEngageReferralScreenOpen(this, getString(R.string.referral_friend_welcome_screen_name));
 
     }
 

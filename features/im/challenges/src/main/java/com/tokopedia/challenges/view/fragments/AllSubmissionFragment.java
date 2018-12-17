@@ -1,7 +1,6 @@
 package com.tokopedia.challenges.view.fragments;
 
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -14,26 +13,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.contractor.AllSubmissionContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.AllSubmissionPresenter;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
+import com.tokopedia.challenges.view.utils.Utils;
 
 import java.util.List;
-
-import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
-import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
-import com.tokopedia.challenges.view.utils.Utils;
 
 import javax.inject.Inject;
 
@@ -56,6 +51,8 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     private String challengeId;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
+    private final static String SCREEN_NAME = "challenges/submission_listing";
+
 
     public static Fragment createInstance(Bundle extras) {
         AllSubmissionFragment categoryFragment = new AllSubmissionFragment();
@@ -87,9 +84,9 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE || ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE) {
             ChallengesCacheHandler.setChallengeAllSubmissionssListCache();//to avoid duplicacy from onstart
         }
-
-            return view;
+        return view;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -256,5 +253,11 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         if (recyclerview.getAdapter() != null) {
             ((SubmissionItemAdapter) recyclerview.getAdapter()).clearList();
         }
+    }
+
+    @Override
+    public void onResume() {
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+        super.onResume();
     }
 }

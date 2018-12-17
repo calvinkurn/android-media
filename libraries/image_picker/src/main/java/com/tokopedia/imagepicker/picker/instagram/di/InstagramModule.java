@@ -27,7 +27,6 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 5/4/18.
  */
 
-@InstagramScope
 @Module
 public class InstagramModule {
 

@@ -118,8 +118,8 @@ public class BaseKolView extends BaseCustomView {
 
         commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
         likeButton.setVisibility(element.isShowLike() ? View.VISIBLE : View.GONE);
-        menuButton.setVisibility(element.isDeletable() ? View.VISIBLE : View.GONE);
         badge.setVisibility(element.isKol() ? View.VISIBLE : View.GONE);
+        menuButton.setVisibility(shouldShowMenu(element) ? View.VISIBLE : View.GONE);
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
@@ -196,6 +196,10 @@ public class BaseKolView extends BaseCustomView {
                     R.color.white));
             followText.setText(R.string.action_follow_english);
         }
+    }
+
+    private boolean shouldShowMenu(BaseKolViewModel baseKolViewModel) {
+        return baseKolViewModel.isDeletable() || baseKolViewModel.isReportable();
     }
 
     private void setKolText(final BaseKolViewModel element) {

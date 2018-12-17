@@ -1,10 +1,12 @@
 package com.tokopedia.digital.product.view.presenter;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.product.domain.interactor.GetOperatorsByCategoryIdUseCase;
-import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
-import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -12,20 +14,18 @@ import rx.Subscriber;
  * Created by Rizky on 12/19/17.
  */
 
-public class OperatorChooserPresenter implements IOperatorChooserPresenter {
+public class OperatorChooserPresenter extends BaseDaggerPresenter<OperatorChooserContract.View> implements OperatorChooserContract.Presenter {
 
     private GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase;
-    private IOperatorChooserView view;
 
-    public OperatorChooserPresenter(IOperatorChooserView view,
-                                    GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase) {
-        this.view = view;
+    @Inject
+    public OperatorChooserPresenter(GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase) {
         this.getOperatorsByCategoryIdUseCase = getOperatorsByCategoryIdUseCase;
     }
 
     @Override
     public void getOperatorsByCategoryId(String categoryId) {
-        view.showInitialProgressLoading();
+        getView().showInitialProgressLoading();
 
         getOperatorsByCategoryIdUseCase.execute(
                 getOperatorsByCategoryIdUseCase.createRequestParam(categoryId),
@@ -42,10 +42,10 @@ public class OperatorChooserPresenter implements IOperatorChooserPresenter {
 
                     @Override
                     public void onNext(List<Operator> operators) {
-                        view.hideInitialProgressLoading();
+                        getView().hideInitialProgressLoading();
 
                         if (!operators.isEmpty()) {
-                            view.showOperators(operators);
+                            getView().showOperators(operators);
                         }
                     }
                 }

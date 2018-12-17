@@ -114,7 +114,7 @@
     <string name="product_youtube_add_url_title">Tambah URL Video</string>
     <string name="product_label_video">Video Produk</string>
     <string name="product_video_count">%1d Video</string>
-    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
+    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan %1$s</string>
     <string name="product_add_whole_sale_title">Tambah Harga Grosir</string>
     <string name="product_price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
     <string name="product_price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
