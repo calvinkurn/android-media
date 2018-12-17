@@ -44,7 +44,8 @@ class ProductInfoShortView : BaseCustomView {
                 && data.preOrder.preorderProcessTime != "0"
                 && data.preOrder.preorderProcessTimeType != "0"
                 && data.preOrder.preorderProcessTimeTypeString != "0") {
-            tv_preorder.setText(String.format("%s %s %s", "Waktu Proses",
+            tv_preorder.setText(String.format(
+                    resources.getString(R.string.value_preorder_process_time),
                     data.preOrder.preorderProcessTime,
                     data.preOrder.preorderProcessTimeTypeString))
             showPreorder(true)

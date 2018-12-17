@@ -104,7 +104,8 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
                 && data?.preOrder?.preorderProcessTime != "0"
                 && data?.preOrder?.preorderProcessTimeType != "0"
                 && data?.preOrder?.preorderProcessTimeTypeString != "0") {
-            true -> tv_preorder.text = String.format("%s %s %s", "Waktu Proses",
+            true -> tv_preorder.text = String.format(
+                    getString(R.string.value_preorder_process_time),
                     data?.preOrder?.preorderProcessTime,
                     data?.preOrder?.preorderProcessTimeTypeString)
             false -> {
@@ -208,19 +209,25 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
                                                           private val etalaseId : String,
                                                           private val shopId : String,
                                                           private val context : Context) : View.OnClickListener {
+        val KEY_ETALASE_NAME : String = "etalase_name"
+        val KEY_ETALASE_ID : String = "etalase_id"
+        val KEY_SHOP_ID : String = "shop_id"
+        val EMPTY_STRING : String = ""
 
         override fun onClick(v: View) {
             val bundle = Bundle()
-            bundle.putString("etalase_name", MethodChecker.fromHtml(etalaseName)?.toString())
-            bundle.putString("etalase_id", etalaseId)
-            bundle.putString("shop_id", shopId)
-            val etalaseId = bundle.getString("etalase_id")
+            bundle.putString(KEY_ETALASE_NAME, MethodChecker.fromHtml(etalaseName)?.toString())
+            bundle.putString(KEY_ETALASE_ID, etalaseId)
+            bundle.putString(KEY_SHOP_ID, shopId)
+            val etalaseId = bundle.getString(KEY_ETALASE_ID)
 
             var intent: Intent? = null
             if (!TextUtils.isEmpty(etalaseId)) {
-                intent = (context.applicationContext as PdpRouter).getShoProductListIntent(context, bundle.getString("shop_id"), "", etalaseId)
+                intent = (context.applicationContext as PdpRouter).getShoProductListIntent(context,
+                        bundle.getString(KEY_SHOP_ID), EMPTY_STRING, etalaseId)
             } else {
-                intent = (context.applicationContext as PdpRouter).getShopPageIntent(context, bundle.getString("shop_id"))
+                intent = (context.applicationContext as PdpRouter).getShopPageIntent(context,
+                        bundle.getString(KEY_SHOP_ID))
             }
 
             startActivity(intent)
