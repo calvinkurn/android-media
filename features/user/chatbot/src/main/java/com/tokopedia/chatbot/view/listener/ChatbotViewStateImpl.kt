@@ -69,11 +69,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showReplyBox()
         showPickerButton()
         checkShowQuickReply(chatroomViewModel)
-        setLoadMore(chatroomViewModel)
-    }
-
-    private fun setLoadMore(chatroomViewModel: ChatroomViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
