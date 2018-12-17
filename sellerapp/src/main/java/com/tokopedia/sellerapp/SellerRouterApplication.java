@@ -226,6 +226,7 @@ import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachP
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
@@ -266,7 +267,7 @@ public abstract class SellerRouterApplication extends MainApplication
         com.tokopedia.tkpdpdp.ProductDetailRouter,
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
-        LoginRegisterRouter {
+        LoginRegisterRouter,UnifiedOrderListRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1669,7 +1670,10 @@ public abstract class SellerRouterApplication extends MainApplication
                                            @NonNull ArrayList<HashMap<String, String>> hashProducts) {
         return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
-
+    @Override
+    public Fragment getFlightOrderListFragment() {
+        return null;
+    }
     @Override
     public Intent getHelpUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
