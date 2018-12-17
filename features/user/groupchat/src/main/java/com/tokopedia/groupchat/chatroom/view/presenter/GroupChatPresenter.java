@@ -59,7 +59,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     public void connectWebSocket(UserSession userSession, String channelId, String groupChatToken
             , SettingGroupChat settingGroupChat) {
-        String magicString = TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN;
+        String magicString = ChatroomUrl.GROUP_CHAT_WEBSOCKET_DOMAIN;
         magicString = localCacheHandler.getString("ip_groupchat", magicString);
 
         this.webSocketUrlWithToken = (String.format("%s%s%s%s%s", magicString, ChatroomUrl
