@@ -22,6 +22,7 @@ public interface CMConstant {
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
         String CAROUSAL_NOTIFICATION = "Carousal";
+        String SILENT_PUSH = "Silent";
     }
 
 
