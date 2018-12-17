@@ -43,13 +43,12 @@ class FlashSaleProductWidget @JvmOverloads constructor(
     }
 
     /**
-     * Only show the stock statistics only if the product is accepted and outside the inReview and Ready State
+     * Only show the stock statistics only if the product is outside the inReview and Ready State
      */
     fun shouldShowStatisticPostSubmission(item: FlashSaleProductItem?): Boolean {
         return item is FlashSalePostProductItem &&
                 item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.IN_REVIEW &&
-                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.READY &&
-                item.getCampaignAdminStatusId() == FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED
+                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.READY
     }
 
     fun setData(item: FlashSaleProductItem?) {
