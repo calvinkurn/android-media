@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
@@ -53,7 +54,7 @@ class ProductInfoShortDetailActivity : AppCompatActivity(),
         setTheme(R.style.Theme_Tokopedia3)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = resources.getColor(R.color.green_600)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.green_600)
         }
         localCacheHandler = LocalCacheHandler(this,  PRODUCT_DETAIL)
         setContentView(getLayout())
