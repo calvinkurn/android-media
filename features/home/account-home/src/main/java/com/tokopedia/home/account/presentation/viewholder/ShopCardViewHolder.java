@@ -43,5 +43,7 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
 
         shopCardView.setKyc(element.getVerificationStatus(), element.getVerificationStatusName(),
                 () -> listener.onKycLinkClicked(element.getVerificationStatus()));
+
+        shopCardView.setTopAdsDeposit(element.getDataDeposit());
     }
 }

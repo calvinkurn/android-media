@@ -21,7 +21,7 @@ public class FiltersBottomSheet extends BottomSheets {
     private int lastCheckedPosition = Integer.MIN_VALUE, lastSavedPosition = Integer.MIN_VALUE;
 
     public interface OnSaveFilterCallback {
-        void onSaveFilter(CatalogFilterPointRange filter);
+        void onSaveFilter(CatalogFilterPointRange filter, int selectedPosition);
     }
 
     @Override
@@ -42,10 +42,10 @@ public class FiltersBottomSheet extends BottomSheets {
                     if (lastSavedPosition != Integer.MIN_VALUE)
                         mFilterDetails.get(lastSavedPosition).setSelected(false);
                     lastSavedPosition = lastCheckedPosition;
-                    onSaveFilterCallback.onSaveFilter(mFilterDetails.get(lastSavedPosition));
+                    onSaveFilterCallback.onSaveFilter(mFilterDetails.get(lastSavedPosition), lastSavedPosition);
                     mFilterDetails.get(lastSavedPosition).setSelected(true);
                 } else
-                    onSaveFilterCallback.onSaveFilter(null);
+                    onSaveFilterCallback.onSaveFilter(null, lastSavedPosition);
                 dismiss();
             }
         });

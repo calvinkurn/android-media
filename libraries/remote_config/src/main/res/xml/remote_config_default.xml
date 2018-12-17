@@ -276,4 +276,8 @@
         <key>app_enable_power_merchant_rebrand</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_digital_channel_recommendation</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

@@ -90,9 +90,13 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     public void initPresenter() {
         presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
-        presenter.setMaxItems(styledAttributes.getInteger(R.styleable.TopAdsView_items, 2));
-        String ep = styledAttributes.getString(R.styleable.TopAdsView_ep);
-        presenter.setEndpoinParam((ep == null ? "0" : ep));
+        try {
+            presenter.setMaxItems(styledAttributes.getInteger(R.styleable.TopAdsView_items, 2));
+            String ep = styledAttributes.getString(R.styleable.TopAdsView_ep);
+            presenter.setEndpoinParam((ep == null ? "0" : ep));
+        }finally {
+            styledAttributes.recycle();
+        }
     }
 
     public void setAdsListener(TopAdsListener adsListener) {
