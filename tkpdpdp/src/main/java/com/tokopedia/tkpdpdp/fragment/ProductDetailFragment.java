@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +40,6 @@ import android.net.Uri;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.perf.metrics.Trace;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -52,14 +53,20 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
+import com.tokopedia.tkpdpdp.DescriptionActivityNew;
+import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
+import com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView;
+import com.tokopedia.tkpdpdp.customview.ProductInfoShortView;
+import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
+import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
+import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -129,7 +136,6 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpdpdp.CourierActivity;
-import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
@@ -144,7 +150,6 @@ import com.tokopedia.tkpdpdp.customview.ButtonAffiliate;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
-import com.tokopedia.tkpdpdp.customview.DetailInfoView;
 import com.tokopedia.tkpdpdp.customview.FlingBehavior;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
@@ -153,11 +158,8 @@ import com.tokopedia.tkpdpdp.customview.MostHelpfulReviewView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
-import com.tokopedia.tkpdpdp.customview.PriceSimulationView;
 import com.tokopedia.tkpdpdp.customview.PromoWidgetView;
-import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
-import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
@@ -293,10 +295,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
-    private DetailInfoView detailInfoView;
+    private ProductInfoAttributeView productInfoAttributeView;
     private PictureView pictureView;
-    private RatingTalkCourierView ratingTalkCourierView;
-    private PriceSimulationView priceSimulationView;
+    private RatingTalkCourierView ratingTalkDescriptionView;
+    private VarianCourierSimulationView varianCourierSimulationView;
     private PromoWidgetView promoWidgetView;
     private ImageFromBuyerView imageFromBuyerView;
 
@@ -304,8 +306,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private MerchantVoucherListWidget merchantVoucherListWidget;
     private View promoContainer;
 
+    private ProductInfoShortView productInfoShortView;
+    private WholesaleInstallmentView wholesaleInstallmentView;
     private ShopInfoViewV2 shopInfoView;
-    private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
     private MostHelpfulReviewView mostHelpfulReviewView;
     private OtherProductsView otherProductsView;
@@ -472,9 +475,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinator);
         tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
         headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
+        productInfoAttributeView = view.findViewById(R.id.view_product_info_attribute);
         pictureView = (PictureView) view.findViewById(R.id.view_picture);
-        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
-        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
+        ratingTalkDescriptionView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
         newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
         videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
@@ -494,14 +497,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         topAds = view.findViewById(R.id.topads);
         collapsingToolbarLayout
                 = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-        transactionDetailView
-                = (TransactionDetailView) view.findViewById(R.id.view_transaction_detail);
-        priceSimulationView
-                = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
+        varianCourierSimulationView
+                = view.findViewById(R.id.view_varian_courier_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
         rootView = (LinearLayout) view.findViewById(R.id.root_view);
         buttonAffiliate = view.findViewById(R.id.buttonAffiliate);
-
+        productInfoShortView = view.findViewById(R.id.view_product_info_short);
+        wholesaleInstallmentView = view.findViewById(R.id.view_wholesale_installment);
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
@@ -656,8 +658,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         headerInfoView.setListener(this);
         pictureView.setListener(this);
         buttonBuyView.setListener(this);
-        ratingTalkCourierView.setListener(this);
-        detailInfoView.setListener(this);
+        ratingTalkDescriptionView.setListener(this);
+        productInfoShortView.setListener(this);
+        wholesaleInstallmentView.setListener(this);
         lastUpdateView.setListener(this);
         otherProductsView.setListener(this);
         newShopView.setListener(this);
@@ -665,8 +668,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         videoDescriptionLayout.setListener(this);
         promoWidgetView.setListener(this);
         mostHelpfulReviewView.setListener(this);
-        transactionDetailView.setListener(this);
-        priceSimulationView.setListener(this);
+        varianCourierSimulationView.setListener(this);
         latestTalkView.setListener(this);
         buttonAffiliate.setListener(this);
         imageFromBuyerView.setListener(this);
@@ -1044,11 +1046,67 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onDescriptionClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(getActivity(), DescriptionActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    public void onDescriptionClicked(Intent intent) {
+        intent.setClass(getActivityContext(), DescriptionActivityNew.class);
         getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onDescriptionClicked(Intent intent, View textDescription, View videoView) {
+        intent.setClass(getActivityContext(), DescriptionActivityNew.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            List<Pair> pairList = new ArrayList<>();
+            if (textDescription.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(textDescription, textDescription.getTransitionName()));
+            }
+            if (videoView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(videoView, videoView.getTransitionName()));
+            }
+
+            Pair[] pairs = new Pair[pairList.size()];
+            ActivityOptions options = ActivityOptions
+                    .makeSceneTransitionAnimation(getActivity(),
+                            pairList.toArray(pairs));
+            getActivity().overridePendingTransition(0,0);
+            startActivity(intent,options.toBundle());
+        } else {
+            getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onProductInfoShortClicked(Intent intent){
+        intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onProductInfoShortClicked(Intent intent, View preorderView, View minOrderView, View conditionView){
+        intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            List<Pair> pairList = new ArrayList<>();
+            if (preorderView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(preorderView, preorderView.getTransitionName()));
+            }
+            if (minOrderView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(minOrderView, minOrderView.getTransitionName()));
+            }
+            if (conditionView.getVisibility() == View.VISIBLE){
+                pairList.add(Pair.create(conditionView, conditionView.getTransitionName()));
+            }
+
+            Pair[] pairs = new Pair[pairList.size()];
+            ActivityOptions activityOptions = ActivityOptions
+                    .makeSceneTransitionAnimation(getActivity(), pairList.toArray(pairs));
+            getActivity().overridePendingTransition(0,0);
+            startActivity(intent,activityOptions.toBundle());
+        } else {
+            getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -1057,6 +1115,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
+    }
+
+    @Override
+    public void onDescriptionClicked(@NonNull Bundle bundle) {
+
     }
 
     @Override
@@ -1093,11 +1156,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderTempProductData(ProductPass productPass) {
         this.headerInfoView.renderTempData(productPass);
         this.pictureView.renderTempData(productPass);
-        this.ratingTalkCourierView.renderTempdata(productPass);
+        this.ratingTalkDescriptionView.renderTempdata(productPass);
         if (productPass.isWishlist()) {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red_pdp));
         } else {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_pdp));
         }
         fabWishlist.setVisibility(View.VISIBLE);
     }
@@ -1180,7 +1243,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onWishlistCountLoaded(@NonNull String wishlistCountText) {
-        transactionDetailView.renderWishlistCount(wishlistCountText);
+        productInfoAttributeView.renderWishlistCount(wishlistCountText);
     }
 
     @Override
@@ -1208,15 +1271,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (!isFromExploreAffiliate()) {
             this.buttonBuyView.renderData(successResult);
         }
-        this.ratingTalkCourierView.renderData(successResult, viewData);
-        this.transactionDetailView.renderData(successResult);
-        this.detailInfoView.renderData(successResult);
+        this.productInfoShortView.renderProductData(productData);
+        this.wholesaleInstallmentView.renderProductData(productData);
+        this.varianCourierSimulationView.setProductDetailData(productData);
+        this.productInfoAttributeView.renderData(successResult);
+        this.ratingTalkDescriptionView.renderData(successResult, viewData);
         this.lastUpdateView.renderData(successResult);
         this.shopInfoView.renderData(successResult);
         this.otherProductsView.renderData(successResult);
         this.newShopView.renderData(successResult);
         this.videoDescriptionLayout.renderData(successResult);
-        this.priceSimulationView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(getActivity(), successResult, AFInAppEventType.CONTENT_VIEW);
@@ -1309,9 +1373,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             }
 
         } else if (status == 1) {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red_pdp));
         } else {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_pdp));
         }
         fabWishlist.setVisibility(View.VISIBLE);
         updateWishlistStatusVariant(status);
@@ -1339,6 +1403,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void loadVideo(VideoData data) {
         this.videoDescriptionLayout.renderVideoData(data, youTubeThumbnailLoadInProcessListener);
+        this.ratingTalkDescriptionView.setVideoData(data, youTubeThumbnailLoadInProcessListener);
         videoData = data;
     }
 
@@ -1678,7 +1743,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         if (data.getParcelableExtra(KEY_LEVEL2_SELECTED) != null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
                             variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
                         }
-                        priceSimulationView.updateVariant(generateVariantString());
+                        varianCourierSimulationView.updateVariant(generateVariantString());
                         if (productVariant != null) {
                             pictureView.renderData(productData);
                             headerInfoView.renderData(productData);
@@ -1687,7 +1752,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                     productData.getInfo());
                             shopInfoView.renderData(productData);
                             presenter.updateRecentView(getActivity(), productData.getInfo().getProductId());
-                            ratingTalkCourierView.renderData(productData, viewData);
+                            ratingTalkDescriptionView.renderData(productData, viewData);
                             latestTalkView.renderData(productData);
                             buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                                     productData.getInfo().getProductId()).isIsBuyable(), productData);
@@ -1953,9 +2018,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void addProductVariant(ProductVariant productVariant) {
         if (productData != null) {
             this.productVariant = productVariant;
-            this.priceSimulationView.addProductVariant(productVariant, productData);
+            this.varianCourierSimulationView.addProductVariant(productVariant, productData);
             if (variantLevel1 != null && variantLevel1 instanceof Option) {
-                priceSimulationView.updateVariant(generateVariantString());
+                varianCourierSimulationView.updateVariant(generateVariantString());
             }
             int defaultChild = productVariant.getParentId() == productData.getInfo().getProductId()
                     ? productVariant.getDefaultChild() : productData.getInfo().getProductId();
@@ -2066,16 +2131,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
             toolbar.setTitleTextColor(ContextCompat.getColor(getActivity(), R.color.grey_toolbar_icon));
             toolbar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_pdp_dark);
             if (menu != null && menu.size() > 2) {
-                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share));
+                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_dark));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_dark));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_pdp_dark));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
             }
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more));
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_overflow_pdp_dark));
         }
     }
 
@@ -2084,16 +2149,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             collapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getActivity(), R.color.white));
             collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
             toolbar.setBackgroundColor(Color.TRANSPARENT);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_pdp_light);
             if (menu != null && menu.size() > 1) {
-                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share_white));
+                menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_light));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
                 menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
             }
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more_white));
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_overflow_pdp_light));
         }
     }
 
@@ -2560,8 +2625,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onSuccesLoadRateEstimaion(RatesModel ratesModel) {
-        priceSimulationView.updateRateEstimation(ratesModel);
+    public void onErrorLoadRateEstimation() {
+        varianCourierSimulationView.renderRateEstimation();
+    }
+
+    @Override
+    public void onSuccesLoadRateEstimation(RatesModel ratesModel) {
+        varianCourierSimulationView.renderRateEstimation(ratesModel);
     }
 
     @Override
