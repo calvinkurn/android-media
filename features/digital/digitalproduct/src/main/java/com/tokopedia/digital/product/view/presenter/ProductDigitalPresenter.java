@@ -227,7 +227,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     }
 
     private void handleCategoryError(Throwable e) {
-        e.printStackTrace();
         if (e instanceof UnknownHostException || e instanceof ConnectException) {
             /* Ini kalau ga ada internet */
             view.renderErrorNoConnectionProductDigitalData(
