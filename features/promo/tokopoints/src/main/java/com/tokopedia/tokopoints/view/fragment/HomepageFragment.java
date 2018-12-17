@@ -90,6 +90,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private View dynamicLinksContainer;
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
+    private HomepagePagerAdapter homepagePagerAdapter;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
@@ -455,7 +456,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onErrorPromos(String error) {
-
+        homepagePagerAdapter.setRefreshing(false);
     }
 
     @Override
@@ -634,7 +635,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons, Map<String, String> emptyMessages) {
-        HomepagePagerAdapter homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
+        homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
+        homepagePagerAdapter.setRefreshing(false);
         homepagePagerAdapter.setEmptyMessages(emptyMessages);
         mPagerPromos.setAdapter(homepagePagerAdapter);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
@@ -650,9 +652,11 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             public void onPageSelected(int position) {
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
+                    mPresenter.setPagerSelectedItem(position);
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
+                    mPresenter.setPagerSelectedItem(position);
                 }
             }
 
@@ -661,6 +665,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             }
         });
+        mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
     }
 
     private void decorateDialog(AlertDialog dialog) {

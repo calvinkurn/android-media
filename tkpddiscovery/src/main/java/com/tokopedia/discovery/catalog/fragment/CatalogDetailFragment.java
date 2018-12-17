@@ -16,7 +16,6 @@ import com.tkpd.library.ui.view.ExpandableTextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;

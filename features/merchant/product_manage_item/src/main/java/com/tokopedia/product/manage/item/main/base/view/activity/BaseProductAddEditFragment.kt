@@ -83,17 +83,20 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         presenter.getShopInfo()
 
         savedInstanceState?.run {
-            if(containsKey(EXTRA_IS_OFFICIAL_STORE)){
+            if (containsKey(EXTRA_IS_OFFICIAL_STORE)) {
                 officialStore = getBoolean(EXTRA_IS_OFFICIAL_STORE)
             }
-            if(containsKey(EXTRA_IS_FREE_RETURN)){
+            if (containsKey(EXTRA_IS_FREE_RETURN)) {
                 isFreeReturn = getBoolean(EXTRA_IS_FREE_RETURN)
             }
-            if(containsKey(EXTRA_IS_GOLD_MERCHANT)){
+            if (containsKey(EXTRA_IS_GOLD_MERCHANT)) {
                 isGoldMerchant = getBoolean(EXTRA_IS_GOLD_MERCHANT)
             }
+            currentProductAddViewModel = cacheManager.get(SAVED_PRODUCT_VIEW_MODEL, ProductAddViewModel::class.java)
         }
-        currentProductAddViewModel = cacheManager.get(SAVED_PRODUCT_VIEW_MODEL,ProductAddViewModel::class.java) ?: ProductAddViewModel()
+        if (currentProductAddViewModel == null) {
+            currentProductAddViewModel = ProductAddViewModel()
+        }
         return inflater.inflate(R.layout.fragment_base_product_edit, container, false)
     }
 
@@ -118,7 +121,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewEtalaseProduct.setOnClickListener { startProductEtalaseActivity() }
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
-        button_save.setOnClickListener{
+        button_save.setOnClickListener {
             if (currentProductAddViewModel?.isDataValid(this) == true) {
                 saveDraft(true)
             }
@@ -175,7 +178,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     private fun startProductEtalaseActivity() {
         if (appRouter != null && appRouter is ProductEditModuleRouter) {
             activity?.run {
-                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId?:-1),
+                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId
+                        ?: -1),
                         REQUEST_CODE_GET_ETALASE)
             }
 
@@ -205,7 +209,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_NAME -> {
                     val productName: ProductName = data.getParcelableExtra(EXTRA_NAME)
-                    if(productName.name != currentProductAddViewModel?.productName?.name){
+                    if (productName.name != currentProductAddViewModel?.productName?.name) {
                         currentProductAddViewModel?.resetCatalog()
                     }
                     currentProductAddViewModel?.productName = productName
@@ -216,7 +220,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 }
                 REQUEST_CODE_GET_STOCK -> {
                     val productStock: ProductStock = data.getParcelableExtra(EXTRA_STOCK)
-                    if(currentProductAddViewModel?.productStock?.stockCount?:0 != productStock.stockCount){
+                    if (currentProductAddViewModel?.productStock?.stockCount ?: 0 != productStock.stockCount) {
                         currentProductAddViewModel?.productVariantViewModel?.changeStockTo(getStatusStockViewVariant(productStock))
                     }
                     currentProductAddViewModel?.productStock = productStock
@@ -334,7 +338,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                 visibility = View.VISIBLE
                 text = currentProductViewModel?.productCatalog?.catalogName
             }
-        }else{
+        } else {
             textViewCatalog.run {
                 visibility = View.GONE
                 text = ""
@@ -352,13 +356,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         if (!TextUtils.isEmpty(currentProductViewModel.productDescription?.description)) {
             labelViewDescriptionProduct.setContent(currentProductViewModel.productDescription?.description)
             labelViewDescriptionProduct.setSubTitle("")
-        }else{
+        } else {
             labelViewDescriptionProduct.setContent("")
             labelViewDescriptionProduct.setSubTitle(getString(R.string.product_subtitle_product_description))
         }
         if ((currentProductViewModel.productPrice?.price ?: 0.0) > 0) {
             labelViewPriceProduct.setSubTitle("")
-            val currencyString = CurrencyFormatUtil.convertPriceValue(currentProductViewModel.productPrice?.price?:0.0, true)
+            val currencyString = CurrencyFormatUtil.convertPriceValue(currentProductViewModel.productPrice?.price
+                    ?: 0.0, true)
             when (currentProductViewModel.productPrice?.currencyType) {
                 CurrencyTypeDef.TYPE_USD -> labelViewPriceProduct.setContent(getString(R.string.usd_format, currencyString))
                 CurrencyTypeDef.TYPE_IDR -> labelViewPriceProduct.setContent(getString(R.string.rupiah_format, currencyString))
@@ -440,9 +445,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onSuccessGetProductVariantCat(productVariantByCatModelList: MutableList<ProductVariantByCatModel>?) {
-        if(productVariantByCatModelList != null){
+        if (productVariantByCatModelList != null) {
             currentProductAddViewModel?.productVariantByCatModelList = productVariantByCatModelList as ArrayList<ProductVariantByCatModel>
-        }else{
+        } else {
             currentProductAddViewModel?.productVariantByCatModelList = ArrayList()
         }
         populateView(currentProductAddViewModel)
@@ -456,7 +461,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         currentProductAddViewModel?.run {
             if (productVariantByCatModelList.size == 0) {
                 NetworkErrorHelper.createSnackbarWithAction(activity) {
-                    presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId?.toLong() ?: 0L)
+                    presenter.fetchProductVariantByCat(currentProductAddViewModel?.productCategory?.categoryId?.toLong()
+                            ?: 0L)
                 }.showRetrySnackbar()
                 return
             }
@@ -467,7 +473,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                         productVariantByCatModelList, productVariantViewModel,
                         productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR,
                         productPrice?.price ?: 0.0,
-                        getStatusStockViewVariant(productStock?: ProductStock()),
+                        getStatusStockViewVariant(productStock ?: ProductStock()),
                         officialStore, productStock?.sku, isEdittingDraft(),
                         productSizeChart, hasOriginalVariantLevel1 == true,
                         hasOriginalVariantLevel2 == true,
@@ -478,13 +484,13 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun getStatusStockViewVariant(productStock: ProductStock) =
-        if(!productStock.isActive){
-            StockTypeDef.TYPE_WAREHOUSE
-        }else if(productStock.isActive && productStock.stockCount > 0){
-            StockTypeDef.TYPE_ACTIVE_LIMITED
-        }else{
-            StockTypeDef.TYPE_ACTIVE
-        }
+            if (!productStock.isActive) {
+                StockTypeDef.TYPE_WAREHOUSE
+            } else if (productStock.isActive && productStock.stockCount > 0) {
+                StockTypeDef.TYPE_ACTIVE_LIMITED
+            } else {
+                StockTypeDef.TYPE_ACTIVE
+            }
 
 
     private fun sendAnalyticsAdd(viewModel: ProductViewModel?) {

@@ -12,6 +12,7 @@ include "features:content:kol_common"
 include "features:content:profile"
 include "features:content:interest_pick"
 
+include "features:digital:common_digital"
 include "features:digital:flight_no_op"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"
@@ -57,6 +58,7 @@ include "features:merchant:reputation"
 include "features:merchant:product_draft_database"
 include "features:merchant:product_manage_item"
 include "features:merchant:product_manage_list"
+include "features:merchant:product_share"
 include "features:merchant:shop_common"
 include "features:merchant:shop_page"
 //include "features:merchant:shop_page_no_op"
@@ -79,6 +81,10 @@ include "features:product:gallery"
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"
 include "features:promo:tokopoints"
+include "features:promo:promo_checkout"
+include "features:promo:promo_checkout_common"
+include "features:promo:loyalty"
+include "features:promo:loyalty_common"
 
 include "features:top_ads:top_ads_dashboard"
 //include "features:top_ads:top_ads_dashboard_no_op"
@@ -112,7 +118,6 @@ include "features:user:user_identification"
 include "features:user:user_identification_common"
 
 include 'logisticanalytics'
-include 'tkpdloyalty'
 include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'

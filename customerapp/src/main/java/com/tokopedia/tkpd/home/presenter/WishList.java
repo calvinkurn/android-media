@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
@@ -74,7 +74,7 @@ public interface WishList {
 
     void fetchDataFromCache(final Context context);
 
-    void setData(GqlWishListDataResponse.GqlWishList wishlistData);
+    void setData(GqlWishListDataResponse gqlWishListDataResponse);
 
     void deleteWishlist(Context context, String productId, int position);
 
