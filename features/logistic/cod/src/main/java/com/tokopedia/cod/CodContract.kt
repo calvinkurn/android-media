@@ -6,10 +6,14 @@ package com.tokopedia.cod
 interface CodContract {
 
     interface View {
-
+        fun loadInformation()
+        fun showError(message: String)
+        fun showLoading()
+        fun hideLoading()
     }
 
     interface Presenter {
-
+        fun submitConfirmation()
     }
+
 }
