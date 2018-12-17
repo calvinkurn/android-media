@@ -1,8 +1,6 @@
 package com.tokopedia.instantloan.view.presenter;
 
-import android.provider.CallLog;
 import android.provider.ContactsContract;
-import android.provider.Telephony;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,9 +15,7 @@ import com.tokopedia.instantloan.ddcollector.PermissionResultCallback;
 import com.tokopedia.instantloan.ddcollector.account.Account;
 import com.tokopedia.instantloan.ddcollector.app.Application;
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData;
-import com.tokopedia.instantloan.ddcollector.call.Call;
 import com.tokopedia.instantloan.ddcollector.contact.Contact;
-import com.tokopedia.instantloan.ddcollector.sms.Sms;
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
@@ -147,7 +143,7 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
         JsonArray messages = new JsonArray();
         JsonObject message;
 
-        if (map.get(Sms.DD_SMS) != null) {
+        /*if (map.get(Sms.DD_SMS) != null) {
             for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Sms.DD_SMS)) {
                 if (entry == null) {
                     continue;
@@ -163,7 +159,7 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
                 }
             }
 
-        }
+        }*/
         data.addProperty(DeviceDataKeys.SMS, messages.toString());
 
         JsonArray contacts = new JsonArray();
@@ -188,7 +184,7 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
         JsonArray callLogs = new JsonArray();
         JsonObject callLog;
 
-        if (map.get(Call.DD_CALL) != null) {
+        /*if (map.get(Call.DD_CALL) != null) {
             for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Call.DD_CALL)) {
                 if (entry == null) {
                     continue;
@@ -200,7 +196,7 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
                 callLog.addProperty(DeviceDataKeys.Call.TIME, entry.get(CallLog.Calls.DATE));
                 callLogs.add(callLog);
             }
-        }
+        }*/
 
         data.addProperty(DeviceDataKeys.CALL, callLogs.toString());
 
