@@ -115,5 +115,7 @@
     <string name="transition_min_order_view">transition_min_order</string>
     <string name="transition_condition_view">transition_condition_view</string>
     <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
-    <string name="value_preorder_process_time">Waktu Proses %s %s</string>
+    <string name="value_preorder_process_time">Waktu Proses %1$s %2$s</string>
+    <string name="value_preorder_process_time">Waktu Proses %1$s %2$s</string>
+    <string name="value_cashback">Cashback %1$s</string>
 </resources>
