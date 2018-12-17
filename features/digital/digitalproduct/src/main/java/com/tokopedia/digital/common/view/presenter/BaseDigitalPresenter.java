@@ -14,6 +14,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ContactData;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 
 /**
  * Created by nabillasabbaha on 8/8/17.
@@ -154,6 +155,33 @@ public abstract class BaseDigitalPresenter extends BaseDaggerPresenter<CustomerV
                 .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                 .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                 .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
+                .build();
+    }
+
+    @Override
+    public DigitalCheckoutPassData generateCheckoutPassData2(
+            ProductDigitalData productDigitalData,
+            String categoryId,
+            String operatorId,
+            String productId,
+            String clientNumber,
+            String versionInfoApplication,
+            String userLoginId
+    ) {
+        return new DigitalCheckoutPassData.Builder()
+                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .categoryId(categoryId)
+                .clientNumber(clientNumber)
+                .instantCheckout("0")
+                .isPromo("0")
+                .operatorId(operatorId)
+                .productId(productId)
+                .utmCampaign((productDigitalData.getCategoryData().getName()))
+                .utmContent(versionInfoApplication)
+                .idemPotencyKey(generateATokenRechargeCheckout(userLoginId))
+                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .voucherCodeCopied("")
                 .build();
     }
 

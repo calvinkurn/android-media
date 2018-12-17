@@ -24,7 +24,7 @@ import rx.Subscriber;
  * @author rizkyfadillah on 15/01/18.
  */
 
-public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDigitalWidgetPresenter {
+public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter implements IDigitalWidgetCategoryPresenter {
 
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
@@ -36,8 +36,8 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
     @Inject
-    public DigitalWidgetPresenter(LocalCacheHandler localCacheHandler,
-                                  GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
+    public DigitalWidgetCategoryCategoryPresenter(LocalCacheHandler localCacheHandler,
+                                                  GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
         super(localCacheHandler);
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }

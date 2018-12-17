@@ -1,6 +1,8 @@
 package com.tokopedia.digital.common.data.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import retrofit2.Retrofit;
@@ -22,7 +24,17 @@ public class DigitalGqlApiService extends AuthService<DigitalGqlApi> {
     }
 
     @Override
+    protected Retrofit createRetrofitInstance(String processedBaseUrl) {
+        return RetrofitFactory.createRetrofitDigitalConfig(processedBaseUrl)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                        .buildClientDigitalAuth(TkpdBaseURL.DigitalApi.HMAC_KEY))
+                .build();
+    }
+
+    @Override
     public DigitalGqlApi getApi() {
         return api;
     }
+
 }

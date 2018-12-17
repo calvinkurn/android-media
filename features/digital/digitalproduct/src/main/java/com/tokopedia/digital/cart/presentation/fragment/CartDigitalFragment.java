@@ -38,7 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
@@ -65,7 +64,6 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -96,18 +94,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     private final int COUPON_ACTIVE = 1;
 
-    @BindView(R2.id.checkout_cart_holder_view)
-    CheckoutHolderView checkoutHolderView;
-    @BindView(R2.id.item_cart_holder_view)
-    ItemCartHolderView itemCartHolderView;
-    @BindView(R2.id.voucher_cart_holder_view)
-    VoucherCartHachikoView voucherCartHachikoView;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
-    @BindView(R2.id.nsv_container)
-    NestedScrollView mainContainer;
-    @BindView(R2.id.input_price_holder_view)
-    InputPriceHolderView inputPriceHolderView;
+    private CheckoutHolderView checkoutHolderView;
+    private ItemCartHolderView itemCartHolderView;
+    private VoucherCartHachikoView voucherCartHachikoView;
+    private ProgressBar pbMainLoading;
+    private NestedScrollView mainContainer;
+    private InputPriceHolderView inputPriceHolderView;
 
     private SessionHandler sessionHandler;
     private ActionListener actionListener;
@@ -227,7 +219,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void initView(View view) {
-
+        checkoutHolderView = view.findViewById(R.id.checkout_cart_holder_view);
+        itemCartHolderView = view.findViewById(R.id.item_cart_holder_view);
+        voucherCartHachikoView = view.findViewById(R.id.voucher_cart_holder_view);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+        mainContainer = view.findViewById(R.id.nsv_container);
+        inputPriceHolderView = view.findViewById(R.id.input_price_holder_view);
     }
 
     @Override
@@ -699,7 +696,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return passData;
     }
 
-
     @Override
     public void interruptRequestTokenVerification() {
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
@@ -909,4 +905,5 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public interface ActionListener {
         void setTitleCart(String title);
     }
+
 }
