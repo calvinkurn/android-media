@@ -2151,7 +2151,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (menu != null && menu.size() > 1) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_light));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_light));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
