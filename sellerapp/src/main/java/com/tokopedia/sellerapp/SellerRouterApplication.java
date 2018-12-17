@@ -1182,6 +1182,14 @@ public abstract class SellerRouterApplication extends MainApplication
             }
 
             @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
+                }
+            }
+
+            @Override
             public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
                 TrackingUtils.eventTrackingEnhancedEcommerce(trackingData);
             }
