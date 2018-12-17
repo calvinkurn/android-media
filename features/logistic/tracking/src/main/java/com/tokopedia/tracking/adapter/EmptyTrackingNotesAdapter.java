@@ -1,5 +1,6 @@
 package com.tokopedia.tracking.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +17,16 @@ public class EmptyTrackingNotesAdapter extends
         RecyclerView.Adapter<EmptyTrackingNotesAdapter.EmptyTrackingNotesViewHolder> {
     private static final int DEFAULT_SIZE = 3;
 
+    @NonNull
     @Override
-    public EmptyTrackingNotesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EmptyTrackingNotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.empty_adapter_layout, parent, false);
         return new EmptyTrackingNotesViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(EmptyTrackingNotesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EmptyTrackingNotesViewHolder holder, int position) {
         switch (position) {
             case 0:
                 holder.notesText.setText(R.string.empty_notes_1);

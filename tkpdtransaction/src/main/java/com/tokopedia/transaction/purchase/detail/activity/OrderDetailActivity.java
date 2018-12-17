@@ -42,8 +42,11 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
@@ -59,7 +62,6 @@ import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.BookingCodeData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
@@ -82,7 +84,7 @@ import static com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFr
  */
 
 public class OrderDetailActivity extends TActivity
-        implements OrderDetailView {
+        implements OrderDetailView, ToolbarChangeListener {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
@@ -691,7 +693,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        //TODO Check Again Later
         Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
