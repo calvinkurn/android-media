@@ -1,4 +1,4 @@
-query wishlist($page: Int, $count: Int){
+query wishlist($page: Int, $count: Int, $params: String){
   wishlist(page: $page, count: $count){
 
       has_next_page
@@ -42,5 +42,79 @@ query wishlist($page: Int, $count: Int){
       pagination {
         next_url
       }
+  }
+
+  productAds: displayAdsV3(displayParams: $params) {
+      status {
+        error_code
+        message
+      }
+    header {
+      process_time
+      total_data
+    }
+    data{
+      id
+      ad_ref_key
+      redirect
+      sticker_id
+      sticker_image
+      product_click_url
+      product_wishlist_url
+      shop_click_url
+      product{
+        id
+        name
+        image{
+          m_url
+          s_url
+          xs_url
+          m_ecs
+          s_ecs
+          xs_ecs
+        }
+        uri
+        relative_uri
+        price_format
+        wholesale_price {
+          price_format
+          quantity_max_format
+          quantity_min_format
+        }
+        count_talk_format
+        count_review_format
+        category {
+          id
+        }
+        product_preorder
+        product_wholesale
+        free_return
+        product_cashback
+        product_new_label
+        product_cashback_rate
+        product_rating
+        top_label
+        bottom_label
+      }
+      shop{
+        id
+        name
+        domain
+        location
+        city
+        gold_shop
+        gold_shop_badge
+        lucky_shop
+        uri
+        owner_id
+        is_owner
+        badges{
+          title
+          image_url
+          show
+        }
+      }
+      applinks
+    }
   }
 }
