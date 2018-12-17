@@ -188,6 +188,7 @@ public class ShopCardView extends BaseCustomView {
             labelViewTopAds.setTitle(getContext().getString(R.string.top_ads_credit_label));
             labelViewTopAds.setContent(dataDeposit.getAmountFmt());
             labelViewTopAds.setContentColorValue(ContextCompat.getColor(getContext(), R.color.light_primary));
+            labelViewTopAds.setContentClick(null);
             if (freeDeposit.getStatus() == 2 && freeDeposit.getUsage() > 0){
                 String bonusTopAds = getContext().getString(R.string.bonus_expired, freeDeposit.getUsageFmt());
                 String nDays = getContext().getString(R.string.template_claim_n_days, freeDeposit.getRemainingDays());
