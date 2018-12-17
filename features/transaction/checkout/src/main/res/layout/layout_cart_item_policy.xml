@@ -4,8 +4,8 @@
     android:id="@+id/rl_product_policies_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:flexWrap="wrap"
-    android:layout_marginTop="@dimen/dp_4">
+    android:layout_marginTop="@dimen/dp_4"
+    app:flexWrap="wrap">
 
     <TextView
         android:id="@+id/tv_cashback"
@@ -16,10 +16,10 @@
         android:background="@drawable/bg_cashback"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:paddingBottom="@dimen/dp_4"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
         android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_4"
         android:textColor="@color/cashback_text_color"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
@@ -35,10 +35,10 @@
         android:background="@drawable/bg_pre_order"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:paddingBottom="@dimen/dp_4"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
         android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_4"
         android:text="@string/label_po"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_10"
@@ -59,10 +59,10 @@
         style="@style/TextSmallNormal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="@string/label_free_return"
         android:textColor="@color/font_black_secondary_54"
         android:visibility="gone" />
@@ -74,14 +74,16 @@
         android:background="@drawable/bg_pre_order"
         android:fontFamily="sans-serif"
         android:gravity="center"
-        android:paddingBottom="@dimen/dp_4"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
         android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_4"
         android:text="@string/label_cod"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
-        tools:ignore="SmallSp" />
+        android:visibility="gone"
+        tools:ignore="SmallSp"
+        tools:visibility="visible" />
 
 </com.google.android.flexbox.FlexboxLayout>

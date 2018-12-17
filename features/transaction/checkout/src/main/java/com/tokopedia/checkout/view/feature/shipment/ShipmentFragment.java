@@ -325,7 +325,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
         }
 
-        if(shipmentPresenter.getCodData().isCod()) {
+        if(shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
             shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
             tvSelectCodPayment.setVisibility(View.VISIBLE);
             tvSelectCodPayment.setOnClickListener(this::proceedCod);
