@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -25,6 +26,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -70,6 +72,12 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    TopAdsGqlUseCase topAdsUseCase(Context context){
+        return new TopAdsGqlUseCase(context);
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
@@ -81,12 +89,15 @@ public class CartListModule {
                                                  CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                  AddWishListUseCase addWishListUseCase,
                                                  RemoveWishListUseCase removeWishListUseCase,
-                                                 UpdateAndReloadCartUseCase updateAndReloadCartUseCase) {
+                                                 UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
+                                                 TopAdsGqlUseCase topAdsGqlUseCase,
+                                                 UserSession userSession) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase);
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase, topAdsGqlUseCase,
+                userSession);
     }
 
     @Provides
@@ -97,8 +108,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartActionListener, cartItemActionListener);
+    CartAdapter provideCartListAdapter(UserSession userSession) {
+        return new CartAdapter(cartActionListener, cartItemActionListener, userSession);
     }
 
     @Provides

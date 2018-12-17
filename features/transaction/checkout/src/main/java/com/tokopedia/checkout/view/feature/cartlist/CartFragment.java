@@ -71,6 +71,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -115,6 +116,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
     private LinearLayout emptyCartContainer;
+    private TopAdsCarouselView topAdsCarouselView;
 
     @Inject
     ICartListPresenter dPresenter;
@@ -285,7 +287,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
-
+        topAdsCarouselView = view.findViewById(R.id.topads);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -827,6 +829,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
+        cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         if (cbSelectAll != null) {
             cbSelectAll.setChecked(cartListData.isAllSelected());
