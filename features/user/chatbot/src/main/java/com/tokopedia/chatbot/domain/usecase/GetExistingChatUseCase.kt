@@ -35,7 +35,7 @@ class GetExistingChatUseCase @Inject constructor(
 
         fun generateParam(messageId: String): Map<String, Any> {
             val requestParams = HashMap<String, Any>()
-            requestParams.put(PARAM_MESSAGE_ID, messageId)
+            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
             return requestParams
         }
     }
