@@ -59,4 +59,6 @@ public interface AccountItemListener {
     void onTickerLinkClicked(String url);
 
     void onTickerClosed();
+
+    void onTopAdsMenuClicked();
 }

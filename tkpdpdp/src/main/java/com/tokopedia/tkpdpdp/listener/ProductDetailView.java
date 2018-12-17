@@ -147,7 +147,7 @@ public interface ProductDetailView extends ViewListener {
      *
      * @param data  data yang dikirim
      */
-    void onProductShareClicked(@NonNull ShareData data);
+    void onProductShareClicked(@NonNull ProductDetailData data);
 
     /**
      * Pada saat rating product diklik

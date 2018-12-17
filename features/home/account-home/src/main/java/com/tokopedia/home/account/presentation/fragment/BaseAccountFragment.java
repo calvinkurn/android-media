@@ -27,6 +27,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -239,8 +240,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onTopadsInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).
-                    gotoTopAdsDashboard(getContext());
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_SELLER_CENTER));
         }
     }
 
@@ -326,5 +326,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onTickerClosed() {
 
+    }
+
+    @Override
+    public void onTopAdsMenuClicked() {
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).
+                    gotoTopAdsDashboard(getContext());
+        }
     }
 }
