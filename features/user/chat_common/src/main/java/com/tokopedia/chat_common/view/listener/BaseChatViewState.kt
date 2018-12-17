@@ -17,4 +17,5 @@ interface BaseChatViewState {
     fun onReceiveMessageEvent(visitable: Visitable<*>)
 
     fun updateHeader(chatroomViewModel: ChatroomViewModel)
+
 }

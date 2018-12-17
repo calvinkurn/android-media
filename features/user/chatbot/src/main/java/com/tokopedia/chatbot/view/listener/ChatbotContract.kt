@@ -29,7 +29,15 @@ interface ChatbotContract {
 
         fun connectWebSocket(messageId: String)
 
+        fun sendRating(rating: Int, onError: (Throwable) -> Unit,
+                       onSuccess: () -> Unit)
+
+        fun sendReasonRating()
+
+        fun sendActionBubble()
+
         fun destroyWebSocket()
+
 
     }
 }

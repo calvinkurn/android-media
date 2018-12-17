@@ -105,6 +105,19 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
+    override fun sendRating(rating: Int,  onError: (Throwable) -> Unit,
+                            onSuccess: () -> Unit) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun sendReasonRating() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun sendActionBubble() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun destroyWebSocket() {
         mSubscription.clear()
         mSubscription.unsubscribe()

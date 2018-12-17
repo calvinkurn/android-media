@@ -63,7 +63,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewState = BaseChatViewStateImpl(view, toolbar)
+        viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar())
         viewState.initView()
 
         setupViewData(arguments, savedInstanceState)
@@ -75,7 +75,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return false
     }
 
-    private fun prepareListener() {
+    open fun prepareListener() {
         send_but.setOnClickListener {
            onSendButtonClicked()
         }

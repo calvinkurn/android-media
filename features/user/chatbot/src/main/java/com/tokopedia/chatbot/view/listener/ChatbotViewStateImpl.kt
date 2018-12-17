@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.listener
 
+import android.app.Activity
 import android.support.annotation.NonNull
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -16,6 +17,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
+import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
@@ -37,7 +39,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            private val attachedInvoiceSelectionListener: AttachedInvoiceSelectionListener,
                            private val chatRatingListener: ChatRatingListener,
                            private val chatActionListBubbleListener: ChatActionListBubbleListener,
-                           private val toolbar: Toolbar
+                           override val toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar), ChatbotViewState {
 
     private lateinit var pickerButton: View
@@ -56,7 +58,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                 , ArrayList())
 
         recyclerView.adapter = adapter
-
 
     }
 
@@ -93,6 +94,25 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
         adapter.addElement(generatedInvoice)
         scrollToBottom()
+    }
+
+    override fun onSendRating(element: ChatRatingViewModel, rating: Int) {
+        //TODO DISABLE RATING BUTTON
+    }
+
+    override fun onSuccessSendRating(element: ChatRatingViewModel, rating: Int, activity: Activity,
+                                     onClickReasonRating: Unit) {
+        if(rating == ChatRatingViewModel.RATING_BAD){
+            showReasonBottomSheet(element, activity, onClickReasonRating)
+        }
+    }
+
+    private fun showReasonBottomSheet(element: ChatRatingViewModel, activity: Activity, onReasonClicked: Unit) {
+        //TODO
+//        if(!::reasonBottomSheet.isInitialized){
+//            reasonBottomSheet = ReasonBottomSheet.createInstance(activity, )
+//        }
+//        reasonBottomSheet.show()
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {

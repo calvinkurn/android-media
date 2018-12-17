@@ -237,15 +237,30 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onSendButtonClicked() {
-        //TODO GET FROM VIEW
-        presenter.sendMessage("")
+        //TODO GET MESSAGE FROM VIEW
+        val sendMessage = ""
+        presenter.sendMessage(sendMessage)
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        presenter.sendActionBubble()
     }
 
     override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        (viewState as ChatbotViewState).onSendRating(element, rating)
+        presenter.sendRating(rating, onError(), onSuccessSendRating())
+    }
+
+    private fun onSuccessSendRating(): () -> Unit {
+        return {
+            (activity as Activity).run{
+                //            (viewState as ChatbotViewState).onSuccessSendRating(element, rating, this,
+//                    onClickReasonRating())
+            }
+        }
+    }
+
+    fun onClickReasonRating() {
+        presenter.sendReasonRating()
     }
 }
