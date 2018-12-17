@@ -10,7 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
-import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.ArrayList;
 

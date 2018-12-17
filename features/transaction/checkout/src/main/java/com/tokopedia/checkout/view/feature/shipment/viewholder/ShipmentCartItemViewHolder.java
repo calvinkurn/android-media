@@ -12,16 +12,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 /**
@@ -106,7 +101,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
 
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
-        if(cartItem.isProtectionAvailable()) {
+        if (cartItem.isProtectionAvailable()) {
             mTvPPPMore.setText(cartItem.getProtectionLinkText());
             mTvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override
