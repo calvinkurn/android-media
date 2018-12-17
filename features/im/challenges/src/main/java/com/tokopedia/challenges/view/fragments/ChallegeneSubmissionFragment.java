@@ -86,6 +86,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private View clAwards;
     private View clSubmissions;
     private View clWinners;
+
     private View clHowBuzzPoints;
     private ProgressBar timerProgressBar;
     private CountDownView countDownView;
@@ -239,14 +240,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         mPresenter.loadCountdownView(challengeResult, isWinnerList);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-
-                    if (scrollY > oldScrollY || scrollY < oldScrollY || scrollY == 0 || scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                        if (videoPlayer != null)
-                            videoPlayer.hideMediaController();
-                    }
+            nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                if (scrollY > oldScrollY || scrollY < oldScrollY || scrollY == 0 || scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    if (videoPlayer != null)
+                        videoPlayer.hideMediaController();
                 }
             });
         }

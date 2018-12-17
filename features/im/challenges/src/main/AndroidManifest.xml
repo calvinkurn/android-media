@@ -31,6 +31,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
+            android:name=".view.activity.ChallengeDetailsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
             android:name=".view.activity.SubmitDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

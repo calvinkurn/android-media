@@ -59,6 +59,8 @@ public class CountDownView extends FrameLayout {
         updateText(startDuration);
     }
 
+    static int lastProgress;
+
     public void start(final ProgressBar progressBar) {
         this.progressBar = progressBar;
         if (timerRunning) {
@@ -70,7 +72,11 @@ public class CountDownView extends FrameLayout {
             @Override
             public void onTick(long millis) {
                 currentDuration = millis;
-                progressBar.setProgress(100 - (int) ((millis / (float) startDuration) * 100.0f));
+                int currentProgress =  100 - (int) ((millis / (float) startDuration) * 100.0f);
+                if(lastProgress != currentProgress) {
+                    lastProgress = currentProgress;
+                    progressBar.setProgress(currentProgress);
+                }
                 updateText(millis);
             }
 

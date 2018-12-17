@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
@@ -60,7 +61,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrl(challengesResult.getThumbnailUrl()), R.color.grey_1100);
 
         itemView.setOnClickListener(view1 -> {
-            Intent intent = new Intent(context, ChallengeDetailActivity.class);
+            Intent intent = new Intent(context, ChallengeDetailsActivity.class);
             intent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, challengesResult);
             intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             context.startActivity(intent);

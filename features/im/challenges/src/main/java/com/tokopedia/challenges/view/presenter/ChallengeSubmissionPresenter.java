@@ -73,6 +73,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         detachView();
     }
 
+
     @Override
     public void getSubmissionChallenges(boolean loadFromApi, Result challengeResult) {
         if (loadFromApi) {

@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
+import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
@@ -308,7 +309,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         this.participateTitle.setText(participateTitle);
 
         this.participateTitle.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
+            Intent intent = new Intent(getActivity(), ChallengeDetailsActivity.class);
             intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
             navigateToActivity(intent);
         });

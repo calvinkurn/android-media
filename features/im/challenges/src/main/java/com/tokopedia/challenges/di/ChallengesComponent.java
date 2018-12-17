@@ -5,6 +5,7 @@ import com.tokopedia.challenges.domain.usecase.PostMapBranchUrlUseCase;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.fragments.AllSubmissionFragment;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
 import com.tokopedia.challenges.view.fragments.ChallengesFragment;
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitFragment;
 import com.tokopedia.challenges.view.fragments.MySubmissionsFragment;
@@ -35,5 +36,10 @@ public interface ChallengesComponent {
     void inject(UploadChallengeService uploadChallengeService);
 
     void inject(ShareBottomSheet shareBottomSheet);
+
+
+    void inject(ChallengeDetailsFragment challengeDetailsFragment);
+
+
 
 }

@@ -289,6 +289,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
                 detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, categoryItems.get(getIndex()));
                 detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
+
                 navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
             }
         }
