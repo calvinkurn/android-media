@@ -6,8 +6,6 @@ import com.tokopedia.core.otp.data.ValidateOtpModel;
 import com.tokopedia.digital.cart.data.entity.response.voucher.ResponseVoucherData;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.presentation.model.OtpData;
-import com.tokopedia.digital.cart.presentation.model.Relation;
-import com.tokopedia.digital.cart.presentation.model.RelationData;
 import com.tokopedia.digital.cart.presentation.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.exception.MapperDataException;
@@ -17,6 +15,18 @@ import com.tokopedia.digital.exception.MapperDataException;
  */
 
 public class CartMapperData implements ICartMapperData {
+/*
+            if (responseCartData.getAttributes().getPostPaidPopUp() != null &&
+            responseCartData.getAttributes().getPostPaidPopUp().getAction() != null &&
+            responseCartData.getAttributes().getPostPaidPopUp().getAction().getConfirmAction() != null){
+        PostPaidPopup postPaidPopup = responseCartData.getAttributes().getPostPaidPopUp();
+        PostPaidPopupAttribute postPaidPopupAttribute = new PostPaidPopupAttribute();
+        postPaidPopupAttribute.setTitle(postPaidPopup.getTitle());
+        postPaidPopupAttribute.setContent(postPaidPopup.getContent());
+        postPaidPopupAttribute.setImageUrl(postPaidPopup.getImageUrl());
+        postPaidPopupAttribute.setConfirmButtonTitle(postPaidPopup.getAction().getConfirmAction().getTitle());
+        attributesDigital.setPostPaidPopupAttribute(postPaidPopupAttribute);
+    }*/
 
     @Override
     public VoucherDigital transformVoucherDigitalData(
