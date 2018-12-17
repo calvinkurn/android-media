@@ -120,15 +120,16 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
                 .inject(this);
+
+        presenter.attachView(this);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void initialPresenter() {
-        presenter.attachView(this);
     }
 
     @Override
