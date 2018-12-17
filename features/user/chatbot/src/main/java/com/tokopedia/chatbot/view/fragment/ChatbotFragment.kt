@@ -18,7 +18,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -90,18 +89,27 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadInitialData() {
-        developmentView()
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChat())
         presenter.connectWebSocket(messageId)
 
     }
 
     private fun onSuccessGetExistingChat(): (ChatroomViewModel) -> Unit {
+
         return {
-            //TODO
+            setCanLoadMore(it)
             getViewState().onSuccessLoadFirstTime(it)
         }
     }
+
+    private fun setCanLoadMore(chatroomViewModel: ChatroomViewModel) {
+        if (chatroomViewModel.canLoadMore) {
+            enableLoadMore()
+        } else {
+            disableLoadMore()
+        }
+    }
+
 
     private fun onError(): (Throwable) -> Unit {
         return {
@@ -111,28 +119,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-
     override fun loadData(page: Int) {
-        developmentView()
-    }
-
-    override fun developmentView() {
-        val dummyList = arrayListOf<Visitable<*>>()
-
-        dummyList.add(MessageViewModel("1", "1960918", "lawan", "User", "", "", "213123123", "213123123", true, false, false, "hi1"))
-        dummyList.add(MessageViewModel("2", "7977933", "lawan", "User", "", "", "213123124", "213123123", true, false, true, "hi2"))
-        dummyList.add(MessageViewModel("3", "1960918", "lawan", "User", "", "", "213123125", "213123123", true, false, false, "hi3"))
-        dummyList.add(MessageViewModel("4", "7977933", "lawan", "User", "", "", "213123126", "213123123", true, false, true, "hi4"))
-        dummyList.add(MessageViewModel("5", "1960918", "lawan", "User", "", "", "213123127", "213123123", true, false, false, "hi5"))
-        dummyList.add(MessageViewModel("6", "7977933", "lawan", "User", "", "", "213123128", "213123123", true, false, true, "hi6"))
-        dummyList.add(MessageViewModel("11", "1960918", "lawan", "User", "", "", "213123123", "213123123", true, false, false, "hi11"))
-        dummyList.add(MessageViewModel("21", "7977933", "lawan", "User", "", "", "213123124", "213123123", true, false, true, "hi21"))
-        dummyList.add(MessageViewModel("31", "1960918", "lawan", "User", "", "", "213123125", "213123123", true, false, false, "hi31"))
-        dummyList.add(MessageViewModel("41", "7977933", "lawan", "User", "", "", "213123126", "213123123", true, false, true, "hi41"))
-        dummyList.add(MessageViewModel("51", "1960918", "lawan", "User", "", "", "213123127", "213123123", true, false, false, "hi51"))
-        dummyList.add(MessageViewModel("61", "7977933", "lawan", "User", "", "", "213123128", "213123123", true, false, true, "hi61"))
-
-        getViewState().onSuccessLoadFirstTime(ChatroomViewModel(dummyList))
 
     }
 
@@ -253,7 +240,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onSuccessSendRating(): () -> Unit {
         return {
-            (activity as Activity).run{
+            (activity as Activity).run {
                 //            (viewState as ChatbotViewState).onSuccessSendRating(element, rating, this,
 //                    onClickReasonRating())
             }

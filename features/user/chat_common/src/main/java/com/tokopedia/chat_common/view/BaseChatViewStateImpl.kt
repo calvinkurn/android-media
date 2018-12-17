@@ -53,22 +53,23 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         replyWatcher = EventsWatcher.text(replyEditText)
 
         replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
+
     }
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel) {
         val title = toolbar.findViewById<TextView>(R.id.title)
-        title.text = chatroomViewModel.title
+        title.text = chatroomViewModel.headerModel.name
 
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
-        ImageHandler.loadImageCircle2(avatar.context, avatar, chatroomViewModel.avatar,
+        ImageHandler.loadImageCircle2(avatar.context, avatar, chatroomViewModel.headerModel.image,
                 R.drawable.ic_default_avatar)
 
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
 
-        onlineDesc.text = chatroomViewModel.onlineStatus
+        onlineDesc.text = chatroomViewModel.headerModel.label
 
-        if (chatroomViewModel.isOnline)
+        if (chatroomViewModel.headerModel.isOnline)
             onlineStatus.setImageResource(R.drawable.status_indicator_online)
         else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)

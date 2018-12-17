@@ -13,7 +13,7 @@ import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
  * @author by nisie on 10/12/18.
  */
 interface ChatbotViewState : BaseChatViewState {
-    fun onSuccessLoadFirstTime(list: ChatroomViewModel)
+    fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel)
 
     fun onCheckToHideQuickReply(visitable: Visitable<*>)
 

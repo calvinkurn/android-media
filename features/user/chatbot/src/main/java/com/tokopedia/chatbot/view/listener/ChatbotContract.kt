@@ -11,7 +11,7 @@ import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
  */
 interface ChatbotContract {
     interface View : BaseChatContract.View {
-        fun developmentView()
+
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

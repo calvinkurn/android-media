@@ -14,7 +14,6 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
 
     private static final int MAX_CHARACTER_LENGTH = 200;
 
-
     @Inject
     public ChatroomPresenter() {
     }

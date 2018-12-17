@@ -14,11 +14,8 @@ class FallbackAttachmentViewModel(msgId: String,
                                   attachmentId: String,
                                   attachmentType: String,
                                   replyTime: String,
-                                  fallbackMessage: String,
-                                  var url: String?,
-                                  var span: String?,
-                                  var html: String?) : BaseChatViewModel(msgId, fromUid, from,
-        fromRole, attachmentId, attachmentType, replyTime, fallbackMessage)
+                                  message: String) : BaseChatViewModel(msgId, fromUid, from,
+        fromRole, attachmentId, attachmentType, replyTime, message)
         , Visitable<BaseChatTypeFactory> {
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
