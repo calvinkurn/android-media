@@ -10,6 +10,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  */
 
 data class CheckoutVariantTypeVariantViewModel(
+        var variantId: Int,
         var variantName: String,
         var variantSelectedValue: String,
         var variantGuideline: String,
@@ -17,6 +18,7 @@ data class CheckoutVariantTypeVariantViewModel(
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
 
     constructor(parcel: Parcel?) : this(
+            parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
@@ -30,6 +32,7 @@ data class CheckoutVariantTypeVariantViewModel(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(variantId)
         parcel.writeString(variantName)
         parcel.writeString(variantSelectedValue)
         parcel.writeString(variantGuideline)

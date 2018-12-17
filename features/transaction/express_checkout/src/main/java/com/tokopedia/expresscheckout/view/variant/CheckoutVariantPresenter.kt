@@ -2,10 +2,9 @@ package com.tokopedia.expresscheckout.view.variant
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutResponse
+import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutResponse
 import com.tokopedia.expresscheckout.view.variant.mapper.DataMapper
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
-import java.io.IOException
 import com.tokopedia.expresscheckout.R
 
 /**
@@ -23,7 +22,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
     }
 
     override fun loadData() {
-        // Todo : load data using usecase
+        // Todo : load dataModel using usecase
         var json = FileUtils().readRawTextFile(view.getActivityContext(), R.raw.response_ok)
         var response: ExpressCheckoutResponse = Gson().fromJson(json, ExpressCheckoutResponse::class.java)
         val dataMapper: DataMapper = ViewModelMapper()

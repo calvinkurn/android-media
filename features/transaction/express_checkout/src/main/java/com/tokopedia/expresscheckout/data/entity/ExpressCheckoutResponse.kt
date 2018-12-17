@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.domain.entity
+package com.tokopedia.expresscheckout.data.entity
 
 import com.google.gson.annotations.SerializedName
 

@@ -4,6 +4,7 @@ import android.view.View
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.expresscheckout.R
+import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.adapter.VariantOptionAdapter
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantTypeVariantViewModel
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantTypeVariantViewHolder(val view: View) : AbstractViewHolder<CheckoutVariantTypeVariantViewModel>(view) {
+class CheckoutVariantTypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<CheckoutVariantTypeVariantViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_variant_detail_product_page
@@ -26,7 +27,7 @@ class CheckoutVariantTypeVariantViewHolder(val view: View) : AbstractViewHolder<
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
-            val variantOptionAdapter = VariantOptionAdapter(element.variantOptions)
+            val variantOptionAdapter = VariantOptionAdapter(element.variantOptions, listener)
             itemView.rv_variant_options.isNestedScrollingEnabled = false
             itemView.rv_variant_options.layoutManager = chipsLayoutManager
             itemView.rv_variant_options.adapter = variantOptionAdapter

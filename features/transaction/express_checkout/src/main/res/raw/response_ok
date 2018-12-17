@@ -290,21 +290,22 @@
                           "id":28511,
                           "value":"Navy",
                           "hex":"#05056b"
+                        }
+                      ]
+                    },
+                    {
+                      "product_variant_id":8981,
+                      "variant_name":"ukuran",
+                      "identifier":"size",
+                      "position":2,
+                      "options":[
+                        {
+                          "id":28515,
+                          "value":"S"
                         },
                         {
-                          "id":28512,
-                          "value":"Maroon",
-                          "hex":"#800000"
-                        },
-                        {
-                          "id":28513,
-                          "value":"Hitam",
-                          "hex":"#000000"
-                        },
-                        {
-                          "id":28514,
-                          "value":"Merah",
-                          "hex":"#ff0016"
+                          "id":28516,
+                          "value":"M"
                         }
                       ]
                     }
@@ -318,10 +319,10 @@
                       "max_order":0,
                       "sku":"",
                       "option_ids":[
-                        28510
+                        28510, 28515
                       ],
                       "is_enabled":true,
-                      "name":"Produk Varian -Putih",
+                      "name":"Produk Varian - Putih - S",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-putih",
                       "is_buyable":true,
                       "stock_wording":"StokTersedia",
@@ -336,10 +337,10 @@
                       "max_order":0,
                       "sku":"",
                       "option_ids":[
-                        28511
+                        28510, 28516
                       ],
                       "is_enabled":false,
-                      "name":"Produk Varian -Navy",
+                      "name":"Produk Varian - Putih - M",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-navy",
                       "is_buyable":false,
                       "stock_wording":"TersediaUntuk Varian Lain",
@@ -354,10 +355,10 @@
                       "max_order":0,
                       "sku":"",
                       "option_ids":[
-                        28512
+                        28511, 28515
                       ],
                       "is_enabled":true,
-                      "name":"Produk Varian -Maroon",
+                      "name":"Produk Varian - Navy - S",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-maroon",
                       "is_buyable":true,
                       "stock_wording":"StokTersedia",
@@ -372,32 +373,14 @@
                       "max_order":0,
                       "sku":"",
                       "option_ids":[
-                        28513
+                        28511, 28516
                       ],
                       "is_enabled":true,
-                      "name":"Produk Varian -Hitam",
+                      "name":"Produk Varian - Navy - M",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-hitam",
                       "is_buyable":true,
                       "stock_wording":"StokTersedia",
                       "stock_wording_html":"StokTersedia",
-                      "other_variant_stock":"available"
-                    },
-                    {
-                      "product_id":15223039,
-                      "price":2000,
-                      "stock":0,
-                      "min_order":6,
-                      "max_order":0,
-                      "sku":"",
-                      "option_ids":[
-                        28514
-                      ],
-                      "is_enabled":false,
-                      "name":"Produk Varian -Merah",
-                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-merah",
-                      "is_buyable":false,
-                      "stock_wording":"TersediaUntuk Varian Lain",
-                      "stock_wording_html":"Tersedia Untuk Varian Lain",
                       "other_variant_stock":"available"
                     }
                   ],

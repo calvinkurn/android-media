@@ -8,10 +8,12 @@ import android.os.Parcelable
  */
 
 class CheckoutVariantOptionVariantViewModel(
-        var id: Int,
+        var variantId: Int,
+        var optionId: Int,
         var currentState: Int,
         var variantHex: String,
-        var variantName: String
+        var variantName: String,
+        var hasAvailableChild: Boolean
 ) : Parcelable {
 
     val STATE_SELECTED = 1
@@ -21,14 +23,19 @@ class CheckoutVariantOptionVariantViewModel(
     constructor(parcel: Parcel?) : this(
             parcel?.readInt() ?: 0,
             parcel?.readInt() ?: 0,
+            parcel?.readInt() ?: 0,
             parcel?.readString() ?: "",
-            parcel?.readString() ?: "")
+            parcel?.readString() ?: "",
+            parcel?.readByte() != 0.toByte()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
+        parcel.writeInt(variantId)
+        parcel.writeInt(optionId)
         parcel.writeInt(currentState)
         parcel.writeString(variantHex)
         parcel.writeString(variantName)
+        parcel.writeByte(if (hasAvailableChild) 1 else 0)
     }
 
     override fun describeContents(): Int {

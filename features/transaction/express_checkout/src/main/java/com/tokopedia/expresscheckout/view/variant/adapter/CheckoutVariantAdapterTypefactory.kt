@@ -45,7 +45,7 @@ class CheckoutVariantAdapterTypefactory(val listener: CheckoutVariantActionListe
             CheckoutVariantProfileViewHolder.LAYOUT -> CheckoutVariantProfileViewHolder(view, listener)
             CheckoutVariantQuantityViewHolder.LAYOUT -> CheckoutVariantQuantityViewHolder(view, listener)
             CheckoutVariantSummaryViewHolder.LAYOUT -> CheckoutVariantSummaryViewHolder(view, listener)
-            CheckoutVariantTypeVariantViewHolder.LAYOUT -> CheckoutVariantTypeVariantViewHolder(view)
+            CheckoutVariantTypeVariantViewHolder.LAYOUT -> CheckoutVariantTypeVariantViewHolder(view, listener)
             else -> super.createViewHolder(view, viewType)
         }
 

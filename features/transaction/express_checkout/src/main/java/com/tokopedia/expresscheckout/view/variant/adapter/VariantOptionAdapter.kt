@@ -3,6 +3,7 @@ package com.tokopedia.expresscheckout.view.variant.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.VariantChangeListener
 import com.tokopedia.expresscheckout.view.variant.viewholder.CheckoutVariantOptionVariantViewHolder
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
@@ -11,7 +12,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptio
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class VariantOptionAdapter(var dataList: ArrayList<CheckoutVariantOptionVariantViewModel>) :
+class VariantOptionAdapter(var dataList: ArrayList<CheckoutVariantOptionVariantViewModel>, val listener: CheckoutVariantActionListener) :
         RecyclerView.Adapter<CheckoutVariantOptionVariantViewHolder>(), VariantChangeListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckoutVariantOptionVariantViewHolder {
@@ -40,6 +41,7 @@ class VariantOptionAdapter(var dataList: ArrayList<CheckoutVariantOptionVariantV
             }
         }
         notifyDataSetChanged()
+        listener.onChangeVariant(selectedVariant.variantId, selectedVariant)
     }
 
 }

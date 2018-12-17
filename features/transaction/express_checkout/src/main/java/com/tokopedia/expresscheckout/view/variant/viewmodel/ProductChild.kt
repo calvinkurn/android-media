@@ -12,7 +12,8 @@ data class ProductChild(
         var isSelected: Boolean,
         var stockWording: String,
         var minOrder: Int,
-        var maxOrder: Int
+        var maxOrder: Int,
+        var optionsId: ArrayList<Int>
 ) : Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
@@ -24,7 +25,10 @@ data class ProductChild(
             parcel?.readByte() != 0.toByte(),
             parcel?.readString() ?: "",
             parcel?.readInt() ?: 0,
-            parcel?.readInt() ?: 0
+            parcel?.readInt() ?: 0,
+            arrayListOf<Int>().apply {
+                parcel?.readList(this, Int::class.java.classLoader)
+            }
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -37,6 +41,7 @@ data class ProductChild(
         parcel.writeString(stockWording)
         parcel.writeInt(minOrder)
         parcel.writeInt(maxOrder)
+        parcel.writeList(optionsId)
     }
 
     override fun describeContents(): Int {

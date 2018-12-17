@@ -2,8 +2,8 @@ package com.tokopedia.expresscheckout.view.variant.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
-import com.tokopedia.expresscheckout.domain.entity.UserProfile
+import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutFormData
+import com.tokopedia.expresscheckout.data.entity.UserProfile
 import com.tokopedia.transactiondata.entity.response.variantdata.Child
 import com.tokopedia.transactiondata.entity.response.variantdata.Option
 import com.tokopedia.transactiondata.entity.response.variantdata.ProductVariantData
@@ -24,9 +24,10 @@ class ViewModelMapper : DataMapper {
         val variantChildrenValidation = validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
         var hasVariant = variantCombinationValidation && variantChildrenValidation
         var variantViewModelList = ArrayList<CheckoutVariantTypeVariantViewModel>()
+        var children = expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].children
         if (hasVariant) {
             for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
-                variantViewModelList.add(convertToTypeVariantViewModel(variant))
+                variantViewModelList.add(convertToTypeVariantViewModel(variant, children))
             }
         }
 
@@ -59,11 +60,10 @@ class ViewModelMapper : DataMapper {
         checkoutVariantProductViewModel.productImageUrl = product.productImageSrc200Square
         checkoutVariantProductViewModel.productName = product.productName
         checkoutVariantProductViewModel.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.productPrice, false)
-        var productChildMap = HashMap<String, ProductChild>()
+        var productChildList = ArrayList<ProductChild>()
+        var hasSelectedDefaultVariant = false
         if (checkoutVariantTypeVariantViewModels.size > 0) {
-            var hasSetDefaultVariant = false
             for (child: Child in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].children) {
-                var key = child.optionIds.joinToString()
                 var productChild = ProductChild()
                 productChild.productId = child.productId
                 productChild.productName = child.name
@@ -72,25 +72,45 @@ class ViewModelMapper : DataMapper {
                 productChild.stockWording = child.stockWording
                 productChild.minOrder = child.minOrder
                 productChild.maxOrder = child.maxOrder
-                productChild.isSelected = !hasSetDefaultVariant && productChild.isAvailable
-
-                for (checkoutVariantTypeVariantViewModel: CheckoutVariantTypeVariantViewModel in checkoutVariantTypeVariantViewModels) {
-                    for (variantOption: CheckoutVariantOptionVariantViewModel in checkoutVariantTypeVariantViewModel.variantOptions) {
-                        when {
-                            productChild.isSelected && child.optionIds.contains(variantOption.id) -> {
-                                variantOption.currentState = variantOption.STATE_SELECTED
-                                checkoutVariantTypeVariantViewModel.variantSelectedValue = variantOption.variantName
+                productChild.optionsId = child.optionIds
+                if (productChild.isAvailable && !hasSelectedDefaultVariant) {
+                    productChild.isSelected = true
+                    hasSelectedDefaultVariant = true
+                    var defaultVariantIdOptionMap = HashMap<Int, Int>()
+                    for (optionId: Int in child.optionIds) {
+                        for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
+                            for (option: Option in variant.options) {
+                                if (optionId == option.id) {
+                                    defaultVariantIdOptionMap.put(variant.productVariantId, optionId)
+                                }
                             }
-                            !productChild.isAvailable -> variantOption.currentState = variantOption.STATE_NOT_AVAILABLE
-                            else -> variantOption.currentState = variantOption.STATE_NOT_SELECTED
+                        }
+                    }
+                    checkoutVariantProductViewModel.selectedVariantOptionsIdMap = defaultVariantIdOptionMap
+                }
+                productChildList.add(productChild)
+/*
+                for (optionId: Int in child.optionIds) {
+                    for (checkoutVariantTypeVariantViewModel: CheckoutVariantTypeVariantViewModel in checkoutVariantTypeVariantViewModels) {
+                        for (variantOption: CheckoutVariantOptionVariantViewModel in checkoutVariantTypeVariantViewModel.variantOptions) {
+                            if (variantOption.id == optionId) {
+                                when {
+                                    productChild.isSelected && child.optionIds.contains(variantOption.id) -> {
+                                        variantOption.currentState = variantOption.STATE_SELECTED
+                                        checkoutVariantTypeVariantViewModel.variantSelectedValue = variantOption.variantName
+                                    }
+                                    !productChild.isAvailable -> variantOption.currentState = variantOption.STATE_NOT_AVAILABLE
+                                    else -> variantOption.currentState = variantOption.STATE_NOT_SELECTED
+                                }
+                            }
                         }
                     }
                 }
+*/
 
-                productChildMap.put(key, productChild)
             }
         }
-        checkoutVariantProductViewModel.productChildrenMap = productChildMap
+        checkoutVariantProductViewModel.productChildrenList = productChildList
 
         return checkoutVariantProductViewModel
     }
@@ -118,24 +138,35 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantSummaryViewModel
     }
 
-    override fun convertToTypeVariantViewModel(variant: Variant): CheckoutVariantTypeVariantViewModel {
+    override fun convertToTypeVariantViewModel(variant: Variant, children: ArrayList<Child>): CheckoutVariantTypeVariantViewModel {
         var checkoutVariantTypeVariantViewModel = CheckoutVariantTypeVariantViewModel(null)
 
         var checkoutVariantOptionVariantViewModels = ArrayList<CheckoutVariantOptionVariantViewModel>()
         for (option: Option in variant.options) {
-            checkoutVariantOptionVariantViewModels.add(convertToOptionVariantViewModel(option))
+            checkoutVariantOptionVariantViewModels.add(convertToOptionVariantViewModel(option, variant.productVariantId, children))
         }
+        checkoutVariantTypeVariantViewModel.variantId = variant.productVariantId
         checkoutVariantTypeVariantViewModel.variantOptions = checkoutVariantOptionVariantViewModels
         checkoutVariantTypeVariantViewModel.variantName = variant.variantName
 
         return checkoutVariantTypeVariantViewModel
     }
 
-    override fun convertToOptionVariantViewModel(option: Option): CheckoutVariantOptionVariantViewModel {
+    override fun convertToOptionVariantViewModel(option: Option, variantId: Int, children: ArrayList<Child>): CheckoutVariantOptionVariantViewModel {
         var checkoutVariantOptionVariantViewModel = CheckoutVariantOptionVariantViewModel(null)
-        checkoutVariantOptionVariantViewModel.id = option.id
-        checkoutVariantOptionVariantViewModel.variantHex = option.hex
+        checkoutVariantOptionVariantViewModel.variantId = variantId
+        checkoutVariantOptionVariantViewModel.optionId = option.id
+        checkoutVariantOptionVariantViewModel.variantHex = option.hex ?: ""
         checkoutVariantOptionVariantViewModel.variantName = option.value
+
+        var hasAvailableChild = false
+        for (child: Child in children) {
+            if (child.isBuyable && child.optionIds.contains(checkoutVariantOptionVariantViewModel.optionId)) {
+                hasAvailableChild = true
+                break
+            }
+        }
+        checkoutVariantOptionVariantViewModel.hasAvailableChild = hasAvailableChild
 
         return checkoutVariantOptionVariantViewModel
     }

@@ -1,6 +1,10 @@
-package com.tokopedia.expresscheckout.domain.entity
+package com.tokopedia.expresscheckout.data.entity
 
 import com.google.gson.annotations.SerializedName
+
+/**
+ * Created by Irfan Khoirul on 30/11/18.
+ */
 
 data class ExpressCheckoutFormHeader(
         @SerializedName("process_time")

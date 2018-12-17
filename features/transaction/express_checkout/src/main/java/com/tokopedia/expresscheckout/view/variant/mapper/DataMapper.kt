@@ -1,10 +1,11 @@
 package com.tokopedia.expresscheckout.view.variant.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.domain.entity.ExpressCheckoutFormData
+import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutFormData
 import com.tokopedia.transactiondata.entity.response.variantdata.Option
 import com.tokopedia.transactiondata.entity.response.variantdata.Variant
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
+import com.tokopedia.transactiondata.entity.response.variantdata.Child
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -26,8 +27,8 @@ interface DataMapper {
 
     fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantSummaryViewModel
 
-    fun convertToTypeVariantViewModel(variant: Variant): CheckoutVariantTypeVariantViewModel
+    fun convertToTypeVariantViewModel(variant: Variant, children: ArrayList<Child>): CheckoutVariantTypeVariantViewModel
 
-    fun convertToOptionVariantViewModel(option: Option): CheckoutVariantOptionVariantViewModel
+    fun convertToOptionVariantViewModel(option: Option, variantId: Int, children: ArrayList<Child>): CheckoutVariantOptionVariantViewModel
 
 }
