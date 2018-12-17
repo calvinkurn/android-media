@@ -102,12 +102,12 @@ public class DetailResChatActivity
     public void inflateFragment(Fragment fragment, String TAG, boolean isReload) {
         if (getFragmentManager().findFragmentByTag(TAG) != null && !isReload) {
             getFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core.R.id.container,
+                    .replace(com.tokopedia.core2.R.id.container,
                             getFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
                     .commit();
         }
     }
@@ -190,7 +190,7 @@ public class DetailResChatActivity
                 intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
             }
             startActivityForResult(intent, REQUEST_GO_DETAIL);
-            UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickDetail(resolutionId));
+            UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickDetail(resolutionId));
             return true;
         } else
             return super.onOptionsItemSelected(item);

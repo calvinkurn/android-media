@@ -14,7 +14,7 @@ public class TkpdCache {
         public static final String URL = "URL";
         public static final String KEY_DEALS_LOCATION = "KEY_DEALS_LOCATION";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
-
+        public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
     }
 
     public class RemoteConfigKey {

@@ -3,7 +3,6 @@ package com.tokopedia.seller.opportunity.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -11,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -23,8 +24,6 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tokopedia.core.network.v4.NetworkConfig.key;
 
 /**
  * Created by nisie on 3/6/17.
@@ -39,6 +38,7 @@ public class OpportunitySortFragment extends BasePresenterFragment {
     OpportunitySortAdapter adapter;
     List<SortingTypeViewModel> listSort;
     RecyclerView sortRecyclerView;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
 
     public static OpportunitySortFragment createInstance(Bundle extras) {
         OpportunitySortFragment fragment = new OpportunitySortFragment();
@@ -49,8 +49,10 @@ public class OpportunitySortFragment extends BasePresenterFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         if (savedInstanceState != null)
-            listSort = savedInstanceState.getParcelableArrayList(ARGS_LIST_SORT);
+            listSort = saveInstanceCacheManager.get(ARGS_LIST_SORT,
+                    (new TypeToken<List<SortingTypeViewModel>>() {}).getType(), new ArrayList<>());
         else if (getArguments().getParcelableArrayList(ARGS_LIST_SORT) != null)
             listSort = getArguments().getParcelableArrayList(ARGS_LIST_SORT);
         else {
@@ -71,7 +73,8 @@ public class OpportunitySortFragment extends BasePresenterFragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(ARGS_LIST_SORT, new ArrayList<Parcelable>(listSort));
+        saveInstanceCacheManager.onSave(outState);
+        saveInstanceCacheManager.put(ARGS_LIST_SORT, listSort);
         super.onSaveInstanceState(outState);
     }
 
@@ -155,6 +158,7 @@ public class OpportunitySortFragment extends BasePresenterFragment {
             public void onItemSelected(int adapterPosition, SimpleCheckListItemModel item) {
 
                 UnifyTracking.eventOpportunity(
+                        getActivity(),
                         OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
                         OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                         AppEventTracking.Action.SUBMIT,

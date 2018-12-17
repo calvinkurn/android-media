@@ -24,7 +24,7 @@
             android:text="@string/title_quantity"
             />
 
-        <com.tokopedia.design.component.NumberPickerWithCounterView
+        <com.tokopedia.tkpdpdp.customview.NumberPickerWithCounterView
             android:id="@+id/number_picker_quantitiy_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

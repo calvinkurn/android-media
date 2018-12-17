@@ -44,6 +44,13 @@ public class CartDataListResponse {
     @SerializedName("donation")
     @Expose
     private Donation donation;
+    @SerializedName("autoapply_v2")
+    @Expose
+    private AutoapplyV2 autoapplyV2;
+
+    public AutoapplyV2 getAutoapplyV2() {
+        return autoapplyV2;
+    }
 
     public int getIsCouponActive() {
         return isCouponActive;

@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.animation.FlipAnimation;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.List;
 

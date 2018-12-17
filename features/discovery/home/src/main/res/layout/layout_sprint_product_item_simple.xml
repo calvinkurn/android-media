@@ -7,7 +7,7 @@
     android:layout_weight="1"
     android:gravity="center_horizontal">
 
-    <com.tokopedia.design.image.SquareImageView
+    <com.tokopedia.design.image.RoundedCornerImageView
         android:id="@+id/channel_image_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,9 +15,9 @@
 
     <TextView
         android:id="@+id/channel_price_1"
-        style="@style/TextView.Small.Orange"
+        style="@style/TextView.Micro.Orange.Bold"
         android:layout_below="@id/channel_before_disc_price_1"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="@dimen/sp_4"
         android:fontFamily="sans-serif-medium"
         tools:text="Rp 1.399.500" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/channel_before_disc_price_1"
         style="@style/TextView.Micro.BlackDisabled"
         android:layout_below="@id/product_name"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="@dimen/sp_4"
         tools:text="Rp 2.799.000" />
 
     <TextView
@@ -37,6 +37,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_4"
         android:maxLines="2"
+        android:lines="2"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_12"
         tools:text="Headset Gaming Power Bass" />
@@ -53,6 +54,7 @@
         android:paddingTop="@dimen/label_padding_top_bottom"
         android:paddingRight="@dimen/label_padding_left_right"
         android:paddingBottom="@dimen/label_padding_top_bottom"
+        android:textSize="@dimen/dp_10"
         tools:text="50% OFF" />
 
     <TextView
@@ -67,6 +69,7 @@
         android:paddingTop="@dimen/label_padding_top_bottom"
         android:paddingRight="@dimen/label_padding_left_right"
         android:paddingBottom="@dimen/label_padding_top_bottom"
+        android:textSize="@dimen/dp_10"
         tools:text="Cashback 5%" />
 
 </RelativeLayout>

@@ -21,7 +21,7 @@ import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.data.cloud.model.response.Fare;
+import com.tokopedia.flight.search.data.api.single.response.Fare;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;

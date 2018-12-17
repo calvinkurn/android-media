@@ -40,20 +40,23 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.product.manage.list.R;
+import com.tokopedia.product.share.ProductData;
+import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -97,6 +100,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
@@ -149,6 +154,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected void initInjector() {
+        GraphqlClient.init(getContext());
         super.initInjector();
         DaggerProductManageComponent.builder()
                 .productManageModule(new ProductManageModule())
@@ -167,7 +173,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        GraphqlClient.init(getContext());
     }
 
     @Override
@@ -230,7 +235,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onSearchSubmitted(String text) {
-        UnifyTracking.eventProductManageSearch();
+        UnifyTracking.eventProductManageSearch(getActivity());
         super.onSearchSubmitted(text);
     }
 
@@ -264,7 +269,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
-                    UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
+                    UnifyTracking.eventProductManageTopNav(getActivity(), item.getTitle().toString());
                     return true;
                 }
             });
@@ -273,12 +278,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 public boolean onMenuItemClick(MenuItem item) {
                     Intent intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(getContext());
                     startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE);
-                    UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
+                    UnifyTracking.eventProductManageTopNav(getActivity(), item.getTitle().toString());
                     return false;
                 }
             });
         } else if (itemId == R.id.checklist_product_menu) {
-            UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
+            UnifyTracking.eventProductManageTopNav(getActivity(), item.getTitle().toString());
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
@@ -371,7 +376,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void trackingSort(ProductManageSortModel productManageSortModel) {
-        UnifyTracking.eventProductManageSortProduct(productManageSortModel.getTitleSort());
+        UnifyTracking.eventProductManageSortProduct(getActivity(), productManageSortModel.getTitleSort());
     }
 
     private void trackingFilter(ProductManageFilterModel productManageFilterModel) {
@@ -396,7 +401,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             filters.add(AppEventTracking.EventLabel.PICTURE_STATUS);
         }
 
-        UnifyTracking.eventProductManageFilterProduct(TextUtils.join(",", filters));
+        UnifyTracking.eventProductManageFilterProduct(getActivity(), TextUtils.join(",", filters));
     }
 
     protected void resetPageAndRefresh() {
@@ -456,7 +461,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
             adapter.notifyDataSetChanged();
             ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
-            UnifyTracking.eventProductManageClickDetail();
+            UnifyTracking.eventProductManageClickDetail(getActivity());
         }
     }
 
@@ -643,23 +648,23 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 int itemId = item.getItemId();
                 if (itemId == R.id.edit_product_menu) {
                     goToEditProduct(productManageViewModel.getId());
-                    UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString());
+                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString());
                 } else if (itemId == R.id.duplicat_product_menu) {
                     goToDuplicateProduct(productManageViewModel.getId());
-                    UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString());
+                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString());
                 } else if (itemId == R.id.delete_product_menu) {
                     final List<String> productIdList = new ArrayList<>();
                     productIdList.add(productManageViewModel.getId());
                     showDialogActionDeleteProduct(productIdList, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString() + " - " + getString(R.string.label_delete));
+                            UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.label_delete));
                             productManagePresenter.deleteProduct(productIdList);
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            UnifyTracking.eventProductManageOverflowMenu(item.getTitle().toString() + " - " + getString(R.string.title_cancel));
+                            UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.title_cancel));
                             dialog.dismiss();
                         }
                     });
@@ -766,61 +771,31 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     default:
                         break;
                 }
-                UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_cashback_title) + " - " + item.getTitle());
+                UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_cashback_title) + " - " + item.getTitle());
             }
         };
     }
 
-    private void goToShareProduct(ShareData shareData) {
-        Intent intent = ShareActivity.createIntent(getActivity(), shareData);
-        startActivity(intent);
-    }
-
     public void downloadBitmap(final ProductManageViewModel productManageViewModel){
-        showLoadingProgress();
-        ImageHandler.loadImageWithTargetCenterCrop(getActivity(), productManageViewModel.getImageFullUrl(), new SimpleTarget<Bitmap>(2048, 2048) {
-            @Override
-            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
-                String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
-                String cashback = (productManageViewModel.getProductCashback() > 0) ? getString(R.string.pml_sticker_cashback, productManageViewModel.getProductCashback()) : "";
-                ProductManageImageSticker productManageImageSticker = new ProductManageImageSticker.Builder()
-                        .setName(productManageViewModel.getProductName() )
-                        .setPrice(productManageViewModel.getProductCurrencySymbol() + " " + price)
-                        .setShop_link(getString(R.string.pml_sticker_shop_link, shopDomain))
-                        .setCashback(cashback)
-                        .build();
+        ProductShare productShare = new ProductShare(getActivity());
 
-                try {
-                    Bitmap newImage = productManageImageSticker.processStickerToImage(bitmap, getActivity());
-                    File file = FileUtils.writeImageToTkpdPath(newImage);
+        String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
+        ProductData data = new ProductData();
+        data.setPriceText(productManageViewModel.getProductCurrencySymbol() + " " + price);
+        data.setCashbacktext((productManageViewModel.getProductCashback() > 0) ? getString(R.string.pml_sticker_cashback, productManageViewModel.getProductCashback()) : "");
+        data.setCurrencySymbol(productManageViewModel.getProductCurrencySymbol());
+        data.setProductId(productManageViewModel.getProductId());
+        data.setProductName(productManageViewModel.getProductName());
+        data.setProductUrl(productManageViewModel.getProductUrl());
+        data.setProductImageUrl(productManageViewModel.getImageFullUrl());
+        data.setShopUrl(getString(R.string.pml_sticker_shop_link, shopDomain));
 
-                    ShareData shareData = ShareData.Builder.aShareData()
-                            .setName(productManageViewModel.getProductName())
-                            .setTextContent(productManageViewModel.getProductName())
-                            .setDescription(productManageViewModel.getProductName())
-                            .setImgUri(productManageViewModel.getImageFullUrl())
-                            .setPrice(productManageViewModel.getProductPrice())
-                            .setUri(productManageViewModel.getProductUrl())
-                            .setType(ShareData.PRODUCT_TYPE)
-                            .setId(productManageViewModel.getProductId())
-                            .setPathSticker(file.getAbsolutePath())
-                            .build();
-
-                    newImage.recycle();
-                    goToShareProduct(shareData);
-                } catch (Throwable e) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
-                }
-
-                hideLoadingProgress();
-            }
-
-            @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
-                hideLoadingProgress();
-                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
-            }
+        productShare.share(data, () -> {
+            showLoadingProgress();
+            return Unit.INSTANCE;
+        }, () -> {
+            hideLoadingProgress();
+            return Unit.INSTANCE;
         });
     }
 
@@ -851,7 +826,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private void showDialogActionGoToGMSubscribe() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(R.string.product_manage_cashback_limited_title);
-        alertDialog.setMessage(R.string.product_manage_cashback_limited_desc);
+        alertDialog.setMessage(getString(R.string.product_manage_cashback_limited_desc,
+                getString(GMConstant.getGMTitleResource(getContext()))));
         alertDialog.setPositiveButton(R.string.pml_label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

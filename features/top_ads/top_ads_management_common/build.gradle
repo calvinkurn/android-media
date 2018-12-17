@@ -18,6 +18,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.design)
 
     testCompile rootProject.ext.testDependencies.junit
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

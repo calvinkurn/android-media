@@ -36,7 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.ArrayList;
 

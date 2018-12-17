@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -54,6 +55,7 @@ public class ShopListFragment extends SearchSectionFragment
     private static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_ACTIVITY_SORT_SHOP = 1235;
     private static final int REQUEST_ACTIVITY_FILTER_SHOP = 4322;
+    private static final String SEARCH_SHOP_TRACE = "search_shop_trace";
 
     private RecyclerView recyclerView;
     private ShopListAdapter adapter;
@@ -69,6 +71,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     private EndlessRecyclerviewListener linearLayoutLoadMoreTriggerListener;
     private EndlessRecyclerviewListener gridLayoutLoadMoreTriggerListener;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static ShopListFragment newInstance(String query) {
         Bundle args = new Bundle();
@@ -161,6 +164,7 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private void loadShopFirstTime() {
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE);
         loadMoreShop(START_ROW_FIRST_TIME_LOAD);
     }
 
@@ -175,6 +179,9 @@ public class ShopListFragment extends SearchSectionFragment
                 if (shopItemList.isEmpty()) {
                     handleEmptySearchResult();
                 } else {
+                    if (performanceMonitoring != null) {
+                        performanceMonitoring.stopTrace();
+                    }
                     handleSearchResult(shopItemList, isHasNextPage, startRow);
                 }
                 isLoadingData = false;

@@ -97,9 +97,9 @@ public class CartActivity extends BaseCheckoutActivity implements EmptyCartListe
     }
 
     @Override
-    public void onCartEmpty(String autoApplyMessage) {
+    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc) {
         if (emptyCartFragment == null) {
-            emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "");
+            emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "", state, titleDesc);
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(com.tokopedia.abstraction.R.id.parent_view, emptyCartFragment, getTagFragment())

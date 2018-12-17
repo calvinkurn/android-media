@@ -100,8 +100,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    ThanksTracker.Presenter provideThanksAnalyticsPresenter(ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
+    ThanksTracker.Presenter provideThanksAnalyticsPresenter(@ApplicationContext Context context, ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
                                                             Gson gson) {
-        return new ThanksTrackerPresenter(thankYouPageTrackerUseCase, gson);
+        return new ThanksTrackerPresenter(context, thankYouPageTrackerUseCase, gson);
     }
 }
