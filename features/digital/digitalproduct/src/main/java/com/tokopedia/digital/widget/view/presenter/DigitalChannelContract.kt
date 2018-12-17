@@ -17,6 +17,8 @@ class DigitalChannelContract {
 
         fun showError(message: String?)
 
+        fun renderDigitalTitle(stringRes: Int)
+
     }
 
     interface Presenter: CustomerPresenter<View> {

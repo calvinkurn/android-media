@@ -5,6 +5,7 @@ import com.tokopedia.digital.widget.domain.interactor.DigitalRecommendationUseCa
 import com.tokopedia.digital.widget.view.model.Recommendation
 import rx.Subscriber
 import javax.inject.Inject
+import com.tokopedia.digital.R
 
 /**
  * Created by Rizky on 15/11/18.
@@ -19,6 +20,7 @@ class DigitalChannelPresenter @Inject constructor(private val recommendationUseC
             override fun onNext(it: List<Recommendation>) {
                 if (!it.isEmpty()) {
                     view.renderRecommendationList(it)
+                    view.renderDigitalTitle(R.string.digital_my_channel_top_up_tagihan_title)
                 } else {
                     view.fetchCategoryList()
                 }

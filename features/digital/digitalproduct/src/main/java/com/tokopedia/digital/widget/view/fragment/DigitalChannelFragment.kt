@@ -27,6 +27,7 @@ import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
 import com.tokopedia.digital.widget.view.presenter.DigitalChannelContract
 import com.tokopedia.digital.widget.view.presenter.DigitalChannelPresenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.user.session.UserSession
 
 /**
  * Created by Rizky on 15/11/18.
@@ -34,6 +35,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View, RecommendationAdapter.OnClickListener {
 
     private lateinit var abstractionRouter: AbstractionRouter
+
+    private lateinit var userSession: UserSession
 
     private lateinit var digitalChannelPresenter: DigitalChannelPresenter
 
@@ -46,6 +49,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
     private lateinit var error_view: LinearLayout
     private lateinit var text_error_message: TextView
     private lateinit var text_see_more: TextView
+    private lateinit var text_title: TextView
     private lateinit var button_try_again: Button
 
     private val APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2"
@@ -61,6 +65,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         error_view = rootview.findViewById(R.id.error_view)
         text_error_message = rootview.findViewById(R.id.text_error_message)
         text_see_more = rootview.findViewById(R.id.see_more)
+        text_title = rootview.findViewById(R.id.title)
         button_try_again = rootview.findViewById(R.id.button_try_again)
 
         button_try_again.setOnClickListener {
@@ -99,7 +104,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
 
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
 
-        if (isDigitalChannelRecommendationEnabled(remoteConfig)) {
+        if (userSession.isLoggedIn() && isDigitalChannelRecommendationEnabled(remoteConfig)) {
             digitalChannelPresenter.getRecommendationList(5)
         } else {
             fetchCategoryList()
@@ -112,6 +117,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
 
     override fun initInjector() {
         abstractionRouter = activity?.application as AbstractionRouter
+        userSession = UserSession(activity)
 
         val digitalEndpointService = DigitalEndpointService()
         val digitalGqlApiService = DigitalGqlApiService()
@@ -142,6 +148,10 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
 
     override fun getScreenName(): String {
         return DigitalChannelFragment::class.java.simpleName
+    }
+
+    override fun renderDigitalTitle(stringRes: Int) {
+        text_title.text = getString(stringRes)
     }
 
     override fun renderRecommendationList(recommendations: List<Recommendation>) {
