@@ -15,7 +15,7 @@ import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupC
 public class OverlayViewModel extends BaseGroupChatPojo implements Visitable<GroupChatTypeFactory>,Parcelable {
 
 
-    public static final String TYPE = "OVERLAY_MESSAGE";
+    public static final String TYPE = "overlay_message";
 
     @SerializedName("closeable")
     @Expose
