@@ -103,10 +103,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
                 pojo.message.timeStampUnix,
-                pojo.attachment!!.fallbackAttachment.message,
-                pojo.attachment!!.fallbackAttachment.url,
-                pojo.attachment!!.fallbackAttachment.span,
-                pojo.attachment!!.fallbackAttachment.html
+                pojo.attachment!!.fallbackAttachment.message
         )
     }
 
