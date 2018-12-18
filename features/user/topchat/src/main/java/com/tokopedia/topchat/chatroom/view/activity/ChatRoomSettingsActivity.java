@@ -296,7 +296,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
     @Override
     public void setPromotionViewOpacity(boolean enable) {
-        if (chatPromotionalcardView.getVisibility() == View.VISIBLE) {
+        if (chatPromotionalcardView.getVisibility() == View.VISIBLE && chatPersonalCardView.getVisibility() == View.VISIBLE) {
             if (enable) {
                 promotionConstraintLayout.setAlpha(0.4f);
             } else {
