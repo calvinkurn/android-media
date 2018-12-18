@@ -60,7 +60,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getActivity(),getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
         UpdateInactivePhoneEventTracking.eventViewPhotoUploadScreen(getActivity());
     }
 

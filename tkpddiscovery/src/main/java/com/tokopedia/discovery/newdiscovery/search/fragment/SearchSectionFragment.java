@@ -188,7 +188,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected void screenTrack() {
         if (getUserVisibleHint()) {
-            ScreenTracking.screen(getActivity(), getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
     }
 
