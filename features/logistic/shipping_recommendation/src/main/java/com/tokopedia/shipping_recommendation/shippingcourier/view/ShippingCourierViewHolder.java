@@ -18,9 +18,11 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_SHIPMENT_COURIER = R.layout.item_courier;
+    private static final int COD_ENABLE_VALUE = 1;
 
     private TextView tvCourier;
     private TextView tvPrice;
+    private TextView tvCod;
     private ImageView imgCheck;
     private View vSeparator;
     private TextView tvPromoPotency;
@@ -36,6 +38,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
         tvCourier = itemView.findViewById(R.id.tv_courier);
         tvPrice = itemView.findViewById(R.id.tv_price);
+        tvCod = itemView.findViewById(R.id.tv_cod_availability);
         imgCheck = itemView.findViewById(R.id.img_check);
         vSeparator = itemView.findViewById(R.id.v_separator);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
@@ -49,6 +52,12 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             tvPromoPotency.setVisibility(View.VISIBLE);
         } else {
             tvPromoPotency.setVisibility(View.GONE);
+        }
+
+        if (shippingCourierViewModel.getProductData().getCodProductData() != null) {
+            tvCod.setText(shippingCourierViewModel.getProductData().getCodProductData().getCodText());
+            tvCod.setVisibility(shippingCourierViewModel.getProductData().getCodProductData()
+                    .getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
         }
 
         tvCourier.setText(shippingCourierViewModel.getProductData().getShipperName());
