@@ -24,7 +24,7 @@ public class MostHelpfulReviewSubscriber extends Subscriber<List<Review>> {
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onWishlistCountLoaded("-");
+
     }
 
     @Override

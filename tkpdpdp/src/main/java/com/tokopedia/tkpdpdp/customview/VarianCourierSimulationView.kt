@@ -46,6 +46,10 @@ class VarianCourierSimulationView : BaseCustomView {
     fun addProductVariant(productVariant: ProductVariant, productDetailData: ProductDetailData) {
         view_variant_field!!.setOnClickListener { listener!!.openVariantPage(0) }
         view_variant_field!!.visibility = View.VISIBLE
+
+        if(view_courier_field.visibility == View.VISIBLE){
+            line.visibility = View.VISIBLE
+        }
     }
 
     fun updateVariant(variantSelected: String) {
@@ -83,7 +87,12 @@ class VarianCourierSimulationView : BaseCustomView {
 
     private fun showCourierRate(show : Boolean) {
         when(show){
-            true -> {view_courier_field.visibility = View.VISIBLE}
+            true -> {
+                view_courier_field.visibility = View.VISIBLE
+                if(view_variant_field.visibility == View.VISIBLE){
+                    line.visibility = View.VISIBLE
+                }
+            }
             false -> {view_courier_field.visibility = View.GONE}
         }
     }

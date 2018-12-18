@@ -49,19 +49,20 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_title_varian"
             app:layout_constraintTop_toBottomOf="@+id/tv_title_varian" />
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/pdp_line_color"
-            app:layout_constraintEnd_toEndOf="@+id/variant_title"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/variant_title"
-            app:layout_constraintTop_toBottomOf="@+id/variant_title"
-            app:layout_constraintVertical_bias="0.0" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/pdp_line_color"
+        app:layout_constraintEnd_toEndOf="@+id/variant_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/variant_title"
+        app:layout_constraintTop_toBottomOf="@+id/variant_title"
+        app:layout_constraintVertical_bias="0.0" />
 
     <LinearLayout
         android:id="@+id/view_courier_field"
