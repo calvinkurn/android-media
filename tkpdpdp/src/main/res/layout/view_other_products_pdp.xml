@@ -3,16 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_10"
-    android:paddingLeft="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_10">
+    android:paddingBottom="@dimen/pdp_content_padding"
+    android:paddingLeft="@dimen/pdp_content_padding"
+    android:paddingRight="@dimen/pdp_content_padding">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center_vertical"
         android:text="@string/title_other_shop_product"
-        android:textColor="@color/black_70"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/pdp_title_text_size"
         android:textStyle="bold" />
 
     <HorizontalScrollView
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:fadeScrollbars="false"
         android:fillViewport="true"
+        android:scrollbars="none"
         android:background="@color/white"
         android:measureAllChildren="false"
         android:scrollbarSize="3dp">

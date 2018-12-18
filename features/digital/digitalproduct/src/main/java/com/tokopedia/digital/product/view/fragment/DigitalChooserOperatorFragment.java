@@ -18,7 +18,6 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.view.presenter.OperatorChooserContract;
@@ -27,10 +26,8 @@ import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
+import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
@@ -48,12 +45,9 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
     private static final String EXTRA_STATE_OPERATOR_STYLE_VIEW =
             "EXTRA_STATE_OPERATOR_STYLE_VIEW";
 
-    @BindView(R2.id.rv_list_chooser)
-    RecyclerView rvOperatorList;
-    @BindView(R2.id.field_search)
-    EditText fieldSearch;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
+    private RecyclerView rvOperatorList;
+    private EditText fieldSearch;
+    private ProgressBar pbMainLoading;
 
     private CompositeSubscription compositeSubscription;
 
@@ -158,6 +152,10 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
 
     @Override
     protected void initView(View view) {
+        rvOperatorList = view.findViewById(R.id.rv_list_chooser);
+        fieldSearch = view.findViewById(R.id.field_search);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
@@ -228,7 +226,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<Operat
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    UnifyTracking.eventClickSearchBar(categoryName, categoryName);
+                    UnifyTracking.eventClickSearchBar(getActivity(),categoryName, categoryName);
                 }
             }
         };

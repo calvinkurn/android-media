@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -71,6 +72,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private DigitalRouter digitalRouter;
+    private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
 
     @Inject
     public CartDigitalPresenter(
@@ -80,7 +82,10 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             DigitalAddToCartUseCase digitalAddToCartUseCase,
             DigitalCheckoutUseCase digitalCheckoutUseCase,
             DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-            DigitalRouter digitalRouter) {
+            DigitalRouter digitalRouter,
+            DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+
+
         this.cartDigitalInteractor = iCartDigitalInteractor;
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
@@ -88,6 +93,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         this.digitalRouter = digitalRouter;
         this.userSession = userSession;
         this.digitalAnalytics = digitalAnalytics;
+        this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
     }
 
     @Override
@@ -434,6 +440,14 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
                     getView().setCartDigitalInfo(cartDigitalInfoData);
                     startOTPProcess();
                 } else {
+                    if (cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
+                            && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+                        getView().showPostPaidDialog(
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
+                        );
+                    }
                     getView().renderAddToCartData(cartDigitalInfoData);
                 }
             }
@@ -532,6 +546,16 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 getView().renderCartDigitalInfoData(cartDigitalInfoData);
+
+                if (!getView().isAlreadyShowPostPaid()
+                        && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
+                        && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+                    getView().showPostPaidDialog(
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
+                    );
+                }
             }
         };
     }
@@ -625,7 +649,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setDealsIds(new ArrayList<>());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
-        attributes.setClientId(TrackingUtils.getClientID());
+        attributes.setClientId(TrackingUtils.getClientID(getView().getApplicationContext()));
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(

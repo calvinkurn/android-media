@@ -26,6 +26,7 @@ import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
@@ -64,6 +65,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
+    private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
 
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
@@ -71,7 +73,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     ICartDigitalInteractor cartDigitalInteractor,
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
+                                    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+                                    DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
         this.digitalModuleRouter = digitalModuleRouter;
@@ -79,6 +82,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
+        this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
     }
 
     @Override
@@ -253,6 +257,21 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         }
 
         branchAutoApplyCouponIfAvailable();
+
+        renderPostPaidPopUp(cartDigitalInfoData);
+    }
+
+    private void renderPostPaidPopUp(CartDigitalInfoData cartDigitalInfoData) {
+        if (!getView().isAlreadyShowPostPaid()
+                && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
+                && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+            getView().showPostPaidDialog(
+                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle(),
+                    userSession.getUserId()
+            );
+        }
     }
 
     private void branchAutoApplyCouponIfAvailable() {

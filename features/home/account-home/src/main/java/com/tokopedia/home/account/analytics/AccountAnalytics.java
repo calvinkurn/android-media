@@ -62,6 +62,18 @@ public class AccountAnalytics {
         );
     }
 
+    public void eventClickOVOPayLater(String category, String action, String label) {
+        if (analyticTracker == null)
+            return;
+
+        analyticTracker.sendEventTracking(
+                "",
+                category,
+                action,
+                label
+        );
+    }
+
     public void eventClickSetting(String item) {
         if (analyticTracker == null)
             return;
