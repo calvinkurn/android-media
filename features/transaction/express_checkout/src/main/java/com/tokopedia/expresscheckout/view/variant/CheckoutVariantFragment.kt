@@ -142,7 +142,25 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     if (variantTypeViewModel.variantId == variantId) {
                         variantTypeViewModel.variantSelectedValue = checkoutVariantOptionVariantViewModel.variantName
                         adapter.notifyItemChanged(adapter.getIndex(variantTypeViewModel))
-                        break
+                    } else {
+                        for (variantOptionViewModel: CheckoutVariantOptionVariantViewModel in variantTypeViewModel.variantOptions) {
+                            var hasAvailableChild = false
+                            for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+                                if (productChild.isAvailable && variantOptionViewModel.optionId in productChild.optionsId &&
+                                        checkoutVariantOptionVariantViewModel.optionId in productChild.optionsId) {
+                                    hasAvailableChild = true
+                                    break
+                                }
+                            }
+                            if (!hasAvailableChild) {
+                                variantOptionViewModel.hasAvailableChild = false
+                                variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_AVAILABLE
+                            } else {
+                                variantOptionViewModel.hasAvailableChild = true
+                                variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_SELECTED
+                            }
+                        }
+                        adapter.notifyItemChanged(adapter.getIndex(variantTypeViewModel))
                     }
                 }
             }
