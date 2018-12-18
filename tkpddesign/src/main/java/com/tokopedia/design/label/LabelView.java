@@ -298,7 +298,12 @@ public class LabelView extends BaseCustomView {
     }
 
     public void setContentClick(View.OnClickListener onClickListener){
-        this.contentTextView.setOnClickListener(onClickListener);
+        if (onClickListener == null){
+            this.contentTextView.setClickable(false);
+        } else {
+            this.contentTextView.setClickable(true);
+            this.contentTextView.setOnClickListener(onClickListener);
+        }
     }
 
     public void setSubTitle(SpannableString subtitle) {
