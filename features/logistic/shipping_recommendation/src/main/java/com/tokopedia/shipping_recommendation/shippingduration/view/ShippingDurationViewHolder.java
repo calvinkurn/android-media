@@ -30,6 +30,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvError;
     private TextView tvDuration;
     private TextView tvPrice;
+    private TextView tvCod;
     private ImageView imgCheck;
     private TextView tvDurationHeaderInfo;
     private RelativeLayout rlContent;
@@ -54,6 +55,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info);
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
+        tvCod = itemView.findViewById(R.id.tv_cod_availability);
     }
 
     public void bindData(ShippingDurationViewModel shippingDurationViewModel,
@@ -80,6 +82,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);
+        tvCod.setVisibility(shippingDurationViewModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
