@@ -24,11 +24,12 @@ class TrackingMapper(context: Context) {
 
         val item = JSONObject(track)
         item.put("session_id", sessionId)
+        item.put("container", "gtm")
         event.put(item)
 
         row.put("device_id", uniqueDeviceId)
         row.put("user_id", userId)
-        row.put("event", event)
+        row.put("event_data", event)
 
         data.put(row)
 
@@ -52,7 +53,7 @@ class TrackingMapper(context: Context) {
             val userId: String = nextItem?.userId ?: ""
             if (userId != item.userId) {
                 if (event.length() > 0) {
-                    row.put("event", event)
+                    row.put("event_data", event)
                     data.put(row)
                 }
                 row.put("device_id", uniqueDeviceId)
