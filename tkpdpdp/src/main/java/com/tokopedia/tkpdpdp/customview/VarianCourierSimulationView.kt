@@ -91,14 +91,10 @@ class VarianCourierSimulationView : BaseCustomView {
     private fun showShopLocationView(show : Boolean){
         when(show){
             true -> {
-                img_shop_location.visibility = View.VISIBLE
-                tv_shop_location_label.visibility = View.VISIBLE
-                tv_shop_location.visibility = View.VISIBLE
+                view_shop_address.visibility = View.VISIBLE
             }
             false -> {
-                img_shop_location.visibility = View.GONE
-                tv_shop_location_label.visibility = View.GONE
-                tv_shop_location.visibility = View.GONE
+                view_shop_address.visibility = View.GONE
             }
         }
     }
@@ -106,24 +102,12 @@ class VarianCourierSimulationView : BaseCustomView {
     private fun showShopDestination(show : Boolean){
         when(show){
             true -> {
-                img_courier.visibility = View.VISIBLE
-                tv_destination.visibility = View.VISIBLE
-                tv_destination_label.visibility = View.VISIBLE
-
-                tv_courier_label.visibility = View.VISIBLE
-                tv_courier_est_cost.visibility = View.VISIBLE
-                tv_courier_est_cost_label.visibility = View.VISIBLE
-                tv_courier_count.visibility = View.VISIBLE
+                view_destination.visibility = View.VISIBLE
+                view_courier.visibility = View.VISIBLE
             }
             false -> {
-                img_courier.visibility = View.GONE
-                tv_destination.visibility = View.GONE
-                tv_destination_label.visibility = View.GONE
-
-                tv_courier_label.visibility = View.GONE
-                tv_courier_est_cost.visibility = View.GONE
-                tv_courier_est_cost_label.visibility = View.GONE
-                tv_courier_count.visibility = View.GONE
+                view_destination.visibility = View.GONE
+                view_courier.visibility = View.GONE
             }
         }
     }
