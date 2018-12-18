@@ -1564,8 +1564,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
-        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+    public Intent Intent getTalkDetailIntent(Context context, String talkId, String shopId,
+                                             String source) {
+        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override

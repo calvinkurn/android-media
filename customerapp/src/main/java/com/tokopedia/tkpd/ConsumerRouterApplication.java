@@ -3265,8 +3265,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
-        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+    public Intent public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
+                                                    String source) {
+        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override
