@@ -97,7 +97,7 @@
                         android:id="@+id/product_properties"
                         layout="@layout/layout_cart_item_policy"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/ll_product_name"
                         android:layout_marginTop="4dp" />
 

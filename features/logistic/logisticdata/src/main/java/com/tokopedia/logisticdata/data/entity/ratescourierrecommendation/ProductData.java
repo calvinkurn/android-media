@@ -63,6 +63,9 @@ public class ProductData implements Parcelable {
     @SerializedName("error")
     @Expose
     private ErrorProductData error;
+    @SerializedName("cod")
+    @Expose
+    private CodProductData codProductData;
 
     public ProductData() {
     }
@@ -259,5 +262,13 @@ public class ProductData implements Parcelable {
 
     public void setPromoCode(String promoCode) {
         this.promoCode = promoCode;
+    }
+
+    public CodProductData getCodProductData() {
+        return codProductData;
+    }
+
+    public void setCodProductData(CodProductData codProductData) {
+        this.codProductData = codProductData;
     }
 }

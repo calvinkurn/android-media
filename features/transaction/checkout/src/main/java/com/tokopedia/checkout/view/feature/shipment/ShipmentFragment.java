@@ -40,6 +40,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHold
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
@@ -49,6 +50,7 @@ import com.tokopedia.checkout.view.feature.shipment.di.DaggerShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentComponent;
 import com.tokopedia.checkout.view.feature.shipment.di.ShipmentModule;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shippingoptions.CourierBottomsheet;
 import com.tokopedia.checkout.view.feature.webview.CheckoutWebViewActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -108,6 +110,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
+    public static final String BOTTOM_SHEET_TAG = "BOTTOM_SHEET_TAG";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -115,6 +118,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private CardView cardFooter;
     private TextView tvTotalPayment;
     private TextView tvSelectPaymentMethod;
+    private TextView tvSelectCodPayment;
     private TkpdProgressDialog progressDialogNormal;
     // For regular shipment
     private CourierBottomsheet courierBottomsheet;
@@ -234,6 +238,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cardFooter = view.findViewById(R.id.card_footer);
         tvTotalPayment = view.findViewById(R.id.tv_total_payment);
         tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
+        tvSelectCodPayment = view.findViewById(R.id.tv_select_cod);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
 
@@ -319,6 +324,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     getArguments().getString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, "")
             );
         }
+
+        if(shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
+            shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
+            tvSelectCodPayment.setVisibility(View.VISIBLE);
+            tvSelectCodPayment.setOnClickListener(this::proceedCod);
+        }
+
         shipmentAdapter.addPromoVoucherData(cartItemPromoHolderData);
         shipmentPresenter.setCartItemPromoHolderData(cartItemPromoHolderData);
         if (promoCodeAppliedData != null) {
@@ -616,6 +628,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void setCourierPromoApplied(int itemPosition) {
         shipmentAdapter.setCourierPromoApplied(itemPosition);
+    }
+
+    @Override
+    public void proceedCod(View view) {
+        // todo : show dialog for testing purpose
+        CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
+        bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
     }
 
     @Override

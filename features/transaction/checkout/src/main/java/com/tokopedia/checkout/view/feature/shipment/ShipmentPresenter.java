@@ -74,6 +74,7 @@ import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentSt
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShopProductData;
+import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.usecase.RequestParams;
 
@@ -124,6 +125,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CartPromoSuggestion cartPromoSuggestion;
     private ShipmentCostModel shipmentCostModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private Cod codData;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<CheckPromoCodeCartShipmentRequest.Data> promoCodeCartShipmentRequestDataList;
@@ -363,6 +365,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         setShipmentCartItemModelList(getView()
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
+
+        this.codData = cartShipmentAddressFormData.getCod();
     }
 
     @Override
@@ -1332,5 +1336,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean getHasDeletePromoAfterChecKPromoCodeFinal() {
         return hasDeletePromoAfterChecKPromoCodeFinal;
+    }
+
+    @Override
+    public Cod getCodData() {
+        return this.codData;
     }
 }

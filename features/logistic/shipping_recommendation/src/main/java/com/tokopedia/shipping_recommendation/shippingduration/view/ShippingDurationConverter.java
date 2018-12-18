@@ -21,6 +21,8 @@ import java.util.List;
 
 public class ShippingDurationConverter {
 
+    private static final int COD_TRUE_VAL = 1;
+
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,
                                                               List<ShopShipment> shopShipmentList,
                                                               ShipmentDetailData shipmentDetailData,
@@ -47,6 +49,10 @@ public class ShippingDurationConverter {
                 } else {
                     shippingDurationViewModel.setErrorMessage(serviceData.getError().getErrorMessage());
                 }
+            }
+            if(serviceData.getCodData() != null) {
+                shippingDurationViewModel.setCodAvailable(serviceData.getCodData().getIsCod() == COD_TRUE_VAL);
+                shippingDurationViewModel.setCodText(serviceData.getCodData().getCodText());
             }
         }
 

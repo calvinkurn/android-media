@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.app.Activity;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -24,6 +25,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +110,8 @@ public interface ShipmentContract {
         boolean checkCourierPromoStillExist();
 
         void setCourierPromoApplied(int itemPosition);
+
+        void proceedCod(android.view.View view);
     }
 
     interface AnalyticsActionListener {
@@ -287,6 +291,8 @@ public interface ShipmentContract {
         void setHasDeletePromoAfterChecKPromoCodeFinal(boolean state);
 
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
+
+        Cod getCodData();
     }
 
 }

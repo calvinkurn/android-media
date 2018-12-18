@@ -26,9 +26,11 @@ import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewH
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceTncModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -58,6 +60,7 @@ import javax.inject.Inject;
 public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int DEFAULT_ERROR_POSITION = -1;
+    public static final int HEADER_POSITION = 0;
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -100,7 +103,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         ShipmentData item = shipmentDataList.get(position);
 
-        if (item instanceof CartItemPromoHolderData) {
+        if (item instanceof ShipmentNotifierModel) {
+            return ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD;
+        } else if (item instanceof CartItemPromoHolderData) {
             return CartVoucherPromoViewHolder.TYPE_VIEW_PROMO;
         } else if (item instanceof CartPromoSuggestion) {
             return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
@@ -125,7 +130,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
 
-        if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
+        if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
+            return new ShipmentNotifierViewHolder(view);
+        } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             return new CartVoucherPromoViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             return new CartPromoSuggestionViewHolder(view, shipmentAdapterActionListener);
@@ -230,6 +237,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentSellerCashbackModel = null;
         shipmentDonationModel = null;
         notifyDataSetChanged();
+    }
+
+    public void addNotifierData(ShipmentNotifierModel shipmentNotifierModel) {
+        shipmentDataList.add(HEADER_POSITION, shipmentNotifierModel);
     }
 
     public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {

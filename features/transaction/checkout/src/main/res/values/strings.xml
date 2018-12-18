@@ -143,6 +143,7 @@
     <string name="label_hide_other_item">Sembunyikan</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_pay">Bayar</string>
+    <string name="label_pay_cod">Bayar di Tempat</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
     <string name="cart_item_count_format" formatted="false">Harga (%s Barang)</string>
     <string name="cart_item_button_checkout_count_format" formatted="false">Checkout (%s)</string>
@@ -219,5 +220,7 @@
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
     <string name="checkout_ppp_label">Proteksi Gadget (3 Barang)</string>
     <string name="title_activity_checkout_webview">Proteksi Gadget</string>
+    <string name="label_cod">Bayar di Tempat</string>
+    <string name="lebel_understood">Mengerti</string>
 
 </resources>
