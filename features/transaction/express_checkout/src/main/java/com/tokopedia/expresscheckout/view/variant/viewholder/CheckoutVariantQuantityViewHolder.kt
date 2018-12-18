@@ -45,7 +45,7 @@ class CheckoutVariantQuantityViewHolder(val view: View, val listener: CheckoutVa
                 }
             })
 
-            itemView.tv_quantity_stock_available.text = element.availableStock
+            itemView.tv_quantity_stock_available.text = element.stockWording
             if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
                 listener.onNeedToNotifySingleItem(adapterPosition)
             }

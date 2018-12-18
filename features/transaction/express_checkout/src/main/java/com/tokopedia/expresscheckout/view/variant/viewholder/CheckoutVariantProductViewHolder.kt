@@ -35,7 +35,7 @@ class CheckoutVariantProductViewHolder(val view: View, val listener: CheckoutVar
             } else {
                 itemView.tv_product_name.text = element.productName
                 itemView.tv_product_price.text = element.productPrice
-                if (element.availableQuantity > 0) stockWording = "Stok Tersedia"
+                if (element.maxOrderQuantity > 0) stockWording = "Stok Tersedia"
             }
 
             listener.onBindProductUpdateQuantityViewModel(stockWording)

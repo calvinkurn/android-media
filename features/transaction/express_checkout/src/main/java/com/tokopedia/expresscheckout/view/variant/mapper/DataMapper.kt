@@ -23,7 +23,9 @@ interface DataMapper {
 
     fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantProfileViewModel
 
-    fun convertToQuantityViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantQuantityViewModel
+    fun convertToQuantityViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
+                                   checkoutVariantProductViewModel: CheckoutVariantProductViewModel):
+            CheckoutVariantQuantityViewModel
 
     fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantSummaryViewModel
 

@@ -10,7 +10,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  */
 
 data class CheckoutVariantQuantityViewModel(
-        var availableStock: String,
+        var stockWording: String,
         var maxOrderQuantity: Int,
         var minOrderQuantity: Int,
         var orderQuantity: Int,
@@ -43,7 +43,7 @@ data class CheckoutVariantQuantityViewModel(
             parcel?.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(availableStock)
+        parcel.writeString(stockWording)
         parcel.writeInt(maxOrderQuantity)
         parcel.writeInt(minOrderQuantity)
         parcel.writeInt(orderQuantity)

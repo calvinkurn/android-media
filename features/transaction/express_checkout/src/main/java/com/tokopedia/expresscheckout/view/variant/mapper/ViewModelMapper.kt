@@ -34,8 +34,9 @@ class ViewModelMapper : DataMapper {
         if (expressCheckoutFormData.userProfileDefault != null) {
             dataList.add(convertToProfileViewModel(expressCheckoutFormData))
         }
-        dataList.add(convertToProductViewModel(expressCheckoutFormData, variantViewModelList))
-        dataList.add(convertToQuantityViewModel(expressCheckoutFormData))
+        var checkoutVariantProductViewModel = convertToProductViewModel(expressCheckoutFormData, variantViewModelList)
+        dataList.add(checkoutVariantProductViewModel)
+        dataList.add(convertToQuantityViewModel(expressCheckoutFormData, checkoutVariantProductViewModel))
         dataList.addAll(variantViewModelList)
         dataList.add(convertToNoteViewModel(expressCheckoutFormData))
         if (expressCheckoutFormData.userProfileDefault != null) {
@@ -59,7 +60,12 @@ class ViewModelMapper : DataMapper {
         var checkoutVariantProductViewModel = CheckoutVariantProductViewModel()
         checkoutVariantProductViewModel.productImageUrl = product.productImageSrc200Square
         checkoutVariantProductViewModel.productName = product.productName
-        checkoutVariantProductViewModel.availableQuantity = product.productQuantity
+        checkoutVariantProductViewModel.minOrderQuantity = product.productMinOrder
+        if (product.productInvenageValue > 0) {
+            checkoutVariantProductViewModel.maxOrderQuantity = product.productInvenageValue
+        } else {
+            checkoutVariantProductViewModel.maxOrderQuantity = expressCheckoutFormData.maxQuantity ?: 10000
+        }
         checkoutVariantProductViewModel.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.productPrice, false)
         var productChildList = ArrayList<ProductChild>()
         var hasSelectedDefaultVariant = false
@@ -92,25 +98,6 @@ class ViewModelMapper : DataMapper {
                     productChild.isSelected = false
                 }
                 productChildList.add(productChild)
-/*
-                for (optionId: Int in child.optionIds) {
-                    for (checkoutVariantTypeVariantViewModel: CheckoutVariantTypeVariantViewModel in checkoutVariantTypeVariantViewModels) {
-                        for (variantOption: CheckoutVariantOptionVariantViewModel in checkoutVariantTypeVariantViewModel.variantOptions) {
-                            if (variantOption.id == optionId) {
-                                when {
-                                    productChild.isSelected && child.optionIds.contains(variantOption.id) -> {
-                                        variantOption.currentState = variantOption.STATE_SELECTED
-                                        checkoutVariantTypeVariantViewModel.variantSelectedValue = variantOption.variantName
-                                    }
-                                    !productChild.isAvailable -> variantOption.currentState = variantOption.STATE_NOT_AVAILABLE
-                                    else -> variantOption.currentState = variantOption.STATE_NOT_SELECTED
-                                }
-                            }
-                        }
-                    }
-                }
-*/
-
             }
         }
         checkoutVariantProductViewModel.productChildrenList = productChildList
@@ -129,8 +116,22 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantProfileViewModel
     }
 
-    override fun convertToQuantityViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantQuantityViewModel {
+    override fun convertToQuantityViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
+                                            checkoutVariantProductViewModel: CheckoutVariantProductViewModel): CheckoutVariantQuantityViewModel {
         var checkoutVariantQuantityViewModel = CheckoutVariantQuantityViewModel()
+        checkoutVariantQuantityViewModel.errorFieldBetween = expressCheckoutFormData.messages?.errorFieldBetween ?: ""
+        checkoutVariantQuantityViewModel.errorFieldMaxChar = expressCheckoutFormData.messages?.errorFieldMaxChar ?: ""
+        checkoutVariantQuantityViewModel.errorFieldRequired = expressCheckoutFormData.messages?.errorFieldRequired ?: ""
+        checkoutVariantQuantityViewModel.errorProductAvailableStock = expressCheckoutFormData.messages?.errorProductAvailableStock ?: ""
+        checkoutVariantQuantityViewModel.errorProductAvailableStockDetail = expressCheckoutFormData.messages?.errorProductAvailableStockDetail ?: ""
+        checkoutVariantQuantityViewModel.errorProductMaxQuantity = expressCheckoutFormData.messages?.errorProductMaxQuantity ?: ""
+        checkoutVariantQuantityViewModel.errorProductMinQuantity = expressCheckoutFormData.messages?.errorProductMinQuantity ?: ""
+        checkoutVariantQuantityViewModel.isStateError = false
+
+        checkoutVariantQuantityViewModel.maxOrderQuantity = checkoutVariantProductViewModel.maxOrderQuantity
+        checkoutVariantQuantityViewModel.minOrderQuantity = checkoutVariantProductViewModel.minOrderQuantity
+        checkoutVariantQuantityViewModel.orderQuantity = checkoutVariantProductViewModel.minOrderQuantity
+        checkoutVariantQuantityViewModel.stockWording = ""
 
         return checkoutVariantQuantityViewModel
     }
