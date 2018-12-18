@@ -21,7 +21,7 @@ class DynamicPostViewHolder(v: View)
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_dynamic_post
+        val LAYOUT = R.layout.item_xdynamic_post
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -37,8 +37,8 @@ class DynamicPostViewHolder(v: View)
     }
 
     private fun bindTitle(title: String) {
-        itemView.metaTitle.shouldShowWithAction(title.isEmpty().not()) {
-            itemView.metaTitle.text = title
+        itemView.titleText.shouldShowWithAction(title.isEmpty().not()) {
+            itemView.titleText.text = title
         }
     }
 
