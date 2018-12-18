@@ -438,9 +438,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
 
     private void startOTPProcess() {
-        if (GlobalConfig.isSellerApp()) {
-            getView().interruptRequestTokenVerification();
-        }
+        getView().interruptRequestTokenVerification();
     }
 
     @NonNull
