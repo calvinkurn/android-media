@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="TransactionToggleButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/tkpd_main_green</item>
+        <item name="colorSwitchThumbNormal">#f1f1f1</item>
+    </style>
+
+    <style name="TransactionCheckbox" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorSecondary">#bfbfbf</item>
+    </style>
+
+    <style name="TransactionCheckboxDisabled" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">#bfbfbf</item>
+        <item name="android:textColorSecondary">#bfbfbf</item>
+    </style>
+
+    <style name="TransactionEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/grey_300</item>
+        <item name="colorControlActivated">@color/tkpd_main_green</item>
+        <item name="colorControlHighlight">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="transactionTextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/black_56</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+    </style>
+
+    <style name="TextSmall">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextVerySmall">
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="TextSmallNormal" parent="TextSmall">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextSmallNormalBlack38" parent="TextSmallNormal">
+        <item name="android:textColor">@color/black_38</item>
+    </style>
+
+    <style name="TextSmallNormalBlack54" parent="TextSmallNormal">
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
+    <style name="TextSmallNormalBlack70" parent="TextSmallNormal">
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="TextSmallMedium" parent="TextSmall">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextSmallMediumBlack38" parent="TextSmallMedium">
+        <item name="android:textColor">@color/black_38</item>
+    </style>
+
+    <style name="TextSmallMediumBlack54" parent="TextSmallMedium">
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
+    <style name="TextSmallMediumBlack70" parent="TextSmallMedium">
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="TextSmallError" parent="TextVerySmall">
+        <item name="android:textColor">@color/text_cart_item_error_red</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextMid">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextMidNormal" parent="TextMid">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextMidNormalBlack70" parent="TextMidNormal">
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+    <style name="TextMidMedium" parent="TextMid">
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextMidMediumBlack54" parent="TextMidMedium">
+        <item name="android:textColor">@color/black_54</item>
+    </style>
+
+    <style name="TextMidMediumBlack38" parent="TextMidMedium">
+        <item name="android:textColor">@color/black_38</item>
+    </style>
+
+    <style name="TextMidMediumBlack70" parent="TextMidMedium">
+        <item name="android:textColor">@color/black_70</item>
+    </style>
+
+</resources>
