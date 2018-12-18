@@ -12,6 +12,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Key;
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.CustomDimension;
 
 
 /**
@@ -317,7 +318,8 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_CHECKOUT,
                 Key.EVENT_LABEL, eventLabel,
-                Key.E_COMMERCE, cartMap
+                Key.E_COMMERCE, cartMap,
+                Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
         sendEnhancedEcommerce(dataLayer);
     }

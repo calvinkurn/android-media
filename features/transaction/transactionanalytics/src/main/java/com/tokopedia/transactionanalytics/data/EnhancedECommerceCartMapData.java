@@ -10,10 +10,12 @@ import java.util.Map;
  */
 public class EnhancedECommerceCartMapData {
     public static final String VALUE_CURRENCY_IDR = "IDR";
+    public static final String VALUE_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace";
 
     public static final String ADD_ACTION = "add";
     public static final String REMOVE_ACTION = "remove";
 
+    private static final String KEY_CURRENT_SITE = "currentSite";
     private static final String KEY_CURRENCY = "currencyCode";
     private static final String KEY_PRODUCTS = "products";
 
@@ -23,6 +25,10 @@ public class EnhancedECommerceCartMapData {
 
     public void setCurrencyCode(String currencyCode) {
         cart.put(KEY_CURRENCY, currencyCode);
+    }
+
+    public void setCurrentSite(String currentSite) {
+        cart.put(KEY_CURRENT_SITE, currentSite);
     }
 
     public void addProduct(Map<String, Object> Product) {

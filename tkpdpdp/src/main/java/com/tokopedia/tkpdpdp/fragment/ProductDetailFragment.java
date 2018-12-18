@@ -2421,7 +2421,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
         enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
-        enhancedECommerceCartMapData.setCurrencyCode("IDR");
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCartMapData.setCurrentSite(EnhancedECommerceCartMapData.VALUE_CURRENT_SITE_MARKETPLACE);
         enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
 
         String eventAction;
