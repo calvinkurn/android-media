@@ -49,6 +49,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     private String chatRole, senderName;
     private boolean shouldShowToast = false;
     private FrameLayout progressBarLayout;
+    private ConstraintLayout promotionConstraintLayout;
 
 
     @Inject
@@ -74,6 +75,8 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         if (isChatEnabled) {
             chatSettingsPresenter.onPersonalChatSettingChange(true, false);
             chatSettingsPresenter.onPromotionalChatSettingChange(true, false);
+        } else if (chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked()){
+            setPromotionViewOpacity(true);
         }
 
     }
@@ -94,6 +97,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         chatPersonalCardView = findViewById(R.id.chat_personal_cardview);
         chatPromotionalcardView = findViewById(R.id.chat_promotional_cardview);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
+        promotionConstraintLayout = findViewById(R.id.cl_promotionView);
         chatPersonalSwitch.setOnCheckedChangeListener(this);
         chatPromotionSwitch.setOnCheckedChangeListener(this);
     }
@@ -294,9 +298,9 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     public void setPromotionViewOpacity(boolean enable) {
         if (chatPromotionalcardView.getVisibility() == View.VISIBLE) {
             if (enable) {
-                chatPromotionalcardView.setAlpha(0.7f);
+                promotionConstraintLayout.setAlpha(0.4f);
             } else {
-                chatPromotionalcardView.setAlpha(1.0f);
+                promotionConstraintLayout.setAlpha(1.0f);
             }
         }
     }

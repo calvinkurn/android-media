@@ -29,11 +29,12 @@
             android:id="@+id/chat_personal_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            app:cardBackgroundColor="@color/white"
             android:visibility="gone"
             tools:visibility="visible">
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_personalView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
@@ -104,10 +105,11 @@
 
                     <ImageView
                         android:id="@+id/chat_personal_info_img"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:src="@drawable/ic_chat_info"
+                        android:elevation="@dimen/dp_4"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -141,9 +143,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            tools:visibility="visible"
             android:visibility="gone">
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_promotionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
@@ -205,16 +209,18 @@
                     android:paddingBottom="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_16"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/chat_information_text">
 
                     <ImageView
                         android:id="@+id/chat_promotion_info_img"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:src="@drawable/ic_chat_info"
+                        android:elevation="@dimen/dp_4"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
