@@ -92,7 +92,6 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -105,7 +104,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
@@ -2085,7 +2083,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (menu != null && menu.size() > 2) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_dark));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_pdp_dark));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_dark_pdp));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
@@ -2103,7 +2101,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (menu != null && menu.size() > 1) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_pdp_light));
                 int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
-                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter));
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_light_pdp));
                 if (cartCount > 0) {
                     setDrawableCount(getContext(), cartCount);
                 }
