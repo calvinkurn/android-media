@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.presenter;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.design.component.ToasterNormal;
@@ -77,7 +76,6 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (!isViewAttached()) {
                         return;
                     }
-                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "on Completed Personal");
                 }
 
                 @Override
@@ -85,9 +83,8 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (!isViewAttached()) {
                         return;
                     }
-                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "onError personal" +e.getMessage());
                     getView().hideProgressBar();
-                    ToasterNormal.show(getView().getActivity(), "Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi");
+                    ToasterNormal.show(getView().getActivity(), getView().getActivity().getResources().getString(R.string.error_chat_message));
                     getView().updateChatSettingResponse(chatSettingsResponse);
                     CommonUtils.dumper("error occured" + e);
                 }
@@ -101,7 +98,6 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
                         chatSettingsResponse = data;
-                        AnalyticsLog.printNOTPLog(getView().getAppContext(), "on Next Personal" +data.getChatBlockResponse().getChatBlockStatus().isBlocked());
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPersonalResponse(data);
                         getView().setPromotionViewOpacity(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
@@ -137,7 +133,6 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     if (!isViewAttached()) {
                         return;
                     }
-                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "on Completed Promotion");
                 }
 
                 @Override
@@ -147,8 +142,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     }
                     getView().hideProgressBar();
                     getView().updateChatSettingResponse(chatSettingsResponse);
-                    ToasterNormal.show(getView().getActivity(), "Mohon maaf, terjadi kendala teknis, cobalah beberapa saat lagi");
-                    AnalyticsLog.printNOTPLog(getView().getAppContext(), "onError Promotion" +e.getMessage());
+                    ToasterNormal.show(getView().getActivity(), getView().getActivity().getResources().getString(R.string.error_chat_message));
                     CommonUtils.dumper("error occured" + e);
                 }
 
@@ -159,7 +153,6 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     }
                     if (response != null) {
                         ChatSettingsResponse data = response.getData(ChatSettingsResponse.class);
-                        AnalyticsLog.printNOTPLog(getView().getAppContext(), "onNext Promotion" + data.getChatBlockResponse().getChatBlockStatus().isBlocked());
                         chatSettingsResponse = data;
                         getView().updateChatSettingResponse(chatSettingsResponse);
                         getView().setChatSettingPromotionResponse(data);
