@@ -1,15 +1,12 @@
 package com.tokopedia.transaction.network;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
 import com.tokopedia.core.network.retrofit.interceptors.DynamicTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.loyalty.domain.apiservice.TokoPointAuthInterceptor;
-import com.tokopedia.loyalty.domain.apiservice.TokoPointRetrofitFactory;
+import com.tokopedia.loyalty.domain.apiservice.RetrofitFactory;
 import com.tokopedia.transaction.network.api.VoucherCartApi;
 
 import okhttp3.OkHttpClient;
@@ -44,7 +41,7 @@ public class VoucherCartService extends AuthService<VoucherCartApi> {
         tkpdOkHttpBuilder.addDebugInterceptor();
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
-        return TokoPointRetrofitFactory.createRetrofitTokoPointConfig(processedBaseUrl)
+        return RetrofitFactory.createRetrofitTokoPointConfig(processedBaseUrl)
                 .client(okHttpClient)
                 .build();
     }

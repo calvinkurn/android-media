@@ -102,6 +102,12 @@ public class CartDigitalContract {
         CartDigitalInfoData getCartDataInfo();
 
         void navigateToLoggedInPage();
+
+        void showPostPaidDialog(String title,
+                                String content,
+                                String confirmButtonTitle);
+
+        boolean isAlreadyShowPostPaid();
     }
 
     interface Presenter extends CustomerPresenter<View> {

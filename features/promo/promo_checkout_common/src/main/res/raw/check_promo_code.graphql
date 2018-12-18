@@ -1,0 +1,30 @@
+mutation check_promo_cart_v2($promoCode: String!, $skipApply: Boolean!, $suggested : Boolean!, $oneClickShipment : Boolean!){
+  check_promo_cart_v2(promoCode: $promoCode, skipApply: $skipApply, suggested : $suggested, oneClickShipment : $oneClickShipment){
+    status
+    error_message
+    data{
+      error
+      data_voucher{
+                code
+        promo_code_id
+        discount_amount
+        cashback_amount
+        saldo_amount
+        cashback_top_cash_amount
+        cashback_voucher_amount
+        cashback_advocate_referral_amount
+        extra_amount
+        cashback_voucher_description
+        lp
+        gateway_id
+        message{
+          state
+          color
+          text
+        }
+        is_coupon
+        title_description
+      }
+    }
+  }
+}

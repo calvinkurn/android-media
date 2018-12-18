@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
@@ -34,11 +35,13 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.digital.cart.fragment.DigitalPostPaidDialog;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
@@ -53,7 +56,6 @@ import com.tokopedia.digital.cart.presentation.presenter.CartDigitalContract;
 import com.tokopedia.digital.cart.presentation.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presentation.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -62,7 +64,6 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -93,18 +94,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     private final int COUPON_ACTIVE = 1;
 
-    @BindView(R2.id.checkout_cart_holder_view)
-    CheckoutHolderView checkoutHolderView;
-    @BindView(R2.id.item_cart_holder_view)
-    ItemCartHolderView itemCartHolderView;
-    @BindView(R2.id.voucher_cart_holder_view)
-    VoucherCartHachikoView voucherCartHachikoView;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
-    @BindView(R2.id.nsv_container)
-    NestedScrollView mainContainer;
-    @BindView(R2.id.input_price_holder_view)
-    InputPriceHolderView inputPriceHolderView;
+    private CheckoutHolderView checkoutHolderView;
+    private ItemCartHolderView itemCartHolderView;
+    private VoucherCartHachikoView voucherCartHachikoView;
+    private ProgressBar pbMainLoading;
+    private NestedScrollView mainContainer;
+    private InputPriceHolderView inputPriceHolderView;
 
     private SessionHandler sessionHandler;
     private ActionListener actionListener;
@@ -114,6 +109,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private DigitalCheckoutPassData passData;
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
+    private boolean isAlreadyShowPostPaidPopUp;
 
     @Inject
     CartDigitalPresenter presenter;
@@ -223,7 +219,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void initView(View view) {
-
+        checkoutHolderView = view.findViewById(R.id.checkout_cart_holder_view);
+        itemCartHolderView = view.findViewById(R.id.item_cart_holder_view);
+        voucherCartHachikoView = view.findViewById(R.id.voucher_cart_holder_view);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+        mainContainer = view.findViewById(R.id.nsv_container);
+        inputPriceHolderView = view.findViewById(R.id.input_price_holder_view);
     }
 
     @Override
@@ -276,6 +277,34 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public CartDigitalInfoData getCartDataInfo() {
         return cartDigitalInfoDataState;
+    }
+
+    @Override
+    public void showPostPaidDialog(String title,
+                                   String content,
+                                   String confirmButtonTitle) {
+        isAlreadyShowPostPaidPopUp = true;
+        DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
+                getActivity(),
+                Dialog.Type.RETORIC,
+                DigitalPostPaidLocalCache.newInstance(getActivity()),
+                getUserId()
+        );
+        dialog.setTitle(title);
+        dialog.setDesc(MethodChecker.fromHtml(content));
+        dialog.setBtnOk(confirmButtonTitle);
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public boolean isAlreadyShowPostPaid() {
+        return isAlreadyShowPostPaidPopUp;
     }
 
     @Override
@@ -667,7 +696,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return passData;
     }
 
-
     @Override
     public void interruptRequestTokenVerification() {
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
@@ -706,26 +734,29 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onClickUseVoucher() {
         if (cartDigitalInfoDataState.getAttributes().isEnableVoucher()) {
-            Intent intent;
-            if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
-                if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
-                        cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
-                                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
-                    intent = LoyaltyActivity.newInstanceCouponActiveAndSelected(
-                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
-                    );
+            if(getApplicationContext() instanceof DigitalModuleRouter) {
+                DigitalModuleRouter digitalModuleRouter = ((DigitalModuleRouter)getApplicationContext());
+                Intent intent;
+                if (cartDigitalInfoDataState.getAttributes().isCouponActive() == COUPON_ACTIVE) {
+                    if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
+                            cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
+                                    IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
+                        intent = digitalModuleRouter.getLoyaltyActivitySelectedCoupon(
+                                context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                        );
+                    } else {
+                        intent = digitalModuleRouter.getLoyaltyActivity(
+                                context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                        );
+                    }
                 } else {
-                    intent = LoyaltyActivity.newInstanceCouponActive(
-                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
+                    intent = digitalModuleRouter.getLoyaltyActivityNoCouponActive(
+                            context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
+                            passData.getCategoryId()
                     );
                 }
-            } else {
-                intent = LoyaltyActivity.newInstanceCouponNotActive(
-                        context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING,
-                        passData.getCategoryId()
-                );
+                navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
             }
-            navigateToActivityRequest(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             voucherCartHachikoView.setVisibility(View.GONE);
         }
@@ -767,11 +798,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
                     if (getApplicationContext() instanceof DigitalModuleRouter) {
-                        ((DigitalModuleRouter)getApplicationContext()).
+                        ((DigitalModuleRouter) getApplicationContext()).
                                 showAdvancedAppRatingDialog(getActivity(), dialog -> {
-                            getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                            closeView();
-                        });
+                                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                                    closeView();
+                                });
                     }
                     presenter.onPaymentSuccess(passData.getCategoryId());
 
@@ -874,4 +905,5 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public interface ActionListener {
         void setTitleCart(String title);
     }
+
 }

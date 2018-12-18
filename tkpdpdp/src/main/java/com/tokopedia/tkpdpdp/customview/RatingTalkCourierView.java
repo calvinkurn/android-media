@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -11,8 +12,10 @@ import android.widget.TextView;
 
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
@@ -22,13 +25,13 @@ import com.tokopedia.tkpdpdp.revamp.ProductViewData;
  */
 
 public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDetailView> {
-    private ImageView ivQualityRate;
+    private RatingBarWithTextView productRating;
     private TextView tvReview;
     private TextView tvTalk;
-    private TextView tvCourier;
     private LinearLayout talkContainer;
     private LinearLayout reviewContainer;
-    private LinearLayout courierContainer;
+    private LinearLayout descriptionContainer;
+    private VideoData videoData;
 
 
     public RatingTalkCourierView(Context context) {
@@ -62,13 +65,12 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        ivQualityRate = (ImageView) findViewById(R.id.iv_quality);
+        productRating = findViewById(R.id.product_rating);
         tvReview = (TextView) findViewById(R.id.tv_review);
         tvTalk = (TextView) findViewById(R.id.tv_talk);
-        tvCourier = (TextView) findViewById(R.id.tv_courier);
         talkContainer = (LinearLayout) findViewById(R.id.talk_container);
         reviewContainer = (LinearLayout) findViewById(R.id.review_container);
-        courierContainer = (LinearLayout) findViewById(R.id.courier_container);
+        descriptionContainer = (LinearLayout) findViewById(R.id.description_container);
     }
 
     @Override
@@ -77,21 +79,24 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     }
 
     public void renderData(@NonNull ProductDetailData data, @NonNull ProductViewData viewData) {
-        ivQualityRate.setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
-        int courierCount = 0;
-        if (data.getShopInfo().getShopShipments() != null) {
-            courierCount = data.getShopInfo().getShopShipments().size();
-        }
+        productRating.setRating(
+                data.getRating().getProductRatingPoint()
+        );
         tvReview.setText(String.format("%1$s %2$s", data.getStatistic().getProductReviewCount(), getContext().getString(R.string.ulasan)));
         tvTalk.setText(String.format("%1$s %2$s",data.getStatistic().getProductTalkCount(), getContext().getString(R.string.diskusi)));
-        tvCourier.setText(String.format("%1$s %2$s", courierCount, getContext().getString(R.string.kurir) ));
-        courierContainer.setOnClickListener(new OnClickListener() {
+        descriptionContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onCourierClicked(
-                        viewData.getProductId(),
-                        viewData.getCourierList()
-                );
+                Intent intent = new Intent();
+                DescriptionActivityNew.IntentOptions.setVideo(intent, videoData);
+                DescriptionActivityNew.IntentOptions.setDescription(intent, data.getInfo().getProductDescription());
+                DescriptionActivityNew.IntentOptions.setName(intent, data.getInfo().getProductName());
+                DescriptionActivityNew.IntentOptions.setPrice(intent, data.getInfo().getProductPrice());
+                DescriptionActivityNew.IntentOptions.setOfficialStore(intent, data.getShopInfo().isOfficial());
+                DescriptionActivityNew.IntentOptions.setShopName(intent, data.getShopInfo().getShopName());
+                DescriptionActivityNew.IntentOptions.setImgUrl(intent, data.getProductImages().get(0).getImageSrc300());
+
+                listener.onDescriptionClicked(intent);
             }
         });
         talkContainer.setOnClickListener(new ClickTalk(data));
@@ -99,12 +104,16 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
         setVisibility(VISIBLE);
     }
 
+    public void setVideoData(VideoData data, YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess youTubeThumbnailLoadInProcess){
+        this.videoData = data;
+    }
+
     public void renderTempdata(ProductPass productPass) {
-        ivQualityRate
-                .setImageResource(getRatingDrawable(productPass.getStarRating()));
+        productRating.setRating(
+                productPass.getStarRating()
+        );
         tvReview.setText(String.format("%1$s %2$s", productPass.getCountReview(), getContext().getString(R.string.ulasan)));
         tvTalk.setText(String.format("%1$s %2$s", productPass.getCountDiscussion(), getContext().getString(R.string.diskusi)));
-        tvCourier.setText(String.format("%1$s %2$s", productPass.getCountCourrier(), getContext().getString(R.string.kurir) ));
         setVisibility(VISIBLE);
     }
 

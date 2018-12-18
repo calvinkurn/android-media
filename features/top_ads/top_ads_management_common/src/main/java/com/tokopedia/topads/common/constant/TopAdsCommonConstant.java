@@ -13,6 +13,8 @@ public class TopAdsCommonConstant {
     public static final String PATH_TOPADS_SHOP_DEPOSIT = "/v1.1/dashboard/deposit";
     public static final String PATH_TOPADS_TOTAL_ADS = "/v1.1/dashboard/total_ad";
     public static final String PATH_CHECK_PROMO = "v1/promo/check";
+    public static final String TOPADS_FREE_CLAIM_URL = "https://ta.tokopedia.com/v1/credits/claim";
+    public static final String TOPADS_SELLER_CENTER = "https://seller.tokopedia.com/about-topads/";
 
     public static final String PARAM_SHOP_ID = "shop_id";
 

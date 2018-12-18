@@ -16,6 +16,8 @@ public interface IProductDigitalPresenter {
             String categoryId, String operatorId, String productId, String clientNumber
     );
 
+    void getCategoryData(String categoryId, String operatorId, String productId, String clientNumber);
+
     void processStateDataToReRender();
 
     void processToCheckBalance(String ussdMobileNumber, int simSlot, String ussdCode);
@@ -41,4 +43,5 @@ public interface IProductDigitalPresenter {
     void processGetHelpUrlData(String categoryId);
 
     void onHelpMenuClicked();
+
 }
