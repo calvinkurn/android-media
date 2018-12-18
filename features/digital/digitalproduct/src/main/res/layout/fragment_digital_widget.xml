@@ -98,8 +98,8 @@
             <Button
                 android:id="@+id/button_try_again"
                 style="@style/Button.Submit.Green"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_32"
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="0dp"
                 android:text="Coba Lagi" />
