@@ -10,10 +10,9 @@
         card_view:cardCornerRadius="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/cards_ui_2"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small">
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -23,10 +22,10 @@
                 android:id="@+id/address_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingBottom="@dimen/padding_vs"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_5"
                 android:singleLine="true"
                 android:text="@string/title_address"
                 android:textStyle="bold"
@@ -38,10 +37,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/address_name"
-                android:paddingTop="@dimen/padding_vs"
-                android:paddingRight="@dimen/padding_small"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingBottom="@dimen/padding_small"
+                android:paddingTop="@dimen/dp_5"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
                 android:text="@string/detail_address"
                 style="@style/TextAppearance.AppCompat.Body1"
                 />
@@ -71,7 +70,7 @@
                     android:background="#780e0e0e"
                     android:text="@string/tentukan_lokasi_google_map_anda"
                     android:textStyle="bold"
-                    android:textSize="@dimen/font_large"
+                    android:textSize="@dimen/sp_18"
                     android:textColor="@color/white"
                     android:gravity="center"
                     android:visibility="visible"
@@ -123,5 +122,5 @@
     <View
         android:id="@+id/view_bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_small"/>
+        android:layout_height="@dimen/dp_10"/>
 </LinearLayout>
