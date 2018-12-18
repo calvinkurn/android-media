@@ -20,7 +20,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import android.support.v7.widget.SimpleItemAnimator
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantTypeVariantViewModel
-
+import com.tokopedia.transactiondata.entity.response.variantdata.Option
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -147,6 +147,23 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
 
+        }
+    }
+
+    override fun onBindVariantGetProductViewModel(): CheckoutVariantProductViewModel? {
+        return adapter.getProductDataViewModel()
+    }
+
+    override fun onBindVariantUpdateProductViewModel() {
+        val productViewModel = adapter.getProductDataViewModel()
+        if (productViewModel != null) {
+            if (recyclerView.isComputingLayout) {
+                recyclerView.post {
+                    adapter.notifyItemChanged(adapter.getIndex(productViewModel))
+                }
+            } else {
+                adapter.notifyItemChanged(adapter.getIndex(productViewModel))
+            }
         }
     }
 

@@ -87,6 +87,8 @@ class ViewModelMapper : DataMapper {
                         }
                     }
                     checkoutVariantProductViewModel.selectedVariantOptionsIdMap = defaultVariantIdOptionMap
+                } else {
+                    productChild.isSelected = false
                 }
                 productChildList.add(productChild)
 /*

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.adapter.VariantOptionAdapter
+import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantTypeVariantViewModel
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
 
@@ -21,6 +22,23 @@ class CheckoutVariantTypeVariantViewHolder(val view: View, val listener: Checkou
 
     override fun bind(element: CheckoutVariantTypeVariantViewModel?) {
         if (element != null) {
+            val checkoutVariantProductViewModel = listener.onBindVariantGetProductViewModel()
+            if (checkoutVariantProductViewModel != null && checkoutVariantProductViewModel.selectedVariantOptionsIdMap.isNotEmpty()) {
+                for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
+                    if (key == element.variantId) {
+                        for (option: CheckoutVariantOptionVariantViewModel in element.variantOptions) {
+                            if (option.optionId == value) {
+                                option.currentState = option.STATE_SELECTED
+                                element.variantSelectedValue = option.variantName
+                            } else {
+                                option.currentState = option.STATE_NOT_SELECTED
+                            }
+                        }
+                        break
+                    }
+                }
+            }
+
             itemView.tv_variant_name.text = element.variantName
             itemView.tv_variant_value.text = element.variantSelectedValue
             val chipsLayoutManager = ChipsLayoutManager.newBuilder(itemView.context)
@@ -31,6 +49,7 @@ class CheckoutVariantTypeVariantViewHolder(val view: View, val listener: Checkou
             itemView.rv_variant_options.isNestedScrollingEnabled = false
             itemView.rv_variant_options.layoutManager = chipsLayoutManager
             itemView.rv_variant_options.adapter = variantOptionAdapter
+            listener.onBindVariantUpdateProductViewModel()
         }
     }
 
