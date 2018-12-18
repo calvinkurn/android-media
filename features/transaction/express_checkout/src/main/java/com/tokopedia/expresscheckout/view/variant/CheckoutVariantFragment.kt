@@ -150,6 +150,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
+    override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
+        var quantityViewModel = adapter.getQuantityViewModel()
+        if (quantityViewModel != null) {
+            quantityViewModel.availableStock = stockWording
+            if (recyclerView.isComputingLayout) {
+                recyclerView.post {
+                    adapter.notifyItemChanged(adapter.getIndex(quantityViewModel))
+                }
+            } else {
+                adapter.notifyItemChanged(adapter.getIndex(quantityViewModel))
+            }
+        }
+    }
+
     override fun onBindVariantGetProductViewModel(): CheckoutVariantProductViewModel? {
         return adapter.getProductDataViewModel()
     }

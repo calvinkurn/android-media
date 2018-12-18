@@ -14,7 +14,8 @@ data class CheckoutVariantProductViewModel(
         var productPrice: String,
         var productImageUrl: String,
         var productChildrenList: ArrayList<ProductChild>,
-        var selectedVariantOptionsIdMap: HashMap<Int, Int> = HashMap()
+        var selectedVariantOptionsIdMap: HashMap<Int, Int> = HashMap(),
+        var availableQuantity: Int
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
@@ -26,7 +27,8 @@ data class CheckoutVariantProductViewModel(
             },
             hashMapOf<Int, Int>().apply {
                 parcel?.readMap(this, Int::class.java.classLoader)
-            }
+            },
+            parcel?.readInt() ?: 0
     )
 
     override fun type(typeFactory: CheckoutVariantAdapterTypefactory): Int {
@@ -39,6 +41,7 @@ data class CheckoutVariantProductViewModel(
         parcel.writeString(productImageUrl)
         parcel.writeList(productChildrenList)
         parcel.writeMap(selectedVariantOptionsIdMap)
+        parcel.writeInt(availableQuantity)
     }
 
     override fun describeContents(): Int {

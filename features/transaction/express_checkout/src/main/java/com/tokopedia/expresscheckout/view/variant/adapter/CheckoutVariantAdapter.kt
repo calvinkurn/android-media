@@ -26,6 +26,16 @@ class CheckoutVariantAdapter(adapterTypefactory: CheckoutVariantAdapterTypefacto
         return null
     }
 
+    fun getQuantityViewModel(): CheckoutVariantQuantityViewModel? {
+        for (visitable in visitables) {
+            if (visitable is CheckoutVariantQuantityViewModel) {
+                return visitable
+            }
+        }
+
+        return null
+    }
+
     fun getVariantTypeViewModel(): ArrayList<CheckoutVariantTypeVariantViewModel> {
         var variantTypeViewModels = ArrayList<CheckoutVariantTypeVariantViewModel>()
         for (visitable in visitables) {

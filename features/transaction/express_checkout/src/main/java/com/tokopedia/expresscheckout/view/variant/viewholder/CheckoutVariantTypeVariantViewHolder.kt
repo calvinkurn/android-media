@@ -49,6 +49,7 @@ class CheckoutVariantTypeVariantViewHolder(val view: View, val listener: Checkou
             itemView.rv_variant_options.isNestedScrollingEnabled = false
             itemView.rv_variant_options.layoutManager = chipsLayoutManager
             itemView.rv_variant_options.adapter = variantOptionAdapter
+
             listener.onBindVariantUpdateProductViewModel()
         }
     }

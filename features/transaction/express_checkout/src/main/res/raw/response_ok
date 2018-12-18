@@ -313,7 +313,7 @@
                   "children":[
                     {
                       "product_id":15223035,
-                      "price":2000,
+                      "price":1000,
                       "stock":0,
                       "min_order":6,
                       "max_order":0,
@@ -349,7 +349,7 @@
                     },
                     {
                       "product_id":15223037,
-                      "price":2000,
+                      "price":3000,
                       "stock":0,
                       "min_order":6,
                       "max_order":0,
@@ -367,7 +367,7 @@
                     },
                     {
                       "product_id":15223038,
-                      "price":2000,
+                      "price":4000,
                       "stock":0,
                       "min_order":6,
                       "max_order":0,

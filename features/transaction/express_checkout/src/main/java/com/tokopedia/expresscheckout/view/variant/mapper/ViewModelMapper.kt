@@ -59,6 +59,7 @@ class ViewModelMapper : DataMapper {
         var checkoutVariantProductViewModel = CheckoutVariantProductViewModel()
         checkoutVariantProductViewModel.productImageUrl = product.productImageSrc200Square
         checkoutVariantProductViewModel.productName = product.productName
+        checkoutVariantProductViewModel.availableQuantity = product.productQuantity
         checkoutVariantProductViewModel.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.productPrice, false)
         var productChildList = ArrayList<ProductChild>()
         var hasSelectedDefaultVariant = false
