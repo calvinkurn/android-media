@@ -2,6 +2,7 @@ package com.tokopedia.talk.talkdetails.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,6 +17,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
@@ -27,6 +31,7 @@ import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
+import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
@@ -42,6 +47,7 @@ import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_comments.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -57,6 +63,9 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var presenter: TalkDetailsPresenter
+
+    @Inject
+    lateinit var analytics : TalkAnalytics
 
     lateinit var adapter: InboxTalkAdapter
     lateinit var talkRecyclerView: RecyclerView
@@ -79,6 +88,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private var talkId: String = ""
     private var shopId: String = ""
+    private var source: String = ""
 
     companion object {
         const val GO_TO_REPORT_TALK_REQ_CODE = 101
@@ -105,10 +115,11 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         savedInstanceState?.run {
             talkId = savedInstanceState.getString(TalkDetailsActivity.THREAD_TALK_ID, "")
             shopId = savedInstanceState.getString(TalkDetailsActivity.SHOP_ID, "")
-
+            source = savedInstanceState.getString(TalkDetailsActivity.SOURCE, "")
         } ?: arguments?.run {
             talkId = getString(TalkDetailsActivity.THREAD_TALK_ID, "")
             shopId = getString(TalkDetailsActivity.SHOP_ID, "")
+            source = getString(TalkDetailsActivity.SOURCE, "")
         } ?: activity?.run {
             finish()
         }
@@ -136,6 +147,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         sendMessageEditText = view.findViewById(R.id.new_comment)
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
+            analytics.trackSendCommentTalk(source)
             KeyboardHandler.DropKeyboard(context, view)
             if (userSession.isLoggedIn) {
                 presenter.sendComment(talkId,
@@ -645,6 +657,44 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         } else super.onActivityResult(requestCode, resultCode, data)
     }
 
+
+    override fun shouldHandleUrlManually(url: String): Boolean {
+        val urlManualHandlingList = arrayOf("tkp.me", "tokopedia.me", "tokopedia.link")
+        return Arrays.asList(*urlManualHandlingList).contains(url)
+    }
+
+    override fun onGoToWebView(url: String, id: String) {
+        if (url.isNotEmpty() && activity != null) {
+            KeyboardHandler.DropKeyboard(activity, view)
+
+            when {
+                RouteManager.isSupportApplink(activity, url) -> RouteManager.route(activity, url)
+                isBranchIOLink(url) -> handleBranchIOLinkClick(url)
+                else -> {
+                    val applinkRouter = activity!!.applicationContext as ApplinkRouter
+                    applinkRouter.goToApplinkActivity(activity,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                }
+            }
+        }
+    }
+
+    override fun handleBranchIOLinkClick(url: String) {
+        activity?.run {
+            val talkRouter = this.applicationContext as TalkRouter
+            val intent = talkRouter.getSplashScreenIntent(this)
+            intent.putExtra("branch", url)
+            intent.putExtra("branch_force_new_session", true)
+            startActivity(intent)
+        }
+    }
+
+    override fun isBranchIOLink(url: String): Boolean {
+        val BRANCH_IO_HOST = "tokopedia.link"
+        val uri = Uri.parse(url)
+        return uri.host != null && uri.host == BRANCH_IO_HOST
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
@@ -656,4 +706,6 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
         super.onDestroyView()
     }
+
+
 }
