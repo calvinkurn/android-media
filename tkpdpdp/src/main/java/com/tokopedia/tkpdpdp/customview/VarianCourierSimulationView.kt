@@ -59,7 +59,7 @@ class VarianCourierSimulationView : BaseCustomView {
 
     fun renderRateEstimation(ratesModel: RatesModel?) {
         if (ratesModel == null) {
-            showCourierRate(true)
+            showCourierRate(false)
             showShopDestination(false)
         } else {
             showCourierRate(true)
@@ -75,8 +75,8 @@ class VarianCourierSimulationView : BaseCustomView {
     }
 
     fun renderRateEstimation() {
-        showCourierRate(true)
-        showShopLocationView(true)
+        showCourierRate(false)
+        showShopLocationView(false)
         showShopDestination(false)
         tv_shop_location.text = productDetailData!!.shopInfo.shopLocation;
     }
