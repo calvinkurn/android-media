@@ -125,7 +125,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         optionRv.adapter = reportTalkAdapter
 
         sendButton.setOnClickListener {
-            getTalkDetailIntentgetTalkDetailInte
+
             reportTalk(talkId, shopId, productId, commentId, reason.text.toString(),
                     reportTalkAdapter.getSelectedOption())
 
