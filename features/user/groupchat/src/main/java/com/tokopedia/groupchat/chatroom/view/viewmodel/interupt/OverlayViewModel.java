@@ -62,6 +62,11 @@ public class OverlayViewModel extends BaseGroupChatPojo implements Visitable<Gro
         this.interuptViewModel = new InteruptViewModel();
     }
 
+    public OverlayViewModel(boolean closeable, InteruptViewModel interuptViewModel) {
+        this.closeable = closeable;
+        this.interuptViewModel = interuptViewModel;
+    }
+
     protected OverlayViewModel(Parcel in) {
         this.closeable = in.readByte() != 0;
         this.interuptViewModel = in.readParcelable(InteruptViewModel.class.getClassLoader());

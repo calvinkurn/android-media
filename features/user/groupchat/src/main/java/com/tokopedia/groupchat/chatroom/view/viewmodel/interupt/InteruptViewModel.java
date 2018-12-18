@@ -96,6 +96,15 @@ public class InteruptViewModel implements Parcelable {
     public InteruptViewModel() {
     }
 
+    public InteruptViewModel(String title, String description, String imageUrl, String imageLink, String btnTitle, String btnLink) {
+        this.title = title;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.imageLink = imageLink;
+        this.btnTitle = btnTitle;
+        this.btnLink = btnLink;
+    }
+
     protected InteruptViewModel(Parcel in) {
         this.title = in.readString();
         this.description = in.readString();

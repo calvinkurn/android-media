@@ -1087,7 +1087,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void showInfoDialog() {
-        if (canShowDialog) {
+        if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null) {
+            showOverlayDialog(viewModel.getChannelInfoViewModel().getOverlayViewModel());
+        } else if (canShowDialog) {
             channelInfoDialog.setContentView(
                     createBottomSheetView(
                             checkPollValid(),
