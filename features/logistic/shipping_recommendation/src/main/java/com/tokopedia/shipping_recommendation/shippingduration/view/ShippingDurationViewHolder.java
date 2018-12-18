@@ -82,6 +82,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);
+        tvCod.setText(shippingDurationViewModel.getCodText());
         tvCod.setVisibility(shippingDurationViewModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
