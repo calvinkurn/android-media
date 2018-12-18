@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_checkout_variant_option.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantOptionVariantViewHolder( view: View?, val listener: VariantChangeListener) :
+class CheckoutVariantOptionVariantViewHolder(view: View?, val listener: VariantChangeListener) :
         RecyclerView.ViewHolder(view) {
 
     companion object {
@@ -22,6 +22,7 @@ class CheckoutVariantOptionVariantViewHolder( view: View?, val listener: Variant
 
     fun bind(viewModel: CheckoutVariantOptionVariantViewModel?) {
         if (viewModel != null) {
+            if (!viewModel.hasAvailableChild) viewModel.currentState = viewModel.STATE_NOT_AVAILABLE
             if (viewModel.currentState != viewModel.STATE_NOT_AVAILABLE) {
                 itemView.setOnClickListener {
                     listener.onSelectedVariantChanged(viewModel)

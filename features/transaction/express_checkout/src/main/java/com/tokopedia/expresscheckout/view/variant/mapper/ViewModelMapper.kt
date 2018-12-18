@@ -170,6 +170,9 @@ class ViewModelMapper : DataMapper {
             }
         }
         checkoutVariantOptionVariantViewModel.hasAvailableChild = hasAvailableChild
+        if (!hasAvailableChild) {
+            checkoutVariantOptionVariantViewModel.currentState = checkoutVariantOptionVariantViewModel.STATE_NOT_AVAILABLE
+        }
 
         return checkoutVariantOptionVariantViewModel
     }
