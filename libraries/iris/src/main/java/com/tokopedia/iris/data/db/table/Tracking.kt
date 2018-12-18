@@ -8,10 +8,9 @@ import java.util.*
 
 @Entity(tableName = TABLE_TRACKING)
 data class Tracking (
-    val eventdata: String,
+    val event: String,
     val sessionId: String,
     val userId: String,
-    val container: String,
     val timeStamp: Long = Calendar.getInstance().timeInMillis
 ) {
     @PrimaryKey(autoGenerate = true)

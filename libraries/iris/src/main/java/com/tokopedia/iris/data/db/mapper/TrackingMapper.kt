@@ -25,11 +25,12 @@ class TrackingMapper(context: Context) {
         val item = JSONObject(track)
         item.put("session_id", sessionId)
         item.put("container", "gtm")
+        item.put("event", "default_app")
         event.put(item)
 
         row.put("device_id", uniqueDeviceId)
         row.put("user_id", userId)
-        row.put("event_data", event)
+        row.put("event_ga", event)
 
         data.put(row)
 
@@ -37,23 +38,23 @@ class TrackingMapper(context: Context) {
         return result.toString()
     }
 
-    fun transform(trackings: List<Tracking>) : String {
+    fun transform(tracking: List<Tracking>) : String {
         val result = JSONObject()
         val data = JSONArray()
         val row = JSONObject()
         var event = JSONArray()
-        for (i in trackings.indices) {
-            val item = trackings[i]
+        for (i in tracking.indices) {
+            val item = tracking[i]
             event.put(transform(item))
             val nextItem: Tracking? = try {
-                trackings[i+1]
+                tracking[i+1]
             } catch (e: IndexOutOfBoundsException) {
                 null
             }
             val userId: String = nextItem?.userId ?: ""
             if (userId != item.userId) {
                 if (event.length() > 0) {
-                    row.put("event_data", event)
+                    row.put("event_ga", event)
                     data.put(row)
                 }
                 row.put("device_id", uniqueDeviceId)
@@ -66,8 +67,10 @@ class TrackingMapper(context: Context) {
     }
 
     fun transform(tracking: Tracking) : JSONObject {
-        val item = JSONObject(tracking.eventdata)
+        val item = JSONObject(tracking.event)
         item.put("session_id", tracking.sessionId)
+        item.put("container", "gtm")
+        item.put("event", "default_app")
         return item
     }
 }
