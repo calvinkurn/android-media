@@ -138,12 +138,12 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
     override fun failedRenderDataRechargeCategory() {
     }
 
-    override fun renderErrorNetwork(errorMessage: String?) {
+    override fun renderErrorNetwork(resId: Int) {
         container.visibility = View.GONE
         pulsa_place_holders.visibility = View.GONE
         error_view.visibility = View.VISIBLE
 
-        text_error_message.text = errorMessage
+        text_error_message.text = getString(resId)
     }
 
     override fun renderErrorMessage() {

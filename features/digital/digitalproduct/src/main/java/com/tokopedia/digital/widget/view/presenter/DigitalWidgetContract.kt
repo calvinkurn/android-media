@@ -15,7 +15,7 @@ class DigitalWidgetContract {
 
         fun failedRenderDataRechargeCategory()
 
-        fun renderErrorNetwork(errorMessage: String?)
+        fun renderErrorNetwork(resId: Int)
 
         fun renderErrorMessage()
 

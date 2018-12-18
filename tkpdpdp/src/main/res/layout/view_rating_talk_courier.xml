@@ -82,6 +82,7 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:padding="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
                 android:contentDescription="@string/image_product_desc"
