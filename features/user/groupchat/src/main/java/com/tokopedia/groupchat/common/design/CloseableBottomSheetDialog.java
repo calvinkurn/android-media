@@ -91,7 +91,7 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
         if (!isCloseable) {
             closeButton.setVisibility(View.GONE);
             contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
-            ((TextView)closeButton.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
+            ((TextView)contentView.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
         } else {
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
