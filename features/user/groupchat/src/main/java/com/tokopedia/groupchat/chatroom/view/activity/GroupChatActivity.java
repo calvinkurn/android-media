@@ -148,7 +148,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
         if (extras.get(ApplinkConstant.PARAM_TAB) != null) {
-            detailsIntent = GroupChatActivity.getCallingIntent(context, id, extras.getInt(ApplinkConstant.PARAM_TAB));
+            detailsIntent = GroupChatActivity.getCallingIntent(context, id, extras.getString(ApplinkConstant.PARAM_TAB));
         }
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
@@ -272,7 +272,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
             if (getIntent().getExtras().get(ApplinkConstant.PARAM_TAB) != null) {
-                initialFragment = getIntent().getExtras().getInt(ApplinkConstant.PARAM_TAB) - 1;
+                initialFragment = Integer.parseInt(getIntent().getExtras().getString(ApplinkConstant.PARAM_TAB)) - 1;
             }
         } else {
             Intent intent = new Intent();
@@ -945,12 +945,12 @@ public class GroupChatActivity extends BaseSimpleActivity
      * @param applinkData if applink contains tab id for access chat/vote/info fragment
      * @return Intent
      */
-    public static Intent getCallingIntent(Context context, String channelId, int applinkData) {
+    public static Intent getCallingIntent(Context context, String channelId, String applinkData) {
         Intent intent = new Intent(context, GroupChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_CHANNEL_UUID, channelId);
         bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true);
-        bundle.putInt(APPLINK_DATA, applinkData);
+        bundle.putString(APPLINK_DATA, applinkData);
         intent.putExtras(bundle);
         return intent;
     }
