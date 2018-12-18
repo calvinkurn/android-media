@@ -260,14 +260,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getOrderListIntent(Context context) {
         return SellerOrderListActivity.getInstance(context);
     }
-
-    @Override
-    public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
-
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-
-    }
 }
