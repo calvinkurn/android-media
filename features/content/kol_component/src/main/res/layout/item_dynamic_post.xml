@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -147,7 +147,7 @@
         android:visibility="visible"
         tools:visibility="visible">
 
-        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+        <com.tokopedia.kolcomponent.view.util.WrapContentViewPager
             android:id="@+id/contentViewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
