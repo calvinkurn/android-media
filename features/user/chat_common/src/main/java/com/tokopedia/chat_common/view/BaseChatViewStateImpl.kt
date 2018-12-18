@@ -154,7 +154,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     }
 
     protected fun showReplyBox() {
-        //TODO SHOW REPLY BOX
+        actionBox.visibility = View.VISIBLE
         replyBox.visibility = View.VISIBLE
     }
 
