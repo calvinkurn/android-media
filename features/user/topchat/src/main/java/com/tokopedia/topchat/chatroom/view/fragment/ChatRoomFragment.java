@@ -1645,7 +1645,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
 //        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
         if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_chat_add_grey));
-        listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_chat_delete));
+        listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
         if (showChatSettingMenu) {
             listMenu.add(new Menus.ItemMenus(getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings));
         }

@@ -253,10 +253,8 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
         if (compoundButton.getId() == R.id.chat_personal_switch) {
             chatSettingsPresenter.onPersonalChatSettingChange(isChecked, true);
-//            showPersonalToast(isChecked);
         } else if (compoundButton.getId() == R.id.chat_promotion_switch) {
             chatSettingsPresenter.onPromotionalChatSettingChange(isChecked, true);
-//            showPromotionToast(isChecked);
         }
     }
 
