@@ -1,5 +1,6 @@
 query get_chat_replies($msgId: Int!) {
   chatReplies(msgId: $msgId) {
+    hasNext
     contacts {
       role
       userId
@@ -9,6 +10,10 @@ query get_chat_replies($msgId: Int!) {
       tag
       thumbnail
       domain
+      status {
+        timestamp
+        isOnline
+      }
     }
     list {
       date
@@ -27,17 +32,13 @@ query get_chat_replies($msgId: Int!) {
           attachment {
             id
             type
-            attributes{
-              url
-            }
-            fallback {
+            fallback{
               message
               html
             }
+            attributes
           }
-           isOpposite
-           isHighlight
-           isRead
+          oldMsgId
         }
       }
     }

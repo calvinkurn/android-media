@@ -9,6 +9,7 @@ import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -69,6 +70,8 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         val title = toolbar.findViewById<TextView>(R.id.title)
         title.text = chatroomViewModel.headerModel.name
 
+        setLabel(chatroomViewModel.headerModel.label)
+
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, chatroomViewModel.headerModel.image,
                 R.drawable.ic_default_avatar)
@@ -76,13 +79,33 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
 
-        onlineDesc.text = chatroomViewModel.headerModel.label
+        onlineDesc.text = ""
 
         if (chatroomViewModel.headerModel.isOnline)
             onlineStatus.setImageResource(R.drawable.status_indicator_online)
         else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
 
+    }
+
+    private fun setLabel(labelText: String) {
+        val ADMIN_TAG = "Administrator"
+        val SELLER_TAG = "Penjual"
+
+        val label = toolbar.findViewById<TextView>(R.id.label)
+        label.text = labelText
+
+        when (labelText) {
+            SELLER_TAG -> {
+                label.setBackgroundResource(R.drawable.topchat_seller_label)
+                label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
+            }
+            ADMIN_TAG ->{
+                label.setBackgroundResource(R.drawable.topchat_admin_label)
+                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+            }
+            else -> label.visibility = View.GONE
+        }
     }
 
     private fun scrollDownWhenInBottom() {
