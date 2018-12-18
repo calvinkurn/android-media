@@ -41,7 +41,6 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chatroom.*
 import javax.inject.Inject
 
 /**
