@@ -118,7 +118,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View login;
     private View sprintSaleIconLayout;
     private TextView sprintSaleText;
-    private CloseableBottomSheetDialog interuptDialog;
 
     private UserSession userSession;
 
@@ -175,20 +174,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             @Override
             public void onClick(View v) {
                 scrollToBottom();
-            }
-        });
-        CloseableBottomSheetDialog channelInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
-
-                if (bottomSheet != null) {
-                    BottomSheetBehavior.from(bottomSheet)
-                            .setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
             }
         });
         login = view.findViewById(R.id.login);
@@ -313,6 +298,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             }
         });
+    }
+
+    private void initChannelInfoDialog() {
+
     }
 
 
@@ -473,7 +462,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
         CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        View view = createContentView(pinnedMessage);
+        View view = createPinnedMessageView(pinnedMessage);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -493,7 +482,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         dialog.show();
     }
 
-    private View createContentView(final PinnedMessageViewModel pinnedMessage) {
+    private View createPinnedMessageView(final PinnedMessageViewModel pinnedMessage) {
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity()).getChannelInfoViewModel();
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ImageHandler.loadImageCircle2(getActivity(), (ImageView) view.findViewById(R.id.pinned_message_avatar)
@@ -514,62 +503,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
         view.findViewById(R.id.thumbnail).setVisibility(View.GONE);
         return view;
-    }
-
-    private void showInteruptDialog(OverlayViewModel model) {
-        if (interuptDialog == null) {
-            createInteruptDialog(model);
-        } else {
-            if (!interuptDialog.isShowing()) {
-                createInteruptDialog(model);
-            }
-        }
-    }
-
-    private void createInteruptDialog(OverlayViewModel model) {
-        interuptDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-        View view = createInteruptView(model);
-        interuptDialog.setCustomContentView(view, model.getInteruptViewModel().getTitle(), model.isCloseable());
-        interuptDialog.show();
-    }
-
-
-    private View createInteruptView(final OverlayViewModel model) {
-        View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
-        InteruptViewModel interuptViewModel = model.getInteruptViewModel();
-        if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
-            ImageHandler.loadImageRounded2(getActivity(), (ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl());
-            view.findViewById(R.id.ivImage).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    routeOverlayApplink(interuptViewModel.getImageLink());
-                }
-            });
-        } else
-            ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
-
-        if (!TextUtils.isEmpty(interuptViewModel.getTitle()))
-            ((TextView) view.findViewById(R.id.tvTitle)).setText(MethodChecker.fromHtml(interuptViewModel.getTitle()));
-        else
-            ((TextView) view.findViewById(R.id.tvTitle)).setVisibility(View.GONE);
-
-        if (!TextUtils.isEmpty(interuptViewModel.getDescription()))
-            ((TextView) view.findViewById(R.id.tvDesc)).setText(MethodChecker.fromHtml(interuptViewModel.getDescription()));
-        else
-            ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
-
-        if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
-            ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
-            ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
-                routeOverlayApplink(interuptViewModel.getBtnLink());
-            });
-        } else
-            ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
-        return view;
-    }
-
-    private void routeOverlayApplink(String applink) {
-        RouteManager.route(getActivity(), applink);
     }
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
@@ -819,10 +752,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (messageItem instanceof ImageAnnouncementViewModel) {
             analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel) messageItem);
-        }
-
-        if (messageItem instanceof OverlayViewModel) {
-            showInteruptDialog((OverlayViewModel)messageItem);
         }
 
         if (!hideMessage) {

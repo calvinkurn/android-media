@@ -54,7 +54,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
@@ -89,6 +91,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewMo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
@@ -215,6 +219,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private RecyclerView tabs;
     private GroupChatTabAdapter tabAdapter;
     private CloseableBottomSheetDialog channelInfoDialog;
+    private CloseableBottomSheetDialog overlayDialog;
     private View sponsorLayout;
     private ImageView sponsorImage;
     private GroupChatVideoFragment videoFragment;
@@ -442,7 +447,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
 
-        channelInfoDialog = CloseableBottomSheetDialog.createInstance(this);
+        channelInfoDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
+            if (overlayDialog != null) {
+                overlayDialog.show();
+            }
+        });
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -1596,6 +1605,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             handleEvent((EventGroupChatViewModel) map);
         } else if (map instanceof ParticipantViewModel) {
             handleParticipant((ParticipantViewModel) map);
+        } else if (map instanceof OverlayViewModel) {
+            showOverlayDialog((OverlayViewModel)map);
         }
 
         if (currentFragmentIsChat()) {
@@ -1607,6 +1618,68 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         }
     }
+
+    private void showOverlayDialog(OverlayViewModel model) {
+        //1. stack overlay if channel info is shown
+        //2. close earlier overlay if overlay is already shown, then show new overlay
+        //3. show overlay if no other bottom dialog is shown
+
+        if (channelInfoDialog != null && channelInfoDialog.isShowing())
+            createOverlayDialog(model, false);
+        else if (overlayDialog != null && overlayDialog.isShowing()) {
+            overlayDialog.dismiss();
+            createOverlayDialog(model, true);
+        } else
+            createOverlayDialog(model, true);
+    }
+
+    private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
+        overlayDialog = CloseableBottomSheetDialog.createInstance(this);
+        View view = createOverlayView(model);
+        overlayDialog.setCustomContentView(view, model.getInteruptViewModel().getTitle(), model.isCloseable());
+        if (showDialogDirectly) {
+            overlayDialog.show();
+        }
+    }
+
+    private View createOverlayView(final OverlayViewModel model) {
+        View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
+        InteruptViewModel interuptViewModel = model.getInteruptViewModel();
+        if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
+            ImageHandler.loadImageRounded2(this, (ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl());
+            view.findViewById(R.id.ivImage).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    routeOverlayApplink(interuptViewModel.getImageLink());
+                }
+            });
+        } else
+            ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(interuptViewModel.getTitle()))
+            ((TextView) view.findViewById(R.id.tvTitle)).setText(MethodChecker.fromHtml(interuptViewModel.getTitle()));
+        else
+            ((TextView) view.findViewById(R.id.tvTitle)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(interuptViewModel.getDescription()))
+            ((TextView) view.findViewById(R.id.tvDesc)).setText(MethodChecker.fromHtml(interuptViewModel.getDescription()));
+        else
+            ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
+
+        if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
+            ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
+            ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
+                routeOverlayApplink(interuptViewModel.getBtnLink());
+            });
+        } else
+            ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
+        return view;
+    }
+
+    private void routeOverlayApplink(String applink) {
+        RouteManager.route(this, applink);
+    }
+
 
     private void handleParticipant(ParticipantViewModel map) {
         if (map.channelId.equals(getChannelInfoViewModel().getChannelId())) {
