@@ -123,6 +123,12 @@ public class GroupChatActivity extends BaseSimpleActivity
         , ToolTipUtils.ToolTipListener {
 
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
+    private static final String TOKOPEDIA_GROUPCHAT_APPLINK = "groupchat";
+
+    private static final String APPLINK_DATA = "APPLINK_DATA";
+    private static final String APPLINK_CHAT = "?tab=1";
+    private static final String APPLINK_VOTE = "?tab=2";
+    private static final String APPLINK_INFO = "?tab=3";
 
     Dialog exitDialog;
     private static final float ELEVATION = 10;
@@ -138,14 +144,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        UserSession userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
-
         String id = extras.getString(ApplinkConstant.PARAM_CHANNEL_ID);
         Intent homeIntent = ((GroupChatModuleRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent detailsIntent = GroupChatActivity.getCallingIntent(context, id);
-        Intent parentIntent = ((GroupChatModuleRouter) context.getApplicationContext())
-                .getInboxChannelsIntent(context);
-
+        if (extras.get(ApplinkConstant.PARAM_TAB) != null) {
+            detailsIntent = GroupChatActivity.getCallingIntent(context, id, extras.getInt(ApplinkConstant.PARAM_TAB));
+        }
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
@@ -267,6 +271,9 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
             viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
+            if (getIntent().getExtras().get(ApplinkConstant.PARAM_TAB) != null) {
+                initialFragment = getIntent().getExtras().getInt(ApplinkConstant.PARAM_TAB) - 1;
+            }
         } else {
             Intent intent = new Intent();
             intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(R.string.default_request_error_unknown));
@@ -808,7 +815,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             super.onBackPressed();
         } else {
             if (!currentFragmentIsChat()) {
-                showFragment(CHATROOM_FRAGMENT);
+                transitionToTabChat();
             } else {
                 showDialogConfirmToExit();
             }
@@ -932,6 +939,22 @@ public class GroupChatActivity extends BaseSimpleActivity
         return intent;
     }
 
+    /**
+     * @param context   activity context
+     * @param channelId can also be substitued by channelUrl
+     * @param applinkData if applink contains tab id for access chat/vote/info fragment
+     * @return Intent
+     */
+    public static Intent getCallingIntent(Context context, String channelId, int applinkData) {
+        Intent intent = new Intent(context, GroupChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_CHANNEL_UUID, channelId);
+        bundle.putBoolean(EXTRA_SHOW_BOTTOM_DIALOG, true);
+        bundle.putInt(APPLINK_DATA, applinkData);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1007,7 +1030,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             refreshVote(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
         } else if (currentFragmentIsVote()) {
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
-            showFragment(CHATROOM_FRAGMENT);
+            transitionToTabChat();
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
@@ -1652,7 +1675,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             view.findViewById(R.id.ivImage).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    routeOverlayApplink(interuptViewModel.getImageLink());
+                    startApplink(interuptViewModel.getImageLink());
                 }
             });
         } else
@@ -1671,17 +1694,44 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
-                routeOverlayApplink(interuptViewModel.getBtnLink());
+                startApplink(interuptViewModel.getBtnLink());
             });
         } else
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
         return view;
     }
 
-    private void routeOverlayApplink(String applink) {
-        RouteManager.route(this, applink);
+    @Override
+    public void startApplink(String applink) {
+        if (isTokopediaGroupChatApplink(applink)) {
+            if (applink.contains(APPLINK_CHAT)) transitionToTabChat();
+            else if (applink.contains(APPLINK_VOTE)) transitionToTabVote();
+            else if (applink.contains(APPLINK_INFO)) transitionToTabInfo();
+        } else
+            RouteManager.route(this, applink);
     }
 
+    private boolean isTokopediaGroupChatApplink(String applink) {
+        return applink.contains(TOKOPEDIA_APPLINK) && applink.contains(TOKOPEDIA_GROUPCHAT_APPLINK);
+    }
+
+    @Override
+    public void transitionToTabChat() {
+        showFragment(CHATROOM_FRAGMENT);
+    }
+
+    @Override
+    public void transitionToTabVote() {
+        if (hasVoteTab()) {
+            showFragment(CHANNEL_VOTE_FRAGMENT);
+        }
+    }
+
+    @Override
+    public void transitionToTabInfo() {
+        showFragment(CHANNEL_INFO_FRAGMENT);
+
+    }
 
     private void handleParticipant(ParticipantViewModel map) {
         if (map.channelId.equals(getChannelInfoViewModel().getChannelId())) {
@@ -1860,7 +1910,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
             tabAdapter.remove(CHANNEL_VOTE_FRAGMENT);
             tabAdapter.notifyItemRemoved(CHANNEL_VOTE_FRAGMENT);
-            showFragment(CHATROOM_FRAGMENT);
+            transitionToTabChat();
         }
 
         setTooltip(voteInfoViewModel);
@@ -1885,12 +1935,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             } else {
                 tabAdapter.change(CHANNEL_VOTE_FRAGMENT, false);
             }
-        }
-    }
-
-    public void moveToVoteFragment() {
-        if (hasVoteTab()) {
-            showFragment(CHANNEL_VOTE_FRAGMENT);
         }
     }
 

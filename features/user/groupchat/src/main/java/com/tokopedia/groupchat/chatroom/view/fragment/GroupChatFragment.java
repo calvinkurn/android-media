@@ -857,7 +857,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onVoteComponentClicked(String type, String name) {
         if (getActivity() instanceof GroupChatActivity) {
-            ((GroupChatActivity) getActivity()).moveToVoteFragment();
+            ((GroupChatActivity) getActivity()).transitionToTabVote();
         }
         analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name);
     }
