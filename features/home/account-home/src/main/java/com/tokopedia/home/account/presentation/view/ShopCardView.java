@@ -202,7 +202,9 @@ public class ShopCardView extends BaseCustomView {
                 labelViewTopAds.setSubTitle("");
             }
         }
-        getRootView().findViewById(R.id.separator_2).setVisibility(VISIBLE);
+        if (getRootView() != null) {
+            getRootView().findViewById(R.id.separator_2).setVisibility(VISIBLE);
+        }
         labelViewTopAds.setVisibility(VISIBLE);
     }
 
