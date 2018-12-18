@@ -275,6 +275,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     private OverlayViewModel convertOverlayModel(OverlayMessagePojo pojo) {
         return new OverlayViewModel(
                 pojo.isCloseable(),
+                pojo.getStatus(),
                 convertInteruptViewModel(pojo.getAssets())
         );
     }

@@ -20,6 +20,9 @@ public class OverlayViewModel extends BaseGroupChatPojo implements Visitable<Gro
     @SerializedName("closeable")
     @Expose
     private boolean closeable;
+    @SerializedName("status")
+    @Expose
+    private int status;
 
     @SerializedName("assets")
     @Expose
@@ -41,9 +44,29 @@ public class OverlayViewModel extends BaseGroupChatPojo implements Visitable<Gro
         this.interuptViewModel = interuptViewModel;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public int type(GroupChatTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public OverlayViewModel() {
+        this.closeable = true;
+        this.interuptViewModel = new InteruptViewModel();
+        this.status = 0;
+    }
+
+    public OverlayViewModel(boolean closeable, int status, InteruptViewModel interuptViewModel) {
+        this.closeable = closeable;
+        this.status = status;
+        this.interuptViewModel = interuptViewModel;
     }
 
     @Override
@@ -54,25 +77,17 @@ public class OverlayViewModel extends BaseGroupChatPojo implements Visitable<Gro
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.closeable ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.status);
         dest.writeParcelable(this.interuptViewModel, flags);
-    }
-
-    public OverlayViewModel() {
-        this.closeable = true;
-        this.interuptViewModel = new InteruptViewModel();
-    }
-
-    public OverlayViewModel(boolean closeable, InteruptViewModel interuptViewModel) {
-        this.closeable = closeable;
-        this.interuptViewModel = interuptViewModel;
     }
 
     protected OverlayViewModel(Parcel in) {
         this.closeable = in.readByte() != 0;
+        this.status = in.readInt();
         this.interuptViewModel = in.readParcelable(InteruptViewModel.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<OverlayViewModel> CREATOR = new Parcelable.Creator<OverlayViewModel>() {
+    public static final Creator<OverlayViewModel> CREATOR = new Creator<OverlayViewModel>() {
         @Override
         public OverlayViewModel createFromParcel(Parcel source) {
             return new OverlayViewModel(source);

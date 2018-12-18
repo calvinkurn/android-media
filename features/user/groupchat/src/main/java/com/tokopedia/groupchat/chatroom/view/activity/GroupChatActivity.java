@@ -129,6 +129,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final String APPLINK_CHAT = "?tab=1";
     private static final String APPLINK_VOTE = "?tab=2";
     private static final String APPLINK_INFO = "?tab=3";
+    private static final int OVERLAY_STATUS_INACTIVE = 0;
 
     Dialog exitDialog;
     private static final float ELEVATION = 10;
@@ -1110,7 +1111,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void showInfoDialog() {
-        if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null) {
+        if (viewModel.getChannelInfoViewModel().getOverlayViewModel() != null
+                &&viewModel.getChannelInfoViewModel().getOverlayViewModel().getStatus() != OVERLAY_STATUS_INACTIVE) {
             showOverlayDialog(viewModel.getChannelInfoViewModel().getOverlayViewModel());
         } else if (canShowDialog) {
             channelInfoDialog.setContentView(
@@ -1649,13 +1651,15 @@ public class GroupChatActivity extends BaseSimpleActivity
         //2. close earlier overlay if overlay is already shown, then show new overlay
         //3. show overlay if no other bottom dialog is shown
 
-        if (channelInfoDialog != null && channelInfoDialog.isShowing())
-            createOverlayDialog(model, false);
-        else if (overlayDialog != null && overlayDialog.isShowing()) {
-            overlayDialog.dismiss();
-            createOverlayDialog(model, true);
-        } else
-            createOverlayDialog(model, true);
+        if (model.getStatus() != OVERLAY_STATUS_INACTIVE) {
+            if (channelInfoDialog != null && channelInfoDialog.isShowing())
+                createOverlayDialog(model, false);
+            else if (overlayDialog != null && overlayDialog.isShowing()) {
+                overlayDialog.dismiss();
+                createOverlayDialog(model, true);
+            } else
+                createOverlayDialog(model, true);
+        }
     }
 
     private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
