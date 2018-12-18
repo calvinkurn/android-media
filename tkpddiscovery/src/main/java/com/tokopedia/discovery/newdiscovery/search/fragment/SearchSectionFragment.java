@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
