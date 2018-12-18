@@ -147,7 +147,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     }
 
     override fun onShowStartTyping() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        recipientTyping()
     }
 
     override fun onShowStopTyping() {

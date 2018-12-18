@@ -40,8 +40,6 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chatroom.*
-import kotlinx.android.synthetic.main.item_quick_reply.view.*
 import javax.inject.Inject
 
 /**
@@ -226,8 +224,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onSendButtonClicked() {
-        val sendMessage = reply_box.text.toString()
-        presenter.sendMessage(sendMessage)
+//        val sendMessage = reply_box.text.toString()
+//        presenter.sendMessage(sendMessage)
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {

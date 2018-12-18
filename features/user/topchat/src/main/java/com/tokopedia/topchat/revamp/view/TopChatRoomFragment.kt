@@ -1,10 +1,12 @@
 package com.tokopedia.topchat.revamp.view
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
 import com.tokopedia.chat_common.BaseChatAdapter
@@ -14,9 +16,12 @@ import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.topchat.revamp.di.DaggerChatComponent
+import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * @author : Steven 29/11/18
@@ -24,6 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
+    @Inject
     lateinit var presenter: TopChatRoomPresenter
 
     lateinit var chatViewState: TopChatViewState
@@ -38,6 +44,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         initView(view)
+        loadInitialData()
+    }
+
+    override fun loadInitialData() {
+        presenter.connectWebSocket(messageId)
+    }
+
+    override fun removeDummy(it: Visitable<*>) {
     }
 
     override fun getScreenName(): String {
@@ -132,8 +146,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     fun initView(view: View?) {
         view?.run {
-            //            chatViewState = TopChatViewState(this, presenter)
-//        }
+            chatViewState = TopChatViewState(this)
+
             chatViewState?.run {
                 chatViewState.showLoading()
                 adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
@@ -154,6 +168,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 //                .build()
 //                .inject(this)
 
+        if (activity != null && (activity as Activity).application != null) {
+            val chatRoomComponent = DaggerTopChatRoomComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+            val chatComponent
+                    = DaggerChatComponent.builder().topChatRoomComponent(chatRoomComponent).build()
+            chatComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 //
 //    override fun getNetworkMode(): Int {
@@ -177,6 +200,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 //    }
 
     override fun onSendButtonClicked() {
-        //TODO SEND BUTTON CLICK LISTENER
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }
