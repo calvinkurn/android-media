@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -57,6 +58,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     @Inject
     lateinit var session: UserSessionInterface
 
+    lateinit var replyEditText : EditText
+
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
             val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
@@ -77,7 +80,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chatroom, container, false)
+        val view = inflater.inflate(R.layout.fragment_chatroom, container, false)
+        replyEditText = view.findViewById(R.id.new_comment)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -225,7 +230,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onSendButtonClicked() {
-        val sendMessage = new_comment.text.toString()
+        val sendMessage = replyEditText.text.toString()
         presenter.sendMessage(sendMessage)
     }
 
