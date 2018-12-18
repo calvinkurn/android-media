@@ -200,7 +200,7 @@ open class BaseChatPresenter @Inject constructor(
 //    }
 
     private fun sendMessageWebSocket(messageText: String, startTime: String) {
-        RxWebSocket.send(webSocketUrl, msg = generateParamSendMessage(messageText, startTime))
+        RxWebSocket.send(msg = generateParamSendMessage(messageText, startTime))
     }
 
     private fun generateParamSendMessage(messageText: String, startTime: String): String {

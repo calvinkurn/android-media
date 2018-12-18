@@ -14,7 +14,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
@@ -42,7 +41,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            override val toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar), ChatbotViewState {
 
-    private lateinit var pickerButton: View
 
     private lateinit var adapter: ChatbotAdapter
     private lateinit var quickReplyAdapter: QuickReplyAdapter
@@ -51,7 +49,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun initView() {
         super.initView()
-        pickerButton = view.findViewById(R.id.image_picker)
+
         adapter = ChatbotAdapter(ChatbotTypeFactoryImpl(imageAnnouncementListener,
                 chatLinkHandlerListener, imageUploadListener, productAttachmentListener,
                 attachedInvoiceSelectionListener, chatRatingListener, chatActionListBubbleListener)
@@ -67,7 +65,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         scrollToBottom()
         updateHeader(chatroomViewModel)
         showReplyBox()
-        showPickerButton()
+        showActionButtons()
         checkShowQuickReply(chatroomViewModel)
     }
 
@@ -102,7 +100,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onSuccessSendRating(element: ChatRatingViewModel, rating: Int, activity: Activity,
                                      onClickReasonRating: Unit) {
-        if(rating == ChatRatingViewModel.RATING_BAD){
+        if (rating == ChatRatingViewModel.RATING_BAD) {
             showReasonBottomSheet(element, activity, onClickReasonRating)
         }
     }
@@ -132,8 +130,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.visibility = View.GONE
     }
 
-    private fun showPickerButton() {
+    private fun showActionButtons() {
         pickerButton.visibility = View.VISIBLE
+        attachProductButton.visibility = View.GONE
+        maximizeButton.visibility = View.GONE
     }
 
 }

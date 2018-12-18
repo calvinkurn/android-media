@@ -31,6 +31,11 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
 
+    protected lateinit var pickerButton: View
+    protected lateinit var maximizeButton: View
+    protected lateinit var attachProductButton: View
+
+
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
 
@@ -42,6 +47,10 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         actionBox = view.findViewById(R.id.add_comment_area)
         sendButton = view.findViewById(R.id.send_but)
         notifier = view.findViewById(R.id.notifier)
+
+        pickerButton = view.findViewById(R.id.image_picker)
+        maximizeButton = view.findViewById(R.id.maximize)
+        attachProductButton = view.findViewById(R.id.add_url)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true

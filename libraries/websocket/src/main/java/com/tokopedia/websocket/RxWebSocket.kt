@@ -13,7 +13,7 @@ object RxWebSocket {
         return RxWebSocketUtil.getInstance()?.getWebSocketInfo(url, accessToken)
     }
 
-    fun send(url: String, msg: String) {
+    fun send(msg: String) {
         RxWebSocketUtil.getInstance()?.send(msg)
     }
 

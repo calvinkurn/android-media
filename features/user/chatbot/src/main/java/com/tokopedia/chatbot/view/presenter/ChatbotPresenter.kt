@@ -151,6 +151,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendMessage(sendMessage: String) {
+        RxWebSocket.send(sendMessage)
     }
 
     override fun sendInvoiceAttachment(messageId: String,
