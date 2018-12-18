@@ -30,7 +30,7 @@ class DigitalChannelPresenter @Inject constructor(private val recommendationUseC
             }
 
             override fun onError(e: Throwable?) {
-                view.showError(e?.message)
+                view.showError(R.string.digital_channel_error_default)
             }
         })
     }

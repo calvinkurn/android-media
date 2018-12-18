@@ -171,11 +171,11 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
                 ?.commit()
     }
 
-    override fun showError(message: String?) {
+    override fun showError(resId: Int) {
         pulsa_place_holders.visibility = View.GONE
         digital_widget_fragment.visibility = View.GONE
         error_view.visibility = View.VISIBLE
-        text_error_message.text = message
+        text_error_message.text = getString(resId)
     }
 
     override fun onClickRecommendation(recommendation: Recommendation, position: Int) {
@@ -183,9 +183,9 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
             RouteManager.route(activity, recommendation.applink)
 
             val eventLabel = if (!recommendation.clientNumber.isNullOrEmpty()) {
-                "history - $position - ${recommendation.categoryId} - ${recommendation.productName}"
+                "history - ${recommendation.position} - ${recommendation.categoryId} - ${recommendation.productName}"
             } else {
-                "recommendation - $position - ${recommendation.categoryId} - ${recommendation.categoryName}"
+                "recommendation - ${recommendation.position} - ${recommendation.categoryId} - ${recommendation.categoryName}"
             }
 
             abstractionRouter
