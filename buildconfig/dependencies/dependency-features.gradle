@@ -15,6 +15,7 @@ ext {
     tkpdExploreVersion = '2.22'
     tkpdEventVersion = '2.22'
     tkpdFeedVersion = '2.22'
+    tkpdFeedComponentVersion = '2.22'
     tkpdFlightVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -23,7 +24,6 @@ ext {
     tkpdInboxVersion = '2.22'
     tkpdInterestPickVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
-    tkpdKolComponentVersion = '2.22'
     tkpdKolVersion = '2.22'
     tkpdAffiliateVersion = '2.22'
     tkpdAffiliateCommonVersion = '2.22'
@@ -73,6 +73,7 @@ ext {
             explore                     : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                      : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                        : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            feedComponent               : "com.tokopedia.feedcomponent:feedComponent:${tkpdFeedComponentVersion}",
             affiliate                   : "com.tokopedia.affiliate:affiliate:${tkpdAffiliateVersion}",
             affiliateCommon             : "com.tokopedia.affiliatecommon:affiliatecommon:${tkpdAffiliateCommonVersion}",
             flight                      : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
@@ -85,7 +86,6 @@ ext {
             inbox                       : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             kol                         : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon                   : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
-            kolComponent                : "com.tokopedia.kolcomponent:kolComponent:${tkpdKolComponentVersion}",
             loginphone                  : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister               : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon               : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
@@ -125,11 +125,11 @@ ext {
             nps                    : ":features:common:nps",
 
             feed                        : ":features:content:feed",
+            feedComponent               : ":features:content:feed_component",
             explore                     : ":features:content:explore",
             interestPick                : ":features:content:interest_pick",
             kol                         : ":features:content:kol",
             kolCommon                   : ":features:content:kol_common",
-            kolComponent                : ":features:content:kol_component",
             affiliate                   : ":features:content:affiliate",
 //            affiliate                   : ":features:content:affiliate_no_op",
             affiliateCommon             : ":features:content:affiliate_common",

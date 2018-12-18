@@ -283,9 +283,9 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.features.kolComponent)
     implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation project(rootProject.ext.features.shopCommon)

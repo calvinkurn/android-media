@@ -1,0 +1,20 @@
+package com.tokopedia.feedcomponent.view.viewmodel.post.poll
+
+/**
+ * @author by milhamj on 12/12/18.
+ */
+data class PollOptionViewModel(
+        var optionId: String = "0",
+        var option: String = "",
+        var imageUrl: String = "",
+        var redirectLink: String = "",
+        var percentageText: String = "0",
+        var percentageNumber: Int = 0,
+        var selected: Int = 0
+) {
+    companion object {
+        const val DEFAULT = 0
+        const val UNSELECTED = 1
+        const val SELECTED = 2
+    }
+}

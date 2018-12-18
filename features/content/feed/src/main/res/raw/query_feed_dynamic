@@ -1,0 +1,233 @@
+query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $lang: String) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, lang: $lang){
+  	 data {
+      id
+      createTime
+      type
+      activity
+      content {
+        cardrecom {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+            action {
+              event
+              action
+              appLink
+              webLink
+            }
+          }
+          items {
+            header {
+              avatar
+              avatarTitle
+              avatarDate
+              avatarWeblink
+              avatarApplink
+              avatarBadgeImage
+              avatarDescription
+              reportable
+              followCta {
+                textTrue
+                textFalse
+              }
+            }
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              items {
+                id
+                text
+                price
+                type
+                appLink
+                webLink
+                thumbnail
+                thumbnailLarge
+                percentage
+                isSelected
+                position
+              }
+              ctaLink {
+                text
+                appLink
+                webLink
+              }
+              totalItems
+            }
+          }
+        }
+        cardbanner {
+          title {
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+            action {
+              event
+              action
+              appLink
+              webLink
+            }
+          }
+        }
+        cardpost{
+          title{
+            text
+            textBadge
+            isClicked
+            ctaLink {
+              text
+              appLink
+              webLink
+            }
+            action{
+              event
+              action
+              appLink
+              webLink
+            }
+          }
+          header {
+            avatar
+            avatarTitle
+            avatarDate
+            avatarWeblink
+            avatarApplink
+            avatarBadgeImage
+            avatarDescription
+            reportable
+            followCta {
+              textTrue
+              textFalse
+              isFollow
+            }
+          }
+          body {
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+              items {
+                id
+                text
+                price
+                type
+                appLink
+                webLink
+                thumbnail
+                thumbnailLarge
+                percentage
+                isSelected
+                position
+              }
+            }
+            caption {
+              text
+              buttonName
+              appLink
+              webLink
+            }
+          }
+          footer {
+            like {
+              fmt
+              value
+              checked
+            }
+            comment {
+              fmt
+              value
+            }
+            buttonCta {
+              text
+              appLink
+              webLink
+            }
+            share {
+              text
+            }
+          }
+        }
+      }
+      tracking {
+        id
+        type
+      }
+      template
+    }
+    meta {
+      totalData
+      lastCursor
+      hasNextPage
+      linkSelf
+    }
+    included {
+      template {
+        id
+        type
+        template {
+          cardbanner {
+            title {
+              text
+              textBadge
+              ctaLink
+            }
+          }
+          cardrecom {
+            title {
+              text
+              textBadge
+              ctaLink
+            }
+            item {
+              ctaLink
+            }
+          }
+          cardpost {
+            title {
+              text
+              textBadge
+              ctaLink
+            }
+            header {
+              avatar
+              avatarTitle
+              avatarDate
+              avatarBadge
+              followCta
+              report
+            }
+            body {
+              media
+              caption
+            }
+            footer {
+              like
+              comment
+              share
+              ctaLink
+            }
+          }
+        }
+      }
+    }
+  }
+}
