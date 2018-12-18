@@ -42,6 +42,7 @@ public class Purchase {
     private String eventLabel;
     private String shopType;
     private String coupon;
+    private String currentSite;
 
     public String getItemPrice() {
         return itemPrice;
@@ -51,6 +52,14 @@ public class Purchase {
 
     public Purchase() {
 
+    }
+
+    public String getCurrentSite() {
+        return currentSite;
+    }
+
+    public void setCurrentSite(String currentSite) {
+        this.currentSite = currentSite;
     }
 
     public String getShopId() {
@@ -180,7 +189,6 @@ public class Purchase {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
             Purchase.put("currencyCode", currency);
-//            Purchase.put(KEY_COUPON, coupon);
         }catch (Exception e) {
             e.printStackTrace();
         }
