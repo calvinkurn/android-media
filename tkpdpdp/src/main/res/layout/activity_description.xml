@@ -50,7 +50,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:paddingBottom="@dimen/dp_4"
                     android:paddingLeft="@dimen/dp_8"
                     android:textColor="@color/pdp_text_color"
                     android:textSize="@dimen/font_small"

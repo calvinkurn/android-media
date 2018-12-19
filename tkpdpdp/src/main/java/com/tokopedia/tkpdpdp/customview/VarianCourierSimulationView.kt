@@ -46,6 +46,7 @@ class VarianCourierSimulationView : BaseCustomView {
     fun addProductVariant(productVariant: ProductVariant, productDetailData: ProductDetailData) {
         view_variant_field!!.setOnClickListener { listener!!.openVariantPage(0) }
         view_variant_field!!.visibility = View.VISIBLE
+        variant_courier_container.visibility = View.VISIBLE
 
         if(view_courier_field.visibility == View.VISIBLE){
             line.visibility = View.VISIBLE
@@ -66,6 +67,7 @@ class VarianCourierSimulationView : BaseCustomView {
             showCourierRate(false)
             showShopDestination(false)
         } else {
+            variant_courier_container.visibility = View.VISIBLE;
             showCourierRate(true)
             showShopLocationView(true)
             showShopDestination(true)

@@ -28,6 +28,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     private RatingBarWithTextView productRating;
     private TextView tvReview;
     private TextView tvTalk;
+    private TextView tvCourier;
     private LinearLayout talkContainer;
     private LinearLayout reviewContainer;
     private LinearLayout courierContainer;
@@ -71,6 +72,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
         talkContainer = (LinearLayout) findViewById(R.id.talk_container);
         reviewContainer = (LinearLayout) findViewById(R.id.review_container);
         courierContainer = (LinearLayout) findViewById(R.id.courier_container);
+        tvCourier = findViewById(R.id.tv_courier);
     }
 
     @Override
@@ -93,6 +95,10 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
                 );
             }
         });
+        tvCourier.setText(
+                String.format(getResources().getString(R.string.value_courier_count),
+                        data.getShopInfo().getShopShipments().size())
+        );
         talkContainer.setOnClickListener(new ClickTalk(data));
         reviewContainer.setOnClickListener(new ClickReview(data));
         setVisibility(VISIBLE);

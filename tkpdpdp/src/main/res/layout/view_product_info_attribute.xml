@@ -11,14 +11,11 @@
     android:background="@drawable/bg_shadow_bottom">
 
     <LinearLayout
-        android:layout_margin="@dimen/dp_8"
+        android:layout_margin="@dimen/dp_16"
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_10"
         android:background="@drawable/pdp_product_info_bg">
