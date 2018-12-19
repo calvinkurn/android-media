@@ -110,13 +110,13 @@ public class CloseableBottomSheetDialog extends BottomSheetDialog {
                 .closeable_bottom_sheet_dialog, null);
         FrameLayout frameLayout = contentView.findViewById(R.id.container);
         frameLayout.addView(view);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                closeListener.onCloseDialog();
-            }
-        });
+//        view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dismiss();
+//                closeListener.onCloseDialog();
+//            }
+//        });
 
         if(!TextUtils.isEmpty(title)){
             contentView.findViewById(R.id.title_closeable).setVisibility(View.VISIBLE);
