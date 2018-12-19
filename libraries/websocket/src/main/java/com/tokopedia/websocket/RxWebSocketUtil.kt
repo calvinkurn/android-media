@@ -33,9 +33,7 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
         builder.addInterceptor(tkpdAuthInterceptor)
         builder.addInterceptor(fingerprintInterceptor)
-
-        client = OkHttpClient.Builder().build()
-
+        client = builder.build()
     }
 
     fun getWebSocketInfo(url: String, accessToken: String): Observable<WebSocketInfo>? {
