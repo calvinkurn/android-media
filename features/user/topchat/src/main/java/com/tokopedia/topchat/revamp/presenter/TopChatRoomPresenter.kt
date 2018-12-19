@@ -20,6 +20,9 @@ class TopChatRoomPresenter @Inject constructor(
         var userSession: UserSessionInterface,
         var topChatWebSocketMapper: TopChatRoomWebSocketMapper)
     : BaseDaggerPresenter<TopChatContract.View>(), TopChatContract.Presenter {
+    override fun destroyWebSocket() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

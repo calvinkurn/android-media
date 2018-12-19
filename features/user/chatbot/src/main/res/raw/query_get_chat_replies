@@ -32,13 +32,11 @@ query get_chat_replies($msgId: Int!) {
           attachment {
             id
             type
-            fallback{
+            fallback {
               message
               html
             }
-            attributes
           }
-          oldMsgId
         }
       }
     }

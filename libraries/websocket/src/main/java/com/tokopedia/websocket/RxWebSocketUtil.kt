@@ -8,6 +8,7 @@ import okhttp3.WebSocket
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import javax.inject.Inject
 
 
 /**
@@ -16,10 +17,10 @@ import rx.schedulers.Schedulers
  * Core Feature : WebSocket will be auto reconnection onFailed.
  */
 class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                                          fingerprintInterceptor: FingerprintInterceptor,
-                                          private val delay: Int,
-                                          private val maxRetries: Int,
-                                          private val pingInterval: Int) {
+                                                  fingerprintInterceptor: FingerprintInterceptor,
+                                                  private val delay: Int,
+                                                  private val maxRetries: Int,
+                                                  private val pingInterval: Int) {
 
     private val client: OkHttpClient
 

@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -85,6 +87,30 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
 
+    }
+
+    override fun onShowStartTyping() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onShowStopTyping() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String) {
+        getAdapter().addElement(
+                MessageViewModel(
+                        messageId,
+                        userId,
+                        name,
+                        SendableViewModel.generateStartTime(),
+                        sendMessage
+                )
+        )
     }
 
     private fun setLabel(labelText: String) {
@@ -166,18 +192,6 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     fun addMessage(visitable: Visitable<*>) {
         getAdapter().addNewMessage(visitable)
         scrollDownWhenInBottom()
-    }
-
-    override fun onShowStartTyping() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onShowStopTyping() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun clearEditText() {

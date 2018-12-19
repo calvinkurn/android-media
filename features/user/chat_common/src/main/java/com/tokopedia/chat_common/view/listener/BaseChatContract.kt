@@ -13,7 +13,7 @@ import com.tokopedia.websocket.WebSocketResponse
 
 
 interface BaseChatContract {
-    interface View : BaseListViewListener<Visitable<*>> {
+    interface View : BaseListViewListener<Visitable<*>>, CustomerView {
 
         fun onReceiveStartTypingEvent()
 

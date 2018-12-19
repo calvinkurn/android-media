@@ -139,17 +139,4 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         maximizeButton.visibility = View.GONE
     }
 
-    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage:
-    String) {
-        adapter.addElement(
-                MessageViewModel(
-                        messageId,
-                        userId,
-                        name,
-                        SendableViewModel.generateStartTime(),
-                        sendMessage
-                )
-        )
-    }
-
 }

@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit
  * @author : Steven 29/11/18
  */
 
-class TopChatViewState(var view: View, presenter: BaseChatPresenter) {
+class TopChatViewState(var view: View, presenter: TopChatRoomPresenter) {
 
     private var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
     private var replyBox: RelativeLayout = view.findViewById(R.id.reply_box)
