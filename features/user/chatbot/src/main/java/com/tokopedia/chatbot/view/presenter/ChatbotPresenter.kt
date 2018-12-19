@@ -168,8 +168,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
-                                generateStartTime: String) {
-
+                                startTime: String) {
+        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendQuickReply(messageId,
+                quickReply, startTime), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
     override fun sendMessageWithApi(messageId : String, sendMessage: String) {
