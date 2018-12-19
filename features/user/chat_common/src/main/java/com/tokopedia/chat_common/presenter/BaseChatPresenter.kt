@@ -19,7 +19,7 @@ import javax.inject.Inject
  * @author : Steven 29/11/18
  */
 
-abstract class BaseChatPresenter<T : BaseChatContract.View> @Inject constructor(
+abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
         open var userSession: UserSessionInterface,
         open var websocketMessageMapper: WebsocketMessageMapper
 ) : BaseDaggerPresenter<T>(), BaseChatContract.Presenter<T> {
