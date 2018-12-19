@@ -14,7 +14,7 @@ data class ProductViewModel(
         var productPrice: String,
         var productImageUrl: String,
         var productChildrenList: ArrayList<ProductChild>,
-        var selectedVariantOptionsIdMap: HashMap<Int, Int> = HashMap(),
+        var selectedVariantOptionsIdMap: LinkedHashMap<Int, Int> = LinkedHashMap(),
         var maxOrderQuantity: Int,
         var minOrderQuantity: Int
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
@@ -26,7 +26,7 @@ data class ProductViewModel(
             arrayListOf<ProductChild>().apply {
                 parcel?.readList(this, ProductChild::class.java.classLoader)
             },
-            hashMapOf<Int, Int>().apply {
+            linkedMapOf<Int, Int>().apply {
                 parcel?.readMap(this, Int::class.java.classLoader)
             },
             parcel?.readInt() ?: 0,

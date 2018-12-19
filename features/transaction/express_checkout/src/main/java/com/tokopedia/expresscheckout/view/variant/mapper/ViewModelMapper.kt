@@ -83,7 +83,7 @@ class ViewModelMapper : DataMapper {
                 if (productChild.isAvailable && !hasSelectedDefaultVariant) {
                     productChild.isSelected = true
                     hasSelectedDefaultVariant = true
-                    var defaultVariantIdOptionMap = HashMap<Int, Int>()
+                    var defaultVariantIdOptionMap = LinkedHashMap<Int, Int>()
                     for (optionId: Int in child.optionIds) {
                         for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
                             for (option: Option in variant.options) {
@@ -101,6 +101,40 @@ class ViewModelMapper : DataMapper {
             }
         }
         checkoutVariantProductViewModel.productChildrenList = productChildList
+
+        if (productChildList.isNotEmpty()) {
+            var firstVariantId = 0
+            var firstOptionId = 0
+            for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
+                if (firstVariantId == 0 && firstOptionId == 0) {
+                    firstVariantId = key
+                    firstOptionId = value
+                    break
+                }
+            }
+
+            for (variantTypeViewModel: TypeVariantViewModel in typeVariantViewModels) {
+                if (variantTypeViewModel.variantId != firstVariantId) {
+                    for (variantOptionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
+                        var hasAvailableChild = false
+                        for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+                            if (productChild.isAvailable && variantOptionViewModel.optionId in productChild.optionsId &&
+                                    firstOptionId in productChild.optionsId) {
+                                hasAvailableChild = true
+                                break
+                            }
+                        }
+                        if (!hasAvailableChild) {
+                            variantOptionViewModel.hasAvailableChild = false
+                            variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_AVAILABLE
+                        } else {
+                            variantOptionViewModel.hasAvailableChild = true
+                            variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_SELECTED
+                        }
+                    }
+                }
+            }
+        }
 
         return checkoutVariantProductViewModel
     }
