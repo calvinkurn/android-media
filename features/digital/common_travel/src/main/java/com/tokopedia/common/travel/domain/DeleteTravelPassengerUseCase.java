@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.R;
-import com.tokopedia.common.travel.data.TravelPassengerDataStoreFactory;
+import com.tokopedia.common.travel.data.TravelPassengerRepository;
 import com.tokopedia.common.travel.data.entity.ResponseTravelDeletePassenger;
 import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
@@ -29,16 +29,16 @@ public class DeleteTravelPassengerUseCase extends BaseTravelPassengerUseCase<Boo
 
     private GraphqlUseCase graphqlUseCase;
     private Context context;
-    private TravelPassengerDataStoreFactory travelPassengerDataStoreFactory;
+    private ITravelPassengerRepository travelPassengerRepository;
     private String idPassengerSelected;
 
     @Inject
     public DeleteTravelPassengerUseCase(GraphqlUseCase graphqlUseCase,
                                         @ApplicationContext Context context,
-                                        TravelPassengerDataStoreFactory travelPassengerDataStoreFactory) {
+                                        TravelPassengerRepository travelPassengerRepository) {
         this.graphqlUseCase = graphqlUseCase;
         this.context = context;
-        this.travelPassengerDataStoreFactory = travelPassengerDataStoreFactory;
+        this.travelPassengerRepository = travelPassengerRepository;
     }
 
     public void setIdPassengerSelected(String idPassengerSelected) {
@@ -88,7 +88,7 @@ public class DeleteTravelPassengerUseCase extends BaseTravelPassengerUseCase<Boo
                 .flatMap(new Func1<TravelPassenger, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(TravelPassenger travelPassenger) {
-                        return travelPassengerDataStoreFactory.deletePassenger(idPassengerSelected);
+                        return travelPassengerRepository.deletePassenger(idPassengerSelected);
                     }
                 });
     }

@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.R;
-import com.tokopedia.common.travel.data.TravelPassengerDataStoreFactory;
+import com.tokopedia.common.travel.data.TravelPassengerRepository;
 import com.tokopedia.common.travel.data.entity.ResponseTravelPassengerList;
 import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
@@ -32,7 +32,7 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
 
     private Context context;
     private GraphqlUseCase graphqlUseCase;
-    private TravelPassengerDataStoreFactory travelPassengerDataStoreFactory;
+    private ITravelPassengerRepository travelPassengerRepository;
     private boolean resetPassengerListSelected;
     private String idPassengerSelected;
 
@@ -47,10 +47,10 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
     @Inject
     public GetTravelPassengersUseCase(@ApplicationContext Context context,
                                       GraphqlUseCase graphqlUseCase,
-                                      TravelPassengerDataStoreFactory travelPassengerDataStoreFactory) {
+                                      TravelPassengerRepository travelPassengerRepository) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
-        this.travelPassengerDataStoreFactory = travelPassengerDataStoreFactory;
+        this.travelPassengerRepository = travelPassengerRepository;
     }
 
     @Override
@@ -86,7 +86,8 @@ public class GetTravelPassengersUseCase extends UseCase<List<TravelPassenger>> {
                 .flatMap(new Func1<List<TravelPassengerEntity>, Observable<List<TravelPassenger>>>() {
                     @Override
                     public Observable<List<TravelPassenger>> call(List<TravelPassengerEntity> travelPassengerEntities) {
-                        return travelPassengerDataStoreFactory.getPassengerListLocal(travelPassengerEntities, resetPassengerListSelected, idPassengerSelected);
+                        return travelPassengerRepository.findAllTravelPassenger(travelPassengerEntities,
+                                resetPassengerListSelected);
                     }
                 })
                 .flatMap(new Func1<List<TravelPassenger>, Observable<List<TravelPassenger>>>() {

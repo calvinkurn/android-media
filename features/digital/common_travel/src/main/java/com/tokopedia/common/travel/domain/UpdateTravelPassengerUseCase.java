@@ -1,6 +1,6 @@
 package com.tokopedia.common.travel.domain;
 
-import com.tokopedia.common.travel.data.TravelPassengerDataStoreFactory;
+import com.tokopedia.common.travel.data.TravelPassengerRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -16,16 +16,18 @@ public class UpdateTravelPassengerUseCase extends UseCase<Boolean> {
     public static final String ID_PASSENGER = "id_passenger";
     public static final String IS_SELECTED = "is_selected";
 
-    private TravelPassengerDataStoreFactory travelPassengerDataStoreFactory;
+    private ITravelPassengerRepository travelPassengerRepository;
 
     @Inject
-    public UpdateTravelPassengerUseCase(TravelPassengerDataStoreFactory travelPassengerDataStoreFactory) {
-        this.travelPassengerDataStoreFactory = travelPassengerDataStoreFactory;
+    public UpdateTravelPassengerUseCase(TravelPassengerRepository travelPassengerRepository) {
+        this.travelPassengerRepository = travelPassengerRepository;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return travelPassengerDataStoreFactory.updatePassenger(requestParams.getString(ID_PASSENGER, ""), requestParams.getBoolean(IS_SELECTED, false));
+        return travelPassengerRepository.updatePassenger(
+                requestParams.getBoolean(IS_SELECTED, false),
+                requestParams.getString(ID_PASSENGER, ""));
     }
 
     public RequestParams createRequestParams(String idPassenger, boolean isSelected) {
