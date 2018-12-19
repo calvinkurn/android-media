@@ -65,6 +65,13 @@ public class DigitalAnalytics {
                 )
         );
 
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "ecommerce", null,
+                        "currentSite", null
+                )
+        );
+
     }
 
     private Map<String, Object> constructProductEnhanceEcommerce(CartDigitalInfoData cartDigitalInfoData,
@@ -101,6 +108,13 @@ public class DigitalAnalytics {
                                 )
                         ),
                         "currentSite", DigitalEventTracking.Label.SITE
+                )
+        );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "ecommerce", null,
+                        "currentSite", null
                 )
         );
     }
