@@ -43,7 +43,7 @@ public class TravelPassengerMapper {
         travelPassengerTable.setPassportExpiry(travelPassengerEntity.getPassportExpiry());
         travelPassengerTable.setTitle(travelPassengerEntity.getTitle());
         travelPassengerTable.setIdNumber(travelPassengerEntity.getIdNumber());
-        travelPassengerTable.setIsBuyer(travelPassengerEntity.getIsBuyer());
+        travelPassengerTable.setIsBuyer(travelPassengerEntity.isBuyer());
         travelPassengerTable.setPaxType(travelPassengerEntity.getPaxType());
         travelPassengerTable.setTravelId(travelPassengerEntity.getTravelId());
         travelPassengerTable.setUserId(travelPassengerEntity.getUserId());
