@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author : Steven 29/11/18
  */
-abstract class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar: Toolbar) :
+open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar: Toolbar) :
         BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
@@ -35,7 +35,6 @@ abstract class BaseChatViewStateImpl(@NonNull open val view: View, open val tool
     protected lateinit var pickerButton: View
     protected lateinit var maximizeButton: View
     protected lateinit var attachProductButton: View
-
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -87,9 +86,6 @@ abstract class BaseChatViewStateImpl(@NonNull open val view: View, open val tool
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
 
     }
-
-    abstract override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage:
-    String)
 
     private fun setLabel(labelText: String) {
         val ADMIN_TAG = "Administrator"
