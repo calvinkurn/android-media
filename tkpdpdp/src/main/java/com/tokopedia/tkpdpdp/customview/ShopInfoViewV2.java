@@ -110,8 +110,10 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         displayLastLogin(data);
 
         tvShopLocation.setText(
-                getResources().getString(R.string.label_shop_location),
-                data.getShopInfo().getShopLocation()
+                String.format(
+                        getResources().getString(R.string.label_shop_location),
+                        data.getShopInfo().getShopLocation()
+                )
         );
         favoriteButton.setVisibility(data.getShopInfo().getShopIsAllowManage() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
