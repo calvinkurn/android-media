@@ -59,6 +59,7 @@ class WholesaleInstallmentView : BaseCustomView {
             tv_installment.text =
                     String.format(
                             resources.getString(R.string.value_installment),
+                            data.info.installmentMinPercentage,
                             data.info.installmentMinPrice
                     )
             showInstallment(true)
