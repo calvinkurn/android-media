@@ -23,7 +23,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
     override fun loadData() {
         // Todo : load dataModel using usecase
-        var json = FileUtils().readRawTextFile(view.getActivityContext(), R.raw.response_ok)
+        var json = FileUtils().readRawTextFile(view.getActivityContext(), R.raw.response_ok_triple_variant)
         var response: ExpressCheckoutResponse = Gson().fromJson(json, ExpressCheckoutResponse::class.java)
         val dataMapper: DataMapper = ViewModelMapper()
 

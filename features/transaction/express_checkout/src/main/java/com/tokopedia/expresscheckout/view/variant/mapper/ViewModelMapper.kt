@@ -20,14 +20,17 @@ class ViewModelMapper : DataMapper {
     override fun convertToViewModels(expressCheckoutFormData: ExpressCheckoutFormData): ArrayList<Visitable<*>> {
         var dataList: ArrayList<Visitable<*>> = ArrayList()
 
-        val variantCombinationValidation = validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
-        val variantChildrenValidation = validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
-        var hasVariant = variantCombinationValidation && variantChildrenValidation
         var variantViewModelList = ArrayList<TypeVariantViewModel>()
-        var children = expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].children
-        if (hasVariant) {
-            for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
-                variantViewModelList.add(convertToTypeVariantViewModel(variant, children))
+        if (expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData != null &&
+                expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData.isNotEmpty()) {
+            val variantCombinationValidation = validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
+            val variantChildrenValidation = validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
+            var hasVariant = variantCombinationValidation && variantChildrenValidation
+            var children = expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].children
+            if (hasVariant) {
+                for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
+                    variantViewModelList.add(convertToTypeVariantViewModel(variant, children))
+                }
             }
         }
 
@@ -37,7 +40,9 @@ class ViewModelMapper : DataMapper {
         var checkoutVariantProductViewModel = convertToProductViewModel(expressCheckoutFormData, variantViewModelList)
         dataList.add(checkoutVariantProductViewModel)
         dataList.add(convertToQuantityViewModel(expressCheckoutFormData, checkoutVariantProductViewModel))
-        dataList.addAll(variantViewModelList)
+        if (variantViewModelList.isNotEmpty()) {
+            dataList.addAll(variantViewModelList)
+        }
         dataList.add(convertToNoteViewModel(expressCheckoutFormData))
         if (expressCheckoutFormData.userProfileDefault != null) {
             dataList.add(convertToSummaryViewModel(expressCheckoutFormData))
