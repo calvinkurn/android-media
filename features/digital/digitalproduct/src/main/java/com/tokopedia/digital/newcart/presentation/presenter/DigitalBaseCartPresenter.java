@@ -144,22 +144,24 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
@@ -635,22 +637,24 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
@@ -673,30 +677,32 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    /* Ini kalau ga ada internet */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException) {
-                    /* Ini kalau timeout */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    getView().renderErrorInstantCheckout(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    getView().renderErrorInstantCheckout(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        /* Ini kalau ga ada internet */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException) {
+                        /* Ini kalau timeout */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        /* Ini kalau error dari API kasih message error */
+                        getView().renderErrorInstantCheckout(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                        getView().renderErrorInstantCheckout(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        /* Ini diluar dari segalanya hahahaha */
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
