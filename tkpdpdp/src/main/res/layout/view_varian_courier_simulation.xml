@@ -2,26 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/variant_courier_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow"
-    android:paddingLeft="@dimen/pdp_content_padding"
-    android:paddingRight="@dimen/pdp_content_padding"
     android:paddingTop="@dimen/dp_25"
     android:paddingBottom="@dimen/dp_25"
-    android:showDividers="middle"
+    android:visibility="gone"
+    tools:visibility="visible"
     android:orientation="vertical">
 
     <LinearLayout
+        android:paddingLeft="@dimen/pdp_content_padding"
+        android:paddingRight="@dimen/pdp_content_padding"
         android:id="@+id/view_variant_field"
         android:visibility="gone"
         tools:visibility="visible"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tv_title_varian"
@@ -29,13 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/product_variant"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/font_medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.071" />
+            android:textSize="@dimen/font_medium"/>
 
         <TextView
             android:id="@+id/variant_title"
@@ -44,26 +37,23 @@
             android:layout_marginTop="@dimen/dp_4"
             android:text="@string/choose_variant"
             android:textColor="@color/medium_green"
-            android:textSize="@dimen/fontvs"
-            app:layout_constraintEnd_toEndOf="@+id/tv_title_varian"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tv_title_varian"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title_varian" />
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/pdp_line_color"
-            app:layout_constraintEnd_toEndOf="@+id/variant_title"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/variant_title"
-            app:layout_constraintTop_toBottomOf="@+id/variant_title"
-            app:layout_constraintVertical_bias="0.0" />
+            android:textSize="@dimen/fontvs" />
     </LinearLayout>
 
+    <View
+        android:id="@+id/line"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:background="@color/pdp_line_color" />
+
     <LinearLayout
+        android:paddingLeft="@dimen/pdp_content_padding"
+        android:paddingRight="@dimen/pdp_content_padding"
         android:id="@+id/view_courier_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,11 +61,7 @@
         android:visibility="gone"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/view_variant_field"
-        app:layout_constraintStart_toStartOf="@+id/view_variant_field"
-        app:layout_constraintTop_toBottomOf="@+id/view_variant_field">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/view_courier"

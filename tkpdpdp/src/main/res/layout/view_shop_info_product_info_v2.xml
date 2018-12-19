@@ -61,6 +61,7 @@
 
                     <com.tokopedia.gm.resource.GMImageView
                         android:id="@+id/iv_gold_shop"
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
                         tools:visibility="visible"
@@ -68,6 +69,7 @@
                         tools:ignore="ContentDescription" />
 
                     <ImageView
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:id="@id/iv_official"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
@@ -77,6 +79,7 @@
                         tools:ignore="ContentDescription" />
 
                     <ImageView
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:id="@id/iv_lucky"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
@@ -107,21 +110,45 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <LinearLayout
-                        android:id="@id/l_medal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:layout_gravity="start"
-                        android:gravity="start"
-                        android:orientation="horizontal" />
-                    <TextView
-                        android:id="@+id/last_online_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black_38"
-                        android:textSize="@dimen/fontvs"
-                        tools:text="15 Menit" />
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_marginLeft="@dimen/dp_2"
+                            android:id="@+id/iv_shop_location"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="@dimen/dp_14"
+                            android:layout_height="@dimen/dp_14"
+                            app:srcCompat="@drawable/ic_icon_location_grey_pdp"
+                            tools:ignore="ContentDescription" />
+                        <TextView
+                            android:id="@+id/tv_shop_location"
+                            android:layout_marginLeft="@dimen/dp_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/fontvs"
+                            tools:text="Kota Depok" />
+                        <TextView
+                            android:layout_marginLeft="@dimen/dp_4"
+                            android:id="@+id/last_online_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/fontvs"
+                            tools:text="15 Menit" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/l_medal"
+                    tools:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:orientation="horizontal" />
             </LinearLayout>
         </LinearLayout>
 

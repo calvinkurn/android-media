@@ -63,7 +63,7 @@ public class VariantActivity extends TActivity  implements
     public static final int STATE_BUTTON_BUY = 1123;
     public static final int STATE_BUTTON_CART = 2234;
     public static final int STATE_VARIANT_DEFAULT = 0;
-    public static final int DEFAULT_MAXIMUM_STOCK_PICKER = 10000;
+    public static final int DEFAULT_MAXIMUM_STOCK_PICKER = 1000;
     public static final int DEFAULT_MINIMUM_STOCK_PICKER = 1;
 
     private TextView topBarTitle;
