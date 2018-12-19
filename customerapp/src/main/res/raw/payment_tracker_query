@@ -70,5 +70,9 @@
       }
     }
     payment_amount
+    voucher{
+      voucher_code
+      voucher_id
+    }
   }
 }

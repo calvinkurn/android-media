@@ -18,7 +18,6 @@ import com.tokopedia.digital.product.view.model.GuideData;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author by furqan on 04/07/18.
  */
@@ -116,4 +115,5 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             progressBar = itemView.findViewById(R.id.youtube_thumbnail_loading_bar);
         }
     }
+
 }

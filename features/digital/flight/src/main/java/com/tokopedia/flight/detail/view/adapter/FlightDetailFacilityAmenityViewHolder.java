@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAmenityIconUtil;
-import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
+import com.tokopedia.flight.search.data.api.single.response.Amenity;
 
 /**
  * Created by zulfikarrahman on 10/31/17.

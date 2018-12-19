@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        app:titleTextAppearance="@style/ToolbarText">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_gojek_pick_address"
+            android:background="@android:color/transparent"
+            android:textSize="@dimen/sp_16"
+            android:padding="@dimen/dp_10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            />
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_below="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pointer_0"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/icon_pointer"
+            android:layout_above="@+id/pointer_0"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/ic_icon_pointer_toped" />
+
+        <RelativeLayout
+            android:id="@+id/view_address_pointer"
+            android:layout_width="@dimen/geolocation_box_width"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_above="@+id/icon_pointer"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/cards_ui_2">
+
+            <TextView
+                android:id="@+id/pointer_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/pointer_submit"
+                android:layout_toStartOf="@+id/pointer_submit"
+                android:text="@string/wait_generate_address"
+                android:padding="@dimen/dp_10"
+                android:textSize="@dimen/sp_14"
+                />
+
+            <RelativeLayout
+                android:id="@+id/pointer_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/pointer_text"
+                android:layout_alignBottom="@+id/pointer_text"
+                android:background="@drawable/button_buy_from_cart">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/ic_done_white_24dp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_edit_location_white_24dp"
+        android:background="@color/tkpd_dark_green"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        />
+
+</RelativeLayout>

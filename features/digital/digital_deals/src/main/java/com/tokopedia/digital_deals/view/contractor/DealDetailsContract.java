@@ -49,6 +49,22 @@ public class DealDetailsContract {
         void addFooter();
 
         void removeFooter();
+
+
+
+        void hideCheckoutView();
+
+        boolean isEnableBuyFromArguments();
+
+        boolean isRecommendationEnableFromArguments();
+
+        void hideRecomendationDealsView();
+
+        boolean isEnableLikeFromArguments();
+
+        void hideLikeButtonView();
+
+        boolean isEnableShareFromArguments();
     }
     public interface Presenter extends CustomerPresenter<DealDetailsContract.View> {
 

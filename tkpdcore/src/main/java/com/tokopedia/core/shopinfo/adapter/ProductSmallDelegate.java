@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
 

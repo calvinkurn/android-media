@@ -142,18 +142,18 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(com.tokopedia.core.R.menu.menu_web_view, menu);
+        inflater.inflate(com.tokopedia.core2.R.menu.menu_web_view, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.core.R.id.menu_home) {
+        if (item.getItemId() == com.tokopedia.core2.R.id.menu_home) {
             if (getApplication() instanceof TkpdCoreRouter) {
                 Intent intentHome = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
                 if (intentHome != null) startActivity(intentHome);
             }
-        } else if (item.getItemId() == com.tokopedia.core.R.id.menu_help) {
+        } else if (item.getItemId() == com.tokopedia.core2.R.id.menu_help) {
             startActivity(InboxRouter.getContactUsActivityIntent(this));
         }
         return super.onOptionsItemSelected(item);
