@@ -4,18 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_wholesale_installment"
     tools:visibility="visible"
+    android:paddingLeft="@dimen/dp_16"
     android:visibility="gone"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow"
     android:divider="@drawable/bg_line_separator"
-    android:dividerPadding="@dimen/dp_10"
     android:showDividers="middle"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/view_wholesale"
-        android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
@@ -42,18 +41,8 @@
             tools:text="Mulai dari Rp 12.000" />
     </LinearLayout>
 
-    <View
-        android:layout_marginLeft="@dimen/dp_16"
-        tools:visibility="visible"
-        android:visibility="gone"
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/pdp_line_color" />
-
     <LinearLayout
         android:id="@+id/view_installment"
-        android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
