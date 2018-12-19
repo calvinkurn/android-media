@@ -88,7 +88,6 @@
     <string name="label_dilihat">Dilihat</string>
     <string name="label_transaksi_berhasil">Transaksi Berhasil </string>
     <string name="label_courier">Kurir \u2022</string>
-    <string name="label_shop_location">%1$s \u2022 </string>
     <string name="label_courier_from">dari </string>
     <string name="label_courier_to">ke </string>
     <string name="label_cost_est">Ongkir mulai dari</string>
