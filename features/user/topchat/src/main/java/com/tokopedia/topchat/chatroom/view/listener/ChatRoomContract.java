@@ -3,13 +3,14 @@ package com.tokopedia.topchat.chatroom.view.listener;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.RawRes;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
@@ -191,6 +192,8 @@ public class ChatRoomContract {
         void shouldShowChatSettingsMenu(boolean showChatSettingMenu);
 
         void enableChatSettings();
+
+        String getQueryString(@RawRes int id);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

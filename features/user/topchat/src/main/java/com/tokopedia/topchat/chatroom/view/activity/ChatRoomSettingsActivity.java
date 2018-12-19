@@ -18,21 +18,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.di.DaggerChatRoomComponent;
 import com.tokopedia.topchat.common.util.Utils;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -46,6 +42,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     public static final int RESULT_CODE_CHAT_SETTINGS_DISABLED = 2;
     private ChatSettingsResponse chatSettingsResponse;
     private boolean isChatEnabled;
+    private String messageId;
     private String chatRole, senderName;
     private boolean shouldShowToast = false;
     private FrameLayout progressBarLayout;
@@ -61,6 +58,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
         initInjector();
         chatSettingsPresenter.attachView(this);
+        messageId = getIntent().getStringExtra(ChatRoomActivity.PARAM_MESSAGE_ID);
         this.chatSettingsResponse = getIntent().getParcelableExtra(InboxChatConstant.CHATRESPONSEMODEL);
         isChatEnabled = getIntent().getBooleanExtra(InboxChatConstant.CHAT_ENABLED, true);
         chatRole = getIntent().getStringExtra(InboxChatConstant.CHAT_ROLE);
@@ -73,9 +71,9 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
             chatSettingsPresenter.initialChatSettings(this.chatSettingsResponse);
         }
         if (isChatEnabled) {
-            chatSettingsPresenter.onPersonalChatSettingChange(true, false);
-            chatSettingsPresenter.onPromotionalChatSettingChange(true, false);
-        } else if (chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked()){
+            chatSettingsPresenter.onPersonalChatSettingChange(messageId,true, false);
+            chatSettingsPresenter.onPromotionalChatSettingChange(messageId,true, false);
+        } else if (chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked()) {
             setPromotionViewOpacity(true);
         }
 
@@ -148,15 +146,8 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     @Override
     public void updateChatSettingResponse(ChatSettingsResponse chatSettingsResponse) {
         this.chatSettingsResponse = chatSettingsResponse;
-        setPersoanlSwitchState(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
+        setPersonalSwitchState(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked());
         setPromotionSwitchState(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
-    }
-
-    @Override
-    public String getMessageId() {
-        if (getIntent() != null) {
-            return getIntent().getStringExtra(ChatRoomActivity.PARAM_MESSAGE_ID);
-        } else return "";
     }
 
     @Override
@@ -252,9 +243,9 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         }
 
         if (compoundButton.getId() == R.id.chat_personal_switch) {
-            chatSettingsPresenter.onPersonalChatSettingChange(isChecked, true);
+            chatSettingsPresenter.onPersonalChatSettingChange(messageId, isChecked, true);
         } else if (compoundButton.getId() == R.id.chat_promotion_switch) {
-            chatSettingsPresenter.onPromotionalChatSettingChange(isChecked, true);
+            chatSettingsPresenter.onPromotionalChatSettingChange(messageId, isChecked, true);
         }
     }
 
@@ -268,7 +259,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
     }
 
     @Override
-    public void showPersonalToast(boolean enable) {
+    public void setPersonalToast(boolean enable) {
         if (shouldShowToast) {
             if (!enable) {
                 ToasterNormal.show(this, String.format(getString(R.string.enable_chat_personal_settings), senderName));
@@ -280,7 +271,7 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
 
 
     @Override
-    public void showPromotionToast(boolean enable) {
+    public void setPromotionToast(boolean enable) {
         if (shouldShowToast) {
             if (enable && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
                 ToasterError.make(findViewById(android.R.id.content), getString(R.string.enable_chat_promotion_blocked_settings), BaseToaster.LENGTH_LONG).show();
@@ -303,7 +294,17 @@ public class ChatRoomSettingsActivity extends BaseSimpleActivity implements Chat
         }
     }
 
-    private void setPersoanlSwitchState(boolean enable) {
+    @Override
+    public void showErrorMessage() {
+        ToasterNormal.show(this, getResources().getString(R.string.error_chat_message));
+    }
+
+    @Override
+    public String getQueryString(int id) {
+        return GraphqlHelper.loadRawString(getResources(), id);
+    }
+
+    private void setPersonalSwitchState(boolean enable) {
         chatPersonalSwitch.setChecked(!enable);
     }
 

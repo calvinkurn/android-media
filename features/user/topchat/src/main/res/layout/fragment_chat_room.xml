@@ -196,7 +196,7 @@
             android:background="@drawable/border_green_reputation">
 
             <TextView
-                android:id="@+id/anda"
+                android:id="@+id/blocked_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
@@ -210,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="@color/tkpd_main_green"
-                android:layout_below="@+id/anda"
+                android:layout_below="@+id/blocked_text"
                 android:text="@string/enable_chat_settings"
                 />
 

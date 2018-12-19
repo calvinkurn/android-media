@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings;
+package com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings;
 
 import android.os.Parcel;
 import android.os.Parcelable;

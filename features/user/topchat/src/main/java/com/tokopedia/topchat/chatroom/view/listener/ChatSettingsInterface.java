@@ -2,12 +2,11 @@ package com.tokopedia.topchat.chatroom.view.listener;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.RawRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatBlockResponse;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
 
 public interface ChatSettingsInterface {
 
@@ -18,8 +17,6 @@ public interface ChatSettingsInterface {
         void setChatSettingPromotionResponse(ChatSettingsResponse chatSettingsResponse);
 
         void updateChatSettingResponse(ChatSettingsResponse chatSettingsResponse);
-
-        String getMessageId();
 
         Context getAppContext();
 
@@ -37,17 +34,21 @@ public interface ChatSettingsInterface {
 
         void hideProgressBar();
 
-        void showPersonalToast(boolean enable);
+        void setPersonalToast(boolean enable);
 
-        void showPromotionToast(boolean enable);
+        void setPromotionToast(boolean enable);
 
         void setPromotionViewOpacity(boolean enable);
+
+        void showErrorMessage();
+
+        String getQueryString(@RawRes int id);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void onPersonalChatSettingChange(boolean state, boolean initialState);
+        void onPersonalChatSettingChange(String messageId, boolean state, boolean initialState);
 
-        void onPromotionalChatSettingChange(boolean state, boolean initialState);
+        void onPromotionalChatSettingChange(String messageId, boolean state, boolean initialState);
 
         void initialChatSettings(ChatSettingsResponse chatSettingsResponse);
 

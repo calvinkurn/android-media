@@ -37,4 +37,25 @@ public class ChatSettingsAnalytics {
         tracker.sendEventTracking(EVENT_NAME, eventCategory, eventAction, eventLabel);
 
     }
+
+    public void sendTrackingUnblockPromotion() {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_UNBLOCK_ACTION, CHAT_PROMOTION_LABEL);
+
+    }
+
+    public void sendTrackingBlockPromotion() {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_BLOCK_ACTION, CHAT_PROMOTION_LABEL);
+
+    }
+
+
+    public void sendTrackingUnblockPersonal() {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_UNBLOCK_ACTION, CHAT_PERSONAL_LABEL);
+
+    }
+
+    public void sendTrackingBlockPersonal() {
+        tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_BLOCK_ACTION, CHAT_PERSONAL_LABEL);
+
+    }
 }

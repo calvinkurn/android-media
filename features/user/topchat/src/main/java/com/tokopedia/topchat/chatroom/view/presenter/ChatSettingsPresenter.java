@@ -1,14 +1,12 @@
 package com.tokopedia.topchat.chatroom.view.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
@@ -22,6 +20,8 @@ import rx.Subscriber;
 
 public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInterface.View> implements ChatSettingsInterface.Presenter {
 
+    private static final String BLOCK_TYPE_PERSONAL = "1";
+    private static final String BLOCK_TYPE_PROMOTION = "2";
 
     GraphqlUseCase graphqlUseCase;
     private ChatSettingsResponse chatSettingsResponse;
@@ -52,8 +52,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
         variables.put(InboxChatConstant.BLOKCED, !state);
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.chatsettings), ChatSettingsResponse.class, variables);
+                GraphqlRequest(getView().getQueryString(R.raw.chatsettings), ChatSettingsResponse.class, variables);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
@@ -62,7 +61,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
     }
 
     @Override
-    public void onPersonalChatSettingChange(boolean state, boolean initialState) {
+    public void onPersonalChatSettingChange(String messageId, boolean state, boolean initialState) {
         if (!isViewAttached()) {
             return;
         }
@@ -70,7 +69,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
             if (initialState) {
                 getView().showProgressBar();
             }
-            getChatSettingResponse(getView().getMessageId(), "1", state, new Subscriber<GraphqlResponse>() {
+            getChatSettingResponse(messageId, BLOCK_TYPE_PERSONAL, state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
                     if (!isViewAttached()) {
@@ -84,9 +83,8 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         return;
                     }
                     getView().hideProgressBar();
-                    ToasterNormal.show(getView().getActivity(), getView().getActivity().getResources().getString(R.string.error_chat_message));
                     getView().updateChatSettingResponse(chatSettingsResponse);
-                    CommonUtils.dumper("error occured" + e);
+                    getView().showErrorMessage();
                 }
 
                 @Override
@@ -104,22 +102,22 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         if (initialState) {
                             getView().showToastMessage();
                             getView().hideProgressBar();
-                            getView().showPersonalToast(state);
+                            getView().setPersonalToast(state);
                         }
                     }
                 }
             });
 
             if (state) {
-                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_UNBLOCK_ACTION, ChatSettingsAnalytics.CHAT_PERSONAL_LABEL);
+                chatSettingsAnalytics.sendTrackingUnblockPersonal();
             } else {
-                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_BLOCK_ACTION, ChatSettingsAnalytics.CHAT_PERSONAL_LABEL);
+                chatSettingsAnalytics.sendTrackingBlockPersonal();
             }
         }
     }
 
     @Override
-    public void onPromotionalChatSettingChange(boolean state, boolean initialState) {
+    public void onPromotionalChatSettingChange(String messageId, boolean state, boolean initialState) {
         if (!isViewAttached()) {
             return;
         }
@@ -127,7 +125,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
             if (initialState) {
                 getView().showProgressBar();
             }
-            getChatSettingResponse(getView().getMessageId(), "2", state, new Subscriber<GraphqlResponse>() {
+            getChatSettingResponse(messageId, BLOCK_TYPE_PROMOTION, state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
                     if (!isViewAttached()) {
@@ -142,8 +140,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                     }
                     getView().hideProgressBar();
                     getView().updateChatSettingResponse(chatSettingsResponse);
-                    ToasterNormal.show(getView().getActivity(), getView().getActivity().getResources().getString(R.string.error_chat_message));
-                    CommonUtils.dumper("error occured" + e);
+                    getView().showErrorMessage();
                 }
 
                 @Override
@@ -159,16 +156,16 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
                         if (initialState) {
                             getView().hideProgressBar();
                             getView().showToastMessage();
-                            getView().showPromotionToast(state);
+                            getView().setPromotionToast(state);
                         }
                     }
                 }
             });
 
             if (state) {
-                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_UNBLOCK_ACTION, ChatSettingsAnalytics.CHAT_PROMOTION_LABEL);
+                chatSettingsAnalytics.sendTrackingUnblockPromotion();
             } else {
-                chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_SETTINGS_CATEGORY, ChatSettingsAnalytics.CHAT_BLOCK_ACTION, ChatSettingsAnalytics.CHAT_PROMOTION_LABEL);
+                chatSettingsAnalytics.sendTrackingBlockPromotion();
             }
         }
     }

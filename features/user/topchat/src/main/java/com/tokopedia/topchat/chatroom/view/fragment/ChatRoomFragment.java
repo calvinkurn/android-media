@@ -38,10 +38,10 @@ import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
@@ -69,7 +69,7 @@ import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
@@ -283,7 +283,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         sendMessageLayout = rootView.findViewById(R.id.send_message_layout);
         chatBlockLayout = rootView.findViewById(R.id.chat_blocked_layout);
         enableChatTextView = rootView.findViewById(R.id.enable_chat_textView);
-        blockedText = rootView.findViewById(R.id.anda);
+        blockedText = rootView.findViewById(R.id.blocked_text);
         enableChatTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -312,6 +312,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         chatBlockLayout.setVisibility(View.GONE);
         disableChatSettingst();
         chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
+    }
+
+    @Override
+    public String getQueryString(int id) {
+        return GraphqlHelper.loadRawString(getResources(), id);
     }
 
     private void prepareView() {
@@ -1639,11 +1644,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         Menus headerMenu = new Menus(getContext());
         List<Menus.ItemMenus> listMenu = new ArrayList<>();
-        String viewProfileText = getString(R.string.view_profile_container_string, title);
         String profileText = getString(R.string.follow_store);
         if (isFavorited) profileText = getString(R.string.already_follow_store);
 
-//        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_chat_set_profile));
         if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_chat_add_grey));
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
         if (showChatSettingMenu) {
@@ -1703,10 +1706,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     );
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
                 } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
-                    if (chatSettingsResponse == null) {
-                        ToasterNormal.show(getActivity(), "Response is Null");
-                    }
-                    AnalyticsLog.printNOTPLog(getContext(), "Open Chat Setting Activity" + chatSettingsResponse);
                     Intent intent = new Intent(getContext(), ChatRoomSettingsActivity.class);
                     intent.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID));
                     intent.putExtra(InboxChatConstant.CHATRESPONSEMODEL, chatSettingsResponse);
@@ -1806,28 +1805,30 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private void setBlockedLayout() {
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
+            String category = "";
             if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
-                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), InboxChatConstant.CHAT_PROMOTION, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
-            } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
-                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), InboxChatConstant.CHAT_BOTH, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+                category = InboxChatConstant.CHAT_PROMOTION;
+               } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
+                category = InboxChatConstant.CHAT_BOTH;
             } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
-                blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), InboxChatConstant.CHAT_PERSONAL, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
+                category = InboxChatConstant.CHAT_PERSONAL;
             }
+            blockedText.setText(String.format(getResources().getString(R.string.chat_blocked_text), category, senderName, Utils.getDateTime(chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())));
         }
     }
 
 
     private void disableChatSettingst() {
-        String toastMessage = "";
+        String category = "";
         if (chatSettingsResponse != null && chatSettingsResponse.getChatBlockResponse() != null) {
             if (role.equalsIgnoreCase(InboxChatConstant.OFFICIAL_TAG)) {
-                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), InboxChatConstant.CHAT_PROMOTION, senderName);
+                category = InboxChatConstant.CHAT_PROMOTION;
             } else if (role.equalsIgnoreCase(InboxChatConstant.SELLER_TAG)) {
-                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), InboxChatConstant.CHAT_BOTH, senderName);
+                category = InboxChatConstant.CHAT_BOTH;
             } else if (role.equalsIgnoreCase(InboxChatConstant.USER_TAG)) {
-                toastMessage = String.format(getResources().getString(R.string.enable_chat_toast), InboxChatConstant.CHAT_PERSONAL, senderName);
+                category = InboxChatConstant.CHAT_PERSONAL;
             }
-            ToasterNormal.show(getActivity(), toastMessage);
+            ToasterNormal.show(getActivity(), String.format(getResources().getString(R.string.enable_chat_toast), category, senderName));
         }
     }
 }

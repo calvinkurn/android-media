@@ -36,7 +36,7 @@ import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendReasonRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.WebSocketUseCase;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomSettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;
@@ -85,6 +85,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         implements ChatRoomContract.Presenter {
 
     private static final String ROLE_SHOP = "shop";
+    private static final String BLOCK_TYPE_PROMOTION = "2";
 
     private final GetReplyListUseCase getReplyListUseCase;
     private final ReplyMessageUseCase replyMessageUseCase;
@@ -194,8 +195,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         Map<String, Object> variables = new HashMap<>();
         variables.put("msgId", Integer.parseInt(getView().getArguments().getString(PARAM_MESSAGE_ID)));
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getContext().getResources(),
-                R.raw.checkchatsettings), ChatSettingsResponse.class, variables);
+                GraphqlRequest(getView().getQueryString(R.raw.checkchatsettings), ChatSettingsResponse.class, variables);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
@@ -208,7 +208,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
             @Override
             public void onError(Throwable throwable) {
-                CommonUtils.dumper("enter error");
                 throwable.printStackTrace();
                 getView().shouldShowChatSettingsMenu(false);
                 NetworkErrorHelper.showEmptyState(getView().getContext(),
@@ -217,7 +216,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-
                 if (graphqlResponse != null) {
                     ChatSettingsResponse data = graphqlResponse.getData(ChatSettingsResponse.class);
                     getView().setInboxMessageVisibility(data, data.getChatBlockResponse().getChatBlockStatus().isBlocked());
@@ -243,8 +241,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getContext().getResources(),
-                R.raw.chatsettings), ChatSettingsResponse.class, variables);
+                GraphqlRequest(getView().getQueryString(R.raw.chatsettings), ChatSettingsResponse.class, variables);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
@@ -254,7 +251,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     public void onPersonalChatSettingChange(String messageId, boolean state) {
 
-            getChatSettingResponse(messageId, "1", state, new Subscriber<GraphqlResponse>() {
+            getChatSettingResponse(messageId, BLOCK_TYPE_PROMOTION, state, new Subscriber<GraphqlResponse>() {
                 @Override
                 public void onCompleted() {
 
@@ -262,7 +259,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
                 @Override
                 public void onError(Throwable e) {
-                    com.tkpd.library.utils.CommonUtils.dumper("error occured" + e);
                 }
 
                 @Override
