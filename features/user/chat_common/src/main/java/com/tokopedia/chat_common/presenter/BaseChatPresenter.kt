@@ -51,26 +51,16 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> @Inject constructor(
 
     abstract fun destroyWebSocket()
 
-    override fun sendMessage(sendMessage: String) {
+
+    override fun sendMessage(messageId : String, sendMessage: String) {
         if (networkMode == MODE_WEBSOCKET) {
-            sendMessageWithWebsocket(sendMessage)
+            sendMessageWithWebsocket(messageId, sendMessage)
         } else {
-            sendMessageWithApi(sendMessage)
+            sendMessageWithApi(messageId, sendMessage)
         }
     }
 
-    abstract fun sendMessageWithWebsocket(sendMessage: String)
+    abstract fun sendMessageWithWebsocket(messageId : String, sendMessage: String)
 
-    abstract fun sendMessageWithApi(sendMessage: String)
-//
-//    private fun generateParamSendMessage(messageText: String, startTime: String): String {
-//        val json = JsonObject()
-//        json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
-//        val data = JsonObject()
-//        data.addProperty("message_id", Integer.valueOf(thisMessageId))
-//        data.addProperty("message", messageText)
-//        data.addProperty("start_time", startTime)
-//        json.add("data", data)
-//        return json.toString()
-//    }
+    abstract fun sendMessageWithApi(messageId : String, sendMessage: String)
 }

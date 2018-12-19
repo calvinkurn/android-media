@@ -12,6 +12,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
@@ -21,6 +22,7 @@ import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -161,8 +163,8 @@ class ChatbotPresenter @Inject constructor(
     override fun sendInvoiceAttachment(messageId: String,
                                        invoiceLinkPojo: InvoiceLinkPojo,
                                        startTime: String) {
-        // webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId,
-//        invoice, startTime));
+        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendInvoice(messageId,
+                invoiceLinkPojo, startTime), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
@@ -170,12 +172,14 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
-    override fun sendMessageWithApi(sendMessage: String) {
+    override fun sendMessageWithApi(messageId : String, sendMessage: String) {
         //TODO
     }
 
-    override fun sendMessageWithWebsocket(sendMessage: String) {
-        RxWebSocket.send(sendMessage, tkpdAuthInterceptor, fingerprintInterceptor)
+    override fun sendMessageWithWebsocket(messageId : String, sendMessage: String) {
+        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage),
+                tkpdAuthInterceptor,
+                fingerprintInterceptor)
     }
 
     override fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String):

@@ -233,7 +233,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
                 .name, sendMessage)
-        presenter.sendMessage(sendMessage)
+        presenter.sendMessage(messageId, sendMessage)
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {

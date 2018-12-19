@@ -1,5 +1,6 @@
 package com.tokopedia.websocket
 
+import com.google.gson.JsonObject
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import rx.Observable
@@ -21,6 +22,11 @@ object RxWebSocket {
     fun send(msg: String, tkpdAuthInterceptor: TkpdAuthInterceptor,
              fingerprintInterceptor: FingerprintInterceptor) {
         RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
+    }
+
+    fun send(json: JsonObject, tkpdAuthInterceptor: TkpdAuthInterceptor,
+             fingerprintInterceptor: FingerprintInterceptor) {
+        send(json.toString(), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
 //    fun asyncSend(url: String, msg: String, groupChatToken: String) {
