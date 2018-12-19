@@ -230,6 +230,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onSendButtonClicked() {
         val sendMessage = replyEditText.text.toString()
+
+        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
+                .name, sendMessage)
         presenter.sendMessage(sendMessage)
     }
 

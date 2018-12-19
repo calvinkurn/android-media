@@ -26,4 +26,5 @@ interface ChatbotViewState : BaseChatViewState {
     fun onSuccessSendRating(element: ChatRatingViewModel, rating: Int, activity: Activity,
                             onClickReasonRating: Unit)
 
+
 }
