@@ -324,24 +324,41 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    private void flushEnhancedECommerceGoToCheckoutStep1(String eventLabel) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.CHECKOUT,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.CLICK_CHECKOUT,
+                Key.EVENT_LABEL, eventLabel,
+                Key.E_COMMERCE, null,
+                Key.CURRENT_SITE, null
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_DEFAULT);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
     }
 
     //PHASE 2

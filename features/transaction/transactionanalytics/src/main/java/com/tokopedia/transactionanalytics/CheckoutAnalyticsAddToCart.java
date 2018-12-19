@@ -50,6 +50,19 @@ public class CheckoutAnalyticsAddToCart extends TransactionAnalytics {
         );
     }
 
+    public void flushEnhancedECommerceAddToCart(String eventLabel, String eventAction) {
+        sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        Key.EVENT, EventName.ADD_TO_CART,
+                        Key.EVENT_CATEGORY, EventCategory.ADD_TO_CART,
+                        Key.EVENT_ACTION, eventAction,
+                        Key.EVENT_LABEL, eventLabel,
+                        Key.E_COMMERCE, null,
+                        Key.CURRENT_SITE, null
+                )
+        );
+    }
+
     public void eventClickAtcAddToCartImpressionAtcSuccess() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,

@@ -322,6 +322,19 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void flushEnhancedECommerceGoToCheckoutStep2(String transactionId) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
+                ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, null,
+                ConstantTransactionAnalytics.Key.CURRENT_SITE, null
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
     public void eventClickCourierSelectionClickPilihAlamatLain() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
