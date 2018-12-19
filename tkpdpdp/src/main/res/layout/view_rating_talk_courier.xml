@@ -72,7 +72,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/description_container"
+            android:id="@+id/courier_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -86,7 +86,7 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
                 android:contentDescription="@string/image_product_desc"
-                app:srcCompat="@drawable/ic_description_pdp" />
+                app:srcCompat="@drawable/ic_courier" />
 
 
             <TextView

@@ -21,8 +21,6 @@ class WholesaleInstallmentView : BaseCustomView {
     private var data: ProductDetailData? = null
     private var listener: ProductDetailView? = null
 
-    private var isWholesaleVisible: Boolean = false
-
     val layoutView: Int
         get() = R.layout.view_wholesale_installment
 
@@ -71,18 +69,15 @@ class WholesaleInstallmentView : BaseCustomView {
     }
 
     fun showWholesale(show : Boolean){
-        isWholesaleVisible = show
         when(show) {
             true -> {
-                tv_title_wholesale.visibility = View.VISIBLE
-                tv_wholesale_price.visibility = View.VISIBLE
+                view_wholesale.visibility = View.VISIBLE
                 tv_title_wholesale.setOnClickListener(ClickWholeSale(listener, data))
                 tv_wholesale_price.setOnClickListener(ClickWholeSale(listener, data))
             }
 
             false -> {
-                tv_title_wholesale.visibility = View.GONE
-                tv_wholesale_price.visibility = View.GONE
+                view_wholesale.visibility = View.GONE
             }
         }
     }
@@ -90,16 +85,14 @@ class WholesaleInstallmentView : BaseCustomView {
     fun showInstallment(show : Boolean){
         when(show) {
             true -> {
-                tv_title_installment.visibility = View.VISIBLE
-                tv_installment.visibility = View.VISIBLE
-                if (isWholesaleVisible) line.visibility = View.VISIBLE
+                view_installment.visibility = View.VISIBLE
+                if (view_wholesale.visibility == View.VISIBLE) line.visibility = View.VISIBLE
                 tv_title_installment.setOnClickListener(ClickInstallment(listener, data))
                 tv_installment.setOnClickListener(ClickInstallment(listener, data))
             }
 
             false -> {
-                tv_title_installment.visibility = View.GONE
-                tv_installment.visibility = View.GONE
+                view_installment.visibility = View.GONE
                 line.visibility = View.GONE
             }
         }
