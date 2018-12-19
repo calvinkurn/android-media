@@ -1162,7 +1162,8 @@ public abstract class SellerRouterApplication extends MainApplication
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
-
+                UnifyTracking.eventClearEnhanceEcommerce();
+                UnifyTracking.sendGTMEvent(events);
             }
 
             @Override
