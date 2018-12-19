@@ -167,7 +167,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         error_view.visibility = View.GONE
         digital_widget_fragment.visibility = View.VISIBLE
         val digitalWidgetFragment = DigitalWidgetFragment()
-        fragmentManager?.beginTransaction()?.add(R.id.digital_widget_fragment, digitalWidgetFragment)
+        childFragmentManager.beginTransaction()?.add(R.id.digital_widget_fragment, digitalWidgetFragment)
                 ?.commit()
     }
 
