@@ -46,6 +46,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private LinearLayout favoriteButton;
     private TextView favoriteText;
     private LinearLayout llReputationMedal;
+    private TextView tvShopLocation;
 
     private boolean isShopFavorite = false;
 
@@ -93,6 +94,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         favoriteButton = (LinearLayout) findViewById(R.id.favorite_button);
         favoriteText = (TextView) findViewById(R.id.favorite_tv);
         llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
+        tvShopLocation = findViewById(R.id.tv_shop_location);
     }
 
     @SuppressLint("DefaultLocale")
@@ -107,6 +109,10 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         displayLastLogin(data);
 
+        tvShopLocation.setText(
+                getResources().getString(R.string.label_shop_location),
+                data.getShopInfo().getShopLocation()
+        );
         favoriteButton.setVisibility(data.getShopInfo().getShopIsAllowManage() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
         switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
