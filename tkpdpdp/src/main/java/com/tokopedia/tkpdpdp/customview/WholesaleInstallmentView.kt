@@ -86,14 +86,12 @@ class WholesaleInstallmentView : BaseCustomView {
         when(show) {
             true -> {
                 view_installment.visibility = View.VISIBLE
-                if (view_wholesale.visibility == View.VISIBLE) line.visibility = View.VISIBLE
                 tv_title_installment.setOnClickListener(ClickInstallment(listener, data))
                 tv_installment.setOnClickListener(ClickInstallment(listener, data))
             }
 
             false -> {
                 view_installment.visibility = View.GONE
-                line.visibility = View.GONE
             }
         }
     }
