@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
@@ -58,7 +59,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        if (pageTracking == 1) {
+        if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
@@ -84,7 +85,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
-        if (pageTracking == 1) {
+        if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed()
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCodeFailed()
@@ -96,7 +97,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onSuccessCheckPromoCode(dataVoucher: DataVoucher) {
-        if (pageTracking == 1) {
+        if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(dataVoucher.code ?: "")
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(dataVoucher.code ?: "")
@@ -113,7 +114,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onImpressionCoupon(promoCheckoutListModel: PromoCheckoutListModel?) {
-        if (pageTracking == 1) {
+        if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartImpressionCoupon(promoCheckoutListModel?.code ?: "")
         } else {
             trackingPromoCheckoutUtil.checkoutImpressionCoupon(promoCheckoutListModel?.code ?: "")
