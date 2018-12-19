@@ -1,7 +1,10 @@
 package com.tokopedia.common.travel.di;
 
-import com.tokopedia.common.travel.data.TravelPassengerDataStoreFactory;
-import com.tokopedia.common.travel.data.TravelPassengerDbDataStore;
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common.travel.database.TravelPassengerDao;
+import com.tokopedia.common.travel.database.TravelPassengerRoomDb;
 import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.domain.provider.TravelScheduler;
 
@@ -14,14 +17,16 @@ import dagger.Provides;
 @Module
 public class CommonTravelModule {
 
+    @CommonTravelScope
     @Provides
-    TravelPassengerDbDataStore provideDbDataStore() {
-        return new TravelPassengerDbDataStore();
+    TravelPassengerRoomDb provideTravelPassengerRoomDb(@ApplicationContext Context context) {
+        return TravelPassengerRoomDb.getDatabase(context);
     }
 
+    @CommonTravelScope
     @Provides
-    TravelPassengerDataStoreFactory provideTravelPassengerDataStoreFactory(TravelPassengerDbDataStore travelPassengerDbDataStore) {
-        return new TravelPassengerDataStoreFactory(travelPassengerDbDataStore);
+    TravelPassengerDao provideTravelPassengerDao(TravelPassengerRoomDb travelPassengerRoomDb) {
+        return travelPassengerRoomDb.travelPassengerDao();
     }
 
     @Provides
