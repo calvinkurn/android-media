@@ -47,10 +47,6 @@ class VarianCourierSimulationView : BaseCustomView {
         view_variant_field!!.setOnClickListener { listener!!.openVariantPage(0) }
         view_variant_field!!.visibility = View.VISIBLE
         variant_courier_container.visibility = View.VISIBLE
-
-        if(view_courier_field.visibility == View.VISIBLE){
-            line.visibility = View.VISIBLE
-        }
     }
 
     fun updateVariant(variantSelected: String) {
@@ -91,9 +87,6 @@ class VarianCourierSimulationView : BaseCustomView {
         when(show){
             true -> {
                 view_courier_field.visibility = View.VISIBLE
-                if(view_variant_field.visibility == View.VISIBLE){
-                    line.visibility = View.VISIBLE
-                }
             }
             false -> {view_courier_field.visibility = View.GONE}
         }
