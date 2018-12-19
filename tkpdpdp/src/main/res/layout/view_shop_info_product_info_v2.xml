@@ -61,6 +61,7 @@
 
                     <com.tokopedia.gm.resource.GMImageView
                         android:id="@+id/iv_gold_shop"
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
                         tools:visibility="visible"

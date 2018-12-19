@@ -8,13 +8,12 @@
     android:background="@drawable/bg_shadow"
     android:paddingTop="@dimen/dp_25"
     android:paddingBottom="@dimen/dp_25"
-    android:paddingLeft="@dimen/pdp_content_padding"
-    android:showDividers="middle"
     android:visibility="gone"
     tools:visibility="visible"
     android:orientation="vertical">
 
     <LinearLayout
+        android:paddingLeft="@dimen/pdp_content_padding"
         android:paddingRight="@dimen/pdp_content_padding"
         android:id="@+id/view_variant_field"
         android:visibility="gone"
@@ -41,14 +40,26 @@
             android:textSize="@dimen/fontvs" />
     </LinearLayout>
 
+    <View
+        android:id="@+id/line"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:background="@color/pdp_line_color" />
+
     <LinearLayout
+        android:paddingLeft="@dimen/pdp_content_padding"
         android:paddingRight="@dimen/pdp_content_padding"
         android:id="@+id/view_courier_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:visibility="visible"
         android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:orientation="vertical">
 
