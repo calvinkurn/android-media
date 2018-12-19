@@ -167,7 +167,7 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
         error_view.visibility = View.GONE
         digital_widget_fragment.visibility = View.VISIBLE
         val digitalWidgetFragment = DigitalWidgetFragment()
-        fragmentManager?.beginTransaction()?.add(R.id.digital_widget_fragment, digitalWidgetFragment)
+        childFragmentManager.beginTransaction()?.add(R.id.digital_widget_fragment, digitalWidgetFragment)
                 ?.commit()
     }
 
@@ -183,9 +183,9 @@ class DigitalChannelFragment: BaseDaggerFragment(), DigitalChannelContract.View,
             RouteManager.route(activity, recommendation.applink)
 
             val eventLabel = if (!recommendation.clientNumber.isNullOrEmpty()) {
-                "history - ${recommendation.position} - ${recommendation.categoryId} - ${recommendation.productName.toLowerCase()}"
+                "history - ${recommendation.position} - ${recommendation.categoryName.toLowerCase()} - ${recommendation.productName.toLowerCase()}"
             } else {
-                "recommendation - ${recommendation.position} - ${recommendation.categoryId} - ${recommendation.categoryName.toLowerCase()}"
+                "recommendation - ${recommendation.position} - ${recommendation.categoryName.toLowerCase()}"
             }
 
             abstractionRouter
