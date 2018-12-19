@@ -33,8 +33,9 @@ public class TravelPassengerValidator {
         return name.length() > MAX_CONTACT_NAME;
     }
 
-    public boolean isNameContainSpace(String name) {
-        return name.contains(" ");
+    public boolean isNameMoreThanTwoWords(String name) {
+        String[] nameList = name.split(" ");
+        return nameList.length > 1;
     }
 
     public boolean isNameUseSpecialCharacter(String name) {

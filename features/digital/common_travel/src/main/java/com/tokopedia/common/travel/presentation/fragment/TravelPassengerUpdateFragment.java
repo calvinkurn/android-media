@@ -211,17 +211,17 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
 
     @Override
     public String getFirstName() {
-        return firstNameEt.getText().toString();
+        return firstNameEt.getText().toString().trim();
     }
 
     @Override
     public String getLastName() {
-        return lastNameEt.getText().toString();
+        return lastNameEt.getText().toString().trim();
     }
 
     @Override
     public String getIdentityNumber() {
-        return idNumberEt.getText().toString();
+        return idNumberEt.getText().toString().trim();
     }
 
     @Override

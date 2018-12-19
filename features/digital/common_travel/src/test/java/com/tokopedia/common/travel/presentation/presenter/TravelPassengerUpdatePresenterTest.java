@@ -316,6 +316,19 @@ public class TravelPassengerUpdatePresenterTest {
     }
 
     @Test
+    public void onEditPassenger_LastNameMoreThanTwoWords_ShowErrorSnackbar() {
+        //given
+        Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
+        Mockito.when(view.getFirstName()).thenReturn("Toped");
+        String nameNotValid = "Buyer Seller";
+        Mockito.when(view.getLastName()).thenReturn(nameNotValid);
+        //when
+        presenter.submitEditPassengerData();
+        //then
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_last_name_word);
+    }
+
+    @Test
     public void onEditPassenger_InfantBirthdateEmpty_ShowErrorSnackbar() {
         //given
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
@@ -413,6 +426,24 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
+        Mockito.when(view.getBirthdate()).thenReturn("24 Juli 1994");
+        Mockito.when(view.getIdentityNumber()).thenReturn("12345678910");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
+        setTravelPassenger();
+        Mockito.when(addTravelPassengerUseCase.createObservable(Mockito.any()))
+                .thenReturn(Observable.just(travelPassenger));
+        //when
+        presenter.submitAddPassengerData();
+        //then
+        Mockito.verify(view).navigateToPassengerList();
+    }
+
+    @Test
+    public void onAddPassenger_AllDataAdultValidWithSpaceLastName_SuccessAddPassenger() {
+        //given
+        Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
+        Mockito.when(view.getFirstName()).thenReturn("Toped");
+        Mockito.when(view.getLastName()).thenReturn("Buyer ");
         Mockito.when(view.getBirthdate()).thenReturn("24 Juli 1994");
         Mockito.when(view.getIdentityNumber()).thenReturn("12345678910");
         Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
