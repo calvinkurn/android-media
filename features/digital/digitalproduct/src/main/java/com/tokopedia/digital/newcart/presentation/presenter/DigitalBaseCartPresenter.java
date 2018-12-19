@@ -432,27 +432,31 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onReceiveVoucherCode(String code, String message, long discount, int isCoupon) {
-        VoucherDigital voucherDigital = new VoucherDigital();
-        VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-        voucherAttributeDigital.setVoucherCode(code);
-        voucherAttributeDigital.setDiscountAmountPlain(discount);
-        voucherAttributeDigital.setMessage(message);
-        voucherAttributeDigital.setIsCoupon(isCoupon);
-        voucherDigital.setAttributeVoucher(voucherAttributeDigital);
-        renderCouponAndVoucher(voucherDigital);
+        if (isViewAttached()){
+            VoucherDigital voucherDigital = new VoucherDigital();
+            VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+            voucherAttributeDigital.setVoucherCode(code);
+            voucherAttributeDigital.setDiscountAmountPlain(discount);
+            voucherAttributeDigital.setMessage(message);
+            voucherAttributeDigital.setIsCoupon(isCoupon);
+            voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+            renderCouponAndVoucher(voucherDigital);
+        }
     }
 
     @Override
     public void onReceiveCoupon(String couponTitle, String couponMessage, String couponCode, long couponDiscountAmount, int isCoupon) {
-        VoucherDigital voucherDigital = new VoucherDigital();
-        VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-        voucherAttributeDigital.setIsCoupon(isCoupon);
-        voucherAttributeDigital.setTitle(couponTitle);
-        voucherAttributeDigital.setVoucherCode(couponCode);
-        voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
-        voucherAttributeDigital.setMessage(couponMessage);
-        voucherDigital.setAttributeVoucher(voucherAttributeDigital);
-        renderCouponAndVoucher(voucherDigital);
+        if (isViewAttached()){
+            VoucherDigital voucherDigital = new VoucherDigital();
+            VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+            voucherAttributeDigital.setIsCoupon(isCoupon);
+            voucherAttributeDigital.setTitle(couponTitle);
+            voucherAttributeDigital.setVoucherCode(couponCode);
+            voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
+            voucherAttributeDigital.setMessage(couponMessage);
+            voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+            renderCouponAndVoucher(voucherDigital);
+        }
     }
 
     @Override
@@ -579,30 +583,32 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    /* Ini kalau ga ada internet */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException) {
-                    /* Ini kalau timeout */
-                    getView().closeViewWithMessageAlert(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
+                if (isViewAttached()) {
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        /* Ini kalau ga ada internet */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                        );
+                    } else if (e instanceof SocketTimeoutException) {
+                        /* Ini kalau timeout */
+                        getView().closeViewWithMessageAlert(
+                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        );
+                    } else if (e instanceof ResponseErrorException) {
+                        /* Ini kalau error dari API kasih message error */
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof ResponseDataNullException) {
+                        /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    getView().closeViewWithMessageAlert(e.getMessage());
-                } else {
-                    /* Ini diluar dari segalanya hahahaha */
-                    getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        getView().closeViewWithMessageAlert(e.getMessage());
+                    } else {
+                        /* Ini diluar dari segalanya hahahaha */
+                        getView().closeViewWithMessageAlert(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
                 }
             }
 
