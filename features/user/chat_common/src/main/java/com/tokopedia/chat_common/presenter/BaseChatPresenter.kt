@@ -13,7 +13,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import javax.inject.Inject
 
 /**
  * @author : Steven 29/11/18

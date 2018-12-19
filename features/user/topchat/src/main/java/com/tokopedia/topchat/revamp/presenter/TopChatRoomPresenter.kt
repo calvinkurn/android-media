@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.topchat.revamp.domain.mapper.TopChatRoomWebSocketMapper
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,7 +19,7 @@ class TopChatRoomPresenter @Inject constructor(
         var userSession: UserSessionInterface,
         var topChatWebSocketMapper: TopChatRoomWebSocketMapper)
     : BaseDaggerPresenter<TopChatContract.View>(), TopChatContract.Presenter {
-    override fun destroyWebSocket() {
+    override fun sendMessage(messageId: String, sendMessage: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -29,10 +28,6 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun sendMessage(sendMessage: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
