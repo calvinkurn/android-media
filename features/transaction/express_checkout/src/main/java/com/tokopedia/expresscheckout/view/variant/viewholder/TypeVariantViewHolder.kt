@@ -6,27 +6,27 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.adapter.VariantOptionAdapter
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantTypeVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantTypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<CheckoutVariantTypeVariantViewModel>(view) {
+class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<TypeVariantViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_variant_detail_product_page
     }
 
-    override fun bind(element: CheckoutVariantTypeVariantViewModel?) {
+    override fun bind(element: TypeVariantViewModel?) {
         if (element != null) {
             val checkoutVariantProductViewModel = listener.onBindVariantGetProductViewModel()
             if (checkoutVariantProductViewModel != null && checkoutVariantProductViewModel.selectedVariantOptionsIdMap.isNotEmpty()) {
                 for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
                     if (key == element.variantId) {
-                        for (option: CheckoutVariantOptionVariantViewModel in element.variantOptions) {
+                        for (option: OptionVariantViewModel in element.variantOptions) {
                             if (option.optionId == value) {
                                 option.currentState = option.STATE_SELECTED
                                 element.variantSelectedValue = option.variantName

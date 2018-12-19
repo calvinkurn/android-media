@@ -1,6 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant
 
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
 
 /**
  * Created by Irfan Khoirul on 03/12/18.
@@ -8,6 +8,6 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptio
 
 interface VariantChangeListener {
 
-    fun onSelectedVariantChanged(selectedVariant: CheckoutVariantOptionVariantViewModel)
+    fun onSelectedVariantChanged(selectedVariant: OptionVariantViewModel)
 
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.expresscheckout.view.variant.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
@@ -16,9 +15,9 @@ class CheckoutVariantAdapter(adapterTypefactory: CheckoutVariantAdapterTypefacto
         visitables.addAll(visitableList)
     }
 
-    fun getProductDataViewModel(): CheckoutVariantProductViewModel? {
+    fun getProductDataViewModel(): ProductViewModel? {
         for (visitable in visitables) {
-            if (visitable is CheckoutVariantProductViewModel) {
+            if (visitable is ProductViewModel) {
                 return visitable
             }
         }
@@ -26,9 +25,9 @@ class CheckoutVariantAdapter(adapterTypefactory: CheckoutVariantAdapterTypefacto
         return null
     }
 
-    fun getQuantityViewModel(): CheckoutVariantQuantityViewModel? {
+    fun getQuantityViewModel(): QuantityViewModel? {
         for (visitable in visitables) {
-            if (visitable is CheckoutVariantQuantityViewModel) {
+            if (visitable is QuantityViewModel) {
                 return visitable
             }
         }
@@ -36,10 +35,10 @@ class CheckoutVariantAdapter(adapterTypefactory: CheckoutVariantAdapterTypefacto
         return null
     }
 
-    fun getVariantTypeViewModel(): ArrayList<CheckoutVariantTypeVariantViewModel> {
-        var variantTypeViewModels = ArrayList<CheckoutVariantTypeVariantViewModel>()
+    fun getVariantTypeViewModel(): ArrayList<TypeVariantViewModel> {
+        var variantTypeViewModels = ArrayList<TypeVariantViewModel>()
         for (visitable in visitables) {
-            if (visitable is CheckoutVariantTypeVariantViewModel) {
+            if (visitable is TypeVariantViewModel) {
                 variantTypeViewModels.add(visitable)
             }
         }
@@ -51,27 +50,27 @@ class CheckoutVariantAdapter(adapterTypefactory: CheckoutVariantAdapterTypefacto
         return visitables.indexOf(visitable)
     }
 
-    fun addProfileDataViewModel(checkoutVariantProfileViewModel: CheckoutVariantProfileViewModel) {
-        visitables.add(checkoutVariantProfileViewModel)
+    fun addProfileDataViewModel(profileViewModel: ProfileViewModel) {
+        visitables.add(profileViewModel)
     }
 
-    fun addProductDataViewModel(checkoutVariantProductViewModel: CheckoutVariantProductViewModel) {
-        visitables.add(checkoutVariantProductViewModel)
+    fun addProductDataViewModel(productViewModel: ProductViewModel) {
+        visitables.add(productViewModel)
     }
 
-    fun addQuantityDataViewModel(checkoutVariantQuantityViewModel: CheckoutVariantQuantityViewModel) {
-        visitables.add(checkoutVariantQuantityViewModel)
+    fun addQuantityDataViewModel(quantityViewModel: QuantityViewModel) {
+        visitables.add(quantityViewModel)
     }
 
-    fun addNoteDataViewModel(checkoutVariantNoteViewModel: CheckoutVariantNoteViewModel) {
-        visitables.add(checkoutVariantNoteViewModel)
+    fun addNoteDataViewModel(noteViewModel: NoteViewModel) {
+        visitables.add(noteViewModel)
     }
 
-    fun addSummaryDataViewModel(checkoutVariantSummaryViewModel: CheckoutVariantSummaryViewModel) {
-        visitables.add(checkoutVariantSummaryViewModel)
+    fun addSummaryDataViewModel(summaryViewModel: SummaryViewModel) {
+        visitables.add(summaryViewModel)
     }
 
-    fun addVariantDataViewModel(variantDataViewModels: ArrayList<CheckoutVariantTypeVariantViewModel>) {
+    fun addVariantDataViewModel(variantDataViewModels: ArrayList<TypeVariantViewModel>) {
         visitables.addAll(variantDataViewModels)
     }
 

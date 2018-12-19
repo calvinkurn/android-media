@@ -1,7 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant
 
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantProductViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 
 /**
  * Created by Irfan Khoirul on 03/12/18.
@@ -23,10 +23,10 @@ interface CheckoutVariantActionListener {
 
     fun onBindProductUpdateQuantityViewModel(stockWording: String)
 
-    fun onBindVariantGetProductViewModel(): CheckoutVariantProductViewModel?
+    fun onBindVariantGetProductViewModel(): ProductViewModel?
 
     fun onBindVariantUpdateProductViewModel()
 
-    fun onChangeVariant(variantId: Int, checkoutVariantOptionVariantViewModel: CheckoutVariantOptionVariantViewModel)
+    fun onChangeVariant(variantId: Int, optionVariantViewModel: OptionVariantViewModel)
 
 }

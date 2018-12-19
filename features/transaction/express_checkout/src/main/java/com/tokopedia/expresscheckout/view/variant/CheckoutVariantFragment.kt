@@ -15,11 +15,11 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypefactory
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantProductViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import android.support.v7.widget.SimpleItemAnimator
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantTypeVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -102,17 +102,17 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onChangeVariant(variantId: Int, checkoutVariantOptionVariantViewModel: CheckoutVariantOptionVariantViewModel) {
+    override fun onChangeVariant(variantId: Int, optionVariantViewModel: OptionVariantViewModel) {
         var checkoutVariantProductViewModel = adapter.getProductDataViewModel()
         if (checkoutVariantProductViewModel != null && checkoutVariantProductViewModel.productChildrenList.isNotEmpty()) {
             var selectedKey = 0
             for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
-                if (key == variantId && value != checkoutVariantOptionVariantViewModel.optionId) {
+                if (key == variantId && value != optionVariantViewModel.optionId) {
                     selectedKey = key
                 }
             }
             if (selectedKey != 0) {
-                checkoutVariantProductViewModel.selectedVariantOptionsIdMap.put(selectedKey, checkoutVariantOptionVariantViewModel.optionId)
+                checkoutVariantProductViewModel.selectedVariantOptionsIdMap.put(selectedKey, optionVariantViewModel.optionId)
             }
 
             // Check is product child for selected variant is available
@@ -137,16 +137,16 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 adapter.notifyItemChanged(adapter.getIndex(checkoutVariantProductViewModel))
 
                 var variantTypeViewModels = adapter.getVariantTypeViewModel()
-                for (variantTypeViewModel: CheckoutVariantTypeVariantViewModel in variantTypeViewModels) {
+                for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
                     if (variantTypeViewModel.variantId == variantId) {
-                        variantTypeViewModel.variantSelectedValue = checkoutVariantOptionVariantViewModel.variantName
+                        variantTypeViewModel.variantSelectedValue = optionVariantViewModel.variantName
                         adapter.notifyItemChanged(adapter.getIndex(variantTypeViewModel))
                     } else {
-                        for (variantOptionViewModel: CheckoutVariantOptionVariantViewModel in variantTypeViewModel.variantOptions) {
+                        for (variantOptionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
                             var hasAvailableChild = false
                             for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
                                 if (productChild.isAvailable && variantOptionViewModel.optionId in productChild.optionsId &&
-                                        checkoutVariantOptionVariantViewModel.optionId in productChild.optionsId) {
+                                        optionVariantViewModel.optionId in productChild.optionsId) {
                                     hasAvailableChild = true
                                     break
                                 }
@@ -181,7 +181,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onBindVariantGetProductViewModel(): CheckoutVariantProductViewModel? {
+    override fun onBindVariantGetProductViewModel(): ProductViewModel? {
         return adapter.getProductDataViewModel()
     }
 

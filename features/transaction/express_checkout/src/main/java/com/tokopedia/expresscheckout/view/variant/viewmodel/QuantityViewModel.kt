@@ -9,7 +9,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-data class CheckoutVariantQuantityViewModel(
+data class QuantityViewModel(
         var stockWording: String,
         var maxOrderQuantity: Int,
         var minOrderQuantity: Int,
@@ -61,12 +61,12 @@ data class CheckoutVariantQuantityViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CheckoutVariantQuantityViewModel> {
-        override fun createFromParcel(parcel: Parcel): CheckoutVariantQuantityViewModel {
-            return CheckoutVariantQuantityViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<QuantityViewModel> {
+        override fun createFromParcel(parcel: Parcel): QuantityViewModel {
+            return QuantityViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<CheckoutVariantQuantityViewModel?> {
+        override fun newArray(size: Int): Array<QuantityViewModel?> {
             return arrayOfNulls(size)
         }
     }

@@ -7,20 +7,20 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantQuantityViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.QuantityViewModel
 import kotlinx.android.synthetic.main.item_quantity_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantQuantityViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<CheckoutVariantQuantityViewModel>(view) {
+class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<QuantityViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_quantity_detail_product_page
     }
 
-    override fun bind(element: CheckoutVariantQuantityViewModel?) {
+    override fun bind(element: QuantityViewModel?) {
         if (element != null) {
             itemView.et_qty.setText(element.minOrderQuantity.toString())
             itemView.et_qty.addTextChangedListener(object : TextWatcher {
@@ -79,7 +79,7 @@ class CheckoutVariantQuantityViewHolder(val view: View, val listener: CheckoutVa
         }
     }
 
-    private fun validateQuantity(element: CheckoutVariantQuantityViewModel): Boolean {
+    private fun validateQuantity(element: QuantityViewModel): Boolean {
         var error: String? = null
         var needToUpdateView: Boolean = false
 

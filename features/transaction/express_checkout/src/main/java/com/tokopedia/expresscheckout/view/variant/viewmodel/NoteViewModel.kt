@@ -9,7 +9,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-data class CheckoutVariantNoteViewModel(
+data class NoteViewModel(
         var note: String,
         var noteCharMax: Int = 144
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
@@ -31,12 +31,12 @@ data class CheckoutVariantNoteViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CheckoutVariantNoteViewModel> {
-        override fun createFromParcel(parcel: Parcel): CheckoutVariantNoteViewModel {
-            return CheckoutVariantNoteViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<NoteViewModel> {
+        override fun createFromParcel(parcel: Parcel): NoteViewModel {
+            return NoteViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<CheckoutVariantNoteViewModel?> {
+        override fun newArray(size: Int): Array<NoteViewModel?> {
             return arrayOfNulls(size)
         }
     }

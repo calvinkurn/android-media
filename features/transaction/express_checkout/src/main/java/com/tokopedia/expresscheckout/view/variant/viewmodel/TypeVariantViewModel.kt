@@ -9,12 +9,12 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-data class CheckoutVariantTypeVariantViewModel(
+data class TypeVariantViewModel(
         var variantId: Int,
         var variantName: String,
         var variantSelectedValue: String,
         var variantGuideline: String,
-        var variantOptions: ArrayList<CheckoutVariantOptionVariantViewModel>
+        var variantOptions: ArrayList<OptionVariantViewModel>
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
 
     constructor(parcel: Parcel?) : this(
@@ -22,8 +22,8 @@ data class CheckoutVariantTypeVariantViewModel(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
-            arrayListOf<CheckoutVariantOptionVariantViewModel>().apply {
-                parcel?.readList(this, CheckoutVariantOptionVariantViewModel::class.java.classLoader)
+            arrayListOf<OptionVariantViewModel>().apply {
+                parcel?.readList(this, OptionVariantViewModel::class.java.classLoader)
             }
     )
 
@@ -43,12 +43,12 @@ data class CheckoutVariantTypeVariantViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CheckoutVariantTypeVariantViewModel> {
-        override fun createFromParcel(parcel: Parcel): CheckoutVariantTypeVariantViewModel {
-            return CheckoutVariantTypeVariantViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<TypeVariantViewModel> {
+        override fun createFromParcel(parcel: Parcel): TypeVariantViewModel {
+            return TypeVariantViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<CheckoutVariantTypeVariantViewModel?> {
+        override fun newArray(size: Int): Array<TypeVariantViewModel?> {
             return arrayOfNulls(size)
         }
     }

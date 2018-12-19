@@ -7,20 +7,20 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantProfileViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.ProfileViewModel
 import kotlinx.android.synthetic.main.item_profile_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantProfileViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<CheckoutVariantProfileViewModel>(view) {
+class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<ProfileViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_profile_detail_product_page
     }
 
-    override fun bind(element: CheckoutVariantProfileViewModel?) {
+    override fun bind(element: ProfileViewModel?) {
         if (element != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 itemView.tv_profile_address_name.text =

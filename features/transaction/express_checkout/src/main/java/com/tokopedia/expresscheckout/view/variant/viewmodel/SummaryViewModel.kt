@@ -9,7 +9,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantSummaryViewModel(
+class SummaryViewModel(
         var itemPrice: Int,
         var shippingPrice: Int,
         var servicePrice: Int,
@@ -40,12 +40,12 @@ class CheckoutVariantSummaryViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CheckoutVariantSummaryViewModel> {
-        override fun createFromParcel(parcel: Parcel): CheckoutVariantSummaryViewModel {
-            return CheckoutVariantSummaryViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<SummaryViewModel> {
+        override fun createFromParcel(parcel: Parcel): SummaryViewModel {
+            return SummaryViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<CheckoutVariantSummaryViewModel?> {
+        override fun newArray(size: Int): Array<SummaryViewModel?> {
             return arrayOfNulls(size)
         }
     }

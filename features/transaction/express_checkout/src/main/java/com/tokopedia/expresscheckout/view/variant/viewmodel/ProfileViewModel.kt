@@ -9,7 +9,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-data class CheckoutVariantProfileViewModel(
+data class ProfileViewModel(
         var addressTitle: String,
         var addressDetail: String,
         var paymentOptionImageUrl: String,
@@ -58,12 +58,12 @@ data class CheckoutVariantProfileViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CheckoutVariantProfileViewModel> {
-        override fun createFromParcel(parcel: Parcel): CheckoutVariantProfileViewModel {
-            return CheckoutVariantProfileViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<ProfileViewModel> {
+        override fun createFromParcel(parcel: Parcel): ProfileViewModel {
+            return ProfileViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<CheckoutVariantProfileViewModel?> {
+        override fun newArray(size: Int): Array<ProfileViewModel?> {
             return arrayOfNulls(size)
         }
     }

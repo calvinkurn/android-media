@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantProductViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import kotlinx.android.synthetic.main.item_product_detail_product_page.view.*
 
@@ -13,13 +13,13 @@ import kotlinx.android.synthetic.main.item_product_detail_product_page.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantProductViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<CheckoutVariantProductViewModel>(view) {
+class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<ProductViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_product_detail_product_page
     }
 
-    override fun bind(element: CheckoutVariantProductViewModel?) {
+    override fun bind(element: ProductViewModel?) {
         if (element != null) {
             var stockWording = ""
             ImageHandler.loadImageRounded2(itemView.context, itemView.img_product, element.productImageUrl)

@@ -7,7 +7,7 @@ import android.os.Parcelable
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantOptionVariantViewModel(
+class OptionVariantViewModel(
         var variantId: Int,
         var optionId: Int,
         var currentState: Int,
@@ -42,13 +42,13 @@ class CheckoutVariantOptionVariantViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CheckoutVariantOptionVariantViewModel> {
+    companion object CREATOR : Parcelable.Creator<OptionVariantViewModel> {
 
-        override fun createFromParcel(parcel: Parcel): CheckoutVariantOptionVariantViewModel {
-            return CheckoutVariantOptionVariantViewModel(parcel)
+        override fun createFromParcel(parcel: Parcel): OptionVariantViewModel {
+            return OptionVariantViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<CheckoutVariantOptionVariantViewModel?> {
+        override fun newArray(size: Int): Array<OptionVariantViewModel?> {
             return arrayOfNulls(size)
         }
     }

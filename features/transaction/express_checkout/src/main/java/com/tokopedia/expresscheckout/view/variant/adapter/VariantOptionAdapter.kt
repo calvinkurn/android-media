@@ -5,19 +5,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.expresscheckout.view.variant.VariantChangeListener
-import com.tokopedia.expresscheckout.view.variant.viewholder.CheckoutVariantOptionVariantViewHolder
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewholder.OptionVariantViewHolder
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class VariantOptionAdapter(var dataList: ArrayList<CheckoutVariantOptionVariantViewModel>, val listener: CheckoutVariantActionListener) :
-        RecyclerView.Adapter<CheckoutVariantOptionVariantViewHolder>(), VariantChangeListener {
+class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val listener: CheckoutVariantActionListener) :
+        RecyclerView.Adapter<OptionVariantViewHolder>(), VariantChangeListener {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckoutVariantOptionVariantViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(CheckoutVariantOptionVariantViewHolder.LAYOUT, parent, false)
-        return CheckoutVariantOptionVariantViewHolder(view, this)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionVariantViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(OptionVariantViewHolder.LAYOUT, parent, false)
+        return OptionVariantViewHolder(view, this)
     }
 
     override fun getItemCount(): Int {
@@ -25,15 +25,15 @@ class VariantOptionAdapter(var dataList: ArrayList<CheckoutVariantOptionVariantV
     }
 
     override fun getItemViewType(position: Int): Int {
-        return CheckoutVariantOptionVariantViewHolder.LAYOUT
+        return OptionVariantViewHolder.LAYOUT
     }
 
-    override fun onBindViewHolder(holder: CheckoutVariantOptionVariantViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: OptionVariantViewHolder, position: Int) {
         holder.bind(dataList[position])
     }
 
-    override fun onSelectedVariantChanged(selectedVariant: CheckoutVariantOptionVariantViewModel) {
-        for (item: CheckoutVariantOptionVariantViewModel in dataList) {
+    override fun onSelectedVariantChanged(selectedVariant: OptionVariantViewModel) {
+        for (item: OptionVariantViewModel in dataList) {
             if (item.equals(selectedVariant)) {
                 item.currentState = item.STATE_SELECTED
             } else if (item.currentState != item.STATE_NOT_AVAILABLE) {

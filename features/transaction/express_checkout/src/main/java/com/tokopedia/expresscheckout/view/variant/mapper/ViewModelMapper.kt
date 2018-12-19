@@ -23,7 +23,7 @@ class ViewModelMapper : DataMapper {
         val variantCombinationValidation = validateVariantCombination(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
         val variantChildrenValidation = validateVariantChildren(expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0])
         var hasVariant = variantCombinationValidation && variantChildrenValidation
-        var variantViewModelList = ArrayList<CheckoutVariantTypeVariantViewModel>()
+        var variantViewModelList = ArrayList<TypeVariantViewModel>()
         var children = expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].children
         if (hasVariant) {
             for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
@@ -46,8 +46,8 @@ class ViewModelMapper : DataMapper {
         return dataList
     }
 
-    override fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantNoteViewModel {
-        var checkoutVariantNoteViewModel = CheckoutVariantNoteViewModel()
+    override fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): NoteViewModel {
+        var checkoutVariantNoteViewModel = NoteViewModel()
         checkoutVariantNoteViewModel.noteCharMax = expressCheckoutFormData.maxCharNote ?: 144
         checkoutVariantNoteViewModel.note = ""
 
@@ -55,9 +55,9 @@ class ViewModelMapper : DataMapper {
     }
 
     override fun convertToProductViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
-                                           checkoutVariantTypeVariantViewModels: ArrayList<CheckoutVariantTypeVariantViewModel>): CheckoutVariantProductViewModel {
+                                           typeVariantViewModels: ArrayList<TypeVariantViewModel>): ProductViewModel {
         val product: Product = expressCheckoutFormData.cart.groupShops[0].products[0]
-        var checkoutVariantProductViewModel = CheckoutVariantProductViewModel()
+        var checkoutVariantProductViewModel = ProductViewModel()
         checkoutVariantProductViewModel.productImageUrl = product.productImageSrc200Square
         checkoutVariantProductViewModel.productName = product.productName
         checkoutVariantProductViewModel.minOrderQuantity = product.productMinOrder
@@ -69,7 +69,7 @@ class ViewModelMapper : DataMapper {
         checkoutVariantProductViewModel.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.productPrice, false)
         var productChildList = ArrayList<ProductChild>()
         var hasSelectedDefaultVariant = false
-        if (checkoutVariantTypeVariantViewModels.size > 0) {
+        if (typeVariantViewModels.size > 0) {
             for (child: Child in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].children) {
                 var productChild = ProductChild()
                 productChild.productId = child.productId
@@ -105,9 +105,9 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantProductViewModel
     }
 
-    override fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantProfileViewModel {
+    override fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): ProfileViewModel {
         val userProfile: UserProfile? = expressCheckoutFormData.userProfileDefault
-        var checkoutVariantProfileViewModel = CheckoutVariantProfileViewModel()
+        var checkoutVariantProfileViewModel = ProfileViewModel()
         checkoutVariantProfileViewModel.addressTitle = userProfile?.receiverName ?: ""
         checkoutVariantProfileViewModel.addressDetail = userProfile?.addressStreet ?: ""
         checkoutVariantProfileViewModel.paymentOptionImageUrl = userProfile?.image ?: ""
@@ -117,8 +117,8 @@ class ViewModelMapper : DataMapper {
     }
 
     override fun convertToQuantityViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
-                                            checkoutVariantProductViewModel: CheckoutVariantProductViewModel): CheckoutVariantQuantityViewModel {
-        var checkoutVariantQuantityViewModel = CheckoutVariantQuantityViewModel()
+                                            productViewModel: ProductViewModel): QuantityViewModel {
+        var checkoutVariantQuantityViewModel = QuantityViewModel()
         checkoutVariantQuantityViewModel.errorFieldBetween = expressCheckoutFormData.messages?.errorFieldBetween ?: ""
         checkoutVariantQuantityViewModel.errorFieldMaxChar = expressCheckoutFormData.messages?.errorFieldMaxChar ?: ""
         checkoutVariantQuantityViewModel.errorFieldRequired = expressCheckoutFormData.messages?.errorFieldRequired ?: ""
@@ -128,24 +128,24 @@ class ViewModelMapper : DataMapper {
         checkoutVariantQuantityViewModel.errorProductMinQuantity = expressCheckoutFormData.messages?.errorProductMinQuantity ?: ""
         checkoutVariantQuantityViewModel.isStateError = false
 
-        checkoutVariantQuantityViewModel.maxOrderQuantity = checkoutVariantProductViewModel.maxOrderQuantity
-        checkoutVariantQuantityViewModel.minOrderQuantity = checkoutVariantProductViewModel.minOrderQuantity
-        checkoutVariantQuantityViewModel.orderQuantity = checkoutVariantProductViewModel.minOrderQuantity
+        checkoutVariantQuantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity
+        checkoutVariantQuantityViewModel.minOrderQuantity = productViewModel.minOrderQuantity
+        checkoutVariantQuantityViewModel.orderQuantity = productViewModel.minOrderQuantity
         checkoutVariantQuantityViewModel.stockWording = ""
 
         return checkoutVariantQuantityViewModel
     }
 
-    override fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantSummaryViewModel {
-        var checkoutVariantSummaryViewModel = CheckoutVariantSummaryViewModel(null)
+    override fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): SummaryViewModel {
+        var checkoutVariantSummaryViewModel = SummaryViewModel(null)
 
         return checkoutVariantSummaryViewModel
     }
 
-    override fun convertToTypeVariantViewModel(variant: Variant, children: ArrayList<Child>): CheckoutVariantTypeVariantViewModel {
-        var checkoutVariantTypeVariantViewModel = CheckoutVariantTypeVariantViewModel(null)
+    override fun convertToTypeVariantViewModel(variant: Variant, children: ArrayList<Child>): TypeVariantViewModel {
+        var checkoutVariantTypeVariantViewModel = TypeVariantViewModel(null)
 
-        var checkoutVariantOptionVariantViewModels = ArrayList<CheckoutVariantOptionVariantViewModel>()
+        var checkoutVariantOptionVariantViewModels = ArrayList<OptionVariantViewModel>()
         for (option: Option in variant.options) {
             checkoutVariantOptionVariantViewModels.add(convertToOptionVariantViewModel(option, variant.productVariantId, children))
         }
@@ -156,8 +156,8 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantTypeVariantViewModel
     }
 
-    override fun convertToOptionVariantViewModel(option: Option, variantId: Int, children: ArrayList<Child>): CheckoutVariantOptionVariantViewModel {
-        var checkoutVariantOptionVariantViewModel = CheckoutVariantOptionVariantViewModel(null)
+    override fun convertToOptionVariantViewModel(option: Option, variantId: Int, children: ArrayList<Child>): OptionVariantViewModel {
+        var checkoutVariantOptionVariantViewModel = OptionVariantViewModel(null)
         checkoutVariantOptionVariantViewModel.variantId = variantId
         checkoutVariantOptionVariantViewModel.optionId = option.id
         checkoutVariantOptionVariantViewModel.variantHex = option.hex ?: ""

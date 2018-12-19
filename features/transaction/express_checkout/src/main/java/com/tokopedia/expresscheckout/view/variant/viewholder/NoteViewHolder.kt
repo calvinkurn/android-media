@@ -1,6 +1,5 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -8,20 +7,20 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantNoteViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.NoteViewModel
 import kotlinx.android.synthetic.main.item_note_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantNoteViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<CheckoutVariantNoteViewModel>(view) {
+class NoteViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<NoteViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_note_detail_product_page
     }
 
-    override fun bind(element: CheckoutVariantNoteViewModel?) {
+    override fun bind(element: NoteViewModel?) {
         if (element != null) {
             itemView.et_note.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(element.noteCharMax))
             itemView.tv_note_char_counter.text = String.format(

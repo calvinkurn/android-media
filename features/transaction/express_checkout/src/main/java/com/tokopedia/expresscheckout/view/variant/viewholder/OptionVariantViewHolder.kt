@@ -6,21 +6,21 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.VariantChangeListener
-import com.tokopedia.expresscheckout.view.variant.viewmodel.CheckoutVariantOptionVariantViewModel
+import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
 import kotlinx.android.synthetic.main.item_checkout_variant_option.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantOptionVariantViewHolder(view: View?, val listener: VariantChangeListener) :
+class OptionVariantViewHolder(view: View?, val listener: VariantChangeListener) :
         RecyclerView.ViewHolder(view) {
 
     companion object {
         val LAYOUT = R.layout.item_checkout_variant_option
     }
 
-    fun bind(viewModel: CheckoutVariantOptionVariantViewModel?) {
+    fun bind(viewModel: OptionVariantViewModel?) {
         if (viewModel != null) {
             if (!viewModel.hasAvailableChild) viewModel.currentState = viewModel.STATE_NOT_AVAILABLE
             if (viewModel.currentState != viewModel.STATE_NOT_AVAILABLE) {
@@ -44,7 +44,7 @@ class CheckoutVariantOptionVariantViewHolder(view: View?, val listener: VariantC
         }
     }
 
-    private fun renderSelectedVariant(viewModel: CheckoutVariantOptionVariantViewModel) {
+    private fun renderSelectedVariant(viewModel: OptionVariantViewModel) {
         itemView.ll_not_selected_variant_container.visibility = View.GONE
         itemView.cv_selected_variant_container.visibility = View.VISIBLE
         if (viewModel.variantHex.isNotBlank()) {
@@ -60,7 +60,7 @@ class CheckoutVariantOptionVariantViewHolder(view: View?, val listener: VariantC
         itemView.tv_variant_value_selected.text = viewModel.variantName
     }
 
-    private fun renderNotSelectedVariant(viewModel: CheckoutVariantOptionVariantViewModel) {
+    private fun renderNotSelectedVariant(viewModel: OptionVariantViewModel) {
         itemView.cv_selected_variant_container.visibility = View.GONE
         itemView.ll_not_selected_variant_container.visibility = View.VISIBLE
         if (viewModel.variantHex.isNotBlank()) {

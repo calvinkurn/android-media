@@ -15,22 +15,22 @@ interface DataMapper {
 
     fun convertToViewModels(expressCheckoutFormData: ExpressCheckoutFormData): ArrayList<Visitable<*>>
 
-    fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantNoteViewModel
+    fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): NoteViewModel
 
     fun convertToProductViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
-                                  checkoutVariantTypeVariantViewModels: ArrayList<CheckoutVariantTypeVariantViewModel>):
-            CheckoutVariantProductViewModel
+                                  typeVariantViewModels: ArrayList<TypeVariantViewModel>):
+            ProductViewModel
 
-    fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantProfileViewModel
+    fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): ProfileViewModel
 
     fun convertToQuantityViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
-                                   checkoutVariantProductViewModel: CheckoutVariantProductViewModel):
-            CheckoutVariantQuantityViewModel
+                                   productViewModel: ProductViewModel):
+            QuantityViewModel
 
-    fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): CheckoutVariantSummaryViewModel
+    fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): SummaryViewModel
 
-    fun convertToTypeVariantViewModel(variant: Variant, children: ArrayList<Child>): CheckoutVariantTypeVariantViewModel
+    fun convertToTypeVariantViewModel(variant: Variant, children: ArrayList<Child>): TypeVariantViewModel
 
-    fun convertToOptionVariantViewModel(option: Option, variantId: Int, children: ArrayList<Child>): CheckoutVariantOptionVariantViewModel
+    fun convertToOptionVariantViewModel(option: Option, variantId: Int, children: ArrayList<Child>): OptionVariantViewModel
 
 }

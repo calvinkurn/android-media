@@ -10,17 +10,17 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 interface CheckoutVariantTypeFactory {
 
-    fun type(viewModel: CheckoutVariantNoteViewModel): Int
+    fun type(viewModel: NoteViewModel): Int
 
-    fun type(viewModel: CheckoutVariantProductViewModel): Int
+    fun type(viewModel: ProductViewModel): Int
 
-    fun type(viewModel: CheckoutVariantProfileViewModel): Int
+    fun type(viewModel: ProfileViewModel): Int
 
-    fun type(viewModel: CheckoutVariantQuantityViewModel): Int
+    fun type(viewModel: QuantityViewModel): Int
 
-    fun type(viewModel: CheckoutVariantSummaryViewModel): Int
+    fun type(viewModel: SummaryViewModel): Int
 
-    fun type(viewModel: CheckoutVariantTypeVariantViewModel): Int
+    fun type(viewModel: TypeVariantViewModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
