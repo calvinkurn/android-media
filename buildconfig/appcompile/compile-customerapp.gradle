@@ -116,6 +116,7 @@ include "features:user:sessioncommon"
 include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
+include "features:user:vote"
 
 include 'logisticanalytics'
 include 'tkpdfeed'
