@@ -35,9 +35,13 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
     @Override
     public void bind(DigitalsViewModel element) {
         container.postDelayed(() -> {
-            Fragment oldFragment = fragmentManager.findFragmentById(container.getId());
-            if (oldFragment == null) {
-                fragmentManager.beginTransaction().add(container.getId(), new DigitalChannelFragment()).commit();
+            try {
+                Fragment oldFragment = fragmentManager.findFragmentById(container.getId());
+                if (oldFragment == null) {
+                    fragmentManager.beginTransaction().add(container.getId(), new DigitalChannelFragment()).commit();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }, 500);
     }
