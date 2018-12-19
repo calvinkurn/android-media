@@ -11,15 +11,17 @@ import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_END
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_TYPING
-import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
+import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
@@ -35,7 +37,9 @@ import javax.inject.Inject
 class ChatbotPresenter @Inject constructor(
         var getExistingChatUseCase: GetExistingChatUseCase,
         var userSession: UserSessionInterface,
-        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper)
+        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
+        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+        private val fingerprintInterceptor: FingerprintInterceptor)
     : BaseDaggerPresenter<ChatbotContract.View>(), ChatbotContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -45,9 +49,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun connectWebSocket(messageId: String) {
-        val webSocketUrl = "wss://chat.tokopedia.com/connect?os_type=1" +
-                "&device_id=" + userSession.deviceId +
-                "&user_id=" + userSession.userId
+        val webSocketUrl = ChatbotUrl.getPathWebsocket(userSession.deviceId, userSession.userId)
 
         destroyWebSocket()
 
@@ -99,13 +101,13 @@ class ChatbotPresenter @Inject constructor(
 
         }
 
-        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken]?.subscribe(subscriber)
-
+        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken,
+                tkpdAuthInterceptor, fingerprintInterceptor]?.subscribe(subscriber)
 
         mSubscription.add(subscription)
     }
 
-    override fun sendRating(rating: Int,  onError: (Throwable) -> Unit,
+    override fun sendRating(rating: Int, onError: (Throwable) -> Unit,
                             onSuccess: () -> Unit) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -151,7 +153,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendMessage(sendMessage: String) {
-        RxWebSocket.send(sendMessage)
+        RxWebSocket.send(sendMessage, tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
     override fun sendInvoiceAttachment(messageId: String,

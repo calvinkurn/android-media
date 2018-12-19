@@ -58,68 +58,6 @@ open class BaseChatPresenter @Inject constructor(
         mSubscription = CompositeSubscription()
     }
 
-    fun connectWebSocket(messageId: String) {
-        var webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
-                "?os_type=1" +
-                "&device_id=" + userSession.deviceId +
-                "&user_id=" + userSession.userId
-
-        destroyWebSocket()
-
-        if (mSubscription == null || mSubscription.isUnsubscribed) {
-            mSubscription = CompositeSubscription()
-        }
-
-        val subscriber = object : WebSocketSubscriber() {
-            override fun onOpen(webSocket: WebSocket) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", " on WebSocket open")
-                }
-            }
-
-            override fun onMessage(text: String) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", text)
-                }
-            }
-
-            override fun onMessage(webSocketResponse: WebSocketResponse) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", "item")
-                }
-                val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
-                if (pojo.msgId.toString() != messageId) return
-                mappingEvent(webSocketResponse, messageId)
-            }
-
-            override fun onMessage(byteString: ByteString) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", byteString.toString())
-                }
-            }
-
-            override fun onReconnect() {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", "onReconnect")
-                }
-            }
-
-            override fun onClose() {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Log.d("RxWebSocket Presenter", "onClose")
-                }
-                destroyWebSocket()
-
-            }
-
-        }
-
-        val subscription = RxWebSocket.get(webSocketUrl, userSession.accessToken)?.subscribe(subscriber)
-
-        mSubscription.add(subscription)
-
-    }
-
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
         if (pojo.msgId.toString() != messageId) return
@@ -199,9 +137,9 @@ open class BaseChatPresenter @Inject constructor(
 //        dummyList.add(dummyMessage)
 //    }
 
-    private fun sendMessageWebSocket(messageText: String, startTime: String) {
-        RxWebSocket.send(msg = generateParamSendMessage(messageText, startTime))
-    }
+//    private fun sendMessageWebSocket(messageText: String, startTime: String) {
+//        RxWebSocket.send(msg = generateParamSendMessage(messageText, startTime))
+//    }
 
     private fun generateParamSendMessage(messageText: String, startTime: String): String {
         val json = JsonObject()
