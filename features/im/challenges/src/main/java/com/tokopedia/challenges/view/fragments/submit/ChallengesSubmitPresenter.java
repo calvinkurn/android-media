@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -28,6 +29,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.net.UnknownHostException;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -44,6 +46,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     public static final String ACTION_UPLOAD_FAIL = "action.upload.fail";
     GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
     private String postId;
+    private String[] videoExtensions = {
+            "mp4", "m4v", "mov", "ogv"
+    };
 
 
     @Inject
@@ -106,7 +111,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 if (e instanceof UnknownHostException) {
                     getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_unknown_host_exp_error_msg));
                 } else {
@@ -173,12 +178,12 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     private boolean isValidateImageSize(@NonNull String fileLoc) {
         File file = new File(fileLoc);
-        return file.length() <= Utils.MB_10;
+        return file.length() / 1000 <= Utils.MAX_IMAGE_SIZE_IN_KB;
     }
 
     private boolean isValidateVidoeSize(@NonNull String fileLoc) {
         File file = new File(fileLoc);
-        return file.length() <= (Utils.MB_1 * 100);
+        return file.length() / 1000 <= (Utils.MAX_VIDEO_SIZE_IN_KB);
     }
 
     private boolean isValidateDescription(@NonNull String description) {
@@ -231,14 +236,14 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().hideProgress();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                if(!isViewAttached()) return;
+                if (!isViewAttached()) return;
                 getView().hideProgress();
                 RestResponse res1 = restResponse.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
@@ -266,6 +271,25 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.ch_submit_video));
             getView().setChooseImageText(getView().getActivity().getString(R.string.ch_choose_image_title_video));
         }
+    }
+
+    public boolean isDeviceSupportVideo() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkAttachmentVideo(String videoPath) {
+        if (videoPath == null) return false;
+        boolean isExtensionAllow = false;
+        for (String extension : videoExtensions) {
+            if (videoPath.toLowerCase(Locale.US).endsWith(extension)) {
+                isExtensionAllow = true;
+                break;
+            }
+        }
+        return isExtensionAllow;
     }
 
     @Override

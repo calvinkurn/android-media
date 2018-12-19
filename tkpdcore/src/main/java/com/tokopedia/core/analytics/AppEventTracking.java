@@ -493,9 +493,8 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
-        String CLICK_REFERRAL = "Click Share";
-        String CLICK_JUAL = "Click Jual";
-        String CLICK_BAYAR = "Click Bayar";
+
+        String CLICK_BILL = "Click Tagihan";
 
         String CLICK_VARIANTS = "click - variants";
         String CLICK_BUY_VARIANT_PDP = "click - buy";
@@ -871,9 +870,6 @@ public interface AppEventTracking {
         String RESO_CREATE_COMPLAINT_CONFIRM = "confirm - create complain";
         String RESO_CREATE_COMPLAINT_UNCONFIRM = "unconfirmed - create complain";
         String RESO_CREATE_ABANDON = "abandon";
-        String LONG_PRESS_SHORTCUT_REFERRAL = "Share";
-        String PRODUCT_SEARCH = "Product Search";
-        String TAKE_TO_SHOP = "Take to Shop";
         String DIGITAL = "Digital";
         String REFERRAL = "Referral";
     }

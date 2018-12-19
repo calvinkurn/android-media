@@ -10,24 +10,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
 import com.tokopedia.home.account.di.component.SellerAccountComponent;
-
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
-import com.tokopedia.home.account.presentation.view.InfoCardView;
-import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 
@@ -168,6 +164,14 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onScrollToTop() {
         if (recyclerView != null)
             recyclerView.scrollToPosition(0);
+    }
+
+    @Override
+    public void onTickerClosed() {
+        if (adapter.getItemCount() > 0 &&
+                adapter.getItemAt(0) instanceof TickerViewModel) {
+            adapter.removeElementAt(0);
+        }
     }
 
     @Override
