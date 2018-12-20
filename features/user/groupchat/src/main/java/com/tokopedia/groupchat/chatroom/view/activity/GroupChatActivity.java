@@ -1666,6 +1666,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         overlayDialog = CloseableBottomSheetDialog.createInstance(this);
         View view = createOverlayView(model);
         overlayDialog.setCustomContentView(view, model.getInteruptViewModel().getTitle(), model.isCloseable());
+        overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
         if (showDialogDirectly) {
             overlayDialog.show();
         }
