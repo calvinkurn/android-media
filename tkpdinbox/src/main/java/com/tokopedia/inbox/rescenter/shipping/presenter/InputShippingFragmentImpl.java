@@ -10,12 +10,16 @@ import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
 import com.journeyapps.barcodescanner.CaptureActivity;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
@@ -25,6 +29,9 @@ import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+
+import dagger.Lazy;
+import rx.Subscriber;
 
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_ATTACHMENT;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
@@ -44,8 +51,12 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private boolean isShippingRefValid = false;
     private boolean isShippingSpinnerValid = false;
     private boolean isListAttachmentValid = false;
+    private Lazy<GraphqlUseCase> graphqlProvider;
+    private GraphqlUseCase graphqlUseCase;
+
 
     public InputShippingFragmentImpl(InputShippingFragmentView viewListener) {
+        graphqlUseCase = graphqlProvider.get();
         this.viewListener = viewListener;
         this.cacheManager = new GlobalCacheManager();
         this.retrofit = new RetrofitInteractorImpl();
@@ -96,6 +107,27 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     private void requestShippingList() {
+        GraphqlRequest graphqlRequest = new
+                GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
+                R.raw.get_kurir_list), ResCenterKurir.class);
+        graphqlUseCase.addRequest(graphqlRequest);
+
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+            }
+        });
         retrofit.getShippingList(viewListener.getActivity(),
                 generateGetShippingListParams(),
                 new RetrofitInteractor.GetKurirListener() {
