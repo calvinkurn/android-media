@@ -124,7 +124,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun hasQuickReply(): Boolean {
-        return quickReplyAdapter != null && rvQuickReply != null
+        return ::quickReplyAdapter.isInitialized
+                && ::rvQuickReply.isInitialized
     }
 
     private fun hideQuickReply() {
