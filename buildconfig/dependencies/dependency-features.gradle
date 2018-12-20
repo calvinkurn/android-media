@@ -61,6 +61,8 @@ ext {
     transactionCheckoutVersion = '2.22'
     tkpdUserIdentification = '2.22'
     tkpdUserIdentificationCommon = '2.22'
+    tkpdTravelVersion = '2.22'
+
 
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
@@ -122,6 +124,7 @@ ext {
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon          : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
+            commonTravel            : "com.tokopedia.common.travel:${tkpdTravelVersion}"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -249,6 +252,7 @@ ext {
             seller                  : ":tkpdseller",
             session                 : ":tkpdsession",
             transaction             : ":tkpdtransaction",
-            transactioncommon       : ":tkpdtransaction-common"
+            transactioncommon       : ":tkpdtransaction-common",
+            commonTravel                : ":features:digital:common_travel"
     ]
 }

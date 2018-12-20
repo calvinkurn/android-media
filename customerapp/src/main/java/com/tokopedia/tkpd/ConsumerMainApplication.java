@@ -484,4 +484,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         return md5StrBuff.toString();
     }
+
+    @Override
+    public Class<?> getDeeplinkClass() {
+        return null;
+    }
 }

@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
@@ -265,7 +267,7 @@ public class ProductPageTracking {
         values.put(AFInAppEventParameterName.DESCRIPTION, productName);
         values.put(Jordan.AF_KEY_CATEGORY_NAME, category);
 
-        PaymentTracking.atcAF(values);
+        PaymentTracking.atcAF(MainApplication.getAppContext(), values);
     }
 
     public static void eventTopAdsClicked(Context context, int position, Product product) {
