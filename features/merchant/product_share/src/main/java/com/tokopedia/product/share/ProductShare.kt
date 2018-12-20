@@ -122,8 +122,8 @@ class ProductShare(private val activity: Activity) {
 
     private fun generateAppLink(applinkTemplate: String, id: String): String {
         return if (applinkTemplate.contains(APPLINK_SCHEME)){
-            applinkTemplate.replace(APPLINK_SCHEME, "")
-                    .replaceFirst("\\{.*?\\} ?", id ?: "")
+            applinkTemplate.replaceFirst("\\{.*?\\} ?", id ?: "")
+                    .replaceFirst(APPLINK_SCHEME, "")
         } else if (applinkTemplate.contains(DESKTOP_URL_SCHEME)){
             applinkTemplate.replace(DESKTOP_URL_SCHEME, "")
         } else if (applinkTemplate.contains(MOBILE_URL_SCHEME)){
