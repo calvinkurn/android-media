@@ -11,6 +11,7 @@ ext {
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
+    coroutineVersion = '0.30.2'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.1'
@@ -27,6 +28,10 @@ ext {
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
+
+    JunitVersion = '4.12'
+    KotlinMockitoVersion = '1.5.0'
+    SpekVersion = "1.1.5"
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -95,6 +100,7 @@ ext {
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
             recyclerMultiSelect: "com.bignerdranch.android:recyclerview-multiselect:0.2@aar",
             appIntro           : "com.github.apl-devs:appintro:v4.2.2",
+            expandableTextview : "at.blogc:expandabletextview:1.0.5",
     ]
 
     serviceDependencies = [
@@ -152,7 +158,9 @@ ext {
             hansel                : "io.hansel.preprocessor:preprocessor:7.0.4",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
-            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
+            flexBoxLayout         : "com.google.android:flexbox:0.3.2",
+            coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
+            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
     ]
 
     testDependencies = [
@@ -176,7 +184,11 @@ ext {
             powerMockJUnit     : "org.powermock:powermock-module-junit4:$powerMockVersion",
             powerMockJUnitRule : "org.powermock:powermock-module-junit4-rule:$powerMockVersion",
             powerMockito       : "org.powermock:powermock-api-mockito:$powerMockVersion",
-            powerMockXstream   : "org.powermock:powermock-classloading-xstream:$powerMockVersion"
+            powerMockXstream   : "org.powermock:powermock-classloading-xstream:$powerMockVersion",
+            kotlinMockito      : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
+            spekApi            : "org.jetbrains.spek:spek-api:${SpekVersion}",
+            platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
+            junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0"
     ]
 
     debugToolsDependencies = [

@@ -24,6 +24,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -102,6 +103,9 @@ public class SearchActivity extends DiscoveryActivity
 
     @Inject
     SearchPresenter searchPresenter;
+
+    @Inject
+    SearchTracking searchTracking;
 
     private SearchComponent searchComponent;
     private MenuItem menuChangeGrid;
@@ -195,7 +199,7 @@ public class SearchActivity extends DiscoveryActivity
 
         if (intent != null &&
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            UnifyTracking.eventBeliLongClick();
+            searchTracking.eventSearchShortcut();
         }
         handleImageUri(intent);
     }
@@ -285,7 +289,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void sendImageSearchFromGalleryGTM(String label) {
-        UnifyTracking.eventDiscoveryExternalImageSearch(label);
+        UnifyTracking.eventDiscoveryExternalImageSearch(this, label);
     }
 
     private void initInjector() {

@@ -27,6 +27,7 @@ import com.tokopedia.logisticaddaddress.di.DaggerManageAddressComponent;
 import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
@@ -58,6 +59,9 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         ManageAddressFragment fragment = new ManageAddressFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public ManageAddressFragment() {
     }
 
     @Override
@@ -132,11 +136,12 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK) {
-            loadInitialData();
-        } else {
-            showErrorSnackbar(null);
+        if(requestCode == REQUEST_CODE_PARAM_CREATE || requestCode == REQUEST_CODE_PARAM_EDIT) {
+            if(resultCode == Activity.RESULT_OK) {
+                loadInitialData();
+            } else if(resultCode == AddAddressFragment.ERROR_RESULT_CODE) {
+                showErrorSnackbar(getString(R.string.logistic_result_error_message));
+            }
         }
     }
 

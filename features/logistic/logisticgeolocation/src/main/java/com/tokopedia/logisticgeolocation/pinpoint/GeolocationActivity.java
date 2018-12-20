@@ -23,9 +23,11 @@ import com.tokopedia.logisticgeolocation.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticgeolocation.di.GeolocationModule;
 import com.tokopedia.logisticgeolocation.util.RequestPermissionUtil;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -117,7 +119,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
             if(locationPass != null && !locationPass.getLatitude().isEmpty()) {
                 fragment = GoogleMapFragment.newInstance(locationPass);
             } else {
-                TKPDMapParam<String,String> params = new TKPDMapParam<>();
+                Map<String,String> params = new HashMap<>();
                 params.put("address", locationPass.getDistrictName()
                         + ", "
                         + locationPass.getCityName());

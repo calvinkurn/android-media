@@ -19,6 +19,7 @@ import java.util.List;
 
 public abstract class BaseStepperActivity extends BaseToolbarActivity implements StepperListener {
     public static final String STEPPER_MODEL_EXTRA = "STEPPER_MODEL_EXTRA";
+    private static final String CURRENT_POSITION_EXTRA = "current_position";
 
     protected StepperModel stepperModel;
     private RoundCornerProgressBar progressStepper;
@@ -26,6 +27,9 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            currentPosition = savedInstanceState.getInt(CURRENT_POSITION_EXTRA);
+        }
         super.onCreate(savedInstanceState);
         progressStepper = (RoundCornerProgressBar) findViewById(R.id.stepper_progress);
         progressStepper.setMax(getListFragment().size());
@@ -45,6 +49,12 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
                     .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                     .commit();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_POSITION_EXTRA, currentPosition);
     }
 
     @Override
@@ -82,7 +92,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
         onBackEvent();
     }
 
-    private void onBackEvent() {
+    protected void onBackEvent() {
         if (currentPosition > 1) {
             decrementPage();
         } else {
@@ -106,5 +116,9 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
+    }
+
+    public void updateToolbarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 }

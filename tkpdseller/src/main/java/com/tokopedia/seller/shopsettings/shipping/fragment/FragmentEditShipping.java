@@ -477,7 +477,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             getActivity().finish();
         } else if (fragmentShipingMainLayout.getChildCount() < 1) {
             showErrorToast(getActivity().getString(R.string.title_select_shop_location));
-            UnifyTracking.eventCreateShopFillLogisticError();
+            UnifyTracking.eventCreateShopFillLogisticError(getActivity());
         }
     }
 

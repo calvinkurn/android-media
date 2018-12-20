@@ -16,6 +16,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.imageuploader.data.GenerateHostRepositoryImpl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
+import com.tokopedia.imageuploader.data.ProgressResponseBody;
 import com.tokopedia.imageuploader.data.StringResponseConverter;
 import com.tokopedia.imageuploader.data.UploadImageDataSource;
 import com.tokopedia.imageuploader.data.UploadImageRepositoryImpl;
@@ -31,12 +32,14 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository;
 import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -50,6 +53,16 @@ public class ImageUploaderModule {
     private static final int NET_CONNECT_TIMEOUT = 100;
     private static final int NET_RETRY = 1;
 
+    private boolean isNeedProgress = false;
+    private ProgressResponseBody.ProgressListener progressListener;
+
+    public ImageUploaderModule() {
+    }
+
+    public ImageUploaderModule(ProgressResponseBody.ProgressListener progressListener) {
+        this.isNeedProgress = true;
+        this.progressListener = progressListener;
+    }
 
     @ImageUploaderQualifier
     @Provides
@@ -63,6 +76,19 @@ public class ImageUploaderModule {
         builder.addInterceptor(tkpdAuthInterceptor);
         builder.addInterceptor(cacheApiInterceptor);
         builder.addInterceptor(errorHandlerInterceptor);
+
+        if (isNeedProgress) {
+            builder.addNetworkInterceptor(new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                            .build();
+                }
+            });
+        }
+
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(loggingInterceptor);
             if (chuckInterceptor != null) {

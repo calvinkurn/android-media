@@ -1,4 +1,4 @@
-query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!){
+query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!, $projectId:Int!){
   status
   isAuthenticated
   saldo {
@@ -38,6 +38,7 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!){
   }
   le_preapprove(merchantID: $merchantID) {
     fieldData {
+        url
         preApp {
             valid
             partnerName
@@ -46,4 +47,17 @@ query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!){
         }
     }
   }
+  kycStatus(projectID: $projectId) {
+        Message
+        Detail {
+          IsSuccess
+          UserId
+          ProjectId
+          Status
+          StatusName
+          CreateTime
+          CreateBy
+          UpdateTime
+        }
+      }
 }

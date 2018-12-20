@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.service;
 
+import android.accounts.NetworkErrorException;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
@@ -194,7 +195,7 @@ public class ManagePeopleAddressService extends IntentService {
                         throw new RuntimeException(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    ErrorHandler.getErrorMessage(getApplicationContext(), null);
+                    ErrorHandler.getErrorMessage(getApplicationContext(), new NetworkErrorException());
                 }
             }
         };

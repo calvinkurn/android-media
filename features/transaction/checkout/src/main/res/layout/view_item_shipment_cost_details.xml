@@ -8,8 +8,8 @@
     android:layout_marginRight="@dimen/dp_16"
     android:background="@drawable/bg_outline_item_grey"
     android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16">
+    android:paddingTop="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
 
     <TextView
         android:id="@+id/tv_shop_summary"
@@ -32,8 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/separator"
-        android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         tools:text="Total Harga (1 Barang)" />
 
     <TextView
@@ -41,9 +41,9 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/separator"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/separator"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_toEndOf="@id/tv_total_item"
         android:layout_toRightOf="@id/tv_total_item"
@@ -65,9 +65,9 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_total_item_label"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/tv_total_item_label"
         android:gravity="end"
         tools:text="-" />
 
@@ -85,9 +85,30 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_shipping_fee_label"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/tv_shipping_fee_label"
+        android:gravity="end"
+        tools:text="-" />
+
+    <TextView
+        android:id="@+id/tv_purchase_protection_label"
+        style="@style/TextSmallNormalBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_insurance_fee_label"
+        android:layout_marginBottom="@dimen/dp_16"
+        tools:text="Proteksi Gadget (3 Barang)" />
+
+    <TextView
+        android:id="@+id/tv_purchase_protection_fee"
+        style="@style/TextSmallMediumBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_insurance_fee_label"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
         tools:text="-" />
 
@@ -96,7 +117,7 @@
         style="@style/TextSmallNormalBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_insurance_fee_label"
+        android:layout_below="@+id/tv_purchase_protection_label"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="Biaya Tambahan Penjual"
         tools:ignore="HardcodedText" />
@@ -106,9 +127,9 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_purchase_protection_label"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/tv_insurance_fee_label"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
         tools:text="Rp100.000" />
@@ -125,12 +146,12 @@
 
     <TextView
         android:id="@+id/tv_promo"
-        style="@style/TextSmallMediumBlack70"
+        style="@style/TextView.Small.OrangeRed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_seller_cost_addition_fee"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/tv_seller_cost_addition_fee"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
         tools:text="Rp100.000" />
@@ -150,20 +171,11 @@
         style="@style/TextSmallMediumBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_promo"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/tv_promo"
         android:layout_marginBottom="@dimen/dp_16"
         android:gravity="end"
         tools:text="Rp100.000" />
-
-    <TextView
-        android:id="@+id/tv_promo_message"
-        style="@style/TextSmallNormalBlack70"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_donation_label"
-        android:layout_marginBottom="@dimen/dp_16"
-        tools:text="Anda mendapat gratis ongkir Rp20.000" />
 
 </RelativeLayout>

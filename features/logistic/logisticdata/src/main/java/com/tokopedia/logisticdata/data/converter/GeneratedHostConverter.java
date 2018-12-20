@@ -20,6 +20,8 @@ import retrofit2.Retrofit;
  * @author Angga.Prasetiyo on 10/12/2015.
  */
 public class GeneratedHostConverter extends Converter.Factory {
+
+    private static final String DATA_KEY = "data";
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 
     @Override
@@ -31,12 +33,12 @@ public class GeneratedHostConverter extends Converter.Factory {
                 String body = value.string();
                 try {
                     JSONObject jsonObject = new JSONObject(body);
-                    if (jsonObject.isNull("data") ||
-                            jsonObject.getJSONObject("data").isNull("generated_host")) {
+                    if (jsonObject.isNull(DATA_KEY) ||
+                            jsonObject.getJSONObject(DATA_KEY).isNull("generated_host")) {
                         return new Gson().fromJson(jsonObject.toString(), GeneratedHostResponse.class);
                     } else {
                         return new Gson().fromJson(jsonObject
-                                .getJSONObject("data")
+                                .getJSONObject(DATA_KEY)
                                 .getJSONObject("generated_host")
                                 .toString(), GeneratedHostResponse.class);
                     }

@@ -47,7 +47,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         implements EmptyCartContract.Presenter {
 
     private static final int LIST_SIZE = 2;
-    private static final int EMPTY_CART_API_COUNT = 4;
+    private static final int EMPTY_CART_API_COUNT = 3;
 
     private final GetCartListUseCase getCartListUseCase;
     private final GetWishlistUseCase getWishlistUseCase;

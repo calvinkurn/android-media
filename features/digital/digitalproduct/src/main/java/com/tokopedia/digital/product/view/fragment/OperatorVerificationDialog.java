@@ -20,9 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.util.ArrayList;
@@ -306,4 +306,5 @@ public class OperatorVerificationDialog extends DialogFragment {
         }
         return message;
     }
+
 }

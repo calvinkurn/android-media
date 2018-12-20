@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class ProductDigitalData implements Parcelable {
+
     private CategoryData categoryData;
     private List<BannerData> bannerDataList = new ArrayList<>();
     private List<BannerData> otherBannerDataList = new ArrayList<>();
@@ -24,7 +25,6 @@ public class ProductDigitalData implements Parcelable {
         setHistoryClientNumber(builder.historyClientNumber);
         setGuideDataList(builder.guideDataList);
     }
-
 
     protected ProductDigitalData(Parcel in) {
         categoryData = in.readParcelable(CategoryData.class.getClassLoader());
@@ -142,4 +142,5 @@ public class ProductDigitalData implements Parcelable {
             return new ProductDigitalData(this);
         }
     }
+
 }

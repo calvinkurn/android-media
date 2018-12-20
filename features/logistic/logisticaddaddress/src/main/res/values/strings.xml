@@ -56,4 +56,7 @@
     <string name="delete_prompt_message" formatted="false"><![CDATA[Apakah Anda yakin ingin menghapus alamat: <b>%s</b>?]]></string>
     <string name="prioritize_message_prompt" formatted="false"><![CDATA[Apakah Anda yakin ingin menggunakan alamat:<br/><br/><b>%s</b><br/><br/>%s<br/><br/><br/> sebagai alamat utama Anda?]]></string>
     <string name="title_activity_manage_people_address">Pengaturan Alamat</string>
+    <string name="logistic_district_recommendation_label">Kota atau Kecamatan</string>
+    <string name="logistic_zip_code_label">Kode Pos</string>
+    <string name="logistic_result_error_message">Ada masalah, hubungi resolusi</string>
 </resources>

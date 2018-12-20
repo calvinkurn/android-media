@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
-import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_ADD_ADDRESS_FORM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
@@ -33,7 +32,7 @@ public class AddAddressActivity extends BaseSimpleActivity {
         Fragment fragment = null;
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
-            fragment = AddAddressFragment.createInstance(bundle);
+            fragment = AddAddressFragment.newInstance(bundle);
         }
         return fragment;
     }

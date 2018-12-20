@@ -43,8 +43,8 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
     @Override
     public void getAddress(int page, int sortId, String query) {
         getAddressUseCase
-            .getExecuteObservable(getAddressUseCase.getAddressParam(page, sortId, query))
-            .subscribe(getPeopleAddressSubscriber());
+            .execute(getAddressUseCase.getAddressParam(page, sortId, query),
+                    getPeopleAddressSubscriber());
     }
 
     @Override

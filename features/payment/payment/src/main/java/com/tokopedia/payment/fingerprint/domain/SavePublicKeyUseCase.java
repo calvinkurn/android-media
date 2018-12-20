@@ -6,6 +6,8 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -29,7 +31,7 @@ public class SavePublicKeyUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(
+        Map<String, String> params = AuthUtil.generateParamsNetwork(
                 userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()
         );
         requestParams.putAllString(params);

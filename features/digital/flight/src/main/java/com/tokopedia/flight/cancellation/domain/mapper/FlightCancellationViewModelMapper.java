@@ -60,6 +60,8 @@ public class FlightCancellationViewModelMapper {
         flightCancellationPassengerViewModel.setType(passenger.getType());
         flightCancellationPassengerViewModel.setFirstName(passenger.getFirstName());
         flightCancellationPassengerViewModel.setLastName(passenger.getLastName());
+        flightCancellationPassengerViewModel.setRelationId(passenger.getRelationId());
+        flightCancellationPassengerViewModel.setRelations(passenger.getRelations());
 
         return flightCancellationPassengerViewModel;
     }

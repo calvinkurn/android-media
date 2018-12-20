@@ -2,11 +2,10 @@ package com.tokopedia.logisticaddaddress.data;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 
 import org.json.JSONException;
 
@@ -56,7 +55,6 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
@@ -84,8 +82,8 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                 }
             }
         };
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+        compositeSubscription.add(observable.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
     }
@@ -103,7 +101,6 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
@@ -131,8 +128,8 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                 }
             }
         };
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+        compositeSubscription.add(observable.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
     }

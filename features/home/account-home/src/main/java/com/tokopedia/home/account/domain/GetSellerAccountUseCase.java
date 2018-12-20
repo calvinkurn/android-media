@@ -8,6 +8,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.data.mapper.SellerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -19,6 +20,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static com.tokopedia.home.account.AccountConstants.QUERY;
+import static com.tokopedia.home.account.AccountConstants.TOPADS_QUERY;
 import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
 /**
@@ -42,12 +44,17 @@ public class GetSellerAccountUseCase extends UseCase<SellerViewModel> {
                 .just(requestParams)
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) requestParam -> {
                     String query = requestParam.getString(QUERY, "");
+                    String topadsQuery = requestParam.getString(TOPADS_QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) requestParam.getObject(VARIABLES);
+                    int[] shopIds = (int[])variables.get("shop_ids");
+                    String shopId = (shopIds != null && shopIds.length > 0) ? shopIds[0]+"" : "";
 
                     if(!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest request = new GraphqlRequest(query, AccountModel.class, variables);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
+                        graphqlUseCase.addRequest(TopAdsGetShopDepositGraphQLUseCase.createGraphqlRequest(topadsQuery,
+                                TopAdsGetShopDepositGraphQLUseCase.createRequestParams(topadsQuery, shopId)));
                         return graphqlUseCase.createObservable(null);
                     }
 

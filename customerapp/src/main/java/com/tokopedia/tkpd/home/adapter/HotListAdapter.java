@@ -78,8 +78,8 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
                 ((ViewHolder) viewHolder).cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        trackingEnhanceEccommerce(hotListModel);
-                        TrackingUtils.sendMoEngageClickHotListEvent(hotListModel);
+                        trackingEnhanceEccommerce(view.getContext(), hotListModel);
+                        TrackingUtils.sendMoEngageClickHotListEvent(view.getContext(), hotListModel);
                         hotList.moveToOtherActivity(hotListModel);
                     }
                 });
@@ -90,8 +90,9 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    private void trackingEnhanceEccommerce(HotListModel model) {
+    private void trackingEnhanceEccommerce(Context context, HotListModel model) {
         UnifyTracking.eventTrackingEnhancedEcommerce(
+                context,
                 DataLayer.mapOf(
                         "event", "promoClick",
                         "eventCategory", "homepage",

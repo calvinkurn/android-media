@@ -120,6 +120,10 @@ public class OrderDetailData implements Parcelable {
 
     private String barcodeType;
 
+    private int totalProtectionItem;
+
+    private String totalProtectionFee;
+
     private List<String> bookingCodeMessage = null;
 
     public String getBookingCode() {
@@ -557,6 +561,21 @@ public class OrderDetailData implements Parcelable {
         this.insuranceNotification = insuranceNotification;
     }
 
+    public int getTotalProtectionItem() {
+        return totalProtectionItem;
+    }
+
+    public void setTotalProtectionItem(int totalProtectionItem) {
+        this.totalProtectionItem = totalProtectionItem;
+    }
+
+    public String getTotalProtectionFee() {
+        return totalProtectionFee;
+    }
+
+    public void setTotalProtectionFee(String totalProtectionFee) {
+        this.totalProtectionFee = totalProtectionFee;
+    }
 
     public String getLiveTrackingUrl() {
         if (TextUtils.isEmpty(liveTrackingUrl))
@@ -629,6 +648,8 @@ public class OrderDetailData implements Parcelable {
         dest.writeString(this.liveTrackingUrl);
         dest.writeString(this.bookingCode);
         dest.writeString(this.barcodeType);
+        dest.writeInt(this.totalProtectionItem);
+        dest.writeString(this.totalProtectionFee);
         dest.writeStringList(this.bookingCodeMessage);
     }
 
@@ -687,6 +708,8 @@ public class OrderDetailData implements Parcelable {
         this.liveTrackingUrl = in.readString();
         this.bookingCode = in.readString();
         this.barcodeType = in.readString();
+        this.totalProtectionItem = in.readInt();
+        this.totalProtectionFee = in.readString();
         this.bookingCodeMessage = in.createStringArrayList();
     }
 

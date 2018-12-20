@@ -30,7 +30,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -73,6 +73,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
+    public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
@@ -167,6 +168,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         prepareView();
         setListener();
         loadWishlistData();
+        trackingAppshortcut();
         return parentView;
     }
 
@@ -175,6 +177,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
         searchEditText = view.findViewById(R.id.wishlist_search_edittext);
+    }
+
+    private void trackingAppshortcut() {
+        boolean isFromAppShortcut = getArguments() != null && getArguments().getBoolean(FROM_APP_SHORTCUTS);
+        if (isFromAppShortcut) {
+            wishlistAnalytics.eventWishlistShortcut();
+        }
     }
 
     private AnalyticTracker getAnalyticTracker() {
@@ -517,38 +526,15 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-
-                // column size default is one
-                int headerColumnSize = 1,
-                        footerColumnSize = 1,
-                        regularColumnSize = 1;
-
-                // check the orientation to determine landscape or portrait
-                switch (getResources().getConfiguration().orientation) {
-                    case Configuration.ORIENTATION_LANDSCAPE:
-                        headerColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN_HEADER;
-                        regularColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN;
-                        footerColumnSize = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN_FOOTER;
-                        break;
-                    case Configuration.ORIENTATION_PORTRAIT:
-                        headerColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN_HEADER;
-                        regularColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN;
-                        footerColumnSize = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN_FOOTER;
-                        break;
-                }
-
-                // set the value of footer, regular and header
                 if (position == wishList.getData().size()) {
-                    // header column
-                    return footerColumnSize;
-                } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
-                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
-                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_STATE) {
-                    // top ads span column
-                    return headerColumnSize;
+                    return 2;
+                } else if(position % 5 == 0 && adapter.getItemViewType(position) == TkpdState.RecyclerViewItem.TYPE_LIST
+                        || adapter.getItemViewType(position) == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
+                        || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_EMPTY_STATE
+                        || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST) {
+                    return 2;
                 } else {
-                    // regular one column
-                    return regularColumnSize;
+                    return 1;
                 }
             }
         };

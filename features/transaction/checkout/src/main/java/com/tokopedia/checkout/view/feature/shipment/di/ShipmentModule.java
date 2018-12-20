@@ -26,6 +26,8 @@ import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.module.UtilModule;
+import com.tokopedia.checkout.view.di.scope.CartListScope;
+import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
@@ -36,6 +38,14 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConver
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 import com.tokopedia.user.session.UserSession;
@@ -49,7 +59,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Irfan Khoirul on 24/04/18.
  */
 
-@Module(includes = {ConverterDataModule.class, UtilModule.class, TrackingAnalyticsModule.class})
+@Module(includes = {ConverterDataModule.class, UtilModule.class, TrackingAnalyticsModule.class, PromoCheckoutModule.class})
 public class ShipmentModule {
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -126,8 +136,9 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     CheckPromoCodeCartListUseCase provideCheckPromoCodeCartListUseCase(ICartRepository cartRepository,
-                                                                       IVoucherCouponMapper voucherCouponMapper) {
-        return new CheckPromoCodeCartListUseCase(cartRepository, voucherCouponMapper);
+                                                                       IVoucherCouponMapper voucherCouponMapper,
+                                                                       @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase) {
+        return new CheckPromoCodeCartListUseCase(cartRepository, voucherCouponMapper, checkPromoCodeUseCase);
     }
 
     @Provides
@@ -162,10 +173,10 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    ShipmentContract.Presenter provideShipmentPresenter(CompositeSubscription compositeSubscription,
+    ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase,
+                                                        CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
-                                                        CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                                                         GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                                                         CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
@@ -176,13 +187,15 @@ public class ShipmentModule {
                                                         GetRatesUseCase getRatesUseCase,
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                                                         ShippingCourierConverter shippingCourierConverter,
-                                                        UserSessionInterface userSessionInterface) {
-        return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
-                checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
+                                                        UserSessionInterface userSessionInterface,
+                                                        IVoucherCouponMapper voucherCouponMapper,
+                                                        CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
+        return new ShipmentPresenter(checkPromoCodeFinalUseCase, compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
+                getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-                shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface);
+                shippingCourierConverter, voucherCouponMapper, shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection);
     }
 
     @Provides
@@ -204,4 +217,20 @@ public class ShipmentModule {
         return new ShipmentAdapter(shipmentAdapterActionListener, shipmentDataRequestConverter, ratesDataConverter);
     }
 
+    @Provides
+    @ShipmentScope
+    @ApplicationContext
+    Context provideContextAbstraction(Context context){
+        return context;
+    }
+
+    @Provides
+    @ShipmentScope
+    TrackingPromoCheckoutUtil provideTrackingPromo(@ApplicationContext Context context) {
+        if(context instanceof TrackingPromoCheckoutRouter){
+            return new TrackingPromoCheckoutUtil((TrackingPromoCheckoutRouter)context);
+        }else{
+            return new TrackingPromoCheckoutUtil(null);
+        }
+    }
 }

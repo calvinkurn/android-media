@@ -37,24 +37,17 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
-import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
-import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.address.db.City;
-import com.tokopedia.logisticdata.data.entity.address.db.District;
-import com.tokopedia.logisticdata.data.entity.address.db.Province;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -78,20 +71,17 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE;
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BaseDaggerFragment
-        implements AddAddressFragmentView, ITransactionAnalyticsAddAddress {
+        implements AddAddressContract.View, ITransactionAnalyticsAddAddress {
 
+    public static final int ERROR_RESULT_CODE = 999;
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
-
+    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 418;
     private static final String ADDRESS = "district_recommendation_address";
-
     private static final double MONAS_LATITUDE = -6.175794;
     private static final double MONAS_LONGITUDE = 106.826457;
-
     private static final int ADDRESS_MAX_CHARACTER = 175;
     private static final int ADDRESS_MIN_CHARACTER = 20;
-    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
-
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
     private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
@@ -109,12 +99,10 @@ public class AddAddressFragment extends BaseDaggerFragment
     private EditText passwordEditText;
     private TextView saveButton;
     private TextView addressLabel;
-
     private TextInputLayout districtLayout;
     private EditText districtEditText;
     private TextInputLayout zipCodeLayout;
     private AutoCompleteTextView zipCodeTextView;
-
     private TextInputLayout postCodeLayout;
     private EditText postCodeEditText;
     private LinearLayout addressSpinerLayout;
@@ -128,63 +116,44 @@ public class AddAddressFragment extends BaseDaggerFragment
     private ProgressBar progressDistrict;
     private Spinner spinnerSubDistrict;
     private TextView subDistrictError;
+    private ProgressBar mProgressBar;
 
     private List<String> zipCodes;
     private Token token;
-
     private Destination address;
 
-    ProvinceAdapter provinceAdapter;
-    RegencyAdapter regencyAdapter;
-    SubDistrictAdapter subDistrictAdapter;
-
-    List<Province> mProvinces;
-    List<City> mCities;
-    List<District> mDistricts;
-
-    ProgressBar mProgressBar;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject
-    AddAddressPresenter mPresenter;
+    @Inject AddAddressContract.Presenter mPresenter;
+    @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
 
-    @Inject
-    @LogisticUserSessionQualifier
-    UserSessionInterface userSession;
-
-    public static AddAddressFragment createInstance(Bundle extras) {
+    public static AddAddressFragment newInstance(Bundle extras) {
+        Bundle bundle = new Bundle(extras);
         AddAddressFragment fragment = new AddAddressFragment();
-        Bundle bundle = new Bundle();
-        bundle.putAll(extras);
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    @Override
-    protected void initInjector() {
-        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
-        DaggerAddressComponent.builder()
-                .baseAppComponent(appComponent)
-                .addressModule(new AddressModule())
-                .build().inject(this);
+    public AddAddressFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            setupArguments(getArguments());
+            Bundle arguments = getArguments();
+            this.token = arguments.getParcelable(KERO_TOKEN);
+            this.address = arguments.getParcelable(EDIT_PARAM);
+            this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
+            this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
         }
-    }
 
-    private void setupArguments(Bundle arguments) {
-        this.token = arguments.getParcelable(KERO_TOKEN);
-        this.address = arguments.getParcelable(EDIT_PARAM);
-        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
-        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
+        if (token == null) {
+            getActivity().setResult(ERROR_RESULT_CODE);
+            getActivity().finish();
+        }
     }
 
     @Nullable
@@ -195,7 +164,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        if (!isDistrictRecommendation()) mPresenter.getListProvince();
         mPresenter.attachView(this);
         initView(view);
         initialVar();
@@ -279,6 +247,15 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
+    protected void initInjector() {
+        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+        DaggerAddressComponent.builder()
+                .baseAppComponent(appComponent)
+                .addressModule(new AddressModule())
+                .build().inject(this);
+    }
+
+    @Override
     public void setPinpointAddress(String address) {
         locationEditText.setText(address);
     }
@@ -311,12 +288,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         getActivity().finish();
     }
 
-    public void setError(TextInputLayout wrapper, String errorMessage) {
-        wrapper.setError(errorMessage);
-        if (errorMessage == null) wrapper.setErrorEnabled(false);
-        wrapper.requestFocus();
-    }
-
     @Override
     public void showErrorSnackbar(String message) {
         if (getActivity() == null) return;
@@ -327,22 +298,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         } else {
             ToasterError.make(BaseToaster.getContentView(getActivity()),
                     message, BaseToaster.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void setActionsEnabled(boolean isEnabled) {
-        saveButton.setEnabled(isEnabled);
-        addressEditText.setEnabled(isEnabled);
-        receiverNameEditText.setEnabled(isEnabled);
-        addressTypeEditText.setEnabled(isEnabled);
-        receiverPhoneEditText.setEnabled(isEnabled);
-        if (isEnabled) {
-            chooseLocation.setOnClickListener(onChooseLocation());
-            locationEditText.setOnClickListener(onChooseLocation());
-        } else {
-            chooseLocation.setOnClickListener(null);
-            locationEditText.setOnClickListener(null);
         }
     }
 
@@ -501,102 +456,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setProvince(List<Province> provinces) {
-        finishLoading();
-        provinceAdapter.setList(provinces);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (isEdit() && addressModel != null) {
-            spinnerProvince.setSelection(provinceAdapter.getPositionFromName(addressModel.getProvinceName()));
-//            mPresenter.getListCity(provinceAdapter.getList().get(spinnerProvince.getSelectedItemPosition() - 1));
-        }
-        this.mProvinces = new ArrayList<>(provinces);
-    }
-
-    @Override
-    public void resetRegency() {
-        regencyAdapter.clearData();
-        spinnerRegency.setSelection(0);
-    }
-
-    @Override
-    public void hideSubDistrict() {
-        spinnerSubDistrict.setVisibility(View.GONE);
-        districtTitle.setVisibility(View.GONE);
-        subDistrictError.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void resetSubDistrict() {
-        subDistrictAdapter.clearData();
-        spinnerSubDistrict.setSelection(0);
-    }
-
-    @Override
-    public ProvinceAdapter getProvinceAdapter() {
-        return provinceAdapter;
-    }
-
-    @Override
-    public RegencyAdapter getRegencyAdapter() {
-        return regencyAdapter;
-    }
-
-    @Override
-    public void showLoadingRegency() {
-        progressRegency.setVisibility(View.VISIBLE);
-        regencyTitle.setVisibility(View.GONE);
-        spinnerRegency.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setCity(List<City> cities) {
-        progressRegency.setVisibility(View.GONE);
-        regencyTitle.setVisibility(View.VISIBLE);
-        spinnerRegency.setVisibility(View.VISIBLE);
-        regencyAdapter.setList(cities);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (isEdit() && addressModel != null) {
-            spinnerRegency.setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
-//            mPresenter.getListDistrict(regencyAdapter.getList().get(spinnerRegency.getSelectedItemPosition() - 1));
-        }
-        this.mCities = new ArrayList<>(cities);
-    }
-
-    @Override
-    public void changeProvince(List<City> cities) {
-        progressRegency.setVisibility(View.GONE);
-        regencyTitle.setVisibility(View.VISIBLE);
-        spinnerRegency.setVisibility(View.VISIBLE);
-        regencyAdapter.setList(cities);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (addressModel != null)
-            spinnerRegency
-                    .setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
-        this.mCities = new ArrayList<>(cities);
-    }
-
-    @Override
-    public void showLoadingDistrict() {
-        progressDistrict.setVisibility(View.VISIBLE);
-        districtTitle.setVisibility(View.GONE);
-        spinnerSubDistrict.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setDistrict(List<District> districts) {
-        progressDistrict.setVisibility(View.GONE);
-        districtTitle.setVisibility(View.VISIBLE);
-        spinnerSubDistrict.setVisibility(View.VISIBLE);
-        subDistrictAdapter.setList(districts);
-        Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
-        if (isEdit() && addressModel != null) {
-            spinnerSubDistrict.setSelection(subDistrictAdapter.getPositionFromName(addressModel.getDistrictName()));
-            updateAddress();
-        }
-        this.mDistricts = new ArrayList<>(districts);
-    }
-
-    @Override
     public void errorSaveAddress() {
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(false);
     }
@@ -749,6 +608,26 @@ public class AddAddressFragment extends BaseDaggerFragment
         return ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_USER;
     }
 
+    public void setError(TextInputLayout wrapper, String errorMessage) {
+        wrapper.setError(errorMessage);
+        if (errorMessage == null) wrapper.setErrorEnabled(false);
+        wrapper.requestFocus();
+    }
+
+    public void initializeZipCodes() {
+        zipCodeTextView.setText("");
+        String header = getResources().getString(R.string.hint_type_postal_code);
+        if (!zipCodes.contains(header)) zipCodes.add(0, header);
+
+        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
+                getContext(),
+                R.layout.item_autocomplete_text_double_row,
+                R.id.item,
+                zipCodes);
+
+        zipCodeTextView.setAdapter(zipCodeAdapter);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     protected void setViewListener() {
         zipCodeLayout.setOnTouchListener(onZipCodeTouch());
@@ -792,85 +671,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 mPresenter.saveAddress();
             }
         });
-
-        spinnerProvince.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                        if (pos != 0) {
-                            provinceError.setVisibility(View.GONE);
-
-                            List<Province> provinceList = provinceAdapter.getList();
-//                            Province province = provinceList.get(pos - 1);
-//                            address.setProvinceName(province.getProvinceName());
-//                            address.setProvinceId(province.getProvinceId());
-                        }
-
-                        if (isEdit()) mPresenter.onEditProvinceSelected(pos);
-                        else mPresenter.onProvinceSelected(pos);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                }
-        );
-
-        spinnerRegency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (pos != 0) {
-                    regencyError.setVisibility(View.GONE);
-
-                    List<City> cityList = regencyAdapter.getList();
-//                    City city = cityList.get(pos - 1);
-//                    address.setCityName(city.getCityName());
-//                    address.setCityId(city.getCityId());
-                    mPresenter.onRegencySelected(pos);
-                }
-
-                if (!isEdit()) mPresenter.onRegencySelected(pos);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerSubDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (pos != 0) {
-                    subDistrictError.setVisibility(View.GONE);
-
-                    List<District> districtList = subDistrictAdapter.getList();
-//                    District district = districtList.get(pos - 1);
-//                    address.setDistrictName(district.getDistrictName());
-//                    address.setDistrictId(district.getDistrictId());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
-    public void initializeZipCodes() {
-        zipCodeTextView.setText("");
-        String header = getResources().getString(R.string.hint_type_postal_code);
-        if (!zipCodes.contains(header)) zipCodes.add(0, header);
-
-        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
-                getContext(),
-                R.layout.item_autocomplete_text_double_row,
-                R.id.item,
-                zipCodes);
-
-        zipCodeTextView.setAdapter(zipCodeAdapter);
     }
 
     protected void initView(View view) {
@@ -917,15 +717,31 @@ public class AddAddressFragment extends BaseDaggerFragment
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
 
-        provinceAdapter = ProvinceAdapter.createInstance(getActivity());
-        spinnerProvince.setAdapter(provinceAdapter);
-        regencyAdapter = RegencyAdapter.createInstance(getActivity());
-        spinnerRegency.setAdapter(regencyAdapter);
-        subDistrictAdapter = SubDistrictAdapter.createInstance(getActivity());
-        spinnerSubDistrict.setAdapter(subDistrictAdapter);
-
         passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
-        selectLayout();
+    }
+
+    protected void initialVar() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
+        }
+        if (isEdit() && address != null) {
+            receiverNameEditText.setText(address.getReceiverName());
+            addressTypeEditText.setText(address.getAddressName());
+            addressEditText.setText(address.getAddressStreet());
+            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
+                    address.getProvinceName(),
+                    address.getCityName(),
+                    address.getDistrictName()
+            )));
+
+            zipCodeTextView.setText(address.getPostalCode());
+            postCodeEditText.setText(address.getPostalCode());
+            receiverPhoneEditText.setText(address.getReceiverPhone());
+            requestPinpointAddress(address);
+        } else if (address == null) {
+            address = new Destination();
+        }
     }
 
     private void setTextWatcher() {
@@ -1014,21 +830,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 }
             }
         };
-    }
-
-    private void selectLayout() {
-        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
-        if (isDistrictRecommendation() && token != null) {
-            addressSpinerLayout.setVisibility(View.GONE);
-            postCodeLayout.setVisibility(View.GONE);
-            districtLayout.setVisibility(View.VISIBLE);
-            zipCodeLayout.setVisibility(View.VISIBLE);
-        } else {
-            addressSpinerLayout.setVisibility(View.VISIBLE);
-            postCodeLayout.setVisibility(View.VISIBLE);
-            districtLayout.setVisibility(View.GONE);
-            zipCodeLayout.setVisibility(View.GONE);
-        }
     }
 
     private void updateAddress() {
@@ -1130,30 +931,6 @@ public class AddAddressFragment extends BaseDaggerFragment
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
             dialog.show();
-        }
-    }
-
-    protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-        }
-        if (isEdit() && address != null) {
-            receiverNameEditText.setText(address.getReceiverName());
-            addressTypeEditText.setText(address.getAddressName());
-            addressEditText.setText(address.getAddressStreet());
-            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
-                    address.getProvinceName(),
-                    address.getCityName(),
-                    address.getDistrictName()
-            )));
-
-            zipCodeTextView.setText(address.getPostalCode());
-            postCodeEditText.setText(address.getPostalCode());
-            receiverPhoneEditText.setText(address.getReceiverPhone());
-            requestPinpointAddress(address);
-        } else if (address == null) {
-            address = new Destination();
         }
     }
 

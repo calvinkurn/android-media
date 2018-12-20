@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -94,7 +93,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "PORING onLocationChanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
         LocationCache.saveLocation(context, location);
         removeLocationUpdate();
@@ -115,7 +113,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     @Override
     public void onGoogleApiConnected(Bundle bundle) {
-        Log.d(TAG, "onGoogleApiConnected");
+
     }
 
     private void getNewLocation() {
@@ -126,8 +124,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
 
-    private void setExistingLocationState(boolean b) {
-        isUseExistingLocation = b;
+    private void setExistingLocationState(boolean state) {
+        isUseExistingLocation = state;
     }
 
     private void checkLocationSettings() {
@@ -155,7 +153,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     @Override
     public void onResult(LocationSettingsResult locationSettingsResult) {
-        Log.d(TAG, "onResult");
         final Status status = locationSettingsResult.getStatus();
         switch (status.getStatusCode()) {
             case LocationSettingsStatusCodes.SUCCESS:
@@ -351,9 +348,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         final String placeID = item.getPlaceId();
         final CharSequence primaryText = item.getMainText();
 
-        Log.d(TAG, "AutoComplete item selected: " + primaryText);
-
-        //TODO summon service di sini
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("placeid", placeID);
         retrofitInteractor.generateLatLng(

@@ -55,6 +55,9 @@ public class FlightEntity {
     @SerializedName("cancellations")
     @Expose
     private List<CancellationEntity> cancellations;
+    @SerializedName("contact_us_url")
+    @Expose
+    private String contactUsUrl;
 
     public FlightEntity() {
     }
@@ -118,4 +121,9 @@ public class FlightEntity {
     public List<CancellationEntity> getCancellations() {
         return cancellations;
     }
+
+    public String getContactUsUrl() {
+        return contactUsUrl;
+    }
+
 }

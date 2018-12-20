@@ -7,6 +7,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -30,7 +31,7 @@ public class GetPostDataOtpUseCase extends UseCase<HashMap<String, String>> {
 
     @Override
     public Observable<HashMap<String, String>> createObservable(final RequestParams requestParams) {
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(
+        Map<String, String> params = AuthUtil.generateParamsNetwork(
                 userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()
         );
         requestParams.putAllString(params);

@@ -23,6 +23,7 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
 
     public static final String DEFAULT_LATITUDE = "-6.1753924";
     public static final String DEFAULT_LONGITUDE = "106.8249641";
+    public static final int ADDRESS_STATUS_VISIBLE_CODE = 1;
 
     public interface ManageAddressListener {
 
@@ -78,7 +79,7 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
     }
 
     private void setVisibility(AddressViewModel viewModel) {
-        if (viewModel.getAddressStatus() == 1) {
+        if (viewModel.getAddressStatus() == ADDRESS_STATUS_VISIBLE_CODE) {
             defaultBtn.setVisibility(View.VISIBLE);
         } else {
             defaultBtn.setVisibility(View.GONE);
@@ -97,11 +98,6 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
             noLocationLabel.setVisibility(View.INVISIBLE);
         }
 
-//        if (position == list.size() - 1) {
-//            bottomView.setVisibility(View.VISIBLE);
-//        } else {
-//            bottomView.setVisibility(View.GONE);
-//        }
     }
 
     private void setTitle(AddressViewModel viewModel) {

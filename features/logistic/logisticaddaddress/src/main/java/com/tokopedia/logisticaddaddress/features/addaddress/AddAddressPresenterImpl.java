@@ -3,16 +3,15 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
-import com.tokopedia.logisticdata.data.entity.address.db.City;
-import com.tokopedia.logisticdata.data.entity.address.db.Province;
+import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,7 +19,7 @@ import javax.inject.Inject;
  * Created by nisie on 9/6/16.
  */
 @AddressScope
-public class AddAddressPresenterImpl implements AddAddressPresenter {
+public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
     private static final String PARAM_ADDRESS_ID = "address_id";
     private static final String PARAM_ADDRESS_TYPE = "address_name";
@@ -35,7 +34,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     private static final String PARAM_LONGITUDE = "longitude";
     private static final String PARAM_PASSWORD = "user_password";
 
-    private AddAddressFragmentView mView;
+    private AddAddressContract.View mView;
     private final AddressRepository networkInteractor;
     private UserSessionInterface userSession;
 
@@ -46,7 +45,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     }
 
     @Override
-    public void attachView(AddAddressFragmentView view) {
+    public void attachView(AddAddressContract.View view) {
         mView = view;
     }
 
@@ -59,7 +58,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     @Override
     public void saveAddress() {
         mView.showLoading();
-        TKPDMapParam<String, String> param = AuthUtil.generateParamsNetwork(
+        Map<String, String> param = AuthUtil.generateParamsNetwork(
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {
@@ -67,53 +66,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         } else {
             networkInteractor.addAddress(mView.context(), param, getListener());
         }
-    }
-
-    @Override
-    public void getListProvince() {
-        mView.setActionsEnabled(false);
-        mView.showLoading();
-    }
-
-    @Override
-    public void onProvinceSelected(int pos) {
-        mView.resetRegency();
-        mView.hideSubDistrict();
-        mView.resetSubDistrict();
-    }
-
-    @Override
-    public void onEditProvinceSelected(int pos) {
-        mView.resetRegency();
-        mView.hideSubDistrict();
-        mView.resetSubDistrict();
-        if (pos != 0) {
-        }
-    }
-
-    @Override
-    public void onRegencySelected(int pos) {
-        mView.resetSubDistrict();
-        if (pos != 0) {
-        }
-    }
-
-    @Override
-    public void getListCity(Province province) {
-        mView.showLoadingRegency();
-        mView.setActionsEnabled(false);
-    }
-
-    @Override
-    public void provinceChanged(Province province) {
-        mView.showLoadingRegency();
-        mView.setActionsEnabled(false);
-    }
-
-    @Override
-    public void getListDistrict(City city) {
-        mView.showLoadingDistrict();
-        mView.setActionsEnabled(false);
     }
 
     @Override

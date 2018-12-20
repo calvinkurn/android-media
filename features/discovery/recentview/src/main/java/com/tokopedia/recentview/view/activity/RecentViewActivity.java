@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.recentview.view.fragment.RecentViewFragment;
 
 /**
@@ -33,7 +32,6 @@ public class RecentViewActivity extends BaseSimpleActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        UnifyTracking.eventFeedViewAll();
     }
 
     @Override

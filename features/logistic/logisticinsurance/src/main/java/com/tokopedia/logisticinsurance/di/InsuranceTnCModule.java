@@ -23,7 +23,6 @@ public class InsuranceTnCModule {
     public InsuranceTnCModule() {
     }
 
-    // Provide Data Store
     @Provides
     @InsuranceTnCScope
     InsuranceTnCDataStore provideInsuranceTnCDataStore(
@@ -31,14 +30,12 @@ public class InsuranceTnCModule {
         return new InsuranceTnCDataStore(insuranceApi);
     }
 
-    // Provide Repository
     @Provides
     @InsuranceTnCScope
     InsuranceTnCRepository provideInsuranceTnCRepository(InsuranceTnCDataStore insuranceTnCDataStore) {
         return new InsuranceTnCRepository(insuranceTnCDataStore);
     }
 
-    // Provide Use Case
     @Provides
     @InsuranceTnCScope
     InsuranceTnCUseCase provideGetDistrictRequestUseCase(
@@ -47,7 +44,6 @@ public class InsuranceTnCModule {
         return new InsuranceTnCUseCase(insuranceTnCRepository);
     }
 
-    // Provide Presenter
     @Provides
     @InsuranceTnCScope
     InsuranceTnCContract.Presenter provideInsuranceTnCPresenter(

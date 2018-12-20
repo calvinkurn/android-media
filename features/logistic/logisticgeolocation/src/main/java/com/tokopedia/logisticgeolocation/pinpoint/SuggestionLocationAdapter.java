@@ -38,7 +38,9 @@ import com.tokopedia.user.session.UserSession;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -117,7 +119,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                 .subscribe(queryAutoCompleteSubscriber()));
     }
 
-    private interface  OnQueryListener {
+    private interface OnQueryListener {
         void onQuerySubmit(String query);
     }
 
@@ -154,17 +156,12 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
         // styling based on the given CharacterStyle.
 
         PredictionResult item = getItem(position);
-
-        TextView textView1 = (TextView) row.findViewById(android.R.id.text1);
-        TextView textView2 = (TextView) row.findViewById(android.R.id.text2);
         if (item != null) {
+            TextView textView1 = row.findViewById(android.R.id.text1);
+            TextView textView2 = row.findViewById(android.R.id.text2);
             textView1.setText(Html.fromHtml(item.getMainTextFormatted()));
-        }
-        if (item != null) {
             textView2.setText(Html.fromHtml(item.getSecondaryTextFormatted()));
         }
-
-
         return row;
     }
 
@@ -183,7 +180,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                         // Query the autocomplete API for the (constraint) search string.
                         //TODO This is where listener is initiated
                         CommonUtils.dumper("PORING Masuk get Filter cuy");
-                        if(queryListener != null) {
+                        if (queryListener != null) {
                             queryListener.onQuerySubmit(constraint.toString());
                         }
                     }
@@ -287,7 +284,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
             @Override
             public void onNext(String query) {
                 CommonUtils.dumper("PORING Kirim Data " + query);
-                TKPDMapParam<String, String> temp = new TKPDMapParam<>();
+                Map<String, String> temp = new HashMap<>();
                 temp = AuthUtil.generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), temp);
                 TKPDMapParam<String, Object> params = new TKPDMapParam<>();
                 params.put("input", query);
@@ -306,10 +303,10 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
 
                             @Override
                             public void onError(Throwable e) {
-                                if(e instanceof RuntimeException) {
+                                if (e instanceof RuntimeException) {
                                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG)
                                             .show();
-                                } else if(e instanceof UnknownHostException) {
+                                } else if (e instanceof UnknownHostException) {
                                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG)
                                             .show();
                                 }

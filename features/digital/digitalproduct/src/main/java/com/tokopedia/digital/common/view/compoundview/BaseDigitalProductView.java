@@ -8,18 +8,16 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
-
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 5/3/17.
@@ -65,7 +63,6 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
         this.context = context;
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
-        ButterKnife.bind(this);
         onCreateView();
         setBottomSheetDialog();
     }
@@ -126,15 +123,12 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
     @NonNull
     protected CompoundButton.OnCheckedChangeListener getInstantCheckoutChangeListener() {
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) onInstantCheckoutChecked();
-                else onInstantCheckoutUnChecked();
+        return (buttonView, isChecked) -> {
+            if (isChecked) onInstantCheckoutChecked();
+            else onInstantCheckoutUnChecked();
 
-                if (data instanceof CategoryData)
-                    UnifyTracking.eventCheckInstantSaldo(((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
-            }
+            if (data instanceof CategoryData)
+                UnifyTracking.eventCheckInstantSaldo(getContext(), ((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
         };
     }
 

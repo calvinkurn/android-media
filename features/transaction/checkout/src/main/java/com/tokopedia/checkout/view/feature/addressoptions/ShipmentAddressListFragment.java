@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -57,10 +58,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         SearchInputView.ResetListener,
         ShipmentAddressListAdapter.ActionListener {
 
-    private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
-
     private static final int ORDER_ASC = 1;
     private static final String PARAMS = "params";
+    private static final String CHOOSE_ADDRESS_TRACE = "choose_another_address_trace";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -77,6 +77,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private boolean isMenuVisible;
 
     private ICartAddressChoiceActivityListener mCartAddressChoiceListener;
+
+    private PerformanceMonitoring chooseAddressTracePerformance;
+    private boolean isChooseAddressTraceStopped;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
@@ -193,6 +196,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
+    }
+
+    @Override
     protected void initView(View view) {
         mCartAddressChoiceListener.setToolbarTitle(getActivity().getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         checkoutAnalyticsChangeAddress.eventViewAtcCartChangeAddressImpressionChangeAddress();
@@ -280,6 +289,14 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel) {
         onAddressContainerClicked(recipientAddressModel);
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isChooseAddressTraceStopped) {
+            chooseAddressTracePerformance.stopTrace();
+            isChooseAddressTraceStopped = true;
+        }
     }
 
     @Override

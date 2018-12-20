@@ -30,4 +30,6 @@ public interface ISearchAddressListView<T> {
 
     void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel);
 
+    void stopTrace();
+
 }

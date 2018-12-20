@@ -31,10 +31,7 @@ public class GetAddressUseCase extends UseCase<GetPeopleAddress> {
 
     @Override
     public Observable<GetPeopleAddress> createObservable(RequestParams requestParams) {
-        return mRepository.getAddress(requestParams)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return mRepository.getAddress(requestParams);
     }
 
     public RequestParams getAddressParam(int page, int sortId, String query) {

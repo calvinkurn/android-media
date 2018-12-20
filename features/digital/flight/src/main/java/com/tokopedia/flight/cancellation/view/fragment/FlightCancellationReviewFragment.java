@@ -2,6 +2,7 @@ package com.tokopedia.flight.cancellation.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -31,6 +33,7 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachme
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.FlightReviewCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
+import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReviewPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
@@ -49,17 +52,22 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
+    private static final int REQUEST_CANCELLATION_TNC = 1;
+
     private LinearLayout containerAdditionalData;
     private LinearLayout containerAdditionalReason;
     private LinearLayout containerAdditionalDocuments;
     private AppCompatButton btnSubmit;
-    private AppCompatTextView txtDescription;
     private AppCompatTextView txtReason;
     private AppCompatTextView txtTotalRefund;
     private RecyclerView rvAttachments;
     private FlightCancellationAttachmentAdapter attachmentAdapter;
     private NestedScrollView reviewContainer;
     private LinearLayout loadingContainer;
+    private AppCompatTextView tvDescription;
+    private AppCompatTextView tvRefundDetail;
+    private LinearLayout containerEstimateRefund;
+    private LinearLayout containerEstimateNotes;
 
     @Inject
     FlightCancellationReviewPresenter presenter;
@@ -88,17 +96,19 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         containerAdditionalReason = view.findViewById(R.id.container_additional_reason);
         containerAdditionalDocuments = view.findViewById(R.id.container_additional_documents);
         txtReason = view.findViewById(R.id.txt_cancellation_reason);
-        txtDescription = view.findViewById(R.id.tv_description);
-        txtTotalRefund = view.findViewById(R.id.txt_total_refund);
+        txtTotalRefund = view.findViewById(R.id.tv_total_refund);
         btnSubmit = view.findViewById(R.id.button_submit);
+        tvDescription = view.findViewById(R.id.tv_description_refund);
+        tvRefundDetail = view.findViewById(R.id.tv_refund_detail);
+        containerEstimateRefund = view.findViewById(R.id.container_estimate_refund);
+        containerEstimateNotes = view.findViewById(R.id.container_estimate_notes);
 
-        txtDescription.setText(setDescriptionText());
-        txtDescription.setMovementMethod(LinkMovementMethod.getInstance());
-
+        tvDescription.setText(setDescriptionText());
+        tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showConfirmationDialog();
+                navigateToTermsAndConditionsPage();
             }
         });
 
@@ -123,7 +133,6 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
         presenter.attachView(this);
         presenter.onViewCreated();
-        renderView();
     }
 
     @Override
@@ -154,7 +163,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     public void showSuccessDialog(int resId) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.flight_cancellation_review_dialog_success_title));
-        dialog.setDesc(getString(resId));
+        dialog.setDesc(Html.fromHtml(getString(resId)));
         dialog.setBtnOk("OK");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -179,6 +188,29 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
+    public void showEstimateValue() {
+        containerEstimateRefund.setVisibility(View.VISIBLE);
+        containerEstimateNotes.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEstimateValue() {
+        containerEstimateRefund.setVisibility(View.GONE);
+        containerEstimateNotes.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRefundDetail(int resId) {
+        tvRefundDetail.setText(getString(resId));
+        tvRefundDetail.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideRefundDetail() {
+        tvRefundDetail.setVisibility(View.GONE);
+    }
+
+    @Override
     public String getInvoiceId() {
         return invoiceId;
     }
@@ -199,7 +231,18 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
                 .getMessageFromException(getContext(), throwable));
     }
 
-    private void renderView() {
+    @Override
+    public void showErrorFetchEstimateRefund(String messageFromException) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), messageFromException, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.onRetryFetchEstimate();
+            }
+        });
+    }
+
+    @Override
+    public void renderView() {
         renderList(flightCancellationPassData.getGetCancellations());
 
         if (flightCancellationPassData.getCancellationReasonAndAttachment().getReason() != null &&
@@ -219,7 +262,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         if ((flightCancellationPassData.getCancellationReasonAndAttachment().getReason() == null &&
                 flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() == null) ||
                 (flightCancellationPassData.getCancellationReasonAndAttachment().getReason().isEmpty() &&
-                flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments().size() == 0)) {
+                        flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments().size() == 0)) {
             containerAdditionalData.setVisibility(View.GONE);
         }
 
@@ -227,7 +270,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
-    public void onUploadAttachmentButtonClicked() {
+    public void onUploadAttachmentButtonClicked(int positionIndex) {
 
     }
 
@@ -236,21 +279,44 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
     }
 
+    @Override
+    public void viewImage(String filePath) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_CANCELLATION_TNC:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.requestCancellation();
+                }
+                break;
+        }
+    }
+
     private void closeReviewCancellationPage() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 
+    private void navigateToTermsAndConditionsPage() {
+        startActivityForResult(FlightCancellationTermsAndConditionsActivity.createIntent(getContext()), REQUEST_CANCELLATION_TNC);
+    }
+
     private SpannableString setDescriptionText() {
         final int color = getContext().getResources().getColor(R.color.green_500);
-        int startIndex = getContext().getString(R.string.flight_cancellation_review_description).indexOf("Syarat");
-        int stopIndex = startIndex + 39;
+        int startIndex = getString(R.string.flight_cancellation_refund_description).indexOf("Pelajari");
+        int stopIndex = getString(R.string.flight_cancellation_refund_description).length();
         SpannableString description = new SpannableString(getContext().getString(
-                R.string.flight_cancellation_review_description));
+                R.string.flight_cancellation_refund_description));
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                navigateToTermsAndConditionsPage();
+                FlightCancellationRefundBottomSheet bottomSheet = new FlightCancellationRefundBottomSheet();
+                bottomSheet.show(getChildFragmentManager(), getString(R.string.flight_cancellation_refund_bottom_sheet_tag));
             }
 
             @Override
@@ -258,36 +324,10 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setColor(color);
-                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
             }
         };
         description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return description;
-    }
-
-    private void navigateToTermsAndConditionsPage() {
-        startActivity(FlightCancellationTermsAndConditionsActivity.createIntent(getContext()));
-    }
-
-    private void showConfirmationDialog() {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(getString(R.string.flight_cancellation_review_dialog_description));
-        dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.setBtnCancel(getString(R.string.flight_booking_submit_button_label));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.requestCancellation();
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
     }
 }

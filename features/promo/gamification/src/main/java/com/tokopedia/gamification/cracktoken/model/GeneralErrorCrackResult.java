@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.gamification.R;
 
 import java.util.ArrayList;
@@ -27,15 +28,20 @@ public class GeneralErrorCrackResult extends CrackResult {
         crackBenefits.add(crackBenefit);
 
         Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.image_error_crack_result);
+                R.drawable.gf_ic_toped_sorry);
+        setBenefits(crackBenefits);
+        setImageBitmap(errorBitmap);
 
         CrackButton returnButton = new CrackButton();
         returnButton.setTitle(context.getString(R.string.try_again_btn));
         returnButton.setType(CrackResult.TYPE_BTN_DISMISS);
-
-        setBenefits(crackBenefits);
-        setImageBitmap(errorBitmap);
         setReturnButton(returnButton);
+
+        CrackButton ctaButton = new CrackButton();
+        ctaButton.setTitle(context.getString(R.string.return_to_home));
+        ctaButton.setApplink(ApplinkConst.HOME);
+        ctaButton.setType(CrackResult.TYPE_BTN_REDIRECT);
+        setCtaButton(ctaButton);
 
         CrackResultStatus crackResultStatus = new CrackResultStatus();
         crackResultStatus.setCode(CrackResult.STATUS_CODE_SERVER_ERROR);

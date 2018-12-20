@@ -88,6 +88,7 @@ public class ShipmentAddressListPresenter
                                 getMvpView().hideLoading();
                                 String message = ErrorHandler.getErrorMessage(getMvpView().getActivityContext(), throwable);
                                 getMvpView().showError(message);
+                                getMvpView().stopTrace();
                             }
                         }
 
@@ -106,6 +107,7 @@ public class ShipmentAddressListPresenter
                                                 !peopleAddressModel.getPaging().getUriNext().equals("0");
                                         if (peopleAddressModel.getRecipientAddressModelList().isEmpty()) {
                                             getMvpView().showListEmpty();
+                                            getMvpView().stopTrace();
                                         } else {
                                             RecipientAddressModel newlyCreatedAddress = null;
                                             if (currentAddress != null) {
@@ -129,18 +131,23 @@ public class ShipmentAddressListPresenter
                                             if (ShipmentAddressListPresenter.this.resetPage) {
                                                 if (currentAddress != null && currentAddress.getId() == null && newlyCreatedAddress != null) {
                                                     getMvpView().navigateToCheckoutPage(newlyCreatedAddress);
+                                                    getMvpView().stopTrace();
                                                 } else {
                                                     getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
+                                                    getMvpView().stopTrace();
                                                 }
                                             } else {
                                                 getMvpView().updateList(peopleAddressModel.getRecipientAddressModelList());
+                                                getMvpView().stopTrace();
                                             }
                                         }
                                     } else {
                                         getMvpView().showListEmpty();
+                                        getMvpView().stopTrace();
                                     }
                                 } else {
                                     getMvpView().showListEmpty();
+                                    getMvpView().stopTrace();
                                 }
                             }
                         }
