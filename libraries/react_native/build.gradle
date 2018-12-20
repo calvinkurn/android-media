@@ -42,7 +42,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
-    implementation rootProject.ext.libraries.config
+    implementation project(rootProject.ext.libraries.config) // rootProject.ext.libraries.con
 }
 
 apply from: '../../publish_local.gradle'
