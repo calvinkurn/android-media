@@ -8,6 +8,8 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.checkout.view.di.scope.CartScope;
+import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -34,11 +36,10 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
     private ICheckoutModuleRouter checkoutModuleRouter;
 
     @Inject
-    public CodCheckoutUseCase(@ApplicationContext Context context,
+    public CodCheckoutUseCase(Context context,
                               ICheckoutModuleRouter checkoutModuleRouter) {
         this.context = context;
         this.checkoutModuleRouter = checkoutModuleRouter;
-
     }
 
     public GraphqlRequest getRequest(CheckoutRequest carts, boolean isOneClickShipment) {
