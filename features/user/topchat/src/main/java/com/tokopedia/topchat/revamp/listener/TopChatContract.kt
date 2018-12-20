@@ -12,7 +12,12 @@ interface TopChatContract {
 
         fun developmentView()
 
-        fun removeDummy(it : Visitable<*>)
+        fun addDummyMessage(visitable : Visitable<*>)
+
+        fun removeDummy(visitable : Visitable<*>)
+
+        fun clearEditText()
+
 
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
     }

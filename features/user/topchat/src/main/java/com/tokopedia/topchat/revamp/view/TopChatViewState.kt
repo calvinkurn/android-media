@@ -10,7 +10,6 @@ import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 import rx.functions.Func1
 import java.util.concurrent.TimeUnit
 
@@ -31,7 +30,9 @@ class TopChatViewState(var view: View) {
     private var pickerButton: View = view.findViewById(R.id.image_picker)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var notifier: View = view.findViewById(R.id.notifier)
-
+    private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
+//    lateinit var templateAdapter: TemplateChatAdapter
+//    lateinit var templateChatTypeFactory: TemplateChatTypeFactory
     private var replyWatcher: Observable<String>
     private var replyIsTyping: Observable<Boolean>
 
@@ -47,14 +48,30 @@ class TopChatViewState(var view: View) {
 
         replyIsTyping = replyWatcher.map(Func1 { t -> t.length > 0 })
 
-        replyIsTyping.subscribe(Action1 {
-            if (it) {
-                minimizeTools()
-            }
-        })
+//        replyIsTyping.subscribe(Action1 {
+//            if (it) {
+//                minimizeTools()
+//                presenter.startTyping()
+//            }
+//        })
+//
+//        replyIsTyping.debounce(2, TimeUnit.SECONDS)
+//                .subscribe { presenter.stopTyping() }
 
         maximize.setOnClickListener { maximizeTools() }
-//        sendButton.setOnClickListener { presenter.sendMessage(replyEditText.text.toString()) }
+        sendButton.setOnClickListener {
+//            presenter.sendMessage(replyEditText.text.toString())
+        }
+//
+//        templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(this))
+//        templateRecyclerView.setHasFixedSize(true)
+//        templateRecyclerView.layoutManager = LinearLayoutManager(contractView.context, LinearLayoutManager.HORIZONTAL, false)
+//        templateRecyclerView.adapter = templateAdapter
+//        templateRecyclerView.visibility = View.GONE
+//
+//        pickerButton.setOnClickListener {
+//            contractView.pickImageToUpload()
+//        }
     }
 
     private fun minimizeTools() {

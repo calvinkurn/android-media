@@ -2,10 +2,12 @@ package com.tokopedia.topchat.revamp.presenter
 
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -14,6 +16,7 @@ import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -30,11 +33,13 @@ import javax.inject.Inject
 
 class TopChatRoomPresenter @Inject constructor(
         var getChatUseCase: GetChatUseCase,
-        var userSession: UserSessionInterface)
+        var userSession: UserSessionInterface,
+        private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper)
     : BaseDaggerPresenter<TopChatContract.View>(), TopChatContract.Presenter {
     private var mSubscription: CompositeSubscription
     private lateinit var webSocketUrl: String
     lateinit var dummyList: ArrayList<Visitable<*>>
+    var thisMessageId: String = ""
 
     init {
         mSubscription = CompositeSubscription()
@@ -42,6 +47,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun connectWebSocket(messageId: String) {
+        thisMessageId = messageId
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
@@ -58,6 +64,7 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
+                view.developmentView()
             }
 
             override fun onMessage(text: String) {
@@ -127,6 +134,18 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+
+    private fun processDummyMessage(messageText: String, startTime: String) {
+        var dummyMessage = mapToDummyMessage(thisMessageId, messageText, startTime)
+        view.addDummyMessage(dummyMessage)
+        dummyList.add(dummyMessage)
+    }
+
+
+    private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
+        return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
+    }
+
     private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
         for (i in 0.. dummyList.size){
             var temp = (dummyList[i] as MessageViewModel)
@@ -140,12 +159,37 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return topChatRoomWebSocketMessageMapper.map(pojo)
     }
 
-    override fun sendMessage(sendMessage: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun sendMessage(messageText: String) {
+        if (isValidReply(messageText)) {
+            val startTime = SendableViewModel.generateStartTime()
+            view.clearEditText()
+//            view.disableAction()
+            processDummyMessage(messageText, startTime)
+//            when (networkMode) {
+//                MODE_WEBSOCKET ->
+                    sendMessageWebSocket(messageText, startTime)
+//            }
+        }
     }
+
+
+    private fun sendMessageWebSocket(messageText: String, startTime: String) {
+        RxWebSocket.send(msg = generateParamSendMessage(messageText, startTime))
+    }
+
+
+    private fun isValidReply(message: String): Boolean {
+        if (message.trim { it <= ' ' }.isEmpty()) {
+//            view.showSnackbarError(view.getStringResource(R.string.error_empty_product))
+            return false
+        }
+        return true
+    }
+
+
 
 
     override fun detachView() {
@@ -153,4 +197,42 @@ class TopChatRoomPresenter @Inject constructor(
         super.detachView()
     }
 
+
+    private fun generateParamSendMessage(messageText: String, startTime: String): String {
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("message_id", Integer.valueOf(thisMessageId))
+        data.addProperty("message", messageText)
+        data.addProperty("start_time", startTime)
+        json.add("data", data)
+        return json.toString()
+    }
+
+    private fun generateParamStartTyping(): String {
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_TYPING)
+        val data = JsonObject()
+        data.addProperty("msg_id", Integer.valueOf(thisMessageId))
+        json.add("data", data)
+        return json.toString()
+    }
+
+    private fun generateParamStopTyping(): String {
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_END_TYPING)
+        val data = JsonObject()
+        data.addProperty("msg_id", Integer.valueOf(thisMessageId))
+        json.add("data", data)
+        return json.toString()
+    }
+
+    private fun generateParamRead(): String {
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("msg_id", Integer.valueOf(thisMessageId))
+        json.add("data", data)
+        return json.toString()
+    }
 }

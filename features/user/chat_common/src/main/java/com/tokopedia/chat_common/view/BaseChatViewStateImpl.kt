@@ -128,15 +128,6 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 
-    fun recipientTyping() {
-        getAdapter().showTyping()
-        scrollDownWhenInBottom()
-    }
-
-    fun recipientStopTyping() {
-        getAdapter().removeTyping()
-    }
-
     fun removeDummy(visitable: Visitable<*>) {
         getAdapter().removeDummy(visitable)
     }
@@ -147,11 +138,12 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     }
 
     override fun onShowStartTyping() {
-        recipientTyping()
+        getAdapter().showTyping()
+        scrollDownWhenInBottom()
     }
 
     override fun onShowStopTyping() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getAdapter().removeTyping()
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {

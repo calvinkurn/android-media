@@ -51,9 +51,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         presenter.connectWebSocket(messageId)
     }
 
-    override fun removeDummy(it: Visitable<*>) {
-    }
-
     override fun getScreenName(): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -161,6 +158,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         }
     }
 
+    override fun clearEditText() {
+        chatViewState.clearEditText()
+    }
+
     override fun initInjector() {
 
 //        DaggerChatComponent.builder()
@@ -179,10 +180,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         }
     }
 //
-//    override fun getNetworkMode(): Int {
-//        return 1
-//    }
-//
 //    override fun disableAction() {
 //        chatViewState.setActionable(false)
 //    }
@@ -190,14 +187,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 //    override fun showSnackbarError(string: Unit) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
-//
-//    override fun addDummyMessage(visitable: Visitable<*>) {
-//        chatViewState.addMessage(visitable)
-//    }
-//
-//    override fun removeDummy(visitable: Visitable<*>) {
-//        chatViewState.removeDummy(visitable)
-//    }
+
+    override fun addDummyMessage(visitable: Visitable<*>) {
+        chatViewState.addMessage(visitable)
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        chatViewState.removeDummy(visitable)
+    }
+
 
     override fun onSendButtonClicked() {
 

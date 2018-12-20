@@ -36,7 +36,7 @@ open class WebsocketMessageMapper @Inject constructor() {
         return MessageViewModel(pojo.msgId.toString(), pojo
                 .fromUid,
                 pojo.from, pojo.fromRole, ""
-                , "", "", pojo.startTime, "", false, false, pojo.isOpposite)
+                , "", "", pojo.startTime, pojo.message.censoredReply, false, false, pojo.isOpposite)
     }
 
     open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
