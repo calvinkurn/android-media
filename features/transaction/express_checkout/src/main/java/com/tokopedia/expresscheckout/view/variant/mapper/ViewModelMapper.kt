@@ -85,7 +85,8 @@ class ViewModelMapper : DataMapper {
                 productChild.minOrder = child.minOrder
                 productChild.maxOrder = child.maxOrder
                 productChild.optionsId = child.optionIds
-                if (productChild.isAvailable && !hasSelectedDefaultVariant) {
+                if (expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].defaultChild == child.productId &&
+                        productChild.isAvailable && !hasSelectedDefaultVariant) {
                     productChild.isSelected = true
                     hasSelectedDefaultVariant = true
                     var defaultVariantIdOptionMap = LinkedHashMap<Int, Int>()
@@ -108,6 +109,27 @@ class ViewModelMapper : DataMapper {
         checkoutVariantProductViewModel.productChildrenList = productChildList
 
         if (productChildList.isNotEmpty()) {
+            if (!hasSelectedDefaultVariant) {
+                for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+                    if (productChild.isAvailable && !hasSelectedDefaultVariant) {
+                        productChild.isSelected = true
+                        hasSelectedDefaultVariant = true
+                        var defaultVariantIdOptionMap = LinkedHashMap<Int, Int>()
+                        for (optionId: Int in productChild.optionsId) {
+                            for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
+                                for (option: Option in variant.options) {
+                                    if (optionId == option.id) {
+                                        defaultVariantIdOptionMap.put(variant.productVariantId, optionId)
+                                    }
+                                }
+                            }
+                        }
+                        checkoutVariantProductViewModel.selectedVariantOptionsIdMap = defaultVariantIdOptionMap
+                    } else {
+                        productChild.isSelected = false
+                    }
+                }
+            }
             var firstVariantId = 0
             var firstOptionId = 0
             for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {

@@ -1,6 +1,9 @@
 package com.tokopedia.expresscheckout.view.variant.viewholder
 
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -49,7 +52,8 @@ class OptionVariantViewHolder(view: View?, val listener: VariantChangeListener) 
         itemView.cv_selected_variant_container.visibility = View.VISIBLE
         if (viewModel.variantHex.isNotBlank()) {
             try {
-                itemView.v_variant_color_selected.setBackgroundColor(Color.parseColor(viewModel.variantHex))
+                val backgroundDrawable = getBackgroundDrawable(viewModel)
+                itemView.v_variant_color_selected.background = backgroundDrawable
                 itemView.v_variant_color_selected.visibility = View.VISIBLE
             } catch (e: IllegalArgumentException) {
                 itemView.v_variant_color_selected.visibility = View.GONE
@@ -60,12 +64,22 @@ class OptionVariantViewHolder(view: View?, val listener: VariantChangeListener) 
         itemView.tv_variant_value_selected.text = viewModel.variantName
     }
 
+    private fun getBackgroundDrawable(viewModel: OptionVariantViewModel): Drawable? {
+        if (viewModel.variantHex.equals("#ffffff") || viewModel.variantHex.equals("#fff")) {
+            return ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator_white)
+        }
+        val backgroundDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.circle_color_variant_indicator)
+        backgroundDrawable?.colorFilter = PorterDuffColorFilter(Color.parseColor(viewModel.variantHex), PorterDuff.Mode.SRC_ATOP)
+        return backgroundDrawable
+    }
+
     private fun renderNotSelectedVariant(viewModel: OptionVariantViewModel) {
         itemView.cv_selected_variant_container.visibility = View.GONE
         itemView.ll_not_selected_variant_container.visibility = View.VISIBLE
         if (viewModel.variantHex.isNotBlank()) {
             try {
-                itemView.v_variant_color_not_selected.setBackgroundColor(Color.parseColor(viewModel.variantHex))
+                val backgroundDrawable = getBackgroundDrawable(viewModel)
+                itemView.v_variant_color_not_selected.background = backgroundDrawable
                 itemView.v_variant_color_not_selected.visibility = View.VISIBLE
             } catch (e: IllegalArgumentException) {
                 itemView.v_variant_color_not_selected.visibility = View.GONE

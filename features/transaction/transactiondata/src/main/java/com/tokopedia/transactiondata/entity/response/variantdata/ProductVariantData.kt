@@ -11,11 +11,11 @@ data class ProductVariantData(
 
         @SerializedName("parent_id")
         @Expose
-        val code: Int,
+        val parentId: Int,
 
         @SerializedName("default_child")
         @Expose
-        val message: Int,
+        val defaultChild: Int,
 
         @SerializedName("variant")
         @Expose
