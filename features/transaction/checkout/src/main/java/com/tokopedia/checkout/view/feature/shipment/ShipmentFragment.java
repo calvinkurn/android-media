@@ -633,9 +633,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void proceedCod(View view) {
         shipmentAdapter.checkDropshipperValidation(1);
+    }
 
-//        CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
-//        bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
+    @Override
+    public void showBottomSheetError() {
+        if (getFragmentManager() != null) {
+            CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
+            bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
+        }
     }
 
     @Override
@@ -1342,7 +1347,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentPresenter.processSaveShipmentState();
                     break;
                 case 1:
-                    shipmentPresenter.proceedCodCheckout();
+                    shipmentPresenter.proceedCodCheckout(isOneClickShipment());
             }
 
         } else if (shipmentData != null && !result) {

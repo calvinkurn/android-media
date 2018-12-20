@@ -27,6 +27,7 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
+import com.tokopedia.checkout.domain.usecase.CodCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
@@ -46,6 +47,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationMo
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
@@ -74,6 +76,9 @@ import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentSt
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShopProductData;
+import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
+import com.tokopedia.transactiondata.entity.response.cod.DataStatus;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.usecase.RequestParams;
@@ -117,6 +122,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetRatesUseCase getRatesUseCase;
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
+    private final CodCheckoutUseCase codCheckoutUseCase;
 
     private CartItemPromoHolderData cartItemPromoHolderData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
@@ -152,6 +158,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              SaveShipmentStateUseCase saveShipmentStateUseCase,
                              GetRatesUseCase getRatesUseCase,
                              GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+                             CodCheckoutUseCase codCheckoutUseCase,
                              ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener) {
         this.compositeSubscription = compositeSubscription;
@@ -169,6 +176,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
+        this.codCheckoutUseCase = codCheckoutUseCase;
     }
 
     @Override
@@ -1344,7 +1352,41 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout() {
+    public void proceedCodCheckout(boolean isOnClickShipment) {
+        CheckoutRequest checkoutRequest = generateCheckoutRequest(
+                promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
+                        promoCodeAppliedData.getPromoCode() : "",
+                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
+        );
+        codCheckoutUseCase.clearRequest();
+        codCheckoutUseCase.addRequest(codCheckoutUseCase.getRequest(checkoutRequest, isOnClickShipment));
+        codCheckoutUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                CodResponse response = graphqlResponse.getData(CodResponse.class);
+
+                if (response.getValidateCheckoutCod().getData() != null &&
+                        response.getValidateCheckoutCod().getData().getData() != null) {
+                    Data data = response.getValidateCheckoutCod().getData().getData();
+                    if (!TextUtils.isEmpty(data.getErrorMessage())) {
+                        // go to cod confirmation page
+
+                    } else {
+                        // show bottomsheet error indicating cod ineligibility
+                        getView().showBottomSheetError();
+                    }
+                }
+            }
+        });
     }
 }

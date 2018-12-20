@@ -23,6 +23,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
@@ -112,6 +113,8 @@ public interface ShipmentContract {
         void setCourierPromoApplied(int itemPosition);
 
         void proceedCod(android.view.View view);
+
+        void showBottomSheetError();
     }
 
     interface AnalyticsActionListener {
@@ -294,7 +297,8 @@ public interface ShipmentContract {
 
         Cod getCodData();
 
-        void proceedCodCheckout();
+        void proceedCodCheckout(boolean isOneClickShipment);
+
     }
 
 }
