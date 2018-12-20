@@ -225,20 +225,22 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
         return true
     }
 
-    fun addNewMessage(item: Visitable<*>) {
+    override fun addElement(item: Visitable<*>) {
         visitables.add(0, item)
         notifyItemInserted(0)
         if (visitables.size > 1) notifyItemRangeChanged(0, 1)
     }
 
-    fun removeDummy(visitable: SendableViewModel) {
-        for (chatItem in visitables) {
-            if (chatItem is SendableViewModel
-                    && chatItem.isDummy
-                    && chatItem.startTime == visitable.startTime) {
-                val indexToRemove = visitables.indexOf(chatItem)
-                visitables.remove(chatItem)
-                notifyItemRemoved(indexToRemove)
+    fun removeDummy(visitable: Visitable<*>) {
+        if (visitable is SendableViewModel) {
+            for (chatItem in visitables) {
+                if (chatItem is SendableViewModel
+                        && chatItem.isDummy
+                        && chatItem.startTime == visitable.startTime) {
+                    val indexToRemove = visitables.indexOf(chatItem)
+                    visitables.remove(chatItem)
+                    notifyItemRemoved(indexToRemove)
+                }
             }
         }
     }

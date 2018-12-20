@@ -147,7 +147,7 @@ class TopChatViewState(var view: View, presenter: TopChatRoomPresenter) {
     }
 
     fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addNewMessage(visitable)
+        getAdapter().addElement(visitable)
         scrollDownWhenInBottom()
     }
 
