@@ -21,6 +21,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
 import com.tokopedia.transaction.purchase.detail.model.buyagain.DataResponseBuyAgain;
+import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
@@ -364,11 +365,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onNext(GraphqlResponse objects) {
                 mainView.dismissProgressDialog();
-                DataResponseBuyAgain dataBuyAgain = objects.getData(DataResponseBuyAgain.class);
-                if(dataBuyAgain.getSuccess() == 1){
-                    mainView.onSuccessBuyAgain(StringUtils.convertListToStringDelimiter(dataBuyAgain.getMessage(), ","), data);
+                ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
+                if(responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1){
+                    mainView.onSuccessBuyAgain(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","), data);
                 }else{
-                    mainView.onErrorBuyAgain( new MessageErrorException(StringUtils.convertListToStringDelimiter(dataBuyAgain.getMessage(),",")));
+                    mainView.onErrorBuyAgain( new MessageErrorException(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(),",")));
                 }
             }
         });

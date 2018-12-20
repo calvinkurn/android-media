@@ -10,7 +10,7 @@ public class DataResponseBuyAgain {
     @SerializedName("success")
     @Expose
     private int success;
-    @SerializedName("message")
+    @SerializedName("messages")
     @Expose
     private List<String> message = null;
     @SerializedName("data")
