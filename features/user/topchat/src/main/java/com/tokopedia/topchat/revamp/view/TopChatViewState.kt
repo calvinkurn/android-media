@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
-import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -56,7 +55,7 @@ class TopChatViewState(var view: View, presenter: TopChatRoomPresenter) {
         })
 
         maximize.setOnClickListener { maximizeTools() }
-        sendButton.setOnClickListener { presenter.sendMessage(replyEditText.text.toString()) }
+        sendButton.setOnClickListener { presenter.sendMessage(messageId, replyEditText.text.toString()) }
     }
 
     private fun minimizeTools() {
