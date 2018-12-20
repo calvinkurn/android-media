@@ -634,7 +634,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position) {
+    public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position, int requestCode) {
 
     }
 

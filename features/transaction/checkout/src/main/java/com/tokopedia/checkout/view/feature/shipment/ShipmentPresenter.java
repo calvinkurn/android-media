@@ -1342,4 +1342,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public Cod getCodData() {
         return this.codData;
     }
+
+    @Override
+    public void proceedCodCheckout() {
+
+    }
 }

@@ -449,7 +449,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void checkDropshipperValidation() {
+    public void checkDropshipperValidation(int REQUEST_CODE) {
         boolean hasSelectAllCourier = checkHasSelectAllCourier();
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
@@ -473,9 +473,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
 
-            shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition);
+            shipmentAdapterActionListener.onDropshipperValidationResult(availableCheckout, selectedShipmentData, errorPosition, REQUEST_CODE);
         } else {
-            shipmentAdapterActionListener.onDropshipperValidationResult(false, null, 0);
+            shipmentAdapterActionListener.onDropshipperValidationResult(false, null, 0, REQUEST_CODE);
         }
     }
 

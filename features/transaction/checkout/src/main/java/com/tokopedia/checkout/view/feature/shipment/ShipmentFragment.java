@@ -245,7 +245,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shipmentAdapter.checkDropshipperValidation();
+                shipmentAdapter.checkDropshipperValidation(0);
             }
         });
     }
@@ -325,7 +325,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
         }
 
-        if(shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
+        if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
             shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
             tvSelectCodPayment.setVisibility(View.VISIBLE);
             tvSelectCodPayment.setOnClickListener(this::proceedCod);
@@ -632,12 +632,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void proceedCod(View view) {
-        // todo : show dialog for testing purpose
+        shipmentAdapter.checkDropshipperValidation(1);
 
-
-
-        CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
-        bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
+//        CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
+//        bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
     }
 
     @Override
@@ -1336,10 +1334,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData,
-                                              int errorPosition) {
+                                              int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
-            shipmentPresenter.processCheckShipmentPrepareCheckout(isOneClickShipment());
-            shipmentPresenter.processSaveShipmentState();
+            switch (requestCode) {
+                case 0:
+                    shipmentPresenter.processCheckShipmentPrepareCheckout(isOneClickShipment());
+                    shipmentPresenter.processSaveShipmentState();
+                    break;
+                case 1:
+                    shipmentPresenter.proceedCodCheckout();
+            }
+
         } else if (shipmentData != null && !result) {
             sendAnalyticsDropshipperNotComplete();
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
@@ -1451,7 +1456,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChoosePaymentMethodButtonClicked() {
-        shipmentAdapter.checkDropshipperValidation();
+        shipmentAdapter.checkDropshipperValidation(0);
     }
 
     @Override

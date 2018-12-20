@@ -293,6 +293,8 @@ public interface ShipmentContract {
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
 
         Cod getCodData();
+
+        void proceedCodCheckout();
     }
 
 }

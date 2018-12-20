@@ -32,5 +32,5 @@ public interface CartAdapterActionListener {
 
     void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
 
-    void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position);
+    void onDropshipperValidationResult(boolean result, ShipmentData shipmentData, int position, int requestCode);
 }
