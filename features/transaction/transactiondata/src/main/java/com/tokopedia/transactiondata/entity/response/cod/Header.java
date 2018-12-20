@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by fajarnuha on 19/12/18.
  */
-class Header {
+public class Header {
 
     @SerializedName("process_time")
     @Expose

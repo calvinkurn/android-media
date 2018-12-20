@@ -14,7 +14,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.CodCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.usecase.RequestParams;
 
 import java.security.PublicKey;

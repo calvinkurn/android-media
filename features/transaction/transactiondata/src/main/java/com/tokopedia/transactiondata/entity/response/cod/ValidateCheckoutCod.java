@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by fajarnuha on 19/12/18.
  */
-class ValidateCheckoutCod {
+public class ValidateCheckoutCod {
 
     @SerializedName("header")
     @Expose
     private Header header;
     @SerializedName("data")
     @Expose
-    private Data data;
+    private DataStatus data;
     @SerializedName("status")
     @Expose
     private String status;
@@ -21,17 +21,17 @@ class ValidateCheckoutCod {
     public ValidateCheckoutCod() {
     }
 
-    public ValidateCheckoutCod(Header header, Data data, String status) {
+    public ValidateCheckoutCod(Header header, DataStatus data, String status) {
         this.header = header;
         this.data = data;
         this.status = status;
     }
 
-    public Data getData() {
+    public DataStatus getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(DataStatus data) {
         this.data = data;
     }
 
