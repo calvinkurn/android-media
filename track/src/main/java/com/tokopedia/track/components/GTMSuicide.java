@@ -2,6 +2,8 @@ package com.tokopedia.track.components;
 
 import android.content.Context;
 
+import com.tokopedia.track.interfaces.ContextAnalytics;
+
 public class GTMSuicide extends ContextAnalytics {
 
     public GTMSuicide(){

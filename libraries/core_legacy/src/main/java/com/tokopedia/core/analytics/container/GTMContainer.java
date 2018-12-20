@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@Deprecated
 public class GTMContainer implements IGTMContainer {
 
     private static final String DEFAULT_CONTAINERID = "GTM-P32KTB";

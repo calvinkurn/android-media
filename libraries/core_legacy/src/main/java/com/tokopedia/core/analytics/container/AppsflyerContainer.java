@@ -28,6 +28,7 @@ import rx.schedulers.Schedulers;
  * Modified by Alvarisi 29/11/2016
  * appsflyer get commented.
  */
+@Deprecated
 public class AppsflyerContainer implements IAppsflyerContainer {
 
     private static final String TAG = AppsflyerContainer.class.getSimpleName();

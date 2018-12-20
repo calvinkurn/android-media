@@ -18,9 +18,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.util.Preconditions;
 
-import com.google.android.gms.common.util.ProcessUtils;
-import com.tokopedia.track.components.ContextAnalytics;
+//import com.google.android.gms.common.util.ProcessUtils;
 import com.tokopedia.track.components.GTMSuicide;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -91,7 +91,7 @@ public class TrackApp {
                 throw new IllegalStateException(
                         "Default TrackApp is not initialized in this "
                         +"process "
-                        + ProcessUtils.getMyProcessName()
+//                        + ProcessUtils.getMyProcessName()
                         + ". make sure to call "
                         + "TrackApp.initTrackApp(Context) first."
                 );
@@ -122,6 +122,7 @@ public class TrackApp {
         }
     }
 
+    @SuppressWarnings("RestrictedApi")
     private void checkNotDeleted(){
         Preconditions.checkState(!deleted.get(), "TrackApp was deleted");
     }
@@ -202,12 +203,8 @@ public class TrackApp {
     }
 
     public ContextAnalytics getValue(String TAG){
-//        Map<String, TypedValue<? extends ContextAnalytics>>
-//                result = new HashMap<>();
-//        result.put("GTM", new TypedValue(GTMSuicide.class, new GTMSuicide()));
-//        ContextAnalytics typedValue = result.get(TAG).value;
-//
-//        return  type.cast(typedValue);
+        if(!INSTANCES.containsKey(TAG))
+            throw new RuntimeException(String.format("no instance related to this TAG : \'%s\' ",TAG));
 
         TypedValue<? extends ContextAnalytics> typedValue = INSTANCES.get(TAG);
         ContextAnalytics value = typedValue.value;

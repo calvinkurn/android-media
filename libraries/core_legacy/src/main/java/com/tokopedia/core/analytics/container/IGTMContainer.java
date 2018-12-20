@@ -19,6 +19,7 @@ import java.util.Map;
  * @author by alvarisi on 10/26/16.
  */
 
+@Deprecated
 public interface IGTMContainer {
     /**
      * Load init container, use this when app start and sync/refresh container

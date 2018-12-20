@@ -3,8 +3,8 @@ package com.tokopedia.track;
 
 import android.content.Context;
 
-import com.tokopedia.track.components.ContextAnalytics;
 import com.tokopedia.track.components.GTMSuicide;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,12 +41,9 @@ public class TrackAppTest  {
         assert trackApp.context==RuntimeEnvironment.application.getApplicationContext();
 
         trackApp.initializeAllApis();
-
-
-
     }
 
-    static class TestSuicide extends ContextAnalytics{
+    static class TestSuicide extends ContextAnalytics {
         public int test1 = 1;
 
         public TestSuicide(Context context) {
