@@ -33,10 +33,15 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel(pojo.msgId.toString(), pojo
-                .fromUid,
-                pojo.from, pojo.fromRole, ""
-                , "", "", pojo.startTime, "", false, false, pojo.isOpposite)
+        return MessageViewModel(pojo.msgId.toString(),
+                pojo.fromUid,
+                pojo.from,
+                pojo.fromRole,
+                "",
+                "",
+                pojo.message.timeStampUnix,
+                pojo.startTime,
+                pojo.message.censoredReply, false, false, !pojo.isOpposite)
     }
 
     open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {

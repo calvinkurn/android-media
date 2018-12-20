@@ -20,4 +20,6 @@ interface BaseChatViewState {
 
     fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String)
 
+    fun removeDummyIfExist(successVisitable: Visitable<*>)
+
 }

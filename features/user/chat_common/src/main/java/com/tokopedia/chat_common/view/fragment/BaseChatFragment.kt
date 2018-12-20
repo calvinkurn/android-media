@@ -219,6 +219,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        viewState.removeDummyIfExist(visitable)
         viewState.onReceiveMessageEvent(visitable)
     }
 

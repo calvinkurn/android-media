@@ -54,8 +54,9 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         maximizeButton = view.findViewById(R.id.maximize)
         attachProductButton = view.findViewById(R.id.add_url)
 
-        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
+        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
+
         replyEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 scrollDownWhenInBottom()
@@ -113,6 +114,12 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
                         sendMessage
                 )
         )
+    }
+
+    override fun removeDummyIfExist(successVisitable: Visitable<*>) {
+        if(successVisitable is SendableViewModel){
+            getAdapter().removeDummy(successVisitable)
+        }
     }
 
     private fun setLabel(labelText: String) {

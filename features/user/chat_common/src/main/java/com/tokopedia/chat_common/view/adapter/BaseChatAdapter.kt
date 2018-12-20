@@ -73,7 +73,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
         notifyItemInserted(0)
     }
 
-    fun removeTyping(){
+    fun removeTyping() {
         var isContainsTyping = this.visitables.remove(typingModel)
         if (isContainsTyping) {
             notifyItemRemoved(0)
@@ -228,12 +228,18 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
     fun addNewMessage(item: Visitable<*>) {
         visitables.add(0, item)
         notifyItemInserted(0)
-        if(visitables.size > 1) notifyItemRangeChanged(0, 1)
+        if (visitables.size > 1) notifyItemRangeChanged(0, 1)
     }
 
-    fun removeDummy(visitable: Visitable<*>) {
-        var indexToRemove = visitables.indexOf(visitable)
-        visitables.removeAt(indexToRemove)
-        notifyItemRemoved(indexToRemove)
+    fun removeDummy(visitable: SendableViewModel) {
+        for (chatItem in visitables) {
+            if (chatItem is SendableViewModel
+                    && chatItem.isDummy
+                    && chatItem.startTime == visitable.startTime) {
+                val indexToRemove = visitables.indexOf(chatItem)
+                visitables.remove(chatItem)
+                notifyItemRemoved(indexToRemove)
+            }
+        }
     }
 }
