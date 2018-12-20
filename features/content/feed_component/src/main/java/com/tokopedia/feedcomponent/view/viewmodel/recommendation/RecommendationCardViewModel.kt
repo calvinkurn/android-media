@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.view.viewmodel
+package com.tokopedia.feedcomponent.view.viewmodel.recommendation
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory
@@ -6,8 +6,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory
 /**
  * @author by yfsx on 04/12/18.
  */
-data class ItemRecommendedViewModel(
-        val title: String = "",
+data class RecommendationCardViewModel(
         val image1Url: String = "",
         val image2Url: String = "",
         val image3Url: String = "",

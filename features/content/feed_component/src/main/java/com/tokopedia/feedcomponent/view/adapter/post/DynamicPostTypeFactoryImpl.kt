@@ -11,7 +11,7 @@ package com.tokopedia.feedcomponent.view.adapter.post
 //    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
 //        return when(type) {
 //            DynamicPostViewHolder.LAYOUT -> DynamicPostViewHolder(parent)
-//            ItemRecommendedViewHolder.LAYOUT -> ItemRecommendedViewHolder(parent)
+//            RecommendationCardViewHolder.LAYOUT -> RecommendationCardViewHolder(parent)
 //            ItemCreateContentViewHolder.LAYOUT -> ItemCreateContentViewHolder(parent)
 //            else -> super.createViewHolder(parent, type)
 //        }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.CardTitle
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -30,15 +31,15 @@ class DynamicPostViewHolder(v: View)
             return
         }
 
-        bindTitle(element.metaTitle)
+        bindTitle(element.title)
         bindHeader(element)
         bindContentList(element.contentList)
         bindFooter(element)
     }
 
-    private fun bindTitle(title: String) {
-        itemView.titleText.shouldShowWithAction(title.isEmpty().not()) {
-            itemView.titleText.text = title
+    private fun bindTitle(title: CardTitle) {
+        itemView.titleText.shouldShowWithAction(title.titleText.isNotEmpty()) {
+            itemView.titleText.text = title.titleText
         }
     }
 

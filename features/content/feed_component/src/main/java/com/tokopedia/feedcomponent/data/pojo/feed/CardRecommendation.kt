@@ -13,6 +13,6 @@ data class CardRecommendation (
 
     @SerializedName("items")
     @Expose
-    val items: List<Item> = ArrayList()
+    val items: MutableList<Item> = ArrayList()
 
 )

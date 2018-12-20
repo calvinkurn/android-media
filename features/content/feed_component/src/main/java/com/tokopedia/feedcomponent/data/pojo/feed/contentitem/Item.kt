@@ -14,5 +14,5 @@ data class Item (
 
     @SerializedName("media")
     @Expose
-    var media: Media = Media()
+    var media: MutableList<Media> = ArrayList()
 )
