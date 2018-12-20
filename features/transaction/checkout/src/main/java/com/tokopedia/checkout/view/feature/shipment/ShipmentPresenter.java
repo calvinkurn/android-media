@@ -1375,9 +1375,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onNext(GraphqlResponse graphqlResponse) {
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
 
-                if (response.getValidateCheckoutCod().getData() != null &&
-                        response.getValidateCheckoutCod().getData().getData() != null) {
-                    Data data = response.getValidateCheckoutCod().getData().getData();
+                if (response.getData() != null &&
+                        response.getData().getData() != null) {
+                    Data data = response.getData().getData();
                     if (!TextUtils.isEmpty(data.getErrorMessage())) {
                         // go to cod confirmation page
 
