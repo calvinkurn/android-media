@@ -23,8 +23,8 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -63,13 +63,6 @@ import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet;
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -79,6 +72,13 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
+import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet;
+import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -633,6 +633,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void proceedCod(View view) {
         // todo : show dialog for testing purpose
+
+
+
         CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
         bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
     }
