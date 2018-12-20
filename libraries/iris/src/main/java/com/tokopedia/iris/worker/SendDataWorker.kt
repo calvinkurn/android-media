@@ -8,9 +8,8 @@ import com.tokopedia.iris.MAX_ROW
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import retrofit2.Response
+import com.tokopedia.iris.data.network.ApiService
+import kotlinx.coroutines.experimental.runBlocking
 
 /**
  * @author okasurya on 10/18/18.
@@ -32,12 +31,16 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
 
             Log.d("Oka Worker", "doWork() Hit Server $request")
 
-            val body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), request)
-            val response: Response<String> = trackingRepository.apiService.apiInterface.sendMultiEvent(body)
-                    .toBlocking()
-                    .last()
-            if (response.isSuccessful && response.code() == 200) {
-//                trackingRepository.delete(trackings)
+            val service = ApiService(context).makeRetrofitService()
+
+            val response = runBlocking {
+                val requestBody = ApiService.parse(request)
+                val response = service.sendMultiEvent(requestBody)
+                response.await()
+            }
+            Log.d("Iris", response.body().toString())
+            if (response.isSuccessful) {
+                trackingRepository.delete(trackings)
                 return Result.SUCCESS
             }
         }

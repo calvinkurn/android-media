@@ -63,7 +63,7 @@ class IrisSession(val context: Context) : Session {
 
     private fun domainHash() : String {
         val data: ByteArray = DOMAIN_HASH.toByteArray(Charset.defaultCharset())
-        return Base64.encodeToString(data, Base64.DEFAULT)
+        return Base64.encodeToString(data, Base64.NO_WRAP).trim()
     }
 
     private fun setDomainHash(domainHash: String) {
