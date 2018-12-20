@@ -513,7 +513,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsDashboardRouter,
         NpsRouter,
         DigitalRouter,
-        TrackingPromoCheckoutRouter
+        TrackingPromoCheckoutRouter,
         TopAdsRouter {
 
 
