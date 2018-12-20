@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
