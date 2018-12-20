@@ -56,7 +56,7 @@ class ProductShare(private val activity: Activity) {
     private fun openIntentShare(file: File, title: String, shareContent: String, shareUri: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            type = "image/jpeg"
+            type = "text/plain"
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
             putExtra(Intent.EXTRA_REFERRER, shareUri)
@@ -122,8 +122,7 @@ class ProductShare(private val activity: Activity) {
 
     private fun generateAppLink(applinkTemplate: String, id: String): String {
         return if (applinkTemplate.contains(APPLINK_SCHEME)){
-            applinkTemplate.replaceFirst("\\{.*?\\} ?", id ?: "")
-                    .replaceFirst(APPLINK_SCHEME, "")
+            applinkTemplate.replaceFirst(APPLINK_SCHEME, "").replaceFirst("""\{.*?\} ?""".toRegex(), id)
         } else if (applinkTemplate.contains(DESKTOP_URL_SCHEME)){
             applinkTemplate.replace(DESKTOP_URL_SCHEME, "")
         } else if (applinkTemplate.contains(MOBILE_URL_SCHEME)){
