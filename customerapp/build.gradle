@@ -173,6 +173,10 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles  'proguard-rules.txt'
+            buildConfigField "boolean", "IS_PREINSTALL", "false"
+            buildConfigField "String", "PREINSTALL_NAME", ""
+            buildConfigField "String", "PREINSTALL_DESC", ""
+            buildConfigField "String", "PREINSTALL_SITE", ""
             ext.enableHansel=false
         }
         release {
