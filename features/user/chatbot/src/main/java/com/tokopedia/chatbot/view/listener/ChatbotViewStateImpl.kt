@@ -9,8 +9,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -89,12 +87,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel) {
+        super.onReceiveMessageEvent(visitable)
         showQuickReply(visitable)
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
-        adapter.addElement(generatedInvoice)
-        scrollToBottom()
+        super.onReceiveMessageEvent(generatedInvoice)
     }
 
     override fun onSendRating(element: ChatRatingViewModel, rating: Int) {

@@ -43,11 +43,6 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
         return websocketMessageMapper.map(pojo)
     }
 
-    override fun detachView() {
-        super.detachView()
-        destroyWebSocket()
-    }
-
     abstract fun destroyWebSocket()
 
 

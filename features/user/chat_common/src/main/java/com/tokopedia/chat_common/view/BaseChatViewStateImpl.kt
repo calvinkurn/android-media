@@ -90,15 +90,17 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     }
 
     override fun onShowStartTyping() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getAdapter().showTyping()
+        scrollDownWhenInBottom()
     }
 
     override fun onShowStopTyping() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getAdapter().removeTyping()
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        getAdapter().addElement(visitable)
+        scrollDownWhenInBottom()
     }
 
     override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String) {
@@ -125,7 +127,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
             }
-            ADMIN_TAG ->{
+            ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
             }
@@ -174,24 +176,6 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
 
     fun getList(): List<Visitable<*>> {
         return (recyclerView.adapter as BaseChatAdapter).getList()
-    }
-
-    fun recipientTyping() {
-        getAdapter().showTyping()
-        scrollDownWhenInBottom()
-    }
-
-    fun recipientStopTyping() {
-        getAdapter().removeTyping()
-    }
-
-    fun removeDummy(visitable: Visitable<*>) {
-        getAdapter().removeDummy(visitable)
-    }
-
-    fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addNewMessage(visitable)
-        scrollDownWhenInBottom()
     }
 
     fun clearEditText() {

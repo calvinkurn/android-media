@@ -35,7 +35,7 @@ data class ChatRoomHeaderViewModel(
     }
 
     override fun describeContents(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<ChatRoomHeaderViewModel> {

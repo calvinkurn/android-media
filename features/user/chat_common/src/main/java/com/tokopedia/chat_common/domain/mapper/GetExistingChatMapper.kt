@@ -1,6 +1,8 @@
 package com.tokopedia.chat_common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
@@ -122,9 +124,9 @@ open class GetExistingChatMapper @Inject constructor() {
 //        )
 //    }
 
-    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+//    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+//        //TODO
+//    }
 
 
     private fun hasAttachment(pojo: Reply): Boolean {
