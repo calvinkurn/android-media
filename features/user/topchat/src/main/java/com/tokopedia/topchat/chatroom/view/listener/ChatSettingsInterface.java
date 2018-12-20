@@ -6,7 +6,7 @@ import android.support.annotation.RawRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 
 public interface ChatSettingsInterface {
 
@@ -27,8 +27,6 @@ public interface ChatSettingsInterface {
         void setChatSettingsVisibility(String chatRole);
 
         void showToastMessage();
-
-        Activity getActivity();
 
         void showProgressBar();
 

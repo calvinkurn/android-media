@@ -5,9 +5,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -36,7 +34,7 @@ import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendReasonRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.SetChatRatingUseCase;
 import com.tokopedia.topchat.chatroom.domain.WebSocketUseCase;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;

@@ -69,7 +69,7 @@ import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatRoomsettings.ChatSettingsResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
@@ -130,8 +130,8 @@ import rx.functions.Func1;
 
 import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.MESSAGE_ID;
 import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARAM_WEBSOCKET;
-import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomSettingsActivity.RESULT_CODE_CHAT_SETTINGS_DISABLED;
-import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomSettingsActivity.RESULT_CODE_CHAT_SETTINGS_ENABLED;
+import static com.tokopedia.topchat.chatroom.view.fragment.ChatRoomSettingsFragment.RESULT_CODE_CHAT_SETTINGS_DISABLED;
+import static com.tokopedia.topchat.chatroom.view.fragment.ChatRoomSettingsFragment.RESULT_CODE_CHAT_SETTINGS_ENABLED;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -311,7 +311,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         sendMessageLayout.setVisibility(View.VISIBLE);
         chatBlockLayout.setVisibility(View.GONE);
         disableChatSettingst();
-        chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
+        chatSettingsAnalytics.sendEnableChatSettingTracking();
     }
 
     @Override
@@ -1706,13 +1706,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     );
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
                 } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.chat_incoming_settings))) {
-                    Intent intent = new Intent(getContext(), ChatRoomSettingsActivity.class);
-                    intent.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID));
-                    intent.putExtra(InboxChatConstant.CHATRESPONSEMODEL, chatSettingsResponse);
-                    intent.putExtra(InboxChatConstant.CHAT_ENABLED, isChatEnabled);
-                    intent.putExtra(InboxChatConstant.CHAT_ROLE, role);
-                    intent.putExtra(InboxChatConstant.SENDER_NAME, senderName);
-                    chatSettingsAnalytics.sendTrackingEvent(ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
+                    Intent intent = ChatRoomSettingsActivity.getIntent(getContext(),
+                            getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID),
+                            chatSettingsResponse,
+                            isChatEnabled, role, senderName);
+                    chatSettingsAnalytics.sendOpenChatSettingTacking();
                     startActivityForResult(intent, REQUEST_CODE_CHAT_SETTINGS);
                 }
                 headerMenu.dismiss();

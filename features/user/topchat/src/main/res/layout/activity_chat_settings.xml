@@ -13,18 +13,6 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:theme="?toolbarTheme"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:elevation="@dimen/dp_4"
-            app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="@style/ChatSettingsToolbarText" />
-
         <android.support.v7.widget.CardView
             android:id="@+id/chat_personal_cardview"
             android:layout_width="match_parent"

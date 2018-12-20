@@ -58,4 +58,12 @@ public class ChatSettingsAnalytics {
         tracker.sendEventTracking(EVENT_NAME, CHAT_SETTINGS_CATEGORY, CHAT_BLOCK_ACTION, CHAT_PERSONAL_LABEL);
 
     }
+
+    public void sendOpenChatSettingTacking() {
+        tracker.sendEventTracking(EVENT_NAME, ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_SETTINGS_ACTION, "");
+    }
+
+    public void sendEnableChatSettingTracking() {
+        tracker.sendEventTracking(EVENT_NAME, ChatSettingsAnalytics.CHAT_OPEN_CATEGORY, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION, ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LABEL);
+    }
 }
