@@ -38,7 +38,6 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConver
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
-import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
@@ -190,12 +189,11 @@ public class ShipmentModule {
                                                         UserSessionInterface userSessionInterface,
                                                         IVoucherCouponMapper voucherCouponMapper,
                                                         CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection) {
-        return new ShipmentPresenter(checkPromoCodeFinalUseCase, compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
-                getShipmentAddressFormUseCase,
-                getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
-                editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
-                saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-                shippingCourierConverter, voucherCouponMapper, shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection);
+        return new ShipmentPresenter(checkPromoCodeFinalUseCase, compositeSubscription, checkoutUseCase,
+                getThanksToppayUseCase, getShipmentAddressFormUseCase, getShipmentAddressFormOneClickShipementUseCase,
+                checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
+                saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase, shippingCourierConverter,
+                shipmentAnalyticsActionListener, voucherCouponMapper, userSessionInterface, analyticsPurchaseProtection);
     }
 
     @Provides

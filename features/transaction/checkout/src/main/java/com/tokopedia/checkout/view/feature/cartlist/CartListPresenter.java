@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -111,7 +110,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
-    private final UserSession userSession;
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
 
     @Inject
@@ -129,8 +127,7 @@ public class CartListPresenter implements ICartListPresenter {
                              RemoveWishListUseCase removeWishListUseCase,
                              UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                              UserSessionInterface userSessionInterface,
-                             TopAdsGqlUseCase topAdsUseCase,
-                             UserSession userSession) {
+                             TopAdsGqlUseCase topAdsUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -146,7 +143,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
         this.userSessionInterface = userSessionInterface;
         this.topAdsUseCase = topAdsUseCase;
-        this.userSession = userSession;
     }
 
     @Override
@@ -228,7 +224,7 @@ public class CartListPresenter implements ICartListPresenter {
         adsParam.put(TopAdsParams.KEY_DEVICE, TopAdsParams.DEFAULT_KEY_DEVICE);
         adsParam.put(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
         adsParam.put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(model));
-        adsParam.put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+        adsParam.put(TopAdsParams.KEY_USER_ID, userSessionInterface.getUserId());
         adsParam.put(TopAdsParams.KEY_SRC, CART_SRC);
         List<String> paramList = new ArrayList<>();
         for (Map.Entry<String, String> entry : adsParam.entrySet()) {
@@ -1001,7 +997,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processCancelAutoApply() {
-        com.tokopedia.network.utils.TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new com.tokopedia.network.utils.TKPDMapParam<>());
 
         RequestParams requestParams = RequestParams.create();

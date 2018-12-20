@@ -56,6 +56,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -94,6 +95,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener {
+
+    private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
@@ -530,6 +533,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.notifyDataSetChanged();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
+    }
+
+    @Override
+    public void onTopAdsItemClicked(Product product) {
+        Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
+/*
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_PRODUCT_ITEM, productItem);
+        intent.putExtras(bundle);
+*/
+        context.startActivity(intent);
     }
 
     @Override

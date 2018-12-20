@@ -27,6 +27,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import rx.Subscriber;
 
@@ -131,7 +132,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         param.put("carts", dataArray.toString());
         RequestParams requestParam = RequestParams.create();
 
-        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
 
         requestParam.putAllString(authParam);
@@ -255,7 +256,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         };
     }
 
-    private TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
                 ?
                 AuthUtil.generateParamsNetwork(

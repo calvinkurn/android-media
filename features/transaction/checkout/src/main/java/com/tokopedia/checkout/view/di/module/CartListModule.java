@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -100,14 +99,13 @@ public class CartListModule {
                                                  RemoveWishListUseCase removeWishListUseCase,
                                                  UpdateAndReloadCartUseCase updateAndReloadCartUseCase,
                                                  UserSessionInterface userSessionInterface,
-                                                 TopAdsGqlUseCase topAdsGqlUseCase,
-                                                 UserSession userSession) {
+                                                 TopAdsGqlUseCase topAdsGqlUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
                 addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
-                userSessionInterface, topAdsGqlUseCase, userSession);
+                userSessionInterface, topAdsGqlUseCase);
     }
 
     @Provides
@@ -118,8 +116,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartAdapter provideCartListAdapter(UserSession userSession) {
-        return new CartAdapter(cartActionListener, cartItemActionListener, userSession);
+    CartAdapter provideCartListAdapter() {
+        return new CartAdapter(cartActionListener, cartItemActionListener);
     }
 
     @Provides

@@ -30,6 +30,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import retrofit2.Response;
@@ -56,7 +59,7 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeInjector();
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         requestGetToken();
     }
 
@@ -70,7 +73,7 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
     }
 
     private void requestGetToken() {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        Map<String, String> params = new HashMap<>();
         params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params);
 
         RequestParams requestParams = RequestParams.create();

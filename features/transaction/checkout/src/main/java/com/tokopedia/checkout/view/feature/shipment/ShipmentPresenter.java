@@ -52,7 +52,6 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
@@ -502,7 +501,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    private TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
         return originParams == null
                 ?
                 AuthUtil.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>())
@@ -1073,7 +1072,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @NonNull
     private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel shipmentCartItemModel,
                                                            String addressLatitude, String addressLongitude) {
-        TKPDMapParam<String, String> params = getGeneratedAuthParamNetwork(null);
+        Map<String, String> params = getGeneratedAuthParamNetwork(null);
 
         String addressId = null;
         String addressName = null;
@@ -1131,7 +1130,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void cancelAutoApplyCoupon() {
-        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>());
 
         RequestParams requestParams = RequestParams.create();
@@ -1187,7 +1186,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         param.put("carts", changeAddressRequestJsonString);
         RequestParams requestParam = RequestParams.create();
 
-        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), param);
 
         requestParam.putAllString(authParam);

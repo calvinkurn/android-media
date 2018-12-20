@@ -10,10 +10,9 @@ import android.widget.ImageView;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -36,10 +35,12 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     private TopAdsCarouselView topAdsCarouselView;
     private Context context;
+    private CartAdapter.ActionListener listener;
 
-    public CartTopAdsViewHolder(View itemView) {
+    public CartTopAdsViewHolder(View itemView, CartAdapter.ActionListener listener) {
         super(itemView);
         this.context = itemView.getContext();
+        this.listener = listener;
         topAdsCarouselView = itemView.findViewById(R.id.topads);
     }
 
@@ -51,16 +52,15 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     @Override
     public void onProductItemClicked(int position, Product product) {
+/*
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
         data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+*/
+
+        listener.onTopAdsItemClicked(product);
     }
 
     @Override

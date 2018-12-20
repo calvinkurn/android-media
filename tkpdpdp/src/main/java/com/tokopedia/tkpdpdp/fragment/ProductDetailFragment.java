@@ -97,7 +97,6 @@ import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;

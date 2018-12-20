@@ -21,7 +21,6 @@ import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttribute
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;

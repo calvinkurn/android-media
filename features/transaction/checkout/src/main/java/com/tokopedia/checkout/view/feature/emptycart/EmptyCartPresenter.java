@@ -119,7 +119,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
 
     @Override
     public void processCancelAutoApply() {
-        TKPDMapParam<String, String> authParam = AuthUtil.generateParamsNetwork(
+        Map<String, String> authParam = AuthUtil.generateParamsNetwork(
                 userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>());
 
         RequestParams requestParams = RequestParams.create();
