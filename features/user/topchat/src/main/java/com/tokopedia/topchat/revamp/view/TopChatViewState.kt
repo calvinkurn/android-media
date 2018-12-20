@@ -55,7 +55,11 @@ class TopChatViewState(var view: View, presenter: TopChatRoomPresenter) {
         })
 
         maximize.setOnClickListener { maximizeTools() }
-        sendButton.setOnClickListener { presenter.sendMessage(messageId, replyEditText.text.toString()) }
+        //TODO ADD MESSAGE ID
+        sendButton.setOnClickListener {
+            presenter.sendMessage("",
+                    replyEditText.text.toString())
+        }
     }
 
     private fun minimizeTools() {
