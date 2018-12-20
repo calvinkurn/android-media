@@ -19,9 +19,9 @@ public class GlobalConfig {
     public static Boolean DEBUG = false;
     public static boolean ENABLE_DISTRIBUTION = false;
     public static boolean IS_PREINSTALL = false;
-    public static final String PREINSTALL_NAME = "";
-    public static final String PREINSTALL_DESC = "";
-    public static final String PREINSTALL_SITE = "";
+    public static String PREINSTALL_NAME = "";
+    public static String PREINSTALL_DESC = "";
+    public static String PREINSTALL_SITE = "";
 
     public static boolean isSellerApp(){
         return APPLICATION_TYPE == SELLER_APPLICATION;
