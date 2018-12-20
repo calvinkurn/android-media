@@ -111,9 +111,8 @@ class ViewModelMapper : DataMapper {
         if (productChildList.isNotEmpty()) {
             if (!hasSelectedDefaultVariant) {
                 for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
-                    if (productChild.isAvailable && !hasSelectedDefaultVariant) {
+                    if (productChild.isAvailable) {
                         productChild.isSelected = true
-                        hasSelectedDefaultVariant = true
                         var defaultVariantIdOptionMap = LinkedHashMap<Int, Int>()
                         for (optionId: Int in productChild.optionsId) {
                             for (variant: Variant in expressCheckoutFormData.cart.groupShops[0].products[0].productVariantData[0].variants) {
@@ -125,8 +124,7 @@ class ViewModelMapper : DataMapper {
                             }
                         }
                         checkoutVariantProductViewModel.selectedVariantOptionsIdMap = defaultVariantIdOptionMap
-                    } else {
-                        productChild.isSelected = false
+                        break
                     }
                 }
             }
@@ -136,27 +134,35 @@ class ViewModelMapper : DataMapper {
                 if (firstVariantId == 0 && firstOptionId == 0) {
                     firstVariantId = key
                     firstOptionId = value
-                    break
                 }
             }
 
             for (variantTypeViewModel: TypeVariantViewModel in typeVariantViewModels) {
                 if (variantTypeViewModel.variantId != firstVariantId) {
-                    for (variantOptionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
-                        var hasAvailableChild = false
-                        for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
-                            if (productChild.isAvailable && variantOptionViewModel.optionId in productChild.optionsId &&
-                                    firstOptionId in productChild.optionsId) {
-                                hasAvailableChild = true
-                                break
+                    for (optionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
+
+                        // Get other variant type selected option id
+                        var otherVariantSelectedOptionIds = ArrayList<Int>()
+                        for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
+                            if (key != firstVariantId && key != variantTypeViewModel.variantId) {
+                                otherVariantSelectedOptionIds.add(value)
                             }
                         }
+
+                        // Look for available child
+                        var hasAvailableChild = false
+                        for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+                            hasAvailableChild = checkChildAvailable(productChild, optionViewModel.optionId, firstOptionId, otherVariantSelectedOptionIds)
+                            if (hasAvailableChild) break
+                        }
+
+                        // Set option id state with checking result
                         if (!hasAvailableChild) {
-                            variantOptionViewModel.hasAvailableChild = false
-                            variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_AVAILABLE
-                        } else {
-                            variantOptionViewModel.hasAvailableChild = true
-                            variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_SELECTED
+                            optionViewModel.hasAvailableChild = false
+                            optionViewModel.currentState == optionViewModel.STATE_NOT_AVAILABLE
+                        } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
+                            optionViewModel.hasAvailableChild = true
+                            optionViewModel.currentState == optionViewModel.STATE_NOT_SELECTED
                         }
                     }
                 }
@@ -164,6 +170,27 @@ class ViewModelMapper : DataMapper {
         }
 
         return checkoutVariantProductViewModel
+    }
+
+    fun checkChildAvailable(productChild: ProductChild,
+                            optionViewModelId: Int,
+                            currentChangedOptionId: Int,
+                            otherVariantSelectedOptionIds: ArrayList<Int>): Boolean {
+
+        // Check is child with newly selected option id, other variant selected option ids,
+        // and current looping variant option id is available
+        var otherSelectedOptionIdCount = 0
+        for (optionId: Int in otherVariantSelectedOptionIds) {
+            if (optionId in productChild.optionsId) {
+                otherSelectedOptionIdCount++
+            }
+        }
+
+        val otherSelectedOptionIdCountEqual = otherSelectedOptionIdCount == otherVariantSelectedOptionIds.size
+        val currentChangedOptionIdAvailable = currentChangedOptionId in productChild.optionsId
+        val optionViewModelIdAvailable = optionViewModelId in productChild.optionsId
+
+        return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
     override fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): ProfileViewModel {
