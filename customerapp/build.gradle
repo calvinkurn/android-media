@@ -189,9 +189,9 @@ android {
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
-            buildConfigField "String", "PREINSTALL_NAME", "${getDynamicProperty("preInstallName")}"
-            buildConfigField "String", "PREINSTALL_DESC", "${getDynamicProperty("preInstallDesc")}"
-            buildConfigField "String", "PREINSTALL_SITE", "${getDynamicProperty("preInstallSite")}"
+            buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
+            buildConfigField "String", "PREINSTALL_DESC", "\"${getDynamicProperty("preInstallDesc")}\""
+            buildConfigField "String", "PREINSTALL_SITE", "\"${getDynamicProperty("preInstallSite")}\""
             multiDexKeepFile file('multidex-config.txt')
             multiDexKeepProguard file('multidex-config.pro')
             if (allowProguard()) {
