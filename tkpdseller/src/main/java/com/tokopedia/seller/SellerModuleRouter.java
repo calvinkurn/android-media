@@ -11,6 +11,7 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -38,6 +39,8 @@ public interface SellerModuleRouter {
 
     void sendEventTracking(String event, String category, String action, String label);
 
+    void sendEventTracking(Map<String, Object> eventTracking);
+
     void sendMoEngageOpenShopEventTracking(String screenName);
 
     Intent getLoginIntent(Context context);
@@ -47,6 +50,8 @@ public interface SellerModuleRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getGMHomeIntent(Context context);
 
     void gotoTopAdsDashboard(Context context);
 

@@ -11,10 +11,9 @@ import android.view.TextureView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -24,6 +23,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
+import com.tokopedia.core.analytics.*;
 
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     }
 
     public void processToShareProduct(Context context, @NonNull ShareData shareData) {
-        UnifyTracking.eventShareProduct();
+        UnifyTracking.eventShareProduct(context);
     }
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {

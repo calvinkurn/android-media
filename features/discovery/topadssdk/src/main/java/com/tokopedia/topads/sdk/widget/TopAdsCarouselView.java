@@ -8,31 +8,39 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
+import com.tokopedia.topads.sdk.utils.GridSpaceItemDecoration;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
+import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheetDynamicChannel;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by errysuprayogi on 7/20/18.
  */
 
-public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAdsClickListener {
+public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAdsClickListener, View.OnClickListener {
 
     private static final String TAG = TopAdsCarouselView.class.getSimpleName();
     private TopAdsPresenter presenter;
@@ -42,6 +50,10 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private TopAdsItemClickListener adsItemClickListener;
     private TopAdsItemImpressionListener adsItemImpressionListener;
     private LinearLayoutManager layoutManager;
+    private ImageView btnCta;
+    private TypedArray styledAttributes;
+    private TextView title;
+    private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
 
     public TopAdsCarouselView(Context context) {
         super(context);
@@ -62,16 +74,37 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
+        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsCarouselView, defStyle, 0);
         inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
                 false);
+        btnCta = findViewById(R.id.info_cta);
+        btnCta.setOnClickListener(this);
+        title = findViewById(R.id.title);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_5)));
+        infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
+        try {
+            adapter.setImpressionOffset(styledAttributes.getDimensionPixelSize(R.styleable.TopAdsCarouselView_ads_offset, 0));
+            String presetTitle = styledAttributes.getString(R.styleable.TopAdsCarouselView_ads_title);
+            if (presetTitle != null)
+                title.setText(presetTitle);
+        } finally {
+            styledAttributes.recycle();
+        }
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.info_cta) {
+            infoBottomSheet.show();
+        }
     }
 
     public void setConfig(Config config) {
@@ -114,6 +147,23 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         adapter.setList(list);
         if (adsListener != null && list.size() > 0) {
             adsListener.onTopAdsLoaded(list);
+        }
+        if (list.isEmpty())
+            setVisibility(GONE);
+    }
+
+    public void setData(TopAdsModel data) {
+        if (data != null && data.getError() == null && data.getStatus().getErrorCode() == 0) {
+            List<Item> visitables = new ArrayList<>();
+            for (int i = 0; i < data.getData().size(); i++) {
+                Data d = data.getData().get(i);
+                if (d.getProduct() != null) {
+                    visitables.add(ModelConverter.convertToCarouselListViewModel(d));
+                }
+            }
+            adapter.setList(visitables);
+            if (visitables.isEmpty())
+                setVisibility(GONE);
         }
     }
 

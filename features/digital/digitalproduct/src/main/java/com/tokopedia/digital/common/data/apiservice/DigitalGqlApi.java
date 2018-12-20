@@ -1,8 +1,8 @@
 package com.tokopedia.digital.common.data.apiservice;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
+import com.tokopedia.digital.widget.data.entity.RecommendationEntity;
 
 import java.util.List;
 
@@ -25,4 +25,9 @@ public interface DigitalGqlApi {
     @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<Response<List<GraphqlResponse<RechargeResponseEntity>>>> getCategoryAndFavoriteList(@Body String requestBody);
+
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<List<GraphqlResponse<RecommendationEntity>>>> getRecommendationList(@Body String requestBody);
+
 }

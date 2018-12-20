@@ -21,6 +21,7 @@ public class FlightBookingCartData implements Parcelable {
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
     private List<FlightBookingAmenityMetaViewModel> mealViewModels;
     private List<NewFarePrice> newFarePrices;
+    private boolean isMandatoryDob;
 
     private FlightBookingVoucherViewModel voucherViewModel;
     private boolean isDomestic;
@@ -37,6 +38,7 @@ public class FlightBookingCartData implements Parcelable {
         isDomestic = in.readByte() != 0;
         insurances = in.createTypedArrayList(FlightInsuranceViewModel.CREATOR);
         voucherViewModel = in.readParcelable(FlightBookingVoucherViewModel.class.getClassLoader());
+        isMandatoryDob = in.readByte() != 0;
     }
 
     @Override
@@ -52,6 +54,7 @@ public class FlightBookingCartData implements Parcelable {
         dest.writeByte((byte) (isDomestic ? 1 : 0));
         dest.writeTypedList(insurances);
         dest.writeParcelable(voucherViewModel, flags);
+        dest.writeByte((byte) (isMandatoryDob ? 1 : 0));
     }
 
     @Override
@@ -162,5 +165,13 @@ public class FlightBookingCartData implements Parcelable {
 
     public void setDomestic(boolean domestic) {
         isDomestic = domestic;
+    }
+
+    public boolean isMandatoryDob() {
+        return isMandatoryDob;
+    }
+
+    public void setMandatoryDob(boolean mandatoryDob) {
+        isMandatoryDob = mandatoryDob;
     }
 }

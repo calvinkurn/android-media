@@ -42,8 +42,11 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
@@ -59,7 +62,6 @@ import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.BookingCodeData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
@@ -69,6 +71,7 @@ import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -81,7 +84,7 @@ import static com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFr
  */
 
 public class OrderDetailActivity extends TActivity
-        implements OrderDetailView {
+        implements OrderDetailView, ToolbarChangeListener {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
@@ -156,6 +159,7 @@ public class OrderDetailActivity extends TActivity
         setInvoiceView(data);
         setBookingCode(data);
         setDescriptionView(data);
+        setProtectionView(data);
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
@@ -359,6 +363,22 @@ public class OrderDetailActivity extends TActivity
         insurancePrice.setText(data.getInsurancePrice());
         additionalFee.setText(data.getAdditionalFee());
         totalPayment.setText(data.getTotalPayment());
+    }
+
+    private void setProtectionView(OrderDetailData data) {
+        View protectionLayout = findViewById(R.id.layout_protection);
+        TextView protectionLabel = findViewById(R.id.protection_label);
+        TextView protectionFee = findViewById(R.id.protection_price);
+
+        if (data.getTotalProtectionItem() == 0 || data.getTotalProtectionFee() == null) {
+            protectionLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        String protectionLabelStr = String.format(Locale.US,
+                getString(R.string.protection_count_label), data.getTotalProtectionItem());
+        protectionLabel.setText(protectionLabelStr);
+        protectionFee.setText(data.getTotalProtectionFee());
     }
 
 
@@ -673,7 +693,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        //TODO Check Again Later
         Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
@@ -749,6 +768,11 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void showSnackbar(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void showSnackbarWithCloseButton(String errorMessage) {
+        NetworkErrorHelper.showCloseSnackbar(this, errorMessage);
     }
 
     @Override

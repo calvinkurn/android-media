@@ -130,10 +130,10 @@ public class Utils {
 
     }
 
-    public static int KB_1 = 1024;
-    public static int KB_10 = 10 * KB_1;
-    public static int MB_1 = 1000 * KB_1;
-    public static int MB_10 = 10 * MB_1;
+    public final static int KB_1 = 1024;
+    public final static int KB_10 = 10 * KB_1;
+    public static final int MAX_VIDEO_SIZE_IN_KB = 300 * KB_1;
+    public static final int MAX_IMAGE_SIZE_IN_KB = 10 * KB_1; // 15 * 1024KB
 
 
     public static byte[] get10KBFile(String path) {

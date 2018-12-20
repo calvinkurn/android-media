@@ -7,9 +7,9 @@ import android.content.Intent;
 import com.tokopedia.topads.R;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
-import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractorImpl;
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.Bank_Table;
 

@@ -8,7 +8,7 @@
     <string name="ch_choose_image_title_video">Pilih konten video</string>
 
     <string name="ch_error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
-    <string name="ch_error_msg_wrong_video_size">Ups! Ukuran video yang di-upload lebih dari 100MB</string>
+    <string name="ch_error_msg_wrong_video_size">Ups! Ukuran video yang di-upload lebih dari 300MB</string>
     <string name="ch_error_msg_wrong_title_size">Panjang judul harus 1 - 50 karakter</string>
     <string name="ch_error_msg_title_blank">Isi Judul</string>
     <string name="ch_error_msg_desc_blank">Isi Deskripsi</string>
@@ -101,5 +101,10 @@
     <string name="ch_share_your_content_msg">Bagikan konten milikmu di media sosial dan dapatkan skor lebih untuk menang!</string>
     <string name="ch_resubmit_text">Kirim ulang konten lain</string>
     <string name="action_settings">Pengaturan</string>
+    <string name="ch_please_wait">Please wait</string>
+    <string name="ch_choose_video">Pilih Video</string>
+    <string name="ch_error_Video_version_minimum">Mohon maaf device Anda tidak dapat menggunakan fitur ini</string>
+    <string name="ch_wait_msg">Mohon tunggu, silakan coba beberapa saat lagi</string>
+
 
 </resources>

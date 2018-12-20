@@ -9,8 +9,6 @@ import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
-import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
-import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
 
 import java.util.List;
 
@@ -41,11 +39,7 @@ public interface CatalogListingContract {
 
         Resources getResources();
 
-        void refreshTab(int categoryId);
-
-        int getSelectedCategoryId();
-
-        void updateSelectedCategoryId(int id);
+        void refreshTab();
 
         boolean isAddedView();
 
@@ -57,10 +51,20 @@ public interface CatalogListingContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getHomePageData();
+        void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire);
 
         void getPointData();
 
-        int getSelectedCategoryId();
+        void setPointRangeId(int id);
+
+        int getPointRangeId();
+
+        void setCurrentCategoryId(int id);
+
+        int getCurrentCategoryId();
+
+        void setCurrentSubCategoryId(int id);
+
+        int getCurrentSubCategoryId();
     }
 }

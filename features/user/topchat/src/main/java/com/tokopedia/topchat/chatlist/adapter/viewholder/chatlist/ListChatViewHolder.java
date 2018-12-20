@@ -223,7 +223,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                     }
                 }else {
                     if (presenter.getSelected() == 0) {
-                        presenter.goToDetailMessage(position, element);
+                        presenter.goToDetailMessage(mainView.getContext(), position, element);
                     } else if (element.isChecked()) {
                         setReadState();
                         presenter.onDeselect(position);

@@ -48,7 +48,7 @@ public class OtpSource {
     public Observable<RequestOtpViewModel> requestOtp(HashMap<String, Object> parameters) {
         return otpApi
                 .requestOtp(
-                        new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(new Date()),
+                        new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(new Date()),
                         parameters.get(RequestOtpUseCase.PARAM_USER_ID).toString(),
                         parameters)
                 .map(requestOTPMapper);
@@ -73,7 +73,7 @@ public class OtpSource {
     public Observable<RequestOtpViewModel> requestOtpWithEmail(HashMap<String, Object> parameters) {
         return otpApi
                 .requestOtpEmail(
-                        new SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(new Date()),
+                        new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(new Date()),
                         parameters.get(RequestOtpUseCase.PARAM_USER_ID).toString(),
                         parameters)
                 .map(requestOTPMapper);

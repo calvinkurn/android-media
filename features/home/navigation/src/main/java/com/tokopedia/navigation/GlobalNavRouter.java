@@ -20,7 +20,7 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage);
+    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc);
 
     Intent getInboxTalkCallingIntent(Context context);
 
@@ -48,7 +48,9 @@ public interface GlobalNavRouter {
 
     Intent instanceIntentDigitalCategoryList();
 
-    Intent getReferralIntent(Context context);
+    Intent gotoWishlistPage(Context context);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
+    void sendOpenHomeEvent();
 }

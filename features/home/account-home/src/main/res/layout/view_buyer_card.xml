@@ -24,6 +24,7 @@
                 android:id="@+id/holder_photo_progress"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50">
+
                 <ImageView
                     android:id="@+id/image_profile_completed"
                     android:layout_width="match_parent"
@@ -59,23 +60,25 @@
 
             </RelativeLayout>
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/text_username"
-                style="@style/TextView.TitleMedium.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:maxLines="1"
+                app:fontSize="title"
+                app:weight="medium"
                 android:layout_toRightOf="@+id/holder_photo_progress"
                 android:layout_toEndOf="@+id/holder_photo_progress"
                 tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/text_profile_completion"
-                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:fontSize="micro"
+                app:textViewTheme="lightSecondary"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_below="@+id/text_username"
