@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment
+import com.tokopedia.flashsale.management.view.fragment.FlashSaleWebViewFragment
 
 class FlashsaleWebViewActivity: BaseSimpleActivity() {
 
@@ -25,5 +25,5 @@ class FlashsaleWebViewActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun getNewFragment() = BaseSessionWebViewFragment.newInstance(url)
+    override fun getNewFragment() = FlashSaleWebViewFragment.newInstance(url)
 }

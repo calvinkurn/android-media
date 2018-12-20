@@ -25,10 +25,10 @@ fun Int.getProductStatusString(context: Context): String {
     }
 }
 
-fun Int.getAdminStatusString(context: Context): String {
+fun Int.getAdminStatusStringAfterReview(context: Context): String {
     return when (this) {
-        FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED ->  context.getString(R.string.flash_sale_waiting)
         FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED -> context.getString(R.string.flash_sale_accepted)
+        FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED, // Yes, this status will become rejected, because "inReview" phase has over.
         FlashSaleAdminStatusIdTypeDef.NAKAMA_REJECTED,
         FlashSaleAdminStatusIdTypeDef.SYSTEM_TAKEOUT,
         FlashSaleAdminStatusIdTypeDef.NAKAMA_TAKEOUT -> context.getString(R.string.flash_sale_rejected)
@@ -72,10 +72,10 @@ fun FlashSaleProductItemCampaign.getProductStatusColor(): StatusColor {
     }
 }
 
-fun Int.getAdminStatusColor(): StatusColor {
+fun Int.getAdminStatusColorAfterReview(): StatusColor {
     return when (this) {
-        FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED,
         FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED -> StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
+        FlashSaleAdminStatusIdTypeDef.NOT_REVIEWED,
         FlashSaleAdminStatusIdTypeDef.NAKAMA_REJECTED,
         FlashSaleAdminStatusIdTypeDef.SYSTEM_TAKEOUT,
         FlashSaleAdminStatusIdTypeDef.NAKAMA_TAKEOUT -> StatusColor(R.color.white, R.drawable.rect_gray_rounded_left)

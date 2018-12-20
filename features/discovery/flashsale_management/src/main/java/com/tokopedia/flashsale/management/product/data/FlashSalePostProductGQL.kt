@@ -35,8 +35,8 @@ data class FlashSalePostProductItem(
         @SerializedName("id")
         @Expose val id: Int = 0,
 
-        @SerializedName("price")
-        @Expose val price: String = "",
+        @SerializedName("price_float")
+        @Expose val price: Float = 0F,
 
         @SerializedName("name")
         @Expose val name: String = "",
@@ -55,7 +55,7 @@ data class FlashSalePostProductItem(
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readString(),
+            parcel.readFloat(),
             parcel.readString(),
             parcel.readString(),
             parcel.createIntArray().toList(),
@@ -67,23 +67,23 @@ data class FlashSalePostProductItem(
     override fun getProductName() = name
     override fun getProductDepartmentId() = departmentId
     override fun getProductImageUrl() = imageUrl
-    override fun getProductPrice() = StringUtils.convertToNumeric(price, false).toInt()
+    override fun getProductPrice() = price.toInt()
     override fun getProductDepartmentName() = departmentName
-    override fun getCampOriginalPrice() = StringUtils.convertToNumeric(campaign.originalPrice, false).toInt()
+    override fun getCampOriginalPrice() = campaign.originalPrice.toInt()
     override fun getDiscountPercentage() = campaign.discountedPercentage
-    override fun getDiscountedPrice() = StringUtils.convertToNumeric(campaign.discountedPrice, false).toInt()
+    override fun getDiscountedPrice() = campaign.discountedPrice.toInt()
     override fun getCustomStock() = campaign.customStock
     override fun getOriginalCustomStock() = campaign.originalCustomStock
     override fun getStockSoldPercentage() = 0
     override fun isEligible() = false //no operation edit is needed for post submission
     override fun getMessage() = ""
     override fun getProductStatus() = FlashSaleProductStatusTypeDef.NOTHING
-    override fun getCampaignStatusId() = FlashSaleCampaignStatusIdTypeDef.ON_GOING
+    override fun getCampaignStatusId() = campaign.statusId
     override fun getCampaignAdminStatusId() = campaign.adminStatus
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
-        parcel.writeString(price)
+        parcel.writeFloat(price)
         parcel.writeString(name)
         parcel.writeString(imageUrl)
         parcel.writeIntArray(departmentId.toIntArray())
@@ -104,20 +104,21 @@ data class FlashSalePostProductItem(
             return arrayOfNulls(size)
         }
     }
+
 }
 
 data class FlashSalePostProductItemCampaign(
         @SerializedName("campaign_id")
         @Expose val campaignId: Int = 0,
 
-        @SerializedName("original_price")
-        @Expose val originalPrice: String = "",
+        @SerializedName("original_price_float")
+        @Expose val originalPrice: Float = 0F,
 
         @SerializedName("discount_percentage")
         @Expose val discountedPercentage: Float = 0f,
 
-        @SerializedName("discounted_price")
-        @Expose val discountedPrice: String = "",
+        @SerializedName("discounted_price_float")
+        @Expose val discountedPrice: Float = 0F,
 
         @SerializedName("custom_stock")
         @Expose val customStock: Int = 0,
@@ -137,9 +138,9 @@ data class FlashSalePostProductItemCampaign(
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readString(),
             parcel.readFloat(),
-            parcel.readString(),
+            parcel.readFloat(),
+            parcel.readFloat(),
             parcel.readInt(),
             parcel.readInt(),
             parcel.readInt(),
@@ -149,9 +150,9 @@ data class FlashSalePostProductItemCampaign(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(campaignId)
-        parcel.writeString(originalPrice)
+        parcel.writeFloat(originalPrice)
         parcel.writeFloat(discountedPercentage)
-        parcel.writeString(discountedPrice)
+        parcel.writeFloat(discountedPrice)
         parcel.writeInt(customStock)
         parcel.writeInt(originalCustomStock)
         parcel.writeInt(stockSoldPercentage)

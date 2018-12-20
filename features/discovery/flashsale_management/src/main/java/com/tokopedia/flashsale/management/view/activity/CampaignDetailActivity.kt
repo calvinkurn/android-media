@@ -27,9 +27,11 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     override fun getNewFragment(): Fragment? = null
 
     private var campaignUrl: String = ""
+    private var campaignName: String? = null
     private var campaignId: Long = -1
     private var campaignType: String? = null
     private var flashSaleTracking: FlashSaleTracking? = null
+    private var tabProductUseButton: Boolean = false
     @Inject lateinit var presenter: CampaignInfoPresenter
 
     val titles by lazy {
@@ -41,6 +43,10 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
         component.inject(this)
         flashSaleTracking = FlashSaleTracking(application as AbstractionRouter)
         loadSellerStatus()
+        campaignName?.let {
+            title = it
+            supportActionBar?.setTitle(it)
+        }
     }
 
     private fun loadSellerStatus(){
@@ -49,6 +55,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     }
 
     fun moveToTabProduct(){
+        this.tabProductUseButton = true
         pager.currentItem = TAB_POS_MY_PRODUCT
     }
 
@@ -84,6 +91,7 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
         campaignId = intent.getLongExtra(EXTRA_PARAM_CAMPAIGN_ID, -1)
         campaignUrl = intent.getStringExtra(EXTRA_PARAM_CAMPAIGN_URL) ?: ""
         campaignType = intent.getStringExtra(EXTRA_PARAM_CAMPAIGN_TYPE)
+        campaignName = intent.getStringExtra(EXTRA_PARAM_CAMPAIGN_NAME)
         super.setupLayout(savedInstanceState)
         indicator.tabMode = TabLayout.MODE_SCROLLABLE
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -92,7 +100,12 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
                 if (position == 0) {
                     flashSaleTracking?.clickTabInfo(campaignId.toString())
                 } else {
-                    flashSaleTracking?.clickTabProduct(campaignId.toString())
+                    if (tabProductUseButton) {
+                        flashSaleTracking?.clickInfoToProduct(campaignId.toString())
+                        tabProductUseButton = false
+                    } else {
+                        flashSaleTracking?.clickTabProduct(campaignId.toString())
+                    }
                 }
             }
 
@@ -112,11 +125,13 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context, campaignId: Long, campaignUrl: String, campaignType: String?) =
+        fun createIntent(context: Context, campaignId: Long, campaignUrl: String, campaignType: String?,
+                         campaignName:String? = null) =
                 Intent(context, CampaignDetailActivity::class.java)
                         .putExtra(EXTRA_PARAM_CAMPAIGN_ID, campaignId)
                         .putExtra(EXTRA_PARAM_CAMPAIGN_URL, campaignUrl)
                         .putExtra(EXTRA_PARAM_CAMPAIGN_TYPE, campaignType)
+                        .putExtra(EXTRA_PARAM_CAMPAIGN_NAME, campaignName)
 
 
         private const val TAB_POS_CAMPAIGN_INFO = 0
@@ -124,5 +139,6 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
         private const val EXTRA_PARAM_CAMPAIGN_URL = "campaign_url"
         private const val EXTRA_PARAM_CAMPAIGN_TYPE = "campaign_type"
+        private const val EXTRA_PARAM_CAMPAIGN_NAME = "campaign_name"
     }
 }

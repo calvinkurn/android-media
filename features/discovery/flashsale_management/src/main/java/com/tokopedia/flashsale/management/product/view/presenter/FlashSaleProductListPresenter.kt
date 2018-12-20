@@ -30,20 +30,20 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
         getProductListJob.cancel()
         getProductListJob = Job()
         val handler = CoroutineExceptionHandler { _, ex ->
-            GlobalScope.launch(Dispatchers.Main) {
+            CoroutineScope(Dispatchers.Main).launch {
                 onError(ex)
             }
         }
-        GlobalScope.launch(Dispatchers.Main + getProductListJob + handler) {
+        CoroutineScope(Dispatchers.Main + getProductListJob + handler).launch() {
             val shopId = userSession.shopId.toInt()
             getSubmissionFlashSaleProductUseCase.setParams(campaignId, offset, rows, q,
                     shopId, filterId)
-            val flashSaleProductJob = GlobalScope.async(Dispatchers.Default + handler) {
+            val flashSaleProductJob = async(Dispatchers.Default + handler) {
                 getSubmissionFlashSaleProductUseCase.executeOnBackground()
             }
 
             getFlashSaleCategoryListUseCase.setParams(campaignSlug, shopId)
-            val flashSaleCategoryJob = GlobalScope.async(Dispatchers.Default + handler) {
+            val flashSaleCategoryJob = async(Dispatchers.Default + handler) {
                 getFlashSaleCategoryListUseCase.executeOnBackground()
             }
             onSuccess(mergeResult(flashSaleProductJob.await(), flashSaleCategoryJob.await()))
@@ -51,24 +51,24 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
     }
 
     fun getPostProductList(campaignId: Int, campaignSlug: String, start: Int, rows: Int, q: String,
-                           statusId:Int,
+                           statusId: Int,
                            onSuccess: (GetMojitoPostProduct) -> Unit, onError: (Throwable) -> Unit) {
         getProductListJob.cancel()
         getProductListJob = Job()
         val handler = CoroutineExceptionHandler { _, ex ->
-            GlobalScope.launch(Dispatchers.Main) {
+            CoroutineScope(Dispatchers.Main).launch {
                 onError(ex)
             }
         }
-        GlobalScope.launch(Dispatchers.Main + getProductListJob + handler) {
+        CoroutineScope(Dispatchers.Main + getProductListJob + handler).launch {
             val shopId = userSession.shopId.toInt()
             getPostFlashSaleProductUseCase.setParams(campaignId, start, rows, q, shopId.toString(), statusId)
-            val flashSaleProductJob = GlobalScope.async(Dispatchers.Default + handler) {
+            val flashSaleProductJob = async(Dispatchers.Default + handler) {
                 getPostFlashSaleProductUseCase.executeOnBackground()
             }
 
             getFlashSaleCategoryListUseCase.setParams(campaignSlug, shopId)
-            val flashSaleCategoryJob = GlobalScope.async(Dispatchers.Default + handler) {
+            val flashSaleCategoryJob = async(Dispatchers.Default + handler) {
                 getFlashSaleCategoryListUseCase.executeOnBackground()
             }
             onSuccess(mergeResult(flashSaleProductJob.await(), flashSaleCategoryJob.await()))
@@ -99,7 +99,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
         return resultProductList
     }
 
-    fun getCategoryMap(flashSaleCategoryListResult: FlashSaleCategoryListGQL):HashMap<Long, String>{
+    fun getCategoryMap(flashSaleCategoryListResult: FlashSaleCategoryListGQL): HashMap<Long, String> {
         val resultCategoryList: List<Criteria> = flashSaleCategoryListResult.flashSaleCategoryListGQLData.flashSaleCategoryListGQLContent.criteriaList
 
         val categoryMap = HashMap<Long, String>()
@@ -148,7 +148,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getSubmissionFlashSa
         submitProductUseCase.setParams(campaignId, userSession.shopId.toInt())
         submitProductUseCase.execute(
                 {
-                    if ( it.flashSaleDataContainer.isSuccess()) {
+                    if (it.flashSaleDataContainer.isSuccess()) {
                         onSuccess(it.flashSaleDataContainer)
                     } else {
                         onError(RuntimeException(it.flashSaleDataContainer.statusCode.toString()))

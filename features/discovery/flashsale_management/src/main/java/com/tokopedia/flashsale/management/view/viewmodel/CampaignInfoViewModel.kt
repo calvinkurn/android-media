@@ -21,4 +21,4 @@ data class CampaignInfoShopCriteriaViewModel(val shopType:String = "-",
 data class CampaignInfoDescriptionViewModel(val description: String): CampaignInfoViewModel()
 data class CampaignInfoPromoViewModel(val minTransaction: String,
                                       val promoCode: String): CampaignInfoViewModel()
-data class CampaignInfoTnCViewModel(val tnc: String): CampaignInfoViewModel()
+data class CampaignInfoTnCViewModel(val tnc: String, val tncLastUpdated:String): CampaignInfoViewModel()

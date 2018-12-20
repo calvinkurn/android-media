@@ -65,7 +65,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
 
     override fun onItemClicked(t: CampaignViewModel) {
         activity?.let {
-            startActivity(CampaignDetailActivity.createIntent(it, t.id, t.campaignUrl, t.campaignType))
+            startActivity(CampaignDetailActivity.createIntent(it, t.id, t.campaignUrl, t.campaignType, t.name))
         }
     }
 

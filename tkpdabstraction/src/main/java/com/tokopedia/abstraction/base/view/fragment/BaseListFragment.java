@@ -73,8 +73,12 @@ import java.util.List;
  *       }
  *       return adapter
  *   }
+ *   override getMessageFromThrowable(context, Throwable) to change the error message based on throwable
+ *   or call
+ *   super.showGetListError(MessageErrorException(getString(R.string.sorry_flash_sale_is_canceled)))
  * 7.Customize [[EMPTY STATE]]
- *   override getEmptyDataViewModel()
+ *   override getEmptyDataViewModel() and create new EmptyModel()
+ *   To manually show fullEmptyPage in adapter: call adapter.clearAllElements() and showEmpty(). Most of time, no need to call it.
  * 8.Customize [[LOADING STATE]]
  *   override getLoadingModel()
  */
@@ -280,8 +284,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         updateScrollListenerState(hasNextPage);
 
         if (isListEmpty()) {
-            // Note: add element should be the last in line.
-            adapter.addElement(getEmptyDataViewModel());
+            showEmpty();
         } else {
             //set flag to false, indicate that the initial data has been set.
             isLoadingInitialData = false;
@@ -290,6 +293,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     public boolean isListEmpty(){
         return adapter.getItemCount() == 0;
+    }
+
+    public void showEmpty(){
+        // Note: add element should be the last in line.
+        adapter.addElement(getEmptyDataViewModel());
     }
 
     public void updateScrollListenerState(boolean hasNextPage){

@@ -104,7 +104,11 @@ data class Campaign(
 
         @SerializedName("tnc")
         @Expose
-        val tnc: String = ""
+        val tnc: String = "",
+
+        @SerializedName("tnc_last_updated")
+        @Expose
+        val tncLastUpdated: String = ""
 ) {
     data class GetCampaignInfo(@SerializedName("data")
                                     @Expose val campaign: Campaign)

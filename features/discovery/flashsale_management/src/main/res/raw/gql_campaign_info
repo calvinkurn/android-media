@@ -55,6 +55,7 @@ query getCampaignInfo($slug: String!, $shop_id: Int!){
             }
             dashboard_url
             tnc
+            tnc_last_updated
         }
     }
 }

@@ -18,11 +18,8 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
     }
 
     companion object {
-        const val TYPE_SUBMIT = 0;
-        const val TYPE_NOT_SUBMIT = 1;
-
-        // will change to 1 in next release, api has bug.
-        const val HAS_NOT_SUBMITTED_COUNT = 0;
+        const val TYPE_SUBMIT = 0
+        const val TYPE_NOT_SUBMIT = 1
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -40,7 +37,7 @@ class FlashSaleSubmitLabelAdapter(var selectedIndex: Int = -1,
     override fun getItemCount(): Int {
         // if it has at least 1 submit count, it will show "Terdaftar" and "Belum Terdaftar"
         return (if (submittedCount > 0) {
-            1 + HAS_NOT_SUBMITTED_COUNT
+            2
         } else {
             0
         })

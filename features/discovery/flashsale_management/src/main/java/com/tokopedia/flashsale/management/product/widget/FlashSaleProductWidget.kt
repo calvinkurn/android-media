@@ -42,11 +42,13 @@ class FlashSaleProductWidget @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Only show the stock statistics only if the product is outside the inReview and Ready State
+     */
     fun shouldShowStatisticPostSubmission(item: FlashSaleProductItem?): Boolean {
         return item is FlashSalePostProductItem &&
                 item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.IN_REVIEW &&
-                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.READY &&
-                item.getCampaignAdminStatusId() == FlashSaleAdminStatusIdTypeDef.NAKAMA_ACCEPTED
+                item.getCampaignStatusId() != FlashSaleCampaignStatusIdTypeDef.READY
     }
 
     fun setData(item: FlashSaleProductItem?) {
@@ -88,14 +90,28 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 }
             } else { // item is postsubmission.
                 ivCheckMark.visibility = View.GONE
-                if (shouldShowStatisticPostSubmission(item)) {
-                    tvStatus.visibility = View.GONE
-                } else {
-                    tvStatus.text = item.getCampaignAdminStatusId().getAdminStatusString(context)
-                    val statusColor = item.getCampaignAdminStatusId().getAdminStatusColor()
+                // When campaign is "inReview", all product status become "Waiting", so we ignore the real status.
+                if (item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.IN_REVIEW) {
+                    tvStatus.text = context.getString(R.string.flash_sale_waiting)
+                    val statusColor = StatusColor(R.color.tkpd_main_green, R.drawable.rect_green_rounded_left)
                     tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
                     tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
                     tvStatus.visibility = View.VISIBLE
+                } else if (item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.READY ||
+                        item.getCampaignStatusId() == FlashSaleCampaignStatusIdTypeDef.READY_LOCKED) {
+                    // only show status when campaign status is ready and ready locked
+                    val statusText = item.getCampaignAdminStatusId().getAdminStatusStringAfterReview(context)
+                    if (statusText.isEmpty()) {
+                        tvStatus.visibility = View.GONE
+                    } else {
+                        tvStatus.text = statusText
+                        val statusColor = item.getCampaignAdminStatusId().getAdminStatusColorAfterReview()
+                        tvStatus.setTextColor(ContextCompat.getColor(context, statusColor.textColor))
+                        tvStatus.setBackgroundResource(statusColor.bgDrawableRes)
+                        tvStatus.visibility = View.VISIBLE
+                    }
+                } else {
+                    tvStatus.visibility = View.GONE
                 }
             }
             tvProductName.text = item.getProductName()

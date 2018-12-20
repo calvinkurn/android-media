@@ -38,6 +38,6 @@ fun Campaign.toListCampaignInfoViewModel(): List<CampaignInfoViewModel> {
     list.add(CampaignInfoDescriptionViewModel(description))
     if (minTransaction.isNotBlank() || promoCode.isNotBlank())
         list.add(CampaignInfoPromoViewModel(minTransaction, promoCode))
-    list.add(CampaignInfoTnCViewModel(tnc))
+    list.add(CampaignInfoTnCViewModel(tnc, tncLastUpdated))
     return list
 }

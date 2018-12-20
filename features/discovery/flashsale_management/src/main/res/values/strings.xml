@@ -80,4 +80,5 @@
     <string name="benefit_flashsale_4">Efektif untuk mempromosikan produk terbaik dari toko Anda</string>
     <string name="benefit_flashsale_5">Produk tampil di halaman khusus yang banyak dikunjungi</string>
     <string name="flash_sale_undo_cancel">Undo Pembatalan</string>
+    <string name="sorry_flash_sale_is_canceled">Mohon maaf, Flash Sale ini dibatalkan</string>
 </resources>
