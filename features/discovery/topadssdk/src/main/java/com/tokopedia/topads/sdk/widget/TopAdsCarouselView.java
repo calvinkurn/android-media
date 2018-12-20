@@ -115,7 +115,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.info_cta){
+        if (view.getId() == R.id.info_cta) {
             infoBottomSheet.show();
         }
     }
@@ -168,6 +168,8 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         if (adsListener != null && list.size() > 0) {
             adsListener.onTopAdsLoaded(list);
         }
+        if (list.isEmpty())
+            setVisibility(GONE);
     }
 
     public void setData(TopAdsModel data) {
@@ -180,6 +182,8 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
                 }
             }
             adapter.setList(visitables);
+            if (visitables.isEmpty())
+                setVisibility(GONE);
         }
     }
 

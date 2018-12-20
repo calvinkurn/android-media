@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.digital.R;
@@ -25,6 +24,7 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;

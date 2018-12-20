@@ -63,7 +63,7 @@ public abstract class CommonClientNumberInputView extends LinearLayout {
     private void init(Context context) {
         this.context = context;
 
-        View view = LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
+        View view = LayoutInflater.from(context).inflate(R.layout.view_holder_common_client_number_input, this, true);
         tvLabel = view.findViewById(R.id.tv_label_client_number);
         autoCompleteTextView = view.findViewById(R.id.ac_client_number);
         btnClear = view.findViewById(R.id.btn_clear_client_number);

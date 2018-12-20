@@ -136,7 +136,8 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
                 if (fragment != null
                         && fragment.isAdded()) {
                     if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
-                        fragment.getPresenter().getCoupons(data.get(position).getId());
+                        fragment.getPresenter().setCategoryId(data.get(position).getId());
+                        fragment.getPresenter().getCoupons(fragment.getPresenter().getCategoryId());
                     }
                 }
             }
@@ -184,7 +185,8 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         if (fragment != null
                 && fragment.isAdded()) {
             if (fragment.getPresenter() != null && fragment.getPresenter().isViewAttached()) {
-                fragment.getPresenter().getCoupons(categoryId);
+                fragment.getPresenter().setCategoryId(categoryId);
+                fragment.getPresenter().getCoupons(fragment.getPresenter().getCategoryId());
             }
         }
     }

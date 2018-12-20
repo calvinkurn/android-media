@@ -20,6 +20,7 @@
             android:layout_height="@dimen/margin_54"
             android:drawablePadding="@dimen/dp_3"
             android:gravity="center_vertical"
+            android:textSize="@dimen/dp_16"
             android:text="@string/promoted_products_related_to_this_item"
             android:textColor="@color/black_70"
             android:textStyle="bold" />

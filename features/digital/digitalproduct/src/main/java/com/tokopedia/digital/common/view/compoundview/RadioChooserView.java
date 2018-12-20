@@ -12,12 +12,9 @@ import android.widget.RadioGroup;
 
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalRadioChooserView;
 
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * Created by Rizky on 31/01/18.
@@ -27,8 +24,8 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
     private static final int EMPTY_MARGIN_VALUE = 0;
     private static final int RADIO_DIVIDER_MARGIN_VALUE = 40;
-    @BindView(R2.id.radio_group_container)
-    LinearLayout radioGroupContainer;
+
+    private LinearLayout radioGroupContainer;
 
     private List<Operator> operators;
 
@@ -44,6 +41,11 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
     public RadioChooserView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onCreateView() {
+        radioGroupContainer = findViewById(R.id.radio_group_container);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
     public void renderInitDataList(final List<Operator> data, String defaultOperatorId) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View viewRadioGroup = inflater.inflate(R.layout.view_digital_radio_group_button,null, false);
-        radioGroup  = (RadioGroup) viewRadioGroup.findViewById(R.id.radio_group_button);
+        radioGroup  = viewRadioGroup.findViewById(R.id.radio_group_button);
         radioGroupContainer.addView(radioGroup);
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -94,7 +96,7 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
         );
         for (int i = 0; i < data.size(); i++) {
             View radioView = inflater.inflate(R.layout.view_digital_radio_button,null, false);
-            RadioButton radioButton  = (RadioButton) radioView.findViewById(R.id.radio_button);
+            RadioButton radioButton  = radioView.findViewById(R.id.radio_button);
             radioButton.setLayoutParams(layoutParams);
             radioButton.setId(i);
             radioButton.setText(data.get(i).getName());
@@ -107,12 +109,9 @@ public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
         Operator operatorModel = data.get(radioGroup.getChildAt(0).getId());
         actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(operatorModel);
         initCheckRadioButtonBasedOnLastOrder(radioGroup, defaultOperatorId);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(data.get(i));
-                actionListener.tracking();
-            }
+        radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
+            actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(data.get(i));
+            actionListener.tracking();
         });
     }
 

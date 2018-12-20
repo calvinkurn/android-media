@@ -18,5 +18,20 @@ data class NotifFilterViewModel(
 
         const val FILTER_SELLER_ID = 2
         const val FILTER_SELLER_TEXT = "Penjual"
+
+        const val FILTER_FOR_YOU_ID = 4
+        const val FILTER_FOR_YOU_TEXT = "For You"
+
+        const val FILTER_PROMO_ID = 5
+        const val FILTER_PROMO_TEXT = "Promo"
+
+        const val FILTER_INSIGHT_ID = 6
+        const val FILTER_INSIGHT_TEXT = "Insight"
+
+        const val FILTER_FEATURE_UPDATE_ID = 7
+        const val FILTER_FEATURE_UPDATE_TEXT = "Feature Update"
+
+        const val FILTER_EVENT_ID = 8
+        const val FILTER_EVENT_TEXT = "Event"
     }
 }

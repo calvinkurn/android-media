@@ -12,6 +12,7 @@ include "features:content:kol_common"
 include "features:content:profile"
 include "features:content:interest_pick"
 
+include "features:digital:common_digital"
 include "features:digital:flight_no_op"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"
@@ -41,12 +42,23 @@ include "features:home:account-home"
 
 include "features:im:challenges"
 
+include "features:logistic:tracking"
+//include 'features:logistic:tracking_no_op'
+include "features:logistic:logisticaddaddress"
 include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticanalytics"
 include "features:logistic:logisticuploadawb"
-include "features:logistic:tracking"
-include "features:logistic:logisticaddaddress"
+//include "features:logistic:logisticuploadawb_no_op"
+include "features:logistic:logisticinputreceiptshipment"
+//include 'features:logistic:logisticinputreceiptshipment_no_op'
+include "features:logistic:logisticlistaddress"
+include "features:logistic:logisticgeolocation"
+//include 'features:logistic:logisticgeolocation_no_op'
+include "features:logistic:logisticcommon"
+include "features:logistic:logisticinsurance"
+//include "features:logistic:logisticinsurance_no_op"
+
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
@@ -57,6 +69,7 @@ include "features:merchant:reputation"
 include "features:merchant:product_draft_database"
 include "features:merchant:product_manage_item"
 include "features:merchant:product_manage_list"
+include "features:merchant:product_share"
 include "features:merchant:shop_common"
 include "features:merchant:shop_page"
 //include "features:merchant:shop_page_no_op"
@@ -68,6 +81,7 @@ include "features:merchant:shop_settings"
 include "features:operational:contact_us"
 
 include "features:payment:payment"
+//include "features:payment:payment_no_op"
 include "features:payment:pms"
 //include "features:payment:pms_no_op"
 include "features:payment:withdraw"
@@ -79,6 +93,10 @@ include "features:product:gallery"
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"
 include "features:promo:tokopoints"
+include "features:promo:promo_checkout"
+include "features:promo:promo_checkout_common"
+include "features:promo:loyalty"
+include "features:promo:loyalty_common"
 
 include "features:top_ads:top_ads_dashboard"
 //include "features:top_ads:top_ads_dashboard_no_op"
@@ -89,6 +107,7 @@ include "features:top_ads:top_ads_management_sourcetagging"
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"
+include "features:transaction:transactioninvoice"
 
 include "features:user:groupchat"
 //include "features:user:groupchat_no_op"
@@ -112,7 +131,6 @@ include "features:user:user_identification"
 include "features:user:user_identification_common"
 
 include 'logisticanalytics'
-include 'tkpdloyalty'
 include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
