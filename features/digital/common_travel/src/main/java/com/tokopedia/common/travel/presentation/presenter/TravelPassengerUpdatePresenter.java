@@ -160,20 +160,16 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
                 travelPassengerValidator.isBirthdateEmpty(getView().getBirthdate())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_birthdate_empty);
-        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                travelPassengerValidator.isIdentityNumberEmpty(getView().getIdentityNumber())) {
+        } else if (travelPassengerValidator.isIdentityNumberEmpty(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number);
-        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                travelPassengerValidator.isIdentityNumberLessThanMin(getView().getIdentityNumber())) {
+        } else if (travelPassengerValidator.isIdentityNumberLessThanMin(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_min);
-        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                travelPassengerValidator.isIdentityNumberMoreThanMax(getView().getIdentityNumber())) {
+        } else if (travelPassengerValidator.isIdentityNumberMoreThanMax(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_max);
-        } else if (getView().getPaxType() == TravelBookingPassenger.ADULT &&
-                travelPassengerValidator.isIdNumberUseSpecialCharacter(getView().getIdentityNumber())) {
+        } else if (travelPassengerValidator.isIdNumberUseSpecialCharacter(getView().getIdentityNumber())) {
             allDataValid = false;
             getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_alphanumeric);
         }

@@ -351,7 +351,6 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getLastName()).thenReturn("Buyer");
         String idNumberNotValid = "";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
-        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         //when
         presenter.submitEditPassengerData();
         //then
@@ -365,7 +364,6 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
-        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         String idNumberNotValid = "1234";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
         //when
@@ -381,7 +379,6 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
-        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         String idNumberNotValid = "12345678910234567890123";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
         //when
@@ -397,7 +394,6 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
-        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         String idNumberNotValid = "12345678910BD?-&3";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
         //when
@@ -463,6 +459,7 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
         Mockito.when(view.getBirthdate()).thenReturn("24 Juli 1994");
+        Mockito.when(view.getIdentityNumber()).thenReturn("24071994");
         Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.INFANT);
         setTravelPassenger();
         Mockito.when(addTravelPassengerUseCase.createObservable(Mockito.any()))
@@ -517,6 +514,7 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
         Mockito.when(view.getBirthdate()).thenReturn("24 Juli 1994");
+        Mockito.when(view.getIdentityNumber()).thenReturn("24071994");
         Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.INFANT);
         setTravelPassenger();
         Mockito.when(editTravelPassengerUseCase.createObservable(Mockito.any()))
