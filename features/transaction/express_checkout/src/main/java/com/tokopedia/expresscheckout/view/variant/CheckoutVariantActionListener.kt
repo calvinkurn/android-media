@@ -27,6 +27,6 @@ interface CheckoutVariantActionListener {
 
     fun onBindVariantUpdateProductViewModel()
 
-    fun onChangeVariant(variantId: Int, optionVariantViewModel: OptionVariantViewModel)
+    fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel)
 
 }

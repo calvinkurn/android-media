@@ -209,7 +209,7 @@
               "product_id":15223035,
               "sku":"",
               "campaign_id":0,
-              "product_name":"Produk Varian - Putih",
+              "product_name":"Produk Varian",
               "product_price_fmt":"Rp 2.000",
               "product_price":2000,
               "product_original_price":2000,
@@ -337,10 +337,10 @@
                       "option_ids":[
                         28510, 28515, 28520
                       ],
-                      "is_enabled":true,
+                      "is_enabled":false,
                       "name":"Produk Varian - Putih - S - Man",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-putih",
-                      "is_buyable":true,
+                      "is_buyable":false,
                       "stock_wording":"StokTersedia",
                       "stock_wording_html":"StokTersedia",
                       "other_variant_stock":"available"
@@ -355,12 +355,12 @@
                       "option_ids":[
                         28510, 28515, 28521
                       ],
-                      "is_enabled":true,
+                      "is_enabled":false,
                       "name":"Produk Varian - Putih - S - Woman",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-putih",
-                      "is_buyable":true,
-                      "stock_wording":"StokTersedia",
-                      "stock_wording_html":"StokTersedia",
+                      "is_buyable":false,
+                      "stock_wording":"TersediaUntuk Varian Lain",
+                      "stock_wording_html":"Tersedia Untuk Varian Lain",
                       "other_variant_stock":"available"
                     },
                     {
@@ -373,12 +373,12 @@
                       "option_ids":[
                         28510, 28516, 28520
                       ],
-                      "is_enabled":false,
+                      "is_enabled":true,
                       "name":"Produk Varian - Putih - M - Man",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-navy",
-                      "is_buyable":false,
-                      "stock_wording":"TersediaUntuk Varian Lain",
-                      "stock_wording_html":"Tersedia Untuk Varian Lain",
+                      "is_buyable":true,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
                       "other_variant_stock":"available"
                     },
                     {
@@ -391,12 +391,12 @@
                       "option_ids":[
                         28510, 28516, 28521
                       ],
-                      "is_enabled":false,
+                      "is_enabled":true,
                       "name":"Produk Varian - Putih - M - Woman",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-navy",
-                      "is_buyable":false,
-                      "stock_wording":"TersediaUntuk Varian Lain",
-                      "stock_wording_html":"Tersedia Untuk Varian Lain",
+                      "is_buyable":true,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
                       "other_variant_stock":"available"
                     },
                     {
@@ -427,13 +427,13 @@
                       "option_ids":[
                         28511, 28515, 28521
                       ],
-                      "is_enabled":true,
+                      "is_enabled":false,
                       "name":"Produk Varian - Navy - S - Woman",
                       "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-maroon",
-                      "is_buyable":true,
-                      "stock_wording":"StokTersedia",
-                      "stock_wording_html":"StokTersedia",
-                      "other_variant_stock":"available"
+                      "is_buyable":false,
+                      "stock_wording":"TersediaUntuk Varian Lain",
+                      "stock_wording_html":"Tersedia Untuk Varian Lain",
+                      "other_variant_stock":"not available"
                     },
                     {
                       "product_id":15223041,

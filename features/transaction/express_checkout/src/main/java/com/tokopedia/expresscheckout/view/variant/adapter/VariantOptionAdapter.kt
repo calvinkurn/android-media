@@ -41,7 +41,7 @@ class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val 
             }
         }
         notifyDataSetChanged()
-        listener.onChangeVariant(selectedVariant.variantId, selectedVariant)
+        listener.onChangeVariant(selectedVariant)
     }
 
 }

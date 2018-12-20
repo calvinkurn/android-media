@@ -102,17 +102,17 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onChangeVariant(variantId: Int, optionVariantViewModel: OptionVariantViewModel) {
+    override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
         var checkoutVariantProductViewModel = adapter.getProductDataViewModel()
         if (checkoutVariantProductViewModel != null && checkoutVariantProductViewModel.productChildrenList.isNotEmpty()) {
             var selectedKey = 0
             for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
-                if (key == variantId && value != optionVariantViewModel.optionId) {
+                if (key == selectedOptionViewModel.variantId && value != selectedOptionViewModel.optionId) {
                     selectedKey = key
                 }
             }
             if (selectedKey != 0) {
-                checkoutVariantProductViewModel.selectedVariantOptionsIdMap.put(selectedKey, optionVariantViewModel.optionId)
+                checkoutVariantProductViewModel.selectedVariantOptionsIdMap.put(selectedKey, selectedOptionViewModel.optionId)
             }
 
             // Check is product child for selected variant is available
@@ -138,33 +138,73 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
                 var variantTypeViewModels = adapter.getVariantTypeViewModel()
                 for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
-                    if (variantTypeViewModel.variantId == variantId) {
-                        variantTypeViewModel.variantSelectedValue = optionVariantViewModel.variantName
+                    if (variantTypeViewModel.variantId == selectedOptionViewModel.variantId) {
+                        variantTypeViewModel.variantSelectedValue = selectedOptionViewModel.variantName
                         adapter.notifyItemChanged(adapter.getIndex(variantTypeViewModel))
-                    } else {
-                        for (variantOptionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
-                            var hasAvailableChild = false
-                            for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
-                                if (productChild.isAvailable && variantOptionViewModel.optionId in productChild.optionsId &&
-                                        optionVariantViewModel.optionId in productChild.optionsId) {
-                                    hasAvailableChild = true
-                                    break
+                        break
+                    }
+                }
+
+                for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
+                    if (variantTypeViewModel.variantId != selectedOptionViewModel.variantId) {
+                        for (optionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
+
+                            // Get other variant type selected option id
+                            var otherVariantSelectedOptionIds = ArrayList<Int>()
+                            for (otherVariantViewModel: TypeVariantViewModel in variantTypeViewModels) {
+                                if (otherVariantViewModel.variantId != variantTypeViewModel.variantId &&
+                                        otherVariantViewModel.variantId != selectedOptionViewModel.variantId) {
+                                    for (otherVariantTypeOption: OptionVariantViewModel in otherVariantViewModel.variantOptions) {
+                                        if (otherVariantTypeOption.currentState == otherVariantTypeOption.STATE_SELECTED) {
+                                            otherVariantSelectedOptionIds.add(otherVariantTypeOption.optionId)
+                                            break
+                                        }
+                                    }
                                 }
                             }
+
+                            // Look for available child
+                            var hasAvailableChild = false
+                            for (productChild: ProductChild in checkoutVariantProductViewModel.productChildrenList) {
+                                hasAvailableChild = checkChildAvailable(productChild, optionViewModel.optionId, selectedOptionViewModel.optionId, otherVariantSelectedOptionIds)
+                                if (hasAvailableChild) break
+                            }
+
+                            // Set option id state with checking result
                             if (!hasAvailableChild) {
-                                variantOptionViewModel.hasAvailableChild = false
-                                variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_AVAILABLE
-                            } else {
-                                variantOptionViewModel.hasAvailableChild = true
-                                variantOptionViewModel.currentState == variantOptionViewModel.STATE_NOT_SELECTED
+                                optionViewModel.hasAvailableChild = false
+                                optionViewModel.currentState == optionViewModel.STATE_NOT_AVAILABLE
+                            } else if (optionViewModel.currentState != optionViewModel.STATE_SELECTED) {
+                                optionViewModel.hasAvailableChild = true
+                                optionViewModel.currentState == optionViewModel.STATE_NOT_SELECTED
                             }
                         }
                         adapter.notifyItemChanged(adapter.getIndex(variantTypeViewModel))
                     }
                 }
             }
-
         }
+    }
+
+    private fun checkChildAvailable(productChild: ProductChild,
+                                    optionViewModelId: Int,
+                                    currentChangedOptionId: Int,
+                                    otherVariantSelectedOptionIds: ArrayList<Int>): Boolean {
+
+        // Check is child with newly selected option id, other variant selected option ids,
+        // and current looping variant option id is available
+        var otherSelectedOptionIdCount = 0
+        for (optionId: Int in otherVariantSelectedOptionIds) {
+            if (optionId in productChild.optionsId) {
+                otherSelectedOptionIdCount++
+            }
+        }
+
+        val otherSelectedOptionIdCountEqual = otherSelectedOptionIdCount == otherVariantSelectedOptionIds.size
+        val currentChangedOptionIdAvailable = currentChangedOptionId in productChild.optionsId
+        val optionViewModelIdAvailable = optionViewModelId in productChild.optionsId
+
+        return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
     override fun onBindProductUpdateQuantityViewModel(stockWording: String) {
