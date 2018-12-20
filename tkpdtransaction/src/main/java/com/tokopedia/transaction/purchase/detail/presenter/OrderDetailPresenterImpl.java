@@ -2,7 +2,6 @@ package com.tokopedia.transaction.purchase.detail.presenter;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
@@ -20,7 +19,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
-import com.tokopedia.transaction.purchase.detail.model.buyagain.DataResponseBuyAgain;
 import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;

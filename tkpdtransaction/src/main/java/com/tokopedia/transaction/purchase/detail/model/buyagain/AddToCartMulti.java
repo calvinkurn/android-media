@@ -8,7 +8,7 @@ public class AddToCartMulti {
 
     @SerializedName("error_message")
     @Expose
-    private List<String> errorMessage = null;
+    private String errorMessage = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -16,11 +16,11 @@ public class AddToCartMulti {
     @Expose
     private DataResponseBuyAgain data;
 
-    public List<String> getErrorMessage() {
+    public String getErrorMessage() {
         return errorMessage;
     }
 
-    public void setErrorMessage(List<String> errorMessage) {
+    public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
