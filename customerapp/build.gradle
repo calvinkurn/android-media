@@ -51,7 +51,7 @@ def isPreInstall() {
     return "false"
 }
 
-getDynamicProperty(param) {
+def getDynamicProperty(param) {
     if (project.hasProperty(param)) {
         return project.property(param)
     }
