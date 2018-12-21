@@ -232,16 +232,21 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
     }
 
     fun removeDummy(visitable: Visitable<*>) {
-        if (visitable is SendableViewModel) {
-            for (chatItem in visitables) {
+        if (visitable is SendableViewModel && visitables.isNotEmpty()) {
+            val iter = visitables.iterator()
+
+            while (iter.hasNext()) {
+                val chatItem = iter.next()
                 if (chatItem is SendableViewModel
                         && chatItem.isDummy
                         && chatItem.startTime == visitable.startTime) {
-                    val indexToRemove = visitables.indexOf(chatItem)
-                    visitables.remove(chatItem)
-                    notifyItemRangeChanged(indexToRemove, 1)
+                    val position = this.visitables.indexOf(chatItem)
+                    this.visitables.remove(chatItem)
+                    notifyItemRemoved(position)
+                    break
                 }
             }
         }
     }
+
 }
