@@ -219,8 +219,8 @@ public interface ApplinkConst {
 
     interface Chat {
         String MESSAGE_ID = "message_id";
-        String SENDER_ID = "sender_id";
-        String SENDER_NAME = "sender_name";
-        String SENDER_ROLE = "sender_role";
+        String OPPONENT_ID = "opponent_id";
+        String OPPONENT_NAME = "opponent_name";
+        String OPPONENT_ROLE = "opponent_role";
     }
 }

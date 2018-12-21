@@ -20,7 +20,7 @@ class TopChatRoomPresenter @Inject constructor(
         var topChatWebSocketMapper: TopChatRoomWebSocketMapper)
     : BaseDaggerPresenter<TopChatContract.View>(), TopChatContract.Presenter {
 
-    override fun sendMessage(messageId: String, sendMessage: String, startTime: String) {
+    override fun sendMessage(messageId: String, sendMessage: String, startTime: String, senderId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

@@ -6,11 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.BaseChatToolbarActivity.Companion.PARAM_HEADER
-import com.tokopedia.chat_common.BaseChatToolbarActivity.Companion.PARAM_MESSAGE_ID
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 
@@ -35,7 +32,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         fun getCallingIntent(messageId: String, context: Context): Intent {
             val intent = Intent(context, ChatbotActivity::class.java)
             val bundle = Bundle()
-            bundle.putString(PARAM_MESSAGE_ID, messageId)
+            bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
             intent.putExtras(bundle)
             return intent
         }
@@ -43,9 +40,9 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         @JvmStatic
         fun getCallingIntent(context: Context, messageId: String, name: String,
                              label: String, senderId: String, role: String, mode: Int,
-                             keyword: String, image: String): Intent{
+                             keyword: String, image: String): Intent {
             val intent = Intent(context, ChatbotActivity::class.java)
-            intent.putExtra(PARAM_MESSAGE_ID, messageId)
+            intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
             val model = ChatRoomHeaderViewModel()
             model.name = name
             model.label = label

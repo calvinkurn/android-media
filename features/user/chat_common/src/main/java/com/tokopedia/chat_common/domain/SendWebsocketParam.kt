@@ -15,27 +15,30 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
  */
 object SendWebsocketParam {
 
-    fun generateParamSendMessage(messageId: String, sendMessage: String, startTime: String): JsonObject {
+    fun generateParamSendMessage(messageId: String, sendMessage: String, startTime: String, toUid
+    : String): JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", Integer.valueOf(messageId))
         data.addProperty("message", sendMessage)
         data.addProperty("start_time", startTime)
+        data.addProperty("to_uid", toUid)
         json.add("data", data)
         return json
     }
 
     fun generateParamSendProductAttachment(messageId: String,
                                            product: ResultProduct,
-                                           startTime: String): JsonObject {
+                                           startTime: String,
+                                           toUid : String): JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", Integer.valueOf(messageId))
         data.addProperty("message", product.productUrl)
-
         data.addProperty("start_time", startTime)
+        data.addProperty("to_uid", toUid)
         data.addProperty("attachment_type", Integer.parseInt(TYPE_PRODUCT_ATTACHMENT))
         data.addProperty("product_id", product.productId)
 
@@ -50,13 +53,16 @@ object SendWebsocketParam {
     }
 
 
-    fun generateParamSendImage(messageId: String, path: String, startTime: String): JsonObject {
+    fun generateParamSendImage(messageId: String, path: String, startTime: String, toUid : String):
+            JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", Integer.valueOf(messageId))
         data.addProperty("message", "Uploaded Image")
         data.addProperty("start_time", startTime)
+        data.addProperty("to_uid", toUid)
+
         data.addProperty("file_path", path)
         data.addProperty("attachment_type", Integer.parseInt(TYPE_IMAGE_UPLOAD))
         json.add("data", data)

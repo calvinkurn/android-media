@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.listener
 
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
@@ -16,9 +17,9 @@ interface ChatbotContract {
 
     interface Presenter : BaseChatContract.Presenter<View> {
 
-        fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String)
+        fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String)
 
-        fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, startTime: String)
+        fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, startTime: String, opponentId: String)
 
         fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String)
                 : AttachInvoiceSentViewModel
@@ -34,7 +35,9 @@ interface ChatbotContract {
 
         fun sendReasonRating()
 
-        fun sendActionBubble()
+        fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
+                             startTime: String,
+                             opponentId: String)
 
         fun destroyWebSocket()
 

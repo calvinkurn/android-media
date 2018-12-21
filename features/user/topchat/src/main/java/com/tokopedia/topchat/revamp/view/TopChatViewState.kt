@@ -56,11 +56,12 @@ class TopChatViewState(var view: View, presenter: TopChatRoomPresenter) {
         })
 
         maximize.setOnClickListener { maximizeTools() }
-        //TODO ADD MESSAGE ID
+        //TODO ADD MESSAGE ID & OPPONENT ID
         sendButton.setOnClickListener {
             presenter.sendMessage("",
                     replyEditText.text.toString(),
-                    SendableViewModel.generateStartTime())
+                    SendableViewModel.generateStartTime(),
+                    "")
         }
     }
 

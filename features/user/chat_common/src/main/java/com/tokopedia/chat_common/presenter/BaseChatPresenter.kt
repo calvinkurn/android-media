@@ -46,15 +46,16 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
     abstract fun destroyWebSocket()
 
 
-    override fun sendMessage(messageId: String, sendMessage: String, startTime: String) {
+    override fun sendMessage(messageId: String, sendMessage: String, startTime: String, opponentId:
+    String) {
         if (networkMode == MODE_WEBSOCKET) {
-            sendMessageWithWebsocket(messageId, sendMessage, startTime)
+            sendMessageWithWebsocket(messageId, sendMessage, startTime, opponentId)
         } else {
             sendMessageWithApi(messageId, sendMessage, startTime)
         }
     }
 
-    abstract fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String)
+    abstract fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String)
 
     abstract fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String)
 }

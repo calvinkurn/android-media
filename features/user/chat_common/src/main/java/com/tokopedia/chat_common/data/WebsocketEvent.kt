@@ -12,7 +12,7 @@ class WebsocketEvent{
         const val EVENT_END_TYPING = 202
         const val EVENT_TOPCHAT_TYPING = 203
         const val EVENT_TOPCHAT_END_TYPING = 204
-        const val EVENT_TOPCHAT_READ_MESSAGE = 301
+        const val EVENT_TOPCHAT_READ_MESSAGE = 2
 
         const val MONITORING = 900
         const val CLOSE_CONNECTION = 999

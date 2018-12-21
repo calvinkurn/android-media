@@ -101,6 +101,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetExistingChat(): (ChatroomViewModel) -> Unit {
 
         return {
+            updateViewData(it)
             setCanLoadMore(it)
             getViewState().onSuccessLoadFirstTime(it)
         }
@@ -144,15 +145,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
-        val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, senderId)
+        val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime)
+        presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
+                opponentId)
     }
 
     private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
+        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime,
+                opponentId)
     }
 
     override fun showSearchInvoiceScreen() {
@@ -167,7 +170,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onQuickReplyClicked(quickReplyListViewModel: QuickReplyListViewModel,
                                      model: QuickReplyViewModel) {
 
-        presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime())
+        presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime(), opponentId)
 
     }
 
@@ -186,6 +189,37 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice))
             }
         }
+    }
+
+
+    override fun onSendButtonClicked() {
+        val sendMessage = replyEditText.text.toString()
+        val startTime = SendableViewModel.generateStartTime()
+        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
+                .name, sendMessage, startTime)
+        presenter.sendMessage(messageId, sendMessage, startTime, opponentId)
+    }
+
+    override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
+        presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+    }
+
+    override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
+        (viewState as ChatbotViewState).onSendRating(element, rating)
+        presenter.sendRating(rating, onError(), onSuccessSendRating())
+    }
+
+    private fun onSuccessSendRating(): () -> Unit {
+        return {
+            (activity as Activity).run {
+                //            (viewState as ChatbotViewState).onSuccessSendRating(element, rating, this,
+//                    onClickReasonRating())
+            }
+        }
+    }
+
+    fun onClickReasonRating() {
+        presenter.sendReasonRating()
     }
 
     override fun onGoToWebView(url: String, id: String) {
@@ -227,33 +261,4 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.detachView()
     }
 
-    override fun onSendButtonClicked() {
-        val sendMessage = replyEditText.text.toString()
-        val startTime = SendableViewModel.generateStartTime()
-        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                .name, sendMessage, startTime)
-        presenter.sendMessage(messageId, sendMessage, startTime)
-    }
-
-    override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
-        presenter.sendActionBubble()
-    }
-
-    override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
-        (viewState as ChatbotViewState).onSendRating(element, rating)
-        presenter.sendRating(rating, onError(), onSuccessSendRating())
-    }
-
-    private fun onSuccessSendRating(): () -> Unit {
-        return {
-            (activity as Activity).run {
-                //            (viewState as ChatbotViewState).onSuccessSendRating(element, rating, this,
-//                    onClickReasonRating())
-            }
-        }
-    }
-
-    fun onClickReasonRating() {
-        presenter.sendReasonRating()
-    }
 }

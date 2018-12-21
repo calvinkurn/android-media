@@ -275,7 +275,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
 //                position,
 //                listMessage.getName(),
 //                listMessage.getLabel(),
-//                listMessage.getSenderId(),
+//                listMessage.getOpponentId(),
 //                listMessage.getRole(),
 //                viewModel.getMode(),
 //                viewModel.getKeyword(),
