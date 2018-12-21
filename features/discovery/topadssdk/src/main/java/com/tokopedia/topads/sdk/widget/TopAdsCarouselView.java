@@ -168,8 +168,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         if (adsListener != null && list.size() > 0) {
             adsListener.onTopAdsLoaded(list);
         }
-        if (list.isEmpty())
+        if (list.isEmpty()) {
             setVisibility(GONE);
+        } else {
+            setVisibility(VISIBLE);
+        }
     }
 
     public void setData(TopAdsModel data) {
@@ -182,8 +185,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
                 }
             }
             adapter.setList(visitables);
-            if (visitables.isEmpty())
+            if (visitables.isEmpty()) {
                 setVisibility(GONE);
+            } else {
+                setVisibility(VISIBLE);
+            }
         }
     }
 
