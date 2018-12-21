@@ -34,7 +34,7 @@ class IrisSession(val context: Context) : Session {
             setInitialVisit(initialVisit)
         }
 
-        return "$domainHash:$uuid:$initialVisit:$beginningPrevious:$beginningCurrent"
+        return "$domainHash:$uuid:$initialVisit"
     }
 
     private fun uuid() : String {

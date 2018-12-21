@@ -23,14 +23,14 @@ class TrackingMapper(context: Context) {
         val event = JSONArray()
 
         val item = JSONObject(track)
-//        item.put("session_id", sessionId)
+        item.put("iris_session_id", sessionId)
         event.put(item)
 
         row.put("device_id", uniqueDeviceId)
         row.put("user_id", userId)
         row.put("event_data", event)
         row.put("container", "gtm")
-        row.put("event", "default_app")
+        row.put("event_ga", "default_app")
 
         data.put(row)
 
@@ -60,7 +60,7 @@ class TrackingMapper(context: Context) {
                 row.put("device_id", uniqueDeviceId)
                 row.put("user_id", item.userId)
                 row.put("container", "gtm")
-                row.put("event", "default_app")
+                row.put("event_ga", "default_app")
                 event = JSONArray()
             }
         }
@@ -70,7 +70,7 @@ class TrackingMapper(context: Context) {
 
     fun transform(tracking: Tracking) : JSONObject {
         val item = JSONObject(tracking.event)
-//        item.put("session_id", tracking.sessionId)
+        item.put("iris_session_id", tracking.sessionId)
         return item
     }
 }
