@@ -64,7 +64,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
-        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(activity, promoCheckoutListModel?.code, isOneClickShipment, pageTracking = pageTracking), REQUEST_CODE_DETAIL_PROMO)
+        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
