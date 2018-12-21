@@ -19,6 +19,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
@@ -110,23 +111,27 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         super.onReceiveMessageEvent(generatedInvoice)
     }
 
-    override fun onSendRating(element: ChatRatingViewModel, rating: Int) {
-        //TODO DISABLE RATING BUTTON
-    }
+    override fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
+                                     chatRatingViewModel: ChatRatingViewModel,
+                                     activity: Activity,
+                                     onClickReasonRating: (String) -> Unit) {
+        val indexToUpdate = adapter.getList().indexOf(chatRatingViewModel)
+        if (adapter.getList()[indexToUpdate] is ChatRatingViewModel) {
+            (adapter.getList()[indexToUpdate] as ChatRatingViewModel).ratingStatus = rating
+            adapter.notifyItemChanged(indexToUpdate)
+        }
 
-    override fun onSuccessSendRating(element: ChatRatingViewModel, rating: Int, activity: Activity,
-                                     onClickReasonRating: Unit) {
         if (rating == ChatRatingViewModel.RATING_BAD) {
             showReasonBottomSheet(element, activity, onClickReasonRating)
         }
     }
 
-    private fun showReasonBottomSheet(element: ChatRatingViewModel, activity: Activity, onReasonClicked: Unit) {
-        //TODO
-//        if(!::reasonBottomSheet.isInitialized){
-//            reasonBottomSheet = ReasonBottomSheet.createInstance(activity, )
-//        }
-//        reasonBottomSheet.show()
+    private fun showReasonBottomSheet(element: SendRatingPojo, activity: Activity, onClickReasonRating: (String) -> Unit) {
+        if (!::reasonBottomSheet.isInitialized) {
+            reasonBottomSheet = ReasonBottomSheet.createInstance(activity,
+                    element.postRatingV2.data.listReason, onClickReasonRating)
+        }
+        reasonBottomSheet.show()
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {
@@ -134,7 +139,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(quickReplyListViewModel: QuickReplyListViewModel) {
-        if(::quickReplyAdapter.isInitialized){
+        if (::quickReplyAdapter.isInitialized) {
             quickReplyAdapter.setList(quickReplyListViewModel)
             quickReplyAdapter.notifyDataSetChanged()
         }

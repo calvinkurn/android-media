@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
 import com.tokopedia.chatbot.attachinvoice.view.fragment.AttachInvoiceFragment
 
@@ -12,7 +13,7 @@ import com.tokopedia.chatbot.attachinvoice.view.fragment.AttachInvoiceFragment
  * Created by Hendri on 22/03/18.
  */
 
-class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activity{
+class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activity {
 
     override val userId: String
         get() = intent.getStringExtra(TOKOPEDIA_ATTACH_INVOICE_USER_ID_KEY)
@@ -37,14 +38,16 @@ class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activi
     }
 
     override fun setupLayout(savedInstanceState: Bundle) {
-        //        setTitle(getString(R.string.string_attach_invoice_activity_title));
+        title = getString(R.string.string_attach_invoice_activity_title);
         super.setupLayout(savedInstanceState)
-        //        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable
-        //                .bg_white_toolbar_drop_shadow));
-        //        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable
-        //                .ic_close_default));
-        //        toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
-        //        toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
+        if (supportActionBar != null) {
+            supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable
+                    .bg_white_toolbar_drop_shadow))
+            supportActionBar?.setHomeAsUpIndicator(resources.getDrawable(R.drawable
+                    .ic_close_default));
+            toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
+            toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
+        }
     }
 
 

@@ -6,6 +6,7 @@ import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
  * @author by nisie on 07/12/18.
@@ -30,10 +31,13 @@ interface ChatbotContract {
 
         fun connectWebSocket(messageId: String)
 
-        fun sendRating(rating: Int, onError: (Throwable) -> Unit,
-                       onSuccess: () -> Unit)
+        fun sendRating(messageId : String, rating: Int, timestamp : String,
+                       onError: (Throwable) -> Unit,
+                       onSuccess: (SendRatingPojo) -> Unit)
 
-        fun sendReasonRating()
+        fun sendReasonRating(messageId: String, reason: String, timestamp: String,
+                             onError: (Throwable) -> Unit,
+                             onSuccess: (String) -> Unit)
 
         fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
                              startTime: String,

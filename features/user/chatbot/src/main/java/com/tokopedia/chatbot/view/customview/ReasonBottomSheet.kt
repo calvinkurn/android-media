@@ -15,7 +15,8 @@ import java.util.*
  * @author by nisie on 6/11/18.
  */
 class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<String>,
-                        private val listener: ReasonAdapter.OnReasonClickListener) : BottomSheetDialog(context) {
+                        private val onClickReasonRating: (String) -> Unit) : BottomSheetDialog
+(context) {
     private var reasonRecyclerView: RecyclerView? = null
     private var closeIcon: ImageView? = null
 
@@ -38,7 +39,7 @@ class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<Stri
                 .VERTICAL, false)
         reasonRecyclerView!!.layoutManager = mLayoutManager
 
-        val adapter = ReasonAdapter(listener)
+        val adapter = ReasonAdapter(onClickReasonRating)
         adapter.addList(reasonList)
         reasonRecyclerView!!.adapter = adapter
 
@@ -48,8 +49,8 @@ class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<Stri
 
         fun createInstance(activity: Activity,
                            reasons: ArrayList<String>,
-                           listener: ReasonAdapter.OnReasonClickListener): ReasonBottomSheet {
-            return ReasonBottomSheet(activity, reasons, listener)
+                           onClickReasonRating: (String) -> Unit): ReasonBottomSheet {
+            return ReasonBottomSheet(activity, reasons, onClickReasonRating)
         }
     }
 }

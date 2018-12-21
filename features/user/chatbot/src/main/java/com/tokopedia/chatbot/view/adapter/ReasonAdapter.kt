@@ -14,13 +14,10 @@ import javax.inject.Inject
  * @author by nisie on 6/11/18.
  */
 class ReasonAdapter @Inject
-constructor(private val listener: OnReasonClickListener) : RecyclerView.Adapter<ReasonAdapter.ReasonViewHolder>() {
+constructor(private val onClickReasonRating: (String) -> Unit)
+    : RecyclerView.Adapter<ReasonAdapter.ReasonViewHolder>() {
 
     private val reasonList: MutableList<String>
-
-    interface OnReasonClickListener {
-        fun onClickReason(adapterPosition: Int)
-    }
 
     init {
         reasonList = ArrayList()
@@ -56,11 +53,10 @@ constructor(private val listener: OnReasonClickListener) : RecyclerView.Adapter<
     }
 
     inner class ReasonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var reason: TextView
+        var reason: TextView = itemView.findViewById(R.id.reason)
 
         init {
-            reason = itemView.findViewById(R.id.reason)
-            reason.setOnClickListener { v -> listener.onClickReason(adapterPosition) }
+            reason.setOnClickListener { onClickReasonRating(reasonList[adapterPosition]) }
         }
     }
 

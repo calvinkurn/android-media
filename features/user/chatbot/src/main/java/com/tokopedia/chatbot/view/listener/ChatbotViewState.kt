@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
  * @author by nisie on 10/12/18.
@@ -21,9 +22,9 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel)
 
-    fun onSendRating(element: ChatRatingViewModel, rating: Int)
-
-    fun onSuccessSendRating(element: ChatRatingViewModel, rating: Int, activity: Activity,
-                            onClickReasonRating: Unit)
+    fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
+                            chatRatingViewModel : ChatRatingViewModel,
+                            activity: Activity,
+                            onClickReasonRating: (String) -> Unit)
 
 }

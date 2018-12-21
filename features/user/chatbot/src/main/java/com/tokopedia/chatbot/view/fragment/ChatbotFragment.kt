@@ -30,6 +30,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
@@ -40,6 +41,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -205,21 +207,31 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
-        (viewState as ChatbotViewState).onSendRating(element, rating)
-        presenter.sendRating(rating, onError(), onSuccessSendRating())
+        presenter.sendRating(messageId, rating, element.replyTimeNano.toString(), onError(),
+                onSuccessSendRating(rating, element))
     }
 
-    private fun onSuccessSendRating(): () -> Unit {
+    private fun onSuccessSendRating(rating: Int, element: ChatRatingViewModel): (SendRatingPojo) ->
+    Unit {
         return {
             (activity as Activity).run {
-                //            (viewState as ChatbotViewState).onSuccessSendRating(element, rating, this,
-//                    onClickReasonRating())
+                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, this,
+                        onClickReasonRating(element.replyTimeNano.toString()))
             }
         }
     }
 
-    fun onClickReasonRating() {
-        presenter.sendReasonRating()
+    private fun onClickReasonRating(timestamp: String): (String) -> Unit {
+        return {
+            presenter.sendReasonRating(messageId, it, timestamp, onError(),
+                    onSuccessSendReasonRating())
+        }
+    }
+
+    private fun onSuccessSendReasonRating(): (String) -> Unit {
+        return {
+            ToasterNormal.make(view, it, ToasterNormal.LENGTH_LONG).show()
+        }
     }
 
     override fun onGoToWebView(url: String, id: String) {

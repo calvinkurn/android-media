@@ -21,9 +21,14 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -44,7 +49,9 @@ class ChatbotPresenter @Inject constructor(
         override var userSession: UserSessionInterface,
         private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
         private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor)
+        private val fingerprintInterceptor: FingerprintInterceptor,
+        private val sendChatRatingUseCase: SendChatRatingUseCase,
+        private val sendRatingReasonUseCase: SendRatingReasonUseCase)
     : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -116,13 +123,19 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    override fun sendRating(rating: Int, onError: (Throwable) -> Unit,
-                            onSuccess: () -> Unit) {
-        //TODO
+    override fun sendRating(messageId : String, rating: Int, timestamp : String,
+                            onError: (Throwable) -> Unit,
+                            onSuccess: (SendRatingPojo) -> Unit) {
+        sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
+           messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
     }
 
-    override fun sendReasonRating() {
-        //TODO
+    override fun sendReasonRating(messageId: String, reason: String, timestamp: String,
+                                  onError: (Throwable) -> Unit,
+                                  onSuccess: (String) -> Unit) {
+        sendRatingReasonUseCase.execute(SendRatingReasonUseCase.generateParam(
+                messageId, reason, timestamp
+        ), SendRatingReasonSubscriber(onError, onSuccess) )
     }
 
     override fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
@@ -209,6 +222,8 @@ class ChatbotPresenter @Inject constructor(
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
+        sendChatRatingUseCase.unsubscribe()
+        sendRatingReasonUseCase.unsubscribe()
         super.detachView()
     }
 }
