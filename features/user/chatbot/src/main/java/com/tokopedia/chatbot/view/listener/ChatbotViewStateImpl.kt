@@ -82,10 +82,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
-    override fun scrollToBottom() {
-        recyclerView.scrollToPosition(0)
-    }
-
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
         if (chatroomViewModel.listChat.isNotEmpty()
                 && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {

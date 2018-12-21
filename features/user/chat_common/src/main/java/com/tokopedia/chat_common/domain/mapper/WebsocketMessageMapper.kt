@@ -39,7 +39,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromRole,
                 "",
                 "",
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojo.startTime,
                 pojo.message.censoredReply, false, false, !pojo.isOpposite)
     }
@@ -65,7 +65,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 !pojo.isOpposite,
                 pojoAttribute.imageUrl,
                 pojoAttribute.thumbnail,
@@ -87,7 +87,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojoAttribute.productId,
                 pojoAttribute.productProfile.name,
                 pojoAttribute.productProfile.price,
@@ -107,7 +107,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojo.attachment!!.fallbackAttachment.message
         )
     }

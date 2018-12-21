@@ -83,7 +83,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 "",
                 chatItemPojoByDateByTime.isRead,
                 false,
-                chatItemPojoByDateByTime.isOpposite,
+                !chatItemPojoByDateByTime.isOpposite,
                 chatItemPojoByDateByTime.msg
         )
     }
