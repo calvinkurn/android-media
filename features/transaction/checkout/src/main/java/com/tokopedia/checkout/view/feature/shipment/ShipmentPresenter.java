@@ -334,7 +334,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setShipmentCartItemModelList(getView()
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
 
-        if(cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
+        if (cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
             isPurchaseProtectionPage = true;
             sendPurchaseProtectionAnalytics(
                     CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI,
@@ -547,6 +547,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<ShipmentCartItemModel> indexShopErrorList = new ArrayList<>();
         Map<ShipmentCartItemModel, List<CartItemModel>> indexShopItemErrorMap = new HashMap<>();
         for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
+            for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
+                if (newShipmentCartItemModelList.get(i).getCartItemModels().get(j).isError()) {
+                    newShipmentCartItemModelList.get(i).setError(true);
+                }
+            }
             if (newShipmentCartItemModelList.get(i).isAllItemError()) {
                 cartListHasError = true;
                 indexShopErrorList.add(newShipmentCartItemModelList.get(i));
@@ -646,7 +651,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().renderErrorCheckPromoShipmentData(e.getMessage());
                 } else if (e instanceof ResponseCartApiErrorException) {
                     getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                }else if (e instanceof CheckPromoCodeException) {
+                } else if (e instanceof CheckPromoCodeException) {
                     getView().renderErrorCheckPromoShipmentData(e.getMessage());
                 } else {
                     getView().renderErrorCheckPromoShipmentData(
@@ -658,7 +663,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(DataVoucher dataVoucher) {
                 getView().renderCheckPromoShipmentDataSuccess(voucherCouponMapper.convertPromoCodeCartShipmentData(dataVoucher));
-                if(TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getMessage().getState()) == TickerCheckoutView.State.FAILED) {
+                if (TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getMessage().getState()) == TickerCheckoutView.State.FAILED) {
                     getView().showToastFailedTickerPromo(dataVoucher.getMessage().getText());
                     getView().cancelAllCourierPromo();
                 }
@@ -711,7 +716,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
                     analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest), checkoutData.getTransactionId());
-                    if(isPurchaseProtectionPage) {
+                    if (isPurchaseProtectionPage) {
                         analyticsPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
                                         ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :
