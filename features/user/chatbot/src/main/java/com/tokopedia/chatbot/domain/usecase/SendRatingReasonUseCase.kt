@@ -2,19 +2,20 @@ package com.tokopedia.chatbot.domain.usecase
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.SendReasonRatingPojo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import rx.Subscriber
+import javax.inject.Inject
 
 /**
  * @author by nisie on 21/12/18.
  */
 
-class SendRatingReasonUseCase(val resources: Resources,
-                            private val graphqlUseCase: GraphqlUseCase) {
+class SendRatingReasonUseCase @Inject constructor(val resources: Resources,
+                                                  private val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.mutation_send_rating_reason)
