@@ -57,7 +57,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     @Inject
     lateinit var session: UserSessionInterface
 
-    lateinit var replyEditText : EditText
+    lateinit var replyEditText: EditText
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -234,10 +234,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onSendButtonClicked() {
         val sendMessage = replyEditText.text.toString()
-
+        val startTime = SendableViewModel.generateStartTime()
         getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                .name, sendMessage)
-        presenter.sendMessage(messageId, sendMessage)
+                .name, sendMessage, startTime)
+        presenter.sendMessage(messageId, sendMessage, startTime)
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {

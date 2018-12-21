@@ -173,12 +173,12 @@ class ChatbotPresenter @Inject constructor(
                 quickReply, startTime), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
-    override fun sendMessageWithApi(messageId : String, sendMessage: String) {
+    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
         //TODO
     }
 
-    override fun sendMessageWithWebsocket(messageId : String, sendMessage: String) {
-        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage),
+    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String) {
+        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage, startTime),
                 tkpdAuthInterceptor,
                 fingerprintInterceptor)
     }

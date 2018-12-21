@@ -30,7 +30,7 @@ interface BaseChatContract {
 
         fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*>
 
-        fun sendMessage(messageId : String, sendMessage: String)
+        fun sendMessage(messageId: String, sendMessage: String, startTime: String)
 
     }
 }

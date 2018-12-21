@@ -18,8 +18,11 @@ interface BaseChatViewState {
 
     fun updateHeader(chatroomViewModel: ChatroomViewModel)
 
-    fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String)
+    fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
+                         startTime: String)
 
     fun removeDummyIfExist(successVisitable: Visitable<*>)
+
+    fun removeMessageOnReplyBox()
 
 }

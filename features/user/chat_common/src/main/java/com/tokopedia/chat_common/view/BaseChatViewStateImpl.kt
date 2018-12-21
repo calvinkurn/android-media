@@ -104,22 +104,26 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         scrollDownWhenInBottom()
     }
 
-    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String) {
+    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
         getAdapter().addElement(
                 MessageViewModel(
                         messageId,
                         userId,
                         name,
-                        SendableViewModel.generateStartTime(),
+                        startTime,
                         sendMessage
                 )
         )
     }
 
     override fun removeDummyIfExist(successVisitable: Visitable<*>) {
-        if(successVisitable is SendableViewModel){
+        if (successVisitable is SendableViewModel) {
             getAdapter().removeDummy(successVisitable)
         }
+    }
+
+    override fun removeMessageOnReplyBox() {
+        replyEditText.setText("")
     }
 
     private fun setLabel(labelText: String) {

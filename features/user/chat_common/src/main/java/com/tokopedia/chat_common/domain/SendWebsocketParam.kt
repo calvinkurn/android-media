@@ -15,13 +15,13 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
  */
 object SendWebsocketParam {
 
-    fun generateParamSendMessage(messageId: String, sendMessage: String): JsonObject {
+    fun generateParamSendMessage(messageId: String, sendMessage: String, startTime: String): JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", Integer.valueOf(messageId))
         data.addProperty("message", sendMessage)
-        data.addProperty("start_time", SendableViewModel.generateStartTime())
+        data.addProperty("start_time", startTime)
         json.add("data", data)
         return json
     }
