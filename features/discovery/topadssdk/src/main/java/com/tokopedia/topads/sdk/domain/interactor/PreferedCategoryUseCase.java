@@ -29,13 +29,14 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
     private TopAdsDataSource dataSource;
     private AsyncTask<TopAdsParams, Void, PreferedCategory> task;
     private boolean execute = false;
-    private PreferedCategoryListener listener;
+    private final PreferedCategoryListener listener;
     private final CacheHandler cacheHandler;
     private Random random;
 
+
+
     public PreferedCategoryUseCase(
             Context context, PreferedCategoryListener listener, CacheHandler cacheHandler) {
-
         this.dataSource = new CloudTopAdsDataSource(context);
         this.listener = listener;
         this.cacheHandler = cacheHandler;

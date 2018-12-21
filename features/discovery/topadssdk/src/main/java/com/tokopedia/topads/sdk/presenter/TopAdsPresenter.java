@@ -37,14 +37,16 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
 
     private static final String TAG = "TopAdsPresenter";
     private AdsView adsView;
-    private Context context;
-    private TopAdsUseCase adsUseCase;
-    private OpenTopAdsUseCase openTopAdsUseCase;
     private PreferedCategoryUseCase preferedCategoryUseCase;
     private MerlinRecomendationUseCase merlinRecomendationUseCase;
-    private TopAdsParams adsParams;
     private Config config;
 
+    @Inject
+    TopAdsParams adsParams;
+    @Inject
+    OpenTopAdsUseCase openTopAdsUseCase;
+    @Inject
+    TopAdsUseCase adsUseCase;
     @Inject
     TopAdsWishlishedUseCase wishlishedUseCase;
     @Inject
@@ -53,15 +55,12 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     RemoveWishListUseCase removeWishListUseCase;
     @Inject
     UserSession userSession;
+    @Inject
+    CacheHandler cacheHandler;
 
     public TopAdsPresenter(Context context) {
-        this.context = context;
-        this.adsUseCase = new TopAdsUseCase(context);
-        this.openTopAdsUseCase = new OpenTopAdsUseCase(context);
-        CacheHandler cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this, cacheHandler);
         this.merlinRecomendationUseCase = new MerlinRecomendationUseCase(context, this);
-        this.adsParams = new TopAdsParams();
     }
 
     @Override

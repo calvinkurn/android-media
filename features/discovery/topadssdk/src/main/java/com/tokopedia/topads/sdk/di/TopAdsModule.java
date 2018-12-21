@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.topads.sdk.base.AuthInterceptor;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.TopAdsWishlistService;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
@@ -14,6 +15,7 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
+import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -95,6 +97,18 @@ public class TopAdsModule {
     @Provides
     TopAdsPresenter provideTopAdsPresenter(@ApplicationContext Context context){
         return new TopAdsPresenter(context);
+    }
+
+    @TopAdsScope
+    @Provides
+    TopAdsParams provideTopAdsParams(){
+        return new TopAdsParams();
+    }
+
+    @TopAdsScope
+    @Provides
+    CacheHandler provideCacheHandler(@ApplicationContext Context context){
+        return new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
     }
 
     @TopAdsScope
