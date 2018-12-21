@@ -49,7 +49,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         String hourTime;
 
         try {
-            hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()));
+            hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime())/1000);
         } catch (NumberFormatException e) {
             hourTime = element.getReplyTime();
         }
@@ -70,7 +70,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
         try {
             long myTime = Long.parseLong(element.getReplyTime());
-            Date date = new Date(myTime);
+            Date date = new Date(myTime / 1000);
             if (DateUtils.isToday(myTime)) {
                 time = itemView.getContext().getString(R.string.chat_today_date);
             } else if (DateUtils.isToday(myTime + DateUtils.DAY_IN_MILLIS)) {
