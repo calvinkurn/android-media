@@ -217,10 +217,12 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
             productReviewPresenter.getHelpfulReview(productId);
         }
         String filter = customViewQuickFilterView.getSelectedFilter();
-        if(filter.equals(getString(R.string.review_label_all)) ||
-                filter.equals(getString(R.string.review_label_with_photo))){
+        if(filter.equals(getString(R.string.review_label_with_photo))){
             filter = "";
             isWithPhoto = true;
+        } else if (filter.equals(getString(R.string.review_label_all))){
+            filter = "";
+            isWithPhoto = false;
         }
         productReviewPresenter.getProductReview(productId, page, filter, isWithPhoto);
     }
