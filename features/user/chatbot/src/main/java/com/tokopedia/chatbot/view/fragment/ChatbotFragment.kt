@@ -215,7 +215,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     Unit {
         return {
             (activity as Activity).run {
-                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, this,
+                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
                         onClickReasonRating(element.replyTimeNano.toString()))
             }
         }
