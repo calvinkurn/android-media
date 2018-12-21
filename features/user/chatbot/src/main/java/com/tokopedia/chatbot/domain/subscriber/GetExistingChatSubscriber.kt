@@ -16,20 +16,14 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
-        //TODO UNCOMMENT
-//        handleError(graphqlResponse, GetExistingChatPojo::class.java,
-//                routingOnNext(graphqlResponse), onErrorGetChat)
-
-        //TODO REMOVE THIS
-        routingOnNext(graphqlResponse)
+        handleError(graphqlResponse, GetExistingChatPojo::class.java,
+                routingOnNext(graphqlResponse), onErrorGetChat)
     }
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
         return {
             val pojo = graphqlResponse.getData<GetExistingChatPojo>(GetExistingChatPojo::class.java)
-
-            //TODO REMOVE UNCOMMENT
-//            onSuccessGetChat(mapper.map(pojo))
+            onSuccessGetChat(mapper.map(pojo))
         }
     }
 
@@ -38,8 +32,7 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
     }
 
     override fun onError(e: Throwable) {
-        //TODO UNCOMMENT
-//        onErrorGetChat(e)
+        onErrorGetChat(e)
     }
 
 }

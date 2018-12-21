@@ -239,7 +239,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
                         && chatItem.startTime == visitable.startTime) {
                     val indexToRemove = visitables.indexOf(chatItem)
                     visitables.remove(chatItem)
-                    notifyItemRemoved(indexToRemove)
+                    notifyItemRangeChanged(indexToRemove, 1)
                 }
             }
         }

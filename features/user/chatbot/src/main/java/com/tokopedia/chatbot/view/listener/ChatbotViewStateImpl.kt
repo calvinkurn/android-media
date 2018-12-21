@@ -134,6 +134,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
             quickReplyAdapter.setList(quickReplyListViewModel)
             quickReplyAdapter.notifyDataSetChanged()
         }
+        rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
