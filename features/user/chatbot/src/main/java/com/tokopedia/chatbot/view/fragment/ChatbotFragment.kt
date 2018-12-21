@@ -201,12 +201,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         && !TextUtils.equals(uri.encodedPath, "/r")
                 val isNeedAuthToken = isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect
 
-                if (isNeedAuthToken && RouteManager.isSupportApplink(activity, String.format
-                        ("%s?url=%s", ApplinkConst.WEBVIEW, url))) {
-
-                    RouteManager.route(activity, URLGenerator.generateURLSessionLogin(url,
-                            session.deviceId,
-                            session.userId))
+                val urlWithSession = URLGenerator.generateURLSessionLogin(url,
+                        session.deviceId,
+                        session.userId)
+                val applinkWebview = String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
+                if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
+                    RouteManager.route(activity, applinkWebview)
                 } else {
                     super.onGoToWebView(url, id)
                 }
