@@ -5,6 +5,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -27,7 +28,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     }
 
-    private fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderViewModel {
+    open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderViewModel {
         var interlocutor = Contact()
 
         for (contact in pojo.chatReplies.contacts) {
@@ -50,7 +51,7 @@ open class GetExistingChatMapper @Inject constructor() {
         )
     }
 
-    private fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
+    open fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
 
         for (chatItemPojo in pojo.chatReplies.list) {
@@ -87,7 +88,7 @@ open class GetExistingChatMapper @Inject constructor() {
         )
     }
 
-    private fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
 //        return when(chatItemPojoByDateByTime.attachment?.type.toString()){
 //            TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
@@ -110,7 +111,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.msg
         )
     }
-
+//
 //    private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
 //        return ImageUploadViewModel(
 //                chatItemPojoByDateByTime.msgId.toString(),
@@ -124,13 +125,13 @@ open class GetExistingChatMapper @Inject constructor() {
 //                chatItemPojoByDateByTime.attachment?.
 //        )
 //    }
-
+//
 //    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 //        //TODO
 //    }
 
 
-    private fun hasAttachment(pojo: Reply): Boolean {
-        return (pojo.attachment?.type != null && pojo.attachment?.attributes != null)
+    open fun hasAttachment(pojo: Reply): Boolean {
+        return (pojo.attachment?.type != null && pojo.attachment.attributes.isNotBlank())
     }
 }

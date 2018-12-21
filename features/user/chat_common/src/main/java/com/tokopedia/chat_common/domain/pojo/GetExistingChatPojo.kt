@@ -132,14 +132,10 @@ data class Attachment(
         val type: Int = 0,
         @Expose
         @SerializedName("attributes")
-        val attributes: Attributes?,
+        val attributes: String = "",
         @Expose
         @SerializedName("fallback")
         val fallback: Fallback?
-)
-
-data class Attributes(
-        val url: Any
 )
 
 data class Fallback(
