@@ -537,14 +537,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Deprecated
     @Override
     public void renderThanksTopPaySuccess(String message) {
-/*
         showToastNormal(getString(R.string.message_payment_succeded_transaction_module));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetTransactionSummaryIntent());
         if (getActivity() != null) {
             checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             getActivity().finish();
         }
-*/
     }
 
     @Override
