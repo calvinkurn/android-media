@@ -20,6 +20,8 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
                            listChat: ArrayList<Visitable<*>>) :
         BaseAdapter<BaseChatTypeFactoryImpl>(adapterTypeFactory, listChat) {
 
+    private val MILISECONDS: Long = 1000000
+
     var typingModel = TypingChatModel()
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
@@ -89,13 +91,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
             if (position != visitables.size - 1) {
                 try {
                     val now = visitables[position] as BaseChatViewModel
-                    val myTime = java.lang.Long.parseLong(now.replyTime)
+                    val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
                     var prevTime: Long = 0
 
                     if (visitables[position + 1] != null
                             && visitables[position + 1] is BaseChatViewModel) {
                         val prev = visitables[position + 1] as BaseChatViewModel
-                        prevTime = java.lang.Long.parseLong(prev.replyTime)
+                        prevTime = java.lang.Long.parseLong(prev.replyTime) / MILISECONDS
                     }
 
                     (visitables[position] as BaseChatViewModel)
@@ -124,13 +126,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
 
                 val now: BaseChatViewModel = visitables[position] as BaseChatViewModel
                 var next: BaseChatViewModel = visitables[position - 1] as BaseChatViewModel
-                val myTime = java.lang.Long.parseLong(now.replyTime)
+                val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
                 var nextItemTime: Long = 0
 
                 if (visitables[position - 1] != null
                         && visitables[position - 1] is BaseChatViewModel) {
                     next = visitables[position - 1] as BaseChatViewModel
-                    nextItemTime = java.lang.Long.parseLong(next.replyTime)
+                    nextItemTime = java.lang.Long.parseLong(next.replyTime) / MILISECONDS
                 }
 
                 (visitables[position] as BaseChatViewModel)
@@ -163,13 +165,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
                 }
 
                 var prev: SendableViewModel? = null
-                val myTime = java.lang.Long.parseLong(now.replyTime)
+                val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
                 var prevTime: Long = 0
 
                 if (visitables[position + 1] != null && visitables[position + 1] is SendableViewModel) {
                     prev = visitables.get(position + 1) as SendableViewModel
                     if (prev.replyTime != null) {
-                        prevTime = (prev!!.replyTime)!!.toLong()
+                        prevTime = (prev!!.replyTime)!!.toLong() / MILISECONDS
                     }
                 }
 
