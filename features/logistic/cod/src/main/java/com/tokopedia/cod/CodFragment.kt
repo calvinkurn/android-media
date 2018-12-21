@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.transactiondata.entity.response.cod.Data
 import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
 
 /**
@@ -14,10 +15,16 @@ import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
  */
 class CodFragment: BaseDaggerFragment(), CodContract.View {
 
+    lateinit var mData: Data
+
     companion object {
-        fun newInstance(): Fragment {
-            val bundle: Bundle = Bundle()
-            val fragment: CodFragment = CodFragment()
+
+        const val ARGUMENT_COD_DATA = "ARGUMENT_COD_DATA"
+
+        fun newInstance(data: Data): Fragment {
+            val bundle = Bundle()
+            bundle.putParcelable(ARGUMENT_COD_DATA, data)
+            val fragment = CodFragment()
             fragment.arguments = bundle
             return fragment
         }
@@ -27,12 +34,16 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
         return inflater.inflate(R.layout.fragment_cod_confirmation, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mData = arguments!!.getParcelable(ARGUMENT_COD_DATA)
+    }
+
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return "bla"
     }
 
     override fun showLoading() {
@@ -48,6 +59,6 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     }
 
     override fun loadInformation() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }
