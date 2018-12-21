@@ -89,10 +89,10 @@ data class Reply(
         @SerializedName("replyId")
         val replyId: Int = 0,
         @Expose
-        @SerializedName("opponentId")
+        @SerializedName("senderId")
         val senderId: Int = 0,
         @Expose
-        @SerializedName("opponentName")
+        @SerializedName("senderName")
         val senderName: String = "",
         @Expose
         @SerializedName("role")
@@ -106,9 +106,6 @@ data class Reply(
         @Expose
         @SerializedName("status")
         val status: Int = 0,
-        @Expose
-        @SerializedName("attachmentID")
-        val attachmentID: Int = 0,
         @Expose
         @SerializedName("attachment")
         val attachment: Attachment?,
