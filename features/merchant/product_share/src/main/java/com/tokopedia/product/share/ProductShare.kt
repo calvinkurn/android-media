@@ -23,44 +23,64 @@ class ProductShare(private val activity: Activity) {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
 
     fun share(data: ProductData, preBuildImage: ()->Unit, postBuildImage: ()-> Unit){
-        preBuildImage()
+        if (SHARE_IMAGE_ENABLED) {
+            preBuildImage()
 
-        ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, object : SimpleTarget<Bitmap>(DEFAULT_IMAGE_WIDTH,
-                DEFAULT_IMAGE_HEIGHT){
-            override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-                super.onLoadFailed(e, errorDrawable)
-                postBuildImage()
-                NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.msg_network_error))
-            }
+            ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, object : SimpleTarget<Bitmap>(DEFAULT_IMAGE_WIDTH,
+                    DEFAULT_IMAGE_HEIGHT){
+                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
+                    super.onLoadFailed(e, errorDrawable)
+                    try {
+                        generateBranchLink(null, data)
+                    } catch (t: Throwable){
+                    } finally {
+                        postBuildImage()
+                    }
+                }
 
-            override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                if (resource == null){
-                    onLoadFailed(null, null)
-                    return
+                override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
+                    if (resource == null){
+                        onLoadFailed(null, null)
+                        return
+                    }
+                    val sticker = ProductImageSticker(activity, resource, data)
+                    try {
+                        val bitmap = sticker.buildBitmapImage()
+                        val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
+                        bitmap.recycle()
+                        generateBranchLink(file, data)
+                    } catch (t: Throwable){
+                        try {
+                            val bitmap = sticker.buildBitmapImage()
+                            val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
+                            bitmap.recycle()
+                            generateBranchLink(file, data)
+                        } catch (t: Throwable){
+                            generateBranchLink(null, data)
+                        } finally {
+                            postBuildImage()
+                        }
+                    } finally {
+                        postBuildImage()
+                    }
                 }
-                val sticker = ProductImageSticker(activity, resource, data)
-                try {
-                    val bitmap = sticker.buildBitmapImage()
-                    val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
-                    bitmap.recycle()
-                    generateBranchLink(file, data)
-                } catch (t: Throwable){
-                    NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.msg_network_error))
-                } finally {
-                    postBuildImage()
-                }
-            }
-        })
+            })
+        } else {
+            generateBranchLink(null, data)
+        }
     }
 
-    private fun openIntentShare(file: File, title: String, shareContent: String, shareUri: String) {
+    private fun openIntentShare(file: File?, title: String, shareContent: String, shareUri: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = "text/plain"
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
+            if (file != null) {
+                putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
+            }
             putExtra(Intent.EXTRA_REFERRER, shareUri)
             putExtra(Intent.EXTRA_HTML_TEXT, shareUri)
+            putExtra(Intent.EXTRA_TITLE, title)
             putExtra(Intent.EXTRA_TEXT, shareContent)
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
@@ -72,9 +92,6 @@ class ProductShare(private val activity: Activity) {
     private fun isAndroidIosUrlActivated() = remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB, true)
 
     private fun generateBranchLink(file: File?, data: ProductData) {
-        if (file == null)
-            return
-
         if (isBranchUrlActive()){
             val branchUniversalObject = createBranchUniversalObject(data)
             val linkProperties = createLinkProperties(data)
@@ -134,6 +151,7 @@ class ProductShare(private val activity: Activity) {
 
 
     companion object {
+        private const val SHARE_IMAGE_ENABLED = false;
         private const val DEFAULT_IMAGE_WIDTH = 2048
         private const val DEFAULT_IMAGE_HEIGHT = 2048
 
