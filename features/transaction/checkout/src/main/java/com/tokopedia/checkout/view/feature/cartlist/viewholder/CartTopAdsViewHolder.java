@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.tokopedia.checkout.R;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.topads.sdk.domain.model.Data;
