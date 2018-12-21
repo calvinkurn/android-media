@@ -23,8 +23,8 @@ class CodActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getScreenName(): String {
-        return getString(R.string.cod_brand_tag)
+    override fun setTitle(title: CharSequence?) {
+        getString(R.string.cod_brand_tag)
     }
 
     override fun getNewFragment(): Fragment {
