@@ -29,8 +29,12 @@ class ProductShare(private val activity: Activity) {
                 DEFAULT_IMAGE_HEIGHT){
             override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
                 super.onLoadFailed(e, errorDrawable)
-                postBuildImage()
-                NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.msg_network_error))
+                try {
+                    generateBranchLink(null, data)
+                } catch (t: Throwable){
+                } finally {
+                    postBuildImage()
+                }
             }
 
             override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
@@ -45,7 +49,16 @@ class ProductShare(private val activity: Activity) {
                     bitmap.recycle()
                     generateBranchLink(file, data)
                 } catch (t: Throwable){
-                    NetworkErrorHelper.showRedCloseSnackbar(activity, activity.getString(R.string.msg_network_error))
+                    try {
+                        val bitmap = sticker.buildBitmapImage()
+                        val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
+                        bitmap.recycle()
+                        generateBranchLink(file, data)
+                    } catch (t: Throwable){
+                        generateBranchLink(null, data)
+                    } finally {
+                        postBuildImage()
+                    }
                 } finally {
                     postBuildImage()
                 }
@@ -53,14 +66,17 @@ class ProductShare(private val activity: Activity) {
         })
     }
 
-    private fun openIntentShare(file: File, title: String, shareContent: String, shareUri: String) {
+    private fun openIntentShare(file: File?, title: String, shareContent: String, shareUri: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = "text/plain"
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
+            if (file != null) {
+                putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
+            }
             putExtra(Intent.EXTRA_REFERRER, shareUri)
             putExtra(Intent.EXTRA_HTML_TEXT, shareUri)
+            putExtra(Intent.EXTRA_TITLE, title)
             putExtra(Intent.EXTRA_TEXT, shareContent)
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
@@ -72,9 +88,6 @@ class ProductShare(private val activity: Activity) {
     private fun isAndroidIosUrlActivated() = remoteConfig.getBoolean(FIREBASE_KEY_INCLUDEMOBILEWEB, true)
 
     private fun generateBranchLink(file: File?, data: ProductData) {
-        if (file == null)
-            return
-
         if (isBranchUrlActive()){
             val branchUniversalObject = createBranchUniversalObject(data)
             val linkProperties = createLinkProperties(data)
