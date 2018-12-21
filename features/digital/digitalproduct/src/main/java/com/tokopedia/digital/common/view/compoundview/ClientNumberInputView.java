@@ -188,7 +188,7 @@ public class ClientNumberInputView extends LinearLayout {
     private void setupLayoutParamAndInputType(ClientNumber clientNumber) {
         LayoutParams layoutParams = new LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_TEL())) {
             btnContactPicker.setVisibility(View.VISIBLE);
             layoutParams.weight = 0.88f;
         } else {
@@ -196,8 +196,8 @@ public class ClientNumberInputView extends LinearLayout {
             layoutParams.weight = 1;
         }
         pulsaFramelayout.setLayoutParams(layoutParams);
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)
-                || clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_NUMERIC)) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_TEL())
+                || clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_NUMERIC())) {
             setInputTypeNumber();
         } else {
             setInputTypeText();

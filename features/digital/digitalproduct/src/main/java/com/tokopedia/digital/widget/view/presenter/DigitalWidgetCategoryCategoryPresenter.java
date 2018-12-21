@@ -2,10 +2,10 @@ package com.tokopedia.digital.widget.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
@@ -15,6 +15,7 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -32,13 +33,16 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
 
     private final String PARAM_VALUE_SORT = "label";
 
+    private UserSession userSession;
     private IDigitalWidgetView digitalWidgetView;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
 
     @Inject
     public DigitalWidgetCategoryCategoryPresenter(LocalCacheHandler localCacheHandler,
+                                                  UserSession userSession,
                                                   GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
-        super(localCacheHandler);
+        super(localCacheHandler, userSession);
+        this.userSession = userSession;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }
 
@@ -75,7 +79,7 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
                     String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
                     String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
-                    String verifiedNumber = SessionHandler.getPhoneNumber();
+                    String verifiedNumber = userSession.getPhoneNumber();
                     if (!TextUtils.isEmpty(lastTypedClientNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
@@ -128,7 +132,7 @@ public class DigitalWidgetCategoryCategoryPresenter extends BaseDigitalPresenter
         DigitalCheckoutPassData passData = super.generateCheckoutPassData(preCheckoutProduct,
                 versionInfoApplication,
                 userLoginId);
-        passData.setSource(DigitalCheckoutPassData.PARAM_WIDGET);
+        passData.setSource(DigitalCheckoutPassData.Companion.getPARAM_WIDGET());
         return passData;
     }
 }

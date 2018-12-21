@@ -85,8 +85,8 @@ public class CategoryData implements Parcelable {
         operatorStyle = in.readString();
         operatorLabel = in.readString();
         additionalFeature = in.readParcelable(AdditionalFeature.class.getClassLoader());
-        clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
-        operatorList = in.createTypedArrayList(Operator.CREATOR);
+        clientNumberList = in.createTypedArrayList(ClientNumber.Companion.getCREATOR());
+        operatorList = in.createTypedArrayList(Operator.Companion.getCREATOR());
         bannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
         otherBannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
         guideDataList = in.createTypedArrayList(GuideData.CREATOR);

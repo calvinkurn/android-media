@@ -36,20 +36,20 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     public static Intent newInstance(Context context, Bundle bundle) {
         DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
-        passData.setAction(bundle.getString(DigitalCheckoutPassData.PARAM_ACTION));
-        passData.setCategoryId(bundle.getString(DigitalCheckoutPassData.PARAM_CATEGORY_ID));
-        passData.setClientNumber(bundle.getString(DigitalCheckoutPassData.PARAM_CLIENT_NUMBER));
-        passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.PARAM_OPERATOR_ID));
-        passData.setProductId(bundle.getString(DigitalCheckoutPassData.PARAM_PRODUCT_ID));
-        passData.setIsPromo(bundle.getString(DigitalCheckoutPassData.PARAM_IS_PROMO));
-        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
-        passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN));
-        passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_MEDIUM));
-        passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_SOURCE));
-        passData.setUtmContent(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_CONTENT));
-        if (!TextUtils.isEmpty(bundle.getString(DigitalCheckoutPassData.PARAM_IDEM_POTENCY_KEY, ""))) {
+        passData.setAction(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_ACTION()));
+        passData.setCategoryId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_CATEGORY_ID()));
+        passData.setClientNumber(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_CLIENT_NUMBER()));
+        passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_OPERATOR_ID()));
+        passData.setProductId(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_PRODUCT_ID()));
+        passData.setIsPromo(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IS_PROMO()));
+        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_INSTANT_CHECKOUT()));
+        passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_CAMPAIGN()));
+        passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_MEDIUM()));
+        passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_SOURCE()));
+        passData.setUtmContent(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_UTM_CONTENT()));
+        if (!TextUtils.isEmpty(bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IDEM_POTENCY_KEY(), ""))) {
             passData.setIdemPotencyKey(
-                    bundle.getString(DigitalCheckoutPassData.PARAM_IDEM_POTENCY_KEY)
+                    bundle.getString(DigitalCheckoutPassData.Companion.getPARAM_IDEM_POTENCY_KEY())
             );
         } else {
             passData.setIdemPotencyKey(

@@ -24,15 +24,7 @@ import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.view.compoundview.ProductPriceInfoView;
@@ -323,7 +315,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
                     // presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
-            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL():
                 if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                     String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {
@@ -452,7 +444,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
 
     private Product getDefaultProduct() {
         for (Product product : selectedOperator.getProductList()) {
-            if (product.getStatus() != Product.STATUS_INACTIVE) {
+            if (product.getStatus() != Product.Companion.getSTATUS_INACTIVE()) {
                 productSelected = product;
                 break;
             }

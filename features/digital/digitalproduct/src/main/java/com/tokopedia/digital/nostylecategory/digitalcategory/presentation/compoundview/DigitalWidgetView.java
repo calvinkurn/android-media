@@ -93,18 +93,18 @@ public class DigitalWidgetView extends FrameLayout {
 
     public void renderWidget(InputFieldModel inputFieldModel, List<BaseWidgetItem> items, String defaultId) {
         switch (inputFieldModel.getType()) {
-            case InputFieldModel.TYPE_TEL:
-            case InputFieldModel.TYPE_NUMERIC:
-            case InputFieldModel.TYPE_TEXT:
+            case InputFieldModel.Companion.getTYPE_TEL():
+            case InputFieldModel.Companion.getTYPE_NUMERIC():
+            case InputFieldModel.Companion.getTYPE_TEXT():
                 showClientNumber(transformInputFieldToClientNumber(inputFieldModel), items);
                 break;
-            case InputFieldModel.TYPE_SELECT:
+            case InputFieldModel.Companion.getTYPE_SELECT():
                 showDropdown(items, inputFieldModel, defaultId);
                 break;
-            case InputFieldModel.TYPE_RADIO:
+            case InputFieldModel.Companion.getTYPE_RADIO():
                 showRadio(items, inputFieldModel, defaultId);
                 break;
-            case InputFieldModel.TYPE_SELECT_LIST:
+            case InputFieldModel.Companion.getTYPE_SELECT_LIST():
                 showList(items, defaultId);
                 break;
         }

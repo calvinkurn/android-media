@@ -120,7 +120,7 @@ public class DigitalCategoryNoStyleFragment extends BaseDaggerFragment implement
         digitalCategoryNoStyleView.setActionListener(new DigitalCategoryNoStyleView.ActionListener() {
             @Override
             public void onClickOperatorDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
-                if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
+                if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_OPERATOR_ID())) {
                     String titleChooser = inputFieldModel.getText() + " " + digitalCategoryModel.getOperatorLabel();
                     Intent intent = DigitalChooserNoStyleActivity.newInstanceOperatorChooser(getActivity(),
                             digitalCategoryModel.getId(), titleChooser, digitalCategoryModel.getOperatorLabel(),
@@ -142,7 +142,7 @@ public class DigitalCategoryNoStyleFragment extends BaseDaggerFragment implement
 
             @Override
             public void onClickProductDropdown(InputFieldModel inputFieldModel, String operatorId, int position) {
-                if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
+                if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_PRODUCT_ID())) {
                     selectedOperatorId = operatorId;
                     tempProductInputFieldModel = inputFieldModel;
                     String titleChooser = inputFieldModel.getText();

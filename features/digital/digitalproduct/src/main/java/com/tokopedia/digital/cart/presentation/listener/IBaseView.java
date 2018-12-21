@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.util.Map;
+
 /**
  * @author anggaprasetiyo on 2/27/17.
  */
@@ -31,8 +33,8 @@ public interface IBaseView extends CustomerView {
 
     String getStringFromResource(@StringRes int resId);
 
-    TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams
+    Map<String, String> getGeneratedAuthParamNetwork(
+            Map<String, String> originParams
     );
 
     RequestBodyIdentifier getDigitalIdentifierParam();

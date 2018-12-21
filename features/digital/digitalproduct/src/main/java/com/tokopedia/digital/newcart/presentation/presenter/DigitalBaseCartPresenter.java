@@ -534,7 +534,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     @Override
     public void onPaymentSuccess(String categoryId) {
         if (categoryId != null && categoryId.length() > 0) {
-            digitalModuleRouter.getGlobalCacheManager().delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
+            digitalModuleRouter.getGlobalCacheManager().delete(DigitalCache.INSTANCE.getNEW_DIGITAL_CATEGORY_AND_FAV() + "/" + categoryId);
         }
     }
 

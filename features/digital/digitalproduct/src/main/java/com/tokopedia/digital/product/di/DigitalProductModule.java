@@ -2,9 +2,9 @@ package com.tokopedia.digital.product.di;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
@@ -20,6 +20,7 @@ import com.tokopedia.digital.product.domain.interactor.GetOperatorsByCategoryIdU
 import com.tokopedia.digital.product.domain.interactor.GetProductsByOperatorIdUseCase;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -84,9 +85,9 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    GetDigitalCategoryByIdUseCase provideGetDigitalCategoryByIdUseCase(@ApplicationContext Context context,
+    GetDigitalCategoryByIdUseCase provideGetDigitalCategoryByIdUseCase(UserSession userSession,
                                                                        IDigitalCategoryRepository digitalCategoryRepository) {
-        return new GetDigitalCategoryByIdUseCase(context, digitalCategoryRepository);
+        return new GetDigitalCategoryByIdUseCase( digitalCategoryRepository, userSession);
     }
 
     @Provides

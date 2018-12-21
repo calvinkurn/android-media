@@ -86,7 +86,7 @@ public class DigitalWidgetRadioInputView extends LinearLayout {
                 EMPTY_MARGIN_VALUE
         );
 
-        if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
+        if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_OPERATOR_ID())) {
             for (int i = 0; i < items.size(); i++) {
                 Operator operator = ((Operator) items.get(i));
                 View radioView = inflater.inflate(R.layout.view_digital_radio_button,null, false);
@@ -105,7 +105,7 @@ public class DigitalWidgetRadioInputView extends LinearLayout {
             actionListener.onItemSelected(operator);
             selectDefaultId(radioGroup, items, inputFieldModel, defaultId);
 //            initCheckRadioButtonBasedOnLastOrder(radioGroup, defaultId);
-        } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
+        } else if (inputFieldModel.getName().equals(InputFieldModel.Companion.getNAME_PRODUCT_ID())) {
 
         }
 

@@ -29,7 +29,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
             Operator operator, PulsaBalance pulsaBalance, String categoryId, String categoryName,
             String productId, boolean isInstantCheckout) {
         return new DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .action(DigitalCheckoutPassData.Companion.getDEFAULT_ACTION())
                 .categoryId(categoryId)
                 .clientNumber(pulsaBalance.getMobileNumber())
                 .instantCheckout(isInstantCheckout ? "1" : "0")
@@ -39,10 +39,10 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
                 .utmCampaign(categoryName)
                 .utmContent(view.getVersionInfoApplication())
                 .idemPotencyKey(generateATokenRechargeCheckout())
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .utmSource(DigitalCheckoutPassData.Companion.getUTM_SOURCE_ANDROID())
+                .utmMedium(DigitalCheckoutPassData.Companion.getUTM_MEDIUM_WIDGET())
                 .voucherCodeCopied("")
-                .source(DigitalCheckoutPassData.PARAM_NATIVE)
+                .source(DigitalCheckoutPassData.Companion.getPARAM_NATIVE())
                 .build();
     }
 
@@ -54,7 +54,7 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
                         (DigitalRouter) view.getMainApplication();
                 view.navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
                 );
             }
         } else {

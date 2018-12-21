@@ -6,7 +6,6 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 
@@ -49,7 +48,7 @@ public class DigitalAnalytics {
 
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", DigitalEventTracking.Event.ADD_TO_CART,
-                        "eventCategory", extraComeFrom == DigitalCheckoutPassData.PARAM_WIDGET ? DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET :
+                        "eventCategory", extraComeFrom == DigitalCheckoutPassData.Companion.getPARAM_WIDGET() ? DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET :
                                 DigitalEventTracking.Category.DIGITAL_NATIVE,
                         "eventAction", DigitalEventTracking.Action.CLICK_BELI,
                         "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase() +

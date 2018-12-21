@@ -11,21 +11,15 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.network.exception.HttpErrorException;
-import com.tokopedia.core.network.exception.ResponseDataNullException;
-import com.tokopedia.core.network.exception.ResponseErrorException;
-import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
@@ -47,6 +41,7 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
+import com.tokopedia.user.session.UserSession;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -107,17 +102,20 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
     private CategoryData categoryData;
+    private UserSession userSession;
 
     @Inject
     public ProductDigitalPresenter(
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase) {
-        super(localCacheHandler);
+            DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
+            UserSession userSession) {
+        super(localCacheHandler, userSession);
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -203,7 +201,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                     String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
                     String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
-                    String verifiedNumber = SessionHandler.getPhoneNumber();
+                    String verifiedNumber = userSession.getPhoneNumber();
                     if (!TextUtils.isEmpty(lastTypedClientNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
@@ -227,34 +225,34 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     }
 
     private void handleCategoryError(Throwable e) {
-        if (e instanceof UnknownHostException || e instanceof ConnectException) {
-            /* Ini kalau ga ada internet */
-            view.renderErrorNoConnectionProductDigitalData(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException) {
-            /* Ini kalau timeout */
-            view.renderErrorTimeoutConnectionProductDigitalData(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
-            view.renderErrorProductDigitalData(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-            view.renderErrorProductDigitalData(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-             code http errornya bisa diambil
-             e.getErrorCode */
-            view.renderErrorHttpProductDigitalData(e.getMessage());
-        } else if (e instanceof ServerErrorException) {
-            view.clearContentRendered();
-            view.closeView();
-            ServerErrorHandlerUtil.handleError(e);
-        } else {
-            view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
+//        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+//            /* Ini kalau ga ada internet */
+//            view.renderErrorNoConnectionProductDigitalData(
+//                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+//            );
+//        } else if (e instanceof SocketTimeoutException) {
+//            /* Ini kalau timeout */
+//            view.renderErrorTimeoutConnectionProductDigitalData(
+//                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+//            );
+//        } else if (e instanceof ResponseErrorException) {
+//            /* Ini kalau error dari API kasih message error */
+//            view.renderErrorProductDigitalData(e.getMessage());
+//        } else if (e instanceof ResponseDataNullException) {
+//            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+//            view.renderErrorProductDigitalData(e.getMessage());
+//        } else if (e instanceof HttpErrorException) {
+//            /* Ini Http error, misal 403, 500, 404,
+//             code http errornya bisa diambil
+//             e.getErrorCode */
+//            view.renderErrorHttpProductDigitalData(e.getMessage());
+//        } else if (e instanceof ServerErrorException) {
+//            view.clearContentRendered();
+//            view.closeView();
+//            ServerErrorHandlerUtil.handleError(e);
+//        } else {
+//            view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+//        }
     }
 
     private boolean isPulsaOrPaketDataOrRoaming(String categoryId) {
@@ -348,9 +346,9 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 intent.putExtra(accoutHandleKey, DeviceUtil.getPhoneHandle(view.getActivity(), simPosition));
             }
         }
-        if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
-            view.getActivity().startActivity(intent);
-        }
+//        if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
+//            view.getActivity().startActivity(intent);
+//        }
         ussdTimeOut = false;
         startUssdCheckBalanceTimer();
     }
@@ -380,30 +378,30 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 if (view == null || view.getActivity() == null) {
                     return;
                 }
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    /* Ini kalau ga ada internet */
-                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
-                } else if (e instanceof SocketTimeoutException) {
-                    /* Ini kalau timeout */
-                    view.showPulsaBalanceError(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
-                    view.showPulsaBalanceError(e.getMessage());
-                } else if (e instanceof ResponseDataNullException) {
-                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.showPulsaBalanceError(e.getMessage());
-                } else if (e instanceof HttpErrorException) {
-                    /* Ini Http error, misal 403, 500, 404,
-                    code http errornya bisa diambil
-                    e.getErrorCode */
-                    view.showPulsaBalanceError(e.getMessage());
-                } else if (e instanceof ServerErrorException) {
-                    ServerErrorHandlerUtil.handleError(e);
-                } else {
-                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+//                if (e instanceof UnknownHostException || e instanceof ConnectException) {
+//                    /* Ini kalau ga ada internet */
+//                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+//                } else if (e instanceof SocketTimeoutException) {
+//                    /* Ini kalau timeout */
+//                    view.showPulsaBalanceError(
+//                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+//                    );
+//                } else if (e instanceof ResponseErrorException) {
+//                    /* Ini kalau error dari API kasih message error */
+//                    view.showPulsaBalanceError(e.getMessage());
+//                } else if (e instanceof ResponseDataNullException) {
+//                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+//                    view.showPulsaBalanceError(e.getMessage());
+//                } else if (e instanceof HttpErrorException) {
+//                    /* Ini Http error, misal 403, 500, 404,
+//                    code http errornya bisa diambil
+//                    e.getErrorCode */
+//                    view.showPulsaBalanceError(e.getMessage());
+//                } else if (e instanceof ServerErrorException) {
+//                    ServerErrorHandlerUtil.handleError(e);
+//                } else {
+//                    view.showPulsaBalanceError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+//                }
             }
 
             @Override
@@ -691,7 +689,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         DigitalCheckoutPassData passData = super.generateCheckoutPassData(preCheckoutProduct,
                 versionInfoApplication,
                 userLoginId);
-        passData.setSource(DigitalCheckoutPassData.PARAM_NATIVE);
+        passData.setSource(DigitalCheckoutPassData.Companion.getPARAM_NATIVE());
         return passData;
     }
 

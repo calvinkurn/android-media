@@ -146,8 +146,8 @@ public class DigitalSearchNumberFragment extends BasePresenterFragment
     }
 
     private void setClientNumberInputType() {
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)
-                || clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_NUMERIC)) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_TEL())
+                || clientNumber.getType().equalsIgnoreCase(ClientNumber.Companion.getTYPE_INPUT_NUMERIC())) {
             editTextSearchNumber.setInputType(InputType.TYPE_CLASS_NUMBER);
             editTextSearchNumber.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
         } else {

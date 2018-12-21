@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.Map;
 

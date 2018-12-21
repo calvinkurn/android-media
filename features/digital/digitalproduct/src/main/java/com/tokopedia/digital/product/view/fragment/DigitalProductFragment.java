@@ -704,7 +704,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                         (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
                 );
             }
         } else {
@@ -733,7 +733,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                         (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                        DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
                 );
                 getActivity().overridePendingTransition(0, 0);
             }
@@ -873,7 +873,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                             data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA)
                     );
                 break;
-            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL():
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                         String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
@@ -906,7 +906,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                                 (DigitalRouter) getActivity().getApplication();
                         navigateToActivityRequest(
                                 digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                                DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL()
                         );
                     }
                 }

@@ -193,7 +193,7 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
                             selectedProduct);
                 }
                 break;
-            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.Companion.getREQUEST_CODE_CART_DIGITAL():
                 if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                     String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {

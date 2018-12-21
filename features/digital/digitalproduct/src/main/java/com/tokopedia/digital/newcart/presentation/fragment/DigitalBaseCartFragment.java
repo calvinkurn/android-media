@@ -309,7 +309,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             } else {
                 closeView();
             }
-        } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
+        } else if (requestCode == InstantCheckoutActivity.Companion.getREQUEST_CODE()) {
             closeView();
         }
     }
@@ -362,7 +362,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void closeViewWithMessageAlert(String message) {
         Intent intent = new Intent();
-        intent.putExtra(DigitalRouter.EXTRA_MESSAGE, message);
+        intent.putExtra(DigitalRouter.Companion.getEXTRA_MESSAGE(), message);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -396,8 +396,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData) {
         navigateToActivityRequest(
-                InstantCheckoutActivity.newInstance(getActivity(), instantCheckoutData),
-                InstantCheckoutActivity.REQUEST_CODE
+                InstantCheckoutActivity.Companion.newInstance(getActivity(), instantCheckoutData),
+                InstantCheckoutActivity.Companion.getREQUEST_CODE()
         );
         closeView();
     }
