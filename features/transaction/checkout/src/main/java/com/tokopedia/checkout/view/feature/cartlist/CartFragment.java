@@ -538,11 +538,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onTopAdsItemClicked(Product product) {
         Intent intent = checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product);
-/*
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_PRODUCT_ITEM, productItem);
-        intent.putExtras(bundle);
-*/
         context.startActivity(intent);
     }
 

@@ -34,12 +34,10 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     public static final int TYPE_VIEW_CART_TOPADS = R.layout.layout_cart_topads;
 
     private TopAdsCarouselView topAdsCarouselView;
-    private Context context;
     private CartAdapter.ActionListener listener;
 
     public CartTopAdsViewHolder(View itemView, CartAdapter.ActionListener listener) {
         super(itemView);
-        this.context = itemView.getContext();
         this.listener = listener;
         topAdsCarouselView = itemView.findViewById(R.id.topads);
     }
@@ -52,14 +50,6 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-/*
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-*/
-
         listener.onTopAdsItemClicked(product);
     }
 
