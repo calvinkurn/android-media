@@ -26,6 +26,7 @@ import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRe
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 
 import java.util.ArrayList;
@@ -115,6 +116,8 @@ public interface ShipmentContract {
         void proceedCod(android.view.View view);
 
         void showBottomSheetError();
+
+        void navigateToCodConfirmationPage(Data data);
     }
 
     interface AnalyticsActionListener {

@@ -81,6 +81,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -632,7 +633,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void proceedCod(View view) {
-        shipmentAdapter.checkDropshipperValidation(1);
+//        shipmentAdapter.checkDropshipperValidation(1);
+        startActivity(checkoutModuleRouter.getCodPageIntent(getContext(), new Data()));
     }
 
     @Override
@@ -641,6 +643,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
             bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
         }
+    }
+
+    @Override
+    public void navigateToCodConfirmationPage(Data data) {
+        Intent intent = checkoutModuleRouter.getCodPageIntent(getContext(), data);
+        startActivity(intent);
     }
 
     @Override

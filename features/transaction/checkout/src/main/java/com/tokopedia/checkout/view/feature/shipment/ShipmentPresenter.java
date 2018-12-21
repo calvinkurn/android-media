@@ -1380,7 +1380,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     Data data = response.getData().getData();
                     if (!TextUtils.isEmpty(data.getErrorMessage())) {
                         // go to cod confirmation page
-
+                        getView().navigateToCodConfirmationPage(data);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
                         getView().showBottomSheetError();

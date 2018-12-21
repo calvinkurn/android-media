@@ -57,6 +57,7 @@ import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
+import com.tokopedia.cod.CodActivity;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -393,6 +394,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
@@ -2701,6 +2703,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
         else
             return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
+    }
+    @Override
+    public Intent getCodPageIntent(Context context, Data data) {
+        return CodActivity.newIntent(context, data);
     }
 
     @Override

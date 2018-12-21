@@ -9,6 +9,7 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 
 import java.security.PublicKey;
 
@@ -64,4 +65,6 @@ public interface ICheckoutModuleRouter {
     void goToPurchasePage(Activity activity);
 
     Intent checkoutModuleRouterGetRecentViewIntent();
+
+    Intent getCodPageIntent(Context context, Data data);
 }
