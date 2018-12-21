@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.transactiondata.entity.response.cod.Data
@@ -30,12 +31,17 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mData = arguments!!.getParcelable(ARGUMENT_COD_DATA)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_cod_confirmation, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mData = arguments!!.getParcelable(ARGUMENT_COD_DATA)
+        initView()
     }
 
     override fun initInjector() {
@@ -58,7 +64,17 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
         NetworkErrorHelper.showCloseSnackbar(activity, message)
     }
 
-    override fun loadInformation() {
+    override fun initView() {
+        textview_ticker_message.setText(mData.message.messageInfo)
+        textview_counter_info.setText(mData.counterInfo)
+        button_confirm.setOnClickListener(this::onPayClicked)
+    }
 
+    override fun onPayClicked(view: View) {
+        Toast.makeText(context, "confirm", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun navigateToThankYouPage() {
+        Toast.makeText(context, "navigate thankyou page", Toast.LENGTH_SHORT).show()
     }
 }

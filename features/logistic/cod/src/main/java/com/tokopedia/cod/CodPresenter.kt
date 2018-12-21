@@ -5,7 +5,7 @@ package com.tokopedia.cod
  */
 class CodPresenter : CodContract.Presenter {
 
-    override fun submitConfirmation() {
+    override fun confirmPayment() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

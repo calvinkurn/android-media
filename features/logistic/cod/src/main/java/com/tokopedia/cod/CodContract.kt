@@ -17,7 +17,6 @@ interface CodContract {
     }
 
     interface Presenter {
-        fun submitConfirmation()
         fun confirmPayment()
     }
 
