@@ -49,7 +49,7 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     }
 
     override fun getScreenName(): String {
-        return "bla"
+        return getString(R.string.cod_brand_tag)
     }
 
     override fun showLoading() {
