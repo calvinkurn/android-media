@@ -88,7 +88,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         super.viewState = ChatbotViewStateImpl(view, session, this, this,
                 this, this, this,
-                this, this, (activity as BaseChatToolbarActivity).getToolbar())
+                this, this, this, (activity as BaseChatToolbarActivity).getToolbar())
         viewState.initView()
         loadInitialData()
     }
