@@ -262,12 +262,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
-    public Intent getPromoDetailIntent(Context context, String slug) {
+    public Class<?> getDeeplinkClass() {
         return null;
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return SellerOrderListActivity.getInstance(context);
     }
 }

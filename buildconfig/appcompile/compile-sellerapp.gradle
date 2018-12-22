@@ -49,9 +49,12 @@ include "features:operational:contact_us"
 include "features:payment:payment"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
+//include "features:payment:payment_setting_no_op"
 
 include "features:product:gallery"
 
+include "features:promo:loyalty"
+include "features:promo:loyalty_common"
 include "features:promo:merchant_voucher"
 
 include "features:top_ads:top_ads_dashboard"
@@ -67,6 +70,7 @@ include "features:transaction:transactiondata"
 
 include "features:user:topchat"
 include "features:user:changepassword"
+//include "features:user:changepassword_no_op"
 include "features:user:changephonenumber"
 include "features:user:settingbank"
 include "features:user:bankdb"
