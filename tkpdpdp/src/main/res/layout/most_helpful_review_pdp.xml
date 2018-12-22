@@ -25,8 +25,8 @@
         android:layout_width="@dimen/dp_340"
         android:layout_height="@dimen/dp_240"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_25"
+        android:layout_marginRight="@dimen/dp_25"
         android:layout_marginBottom="@dimen/dp_5"
         android:visibility="visible" />
 

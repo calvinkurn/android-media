@@ -20,9 +20,10 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
 
-    private FrameLayout container;
+    private static final String TAG = "DigitalWidgetFragment";
 
     private FragmentManager fragmentManager;
+    private FrameLayout container;
 
     public DigitalsViewHolder(FragmentManager fragmentManager, View itemView) {
         super(itemView);
@@ -32,14 +33,18 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
         this.fragmentManager = fragmentManager;
     }
 
+
     @Override
     public void bind(DigitalsViewModel element) {
         container.postDelayed(() -> {
-            Fragment oldFragment = fragmentManager.findFragmentById(container.getId());
-            if (oldFragment == null) {
-                fragmentManager.beginTransaction().add(container.getId(), new DigitalChannelFragment()).commit();
+            try {
+                Fragment oldFragment = fragmentManager.findFragmentByTag(TAG);
+                if (oldFragment == null) {
+                    fragmentManager.beginTransaction().replace(R.id.container_layout_digital_widget, new DigitalChannelFragment(), TAG).commit();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, 500);
+        }, 300);
     }
-
 }
