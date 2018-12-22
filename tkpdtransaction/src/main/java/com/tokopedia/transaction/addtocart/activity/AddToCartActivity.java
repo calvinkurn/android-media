@@ -804,7 +804,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.btn_choose_address)
     void actionChangeAddress() {
-        UnifyTracking.eventATCChangeAddress();
+        UnifyTracking.eventATCChangeAddress(this);
         Intent intent2 = new Intent(this, ChooseAddressActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(ChooseAddressActivity.REQUEST_CODE_PARAM_ADDRESS,

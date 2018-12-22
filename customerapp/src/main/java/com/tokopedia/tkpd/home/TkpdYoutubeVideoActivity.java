@@ -88,13 +88,13 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         btnCta.setOnClickListener(v -> {
             if (!TextUtils.isEmpty(videoLand)) {
                 RouteManager.route(TkpdYoutubeVideoActivity.this, videoLand);
-                HomeGATracking.eventClickCTAButton();
+                HomeGATracking.eventClickCTAButton(v.getContext());
             }
             finish();
         });
 
         extractValues(getIntent().getExtras());
-        HomeGATracking.eventYoutubeVideoImpression();
+        HomeGATracking.eventYoutubeVideoImpression(this);
     }
 
     @Override

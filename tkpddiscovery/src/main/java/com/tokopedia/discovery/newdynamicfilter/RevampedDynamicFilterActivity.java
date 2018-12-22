@@ -91,7 +91,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             Intent intent = new Intent(activity, RevampedDynamicFilterActivity.class);
             intent.putParcelableArrayListExtra(EXTRA_FILTER_LIST, new ArrayList<>(filterCategoryList));
             activity.startActivityForResult(intent, REQUEST_CODE);
-            activity.overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);
+            activity.overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 
@@ -318,7 +318,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core.R.anim.push_down);
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core2.R.anim.push_down);
     }
 
     @Override

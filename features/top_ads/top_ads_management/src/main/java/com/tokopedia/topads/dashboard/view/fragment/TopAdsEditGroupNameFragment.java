@@ -81,7 +81,7 @@ public class TopAdsEditGroupNameFragment extends BasePresenterFragment implement
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventTopAdsProductEditGroupName();
+                UnifyTracking.eventTopAdsProductEditGroupName(getActivity());
                 saveAd();
             }
         });

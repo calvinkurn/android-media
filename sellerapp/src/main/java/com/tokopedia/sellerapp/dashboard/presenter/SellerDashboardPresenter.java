@@ -122,7 +122,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
 
     public void getVerificationStatus() {
         getVerificationStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(),
-                new GetApprovalStatusSubscriber(getView().getApprovalStatusListener()));
+                new GetApprovalStatusSubscriber(getView()
     }
 
     public void getNotification() {

@@ -114,6 +114,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
+
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> category = new HashMap<String, String>();
         ArrayList<String> prodIdArray = new ArrayList<>();
@@ -130,8 +131,8 @@ public class BaseDiscoveryActivity
 
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         finish();
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
@@ -153,8 +154,8 @@ public class BaseDiscoveryActivity
                 category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }

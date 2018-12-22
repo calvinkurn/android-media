@@ -560,15 +560,15 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     private int getPassengerTitleId() {
         switch (getView().getTitleSpinnerPosition()) {
-            case 0:
-                return FlightPassengerTitleType.TUAN;
             case 1:
+                return FlightPassengerTitleType.TUAN;
+            case 2:
                 if (isChildPassenger() || isInfantPassenger()) {
                     return FlightPassengerTitleType.NONA;
                 } else {
                     return FlightPassengerTitleType.NYONYA;
                 }
-            case 2:
+            case 3:
                 return FlightPassengerTitleType.NONA;
             default:
                 return 0;

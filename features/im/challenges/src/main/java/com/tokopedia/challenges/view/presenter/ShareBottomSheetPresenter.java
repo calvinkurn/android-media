@@ -49,6 +49,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSheetContract.View> implements ShareBottomSheetContract.Presenter {
+
     PostMapBranchUrlUseCase postMapBranchUrlUseCase;
     private static final String PACKAGENAME_WHATSAPP = "com.whatsapp";
     private static final String PACKAGENAME_FACEBOOK = "com.facebook.katana";

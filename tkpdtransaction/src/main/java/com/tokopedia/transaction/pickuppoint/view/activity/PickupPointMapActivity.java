@@ -140,7 +140,7 @@ public class PickupPointMapActivity extends BasePresenterActivity implements OnM
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        toolbar.setNavigationIcon(com.tokopedia.core.R.drawable.ic_clear_24dp);
+        toolbar.setNavigationIcon(com.tokopedia.core2.R.drawable.ic_clear_24dp);
         toolbar.setTitle(String.format(getString(R.string.title_send_to_pick_up_booth),
                 getIntent().getStringExtra(INTENT_DISTRICT_NAME)));
     }

@@ -2,6 +2,8 @@ package com.tokopedia.transactiondata.entity.response.shippingaddressform;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.GoldMerchant;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.OfficialStore;
 
 /**
  * @author anggaprasetiyo on 22/02/18.
@@ -70,6 +72,12 @@ public class Shop {
     @SerializedName("city_name")
     @Expose
     private String cityName;
+    @SerializedName("gold_merchant")
+    @Expose
+    private GoldMerchant goldMerchant;
+    @SerializedName("official_store")
+    @Expose
+    private OfficialStore officialStore;
 
     public int getShopId() {
         return shopId;
@@ -153,5 +161,13 @@ public class Shop {
 
     public String getCityName() {
         return cityName;
+    }
+
+    public GoldMerchant getGoldMerchant() {
+        return goldMerchant;
+    }
+
+    public OfficialStore getOfficialStore() {
+        return officialStore;
     }
 }

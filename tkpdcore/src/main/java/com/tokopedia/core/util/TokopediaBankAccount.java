@@ -6,7 +6,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.var.TkpdCache;
 
 /**
