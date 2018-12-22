@@ -28,6 +28,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
@@ -687,7 +688,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
     }
 
-    @Override
+
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
     }
@@ -1159,7 +1160,8 @@ public abstract class SellerRouterApplication extends MainApplication
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
-
+                UnifyTracking.eventClearEnhanceEcommerce(SellerRouterApplication.this);
+                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, events);
             }
 
             @Override
@@ -1176,6 +1178,14 @@ public abstract class SellerRouterApplication extends MainApplication
             public void sendScreen(Activity activity, final String screenName) {
                 if (activity != null && !TextUtils.isEmpty(screenName)) {
                     ScreenTracking.sendScreen(activity, () -> screenName);
+                }
+            }
+
+            @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
                 }
             }
 
@@ -1564,8 +1574,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
-        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
+                                             String source) {
+        return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override
@@ -1856,6 +1867,31 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void eventClickFilterReview(Context context, String filterName, String productId) {
+
+    }
+
+    @Override
+    public void eventImageClickOnReview(Context context, String productId, String reviewId) {
+
+    }
+
+    @Override
+    public String getBranchAutoApply(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public String getTrackingClientId() {
+        return null;
+    }
+
+    @Override
+    public Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation, boolean enableShare, boolean enableLike) {
+        return null;
+    }
+
+    @Override
     @NonNull
     public Intent getTopAdsDashboardIntent(@NonNull Context context) {
         return TopAdsDashboardInternalRouter.getTopAdsdashboardIntent(context);
@@ -1869,4 +1905,34 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void openTopAdsDashboardApplink(Context context) {}
+
+    @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
+        return remoteConfig.getBoolean(key, defaultValue);
+    }
+
+    @Override
+    public void eventClickFilterReview(Context context, String filterName, String productId) {
+
+    }
+
+    @Override
+    public void eventImageClickOnReview(Context context, String productId, String reviewId) {
+
+    }
+
+    @Override
+    public String getBranchAutoApply(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public String getTrackingClientId() {
+        return null;
+    }
+
+    @Override
+    public Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation, boolean enableShare, boolean enableLike) {
+        return null;
+    }
 }

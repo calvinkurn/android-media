@@ -23,7 +23,7 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
@@ -80,8 +80,9 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.loyalty.common.PopUpNotif;
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
@@ -101,14 +102,15 @@ import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutRouter;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -242,6 +244,7 @@ import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
@@ -286,6 +289,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -506,7 +510,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoginPhoneNumberRouter,
         TopAdsDashboardRouter,
         NpsRouter,
-        DigitalRouter {
+        DigitalRouter,
+        TrackingPromoCheckoutRouter {
 
     private static final String EXTRA = "extra";
 
@@ -583,6 +588,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .build();
 
         tokopointComponent = DaggerTokopointComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
                 .serviceApiModule(new ServiceApiModule())
                 .build();
 
@@ -992,7 +998,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void setPromoPushPreference(Boolean newValue) {
-        TrackingUtils.setMoEngagePushPreference(newValue);
+        TrackingUtils.setMoEngagePushPreference(this, newValue);
     }
 
     @Override
@@ -1115,6 +1121,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendEventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title) {
+        TrackingUtils.eventImpressionPromoList(this,dataLayerSinglePromoCodeList, title);
+    }
+
+    @Override
+    public void eventClickPromoListItem(List<Object> dataLayerSinglePromoCodeList, String title) {
+        TrackingUtils.eventClickPromoListItem(this, dataLayerSinglePromoCodeList, title);
+    }
+
+    @Override
     public Intent getBrandsWebViewIntent(Context context, String url) {
         return BrandsWebViewActivity.newInstance(context, url);
     }
@@ -1140,12 +1156,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventTracking(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(eventTracking);
+        UnifyTracking.sendGTMEvent(this, eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
 
     public void sendScreenName(String screenName) {
-        ScreenTracking.screen(screenName);
+        ScreenTracking.screen(this, screenName);
     }
 
     @Override
@@ -1215,7 +1231,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getTrackingClientId() {
-        return TrackingUtils.getClientID();
+        return TrackingUtils.getClientID(getAppContext());
     }
 
     @Override
@@ -1239,6 +1255,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getBranchAutoApply(Activity activity) {
         return BranchSdkUtils.getAutoApplyCouponIfAvailable(activity);
+    }
+
+    @Override
+    public Intent getLoyaltyActivitySelectedCoupon(Context context, String digitalString, String categoryId) {
+        return LoyaltyActivity.newInstanceCouponActiveAndSelected(
+                context, digitalString, categoryId
+        );
+    }
+
+    @Override
+    public Intent getLoyaltyActivity(Context context, String platform, String categoryId) {
+        return LoyaltyActivity.newInstanceCouponActive(
+                context, platform, categoryId
+        );
+    }
+
+    @Override
+    public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
+        return LoyaltyActivity.newInstanceCouponNotActive(
+                context, platform,
+                categoryId);
     }
 
     @Override
@@ -1655,13 +1692,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
-                UnifyTracking.eventClearEnhanceEcommerce();
-                UnifyTracking.sendGTMEvent(events);
+                UnifyTracking.eventClearEnhanceEcommerce(ConsumerRouterApplication.this);
+                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, events);
             }
 
             @Override
             public void sendEventTracking(String event, String category, String action, String label) {
-                UnifyTracking.sendGTMEvent(new EventTracking(
+                UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
                         event,
                         category,
                         action,
@@ -1677,8 +1714,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             }
 
             @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
+                }
+            }
+
+            @Override
             public void sendEnhancedEcommerce(Map<String, Object> trackingData) {
-                TrackingUtils.eventTrackingEnhancedEcommerce(trackingData);
+                TrackingUtils.eventTrackingEnhancedEcommerce(ConsumerRouterApplication.this, trackingData);
             }
         };
     }
@@ -1843,12 +1888,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventTracking(String event, String category, String action, String label) {
-        UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+        UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(event, category, action, label).getEvent());
     }
 
     @Override
     public void sendMoEngageOpenShopEventTracking(String screenName) {
-        TrackingUtils.sendMoEngageCreateShopEvent(screenName);
+        TrackingUtils.sendMoEngageCreateShopEvent(ConsumerRouterApplication.this, screenName);
     }
 
     @Override
@@ -2014,26 +2059,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData, int pageTracking
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(
-                getAppContext(), additionalStringData, defaultSelectedTab
-        )
-                : LoyaltyActivity.newInstanceNewCheckoutCartListCouponNotActive(
-                getAppContext(), additionalStringData
-        );
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(),couponActive, "", false, pageTracking);
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab, boolean isOneClickShipment
+            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
-                getAppContext(), additionalStringData, defaultSelectedTab, isOneClickShipment
-        )
-                : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(
-                getAppContext(), additionalStringData, isOneClickShipment
-        );
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", isOneClickShipment, pageTracking);
     }
 
     @Override
@@ -2042,13 +2077,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
-        return getAppComponent().chuckInterceptor();
+    public Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking) {
+        return PromoCheckoutDetailMarketplaceActivity.Companion.createIntent(getAppContext(), promoCode, true, oneClickShipment, pageTracking);
     }
 
     @Override
-    public FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor() {
-        return getAppComponent().fingerprintInterceptor();
+    public Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking) {
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), promoCouponActive, promoCode, oneClickShipment, pageTracking);
+    }
+
+    @Override
+    public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
+        return getAppComponent().chuckInterceptor();
     }
 
     @Override
@@ -2243,7 +2283,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
-            UnifyTracking.eventShopSendChat();
+            UnifyTracking.eventShopSendChat(context);
             Intent intent = getAskSellerIntent(this, shopId, shopName, TkpdInboxRouter.SHOP, avatar);
             context.startActivity(intent);
         } else {
@@ -2351,7 +2391,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void logInvalidGrant(Response response) {
-        AnalyticsLog.logInvalidGrant(response.request().url().toString());
+        AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
 
     }
 
@@ -2464,8 +2504,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendAnalyticsGroupChat(String url, String error) {
-        if (remoteConfig.getBoolean("groupchat_analytics", false)) {
-            AnalyticsLog.logGroupChatWebSocketError(url, error);
+        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+            AnalyticsLog.logGroupChatWebSocketError(getAppContext(), url, error);
         }
     }
 
@@ -2484,6 +2524,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
         return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
                 .verifyPromo(requestParams);
+    }
+
+    @Override
+    public void sharePromoLoyalty(Activity activity,PromoData promoData) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.PROMO_TYPE)
+                .setId(promoData.getSlug())
+                .setName(promoData.getTitle())
+                .setTextContent(promoData.getTitle()
+                        + getString(com.tokopedia.loyalty.R.string.share_promo_additional_text))
+                .setUri(promoData.getLink())
+                .build();
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -2536,7 +2589,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     productId, shopId, source));
         } else {
             goToCreateMerchantRedirect(context);
-            UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
+            UnifyTracking.eventTopAdsSwitcher(this, AppEventTracking.Category.SWITCHER);
         }
     }
 
@@ -2549,7 +2602,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendAnalyticsFirstTime() {
-        TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
+        TrackingUtils.activityBasedAFEvent(this, HomeRouter.IDENTIFIER_HOME_ACTIVITY);
     }
 
     @Override
@@ -2748,7 +2801,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToEditShop(Context context) {
         Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
-        UnifyTracking.eventManageShopInfo();
+        UnifyTracking.eventManageShopInfo(context);
 
         context.startActivity(intent);
     }
@@ -2857,8 +2910,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getEmptyCartFragment(String autoApplyMessage) {
-        return EmptyCartFragment.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName());
+    public Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc) {
+        return EmptyCartFragment.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName(), state, titleDesc);
     }
 
     @Override
@@ -2883,34 +2936,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToShopEditor(Context context) {
-        UnifyTracking.eventManageShopInfo();
+        UnifyTracking.eventManageShopInfo(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goToManageShopShipping(Context context) {
-        UnifyTracking.eventManageShopShipping();
+        UnifyTracking.eventManageShopShipping(context);
         context.startActivity(new Intent(context, EditShippingActivity.class));
     }
 
     @Override
     public void goToManageShopEtalase(Context context) {
-        UnifyTracking.eventManageShopEtalase();
+        UnifyTracking.eventManageShopEtalase(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goTotManageShopNotes(Context context) {
-        UnifyTracking.eventManageShopNotes();
+        UnifyTracking.eventManageShopNotes(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
         context.startActivity(intent);
     }
 
     @Override
     public void goToManageShopLocation(Context context) {
-        UnifyTracking.eventManageShopLocation();
+        UnifyTracking.eventManageShopLocation(context);
         Intent intent = ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
         context.startActivity(intent);
     }
@@ -2942,8 +2995,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToSaldo(Context context) {
         Intent intent = new Intent(context, DepositActivity.class);
         context.startActivity(intent);
-        UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DEPOSIT);
-        AnalyticsEventTrackingHelper.homepageSaldoClick(DepositActivity.class.getName());
+        UnifyTracking.eventDrawerClick(context, AppEventTracking.EventLabel.DEPOSIT);
+        AnalyticsEventTrackingHelper.homepageSaldoClick(context, DepositActivity.class.getName());
     }
 
     public Intent getInboxChatIntent(Context context) {
@@ -3014,12 +3067,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendOpenHomeEvent() {
-        TrackingUtils.sendMoEngageOpenHomeEvent();
+        TrackingUtils.sendMoEngageOpenHomeEvent(getAppContext());
     }
 
     @Override
     public void sendMoEngageOpenFeedEvent(boolean isEmptyFeed) {
-        TrackingUtils.sendMoEngageOpenFeedEvent(isEmptyFeed);
+        TrackingUtils.sendMoEngageOpenFeedEvent(getAppContext(), isEmptyFeed);
     }
 
     @Override
@@ -3046,7 +3099,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new GlobalCacheManager().deleteAll();
         Router.clearEtalase(activity);
         DbManagerImpl.getInstance().removeAllEtalase();
-        TrackingUtils.eventMoEngageLogoutUser();
+        TrackingUtils.eventMoEngageLogoutUser(activity);
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
         notif.dismissAllActivedNotifications();
@@ -3143,7 +3196,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
-            TrackingUtils.eventMoEngageLogoutUser();
+            TrackingUtils.eventMoEngageLogoutUser(this);
             SessionHandler.clearUserData(activity);
             NotificationModHandler notif = new NotificationModHandler(activity);
             notif.dismissAllActivedNotifications();
@@ -3199,7 +3252,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendMoengageEvents(String eventName, Map<String, Object> values) {
-        TrackingUtils.sendMoEngageEvents(eventName, values);
+        TrackingUtils.sendMoEngageEvents(this, eventName, values);
     }
 
     @Override
@@ -3265,8 +3318,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
-        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
+                                                    String source) {
+        return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override
@@ -3276,7 +3330,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getAppsFlyerID() {
-        return TrackingUtils.getAfUniqueId();
+        return TrackingUtils.getAfUniqueId(this);
     }
 
     @Override
@@ -3285,7 +3339,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
-        UnifyTracking.sendAFCompleteRegistrationEvent(userId, methodName);
+        UnifyTracking.sendAFCompleteRegistrationEvent(this, userId, methodName);
     }
 
     public void onAppsFlyerInit() {
@@ -3302,13 +3356,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
-        TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
+        TrackingUtils.sendMoEngageFavoriteEvent(getAppContext(), shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
     }
 
     @Override
     public void setTrackingUserId(String userId, Context applicationContext) {
         onAppsFlyerInit();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(getAppContext(), getTkpdCoreRouter().legacySessionHandler().getGTMLoginID());
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
         BranchSdkUtils.sendIdentityEvent(userId);
@@ -3320,7 +3374,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                           String phoneNumber, boolean isGoldMerchant,
                                           String shopName, String shopId, boolean hasShop,
                                           String loginMethod) {
-        TrackingUtils.setMoEUserAttributesLogin(
+        TrackingUtils.setMoEUserAttributesLogin(getAppContext(),
                 userId,
                 name,
                 email,
@@ -3335,17 +3389,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void eventMoRegistrationStart(String label) {
-        UnifyTracking.eventMoRegistrationStart(label);
+        UnifyTracking.eventMoRegistrationStart(getAppContext(), label);
     }
 
     @Override
     public void eventMoRegister(String name, String phone) {
-        UnifyTracking.eventMoRegister(name, phone);
+        UnifyTracking.eventMoRegister(getAppContext(), name, phone);
     }
 
     @Override
     public void sendBranchRegisterEvent(String email, String phone) {
-        BranchSdkUtils.sendRegisterEvent(email, phone);
+        BranchSdkUtils.sendRegisterEvent(getAppContext(), email, phone);
     }
 
     /**
@@ -3359,6 +3413,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
         SimpleAppRatingDialog.show(activity);
+    }
+
+    @Override
+    public void sendEventCouponPageClosed() {
+        UnifyTracking.eventCouponPageClosed(this);
+    }
+
+    @Override
+    public void sendEventMyCouponClicked() {
+        UnifyTracking.eventMyCouponClicked(this);
+    }
+
+    @Override
+    public void sendEventCouponChosen(Context context, String title) {
+        UnifyTracking.eventCouponChosen(this,title);
+    }
+
+    @Override
+    public void sendEventDigitalEventTracking(Context context,String text, String failmsg) {
+        UnifyTracking.eventDigitalEventTracking(this,text, failmsg);
     }
 
     @Override
@@ -3414,32 +3488,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void eventTopAdsProductAddBalance() {
-        UnifyTracking.eventTopAdsProductAddBalance();
+        UnifyTracking.eventTopAdsProductAddBalance(getAppContext());
     }
 
     @Override
     public void eventTopAdsShopChooseDateCustom() {
-        UnifyTracking.eventTopAdsShopChooseDateCustom();
+        UnifyTracking.eventTopAdsShopChooseDateCustom(getAppContext());
     }
 
     @Override
     public void eventTopAdsShopDatePeriod(@NonNull String label) {
-        UnifyTracking.eventTopAdsShopDatePeriod(label);
+        UnifyTracking.eventTopAdsShopDatePeriod(getAppContext(), label);
     }
 
     @Override
     public void eventTopAdsProductStatisticBar(@NonNull String label) {
-        UnifyTracking.eventTopAdsProductStatisticBar(label);
+        UnifyTracking.eventTopAdsProductStatisticBar(getAppContext(), label);
     }
 
     @Override
     public void eventTopAdsShopStatisticBar(@NonNull String label) {
-        UnifyTracking.eventTopAdsShopStatisticBar(label);
+        UnifyTracking.eventTopAdsShopStatisticBar(getAppContext(), label);
     }
 
     @Override
     public void eventOpenTopadsPushNotification(@NonNull String label) {
-        UnifyTracking.eventOpenTopadsPushNotification(label);
+        UnifyTracking.eventOpenTopadsPushNotification(getAppContext(), label);
     }
 
     @Override

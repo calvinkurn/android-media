@@ -175,7 +175,7 @@ public class PickupPointActivity extends BaseActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core.R.drawable.ic_webview_back_button
+                    com.tokopedia.core2.R.drawable.ic_webview_back_button
             );
             String districtName = String.format(getString(R.string.title_send_to_pick_up_booth),
                     getIntent().getStringExtra(INTENT_DISTRICT_NAME));

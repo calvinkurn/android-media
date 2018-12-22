@@ -1,3 +1,8 @@
 <resources>
-
+    <string name="topads_claim_label">Klaim</string>
+    <string name="top_ads_credit_label">Kredit TopAds</string>
+    <string name="top_ads_free_claim_label">Kredit TopAds Gratis %1$s</string>
+    <string name="claim_expired">Batas klaim</string>
+    <string name="bonus_expired">Bonus %1$s</string>
+    <string name="template_claim_n_days">%1$d hari lagi</string>
 </resources>

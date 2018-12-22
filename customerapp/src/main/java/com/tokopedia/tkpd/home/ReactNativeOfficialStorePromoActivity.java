@@ -29,7 +29,7 @@ public class ReactNativeOfficialStorePromoActivity extends ReactFragmentActivity
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO})
     public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(OS_PROMO_PAGE);
+        ScreenTracking.screen(context, OS_PROMO_PAGE);
         return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -40,7 +40,7 @@ public class ReactNativeOfficialStorePromoActivity extends ReactFragmentActivity
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
     public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(OS_PROMO_PAGE);
+        ScreenTracking.screen(context, OS_PROMO_PAGE);
         return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,

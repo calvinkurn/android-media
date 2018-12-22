@@ -8,7 +8,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by hangnadi on 17/02/2015.

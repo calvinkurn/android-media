@@ -11,14 +11,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by kris on 5/9/17. Tokopedia
@@ -76,19 +72,19 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     static class ItemNameAndImageHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.operator_image)
         ImageView operatorImage;
-        @BindView(R2.id.operator_name)
         TextView operatorName;
 
         ItemNameAndImageHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            operatorImage = itemView.findViewById(R.id.operator_image);
+            operatorName = itemView.findViewById(R.id.operator_name);
         }
     }
 
     public void setSearchResultData(List<Operator> operatorQuery) {
         this.operatorList = operatorQuery;
     }
+
 }
 
