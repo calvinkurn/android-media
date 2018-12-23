@@ -8,6 +8,7 @@
 
         <activity
             android:name=".CodActivity"
+            android:label="@string/cod_brand_tag"
             android:theme="@style/Theme.White"/>
 
     </application>
