@@ -50,6 +50,8 @@
                     android:background="@color/divider_color" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingBottom="@dimen/dp_8"
                     android:id="@+id/recycler_view_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
