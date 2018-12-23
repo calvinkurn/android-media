@@ -2,6 +2,7 @@ package com.tokopedia.cod
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +58,11 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
         arguments?.getParcelable<Data>(ARGUMENT_COD_DATA)?.let {
             textview_ticker_message.setText(it.message.messageInfo)
             textview_counter_info.setText(it.counterInfo)
+            recycler_view_summary.run {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(context)
+                adapter = CodSummaryAdapter(it.priceSummary)
+            }
             button_confirm.setOnClickListener(this::onPayClicked)
         }
     }
