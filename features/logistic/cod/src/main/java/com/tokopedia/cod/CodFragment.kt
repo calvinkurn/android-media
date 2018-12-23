@@ -16,24 +16,13 @@ import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
  */
 class CodFragment: BaseDaggerFragment(), CodContract.View {
 
-    lateinit var mData: Data
-
     companion object {
 
         const val ARGUMENT_COD_DATA = "ARGUMENT_COD_DATA"
 
-        fun newInstance(data: Data): Fragment {
-            val bundle = Bundle()
-            bundle.putParcelable(ARGUMENT_COD_DATA, data)
-            val fragment = CodFragment()
-            fragment.arguments = bundle
-            return fragment
+        fun newInstance(data: Data): Fragment = CodFragment().apply {
+            arguments = Bundle().apply { putParcelable(ARGUMENT_COD_DATA, data) }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mData = arguments!!.getParcelable(ARGUMENT_COD_DATA)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,9 +54,11 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     }
 
     override fun initView() {
-        textview_ticker_message.setText(mData.message.messageInfo)
-        textview_counter_info.setText(mData.counterInfo)
-        button_confirm.setOnClickListener(this::onPayClicked)
+        arguments?.getParcelable<Data>(ARGUMENT_COD_DATA)?.let {
+            textview_ticker_message.setText(it.message.messageInfo)
+            textview_counter_info.setText(it.counterInfo)
+            button_confirm.setOnClickListener(this::onPayClicked)
+        }
     }
 
     override fun onPayClicked(view: View) {
