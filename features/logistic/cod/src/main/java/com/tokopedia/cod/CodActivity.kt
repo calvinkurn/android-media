@@ -16,19 +16,14 @@ class CodActivity : BaseSimpleActivity() {
         const val EXTRA_COD_DATA = "EXTRA_COD_DATA"
 
         @JvmStatic
-        fun newIntent(context: Context, data: Data): Intent {
-            val intent = Intent(context, CodActivity::class.java)
-            intent.putExtra(EXTRA_COD_DATA, data)
-            return intent
-        }
-    }
-
-    override fun setTitle(title: CharSequence?) {
-        getString(R.string.cod_brand_tag)
+        fun newIntent(context: Context, data: Data): Intent =
+                Intent(context, CodActivity::class.java).apply {
+                    putExtra(EXTRA_COD_DATA, data)
+                }
     }
 
     override fun getNewFragment(): Fragment {
-        val data:Data = intent.getParcelableExtra(EXTRA_COD_DATA)
+        val data: Data = intent.getParcelableExtra(EXTRA_COD_DATA)
         return CodFragment.newInstance(data)
     }
 
