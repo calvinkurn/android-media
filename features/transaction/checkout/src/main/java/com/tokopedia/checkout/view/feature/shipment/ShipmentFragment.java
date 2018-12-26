@@ -633,14 +633,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void proceedCod(View view) {
-//        shipmentAdapter.checkDropshipperValidation(1);
-        startActivity(checkoutModuleRouter.getCodPageIntent(getContext(), new Data()));
+        shipmentAdapter.checkDropshipperValidation(1);
     }
 
     @Override
-    public void showBottomSheetError() {
+    public void showBottomSheetError(String htmlMessage) {
         if (getFragmentManager() != null) {
-            CodBottomSheetFragment bottomSheet = new CodBottomSheetFragment();
+            CodBottomSheetFragment bottomSheet = CodBottomSheetFragment.newInstance(htmlMessage);
             bottomSheet.show(getFragmentManager(), BOTTOM_SHEET_TAG);
         }
     }

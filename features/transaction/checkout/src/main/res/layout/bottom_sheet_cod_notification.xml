@@ -7,18 +7,11 @@
     android:padding="@dimen/dp_16">
 
     <TextView
-        style="@style/TextSmallMediumBlack54"
+        android:id="@+id/text_view_content"
+        style="@style/TextSmallNormalBlack70"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Untuk menggunakan Bayar di Tempat, perbaiki sesuai ketentuan berikut:"
-        tools:text="Untuk menggunakan Bayar di Tempat, perbaiki sesuai ketentuan berikut:" />
-
-    <TextView
-        style="@style/TextSmallMediumBlack54"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="Total transaksi maksimum Rp1.000.000 di luar biaya pengiriman\nSemua produk dalam transaksi wajib mendukung fitur Bayar di Tempat" />
+        tools:text="Make sure you have followed this terms to use Bayar di Tempat:\n\n\t•All the products you buy must support Bayar di Tempat\n\n\t•Maximum amount of transaction is IDR 1.000.000 excluding shipping cost\n\n" />
 
 
     <Button

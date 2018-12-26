@@ -115,7 +115,7 @@ public interface ShipmentContract {
 
         void proceedCod(android.view.View view);
 
-        void showBottomSheetError();
+        void showBottomSheetError(String htmlMessage);
 
         void navigateToCodConfirmationPage(Data data);
     }

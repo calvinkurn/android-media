@@ -1386,7 +1386,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         getView().navigateToCodConfirmationPage(data);
                     } else {
                         // show bottomsheet error indicating cod ineligibility
-                        getView().showBottomSheetError();
+                        getView().showBottomSheetError(data.getErrorMessage());
                     }
                 }
             }
