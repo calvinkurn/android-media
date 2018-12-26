@@ -75,7 +75,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_0));
         }
 
-        if (recipientAddress.isFromPdp()) {
+        if (recipientAddress.isDisableMultipleAddress()) {
             tvSendToMultipleAddress.setVisibility(View.GONE);
         } else {
             tvSendToMultipleAddress.setVisibility(View.VISIBLE);

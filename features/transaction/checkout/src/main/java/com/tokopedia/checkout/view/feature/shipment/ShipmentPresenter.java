@@ -375,6 +375,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
 
         this.codData = cartShipmentAddressFormData.getCod();
+        if (this.codData != null) {
+            recipientAddressModel.setDisableMultipleAddress(true);
+        }
     }
 
     @Override

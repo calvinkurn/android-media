@@ -469,8 +469,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
         CartPromoSuggestion cartPromoSuggestion = shipmentPresenter.getCartPromoSuggestion();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-        if (recipientAddressModel != null) {
-            recipientAddressModel.setFromPdp(isFromPdp);
+        if (recipientAddressModel != null && isFromPdp) {
+            recipientAddressModel.setDisableMultipleAddress(true);
         }
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
         ShipmentDonationModel shipmentDonationModel = shipmentPresenter.getShipmentDonationModel();
@@ -983,7 +983,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             !currentAddress.getDestinationDistrictId().equals(newAddress.getDestinationDistrictId()) ||
                             !currentAddress.getCityId().equals(newAddress.getCityId()) ||
                             !currentAddress.getProvinceId().equals(newAddress.getProvinceId())) {
-                        newAddress.setFromPdp(isOneClickShipment());
+                        if (isOneClickShipment() || shipmentPresenter.getCodData() != null) {
+                            newAddress.setDisableMultipleAddress(true);
+                        }
                         shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null).getChangeAddressRequestData());
                         shipmentPresenter.changeShippingAddress(newAddress, isOneClickShipment());
                     }

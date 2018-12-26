@@ -241,6 +241,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void addNotifierData(ShipmentNotifierModel shipmentNotifierModel) {
         shipmentDataList.add(HEADER_POSITION, shipmentNotifierModel);
+
     }
 
     public void addPromoVoucherData(CartItemPromoHolderData cartItemPromoHolderData) {
