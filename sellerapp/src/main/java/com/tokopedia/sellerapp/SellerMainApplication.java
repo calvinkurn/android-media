@@ -263,6 +263,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public Class<?> getDeeplinkClass() {
-        return null;
+        return DeepLinkActivity.class;
     }
 }
