@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -183,7 +183,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventDepositTopUp();
+                UnifyTracking.eventDepositTopUp(getActivity());
                 Bundle bundle = new Bundle();
                 bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
                 Intent intent = new Intent(context, LoyaltyDetail.class);

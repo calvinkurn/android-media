@@ -10,8 +10,8 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.tkpd.library.utils.data.model.ListBank;
-import com.tokopedia.core.database.DatabaseConstant;
 import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.core.database.DatabaseConstant;
 
 import java.util.ArrayList;
 import java.util.List;

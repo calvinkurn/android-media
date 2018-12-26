@@ -6,7 +6,9 @@ package com.tokopedia.home.account;
 public class AccountConstants {
 
     public static final String QUERY = "query";
+    public static final String TOPADS_QUERY = "topads_query";
     public static final String VARIABLES = "variables";
+    public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
 
     public static class Navigation {
@@ -14,7 +16,6 @@ public class AccountConstants {
         public static final String TRAIN_ORDER_LIST = "train_order_list";
         public static final String TOPADS = "topads";
         public static final String FEATURED_PRODUCT = "featured_product";
-        public static final String MITRA_TOPPERS = "mitra-toppers";
     }
 
     public static class Analytics {
@@ -25,6 +26,7 @@ public class AccountConstants {
         public static final String PROFILE = "profile";
         public static final String TOKOPOINTS = "tokopoints";
         public static final String MY_COUPON = "kupon saya";
+        public static final String LOAN = "modal usaha";
         public static final String PEMBELI = "pembeli";
         public static final String CLICK_CHALLENGE = "challenge";
         public static final String PENJUAL = "penjual";
@@ -80,10 +82,14 @@ public class AccountConstants {
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
         public static final String CLICK_KYC_SETTING = "click on dokumen data diri";
-        public static final String CLICK_KYC_EXPIRED = "click on verifikasi ulang";
+        public static final String CLICK_KYC_REJECTED = "click on verifikasi ulang";
         public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
         public static final String CLICK_KYC_PENDING = "click on lihat status";
         public static final String EVENT_SALDO_OVO = "clickSaldo";
+        public static final String OVO_PAY_LATER_CATEGORY = "fin - android main screen";
+        public static final String OVO_PAY_LATER_CLICK = "ovo - pay later click";
+        public static final String OVO_PAY_LATER_LABEL = "success - %s";
+        public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
     }
 
     public class ImageUrl {

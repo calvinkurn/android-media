@@ -42,44 +42,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/layout_used_promo"
+
+                <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+                    android:id="@+id/ticker_checkout_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@drawable/border_rectangle_grey"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textview_promo_code"
-                            style="@style/TextSmallMediumBlack54"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:lineSpacingExtra="6sp"
-                            android:padding="@dimen/dp_16"
-                            tools:text="Lorem ipsum dolor sit amet, consect etur adipiscing elit, sed do eiusmodte mpor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniamane" />
-
-                        <ImageView
-                            android:id="@+id/button_cancel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/dp_16"
-                            app:srcCompat="@drawable/ic_ticker_action_close_12dp"
-                            tools:ignore="ContentDescription,VectorDrawableCompat" />
-
-                    </LinearLayout>
-
-                </RelativeLayout>
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -149,66 +119,6 @@
                 </LinearLayout>
 
                 <android.support.v7.widget.CardView
-                    android:id="@+id/cv_wish_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <RelativeLayout
-                        android:id="@+id/rl_wish_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/dp_16">
-
-                        <TextView
-                            android:id="@+id/tv_label_wish_list"
-                            style="@style/TextSmallMediumBlack54"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:text="@string/label_empty_cart_wishlist"
-                            android:textSize="@dimen/sp_16" />
-
-                        <com.tokopedia.design.component.TextViewCompat
-                            android:id="@+id/tv_wish_list_see_all"
-                            style="@style/TextSmallMedium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBaseline="@+id/tv_label_wish_list"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:text="@string/label_empty_cart_see_all"
-                            android:textColor="@color/tkpd_main_green"
-                            app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_24dp" />
-
-                        <View
-                            android:id="@+id/v_separator_wish_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_1"
-                            android:layout_below="@+id/tv_label_wish_list"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_16"
-                            android:background="@color/grey_300" />
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/rv_wish_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/v_separator_wish_list"
-                            android:layout_marginTop="@dimen/dp_16" />
-
-                    </RelativeLayout>
-
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
                     android:id="@+id/cv_last_seen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -262,6 +172,66 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/v_separator_last_seen"
+                            android:layout_marginTop="@dimen/dp_16" />
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_wish_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_wish_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/dp_16">
+
+                        <TextView
+                            android:id="@+id/tv_label_wish_list"
+                            style="@style/TextSmallMediumBlack54"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingRight="@dimen/dp_16"
+                            android:text="@string/label_empty_cart_wishlist"
+                            android:textSize="@dimen/sp_16" />
+
+                        <com.tokopedia.design.component.TextViewCompat
+                            android:id="@+id/tv_wish_list_see_all"
+                            style="@style/TextSmallMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/tv_label_wish_list"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingRight="@dimen/dp_16"
+                            android:text="@string/label_empty_cart_see_all"
+                            android:textColor="@color/tkpd_main_green"
+                            app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_24dp" />
+
+                        <View
+                            android:id="@+id/v_separator_wish_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:layout_below="@+id/tv_label_wish_list"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@color/grey_300" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_wish_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/v_separator_wish_list"
                             android:layout_marginTop="@dimen/dp_16" />
 
                     </RelativeLayout>

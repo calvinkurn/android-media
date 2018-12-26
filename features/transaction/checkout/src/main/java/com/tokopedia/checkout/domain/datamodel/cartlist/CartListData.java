@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,15 @@ public class CartListData implements Parcelable {
     private AutoApplyData autoApplyData;
     private String defaultPromoDialogTab;
     private boolean allSelected;
+    private TopAdsModel adsModel;
+
+    public TopAdsModel getAdsModel() {
+        return adsModel;
+    }
+
+    public void setAdsModel(TopAdsModel adsModel) {
+        this.adsModel = adsModel;
+    }
 
     public String getDefaultPromoDialogTab() {
         return defaultPromoDialogTab;

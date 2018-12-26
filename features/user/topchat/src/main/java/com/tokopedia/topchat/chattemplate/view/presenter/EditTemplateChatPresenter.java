@@ -74,9 +74,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                 @Override
                 public void onNext(EditTemplateViewModel editTemplateViewModel) {
                     if(editTemplateViewModel.isSuccess()) {
-                        UnifyTracking.eventClickTemplate(TopChatAnalytics.Category.ADD_TEMPLATE,
-                                TopChatAnalytics.Action.UPDATE_TEMPLATE,
-                                TopChatAnalytics.Name.INBOX_CHAT);
+
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
                     }else {

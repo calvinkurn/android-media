@@ -18,10 +18,10 @@ import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
-import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
-import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
-import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
-import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.search.data.db.FlightComboDao;
+import com.tokopedia.flight.search.data.db.FlightJourneyDao;
+import com.tokopedia.flight.search.data.db.FlightRouteDao;
+import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
 
 import dagger.Component;
 import retrofit2.Retrofit;

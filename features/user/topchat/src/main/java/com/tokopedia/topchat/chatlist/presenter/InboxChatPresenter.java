@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.util.Pair;
@@ -283,7 +284,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         return getView().getAdapter().getListMove().size();
     }
 
-    public void goToDetailMessage(int position, ChatListViewModel listMessage) {
+    public void goToDetailMessage(Context context, int position, ChatListViewModel listMessage) {
 
         if (viewModel == null)
             return;
@@ -291,7 +292,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         ws.close(1000, "");
         getView().dropKeyboard();
 
-        UnifyTracking.eventOpenTopChat(TopChatAnalytics.Category.INBOX_CHAT,
+        UnifyTracking.eventOpenTopChat(context, TopChatAnalytics.Category.INBOX_CHAT,
                 TopChatAnalytics.Action.INBOX_CHAT_CLICK,
                 TopChatAnalytics.Name.INBOX_CHAT);
 

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_10_header"
+    android:background="@drawable/bg_shadow"
+    android:orientation="vertical"
+    android:padding="@dimen/pdp_content_padding">
+
+    <ImageView
+        android:id="@+id/iv_shop_icon"
+        android:layout_width="@dimen/med_dp"
+        android:layout_height="@dimen/med_dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/iv_ava"
+        app:layout_constraintTop_toTopOf="@+id/iv_ava"
+        tools:ignore="ContentDescription"
+        tools:srcCompat="@drawable/ic_official_store_pdp"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@id/iv_ava"
+        android:layout_width="@dimen/shopinfo_pdp"
+        android:layout_height="@dimen/shopinfo_pdp"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:contentDescription="@string/image_product_desc"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/tab_selector"
+        android:gravity="center"
+        android:lines="1"
+        android:maxLines="1"
+        android:paddingLeft="@dimen/dp_5"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/font_large"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_shop_icon"
+        app:layout_constraintStart_toEndOf="@+id/iv_shop_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_shop_icon"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="HardcodedText"
+        tools:text="The Home Dept" />
+
+    <LinearLayout
+        android:id="@id/l_medal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_chat_rate"
+        app:layout_constraintEnd_toStartOf="@+id/tv_chat_rate"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_chat_rate"
+        tools:layout_height="20dp"
+        tools:layout_width="0dp" />
+
+    <TextView
+        android:id="@+id/tv_medal_poin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/pdp_text_sub_title_color"
+        app:layout_constraintEnd_toEndOf="@+id/l_medal"
+        app:layout_constraintStart_toStartOf="@+id/l_medal"
+        app:layout_constraintTop_toBottomOf="@+id/l_medal"
+        tools:text="1.234 poin" />
+
+    <TextView
+        android:id="@+id/tv_chat_rate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="center"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/font_medium"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tv_process_rate"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/l_medal"
+        app:layout_constraintTop_toBottomOf="@+id/iv_ava"
+        tools:text="1 hari" />
+
+    <TextView
+        android:id="@+id/tv_process_rate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/pdp_text_color"
+        android:textSize="@dimen/font_medium"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_chat_rate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_chat_rate"
+        app:layout_constraintTop_toTopOf="@+id/tv_chat_rate"
+        tools:text="3 hari" />
+
+    <TextView
+        android:id="@+id/tv_chat_rate_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/pdp_text_sub_title_color"
+        app:layout_constraintEnd_toEndOf="@+id/tv_chat_rate"
+        app:layout_constraintStart_toStartOf="@+id/tv_chat_rate"
+        app:layout_constraintTop_toBottomOf="@+id/tv_chat_rate"
+        tools:text="Chat Dibalas" />
+
+    <TextView
+        android:id="@+id/tv_process_rate_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/pdp_text_sub_title_color"
+        app:layout_constraintEnd_toEndOf="@+id/tv_process_rate"
+        app:layout_constraintStart_toStartOf="@+id/tv_process_rate"
+        app:layout_constraintTop_toBottomOf="@+id/tv_process_rate"
+        tools:text="Waktu Proses" />
+
+    <TextView
+        android:id="@+id/last_online_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/font_medium"
+        app:layout_constraintStart_toStartOf="@+id/iv_shop_icon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name"
+        tools:text="15 Menit" />
+
+    <Button
+        android:id="@+id/send_msg_button"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/button_selector"
+        android:drawableLeft="@drawable/ic_topchat"
+        android:gravity="center"
+        android:text="Chat Penjual"
+        android:textAllCaps="false"
+        android:textSize="@dimen/font_normal"
+        app:layout_constraintEnd_toStartOf="@+id/favorite_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_chat_rate_label"
+        tools:ignore="HardcodedText" />
+
+    <LinearLayout
+        android:id="@id/favorite_button"
+        style="@style/FavButtonPDP"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/send_msg_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/send_msg_button"
+        app:layout_constraintTop_toTopOf="@+id/send_msg_button">
+
+        <TextView
+            android:id="@id/favorite_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_add_black_24dp"
+            android:gravity="center"
+            android:text="@string/fave"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_normal"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"/>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

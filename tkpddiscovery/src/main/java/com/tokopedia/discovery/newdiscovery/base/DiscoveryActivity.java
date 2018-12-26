@@ -221,38 +221,38 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private void sendSearchProductGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoverySearch(keyword);
+            UnifyTracking.eventDiscoverySearch(this, keyword);
         }
     }
 
     private void sendSearchShopGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoverySearchShop(keyword);
+            UnifyTracking.eventDiscoverySearchShop(this, keyword);
         }
     }
 
     private void sendVoiceSearchGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoveryVoiceSearch(keyword);
+            UnifyTracking.eventDiscoveryVoiceSearch(this, keyword);
         }
     }
 
     private void sendCameraImageSearchProductGTM() {
-        UnifyTracking.eventDiscoveryCameraImageSearch();
+        UnifyTracking.eventDiscoveryCameraImageSearch(this);
     }
 
     private void sendGalleryImageSearchProductGTM() {
-        UnifyTracking.eventDiscoveryGalleryImageSearch();
+        UnifyTracking.eventDiscoveryGalleryImageSearch(this);
     }
 
     private void sendGalleryImageSearchResultGTM(String label) {
-        UnifyTracking.eventDiscoveryGalleryImageSearchResult(label);
+        UnifyTracking.eventDiscoveryGalleryImageSearchResult(this, label);
     }
 
     private void sendCameraImageSearchResultGTM(String label) {
-        UnifyTracking.eventDiscoveryCameraImageSearchResult(label);
+        UnifyTracking.eventDiscoveryCameraImageSearchResult(this, label);
     }
 
     @Override
@@ -464,7 +464,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             if (!TextUtils.isEmpty(imagePath)) {
                 onImagePickedSuccess(imagePath);
             } else {
-                showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+                showSnackBarView(getString(com.tokopedia.core2.R.string.error_gallery_valid));
             }
             if (searchView != null) {
                 searchView.clearFocus();
