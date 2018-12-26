@@ -257,7 +257,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
         sellerDashboardPresenter.getTicker();
-        sellerDashboardPresenter.getVerificationStatus();
     }
 
     void onRefresh() {
@@ -442,8 +441,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
-        String kycMessage = getString(R.string.ticker_unverified);
-        if (!tickerView.contains(kycMessage) && tickers.length < 1) {
+        if (tickers.length < 1) {
             tickerView.setVisibility(View.GONE);
             return;
         }
@@ -454,9 +452,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         for (Ticker.Tickers ticker : tickers) {
             messages.add(ticker.getBasicMessage());
             backgrounds.add(ticker.getColor());
-        }
-        if (tickerView.contains(kycMessage)) {
-            messages.add(kycMessage);
         }
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
@@ -487,6 +482,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             }
         });
         tickerView.buildView();
+
+        sellerDashboardPresenter.getVerificationStatus();
+
     }
 
     @Override
