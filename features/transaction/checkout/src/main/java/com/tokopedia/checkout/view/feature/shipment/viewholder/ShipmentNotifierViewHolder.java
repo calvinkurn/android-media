@@ -15,4 +15,6 @@ public class ShipmentNotifierViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
+
+
 }

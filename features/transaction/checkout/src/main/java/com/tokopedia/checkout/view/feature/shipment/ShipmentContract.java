@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
 import android.app.Activity;
-import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -16,6 +15,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
@@ -23,11 +23,9 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -298,7 +296,7 @@ public interface ShipmentContract {
 
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
 
-        Cod getCodData();
+        CodModel getCodData();
 
         void proceedCodCheckout(boolean isOneClickShipment);
 

@@ -64,6 +64,7 @@ import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
@@ -326,8 +327,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             );
         }
 
-        if (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod()) {
-            shipmentAdapter.addNotifierData(new ShipmentNotifierModel());
+        CodModel tempCod = shipmentPresenter.getCodData();
+        if (tempCod != null && tempCod.isCod()) {
+            shipmentAdapter.addNotifierData(new ShipmentNotifierModel(
+                    tempCod.getMessageInfo(),
+                    tempCod.getMessageLink()
+            ));
             tvSelectCodPayment.setVisibility(View.VISIBLE);
             tvSelectCodPayment.setOnClickListener(this::proceedCod);
         }

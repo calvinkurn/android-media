@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String keroDiscomToken;
     private int keroUnixTime;
     private Donation donation;
-    private Cod cod;
+    private CodModel cod;
     private boolean useCourierRecommendation;
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
@@ -135,11 +135,11 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.autoApplyData = autoApplyData;
     }
 
-    public Cod getCod() {
+    public CodModel getCod() {
         return cod;
     }
 
-    public void setCod(Cod cod) {
+    public void setCod(CodModel cod) {
         this.cod = cod;
     }
 

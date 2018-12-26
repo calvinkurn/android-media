@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtecti
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ServiceId;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.Cod;
@@ -86,9 +87,12 @@ public class ShipmentMapper implements IShipmentMapper {
         }
 
         if (shipmentAddressFormDataResponse.getCod() != null) {
-            Cod cod = new Cod();
+            CodModel cod = new CodModel();
             cod.setCod(shipmentAddressFormDataResponse.getCod().isCod());
             cod.setCounterCod(shipmentAddressFormDataResponse.getCod().getCounterCod());
+            cod.setMessageInfo(shipmentAddressFormDataResponse.getMessage().getMessageInfo());
+            cod.setMessageLink(shipmentAddressFormDataResponse.getMessage().getMessageLink());
+            cod.setMessageLogo(shipmentAddressFormDataResponse.getMessage().getMessageLogo());
             dataResult.setCod(cod);
         }
 
