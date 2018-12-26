@@ -457,7 +457,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         channelInfoDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
             if (overlayDialog != null) {
-                overlayDialog.show();
+                showOverlayDialogOnScreen();
             }
         });
         channelInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -1663,13 +1663,26 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
-        overlayDialog = CloseableBottomSheetDialog.createInstance(this);
+        overlayDialog = CloseableBottomSheetDialog.createInstance(this, () -> {
+            analytics.eventClickCloseOverlayCloseButton(model.getChannelId());
+        });
         View view = createOverlayView(model);
         overlayDialog.setCustomContentView(view, model.getInteruptViewModel().getTitle(), model.isCloseable());
         overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
+        overlayDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                dialogInterface
+            }
+        });
         if (showDialogDirectly) {
-            overlayDialog.show();
+            showOverlayDialogOnScreen();
         }
+        analytics.eventViewOverlay(model.getChannelId());
+    }
+
+    private void showOverlayDialogOnScreen() {
+        overlayDialog.show();
     }
 
     private View createOverlayView(final OverlayViewModel model) {
@@ -1677,11 +1690,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         InteruptViewModel interuptViewModel = model.getInteruptViewModel();
         if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
             ImageHandler.loadImageRounded2(this, (ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl());
-            view.findViewById(R.id.ivImage).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startApplink(interuptViewModel.getImageLink());
-                }
+            view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
+                startApplink(interuptViewModel.getImageLink());
+                analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle());
             });
         } else
             ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
