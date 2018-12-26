@@ -757,7 +757,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce, etalaseBadge);
                     if (shopPageTracking != null) {
                         shopPageTracking.clickMenuFromMoreMenu(isOwner(),
-                                selectedEtalaseName, CustomDimensionShopPage.create(shopInfo));
+                                selectedEtalaseName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant));
                     }
                     needReloadData = true;
                 }
