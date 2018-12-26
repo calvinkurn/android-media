@@ -3,12 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
+<!--
     <FrameLayout
-        android:id="@+id/container_layout_digital_widget"
+        android:id="@+id/container_layout_digital_channel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@color/white"
-        android:orientation="vertical" />
+        android:orientation="vertical" />-->
+
+    <com.tokopedia.design.viewpager.WrapContentViewPager
+        android:id="@+id/view_pager_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+    </com.tokopedia.design.viewpager.WrapContentViewPager>
 </LinearLayout>

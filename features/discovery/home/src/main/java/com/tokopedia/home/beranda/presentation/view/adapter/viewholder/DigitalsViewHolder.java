@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.viewpager.WrapContentViewPager;
 import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
@@ -23,12 +24,15 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
     private static final String TAG = "DigitalWidgetFragment";
 
     private FragmentManager fragmentManager;
-    private FrameLayout container;
+    private WrapContentViewPager viewPager;
+    private DigitalsHomePagerAdater digitalsHomePagerAdater;
+//    private FrameLayout container;
 
     public DigitalsViewHolder(FragmentManager fragmentManager, View itemView) {
         super(itemView);
 
-        container = itemView.findViewById(R.id.container_layout_digital_widget);
+//        container = itemView.findViewById(R.id.container_layout_digital_channel);
+        viewPager = itemView.findViewById(R.id.view_pager_widget);
 
         this.fragmentManager = fragmentManager;
     }
@@ -36,15 +40,23 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
 
     @Override
     public void bind(DigitalsViewModel element) {
-        container.postDelayed(() -> {
+       /* container.postDelayed(() -> {
             try {
                 Fragment oldFragment = fragmentManager.findFragmentByTag(TAG);
-                if (oldFragment == null && itemView.findViewById(R.id.container_layout_digital_widget) != null) {
-                    fragmentManager.beginTransaction().replace(container.getId(), new DigitalChannelFragment(), TAG).commit();
+                if (oldFragment == null && itemView.findViewById(R.id.container_layout_digital_channel) != null) {
+                    fragmentManager.beginTransaction().add(container.getId(), new DigitalChannelFragment(), TAG).addToBackStack(null).commit();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, 300);
+        }, 300);*/
+
+
+        if (digitalsHomePagerAdater == null) {
+            digitalsHomePagerAdater = new DigitalsHomePagerAdater(fragmentManager);
+            viewPager.setAdapter(digitalsHomePagerAdater);
+        }
+        viewPager.setOffscreenPageLimit(1);
+        digitalsHomePagerAdater.notifyDataSetChanged();
     }
 }
