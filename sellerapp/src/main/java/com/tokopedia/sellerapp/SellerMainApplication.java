@@ -260,9 +260,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
-
-    @Override
-    public Class<?> getDeeplinkClass() {
-        return null;
-    }
 }
