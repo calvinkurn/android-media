@@ -472,7 +472,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
             @Override
             public void onSelected(int position) {
-                tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
+                if (position < backgrounds.size()) {
+                    tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
+                }
             }
 
             @Override
@@ -602,6 +604,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void addMessageToTickerView(String tickerMessage) {
         if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
+            tickerView.setVisibility(View.VISIBLE);
             tickerView.addMessage(tickerMessage);
         }
     }
