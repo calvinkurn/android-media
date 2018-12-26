@@ -31,8 +31,8 @@ data class ProductModel(
         var productMenuId: Int = 0,
         var productFinsurance: Int = 0,
         var productFcancelPartial: Int = 0,
-        var productShipmentModel: ArrayList<ProductShipmentModel>? = null,
-        var productShipmentMapping: ArrayList<ProductShipmentMapping>? = null,
+        var productShipmentModels: ArrayList<ProductShipmentModel>? = null,
+        var productShipmentMappingModels: ArrayList<ProductShipmentMappingModel>? = null,
         var productCatId: Int = 0,
         var productCatalogId: Int = 0,
         var purchaseProtectionPlanDataModel: PurchaseProtectionPlanDataModel? = null,
@@ -40,5 +40,5 @@ data class ProductModel(
         var productCategory: String? = null,
         var productTrackerDataModel: ProductTrackerDataModel? = null,
         var productPreorderModel: ProductPreorderModel? = null,
-        var productVariantDatumModels: ArrayList<ProductVariantDataModel>? = null
+        var productVariantDataModels: ArrayList<ProductVariantDataModel>? = null
 )

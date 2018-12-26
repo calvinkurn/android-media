@@ -5,10 +5,10 @@ package com.tokopedia.expresscheckout.domain.model
  */
 
 data class ProductVariantDataModel(
-        var code: Int? = 0,
-        var message: Int? = 0,
-        var variantModels: ArrayList<VariantModel>,
-        var childModels: ArrayList<ChildModel>,
-        var isEnabled: Boolean,
-        var stock: Int
+        var parentId: Int? = 0,
+        var defaultShild: Int? = 0,
+        var variantModels: ArrayList<VariantModel>? = null,
+        var childModels: ArrayList<ChildModel>? = null,
+        var isEnabled: Boolean? = false,
+        var stock: Int? = 0
 )

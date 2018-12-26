@@ -5,9 +5,9 @@ package com.tokopedia.expresscheckout.domain.model
  */
 
 data class VariantModel(
-        var productVariantId: Int,
-        var variantName: String,
-        var identifier: String,
-        var position: Int,
-        var optionModels: ArrayList<OptionModel>
+        var productVariantId: Int? = 0,
+        var variantName: String? = null,
+        var identifier: String? = null,
+        var position: Int? = 0,
+        var optionModels: ArrayList<OptionModel>? = null
 )
