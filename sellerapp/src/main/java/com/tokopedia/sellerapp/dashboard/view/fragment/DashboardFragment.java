@@ -441,12 +441,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
-        if (tickers.length < 1) {
-            tickerView.setVisibility(View.GONE);
-            return;
-        }
 
-        tickerView.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
         final ArrayList<String> backgrounds = new ArrayList<>();
         for (Ticker.Tickers ticker : tickers) {
@@ -482,6 +477,12 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             }
         });
         tickerView.buildView();
+
+        if (tickers.length < 1) {
+            tickerView.setVisibility(View.GONE);
+        } else {
+            tickerView.setVisibility(View.VISIBLE);
+        }
 
         sellerDashboardPresenter.getVerificationStatus();
 
