@@ -1377,8 +1377,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
-
-                if (response.getData() != null &&
+                if (getView() != null && response.getData() != null &&
                         response.getData().getData() != null) {
                     Data data = response.getData().getData();
                     if (!TextUtils.isEmpty(data.getErrorMessage())) {
