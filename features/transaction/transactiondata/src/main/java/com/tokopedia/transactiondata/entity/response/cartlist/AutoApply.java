@@ -30,6 +30,17 @@ public class AutoApply {
     @SerializedName("promo_id")
     @Expose
     private int promoId;
+    @SerializedName("message")
+    @Expose
+    private MessageAutoApply messageAutoApply;
+
+    public MessageAutoApply getMessageAutoApply() {
+        return messageAutoApply;
+    }
+
+    public void setMessageAutoApply(MessageAutoApply messageAutoApply) {
+        this.messageAutoApply = messageAutoApply;
+    }
 
     public boolean isSuccess() {
         return success;

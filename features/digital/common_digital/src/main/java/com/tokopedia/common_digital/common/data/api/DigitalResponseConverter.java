@@ -2,7 +2,6 @@ package com.tokopedia.common_digital.common.data.api;
 
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 

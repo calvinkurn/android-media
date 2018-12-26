@@ -115,4 +115,5 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             progressBar = itemView.findViewById(R.id.youtube_thumbnail_loading_bar);
         }
     }
+
 }

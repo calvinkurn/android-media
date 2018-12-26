@@ -72,8 +72,9 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     }
 
     @Override
-    public void getCatalog(int categoryId, int subCategoryId) {
+    public void getCatalog(int categoryId, int subCategoryId, boolean showLoader) {
         mGetHomePageData.clearRequest();
+        if(showLoader)
         getView().showLoader();
 
         //Adding request for main query

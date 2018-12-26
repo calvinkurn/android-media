@@ -140,4 +140,5 @@ public class PromoGuidePagerAdapter extends FragmentStatePagerAdapter
     public List<GuideData> getGuideDataList() {
         return guideDataList;
     }
+
 }

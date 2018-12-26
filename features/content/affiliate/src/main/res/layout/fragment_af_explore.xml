@@ -33,7 +33,7 @@
                     android:src="@drawable/ic_action_back"
                     android:tint="@color/black_70" />
 
-                <com.tokopedia.design.text.SearchInputView
+                <com.tokopedia.affiliate.common.widget.ExploreSearchView
                     android:id="@+id/search_input_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

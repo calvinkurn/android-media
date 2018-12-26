@@ -13,6 +13,7 @@ import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
+import com.tokopedia.gm.resource.GMConstant;
 
 /**
  * Created by henrypriyono on 10/13/17.
@@ -65,7 +66,7 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
             if(shopItem.isOfficial()) {
                 itemShopBadge.setImageResource(com.tokopedia.core2.R.drawable.ic_badge_official);
             } else if(shopItem.getShopGoldShop().equals("1")){
-                itemShopBadge.setImageResource(com.tokopedia.core2.R.drawable.ic_shop_gold);
+                itemShopBadge.setImageDrawable(GMConstant.getGMDrawable(context));
             }
         } else {
             itemShopBadge.setVisibility(View.GONE);
