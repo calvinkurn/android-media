@@ -282,7 +282,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             @Override
             public void onClick(View view) {
                 presenter.btnContinueClicked();
-                UnifyTracking.eventCreateResoStep3Continue();
+                UnifyTracking.eventCreateResoStep3Continue(getActivity());
             }
         });
     }
@@ -290,7 +290,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void onAddAttachmentClicked() {
         if (adapter.getList().size() < COUNT_MAX_ATTACHMENT) {
-            if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
+            if (TrackingUtils.getGtmString(getActivity(), AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(getActivity().getString(R.string.dialog_upload_option));

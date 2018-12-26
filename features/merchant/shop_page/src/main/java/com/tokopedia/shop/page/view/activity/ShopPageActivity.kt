@@ -161,7 +161,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
         }
         super.onCreate(savedInstanceState)
-        shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking)
+        shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking, this)
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -343,7 +343,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopInfoFragment.updateShopInfo(this)
             }
 
-            shopPageTracking.sendScreenShopPage(this@ShopPageActivity, info.shopId)
+            shopPageTracking.sendScreenShopPage(this@ShopPageActivity, CustomDimensionShopPage.create(shopInfo))
 
             presenter.getFeedWhitelist(info.shopId)
         }

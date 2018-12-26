@@ -25,8 +25,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.logout)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.userIdentificationCommon)
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

@@ -23,7 +23,7 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -108,7 +108,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         setAdapter();
         setListener();
         if (getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
         }
         return rootView;
     }

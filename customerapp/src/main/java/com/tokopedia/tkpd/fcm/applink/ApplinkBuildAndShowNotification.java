@@ -5,10 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
@@ -24,6 +20,7 @@ import com.tokopedia.core.gcm.notification.applink.DiscussionPushNotificationWra
 import com.tokopedia.core.gcm.notification.applink.MessagePushNotificationWrapper;
 import com.tokopedia.core.gcm.notification.applink.PromoPushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Subscriber;
 
@@ -38,18 +35,14 @@ public class ApplinkBuildAndShowNotification {
 
     public ApplinkBuildAndShowNotification(Context context) {
         this.context = context;
-        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository(context);
         getSavedMessagePushNotificationUseCase =
                 new GetSavedMessagePushNotificationUseCase(
-                        new JobExecutor(),
-                        new UIThread(),
                         pushNotificationRepository
                 );
 
         getSavedDiscussionPushNotificationUseCase =
                 new GetSavedDiscussionPushNotificationUseCase(
-                        new JobExecutor(),
-                        new UIThread(),
                         pushNotificationRepository
                 );
     }

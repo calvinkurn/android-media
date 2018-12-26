@@ -7,13 +7,13 @@ include "features:communication:broadcast_message"
 include "features:communication:broadcast_message_common"
 //include "features:communication:broadcast_message_no_op"
 
-
-include "features:digital:flight_no_op"
+include "features:digital:common_digital"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"
 include "features:digital:event"
 include "features:digital:digitalproduct"
 include "features:digital:flight"
+include "features:digital:flight_no_op"
 include "features:digital:flight_dbflow"
 include "features:digital:train"
 

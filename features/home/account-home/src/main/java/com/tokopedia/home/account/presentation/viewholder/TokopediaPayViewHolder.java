@@ -50,6 +50,7 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
                 element.getWalletType()));
         tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayRightItemClicked(
                 element.getLabelRight(),
+                element.getVccUserStatus(),
                 element.getApplinkRight(),
                 element.getBsDataRight()));
     }

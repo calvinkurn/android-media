@@ -213,7 +213,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
                 loadData();
 
-                UnifyTracking.eventClickGMStatFilterTypeProductSold(itemTitle);
+                UnifyTracking.eventClickGMStatFilterTypeProductSold(getActivity(), itemTitle);
             }
         });
     }

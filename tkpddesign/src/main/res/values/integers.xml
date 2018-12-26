@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <integer name="text_headline">34</integer>
+    <integer name="text_sub_headline">24</integer>
+    <integer name="text_title_big">20</integer>
+    <integer name="text_title">17</integer>
+    <integer name="text_small">14</integer>
+    <integer name="text_micro">12</integer>
+
+    <integer name="text_headline_weight">38</integer>
+    <integer name="text_sub_headline_weight">28</integer>
+    <integer name="text_title_big_weight">24</integer>
+    <integer name="text_title_weight">22</integer>
+    <integer name="text_small_weight">18</integer>
+    <integer name="text_micro_weight">16</integer>
+
+    <integer name="button_big">14</integer>
+    <integer name="button_medium">13</integer>
+    <integer name="button_small">11</integer>
+
     <integer name="medal_margin">1</integer>
     <integer name="product_max_counter_length">20</integer>
     <integer name="product_max_counter_int_length">9</integer>

@@ -13,7 +13,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
-import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -168,7 +169,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                     preference.setSummary(stringValue);
 
                 if(value instanceof Boolean) {
-                    TrackingUtils.setMoEngagePushPreference((Boolean) value);
+                    TrackingUtils.setMoEngagePushPreference(MainApplication.getAppContext(), (Boolean) value);
                 }
             }
 
@@ -179,7 +180,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

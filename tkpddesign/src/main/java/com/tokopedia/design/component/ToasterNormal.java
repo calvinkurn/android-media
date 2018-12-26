@@ -26,18 +26,34 @@ public class ToasterNormal extends BaseToaster {
 
     public static void showClose(@NonNull Activity activity,
                                  String snackbarText) {
+        if (activity == null) {
+            return;
+        }
         ToasterNormal.make(activity.findViewById(android.R.id.content),
                 snackbarText, BaseToaster.LENGTH_LONG)
-                .setAction(activity.getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // no-op
-                    }
+                .setAction(activity.getString(R.string.close), v -> {
+                    // no-op
+                }).show();
+    }
+
+    public static void show(@NonNull Activity activity,
+                            String snackbarText,
+                            String actionLabel) {
+        if (activity == null) {
+            return;
+        }
+        ToasterNormal.make(activity.findViewById(android.R.id.content),
+                snackbarText, BaseToaster.LENGTH_LONG)
+                .setAction(actionLabel, v -> {
+                    // no-op
                 }).show();
     }
 
     public static void show(@NonNull Activity activity,
                                  String snackbarText) {
+        if (activity == null) {
+            return;
+        }
         ToasterNormal.make(activity.findViewById(android.R.id.content),
                 snackbarText, BaseToaster.LENGTH_LONG).show();
     }
