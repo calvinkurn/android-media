@@ -1,6 +1,9 @@
 package com.tokopedia.travelcalendar.di
 
+import com.tokopedia.travelcalendar.domain.TravelCalendarProvider
+import com.tokopedia.travelcalendar.domain.TravelCalendarScheduler
 import dagger.Module
+import dagger.Provides
 
 /**
  * Created by nabillasabbaha on 14/05/18.
@@ -8,4 +11,8 @@ import dagger.Module
 @Module
 class TravelCalendarModule {
 
+    @Provides
+    internal fun provideTravelCalendarProvider(): TravelCalendarProvider {
+        return TravelCalendarScheduler()
+    }
 }
