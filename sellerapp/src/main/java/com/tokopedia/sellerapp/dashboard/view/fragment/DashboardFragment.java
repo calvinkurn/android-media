@@ -605,8 +605,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private void addMessageToTickerView(String tickerMessage) {
         if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
             tickerView.addMessage(tickerMessage);
-            checkShowTickerView();
         }
+        checkShowTickerView();
     }
 
     private void checkShowTickerView() {
