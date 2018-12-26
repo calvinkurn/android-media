@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import com.tokopedia.design.viewpager.WrapContentViewPager;
 import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
 
-public class DigitalsHomePagerAdater extends FragmentStatePagerAdapter {
+public class DigitalsHomePagerAdapter extends FragmentStatePagerAdapter {
     private int currentPosition = -1;
+    private static int DIGITAL_WIDGET_COUNT = 1;
 
-    public DigitalsHomePagerAdater(FragmentManager fm) {
+    public DigitalsHomePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -35,6 +36,6 @@ public class DigitalsHomePagerAdater extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        return DIGITAL_WIDGET_COUNT;
     }
 }
