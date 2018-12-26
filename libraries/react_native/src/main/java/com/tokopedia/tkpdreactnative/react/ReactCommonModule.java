@@ -14,6 +14,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdreactnative.R;
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,12 +69,14 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
                     });
         }
     }
+
     @ReactMethod
-    public void shareImageWithText(String imageLocalPath, String description, String websiteUrl){
+    public void shareImageWithText(String imageLocalPath, String description, String websiteUrl) {
         Uri imageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider",
                 new File(imageLocalPath));
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
+
         //Add text and then Image URI
         shareIntent.putExtra(Intent.EXTRA_TEXT, description +" "+ websiteUrl);
         shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
@@ -86,5 +89,11 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+
+    @ReactMethod
+    public void stopTracing() {
+        ReactFragmentActivity.stopTracing();
     }
 }
