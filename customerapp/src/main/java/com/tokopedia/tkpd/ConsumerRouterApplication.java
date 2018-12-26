@@ -82,6 +82,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -413,6 +415,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -514,6 +517,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalRouter,
         TrackingPromoCheckoutRouter {
 
+
+    private final static int IRIS_ROW_LIMIT = 50;
+    private final static long IRIS_TIME = 900000;
+    private final static boolean IRIS_ENABLE = true;
+
     private static final String EXTRA = "extra";
 
     @Inject
@@ -538,16 +546,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private CacheManager cacheManager;
     private UserSession userSession;
 
+    private Iris mIris;
+
     @Override
     public void onCreate() {
         super.onCreate();
         initializeDagger();
         initDaggerInjector();
         initRemoteConfig();
+        initIris();
     }
 
     private void initDaggerInjector() {
         getReactNativeComponent().inject(this);
+    }
+
+
+    private void initIris() {
+        mIris = Iris.Companion.init(this);
+
+        // init remote config for iris
+        mIris.setService(new Configuration(
+                IRIS_ROW_LIMIT,
+                IRIS_TIME,
+                IRIS_ENABLE
+        ));
     }
 
     private FlightConsumerComponent getFlightConsumerComponent() {
@@ -1686,11 +1709,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public void sendEventTracking(Map<String, Object> events) {
                 UnifyTracking.eventClearEnhanceEcommerce(ConsumerRouterApplication.this);
                 UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, events);
+                mIris.saveEvent(events);
             }
 
             @Override
             public void sendEventTracking(String event, String category, String action, String label) {
                 UnifyTracking.sendGTMEvent(ConsumerRouterApplication.this, new EventTracking(
+                        event,
+                        category,
+                        action,
+                        label
+                ).getEvent());
+                mIris.saveEvent(new EventTracking(
                         event,
                         category,
                         action,
@@ -3183,6 +3213,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             invalidateCategoryMenuData();
             onLogout(getApplicationComponent());
+            mIris.setUserId("");
 
             Intent intent = getHomeIntent(activity);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -3352,6 +3383,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             Crashlytics.setUserIdentifier(userId);
         BranchSdkUtils.sendIdentityEvent(userId);
         BranchSdkUtils.sendLoginEvent(applicationContext);
+        mIris.setUserId(userId);
     }
 
     @Override

@@ -13,7 +13,7 @@ class IrisSession(val context: Context) : Session {
     private val editor = sharedPreferences.edit()
 
     override fun getUserId(): String {
-        return sharedPreferences.getString(KEY_USER_ID, "mockId")
+        return sharedPreferences.getString(KEY_USER_ID, "")
     }
 
     override fun getSessionId(): String {
