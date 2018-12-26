@@ -15,7 +15,9 @@ class DigitalChannelContract {
 
         fun fetchCategoryList()
 
-        fun showError(message: String?)
+        fun showError(resId: Int)
+
+        fun renderDigitalTitle(stringRes: Int)
 
     }
 
