@@ -24,6 +24,7 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
         if (element != null) {
             itemView.et_qty.setText(element.minOrderQuantity.toString())
             itemView.et_qty.addTextChangedListener(object : TextWatcher {
+                var previousQuantity: Int = element.orderQuantity
                 override fun afterTextChanged(s: Editable?) {
 
                 }
@@ -33,14 +34,17 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    var newQuantity = 0
                     try {
-                        element.orderQuantity = s.toString().toInt()
-
-                        if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-                            listener.onNeedToNotifySingleItem(adapterPosition)
-                        }
+                        newQuantity = s.toString().toInt()
                     } catch (e: NumberFormatException) {
                         e.printStackTrace()
+                        element.orderQuantity = 0
+                    }
+                    if (newQuantity != previousQuantity) {
+                        previousQuantity = newQuantity
+                        element.orderQuantity = newQuantity
+                        commitQuantityChange(element)
                     }
                 }
             })
@@ -50,38 +54,52 @@ class QuantityViewHolder(val view: View, val listener: CheckoutVariantActionList
                 listener.onNeedToNotifySingleItem(adapterPosition)
             }
 
-            if (element.orderQuantity > element.minOrderQuantity && element.orderQuantity > 0) {
-                itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_enabled)
-                itemView.btn_qty_min.setOnClickListener {
-                    element.orderQuantity -= 1
-                    if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-                        listener.onNeedToNotifySingleItem(adapterPosition)
-                    }
-                }
-            } else {
-                itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_disabled)
-                itemView.btn_qty_min.setOnClickListener { }
-            }
+            setupMinButton(element)
+            setupPlusButton(element)
+        }
+    }
 
-            if (element.orderQuantity < element.maxOrderQuantity) {
-                itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_enabled)
-                itemView.btn_qty_plus.setOnClickListener {
-                    element.orderQuantity += 1
-                    if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
-                        listener.onNeedToNotifySingleItem(adapterPosition)
-                    }
-                }
-            } else {
-                itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_disabled)
-                itemView.btn_qty_plus.setOnClickListener { }
+    private fun setupMinButton(element: QuantityViewModel) {
+        if (element.orderQuantity > element.minOrderQuantity && element.orderQuantity > 0) {
+            itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_enabled)
+            itemView.btn_qty_min.setOnClickListener {
+                element.orderQuantity -= 1
+                commitQuantityChange(element)
             }
+        } else {
+            itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_disabled)
+            itemView.btn_qty_min.setOnClickListener { }
+        }
+    }
 
+    private fun setupPlusButton(element: QuantityViewModel) {
+        if (element.orderQuantity < element.maxOrderQuantity) {
+            itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_enabled)
+            itemView.btn_qty_plus.setOnClickListener {
+                element.orderQuantity += 1
+                commitQuantityChange(element)
+            }
+        } else {
+            itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_disabled)
+            itemView.btn_qty_plus.setOnClickListener { }
+        }
+    }
+
+    private fun commitQuantityChange(element: QuantityViewModel) {
+        setupMinButton(element)
+        setupPlusButton(element
+        )
+        if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
+            listener.onNeedToNotifySingleItem(adapterPosition)
+        } else {
+            itemView.et_qty.setText(element.orderQuantity.toString())
+            itemView.et_qty.setSelection(itemView.et_qty.length())
         }
     }
 
     private fun validateQuantity(element: QuantityViewModel): Boolean {
         var error: String? = null
-        var needToUpdateView: Boolean = false
+        var needToUpdateView = false
 
         if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
             error = element.errorProductMinQuantity.replace("{{value}}", "${element.minOrderQuantity}", false)
