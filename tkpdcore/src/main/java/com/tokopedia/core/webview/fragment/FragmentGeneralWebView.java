@@ -378,8 +378,10 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     }
                 }
             }
-            callbackAfterL.onReceiveValue(results);
-            callbackAfterL = null;
+            if (callbackAfterL!= null) {
+                callbackAfterL.onReceiveValue(results);
+                callbackAfterL = null;
+            }
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
                 if (null == callbackBeforeL) return;
