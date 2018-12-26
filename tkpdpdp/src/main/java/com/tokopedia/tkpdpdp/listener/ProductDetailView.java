@@ -50,8 +50,6 @@ public interface ProductDetailView extends ViewListener {
 
     void onImageReviewLoaded(List<ImageReviewItem> data);
 
-    void onProductInfoShortClicked(Intent intent, View preorderView, View minOrderView, View conditionView);
-
     void onProductInfoShortClicked(Intent intent);
     /**
      * Saat salah satu kategori product di klik.
@@ -170,7 +168,6 @@ public interface ProductDetailView extends ViewListener {
 
     void onDescriptionClicked(@NonNull Intent intent);
 
-    void onDescriptionClicked(@NonNull Intent intent, View descriptionView, View videoView);
     /**
      * Pada saat ada error pada toko
      */

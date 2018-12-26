@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:layout_marginTop="@dimen/dp_8"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -22,9 +23,9 @@
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="8sp"
             android:padding="@dimen/dp_16"
+            android:text="@string/digital_channel_top_up_tagihan_title"
             android:textColor="@color/black_70"
-            android:textSize="16sp"
-            android:text="Topup dan Tagihan" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/see_more"
@@ -72,59 +73,62 @@
                 android:layout_height="16dp"
                 android:layout_below="@id/dummy_view_1"
                 android:layout_marginLeft="@dimen/keyline_1"
-                android:layout_marginRight="@dimen/keyline_1"
                 android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/keyline_1"
                 android:background="@color/grey_200" />
 
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:visibility="gone"
             android:id="@+id/recyclerview_recommendation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <FrameLayout
-            android:visibility="gone"
+            android:id="@+id/digital_widget_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/digital_widget_fragment" />
+            android:visibility="gone" />
 
         <LinearLayout
-            android:padding="@dimen/dp_16"
             android:id="@+id/error_view"
-            android:visibility="gone"
-            android:orientation="horizontal"
-            android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_16"
+            android:visibility="gone">
 
             <ImageView
-                android:layout_weight="0.5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_error_network"/>
+                android:layout_weight="0.5"
+                app:srcCompat="@drawable/ic_network_error" />
 
             <LinearLayout
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/text_error_message"
+                    style="@style/TextView.Small.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/text_error_message"
-                    tools:text="Terjadi Kendala pada Server"/>
+                    tools:text="Terjadi Kendala pada Server" />
 
                 <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/button_try_again"
+                    style="@style/Button.Submit.Green"
+                    android:layout_width="@dimen/dp_120"
+                    android:layout_height="@dimen/dp_32"
                     android:layout_marginStart="0dp"
                     android:layout_marginLeft="0dp"
-                    android:text="Coba Lagi"
-                    style="@style/Button.Submit.Green"/>
+                    android:text="@string/digital_channel_try_again" />
 
             </LinearLayout>
 

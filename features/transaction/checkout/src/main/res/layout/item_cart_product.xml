@@ -157,8 +157,8 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_9"
             android:layout_marginLeft="@dimen/dp_9"
-            android:layout_toStartOf="@id/text_ppp_more"
-            android:layout_toLeftOf="@id/text_ppp_more"
+            android:layout_toStartOf="@+id/text_ppp_more"
+            android:layout_toLeftOf="@+id/text_ppp_more"
             android:layout_toEndOf="@+id/checkbox_ppp"
             android:layout_toRightOf="@+id/checkbox_ppp"
             android:orientation="vertical">

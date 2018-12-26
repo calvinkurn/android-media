@@ -45,7 +45,7 @@
             app:cardCornerRadius="@dimen/dp_4"
             app:cardElevation="@dimen/dp_0">
 
-            <ImageView
+            <com.tokopedia.promocheckout.widget.PromoImageView
                 android:id="@+id/imageBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

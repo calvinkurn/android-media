@@ -111,6 +111,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void renderHachikoCoupon(String title, String message, String voucherCode) {
+        checkoutHolderView.setVoucherActionListener(this);
         checkoutHolderView.setHachikoCoupon(title, message, voucherCode);
     }
 
@@ -121,6 +122,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void renderHachikoVoucher(String voucherCode, String message) {
+        checkoutHolderView.setVoucherActionListener(this);
         checkoutHolderView.setVoucher(voucherCode, message);
     }
 

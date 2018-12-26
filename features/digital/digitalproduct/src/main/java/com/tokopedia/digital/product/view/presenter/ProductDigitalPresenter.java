@@ -276,6 +276,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             view.renderCategory(digitalProductView, categoryData, historyClientNumber);
 
             if (!GlobalConfig.isSellerApp()) {
+                view.showPromoContainer();
                 if (bannerDataList.size() > 0 && guideDataList.size() > 0) {
                     view.renderPromoGuideTab(TAB_COUNT_TWO, PROMO_TAB);
                 } else if (bannerDataList.size() > 0 && guideDataList.size() == 0) {
