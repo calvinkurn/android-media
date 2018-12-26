@@ -5,10 +5,10 @@ package com.tokopedia.expresscheckout.domain.model
  */
 
 data class ShopShipmentModel(
-        var shipId: Int = 0,
+        var shipId: Int? = 0,
         var shipName: String? = null,
         var shipCode: String? = null,
         var shipLogo: String? = null,
-        var shipProdModels: ArrayList<ShipProdModel>,
-        var isDropshipEnabled: Int = 0
+        var shipProdModels: ArrayList<ShipProdModel>? = null,
+        var isDropshipEnabled: Int? = 0
 )

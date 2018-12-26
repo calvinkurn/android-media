@@ -7,7 +7,7 @@ package com.tokopedia.expresscheckout.domain.model
 data class PromoSuggestionModel(
         var cta: String? = null,
         var ctaColor: String? = null,
-        var isVisible: Int = 0,
+        var isVisible: Int? = 0,
         var promoCode: String? = null,
         var text: String? = null
 )

@@ -5,7 +5,7 @@ package com.tokopedia.expresscheckout.domain.model
  */
 
 data class AutoApplyModel(
-        var success: Boolean? = false,
+        var isSuccess: Boolean? = false,
         var code: String? = null,
         var isCoupon: Int = 0,
         var discountAmount: Int = 0,

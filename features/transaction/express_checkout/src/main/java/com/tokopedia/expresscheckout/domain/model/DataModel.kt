@@ -16,8 +16,8 @@ data class DataModel(
         var enablePartialCancel: Boolean? = null,
         var donationModel: DonationModel? = null,
         var promoSuggestionModel: PromoSuggestionModel? = null,
-        var autoapply: AutoApplyModel? = null,
-        var userProfileModelDefault: UserProfileModel? = null,
+        var autoapplyModel: AutoApplyModel? = null,
+        var userProfileModelDefaultModel: UserProfileModel? = null,
         var messagesModel: MessagesModel? = null,
         var maxQuantity: Int = 0,
         var maxCharNote: Int = 0
