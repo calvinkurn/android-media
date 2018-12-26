@@ -46,7 +46,6 @@ public class TrainBookingAddPassengerFragment extends BaseDaggerFragment
     private TkpdHintTextInputLayout tilPhoneNumber;
     private TkpdHintTextInputLayout tilIdentityNumber;
     private AppCompatTextView identityNumberInfo;
-    private AppCompatTextView phoneNumberInfo;
     private boolean isCheckSameAsBuyer;
 
     @Inject
@@ -74,7 +73,6 @@ public class TrainBookingAddPassengerFragment extends BaseDaggerFragment
         tilPhoneNumber = view.findViewById(R.id.til_phone_number);
         tilIdentityNumber = view.findViewById(R.id.til_identity_number);
         identityNumberInfo = view.findViewById(R.id.identity_number_info);
-        phoneNumberInfo = view.findViewById(R.id.et_phone_number_info);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,13 +96,11 @@ public class TrainBookingAddPassengerFragment extends BaseDaggerFragment
             tilPhoneNumber.setVisibility(View.VISIBLE);
             tilIdentityNumber.setVisibility(View.VISIBLE);
             identityNumberInfo.setVisibility(View.VISIBLE);
-            phoneNumberInfo.setVisibility(View.VISIBLE);
         } else {
             renderSpinnerForInfant();
             tilPhoneNumber.setVisibility(View.GONE);
             tilIdentityNumber.setVisibility(View.GONE);
             identityNumberInfo.setVisibility(View.GONE);
-            phoneNumberInfo.setVisibility(View.GONE);
         }
         renderPassengerData();
     }
