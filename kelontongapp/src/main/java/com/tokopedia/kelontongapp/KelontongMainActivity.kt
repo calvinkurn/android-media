@@ -168,23 +168,23 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         }
     }
 
-    private fun requestPermissionLocation() {
-        val resultLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        if (resultLocation != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                AlertDialog.Builder(this)
-                        .setTitle("Allows \"Mitra Tokopedia\" to access your location while you are using the app?")
-                        .setMessage("Your current location will be displayed on the map and used for getting your address.")
-                        .setPositiveButton("Allow") { _, _ ->
-                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_LOCATION)
-                        }
-                        .create()
-                        .show()
-            } else {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_LOCATION)
-            }
-        }
-    }
+//    private fun requestPermissionLocation() {
+//        val resultLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//        if (resultLocation != PackageManager.PERMISSION_GRANTED) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                AlertDialog.Builder(this)
+//                        .setTitle("Allows \"Mitra Tokopedia\" to access your location while you are using the app?")
+//                        .setMessage("Your current location will be displayed on the map and used for getting your address.")
+//                        .setPositiveButton("Allow") { _, _ ->
+//                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_LOCATION)
+//                        }
+//                        .create()
+//                        .show()
+//            } else {
+//                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_LOCATION)
+//            }
+//        }
+//    }
 
     private fun showAlertDialog() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -225,20 +225,8 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == PERMISSIONS_REQUEST_LOCATION) {
-            if (grantResults.isNotEmpty()) {
-                val locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
-
-                if (!(locationAccepted))
-                    Toast.makeText(this, "Please allow access location.", Toast.LENGTH_SHORT).show()
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        requestPermissionLocation()
-                        return
-                    }
-                }
-            }
+        if (requestCode == PERMISSION_REQUEST_LOCATION) {
+            webViewChromeClient.onRequestPermissionsResult(requestCode, permissions, grantResults)
         } else {
             webviewClient.onRequestPermissionsResult(requestCode, permissions, grantResults)
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)

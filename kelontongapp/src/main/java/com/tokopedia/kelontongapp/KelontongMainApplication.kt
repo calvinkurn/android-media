@@ -12,15 +12,15 @@ import com.appsflyer.AppsFlyerLib
 import com.crashlytics.android.Crashlytics
 
 import io.fabric.sdk.android.Fabric
+import com.moengage.core.MoEngage
+
+
 
 /**
  * Created by meta on 02/10/18.
  */
 class KelontongMainApplication : Application() {
 
-    val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
-    val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
-    val AF_KEY = "SdSopxGtYr9yK8QEjFVHXL"
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -28,6 +28,7 @@ class KelontongMainApplication : Application() {
         super.onCreate()
         sharedPref = getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
         initAppsflyer()
+        initMoengage()
         initCrashlytics()
         createNotificationChannel()
     }
@@ -37,6 +38,12 @@ class KelontongMainApplication : Application() {
             Fabric.with(this, Crashlytics())
             Crashlytics.setUserIdentifier(getString(R.string.app_name))
         }
+    }
+
+    private fun initMoengage() {
+        val moEngage = MoEngage.Builder(this, MOENGAGE_ID)
+                .build()
+        MoEngage.initialise(moEngage)
     }
 
     private fun createNotificationChannel() {
