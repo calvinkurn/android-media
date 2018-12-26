@@ -456,7 +456,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             backgrounds.add(ticker.getColor());
         }
         if (tickerView.contains(kycMessage)) {
-            messages.add(kycMessage)
+            messages.add(kycMessage);
         }
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
