@@ -477,12 +477,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             }
         });
         tickerView.buildView();
-
-        if (tickers.length < 1) {
-            tickerView.setVisibility(View.GONE);
-        } else {
-            tickerView.setVisibility(View.VISIBLE);
-        }
+        checkShowTickerView();
 
         sellerDashboardPresenter.getVerificationStatus();
 
@@ -567,12 +562,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             @Override
             public void onErrorGetShopVerificationStatusWithErrorCode(String errorCode) {
                 verificationWarningTickerView.setVisibility(View.GONE);
+                checkShowTickerView();
 
             }
 
             @Override
             public void onErrorGetShopVerificationStatus(Throwable errorMessage) {
                 verificationWarningTickerView.setVisibility(View.GONE);
+                checkShowTickerView();
             }
 
             @Override
@@ -607,8 +604,16 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     private void addMessageToTickerView(String tickerMessage) {
         if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
-            tickerView.setVisibility(View.VISIBLE);
             tickerView.addMessage(tickerMessage);
+            checkShowTickerView();
+        }
+    }
+
+    private void checkShowTickerView() {
+        if (tickerView.getCount() < 1) {
+            tickerView.setVisibility(View.GONE);
+        } else {
+            tickerView.setVisibility(View.VISIBLE);
         }
     }
 
