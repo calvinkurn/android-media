@@ -598,6 +598,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     addMessageToTickerView(tickerMessage);
                 }
 
+                checkShowTickerView();
+
             }
         };
     }
@@ -606,7 +608,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
             tickerView.addMessage(tickerMessage);
         }
-        checkShowTickerView();
     }
 
     private void checkShowTickerView() {
