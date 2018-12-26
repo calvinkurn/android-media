@@ -91,7 +91,6 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
         }
     }
 
-
     @ReactMethod
     public void stopTracing() {
         ReactFragmentActivity.stopTracing();
