@@ -4,6 +4,9 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.travelcalendar.R
 import com.tokopedia.travelcalendar.data.TravelCalendarRepository
 import com.tokopedia.travelcalendar.data.entity.HolidayEntity
