@@ -635,29 +635,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (getView() != null) {
-                    if (e instanceof UnknownHostException) {
-                        getView().renderErrorCheckPromoShipmentData(
-                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                        );
-                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                        getView().renderErrorCheckPromoShipmentData(
-                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                        );
-                    } else if (e instanceof CartResponseErrorException) {
-                        getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                    } else if (e instanceof CartResponseDataNullException) {
-                        getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                    } else if (e instanceof CartHttpErrorException) {
-                        getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                    } else if (e instanceof ResponseCartApiErrorException) {
-                        getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                    } else if (e instanceof CheckPromoCodeException) {
-                        getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                    } else {
-                        getView().renderErrorCheckPromoShipmentData(
-                                ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                        );
-                    }
+                    getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                 }
             }
 
