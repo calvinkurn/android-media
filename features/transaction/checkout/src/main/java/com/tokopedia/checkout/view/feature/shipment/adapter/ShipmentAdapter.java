@@ -157,7 +157,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int viewType = getItemViewType(position);
         ShipmentData data = shipmentDataList.get(position);
 
-        if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
+        if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
+            ((ShipmentNotifierViewHolder) holder).bind((ShipmentNotifierModel) data);
+        } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
             ((CartVoucherPromoViewHolder) holder).bindData((CartItemPromoHolderData) data, position);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestion) data, position);
