@@ -124,7 +124,7 @@ class DigitalWidgetFragment: BaseDaggerFragment(), DigitalWidgetContract.View {
         tab_layout_widget.tabMode = TabLayout.MODE_SCROLLABLE
 
         if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = RechargeViewPagerAdapter(fragmentManager, rechargeCategory.toMutableList())
+            rechargeViewPagerAdapter = RechargeViewPagerAdapter(childFragmentManager, rechargeCategory.toMutableList())
             view_pager_widget.adapter = rechargeViewPagerAdapter
         } else {
             rechargeViewPagerAdapter?.addFragments(rechargeCategory)

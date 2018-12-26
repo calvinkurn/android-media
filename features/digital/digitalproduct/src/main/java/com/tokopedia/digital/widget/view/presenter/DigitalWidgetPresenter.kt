@@ -20,6 +20,7 @@ class DigitalWidgetPresenter(private val digitalWidgetUseCase: DigitalWidgetUseC
             }
 
             override fun onError(e: Throwable) {
+                if (isViewAttached)
                 view.renderErrorNetwork(R.string.digital_channel_error_default)
             }
 
