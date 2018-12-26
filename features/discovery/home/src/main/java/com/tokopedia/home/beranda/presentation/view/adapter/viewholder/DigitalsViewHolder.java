@@ -20,7 +20,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
 
     private FragmentManager fragmentManager;
     private WrapContentViewPager viewPager;
-    private DigitalsHomePagerAdater digitalsHomePagerAdater;
+    private DigitalsHomePagerAdapter digitalsHomePagerAdapter;
 
     public DigitalsViewHolder(FragmentManager fragmentManager, View itemView) {
         super(itemView);
@@ -31,11 +31,11 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
 
     @Override
     public void bind(DigitalsViewModel element) {
-        if (digitalsHomePagerAdater == null) {
-            digitalsHomePagerAdater = new DigitalsHomePagerAdater(fragmentManager);
-            viewPager.setAdapter(digitalsHomePagerAdater);
+        if (digitalsHomePagerAdapter == null) {
+            digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager);
+            viewPager.setAdapter(digitalsHomePagerAdapter);
         }
         viewPager.setOffscreenPageLimit(1);
-        digitalsHomePagerAdater.notifyDataSetChanged();
+        digitalsHomePagerAdapter.notifyDataSetChanged();
     }
 }
