@@ -1,8 +1,6 @@
 package com.tokopedia.chatbot.attachinvoice.di
 
-import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.chatbot.attachinvoice.view.fragment.AttachInvoiceFragment
 import dagger.Component
 
@@ -16,6 +14,4 @@ interface AttachInvoiceComponent {
 
     fun inject(fragment: AttachInvoiceFragment)
 
-    @ApplicationContext
-    fun context(): Context
 }

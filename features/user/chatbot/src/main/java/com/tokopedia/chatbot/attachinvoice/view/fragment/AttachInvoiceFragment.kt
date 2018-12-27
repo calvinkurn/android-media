@@ -29,7 +29,7 @@ import javax.inject.Inject
 class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceListAdapterTypeFactory>(), AttachInvoiceContract.View {
 
     @Inject
-    var presenter: AttachInvoicePresenter? = null
+    lateinit var presenter: AttachInvoicePresenter
 
     lateinit var activity: AttachInvoiceContract.Activity
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
@@ -61,8 +61,8 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
         val daggerAttachInvoiceComponent = DaggerAttachInvoiceComponent.builder()
                 .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
         daggerAttachInvoiceComponent.inject(this)
-        presenter!!.attachView(this)
-        presenter!!.attachActivityContract(activity)
+        presenter.attachView(this)
+        presenter.attachActivityContract(activity)
     }
 
     override fun onItemClicked(invoiceViewModel: InvoiceViewModel) {

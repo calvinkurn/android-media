@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.topchat.attachinvoice.view.fragment.AttachInvoiceFragment;
-import com.tokopedia.topchat.attachinvoice.view.fragment.AttachInvoiceFragment;
 
 import dagger.Component;
 
