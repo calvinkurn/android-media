@@ -5,6 +5,8 @@ import com.tokopedia.topchat.chattemplate.data.source.CloudGetTemplateChatDataSo
 import com.tokopedia.topchat.chattemplate.data.source.CloudSetTemplateChatDataSource;
 import com.tokopedia.topchat.common.chat.ChatService;
 
+import javax.inject.Inject;
+
 /**
  * Created by stevenfredian on 11/27/17.
  */
@@ -14,6 +16,7 @@ public class TemplateChatFactory {
     private TemplateChatMapper templateChatMapper;
     private ChatService chatService;
 
+    @Inject
     public TemplateChatFactory(TemplateChatMapper templateChatMapper, ChatService chatService) {
         this.templateChatMapper = templateChatMapper;
         this.chatService = chatService;
