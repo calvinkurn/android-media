@@ -821,28 +821,30 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
         Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                    AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-            );
-        }
-        if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
-            uriBuilder.appendQueryParameter(
-                    AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-            );
+        if(!originUri.isOpaque()) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                );
+            }
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                );
+            }
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                );
+            }
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                );
+            }
         }
         return uriBuilder.build().toString().trim();
     }
@@ -1700,6 +1702,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public void sendScreen(Activity activity, final String screenName) {
                 if (activity != null && !TextUtils.isEmpty(screenName)) {
                     ScreenTracking.sendScreen(activity, () -> screenName);
+                }
+            }
+
+            @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
                 }
             }
 
@@ -3287,8 +3297,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
-        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
+                                                    String source) {
+        return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override

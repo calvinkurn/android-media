@@ -488,6 +488,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public Class<?> getDeeplinkClass() {
-        return null;
+        return DeepLinkActivity.class;
     }
 }

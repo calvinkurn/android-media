@@ -314,9 +314,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                         ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString())
                 );
                 taskStackBuilder.startActivities();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+                return;
+            } catch (Exception ignored) { }
+
+            try {
+                TaskStackBuilder taskStackBuilder = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getTaskStackBuilder(this, applink.toString());
+                taskStackBuilder.startActivities();
+            } catch (Exception ignored) { }
         }
     }
 

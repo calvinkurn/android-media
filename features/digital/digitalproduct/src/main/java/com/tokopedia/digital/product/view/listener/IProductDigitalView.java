@@ -91,4 +91,5 @@ public interface IProductDigitalView extends IBaseView {
 
     void goToCartPage(ProductDigitalData productDigitalData);
 
+    void showPromoContainer();
 }

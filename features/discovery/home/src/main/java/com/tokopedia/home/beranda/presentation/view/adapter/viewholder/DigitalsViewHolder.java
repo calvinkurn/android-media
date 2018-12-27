@@ -1,13 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.digital.widget.view.fragment.DigitalChannelFragment;
+import com.tokopedia.design.viewpager.WrapContentViewPager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 
@@ -20,26 +18,24 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
 
-    private FrameLayout container;
-
     private FragmentManager fragmentManager;
+    private WrapContentViewPager viewPager;
+    private DigitalsHomePagerAdapter digitalsHomePagerAdapter;
 
     public DigitalsViewHolder(FragmentManager fragmentManager, View itemView) {
         super(itemView);
-
-        container = itemView.findViewById(R.id.container_layout_digital_widget);
-
+        viewPager = itemView.findViewById(R.id.view_pager_widget);
         this.fragmentManager = fragmentManager;
     }
 
+
     @Override
     public void bind(DigitalsViewModel element) {
-        container.postDelayed(() -> {
-            Fragment oldFragment = fragmentManager.findFragmentById(container.getId());
-            if (oldFragment == null) {
-                fragmentManager.beginTransaction().add(container.getId(), new DigitalChannelFragment()).commit();
-            }
-        }, 500);
+        if (digitalsHomePagerAdapter == null) {
+            digitalsHomePagerAdapter = new DigitalsHomePagerAdapter(fragmentManager);
+            viewPager.setAdapter(digitalsHomePagerAdapter);
+        }
+        viewPager.setOffscreenPageLimit(1);
+        digitalsHomePagerAdapter.notifyDataSetChanged();
     }
-
 }

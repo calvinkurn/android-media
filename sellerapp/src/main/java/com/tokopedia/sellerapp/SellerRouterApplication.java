@@ -1118,7 +1118,8 @@ public abstract class SellerRouterApplication extends MainApplication
         return new AnalyticTracker() {
             @Override
             public void sendEventTracking(Map<String, Object> events) {
-
+                UnifyTracking.eventClearEnhanceEcommerce(SellerRouterApplication.this);
+                UnifyTracking.sendGTMEvent(SellerRouterApplication.this, events);
             }
 
             @Override
@@ -1135,6 +1136,14 @@ public abstract class SellerRouterApplication extends MainApplication
             public void sendScreen(Activity activity, final String screenName) {
                 if (activity != null && !TextUtils.isEmpty(screenName)) {
                     ScreenTracking.sendScreen(activity, () -> screenName);
+                }
+            }
+
+            @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
                 }
             }
 
@@ -1509,8 +1518,9 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
-        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+    public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
+                                             String source) {
+        return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
     @Override

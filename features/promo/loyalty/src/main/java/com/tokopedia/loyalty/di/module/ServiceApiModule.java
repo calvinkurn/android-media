@@ -101,7 +101,7 @@ public class ServiceApiModule {
         tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
-        return RetrofitFactory.createRetrofitPromoConfig(TkpdBaseURL.Transaction.URL_TX_PAYMENT_VOUCHER)
+        return RetrofitFactory.createRetrofitPromoConfig(TkpdBaseURL.PROMO_API_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }
@@ -118,7 +118,7 @@ public class ServiceApiModule {
         tkpdOkHttpBuilder.addInterceptor(new TkpdBaseInterceptor());
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
-        return RetrofitFactory.createRetrofitPromoConfig(TkpdBaseURL.PROMO_API_DOMAIN)
+        return RetrofitFactory.createRetrofitPromoConfig(TkpdBaseURL.Transaction.URL_TX_PAYMENT_VOUCHER)
                 .client(okHttpClient)
                 .build();
     }
