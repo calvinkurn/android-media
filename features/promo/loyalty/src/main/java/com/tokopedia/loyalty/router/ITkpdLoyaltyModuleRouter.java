@@ -4,7 +4,6 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 
 import retrofit2.Converter;
-import rx.Observable;
 
 
 /**

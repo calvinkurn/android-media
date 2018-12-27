@@ -57,7 +57,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -829,7 +829,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
-        cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+        if (cartListData.getAdsModel() != null) {
+            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+        }
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         if (cbSelectAll != null) {
             cbSelectAll.setChecked(cartListData.isAllSelected());
@@ -1216,10 +1218,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void goToDetail(PromoData promoData) {
-        if(promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
+        if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCodeSafe(),
                     cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        }else{
+        } else {
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoData.getPromoCodeSafe(),
                     cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
@@ -1379,7 +1381,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
-        if(resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             sendAnalyticsScreenName(getScreenName());
             Bundle bundle = data.getExtras();
             if (bundle != null) {
