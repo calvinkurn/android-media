@@ -17,12 +17,14 @@ import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,7 +33,7 @@ import dagger.Provides;
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module(includes = HomeFeedModule.class)
+@Module
 public class HomeModule {
 
     @HomeScope
@@ -78,6 +80,17 @@ public class HomeModule {
     @Provides
     protected GetHomeDataUseCase provideGetHomeDataUseCase(HomeRepository homeRepository){
         return new GetHomeDataUseCase(homeRepository);
+    }
+
+    @Provides
+    protected GetHomeFeedUseCase provideGetHomeFeedUseCase(@ApplicationContext Context context,
+                                                           GraphqlUseCase graphqlUseCase){
+        return new GetHomeFeedUseCase(context, graphqlUseCase);
+    }
+
+    @Provides
+    GraphqlUseCase graphqlUseCase() {
+        return new GraphqlUseCase();
     }
 
     @Provides
