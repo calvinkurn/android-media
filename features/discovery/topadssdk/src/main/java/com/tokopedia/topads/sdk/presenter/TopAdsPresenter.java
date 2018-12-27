@@ -55,11 +55,9 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     RemoveWishListUseCase removeWishListUseCase;
     @Inject
     UserSession userSession;
-    @Inject
-    CacheHandler cacheHandler;
 
     public TopAdsPresenter(Context context) {
-        this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this, cacheHandler);
+        this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this);
         this.merlinRecomendationUseCase = new MerlinRecomendationUseCase(context, this);
     }
 

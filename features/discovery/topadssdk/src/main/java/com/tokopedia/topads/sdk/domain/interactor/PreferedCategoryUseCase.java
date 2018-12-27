@@ -36,10 +36,10 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
 
 
     public PreferedCategoryUseCase(
-            Context context, PreferedCategoryListener listener, CacheHandler cacheHandler) {
+            Context context, PreferedCategoryListener listener) {
         this.dataSource = new CloudTopAdsDataSource(context);
         this.listener = listener;
-        this.cacheHandler = cacheHandler;
+        this.cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         this.random = new Random();
     }
 
