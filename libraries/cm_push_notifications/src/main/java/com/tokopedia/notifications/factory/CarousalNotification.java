@@ -64,7 +64,6 @@ public class CarousalNotification extends BaseNotification {
             remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE);
             remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getArrowClickPendingIntent(carousalList, getRequestCode(), CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK, index));
 
-
         } else if (index == carousalList.size() - 1) {
             remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE);
             remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE);

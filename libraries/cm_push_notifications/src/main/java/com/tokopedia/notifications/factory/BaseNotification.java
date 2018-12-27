@@ -68,7 +68,12 @@ public abstract class BaseNotification {
             builder = new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
         }
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        if (!baseNotificationModel.isUpdateExisting()) {
+        if (baseNotificationModel.isUpdateExisting()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                silentChannel();
+            }
+
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createChannelGroup();
                 createNotificationChannel();
@@ -76,10 +81,6 @@ public abstract class BaseNotification {
                 builder.setNumber(1);
             } else {
                 setNotificationSound(builder);
-            }
-        }else{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                silentChannel();
             }
         }
         if (baseNotificationModel.getIcon().isEmpty()) {
@@ -92,7 +93,7 @@ public abstract class BaseNotification {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void silentChannel(){
+    private void silentChannel() {
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         NotificationChannel channel = new NotificationChannel("SILENT_01)",
@@ -102,10 +103,10 @@ public abstract class BaseNotification {
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build();
         channel.setSound(null, null);
-       // channel.setShowBadge(true);
+        // channel.setShowBadge(true);
         channel.setDescription(CMConstant.NotificationGroup.CHANNEL_DESCRIPTION);
         //channel.setGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID);
-        //channel.setVibrationPattern(getVibratePattern());
+        channel.setVibrationPattern(null);
         notificationManager.createNotificationChannel(channel);
     }
 
