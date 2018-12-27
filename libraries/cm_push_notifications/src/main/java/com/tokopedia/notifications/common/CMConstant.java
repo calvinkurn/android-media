@@ -68,6 +68,7 @@ public interface CMConstant {
         String CAROUSAL_DATA_ITEM = "carousal_data_item";
 
 
+        String GRID_APP_LINK = "GRID_APP_LINK";
     }
 
     interface NotificationGroup {
@@ -88,7 +89,7 @@ public interface CMConstant {
         String ACTION_RIGHT_ARROW_CLICK = "com.tokopedia.notification.ACTION_RIGHT_ARROW_CLICK";
         String ACTION_LEFT_ARROW_CLICK = "com.tokopedia.notification.ACTION_LEFT_ARROW_CLICK";
         String ACTION_CAROUSAL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSAL_IMAGE_CLICK";
-
+        String ACTION_GRID_CLICK = "com.tokopedia.notification.GRID_CLICK";
     }
 
     interface CouponCodeExtra {

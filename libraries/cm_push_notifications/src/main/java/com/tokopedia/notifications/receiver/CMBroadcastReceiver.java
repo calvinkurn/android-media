@@ -64,8 +64,21 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
                 case CMConstant.ReceiverAction.ACTION_CAROUSAL_IMAGE_CLICK:
                     handleCarousalImageClick(context, intent, notificationId);
                     break;
+                case CMConstant.ReceiverAction.ACTION_GRID_CLICK:
+                    handleGridNotificationClick(context, intent, notificationId);
+                    break;
             }
         }
+    }
+
+    private void handleGridNotificationClick(Context context, Intent intent, int notificationId) {
+        String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK);
+        Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+        appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        appLinkIntent.putExtras(intent.getExtras());
+        context.getApplicationContext().startActivity(appLinkIntent);
+        context.getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        NotificationManagerCompat.from(context).cancel(notificationId);
     }
 
     private void cancelPersistentNotification(Context context, int notificationId) {
@@ -89,6 +102,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             }
 
             Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), persistentButton.getAppLink());
+            appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appLinkIntent.putExtras(intent.getExtras());
             context.startActivity(appLinkIntent);
         }
@@ -106,6 +120,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
 
         String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK);
         Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+        appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appLinkIntent.putExtras(intent.getExtras());
         context.startActivity(appLinkIntent);
         NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
@@ -122,6 +137,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             return;
         String appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK);
         Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), appLinks);
+        appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appLinkIntent.putExtras(intent.getExtras());
         context.startActivity(appLinkIntent);
         NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
@@ -150,6 +166,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         try {
             Carousal carousal = intent.getParcelableExtra(CMConstant.ReceiverExtraData.CAROUSAL_DATA_ITEM);
             Intent appLinkIntent = RouteManager.getIntent(context.getApplicationContext(), carousal.getAppLink());
+            appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appLinkIntent.putExtras(intent.getExtras());
             context.startActivity(appLinkIntent);
             NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);

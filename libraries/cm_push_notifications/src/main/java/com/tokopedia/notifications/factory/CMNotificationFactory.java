@@ -1,8 +1,11 @@
 package com.tokopedia.notifications.factory;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -33,24 +36,43 @@ public class CMNotificationFactory {
 
     public static BaseNotification getNotification(Context context, Bundle bundle) {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
-        switch (baseNotificationModel.getType()) {
-            case CMConstant.NotificationType.GENERAL:
-                return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
-            case CMConstant.NotificationType.ACTION_BUTTONS:
-                return (new ActionNotification(context.getApplicationContext(), baseNotificationModel));
-            case CMConstant.NotificationType.BIG_IMAGE:
-                return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
-            case CMConstant.NotificationType.PERSISTENT:
-                CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
-                        CMEvents.PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, CMEvents.PersistentEvent.EVENT_LABEL);
-                return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
-            case CMConstant.NotificationType.DELETE_NOTIFICATION:
-                cancelNotification(context, baseNotificationModel.getNotificationId());
-                return null;
-            case CMConstant.NotificationType.CAROUSAL_NOTIFICATION:
-                return (new CarousalNotification(context.getApplicationContext(), baseNotificationModel));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(context, baseNotificationModel)) {
+            //todo notify to server for Blocked Channel By User.
+        } else {
+            switch (baseNotificationModel.getType()) {
+                case CMConstant.NotificationType.GENERAL:
+                    return (new GridNotification(context.getApplicationContext(), baseNotificationModel));
+                case CMConstant.NotificationType.ACTION_BUTTONS:
+                    return (new ActionNotification(context.getApplicationContext(), baseNotificationModel));
+                case CMConstant.NotificationType.BIG_IMAGE:
+                    return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
+                case CMConstant.NotificationType.PERSISTENT:
+                    CmEventPost.postEvent(context, CMEvents.PersistentEvent.EVENT_VIEW_NOTIFICATION, CMEvents.PersistentEvent.EVENT_CATEGORY,
+                            CMEvents.PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, CMEvents.PersistentEvent.EVENT_LABEL);
+                    return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
+                case CMConstant.NotificationType.DELETE_NOTIFICATION:
+                    cancelNotification(context, baseNotificationModel.getNotificationId());
+                    return null;
+                case CMConstant.NotificationType.CAROUSAL_NOTIFICATION:
+                    return (new CarousalNotification(context.getApplicationContext(), baseNotificationModel));
+            }
+
         }
         return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private static boolean isChannelBlocked(Context context, BaseNotificationModel baseNotificationModel) {
+        try {
+            String channelId = baseNotificationModel.getChannelName();
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = manager.getNotificationChannel(channelId);
+            if (null != channel && channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
+                return true;
+            }
+        } catch (NullPointerException e) {
+        }
+        return false;
     }
 
     private static void cancelNotification(Context context, int notificationId) {
