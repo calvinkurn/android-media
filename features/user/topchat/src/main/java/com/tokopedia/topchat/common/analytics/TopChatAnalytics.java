@@ -8,6 +8,7 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 public class TopChatAnalytics {
 
+    public static final String SCREEN_CHAT_LIST = "inbox-chat";
 
     public interface Category {
         public static final String PRODUCT_PAGE = "product page";

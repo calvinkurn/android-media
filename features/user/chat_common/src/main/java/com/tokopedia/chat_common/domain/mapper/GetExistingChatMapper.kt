@@ -1,12 +1,9 @@
 package com.tokopedia.chat_common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
@@ -90,13 +87,11 @@ open class GetExistingChatMapper @Inject constructor() {
 
     open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
-//        return when(chatItemPojoByDateByTime.attachment?.type.toString()){
-//            TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
-//            TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
-//            else -> convertToFallBackModel(chatItemPojoByDateByTime)
-//        }
-
-        return convertToFallBackModel(chatItemPojoByDateByTime)
+        return when(chatItemPojoByDateByTime.attachment?.type.toString()){
+            TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
+            TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
+            else -> convertToFallBackModel(chatItemPojoByDateByTime)
+        }
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
@@ -111,24 +106,45 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.msg
         )
     }
-//
-//    private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-//        return ImageUploadViewModel(
-//                chatItemPojoByDateByTime.msgId.toString(),
-//                chatItemPojoByDateByTime.opponentId.toString(),
-//                chatItemPojoByDateByTime.opponentName,
-//                chatItemPojoByDateByTime.role,
-//                chatItemPojoByDateByTime.attachment?.id.toString(),
-//                chatItemPojoByDateByTime.attachment?.type.toString(),
-//                chatItemPojoByDateByTime.replyTime,
-//                !chatItemPojoByDateByTime.isOpposite,
-//                chatItemPojoByDateByTime.attachment?.
-//        )
-//    }
-//
-//    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-//        //TODO
-//    }
+
+    private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        //TODO chatItemPojoByDateByTime.attachment imgurl& imgthumbnail
+        return ImageUploadViewModel(
+                chatItemPojoByDateByTime.msgId.toString(),
+                chatItemPojoByDateByTime.senderId.toString(),
+                chatItemPojoByDateByTime.senderName,
+                chatItemPojoByDateByTime.role,
+                chatItemPojoByDateByTime.attachment?.id.toString(),
+                chatItemPojoByDateByTime.attachment?.type.toString(),
+                chatItemPojoByDateByTime.replyTime,
+                !chatItemPojoByDateByTime.isOpposite,
+                "" ,
+                "",
+                chatItemPojoByDateByTime.isRead,
+                chatItemPojoByDateByTime.msg
+        )
+    }
+
+    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        //TODO product attribute
+        return ProductAttachmentViewModel(
+                chatItemPojoByDateByTime.msgId.toString(),
+                chatItemPojoByDateByTime.senderId.toString(),
+                chatItemPojoByDateByTime.senderName,
+                chatItemPojoByDateByTime.role,
+                chatItemPojoByDateByTime.attachment?.id.toString(),
+                chatItemPojoByDateByTime.attachment?.type.toString(),
+                chatItemPojoByDateByTime.replyTime,
+                chatItemPojoByDateByTime.isRead,
+                0,
+                "",
+                "",
+                "",
+                "",
+                !chatItemPojoByDateByTime.isOpposite,
+                chatItemPojoByDateByTime.msg
+        )
+    }
 
 
     open fun hasAttachment(pojo: Reply): Boolean {
