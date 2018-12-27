@@ -1669,12 +1669,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         View view = createOverlayView(model);
         overlayDialog.setCustomContentView(view, model.getInteruptViewModel().getTitle(), model.isCloseable());
         overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
-        overlayDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                dialogInterface
-            }
-        });
         if (showDialogDirectly) {
             showOverlayDialogOnScreen();
         }
