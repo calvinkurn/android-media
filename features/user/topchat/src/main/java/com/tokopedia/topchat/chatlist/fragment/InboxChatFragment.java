@@ -352,11 +352,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void addTimeMachine() {
-        adapter.showTimeMachine();
-    }
-
-    @Override
     public void onGoToTimeMachine(String url) {
         dropKeyboard();
         startActivity(TimeMachineActivity.getCallingIntent(getActivity(), url));
@@ -677,8 +672,9 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void reloadNotifDrawer() {
-        if (getActivity() instanceof InboxChatActivity) {
-            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
-        }
+        //TODO : GET NOTIF AND UPDATE TOOLBAR IF STILL USED
+//        if (getActivity() instanceof InboxChatActivity) {
+//            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
+//        }
     }
 }

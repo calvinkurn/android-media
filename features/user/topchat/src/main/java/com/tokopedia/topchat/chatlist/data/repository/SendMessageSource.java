@@ -1,9 +1,10 @@
 package com.tokopedia.topchat.chatlist.data.repository;
 
-import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
+import com.tokopedia.topchat.common.chat.ChatService;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -20,7 +21,7 @@ public class SendMessageSource {
         this.sendMessageMapper = sendMessageMapper;
     }
 
-    public Observable<SendMessageViewModel> sendMessage(TKPDMapParam<String, Object> requestParams) {
+    public Observable<SendMessageViewModel> sendMessage(HashMap<String, Object> requestParams) {
         return chatService.getApi()
                 .sendMessage(requestParams)
                 .map(sendMessageMapper);

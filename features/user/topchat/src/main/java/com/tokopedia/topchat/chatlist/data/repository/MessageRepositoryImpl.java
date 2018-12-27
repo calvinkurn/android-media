@@ -2,11 +2,12 @@ package com.tokopedia.topchat.chatlist.data.repository;
 
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -26,7 +27,7 @@ public class MessageRepositoryImpl implements MessageRepository{
     }
 
     @Override
-    public Observable<InboxChatViewModel> getMessage(TKPDMapParam<String, Object> mapParam) {
+    public Observable<InboxChatViewModel> getMessage(HashMap<String, Object> mapParam) {
         return messageFactory.createCloudMessageDataSource().getMessage(mapParam);
     }
 
@@ -36,7 +37,7 @@ public class MessageRepositoryImpl implements MessageRepository{
     }
 
     @Override
-    public Observable<SendMessageViewModel> sendMessage(TKPDMapParam<String, Object> requestParams) {
+    public Observable<SendMessageViewModel> sendMessage(HashMap<String, Object> requestParams) {
         return sendMessageSource.sendMessage(requestParams);
     }
 }

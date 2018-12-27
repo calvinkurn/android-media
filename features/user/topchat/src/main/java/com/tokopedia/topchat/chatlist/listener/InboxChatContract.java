@@ -71,8 +71,6 @@ public class InboxChatContract {
 
         void finishSearch();
 
-        void addTimeMachine();
-
         void onGoToTimeMachine(String url);
 
         void removeList(List<Pair> originList, List<DeleteChatViewModel> list);

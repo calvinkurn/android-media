@@ -10,16 +10,7 @@ import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.EmptyChatListViewHolder;
 import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
-import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.TimeMachineListViewHolder;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
-import com.tokopedia.topchat.chatlist.viewmodel.TimeMachineListViewModel;
-import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.EmptyChatListViewHolder;
-import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
-import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.TimeMachineListViewHolder;
-import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
-import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
-import com.tokopedia.topchat.chatlist.viewmodel.EmptyChatModel;
-import com.tokopedia.topchat.chatlist.viewmodel.TimeMachineListViewModel;
 
 /**
  * Created by stevenfredian on 9/27/17.
@@ -43,10 +34,8 @@ public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
 
         if (type == ListChatViewHolder.LAYOUT)
             viewHolder = new ListChatViewHolder(view, viewListener, presenter);
-        else if (type == TimeMachineListViewHolder.LAYOUT)
-            viewHolder = new TimeMachineListViewHolder(view, viewListener);
         else if (type == EmptyChatListViewHolder.LAYOUT)
-            viewHolder = new EmptyChatListViewHolder(view, view.getContext(), viewListener);
+            viewHolder = new EmptyChatListViewHolder(view, view.getContext());
         else
             return super.createViewHolder(view, type);
 
@@ -56,11 +45,6 @@ public class InboxChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
     @Override
     public int type(ChatListViewModel chatListViewModel) {
         return ListChatViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(TimeMachineListViewModel timeMachineListViewModel) {
-        return TimeMachineListViewHolder.LAYOUT;
     }
 
     @Override

@@ -171,10 +171,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 getView().getAdapter().showEmptyFull(true);
             }
         }
-
-        if (!result.isHasNext() && result.isHasTimeMachine()) {
-            getView().addTimeMachine();
-        }
     }
 
     public void setCache(List<Visitable> list) {
@@ -223,10 +219,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             } else if (result.getMode() == InboxChatViewModel.GET_CHAT_MODE) {
                 getView().getAdapter().showEmptyFull(true);
             }
-        }
-
-        if (!result.isHasNext() && result.isHasTimeMachine()) {
-            getView().addTimeMachine();
         }
 
         getView().setMenuEnabled(false);
