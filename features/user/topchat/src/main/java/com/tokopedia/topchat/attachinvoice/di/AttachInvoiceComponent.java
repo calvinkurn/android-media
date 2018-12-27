@@ -17,8 +17,6 @@ import dagger.Component;
 @Component(modules = {AttachInvoiceModule.class}, dependencies = BaseAppComponent.class)
 public interface AttachInvoiceComponent {
 
-    void inject(AttachInvoiceFragment fragment);
-
     @ApplicationContext
     Context context();
 }
