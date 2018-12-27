@@ -9,11 +9,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachinvoice.view.AttachInvoiceContract;
-import com.tokopedia.topchat.attachinvoice.view.fragment.AttachInvoiceFragment;
-import com.tokopedia.topchat.attachinvoice.view.fragment.AttachInvoiceFragment;
 
 /**
  * Created by Hendri on 22/03/18.
@@ -37,12 +34,14 @@ public class AttachInvoiceActivity extends BaseSimpleActivity implements AttachI
     @Override
     protected Fragment getNewFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-        if (fragment != null) {
-            return fragment;
-        } else {
-            fragment = AttachInvoiceFragment.newInstance(this);
-            return fragment;
-        }
+//        if (fragment != null) {
+        return fragment;
+//        }
+
+//        else {
+//            fragment = AttachInvoiceFragment.newInstance(this);
+//            return fragment;
+//        }
     }
 
     @Override
