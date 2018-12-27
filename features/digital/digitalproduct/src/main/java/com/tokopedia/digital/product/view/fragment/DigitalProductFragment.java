@@ -182,7 +182,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String productId;
     private String clientNumber;
     private boolean isFromWidget;
-    private boolean isAlreadyRenderIfFromWidget;
     private String additionalETollLastBalance;
     private String additionalETollLastUpdatedDate;
 
@@ -883,8 +882,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                         }
                     }
                 }
-                if (isFromWidget && !isAlreadyRenderIfFromWidget) {
-                    isAlreadyRenderIfFromWidget = true;
+                if (isFromWidget) {
+                    isFromWidget = false;
                     presenter.processGetHelpUrlData(categoryId);
                     presenter.processGetCategoryAndBannerData(
                             categoryId, operatorId, productId, clientNumber);
