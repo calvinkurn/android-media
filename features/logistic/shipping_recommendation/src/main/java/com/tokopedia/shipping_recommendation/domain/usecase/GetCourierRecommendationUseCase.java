@@ -38,12 +38,13 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     }
 
     public void execute(String query,
+                        int codHistory,
                         ShipmentDetailData shipmentDetailData,
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
-        query = getQueryWithParams(query, shipmentDetailData);
+        query = getQueryWithParams(query, codHistory, shipmentDetailData);
 
         GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class);
 
@@ -85,7 +86,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribe(subscriber);
     }
 
-    private String getQueryWithParams(String query, ShipmentDetailData shipmentDetailData) {
+    private String getQueryWithParams(String query, int codHistory, ShipmentDetailData shipmentDetailData) {
         StringBuilder queryStringBuilder = new StringBuilder(query);
 
         StringBuilder spidsStringBuilder = new StringBuilder();
@@ -151,6 +152,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.ORDER_VALUE, String.valueOf(shipmentDetailData.getShipmentCartData().getOrderValue()));
         queryStringBuilder = setParam(queryStringBuilder, Param.CAT_ID, shipmentDetailData.getShipmentCartData().getCategoryIds());
         queryStringBuilder = setParam(queryStringBuilder, Param.LANG, Param.VALUE_LANG_ID);
+        queryStringBuilder = setParam(queryStringBuilder, Param.USER_HISTORY, String.valueOf(codHistory));
 
         return queryStringBuilder.toString();
     }
@@ -176,6 +178,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         static final String ORDER_VALUE = "$order_value";
         static final String CAT_ID = "$cat_id";
         static final String LANG = "$lang";
+        static final String USER_HISTORY = "$user_history";
 
         static final String VALUE_ANDROID = "android";
         static final String VALUE_CLIENT = "client";

@@ -1668,9 +1668,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
-            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                    recipientAddressModel, cartPosition);
+            if (shipmentPresenter.getCodData() != null) {
+                // if cod available
+                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                        recipientAddressModel, cartPosition, shipmentPresenter.getCodData().getCounterCod());
+            } else {
+                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                        recipientAddressModel, cartPosition);
+            }
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
