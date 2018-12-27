@@ -1,13 +1,16 @@
-query get_chat_replies($msgId: Int!) {
-  chatReplies(msgId: $msgId) {
-    list {
-      date
-      chats {
-        time
-        replies {
-          replyId
-        }
+ query get_approval_status($projectId: Int!) {
+    kycStatus(projectID: $projectId) {
+      Message
+      Detail {
+        IsSuccess
+        UserId
+        ProjectId
+        Status
+        StatusName
+        CreateTime
+        CreateBy
+        UpdateTime
       }
     }
   }
-}
+

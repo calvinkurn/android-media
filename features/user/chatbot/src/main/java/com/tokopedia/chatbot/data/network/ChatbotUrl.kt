@@ -13,10 +13,5 @@ class ChatbotUrl {
         }
 
         const val WEBSOCKET_URL = "wss://chat.tokopedia.com/connect"
-        const val BASE_URL = "https://api.tokopedia.com/"
-
-        const val PATH_SET_RATING = "/cs/chatbot/v2/post-rating"
-        const val PATH_INVOICE_LIST = "/cs/chatbot/invoice-list"
-        const val PATH_SEND_REASON_RATING = "/cs/chatbot/api/rating/post-reason"
     }
 }

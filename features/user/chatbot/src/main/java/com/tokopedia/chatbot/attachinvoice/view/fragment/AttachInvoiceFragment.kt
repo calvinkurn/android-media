@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.attachinvoice.di.DaggerAttachInvoiceComponent
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
 import com.tokopedia.chatbot.attachinvoice.view.adapter.AttachInvoiceListAdapter
 import com.tokopedia.chatbot.attachinvoice.view.adapter.AttachInvoiceListAdapterTypeFactory
@@ -18,6 +20,7 @@ import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.chatbot.attachinvoice.view.presenter.AttachInvoicePresenter
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
+import javax.inject.Inject
 
 /**
  * Created by Hendri on 22/03/18.
@@ -25,11 +28,11 @@ import com.tokopedia.chatbot.view.ChatbotInternalRouter
 
 class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceListAdapterTypeFactory>(), AttachInvoiceContract.View {
 
-//    @Inject
+    @Inject
     var presenter: AttachInvoicePresenter? = null
 
     lateinit var activity: AttachInvoiceContract.Activity
-    private val swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        //        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         val recyclerView = super.getRecyclerView(view)
         if (recyclerView is VerticalRecyclerView) {
             recyclerView.clearItemDecoration()
@@ -55,9 +58,9 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
     override fun initInjector() {
         val appComponent = getComponent(BaseAppComponent::class.java)
-//        val daggerInboxChatComponent = DaggerAttachInvoiceComponent.builder()
-//                .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
-//        daggerInboxChatComponent.inject(this)
+        val daggerAttachInvoiceComponent = DaggerAttachInvoiceComponent.builder()
+                .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
+        daggerAttachInvoiceComponent.inject(this)
         presenter!!.attachView(this)
         presenter!!.attachActivityContract(activity)
     }

@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.domain.usecase
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.attachinvoice.domain.SendReasonRatingPojo
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendReasonRatingPojo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase

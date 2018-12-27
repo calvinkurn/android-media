@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.attachinvoice.data.mapper
 
 import com.tokopedia.chatbot.attachinvoice.data.model.GetInvoicesPayloadWrapper
-import com.tokopedia.chatbot.attachinvoice.data.model.GetInvoicesResponseWrapper
+import com.tokopedia.chatbot.attachinvoice.data.model.GetInvoicesResponsePojo
 import com.tokopedia.chatbot.attachinvoice.data.model.InvoicesDataModel
 import com.tokopedia.chatbot.attachinvoice.domain.model.Invoice
 import retrofit2.Response
@@ -13,9 +13,9 @@ import javax.inject.Inject
  * Created by Hendri on 21/03/18.
  */
 
-class TkpdResponseToInvoicesDataModelMapper @Inject constructor() : Func1<Response<GetInvoicesResponseWrapper>, List<Invoice>> {
+class TkpdResponseToInvoicesDataModelMapper @Inject constructor() : Func1<Response<GetInvoicesResponsePojo>, List<Invoice>> {
 
-    override fun call(getInvoicesResponseWrapperResponse: Response<GetInvoicesResponseWrapper>): List<Invoice> {
+    override fun call(getInvoicesResponseWrapperResponse: Response<GetInvoicesResponsePojo>): List<Invoice> {
         val responseWrapper = getInvoicesResponseWrapperResponse.body()
         var domainModel: List<Invoice> = ArrayList()
         if (responseWrapper.dataWrapper != null
