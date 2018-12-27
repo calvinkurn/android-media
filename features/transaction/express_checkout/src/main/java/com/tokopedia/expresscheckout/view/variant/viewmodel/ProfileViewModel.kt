@@ -20,7 +20,9 @@ data class ProfileViewModel(
         var isSelected: Boolean,
         var isEditable: Boolean,
         var isShowDefaultProfileCheckBox: Boolean,
-        var isDefaultProfileCheckboxChecked: Boolean
+        var isDefaultProfileCheckboxChecked: Boolean,
+        var isStateHasRemovedProfile: Boolean,
+        var isStateHasChangedProfile: Boolean
 ) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
@@ -30,6 +32,8 @@ data class ProfileViewModel(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
+            parcel?.readByte() != 0.toByte(),
+            parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
@@ -52,6 +56,8 @@ data class ProfileViewModel(
         parcel.writeByte(if (isEditable) 1 else 0)
         parcel.writeByte(if (isShowDefaultProfileCheckBox) 1 else 0)
         parcel.writeByte(if (isDefaultProfileCheckboxChecked) 1 else 0)
+        parcel.writeByte(if (isStateHasRemovedProfile) 1 else 0)
+        parcel.writeByte(if (isStateHasChangedProfile) 1 else 0)
     }
 
     override fun describeContents(): Int {

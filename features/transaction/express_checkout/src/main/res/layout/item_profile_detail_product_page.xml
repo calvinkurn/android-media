@@ -9,185 +9,227 @@
     android:paddingBottom="@dimen/dp_16"
     app:cardCornerRadius="@dimen/dp_4">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_profile_highlight"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_16">
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/ll_no_profile_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_16"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:fontFamily="sans-serif-medium"
+                android:lineSpacingExtra="6sp"
+                android:textColor="#8a000000"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                tools:text="Lanjutkan Tanpa Template" />
 
-                <TextView
-                    android:id="@+id/tv_profile_address_name"
-                    style="@style/TextSmallNormalBlack54"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_2"
-                    android:ellipsize="end"
-                    android:lineSpacingExtra="6sp"
-                    android:maxLines="1"
-                    tools:text="Rumah (Tokopedia Tower Lt. 45, Jl. Raya gdaf afghi dshf ksdf skdfbk ksdhbf)" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="end"
+                android:lineSpacingExtra="4sp"
+                android:textColor="#42b549"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                tools:text="Ubah" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_profile_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_profile_highlight"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_16"
+            android:visibility="visible"
+            tools:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/img_profile_payment_method"
-                        android:layout_width="@dimen/dp_40"
-                        android:layout_height="@dimen/dp_27"
-                        tools:src="@color/blue_nob" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_profile_payment_detail"
+                        android:id="@+id/tv_profile_address_name"
                         style="@style/TextSmallNormalBlack54"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp_27"
-                        android:layout_marginStart="@dimen/dp_8"
-                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_2"
                         android:ellipsize="end"
-                        android:gravity="center_vertical"
                         android:lineSpacingExtra="6sp"
                         android:maxLines="1"
-                        tools:text="BCA a/n Raisa aaa aaaddd aaa aaa aaa aaa … ****2917" />
+                        tools:text="Rumah (Tokopedia Tower Lt. 45, Jl. Raya gdaf afghi dshf ksdf skdfbk ksdhbf)" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/img_profile_payment_method"
+                            android:layout_width="@dimen/dp_40"
+                            android:layout_height="@dimen/dp_27"
+                            tools:src="@color/blue_nob" />
+
+                        <TextView
+                            android:id="@+id/tv_profile_payment_detail"
+                            style="@style/TextSmallNormalBlack54"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dp_27"
+                            android:layout_marginStart="@dimen/dp_8"
+                            android:layout_marginLeft="@dimen/dp_8"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:lineSpacingExtra="6sp"
+                            android:maxLines="1"
+                            tools:text="BCA a/n Raisa aaa aaaddd aaa aaa aaa aaa … ****2917" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
+                <ImageButton
+                    android:id="@+id/img_bt_profile_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:scaleX=".66"
+                    android:scaleY=".66"
+                    android:src="@drawable/ic_edit" />
+
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/img_bt_profile_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/transparent"
-                android:scaleX=".66"
-                android:scaleY=".66"
-                android:src="@drawable/ic_edit" />
+            <View
+                android:id="@+id/v_profile_separator_top"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:background="@drawable/bg_line_separator" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_profile_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <View
-            android:id="@+id/v_profile_separator_top"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:background="@drawable/bg_line_separator" />
+                <TextView
+                    style="@style/TextSmallNormalBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="4sp"
+                    android:textStyle="bold"
+                    tools:text="Durasi" />
 
-        <LinearLayout
-            android:id="@+id/ll_profile_duration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_profile_shipping_duration_value"
+                    style="@style/TextSmallNormalBlack70"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="4sp"
+                    tools:text="1 hari" />
+
+                <ImageButton
+                    android:id="@+id/img_bt_profile_show_more_shipping_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:src="@drawable/ic_keyboard_arrow_down_grey_24dp" />
+
+            </LinearLayout>
 
             <TextView
-                style="@style/TextSmallNormalBlack70"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="4sp"
-                android:textStyle="bold"
-                tools:text="Durasi" />
-
-            <TextView
-                android:id="@+id/tv_profile_shipping_duration_value"
-                style="@style/TextSmallNormalBlack70"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_weight="1"
-                android:lineSpacingExtra="4sp"
-                tools:text="1 hari" />
-
-            <ImageButton
-                android:id="@+id/img_bt_profile_show_more_shipping_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:src="@drawable/ic_keyboard_arrow_down_grey_24dp" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_profile_shipping_duration_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:textColor="#d0021b"
-            android:textSize="12sp"
-            android:textStyle="normal"
-            tools:text="Toko tidak mendukung durasi pengiriman ini" />
-
-        <LinearLayout
-            android:id="@+id/ll_profile_courier"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_profile_shipping_courier"
-                style="@style/TextSmallNormalBlack70"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:lineSpacingExtra="4sp"
-                android:textStyle="bold"
-                tools:text="JNE Express" />
-
-            <ImageButton
-                android:id="@+id/img_bt_profile_show_more_shipping_courier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:src="@drawable/ic_keyboard_arrow_down_grey_24dp" />
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/v_profile_separator_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:background="@drawable/bg_line_separator" />
-
-        <LinearLayout
-            android:id="@+id/ll_profile_default_checkbox_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/cb_profile_set_default"
-                style="@style/TransactionCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
+                android:id="@+id/tv_profile_shipping_duration_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:gravity="center_horizontal"
-                android:textColor="#8a000000"
-                android:textSize="14sp"
+                android:textColor="#d0021b"
+                android:textSize="12sp"
                 android:textStyle="normal"
-                android:text="Jadikan Template Utama" />
+                tools:text="Toko tidak mendukung durasi pengiriman ini" />
+
+            <LinearLayout
+                android:id="@+id/ll_profile_courier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_profile_shipping_courier"
+                    style="@style/TextSmallNormalBlack70"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:lineSpacingExtra="4sp"
+                    android:textStyle="bold"
+                    tools:text="JNE Express" />
+
+                <ImageButton
+                    android:id="@+id/img_bt_profile_show_more_shipping_courier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:src="@drawable/ic_keyboard_arrow_down_grey_24dp" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/v_profile_separator_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:background="@drawable/bg_line_separator" />
+
+            <LinearLayout
+                android:id="@+id/ll_profile_default_checkbox_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_profile_set_default"
+                    style="@style/TransactionCheckbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:text="Jadikan Template Utama"
+                    android:textColor="#8a000000"
+                    android:textSize="14sp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </android.support.v7.widget.CardView>

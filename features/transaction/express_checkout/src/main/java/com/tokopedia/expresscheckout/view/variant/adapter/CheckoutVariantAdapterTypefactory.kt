@@ -38,6 +38,10 @@ class CheckoutVariantAdapterTypefactory(val listener: CheckoutVariantActionListe
         return TypeVariantViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: InsuranceViewModel): Int {
+        return InsuranceViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
             NoteViewHolder.LAYOUT -> NoteViewHolder(view, listener)

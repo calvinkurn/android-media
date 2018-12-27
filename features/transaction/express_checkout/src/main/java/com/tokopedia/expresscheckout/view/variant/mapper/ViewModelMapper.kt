@@ -338,4 +338,10 @@ class ViewModelMapper : DataMapper {
         return false
     }
 
+    override fun convertToInsuranceViewModel(): InsuranceViewModel {
+        var insuranceViewModel = InsuranceViewModel()
+
+        return insuranceViewModel
+    }
+
 }
