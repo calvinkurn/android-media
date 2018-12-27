@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chattemplate.data.source;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.common.chat.ChatService;
 
 import rx.Observable;
 

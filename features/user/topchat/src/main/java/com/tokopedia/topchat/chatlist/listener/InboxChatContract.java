@@ -59,8 +59,6 @@ public class InboxChatContract {
 
         String getKeyword();
 
-        void showEmptyState(String localizedMessage);
-
         void showError(String localizedMessage);
 
         Bundle getArguments();
@@ -70,8 +68,6 @@ public class InboxChatContract {
         void setOptionsMenuFromSelect();
 
         void finishSearch();
-
-        void onGoToTimeMachine(String url);
 
         void removeList(List<Pair> originList, List<DeleteChatViewModel> list);
 

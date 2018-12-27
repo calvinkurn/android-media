@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.data.factory;
 
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.GetReplyMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.ReplyMessageMapper;
@@ -11,6 +10,8 @@ import com.tokopedia.topchat.chatroom.data.mapper.ReplyMessageMapper;
 import com.tokopedia.topchat.chatroom.data.source.CloudReplyActionDataSource;
 import com.tokopedia.topchat.chatroom.data.source.CloudReplyDataSource;
 import com.tokopedia.topchat.chatroom.data.source.CloudGetExistingChatDataSource;
+import com.tokopedia.topchat.common.chat.ChatService;
+
 /**
  * Created by stevenfredian on 8/31/17.
  */

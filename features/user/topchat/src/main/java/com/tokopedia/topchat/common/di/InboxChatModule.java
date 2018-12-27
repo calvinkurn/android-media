@@ -4,25 +4,20 @@ package com.tokopedia.topchat.common.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
@@ -32,7 +27,6 @@ import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
-import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
 import com.tokopedia.topchat.chatlist.data.factory.SearchFactory;
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper;
@@ -43,10 +37,8 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepository;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource;
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase;
-import com.tokopedia.topchat.chatlist.domain.usecase.GetMessageListUseCase;
-import com.tokopedia.topchat.chatlist.domain.usecase.SearchMessageUseCase;
 import com.tokopedia.topchat.chatroom.data.factory.ReplyFactory;
+import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.GetReplyMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.GetUserStatusMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.ReplyMessageMapper;
@@ -59,7 +51,6 @@ import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
-import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
@@ -67,7 +58,7 @@ import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
-import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
+import com.tokopedia.topchat.common.chat.ChatService;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
@@ -78,8 +69,8 @@ import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepositoryImpl;
 import com.tokopedia.topchat.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.topchat.uploadimage.domain.interactor.UploadImageUseCase;
-import com.tokopedia.topchat.chatroom.domain.GetExistingChatUseCase;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -137,51 +128,6 @@ public class InboxChatModule {
         return new TemplateChatFactory(templateChatMapper, chatService);
     }
 
-
-    @InboxChatScope
-    @Provides
-    GetReplyMapper provideGetReplyMapper(SessionHandler sessionHandler) {
-        return new GetReplyMapper(sessionHandler);
-    }
-
-    @InboxChatScope
-    @Provides
-    GetMessageMapper provideGetMessageMapper() {
-        return new GetMessageMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    ReplyMessageMapper provideReplyMessageMapper() {
-        return new ReplyMessageMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    DeleteMessageMapper provideDeleteMessageMapper() {
-        return new DeleteMessageMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    GetExistingChatMapper provideGetExistingMapper(){
-        return new GetExistingChatMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    SearchChatMapper provideSearchChatMapper() {
-        return new SearchChatMapper();
-    }
-
-
-    @InboxChatScope
-    @Provides
-    TemplateChatMapper provideTemplateChatMapper() {
-        return new TemplateChatMapper();
-    }
-
-
     @InboxChatScope
     @Provides
     MessageRepository provideMessageRepository(MessageFactory messageFactory,
@@ -208,71 +154,12 @@ public class InboxChatModule {
         return new TemplateRepositoryImpl(templateChatFactory);
     }
 
-    @InboxChatScope
-    @Provides
-    GetMessageListUseCase provideGetMessageListUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutor,
-                                                       MessageRepository messageRepository) {
-        return new GetMessageListUseCase(threadExecutor, postExecutor, messageRepository);
-    }
-
-
-    @InboxChatScope
-    @Provides
-    GetReplyListUseCase provideGetReplyListUseCase(ThreadExecutor threadExecutor,
-                                                   PostExecutionThread postExecutor,
-                                                   ReplyRepository replyRepository) {
-        return new GetReplyListUseCase(threadExecutor, postExecutor, replyRepository);
-    }
-
-
-    @InboxChatScope
-    @Provides
-    ReplyMessageUseCase provideReplyMessageUseCase(ThreadExecutor threadExecutor,
-                                                   PostExecutionThread postExecutor,
-                                                   ReplyRepository replyRepository) {
-        return new ReplyMessageUseCase(threadExecutor, postExecutor, replyRepository);
-    }
-
-    @InboxChatScope
-    @Provides
-    SearchMessageUseCase provideSearchChatUseCase(ThreadExecutor threadExecutor,
-                                                  PostExecutionThread postExecutor,
-                                                  SearchRepository searchRepository) {
-        return new SearchMessageUseCase(threadExecutor, postExecutor, searchRepository);
-    }
-
-    @InboxChatScope
-    @Provides
-    DeleteMessageListUseCase provideDeleteChatUseCase(ThreadExecutor threadExecutor,
-                                                      PostExecutionThread postExecutor,
-                                                      MessageRepository messageRepository) {
-        return new DeleteMessageListUseCase(threadExecutor, postExecutor, messageRepository);
-    }
-
-    @InboxChatScope
-    @Provides
-    GetTemplateUseCase provideGetTemplateUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutor,
-                                                 TemplateRepository templateRepository) {
-        return new GetTemplateUseCase(threadExecutor, postExecutor, templateRepository);
-    }
-
-    @InboxChatScope
-    @Provides
-    GetExistingChatUseCase provideGetExistingChat(ThreadExecutor threadExecutor,
-                                                  PostExecutionThread postExecutor,
-                                                  ReplyRepository replyRepository) {
-        return new GetExistingChatUseCase(threadExecutor, postExecutor, replyRepository);
-    }
-
     //Add ShopInfo provides.. Change it to use component after shop_common Component & module are
     // Implemented
     @InboxChatScope
     @Provides
-    public com.tokopedia.abstraction.common.data.model.session.UserSession
-            providesUserSessionAbstraction(@ApplicationContext Context context) {
-        return ((AbstractionRouter)context).getSession();
+    public UserSessionInterface providesUserSessionAbstraction(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @InboxChatScope
@@ -316,7 +203,7 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository){
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
         return new ToggleFavouriteShopUseCase(shopCommonRepository);
     }
 
@@ -350,52 +237,6 @@ public class InboxChatModule {
     SendMessageSource provideSendMessageSource(ChatService chatService,
                                                SendMessageMapper sendMessageMapper) {
         return new SendMessageSource(chatService, sendMessageMapper);
-    }
-
-    @InboxChatScope
-    @Provides
-    SendMessageUseCase provideSendMessageUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutor,
-                                                 MessageRepository messageRepository) {
-        return new SendMessageUseCase(
-                threadExecutor,
-                postExecutor,
-                messageRepository
-        );
-    }
-
-    @InboxChatScope
-    @Provides
-    AttachImageUseCase provideAttachImageUsecase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutor,
-                                                 GenerateHostUseCase generateHostUseCase,
-                                                 UploadImageUseCase uploadImageUseCase,
-                                                 ReplyMessageUseCase replyMessageUseCase) {
-        return new AttachImageUseCase(threadExecutor, postExecutor, generateHostUseCase, uploadImageUseCase, replyMessageUseCase);
-    }
-
-    @InboxChatScope
-    @Provides
-    UploadImageUseCase
-    provideUploadImageUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              ImageUploadRepository imageUploadRepository) {
-        return new UploadImageUseCase(
-                threadExecutor,
-                postExecutionThread,
-                imageUploadRepository);
-    }
-
-    @InboxChatScope
-    @Provides
-    GenerateHostUseCase
-    provideGenerateHostUseCase(ThreadExecutor threadExecutor,
-                               PostExecutionThread postExecutionThread,
-                               ImageUploadRepository imageUploadRepository) {
-        return new GenerateHostUseCase(
-                threadExecutor,
-                postExecutionThread,
-                imageUploadRepository);
     }
 
     @InboxChatScope
@@ -495,7 +336,7 @@ public class InboxChatModule {
     @RetrofitJsDomainQualifier
     @Provides
     Retrofit provideChatRetrofitJsDomain(OkHttpClient okHttpClient,
-                                 Retrofit.Builder retrofitBuilder) {
+                                         Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TopChatUrl.TOPCHAT_JS_API)
                 .client(okHttpClient)
                 .build();
@@ -505,7 +346,7 @@ public class InboxChatModule {
     @RetrofitWsDomainQualifier
     @Provides
     Retrofit provideWsRetrofitDomain(OkHttpClient okHttpClient,
-                                       Retrofit.Builder retrofitBuilder) {
+                                     Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
                 .client(okHttpClient)
                 .build();
@@ -515,7 +356,7 @@ public class InboxChatModule {
     @RetrofitTomeDomainQualifier
     @Provides
     Retrofit provideTomeRetrofitDomain(OkHttpClient okHttpClient,
-                                     Retrofit.Builder retrofitBuilder) {
+                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN)
                 .client(okHttpClient)
                 .build();
@@ -541,13 +382,13 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    GetUserStatusMapper provideGetUserStatusMapper(){
+    GetUserStatusMapper provideGetUserStatusMapper() {
         return new GetUserStatusMapper();
     }
 
     @InboxChatScope
     @Provides
-    GetUserStatusUseCase provideUserStatusUseCase(TopChatApi topChatApi, GetUserStatusMapper mapper){
-        return new GetUserStatusUseCase(topChatApi,mapper);
+    GetUserStatusUseCase provideUserStatusUseCase(TopChatApi topChatApi, GetUserStatusMapper mapper) {
+        return new GetUserStatusUseCase(topChatApi, mapper);
     }
 }

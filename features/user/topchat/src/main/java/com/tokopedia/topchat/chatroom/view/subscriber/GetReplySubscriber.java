@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
@@ -30,7 +30,7 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
     @Override
     public void onError(Throwable e) {
         view.setViewEnabled(true);
-        view.showError(ErrorHandler.getErrorMessage(e));
+        view.showError(ErrorHandler.getErrorMessage(view.getContext(), e));
         view.hideMainLoading();
         presenter.finishRequest();
     }

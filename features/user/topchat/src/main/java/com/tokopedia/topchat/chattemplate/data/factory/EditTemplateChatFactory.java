@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chattemplate.data.factory;
 
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.source.CloudEditTemplateChatDataSource;
+import com.tokopedia.topchat.common.chat.ChatService;
 
 /**
  * Created by stevenfredian on 11/27/17.

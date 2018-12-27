@@ -31,6 +31,8 @@ import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class InboxChatActivity extends BaseSimpleActivity
         implements InboxMessageConstant, ChatNotifInterface,
         IndicatorAdapter.OnIndicatorClickListener {
@@ -42,6 +44,9 @@ public class InboxChatActivity extends BaseSimpleActivity
     IndicatorAdapter indicatorAdapter;
     RecyclerView indicator;
     View indicatorLayout;
+
+    @Inject
+    TopChatAnalytics analytics;
 
     @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
     public static Intent getCallingIntentTopchatWithoutId(Context context, Bundle extras) {
@@ -179,9 +184,7 @@ public class InboxChatActivity extends BaseSimpleActivity
                 initTopChatFragment();
                 break;
             case POSITION_GROUP_CHAT:
-                AbstractionRouter abstractionRouter = (AbstractionRouter) getApplicationContext();
-                abstractionRouter.getAnalyticTracker().sendEventTracking(
-                        TopChatAnalytics.eventClickInboxChannel().getEvent());
+                analytics.eventClickInboxChannel();
                 initGroupChatFragment();
                 break;
             default:

@@ -15,6 +15,8 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -23,6 +25,10 @@ import rx.functions.Func1;
  */
 
 public class TemplateChatMapper implements Func1<Response<TkpdResponse>, GetTemplateViewModel> {
+
+    @Inject
+    public TemplateChatMapper() {
+    }
 
     @Override
     public GetTemplateViewModel call(Response<TkpdResponse> response) {

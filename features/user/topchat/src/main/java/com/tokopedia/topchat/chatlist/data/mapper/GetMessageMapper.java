@@ -15,6 +15,8 @@ import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -26,6 +28,10 @@ public class GetMessageMapper implements Func1<Response<TkpdResponse>, InboxChat
 
     private static final String ERROR = "error";
     private static final String ERROR_DESCRIPTION = "error_description";
+
+    @Inject
+    public GetMessageMapper() {
+    }
 
     @Override
     public InboxChatViewModel call(Response<TkpdResponse> response) {

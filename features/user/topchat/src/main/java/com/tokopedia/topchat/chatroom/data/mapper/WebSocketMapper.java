@@ -55,14 +55,10 @@ public class WebSocketMapper {
     public static final String TYPE_CHAT_BALLOON_ACTION = "9";
     public static final String TYPE_QUICK_REPLY_SEND = "10";
 
-
-    private SessionHandler sessionHandler;
-
     @Inject
-    public WebSocketMapper(SessionHandler sessionHandler) {
-        this.sessionHandler = sessionHandler;
-    }
+    public WebSocketMapper() {
 
+    }
 
     public BaseChatViewModel map(String json) {
         try {

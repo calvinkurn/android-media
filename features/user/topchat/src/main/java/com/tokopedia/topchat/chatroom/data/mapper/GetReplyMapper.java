@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.Attachment;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.AttachmentInvoice;
@@ -23,10 +22,13 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAt
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper.TYPE_CHAT_RATING;
 
@@ -42,10 +44,11 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData, ChatRoomVie
     private static final String USER_ROLE = "User";
     private static final String TOKOPEDIA_ADMIN_ROLE = "Tokopedia Administrator";
     private static final String TOKOPEDIA = "Tokopedia";
-    private final SessionHandler sessionHandler;
+    private final UserSessionInterface userSession;
 
-    public GetReplyMapper(SessionHandler sessionHandler) {
-        this.sessionHandler = sessionHandler;
+    @Inject
+    public GetReplyMapper(UserSessionInterface userSession) {
+        this.userSession = userSession;
     }
 
     @Override
@@ -288,7 +291,7 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData, ChatRoomVie
         for (Contact contact : contacts) {
 
             if (contact.getUserId() != 0
-                    && !String.valueOf(contact.getUserId()).equals(sessionHandler.getLoginID())
+                    && !String.valueOf(contact.getUserId()).equals(userSession.getUserId())
                     && contact.isInterlocutor()) {
                 if (!TextUtils.isEmpty(contact.getAttributes().getName())) {
                     chatRoomViewModel.setNameHeader(contact.getAttributes().getName());

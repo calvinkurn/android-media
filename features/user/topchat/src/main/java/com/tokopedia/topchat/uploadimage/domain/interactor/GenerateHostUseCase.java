@@ -1,11 +1,11 @@
 package com.tokopedia.topchat.uploadimage.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.topchat.uploadimage.domain.model.GenerateHostDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -18,10 +18,10 @@ public class GenerateHostUseCase extends UseCase<GenerateHostDomain> {
     private static final String PARAM_NEW_ADD = "new_add";
     private ImageUploadRepository imageUploadRepository;
 
-    public GenerateHostUseCase(ThreadExecutor threadExecutor,
-                               PostExecutionThread postExecutionThread,
+    @Inject
+    public GenerateHostUseCase(
                                ImageUploadRepository imageUploadRepository) {
-        super(threadExecutor, postExecutionThread);
+        super();
         this.imageUploadRepository = imageUploadRepository;
     }
 

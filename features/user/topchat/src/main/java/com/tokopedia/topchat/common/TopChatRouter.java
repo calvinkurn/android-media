@@ -30,4 +30,9 @@ public interface TopChatRouter {
 
     Fragment getChannelFragment(Bundle bundle);
 
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+
 }

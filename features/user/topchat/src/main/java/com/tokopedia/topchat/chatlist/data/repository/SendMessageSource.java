@@ -6,6 +6,8 @@ import com.tokopedia.topchat.common.chat.ChatService;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -16,6 +18,7 @@ public class SendMessageSource {
     private ChatService chatService;
     private SendMessageMapper sendMessageMapper;
 
+    @Inject
     public SendMessageSource(ChatService chatService, SendMessageMapper sendMessageMapper) {
         this.chatService = chatService;
         this.sendMessageMapper = sendMessageMapper;
