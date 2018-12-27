@@ -8,39 +8,37 @@ import android.widget.TextView;
 
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
 public class DigitalOperatorChooserView extends BaseDigitalChooserView<Operator> {
 
-    @BindView(R2.id.tv_label_chooser)
-    TextView tvLabel;
-    @BindView(R2.id.tv_operator_product_name)
-    TextView tvNameOperator;
-    @BindView(R2.id.tv_error_chooser)
-    TextView tvErrorOperator;
-    @BindView(R2.id.layout_product)
-    RelativeLayout layoutProduct;
+    private TextView tvLabel;
+    private TextView tvNameOperator;
+    private TextView tvErrorOperator;
+    private RelativeLayout layoutProduct;
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalOperatorChooserView(Context context) {
         super(context);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalOperatorChooserView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalOperatorChooserView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onCreateView() {
+        tvLabel = findViewById(R.id.tv_label_chooser);
+        tvNameOperator = findViewById(R.id.tv_operator_product_name);
+        tvErrorOperator = findViewById(R.id.tv_error_chooser);
+        layoutProduct = findViewById(R.id.layout_product);
     }
 
     @Override

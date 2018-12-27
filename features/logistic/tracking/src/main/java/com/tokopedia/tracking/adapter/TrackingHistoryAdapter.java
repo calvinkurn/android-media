@@ -2,6 +2,7 @@ package com.tokopedia.tracking.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -31,15 +32,16 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         this.dateUtil = dateUtil;
     }
 
+    @NonNull
     @Override
-    public TrackingHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TrackingHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.adapter_trailing_bullet, parent, false);
         return new TrackingHistoryViewHolder(parent.getContext(), view);
     }
 
     @Override
-    public void onBindViewHolder(TrackingHistoryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TrackingHistoryViewHolder holder, int position) {
 
         holder.title.setText(dateUtil.getFormattedDate(trackingHistoryData.get(position).getTime()));
         setTitleColor(holder, position);
@@ -82,8 +84,6 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private TextView description;
 
-        private TextView time;
-
         private ImageView dot;
 
         private View dotTrail;
@@ -98,8 +98,6 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             title = itemView.findViewById(R.id.title);
 
             description = itemView.findViewById(R.id.description);
-
-            time = itemView.findViewById(R.id.date);
 
             dot = itemView.findViewById(R.id.dot_image);
 

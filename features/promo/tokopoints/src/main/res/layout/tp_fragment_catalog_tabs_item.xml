@@ -18,14 +18,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_catalog_item"
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/tp_item_coupon"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/tp_margin_bottom_membership_and_egg"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_catalog_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/tp_margin_bottom_membership_and_egg"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/tp_item_coupon" />
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
     </LinearLayout>
 
     <include layout="@layout/layout_tp_network_error" />

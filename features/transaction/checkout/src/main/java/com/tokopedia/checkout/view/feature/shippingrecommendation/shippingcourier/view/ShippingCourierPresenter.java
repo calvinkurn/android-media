@@ -3,8 +3,6 @@ package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcouri
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
 import java.util.List;
