@@ -4,6 +4,8 @@ package com.tokopedia.topchat.common.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
@@ -49,11 +51,8 @@ import com.tokopedia.topchat.chatroom.data.network.TopChatApi;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepositoryImpl;
-import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
-import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
-import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
@@ -67,8 +66,6 @@ import com.tokopedia.topchat.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.topchat.uploadimage.data.mapper.UploadImageMapper;
 import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepositoryImpl;
-import com.tokopedia.topchat.uploadimage.domain.interactor.GenerateHostUseCase;
-import com.tokopedia.topchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -91,6 +88,20 @@ public class InboxChatModule {
     private static final int NET_WRITE_TIMEOUT = 60;
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 1;
+
+    @InboxChatScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(
+            @ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @InboxChatScope
+    @Provides
+    AnalyticTracker provideAnalyticTracker(
+            @ApplicationContext Context context) {
+        return ((AbstractionRouter) context).getAnalyticTracker();
+    }
 
     @InboxChatScope
     @Provides

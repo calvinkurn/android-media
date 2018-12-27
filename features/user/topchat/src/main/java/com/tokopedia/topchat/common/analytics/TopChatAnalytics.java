@@ -3,6 +3,8 @@ package com.tokopedia.topchat.common.analytics;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
+import javax.inject.Inject;
+
 /**
  * Created by stevenfredian on 11/6/17.
  */
@@ -12,6 +14,7 @@ public class TopChatAnalytics {
 
     private final AnalyticTracker analyticTracker;
 
+    @Inject
     public TopChatAnalytics(AnalyticTracker analyticTracker) {
         this.analyticTracker = analyticTracker;
     }
