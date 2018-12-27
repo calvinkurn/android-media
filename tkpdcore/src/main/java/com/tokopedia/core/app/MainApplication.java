@@ -412,5 +412,10 @@ public abstract class MainApplication extends MainRouterApplication{
         return SellerRouter.getActivitySellingTransactionList(mContext);
     }
 
+    @Override
+    public Intent getInboxTalkCallingIntent(Context mContext){
+        return null;
+    }
+
 
 }

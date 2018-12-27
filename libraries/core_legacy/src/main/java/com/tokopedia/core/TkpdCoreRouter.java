@@ -90,7 +90,7 @@ public interface TkpdCoreRouter {
     }
 
     static Intent getInboxTalkActivityIntentWrapper(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getInboxTalkActivityIntent(mContext);
+        return RouterUtils.getRouterFromContext(mContext).getInboxTalkCallingIntent(mContext);
     }
 
     static Intent getSellerHomeActivity(Context context) {
@@ -105,7 +105,7 @@ public interface TkpdCoreRouter {
 
     Intent getSellerHomeActivityReal(Context context);
 
-    Intent getInboxTalkActivityIntent(Context mContext);
+    Intent getInboxTalkCallingIntent(Context mContext);
 
     IAppNotificationReceiver getAppNotificationReceiver();
 
