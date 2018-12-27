@@ -5,12 +5,12 @@ import android.text.TextUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendationData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationData;
+import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
