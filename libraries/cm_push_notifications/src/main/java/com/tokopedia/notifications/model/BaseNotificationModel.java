@@ -36,6 +36,8 @@ public class BaseNotificationModel {
 
     private List<Carousal> carousalList = new ArrayList<>();
 
+    private List<Grid> gridList = new ArrayList<>();
+
     private int carousalIndex = 0;
     private boolean vibration = true;
     private boolean sound = true;
@@ -200,5 +202,13 @@ public class BaseNotificationModel {
 
     public void setUpdateExisting(boolean updateExisting) {
         this.updateExisting = updateExisting;
+    }
+
+    public List<Grid> getGridList() {
+        return gridList;
+    }
+
+    public void setGridList(List<Grid> gridList) {
+        this.gridList = gridList;
     }
 }

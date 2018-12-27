@@ -111,7 +111,7 @@ public abstract class BaseNotification {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createNotificationChannel() {
+    public void createNotificationChannel() {
         if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(baseNotificationModel.getChannelName(),
@@ -157,7 +157,7 @@ public abstract class BaseNotification {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createChannelGroup() {
+    public void createChannelGroup() {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         NotificationChannelGroup notificationChannelGroup = new NotificationChannelGroup(CMConstant.NotificationGroup.CHANNEL_GROUP_ID,
@@ -165,7 +165,7 @@ public abstract class BaseNotification {
         mNotificationManager.createNotificationChannelGroup(notificationChannelGroup);
     }
 
-    private void setNotificationSound(NotificationCompat.Builder builder) {
+    public void setNotificationSound(NotificationCompat.Builder builder) {
         if (baseNotificationModel.getSoundFileName() != null && !baseNotificationModel.getSoundFileName().isEmpty()) {
             Uri soundUri = Uri.parse("android.resource://" + context.getPackageName() + "/" +
                     "/raw/" + baseNotificationModel.getSoundFileName());
