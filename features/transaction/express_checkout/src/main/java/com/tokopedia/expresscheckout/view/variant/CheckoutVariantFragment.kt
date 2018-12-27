@@ -56,6 +56,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return view
     }
 
+    override fun showLoading() {
+        super.showLoading()
+    }
+
+    override fun hideLoading() {
+        super.hideLoading()
+    }
+
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
     }
@@ -248,7 +256,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun loadData(page: Int) {
         if (!isDataLoaded) {
-            presenter.loadData()
+            presenter.loadExpressCheckoutData()
         }
     }
 

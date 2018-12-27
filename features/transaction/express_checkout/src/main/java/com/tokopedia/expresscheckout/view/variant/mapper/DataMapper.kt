@@ -2,6 +2,10 @@ package com.tokopedia.expresscheckout.view.variant.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutFormData
+import com.tokopedia.expresscheckout.domain.model.AtcExpressCheckoutModel
+import com.tokopedia.expresscheckout.domain.model.ChildModel
+import com.tokopedia.expresscheckout.domain.model.OptionModel
+import com.tokopedia.expresscheckout.domain.model.VariantModel
 import com.tokopedia.transactiondata.entity.response.variantdata.Option
 import com.tokopedia.transactiondata.entity.response.variantdata.Variant
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
@@ -13,24 +17,22 @@ import com.tokopedia.transactiondata.entity.response.variantdata.Child
 
 interface DataMapper {
 
-    fun convertToViewModels(expressCheckoutFormData: ExpressCheckoutFormData): ArrayList<Visitable<*>>
+    fun convertToViewModels(atcExpressCheckoutModel: AtcExpressCheckoutModel): ArrayList<Visitable<*>>
 
-    fun convertToNoteViewModel(expressCheckoutFormData: ExpressCheckoutFormData): NoteViewModel
+    fun convertToNoteViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): NoteViewModel
 
-    fun convertToProductViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
-                                  typeVariantViewModels: ArrayList<TypeVariantViewModel>):
-            ProductViewModel
+    fun convertToProductViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel,
+                                  typeVariantViewModels: ArrayList<TypeVariantViewModel>): ProductViewModel
 
-    fun convertToProfileViewModel(expressCheckoutFormData: ExpressCheckoutFormData): ProfileViewModel
+    fun convertToProfileViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): ProfileViewModel
 
-    fun convertToQuantityViewModel(expressCheckoutFormData: ExpressCheckoutFormData,
-                                   productViewModel: ProductViewModel):
-            QuantityViewModel
+    fun convertToQuantityViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel,
+                                   productViewModel: ProductViewModel): QuantityViewModel
 
-    fun convertToSummaryViewModel(expressCheckoutFormData: ExpressCheckoutFormData): SummaryViewModel
+    fun convertToSummaryViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): SummaryViewModel
 
-    fun convertToTypeVariantViewModel(variant: Variant, children: ArrayList<Child>): TypeVariantViewModel
+    fun convertToTypeVariantViewModel(variantModel: VariantModel, childrenModel: ArrayList<ChildModel>): TypeVariantViewModel
 
-    fun convertToOptionVariantViewModel(option: Option, variantId: Int, children: ArrayList<Child>): OptionVariantViewModel
+    fun convertToOptionVariantViewModel(optionModel: OptionModel, variantId: Int, childrenModel: ArrayList<ChildModel>): OptionVariantViewModel
 
 }

@@ -14,8 +14,8 @@ import com.tokopedia.transactiondata.entity.response.variantdata.Variant
 
 class DomainModelMapper : DataMapper {
 
-    override fun convertToDomainModel(expressCheckoutResponse: ExpressCheckoutResponse): ResponseModel {
-        var responseModel = ResponseModel()
+    override fun convertToDomainModel(expressCheckoutResponse: ExpressCheckoutResponse): AtcExpressCheckoutModel {
+        var responseModel = AtcExpressCheckoutModel()
         responseModel.status = expressCheckoutResponse.status
         responseModel.headerModel = getHeaderModel(expressCheckoutResponse)
         responseModel.dataModel = getDataModel(expressCheckoutResponse)
@@ -348,7 +348,7 @@ class DomainModelMapper : DataMapper {
     private fun getProductVariantDataModel(productVariantData: ProductVariantData): ProductVariantDataModel {
         var productVariantDataModel = ProductVariantDataModel()
         productVariantDataModel.parentId = productVariantData.parentId
-        productVariantDataModel.defaultShild = productVariantData.defaultChild
+        productVariantDataModel.defaultChild = productVariantData.defaultChild
         productVariantDataModel.stock = productVariantData.stock
         productVariantDataModel.isEnabled = productVariantData.isEnabled
 

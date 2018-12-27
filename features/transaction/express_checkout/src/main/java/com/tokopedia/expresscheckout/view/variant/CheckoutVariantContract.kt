@@ -12,6 +12,9 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 interface CheckoutVariantContract {
 
     interface View : CustomerView {
+        fun showLoading()
+
+        fun hideLoading()
 
         fun showData(arrayList: ArrayList<Visitable<*>>)
 
@@ -24,7 +27,9 @@ interface CheckoutVariantContract {
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun loadData()
+        fun loadExpressCheckoutData()
+
+        fun checkout()
 
     }
 
