@@ -75,6 +75,8 @@ class VideoDescriptionLayout : BaseCustomView {
         else
             description
 
+        title_description.setOnClickListener(null)
+
         if (MethodChecker.fromHtml(tv_description.getText().toString()).length > MAX_CHAR) {
             val subDescription = MethodChecker.fromHtml(description).toString().substring(0, MAX_CHAR)
             tv_description.setText(MethodChecker.fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "..."))
@@ -121,7 +123,7 @@ class VideoDescriptionLayout : BaseCustomView {
                 intent.imgUrl = data.productImages[0].imageSrc300
             }
 
-            listener?.onDescriptionClicked(intent, tv_description, product_video_horizontal_scroll)
+            listener?.onDescriptionClicked(intent)
             UnifyTracking.eventPDPExpandDescription(
                     this@VideoDescriptionLayout.context)
         }

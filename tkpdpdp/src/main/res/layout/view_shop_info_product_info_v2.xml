@@ -61,12 +61,15 @@
 
                     <com.tokopedia.gm.resource.GMImageView
                         android:id="@+id/iv_gold_shop"
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
+                        tools:visibility="visible"
                         android:visibility="gone"
                         tools:ignore="ContentDescription" />
 
                     <ImageView
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:id="@id/iv_official"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
@@ -76,6 +79,7 @@
                         tools:ignore="ContentDescription" />
 
                     <ImageView
+                        android:layout_marginLeft="@dimen/dp_2"
                         android:id="@id/iv_lucky"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
@@ -96,7 +100,7 @@
                         android:maxLines="1"
                         android:text="Shop Name"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/font_large"
+                        android:textSize="@dimen/fonts"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
 
@@ -106,21 +110,45 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <LinearLayout
-                        android:id="@id/l_medal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:layout_gravity="start"
-                        android:gravity="start"
-                        android:orientation="horizontal" />
-                    <TextView
-                        android:id="@+id/last_online_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black_38"
-                        android:textSize="@dimen/font_small"
-                        tools:text="15 Menit" />
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_marginLeft="@dimen/dp_2"
+                            android:id="@+id/iv_shop_location"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="@dimen/dp_14"
+                            android:layout_height="@dimen/dp_14"
+                            app:srcCompat="@drawable/ic_icon_location_grey_pdp"
+                            tools:ignore="ContentDescription" />
+                        <TextView
+                            android:id="@+id/tv_shop_location"
+                            android:layout_marginLeft="@dimen/dp_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/fontvs"
+                            tools:text="Kota Depok" />
+                        <TextView
+                            android:layout_marginLeft="@dimen/dp_4"
+                            android:id="@+id/last_online_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black_38"
+                            android:textSize="@dimen/fontvs"
+                            tools:text="15 Menit" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/l_medal"
+                    tools:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:orientation="horizontal" />
             </LinearLayout>
         </LinearLayout>
 
@@ -138,7 +166,7 @@
             android:id="@+id/send_msg_button"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
             android:gravity="center"
@@ -154,13 +182,13 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:orientation="horizontal"
-            android:padding="@dimen/dp_10">
+            android:orientation="horizontal">
 
             <TextView
+                android:padding="@dimen/dp_10"
                 android:id="@id/favorite_tv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_add_black_24dp"
                 android:gravity="center"
                 android:textSize="@dimen/text_size_medium"

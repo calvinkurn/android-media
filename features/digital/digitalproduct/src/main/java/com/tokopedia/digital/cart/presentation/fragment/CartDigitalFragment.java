@@ -64,15 +64,11 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.RuntimePermissions;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
  */
-@RuntimePermissions
+
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         CheckoutHolderView.IAction,
         InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener,
@@ -172,21 +168,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
-    }
-
-    @NeedsPermission({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
-    void requestNOtpWithPermission() {
-        presenter.callPermissionCheckSuccess();
-    }
-
-    @OnPermissionDenied({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
-    void requestNOtpPermissionDenied() {
-        presenter.callPermissionCheckFail();
-    }
-
-    @OnNeverAskAgain({Manifest.permission.WRITE_CALL_LOG, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG})
-    void requestNOtpPermissionNeverAsk() {
-        presenter.callPermissionCheckFail();
     }
 
     @Override
@@ -682,10 +663,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         }
     }
 
-    public void checkCallPermissionForNOTP() {
-        CartDigitalFragmentPermissionsDispatcher.requestNOtpWithPermissionWithCheck(this);
-    }
-
     @Override
     public Context getApplicationContext() {
         return getActivity().getApplicationContext();
@@ -777,12 +754,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void trackingCancelledVoucher() {
         UnifyTracking.eventClickCancelVoucher(getActivity(),"", "");
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        CartDigitalFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override

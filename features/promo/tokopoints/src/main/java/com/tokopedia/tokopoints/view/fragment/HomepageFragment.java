@@ -444,7 +444,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onError(String error) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        if (mContainerMain != null) {
+            mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        }
     }
 
     @Override
@@ -456,7 +458,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onErrorPromos(String error) {
-        homepagePagerAdapter.setRefreshing(false);
+        if (homepagePagerAdapter != null) {
+            homepagePagerAdapter.setRefreshing(false);
+        }
     }
 
     @Override

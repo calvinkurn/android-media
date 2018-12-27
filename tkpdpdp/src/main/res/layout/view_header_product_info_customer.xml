@@ -80,7 +80,7 @@
 
     <TextView
         android:paddingTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_120"
+        android:layout_marginRight="@dimen/dp_96"
         android:layout_marginLeft="@dimen/dp_16"
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
