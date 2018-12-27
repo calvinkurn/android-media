@@ -50,7 +50,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         isFavActivity = isFav;
         if (!isFav)
             ((EventsHomeActivity) context).eventHomePresenter.setupCallback(this);
-        redColor = context.getResources().getColor(R.color.red_1);
+        redColor = context.getResources().getColor(R.color.red_a700);
         blackColor = context.getResources().getColor(R.color.black_54);
     }
 

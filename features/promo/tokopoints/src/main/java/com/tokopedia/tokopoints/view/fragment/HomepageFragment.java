@@ -90,6 +90,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private View dynamicLinksContainer;
     private LinearLayout containerEgg;
     private onAppBarCollapseListener appBarCollapseListener;
+    private HomepagePagerAdapter homepagePagerAdapter;
 
     public static HomepageFragment newInstance() {
         return new HomepageFragment();
@@ -137,7 +138,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_up);
+                    R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
             bottomViewMembership.setVisibility(View.VISIBLE);
         }
@@ -149,7 +150,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_large));
             Animation slideDown = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
-                    R.animator.tp_bottom_down);
+                    R.anim.tp_bottom_down);
             bottomViewMembership.startAnimation(slideDown);
             bottomViewMembership.setVisibility(View.GONE);
         }
@@ -363,14 +364,22 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     public void onSuccessTokenDetail(LuckyEggEntity tokenDetail) {
         if (tokenDetail != null) {
             try {
+                if (tokenDetail.isOffFlag()) {
+                    return;
+                }
+
                 containerEgg.setVisibility(View.VISIBLE);
                 TextView textCount = getView().findViewById(R.id.text_token_count);
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
                 ImageView imgToken = getView().findViewById(R.id.img_token);
                 textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
-                textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
-                ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
+                textMessage.setText(tokenDetail.getFloating().getTokenClaimCustomText());
+                if(tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl().endsWith(".gif")){
+                    ImageHandler.loadGifFromUrl(imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl(), R.color.green_50);
+                }else{
+                    ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
+                }
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
@@ -435,7 +444,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onError(String error) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        if (mContainerMain != null) {
+            mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        }
     }
 
     @Override
@@ -447,7 +458,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onErrorPromos(String error) {
-
+        if (homepagePagerAdapter != null) {
+            homepagePagerAdapter.setRefreshing(false);
+        }
     }
 
     @Override
@@ -626,7 +639,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     private void initPromoPager(List<CatalogsValueEntity> catalogs, List<CouponValueEntity> coupons, Map<String, String> emptyMessages) {
-        HomepagePagerAdapter homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
+        homepagePagerAdapter = new HomepagePagerAdapter(getActivityContext(), mPresenter, catalogs, coupons);
+        homepagePagerAdapter.setRefreshing(false);
         homepagePagerAdapter.setEmptyMessages(emptyMessages);
         mPagerPromos.setAdapter(homepagePagerAdapter);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
@@ -642,9 +656,11 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             public void onPageSelected(int position) {
                 if (position == 0) {
                     appBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
+                    mPresenter.setPagerSelectedItem(position);
                 } else {
                     appBarHeader.removeOnOffsetChangedListener(offsetChangedListenerBottomView);
                     slideDown();
+                    mPresenter.setPagerSelectedItem(position);
                 }
             }
 
@@ -653,6 +669,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             }
         });
+        mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
     }
 
     private void decorateDialog(AlertDialog dialog) {

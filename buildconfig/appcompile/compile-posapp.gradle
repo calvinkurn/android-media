@@ -3,6 +3,7 @@ include "features:common:nps"
 
 include "features:content:profile"
 
+include "features:digital:common_digital"
 include "features:digital:flight_no_op"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"

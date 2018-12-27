@@ -1,6 +1,8 @@
 package com.tokopedia.talk.common.di
 
 import android.content.Context
+import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.talk.common.data.TalkApi
@@ -26,5 +28,9 @@ interface TalkComponent {
     fun getTalkDetailsApi(): DetailTalkApi
 
     fun retrofitBuilder(): Retrofit.Builder
+
+    fun provideAbstractionRouter(): AbstractionRouter
+
+    fun analyticTracker(): AnalyticTracker
 
 }

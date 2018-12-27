@@ -46,7 +46,7 @@ public class BannerPagerAdapter extends PagerAdapter {
             bannerImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventBannerClickCategory(categoryId,bannerList.get(position).getUrl());
+                    UnifyTracking.eventBannerClickCategory(view.getContext(), categoryId,bannerList.get(position).getUrl());
                     switch ((DeepLinkChecker.getDeepLinkType(bannerList.get(position).getUrl()))) {
                         case DeepLinkChecker.BROWSE:
                             DeepLinkChecker.openBrowse(bannerList.get(position).getUrl(), context);

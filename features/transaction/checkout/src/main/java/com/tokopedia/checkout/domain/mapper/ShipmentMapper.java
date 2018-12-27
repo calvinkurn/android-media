@@ -66,13 +66,18 @@ public class ShipmentMapper implements IShipmentMapper {
 
         if (shipmentAddressFormDataResponse.getAutoApply() != null) {
             AutoApplyData autoApplyData = new AutoApplyData();
-            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoApply().getCode());
+            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoapplyV2().getCode());
             autoApplyData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoApply().getDiscountAmount());
-            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoApply().getIsCoupon());
-            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoApply().getMessageSuccess());
-            autoApplyData.setPromoId(shipmentAddressFormDataResponse.getAutoApply().getPromoId());
+            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoapplyV2().getIsCoupon());
+            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getText());
+            int promoId = 0;
+            if(!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())){
+                Integer.valueOf(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId());
+            }
+            autoApplyData.setPromoId(promoId);
             autoApplyData.setSuccess(shipmentAddressFormDataResponse.getAutoApply().isSuccess());
-            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoApply().getTitleDescription());
+            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoapplyV2().getTitleDescription());
+            autoApplyData.setState(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getState());
             dataResult.setAutoApplyData(autoApplyData);
         }
 
@@ -148,6 +153,11 @@ public class ShipmentMapper implements IShipmentMapper {
                             shopResult.setGold(groupShop.getShop().getIsGold() == 1);
                             shopResult.setGoldBadge(groupShop.getShop().isGoldBadge());
                             shopResult.setOfficial(groupShop.getShop().getIsOfficial() == 1);
+                            if (groupShop.getShop().getIsOfficial() == 1) {
+                                shopResult.setShopBadge(groupShop.getShop().getOfficialStore().getOsLogoUrl());
+                            } else if (groupShop.getShop().getIsGold() == 1) {
+                                shopResult.setShopBadge(groupShop.getShop().getGoldMerchant().getGoldMerchantLogoUrl());
+                            }
                             shopResult.setFreeReturns(groupShop.getShop().getIsFreeReturns() == 1);
                             shopResult.setAddressId(groupShop.getShop().getAddressId());
                             shopResult.setPostalCode(groupShop.getShop().getPostalCode());
@@ -203,7 +213,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 AnalyticsProductCheckoutData analyticsProductCheckoutData = new AnalyticsProductCheckoutData();
                                 analyticsProductCheckoutData.setProductId(String.valueOf(product.getProductId()));
 
-                                if(product.getProductTrackerData() != null) {
+                                if (product.getProductTrackerData() != null) {
                                     analyticsProductCheckoutData.setProductAttribution(product.getProductTrackerData().getAttribution());
                                     analyticsProductCheckoutData.setProductListName(product.getProductTrackerData().getTrackerListName());
                                 }

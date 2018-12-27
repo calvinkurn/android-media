@@ -3,7 +3,7 @@ package com.tokopedia.contactus.createticket.presenter;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.contactus.createticket.ContactUsConstant;

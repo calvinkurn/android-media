@@ -15,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.media.Image;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -481,6 +482,19 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageRounded(Context context, final ImageView imageview, final String url, float radius) {
+        if (url != null && !url.isEmpty()) {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .centerCrop()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(getRoundedImageViewTarget(imageview, radius));
+        }
+    }
+
     public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
             Glide.with(fragment)
@@ -618,6 +632,13 @@ public class ImageHandler {
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
         Glide.with(imageView.getContext()).load(gifDrawable)
+                .asGif()
+                .placeholder(placeholder)
+                .into(imageView);
+    }
+
+    public static void loadGifFromUrl(ImageView imageView, String url, int placeholder){
+        Glide.with(imageView.getContext()).load(url)
                 .asGif()
                 .placeholder(placeholder)
                 .into(imageView);

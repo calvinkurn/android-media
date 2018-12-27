@@ -3,7 +3,7 @@ package com.tokopedia.contactus.inboxticket.presenter;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.contactus.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.contactus.inboxticket.interactor.InboxTicketCacheInteractor;
 import com.tokopedia.contactus.inboxticket.interactor.InboxTicketCacheInteractorImpl;

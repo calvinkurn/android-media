@@ -176,7 +176,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
-    public void setElements( List< Visitable> data) {
+    public void setElements(List<Visitable> data) {
         visitables = data;
         notifyDataSetChanged();
     }
@@ -220,6 +220,12 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         } else {
             notifyItemRangeInserted(positionStart, data.size());
         }
+    }
+
+
+    public void removeElement(Visitable visitable) {
+        visitables.remove(visitable);
+        notifyDataSetChanged();
     }
 
     public void setLoadingModel(LoadingModel loadingModel) {
