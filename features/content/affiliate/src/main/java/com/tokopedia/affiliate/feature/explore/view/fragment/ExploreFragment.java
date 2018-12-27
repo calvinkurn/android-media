@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -41,6 +42,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
@@ -83,6 +85,8 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
+    private BottomActionView scrollToTopButton;
+    private int oldScrollY = 0;
 
     private boolean isCanDoAction;
 
@@ -115,6 +119,7 @@ public class ExploreFragment
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         layoutEmpty = view.findViewById(R.id.layout_empty);
+        scrollToTopButton = view.findViewById(R.id.bottom_action_view);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -183,6 +188,22 @@ public class ExploreFragment
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
                 )
         );
+        rvExplore.getViewTreeObserver().addOnScrollChangedListener(
+                () -> showBottomActionWhenScrollingUp()
+        );
+        scrollToTopButton.setButton2OnClickListener(view -> {
+            rvExplore.scrollToPosition(0);
+        });
+    }
+
+    @NonNull
+    private void showBottomActionWhenScrollingUp() {
+        if (rvExplore.getScrollY() < oldScrollY && rvExplore.getScrollY() != 0) {
+            scrollToTopButton.setVisibility(View.VISIBLE);
+        } else {
+            scrollToTopButton.setVisibility(View.GONE);
+        }
+        oldScrollY = rvExplore.getScrollY();
     }
 
     @Override
