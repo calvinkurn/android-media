@@ -31,6 +31,7 @@ import com.tokopedia.discovery.catalog.model.CatalogReview;
 import com.tokopedia.discovery.catalog.model.CatalogSpec;
 import com.tokopedia.discovery.catalog.presenter.CatalogDetailPresenter;
 import com.tokopedia.discovery.catalog.presenter.ICatalogDetailPresenter;
+import com.tokopedia.linker.model.LinkerData;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     private ICatalogActionFragment catalogActionFragment;
     private TkpdProgressDialog progressDialog;
 
-    private ShareData stateShareData;
+    private LinkerData stateShareData;
     private CatalogInfo stateCatalogInfo;
     private CatalogReview stateCatalogReview;
     private List<CatalogImage> stateCatalogImageList;
@@ -291,7 +292,7 @@ public class CatalogDetailFragment extends BasePresenterFragment<ICatalogDetailP
     }
 
     @Override
-    public void renderCatalogShareData(ShareData shareData) {
+    public void renderCatalogShareData(LinkerData shareData) {
         this.stateShareData = shareData;
         if (catalogActionFragment != null)
             catalogActionFragment.deliverCatalogShareData(stateShareData);

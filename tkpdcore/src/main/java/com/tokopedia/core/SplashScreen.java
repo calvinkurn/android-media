@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -21,21 +22,24 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.util.CacheUtil;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
+import com.tokopedia.linker.model.LinkerDeeplinkData;
+import com.tokopedia.linker.model.LinkerDeeplinkResult;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
+import com.tokopedia.user.session.UserSession;
 
 
 /**
@@ -98,7 +102,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onStart() {
         super.onStart();
-        handleBranchDefferedDeeplink();
+        getBranchDefferedDeeplink();
+        moveToHome();
     }
 
     private void moveToHome() {
@@ -206,55 +211,30 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         }
     }
 
-    private void handleBranchDefferedDeeplink() {
-        Branch branch = Branch.getInstance();
-        if (branch == null) {
-            moveToHome();
-        } else {
-            try {
-                branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
-                branch.initSession(new Branch.BranchReferralInitListener() {
+    private void getBranchDefferedDeeplink() {
+
+        UserSession userSession = new UserSession(this);
+        UserData userData = new UserData();
+        userData.setUserId(userSession.getUserId());
+
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userData));
+
+        LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
+        linkerDeeplinkData.setClientId(TrackingUtils.getClientID());
+        linkerDeeplinkData.setReferrable(this.getIntent().getData());
+
+        LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
+                linkerDeeplinkData, new DefferedDeeplinkCallback() {
                     @Override
-                    public void onInitFinished(JSONObject referringParams, BranchError error) {
-                        if (isFinishing()) {
-                            return;
-                        }
-
-                        if (error == null) {
-                            try {
-                                BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
-
-                                String deeplink = referringParams.getString("$android_deeplink_path");
-                                if (deeplink == null) {
-                                    moveToHome();
-                                } else {
-                                    Uri uri;
-                                    if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
-                                        uri = Uri.parse(deeplink);
-                                    } else {
-                                        uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                                    }
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                                    intent.setData(uri);
-                                    startActivity(intent);
-                                    finish();
-
-                                }
-
-                            } catch (JSONException e) {
-                                moveToHome();
-
-                            }
-                        } else {
-                            moveToHome();
-                        }
+                    public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
 
                     }
-                }, this.getIntent().getData(), this);
-            } catch (Exception e) {
-                // Do nothing
-            }
-        }
-    }
 
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }, this));
+    }
 }

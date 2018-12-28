@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
@@ -91,8 +92,8 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void onSharePromo(PromoData promoData) {
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.PROMO_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.PROMO_TYPE)
                 .setId(promoData.getSlug())
                 .setName(promoData.getTitle())
                 .setTextContent(promoData.getTitle()

@@ -29,6 +29,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -93,11 +94,11 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public void shareApp(FragmentManager fragmentManager) {
-        String type = ShareData.APP_SHARE_TYPE;
+        String type = LinkerData.APP_SHARE_TYPE;
         if (isAppShowReferralButtonActivated()) {
-            type = ShareData.REFERRAL_TYPE;
+            type = LinkerData.REFERRAL_TYPE;
         }
-        ShareData shareData = ShareData.Builder.aShareData()
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
@@ -333,11 +334,11 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     }
 
     public void appShare(ShareApps shareApp, FragmentManager fragmentManager) {
-        String type = ShareData.APP_SHARE_TYPE;
+        String type = LinkerData.APP_SHARE_TYPE;
         if (isAppShowReferralButtonActivated()) {
-            type = ShareData.REFERRAL_TYPE;
+            type = LinkerData.REFERRAL_TYPE;
         }
-        ShareData shareData = ShareData.Builder.aShareData()
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(type)
                 .setId(getView().getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
@@ -371,7 +372,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         }
     }
 
-    private void actionShare(ShareData data, String packageName, String media) {
+    private void actionShare(LinkerData data, String packageName, String media) {
         data.setSource(media);
 
         ShareSocmedHandler.ShareSpecific(data, getView().getActivity(), packageName,
@@ -383,10 +384,10 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
 
     private void sendAnalyticsToGTM(String type, String channel) {
-        if (type.equals(ShareData.REFERRAL_TYPE)) {
+        if (type.equals(LinkerData.REFERRAL_TYPE)) {
             UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
             TrackingUtils.sendMoEngageReferralShareEvent(channel);
-        } else if (type.equals(ShareData.APP_SHARE_TYPE)) {
+        } else if (type.equals(LinkerData.APP_SHARE_TYPE)) {
             UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL, channel);
         } else {
             UnifyTracking.eventShare(channel);

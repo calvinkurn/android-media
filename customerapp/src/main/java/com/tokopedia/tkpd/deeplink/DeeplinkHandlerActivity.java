@@ -31,6 +31,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.core.util.CacheUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
@@ -62,6 +63,12 @@ import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
+import com.tokopedia.linker.model.LinkerDeeplinkData;
+import com.tokopedia.linker.model.LinkerDeeplinkResult;
+import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
@@ -178,7 +185,7 @@ import io.branch.referral.BranchError;
         UserIdentificationApplinkModule.class
 })
 
-public class DeeplinkHandlerActivity extends AppCompatActivity {
+public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static ApplinkDelegate applinkDelegate;
 
@@ -333,17 +340,23 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     }
 
     private void initBranchSession() {
-        Branch branch = Branch.getInstance();
-        if (branch != null) {
-            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
-            branch.initSession(new Branch.BranchReferralInitListener() {
-                @Override
-                public void onInitFinished(JSONObject referringParams, BranchError error) {
-                    if (error == null) {
-                        BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, DeeplinkHandlerActivity.this);
-                    }
-                }
-            }, this.getIntent().getData(), this);
-        }
+
+        LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
+        linkerDeeplinkData.setClientId(TrackingUtils.getClientID());
+        linkerDeeplinkData.setReferrable(this.getIntent().getData());
+
+        LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
+                linkerDeeplinkData, this, this));
+
+    }
+
+    @Override
+    public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
+        CacheUtil.storeWebToAppPromoCodeIfExist(linkerDefferedDeeplinkData.getPromoCode(), this);
+    }
+
+    @Override
+    public void onError(LinkerError linkerError) {
+
     }
 }

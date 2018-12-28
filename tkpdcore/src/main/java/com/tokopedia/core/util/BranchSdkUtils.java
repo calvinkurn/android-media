@@ -41,7 +41,10 @@ import io.branch.referral.util.LinkProperties;
 /**
  * Created by ashwanityagi on 04/10/17.
  */
-
+/*
+*Use LinkerManager instead
+*/
+@Deprecated
 public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DEEPLINK_PATH_KEY = "$android_deeplink_path";
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";

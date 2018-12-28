@@ -6,6 +6,12 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.LinkerCommerceData;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
@@ -13,6 +19,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +55,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
                 int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
                     PurchaseTracking.marketplace(getTrackignData(orderData, indexOrdersData));
-                    BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(orderData));
+                    LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
+                                    getTrackignBranchIOData(orderData)));
                     indexOrdersData++;
                 }
 
@@ -206,8 +214,22 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return "";
     }
 
-    private BranchIOPayment getTrackignBranchIOData(OrderData orderData) {
-        BranchIOPayment branchIOPayment = new BranchIOPayment();
+    private LinkerCommerceData getTrackignBranchIOData(OrderData orderData) {
+
+        LinkerCommerceData linkerCommerceData = new LinkerCommerceData();
+
+        UserSession userSession = new UserSession(LinkerManager.getInstance().getContext());
+
+        UserData userData = new UserData();
+        userData.setUserId(userSession.getUserId());
+        userData.setPhoneNumber(userSession.getPhoneNumber());
+        userData.setName(userSession.getName());
+        userData.setEmail(userSession.getEmail());
+
+        linkerCommerceData.setUserData(userData);
+
+        com.tokopedia.linker.model.PaymentData branchIOPayment = new com.tokopedia.linker.model.PaymentData();
+
         branchIOPayment.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
         branchIOPayment.setShipping(String.valueOf((int)orderData.getShippingPrice()));
@@ -216,14 +238,19 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         branchIOPayment.setItemPrice(String.valueOf(orderData.getItemPrice()));
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();
-            product.put(BranchIOPayment.KEY_ID, String.valueOf(orderDetail.getProductId()));
-            product.put(BranchIOPayment.KEY_NAME, getProductName(orderDetail));
-            product.put(BranchIOPayment.KEY_PRICE, String.valueOf((int)orderDetail.getProductPrice()));
-            product.put(BranchIOPayment.KEY_QTY, String.valueOf(orderDetail.getQuantity()));
-            product.put(BranchIOPayment.KEY_CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));
+            product.put(LinkerConstants.ID, String.valueOf(orderDetail.getProductId()));
+            product.put(LinkerConstants.NAME, getProductName(orderDetail));
+            product.put(LinkerConstants.PRICE, String.valueOf((int)orderDetail.getProductPrice()));
+            product.put(LinkerConstants.PRICE_IDR_TO_DOUBLE,String.valueOf(CurrencyFormatHelper.convertRupiahToLong(
+                    String.valueOf(orderDetail.getProductPrice()))));
+            product.put(LinkerConstants.QTY, String.valueOf(orderDetail.getQuantity()));
+            product.put(LinkerConstants.CATEGORY, String.valueOf(orderDetail.getProduct().getProductCategory().getCategoryName()));
 
             branchIOPayment.setProduct(product);
         }
-        return branchIOPayment;
+
+        linkerCommerceData.setPaymentData(branchIOPayment);
+
+        return linkerCommerceData;
     }
 }

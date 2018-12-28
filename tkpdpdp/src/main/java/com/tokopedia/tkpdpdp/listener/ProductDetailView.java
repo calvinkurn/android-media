@@ -21,6 +21,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
@@ -142,7 +143,7 @@ public interface ProductDetailView extends ViewListener {
      *
      * @param data  data yang dikirim
      */
-    void onProductShareClicked(@NonNull ShareData data);
+    void onProductShareClicked(@NonNull LinkerData data);
 
     /**
      * Pada saat rating product diklik

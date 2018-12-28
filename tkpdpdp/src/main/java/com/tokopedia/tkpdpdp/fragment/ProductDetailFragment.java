@@ -50,6 +50,7 @@ import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
 import com.tokopedia.user.session.UserSession;
@@ -944,12 +945,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductShareClicked(@NonNull ShareData data) {
+    public void onProductShareClicked(@NonNull LinkerData data) {
         new DefaultShare(getActivity(), data).show();
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void shareProduct(ShareData data) {
+    public void shareProduct(LinkerData data) {
         interactionListener.shareProductInfo(data);
     }
 
@@ -1564,14 +1565,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (productData != null) {
                 String productName = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductName()).toString();
                 String productDesc = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductDescription()).toString();
-                ShareData shareData = ShareData.Builder.aShareData()
+                LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                         .setName(productName)
                         .setTextContent(productName)
                         .setDescription(productDesc)
                         .setImgUri(productData.getProductImages().get(0).getImageSrc())
                         .setPrice(productData.getInfo().getProductPrice())
                         .setUri(productData.getInfo().getProductUrl())
-                        .setType(ShareData.PRODUCT_TYPE)
+                        .setType(LinkerData.PRODUCT_TYPE)
                         .setId(productData.getInfo().getProductId().toString())
                         .build();
                 onProductShareClicked(shareData);

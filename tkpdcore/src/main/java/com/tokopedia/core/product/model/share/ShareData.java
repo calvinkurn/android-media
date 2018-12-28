@@ -11,6 +11,10 @@ import com.tokopedia.core.util.MethodChecker;
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
  */
+/*
+* Use LinkerData from linker module
+*/
+@Deprecated
 public class ShareData implements Parcelable {
     public static final String TAG = ShareData.class.getSimpleName();
     public static final String CATALOG_TYPE = "Catalog";

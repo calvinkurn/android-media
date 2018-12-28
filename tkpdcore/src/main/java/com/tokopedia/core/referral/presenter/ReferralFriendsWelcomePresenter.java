@@ -4,6 +4,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.referral.listener.FriendsWelcomeView;
+import com.tokopedia.core.util.CacheUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -39,7 +40,8 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
                 }
                 view.closeView();
             }
-            BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE = code;
+            CacheUtil.addValueToCache(view.getActivity(), TkpdCache.CACHE_PROMO_CODE,
+                    TkpdCache.Key.KEY_CACHE_PROMO_CODE, code);
         }
 
     }

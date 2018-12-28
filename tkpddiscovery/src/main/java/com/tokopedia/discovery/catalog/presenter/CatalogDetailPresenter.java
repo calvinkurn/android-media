@@ -17,6 +17,7 @@ import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
 import com.tokopedia.discovery.catalog.listener.IDetailCatalogView;
 import com.tokopedia.discovery.catalog.model.CatalogDetailData;
 import com.tokopedia.discovery.catalog.model.CatalogImage;
+import com.tokopedia.linker.model.LinkerData;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -103,18 +104,18 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
                 });
     }
 
-    private ShareData generateCatalogShareData(Activity activity, String catalogUrl,String catalogId) {
-        return ShareData.Builder.aShareData()
+    private LinkerData generateCatalogShareData(Activity activity, String catalogUrl,String catalogId) {
+        return LinkerData.Builder.getLinkerBuilder()
                 .setId(catalogId)
                 .setName(activity.getString(R.string.message_share_catalog))
-                .setType(ShareData.CATALOG_TYPE)
+                .setType(LinkerData.CATALOG_TYPE)
                 .setTextContent(activity.getString(R.string.share_text_content))
                 .setUri(catalogUrl)
                 .build();
     }
 
     @Override
-    public void processShareCatalog(Activity activity, ShareData shareData) {
+    public void processShareCatalog(Activity activity, LinkerData shareData) {
         if (shareData == null) {
             catalogView.showToastMessage("Data katalog belum tersedia");
             return;

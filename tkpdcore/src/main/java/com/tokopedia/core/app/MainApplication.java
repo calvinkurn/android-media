@@ -36,6 +36,11 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.UserData;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -366,10 +371,14 @@ public abstract class MainApplication extends BaseMainApplication {
     }
 
     private void initBranch() {
-        Branch.getAutoInstance(this);
-        if (SessionHandler.isV4Login(this)) {
-            BranchSdkUtils.sendIdentityEvent(SessionHandler.getLoginID(this));
-        }
+        LinkerManager.initLinkerManager(getApplicationContext());
+
+        UserSession userSession = new UserSession(this);
+        UserData userData = new UserData();
+        userData.setUserId(userSession.getUserId());
+
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                userData));
     }
 
     private void initFirebase() {

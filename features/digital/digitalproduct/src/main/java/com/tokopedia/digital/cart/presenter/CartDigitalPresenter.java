@@ -11,6 +11,8 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.CacheUtil;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -628,13 +630,14 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
 
     @Override
     public void autoApplyCouponIfAvailable(String digitalCategoryId) {
-        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
+        String savedCoupon = CacheUtil.getValueFromCache(view.getActivity(), TkpdCache.CACHE_PROMO_CODE,
+                TkpdCache.Key.KEY_CACHE_PROMO_CODE);
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucher(savedCoupon, digitalCategoryId);
         }
     }
 
     private void removeBranchPromoIfNeeded() {
-        BranchSdkUtils.removeCouponCode(view.getActivity());
+        CacheUtil.removeCouponCode(view.getActivity());
     }
 }

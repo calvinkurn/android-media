@@ -50,6 +50,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
@@ -771,7 +772,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         };
     }
 
-    private void goToShareProduct(ShareData shareData) {
+    private void goToShareProduct(LinkerData shareData) {
         Intent intent = ShareActivity.createIntent(getActivity(), shareData);
         startActivity(intent);
     }
@@ -794,14 +795,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     Bitmap newImage = productManageImageSticker.processStickerToImage(bitmap, getActivity());
                     File file = FileUtils.writeImageToTkpdPath(newImage);
 
-                    ShareData shareData = ShareData.Builder.aShareData()
+                    LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                             .setName(productManageViewModel.getProductName())
                             .setTextContent(productManageViewModel.getProductName())
                             .setDescription(productManageViewModel.getProductName())
                             .setImgUri(productManageViewModel.getImageFullUrl())
                             .setPrice(productManageViewModel.getProductPrice())
                             .setUri(productManageViewModel.getProductUrl())
-                            .setType(ShareData.PRODUCT_TYPE)
+                            .setType(LinkerData.PRODUCT_TYPE)
                             .setId(productManageViewModel.getProductId())
                             .setPathSticker(file.getAbsolutePath())
                             .build();

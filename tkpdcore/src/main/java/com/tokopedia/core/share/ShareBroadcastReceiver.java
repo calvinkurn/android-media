@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 
 import java.util.Objects;
 
@@ -33,7 +34,7 @@ public class ShareBroadcastReceiver extends BroadcastReceiver {
                     AnalyticTracker analyticTracker = ((AbstractionRouter) context
                             .getApplicationContext()).getAnalyticTracker();
 
-                    if (analyticTracker != null && type.equals(ShareData.GROUPCHAT_TYPE)) {
+                    if (analyticTracker != null && type.equals(LinkerData.GROUPCHAT_TYPE)) {
                         analyticTracker.sendEventTracking(
                                 "clickShare",
                                 "groupchat room",
