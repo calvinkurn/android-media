@@ -98,6 +98,13 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
+    ChuckInterceptor provideChuckInterceptor(
+            @ApplicationContext Context context) {
+        return new ChuckInterceptor(context);
+    }
+
+    @InboxChatScope
+    @Provides
     MessageFactory provideMessageFactory(
             ChatService chatService,
             GetMessageMapper getMessageMapper,
