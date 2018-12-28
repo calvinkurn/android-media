@@ -17,6 +17,7 @@ public interface CMConstant {
 
     interface NotificationType {
         String GENERAL = "General";
+        String GRID_NOTIFICATION = "Grid";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
@@ -56,6 +57,7 @@ public interface CMConstant {
         String IMG =  "img";
         String VIBRATE = "vibrate";
         String UPDATE = "update";
+        String GRID_DATA = "gridData";
 
 
     }
