@@ -91,13 +91,6 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    UserSessionInterface provideUserSessionInterface(
-            @ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @InboxChatScope
-    @Provides
     AnalyticTracker provideAnalyticTracker(
             @ApplicationContext Context context) {
         return ((AbstractionRouter) context).getAnalyticTracker();
