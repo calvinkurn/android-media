@@ -4,12 +4,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
+import com.tokopedia.affiliate.feature.explore.data.pojo.CategoryPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreProductPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreQuery;
+import com.tokopedia.affiliate.feature.explore.data.pojo.FilterQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -64,9 +68,24 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
                             new ArrayList<>(),
                     exploreQuery.getPagination() != null ?
                             exploreQuery.getPagination().getNextCursor() :
-                            ""
+                            "",
+                    mappingSortFilter(query.getFilter())
             );
         }
+    }
+
+    private SortFilterModel mappingSortFilter(FilterQuery filterPojo) {
+        return new SortFilterModel(mappingFilterModel(filterPojo.getCategory()));
+    }
+
+    private List<FilterViewModel> mappingFilterModel(List<CategoryPojo> pojoList) {
+        List<FilterViewModel> itemList = new ArrayList<>();
+        for (CategoryPojo pojo : pojoList) {
+            FilterViewModel item = new FilterViewModel(pojo.getName(), pojo.getImage(), pojo.getIds(), false);
+            itemList.add(item);
+        }
+        return itemList;
+
     }
 
     public static List<Visitable> mappingProducts(List<ExploreProductPojo> pojoList, ExploreContract.View mainView) {

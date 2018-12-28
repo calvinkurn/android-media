@@ -40,6 +40,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewMo
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
@@ -189,7 +190,9 @@ public class ExploreFragment
                 )
         );
         rvExplore.getViewTreeObserver().addOnScrollChangedListener(
-                () -> showBottomActionWhenScrollingUp()
+                () -> {
+//                    showBottomActionWhenScrollingUp();
+                }
         );
         scrollToTopButton.setButton2OnClickListener(view -> {
             rvExplore.scrollToPosition(0);
@@ -354,7 +357,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor, SortFilterModel sortFilterModel) {
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);

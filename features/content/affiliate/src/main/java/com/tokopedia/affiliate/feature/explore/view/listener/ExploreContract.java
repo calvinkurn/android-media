@@ -10,6 +10,8 @@ import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortFilterModel;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public interface ExploreContract {
 
         void hideLoading();
 
-        void onSuccessGetFirstData(List<Visitable> itemList, String cursor);
+        void onSuccessGetFirstData(List<Visitable> itemList, String cursor, SortFilterModel sortFilterModel);
 
         void onErrorGetFirstData(String error);
 
