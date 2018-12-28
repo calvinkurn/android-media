@@ -163,7 +163,7 @@ ext {
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
-            lifeCycleExtention    : "android.arch.lifecycle:extensions:$lifeCycleVersion",
+            viewModel             : "android.arch.lifecycle:viewmodel:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"
     ]
 
