@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class HomeFeedGqlResponse {
 
-    @SerializedName("data")
+    @SerializedName("feed")
     @Expose
-    private Data data;
+    private Feed feed;
 
-    public Data getData() {
-        return data;
+    public Feed getFeed() {
+        return feed;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setFeed(Feed feed) {
+        this.feed = feed;
     }
 
 }

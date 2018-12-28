@@ -13,6 +13,7 @@ import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
@@ -84,8 +85,14 @@ public class HomeModule {
 
     @Provides
     protected GetHomeFeedUseCase provideGetHomeFeedUseCase(@ApplicationContext Context context,
-                                                           GraphqlUseCase graphqlUseCase){
-        return new GetHomeFeedUseCase(context, graphqlUseCase);
+                                                           GraphqlUseCase graphqlUseCase,
+                                                           HomeFeedMapper homeFeedMapper){
+        return new GetHomeFeedUseCase(context, graphqlUseCase, homeFeedMapper);
+    }
+
+    @Provides
+    HomeFeedMapper homeFeedMapper() {
+        return new HomeFeedMapper();
     }
 
     @Provides

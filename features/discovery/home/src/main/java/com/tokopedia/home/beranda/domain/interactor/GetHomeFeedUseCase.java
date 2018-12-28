@@ -2,15 +2,15 @@ package com.tokopedia.home.beranda.domain.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedGqlResponse;
 import com.tokopedia.home.beranda.domain.model.feed.FeedResult;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 
 import rx.Observable;
 
@@ -21,20 +21,24 @@ public class GetHomeFeedUseCase extends UseCase<FeedResult> {
 
     private Context context;
     private GraphqlUseCase graphqlUseCase;
+    private HomeFeedMapper homeFeedMapper;
 
-    public GetHomeFeedUseCase(Context context, GraphqlUseCase graphqlUseCase) {
+    public GetHomeFeedUseCase(Context context,
+                              GraphqlUseCase graphqlUseCase,
+                              HomeFeedMapper homeFeedMapper) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
+        this.homeFeedMapper = homeFeedMapper;
     }
 
     @Override
     public Observable<FeedResult> createObservable(RequestParams requestParams) {
-        GraphqlRequest graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
         R.raw.gql_home_feed), HomeFeedGqlResponse.class, requestParams.getParameters());
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
-        return graphqlUseCase.createObservable(RequestParams.EMPTY);
+        return graphqlUseCase.createObservable(RequestParams.EMPTY).map(homeFeedMapper);
     }
 
     public RequestParams getFeedPlusParam(int page, String userId, String
