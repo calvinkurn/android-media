@@ -45,15 +45,15 @@ public class ChatRoomModule {
         return new MessageFactory(chatService, getMessageMapper, deleteMessageMapper);
     }
 
-    @InboxChatScope
-    @Provides
-    ReplyFactory provideReplyFactory(
-            ChatService chatService,
-            GetReplyMapper getReplyMapper,
-            ReplyMessageMapper replyMessageMapper,
-            GetExistingChatMapper getExistingChatMapper) {
-        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
-    }
+//    @InboxChatScope
+//    @Provides
+//    ReplyFactory provideReplyFactory(
+//            ChatService chatService,
+//            GetReplyMapper getReplyMapper,
+//            ReplyMessageMapper replyMessageMapper,
+//            GetExistingChatMapper getExistingChatMapper) {
+//        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
+//    }
 
     @InboxChatScope
     @Provides
@@ -105,12 +105,12 @@ public class ChatRoomModule {
                                                SendMessageSource sendMessageSource) {
         return new MessageRepositoryImpl(messageFactory, sendMessageSource);
     }
-
-    @InboxChatScope
-    @Provides
-    ReplyRepository provideReplyRepository(ReplyFactory replyFactory) {
-        return new ReplyRepositoryImpl(replyFactory);
-    }
+//
+//    @InboxChatScope
+//    @Provides
+//    ReplyRepository provideReplyRepository(ReplyFactory replyFactory) {
+//        return new ReplyRepositoryImpl(replyFactory);
+//    }
 
     @InboxChatScope
     @Provides
