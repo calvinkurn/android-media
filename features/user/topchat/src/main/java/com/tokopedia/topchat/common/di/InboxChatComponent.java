@@ -2,8 +2,6 @@ package com.tokopedia.topchat.common.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.topchat.chatlist.fragment.InboxChatFragment;
-import com.tokopedia.topchat.chatroom.data.network.ChatBotApi;
-import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 
 import dagger.Component;
 
@@ -17,5 +15,5 @@ public interface InboxChatComponent {
 
     void inject(InboxChatFragment fragment);
 
-    void inject(ChatRoomFragment fragment);
+//    void inject(ChatRoomFragment fragment);
 }
