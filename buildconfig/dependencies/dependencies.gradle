@@ -164,7 +164,7 @@ ext {
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             lifeCycleExtention    : "android.arch.lifecycle:extensions:$lifeCycleVersion",
-            lifeCycleRuntime      : "android.arch.lifecycle:compiler:\$$lifeCycleVersion"
+            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"
     ]
 
     testDependencies = [
