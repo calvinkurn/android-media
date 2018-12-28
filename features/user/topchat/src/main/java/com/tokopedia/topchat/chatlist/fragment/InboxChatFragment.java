@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.fragment;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,16 +16,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -45,16 +41,12 @@ import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
-import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
-import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
-import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
-import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -480,11 +472,13 @@ public class InboxChatFragment extends BaseDaggerFragment
                 adapter.updateListCache(model.getMessageId(), model.getMsg(), false,
                         presenter.getListCache());
             }
-        } else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
-                resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
-                data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID)) {
-            presenter.refreshData();
         }
+        //TODO UNCOMMENT CHANGE RESULT CODE
+//        else if (requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
+//                resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
+//                data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID)) {
+//            presenter.refreshData();
+//        }
 
         presenter.createWebSocket();
     }
