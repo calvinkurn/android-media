@@ -2,6 +2,8 @@ package com.tokopedia.topads.dashboard.data.model.credit_history
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditHistoryTypeFactory
 
 data class CreditHistory(
         @SerializedName("amount")
@@ -31,4 +33,8 @@ data class CreditHistory(
         @SerializedName("transaction_type")
         @Expose
         val transactionType: Int = 0
-)
+): Visitable<TopAdsCreditHistoryTypeFactory>{
+
+    override fun type(typeFactory: TopAdsCreditHistoryTypeFactory) = typeFactory.type(this)
+
+}

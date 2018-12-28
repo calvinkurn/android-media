@@ -8,6 +8,8 @@ ext {
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.71"
 
+    lifeCycleVersion = "1.1.1"
+
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
@@ -160,7 +162,9 @@ ext {
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
             coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
-            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
+            lifeCycleExtention    : "android.arch.lifecycle:extensions:$lifeCycleVersion",
+            lifeCycleRuntime      : "android.arch.lifecycle:compiler:\$$lifeCycleVersion"
     ]
 
     testDependencies = [
