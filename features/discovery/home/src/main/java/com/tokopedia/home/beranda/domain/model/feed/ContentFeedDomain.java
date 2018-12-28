@@ -9,16 +9,7 @@ import javax.annotation.Nullable;
 public class ContentFeedDomain {
 
     @Nullable
-    private final
-    String type;
-
-    @Nullable
-    private final
-    int totalProduct;
-
-    @Nullable
-    private final
-    String statusActivity;
+    private final String type;
 
     @Nullable
     private final List<InspirationDomain> inspirationDomains;
@@ -26,13 +17,10 @@ public class ContentFeedDomain {
     @Nullable
     private final List<Data> topAdsList;
 
-    public ContentFeedDomain(@Nullable String type, @Nullable int total_product,
+    public ContentFeedDomain(@Nullable String type,
                              @Nullable List<InspirationDomain> inspirationDomains,
-                             @Nullable List<Data> topAdsList,
-                             @Nullable String status_activity) {
+                             @Nullable List<Data> topAdsList) {
         this.type = type;
-        this.totalProduct = total_product;
-        this.statusActivity = status_activity;
         this.inspirationDomains = inspirationDomains;
         this.topAdsList = topAdsList;
     }
@@ -40,16 +28,6 @@ public class ContentFeedDomain {
     @Nullable
     public String getType() {
         return type;
-    }
-
-    @Nullable
-    public int getTotalProduct() {
-        return totalProduct;
-    }
-
-    @Nullable
-    public String getStatusActivity() {
-        return statusActivity;
     }
 
     @Nullable

@@ -133,10 +133,8 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, FeedResult> {
                             List<Data> topAdsList) {
         if (content == null) return null;
         return new ContentFeedDomain(content.getType(),
-                0,
-                null,
-                null,
-                null);
+                inspirationDomains,
+                topAdsList);
     }
 
     private SourceFeedDomain createSourceFeedDomain(Source source) {
