@@ -2,6 +2,7 @@ package com.tokopedia.talk.shoptalk.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -11,6 +12,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -37,6 +42,7 @@ import com.tokopedia.talk.shoptalk.view.presenter.ShopTalkPresenter
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_shop.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -65,6 +71,9 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var analytics: TalkAnalytics
+
     companion object {
         fun newInstance(bundle: Bundle): ShopTalkFragment {
             val fragment = ShopTalkFragment()
@@ -84,6 +93,13 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun getScreenName(): String {
         return TalkAnalytics.SCREEN_NAME_SHOP_TALK
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            analytics.sendScreen(this, screenName)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -201,7 +217,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         if (allowReply) {
             context?.run {
                 this@ShopTalkFragment.startActivityForResult(
-                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
+                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this,
+                                TalkDetailsActivity.SOURCE_SHOP)
                         , REQUEST_GO_TO_DETAIL)
             }
         } else {
@@ -535,8 +552,44 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         }
 
         onRefreshData()
+    }
 
 
+    override fun shouldHandleUrlManually(url: String): Boolean {
+        val urlManualHandlingList = arrayOf("tkp.me", "tokopedia.me", "tokopedia.link")
+        return Arrays.asList(*urlManualHandlingList).contains(url)
+    }
+
+    override fun onGoToWebView(url: String, id: String) {
+        if (url.isNotEmpty() && activity != null) {
+            KeyboardHandler.DropKeyboard(activity, view)
+
+            when {
+                RouteManager.isSupportApplink(activity, url) -> RouteManager.route(activity, url)
+                isBranchIOLink(url) -> handleBranchIOLinkClick(url)
+                else -> {
+                    val applinkRouter = activity!!.applicationContext as ApplinkRouter
+                    applinkRouter.goToApplinkActivity(activity,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                }
+            }
+        }
+    }
+
+    override fun handleBranchIOLinkClick(url: String) {
+        activity?.run {
+            val talkRouter = this.applicationContext as TalkRouter
+            val intent = talkRouter.getSplashScreenIntent(this)
+            intent.putExtra("branch", url)
+            intent.putExtra("branch_force_new_session", true)
+            startActivity(intent)
+        }
+    }
+
+    override fun isBranchIOLink(url: String): Boolean {
+        val BRANCH_IO_HOST = "tokopedia.link"
+        val uri = Uri.parse(url)
+        return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
 }

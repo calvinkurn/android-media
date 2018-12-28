@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -219,7 +220,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.getOrderList(isVisibleToUser);
-        ScreenTracking.screen(getActivity(),AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
+        ScreenTracking.screen(MainApplication.getAppContext(), AppScreen.SCREEN_TX_SHOP_NEW_ORDER);
         super.setUserVisibleHint(isVisibleToUser);
     }
 

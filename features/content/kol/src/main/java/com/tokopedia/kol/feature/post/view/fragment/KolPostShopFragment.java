@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.post.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -126,6 +127,15 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     @Override
     public void onErrorGetKolPostShop(String message) {
         adapter.showErrorNetwork(message, this::fetchData);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CREATE_POST) {
+            adapter.clearData();
+            fetchDataFirstTime();
+        }
     }
 
     private void goToCreatePost() {

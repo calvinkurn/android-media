@@ -209,9 +209,11 @@ public class ProductListFragment extends SearchSectionFragment
             setEmptyProduct();
         } else {
             setProductList(initMappingProduct());
-            adapter.addLoading();
         }
 
+        if (productViewModel.getTotalData() > Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS)) {
+            adapter.addLoading();
+        }
         adapter.setTotalData(productViewModel.getTotalData());
     }
 
@@ -263,7 +265,9 @@ public class ProductListFragment extends SearchSectionFragment
                 }
             }
         };
-        recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
+        if (productViewModel.getTotalData() > Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS)) {
+            recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
+        }
     }
 
     @Override

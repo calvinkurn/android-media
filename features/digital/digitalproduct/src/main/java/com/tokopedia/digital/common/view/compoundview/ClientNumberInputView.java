@@ -24,35 +24,24 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.view.adapter.AutoCompleteTVAdapter;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * @author anggaprasetiyo on 5/6/17.
  */
 public class ClientNumberInputView extends LinearLayout {
 
-    @BindView(R2.id.tv_label_client_number)
-    TextView tvLabel;
-    @BindView(R2.id.ac_client_number)
-    AutoCompleteTextView autoCompleteTextView;
-    @BindView(R2.id.btn_clear_client_number)
-    Button btnClear;
-    @BindView(R2.id.iv_pic_operator)
-    ImageView imgOperator;
-    @BindView(R2.id.btn_contact_picker)
-    Button btnContactPicker;
-    @BindView(R2.id.fl_holder_input_client_number)
-    RelativeLayout pulsaFramelayout;
-    @BindView(R2.id.tv_error_client_number)
-    TextView tvErrorClientNumber;
+    private TextView tvLabel;
+    private AutoCompleteTextView autoCompleteTextView;
+    private Button btnClear;
+    private ImageView imgOperator;
+    private Button btnContactPicker;
+    private RelativeLayout pulsaFramelayout;
+    private TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
     private Context context;
@@ -76,8 +65,17 @@ public class ClientNumberInputView extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
+
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
-        ButterKnife.bind(this);
+
+        tvLabel = findViewById(R.id.tv_label_client_number);
+        autoCompleteTextView = findViewById(R.id.ac_client_number);
+        btnClear = findViewById(R.id.btn_clear_client_number);
+        imgOperator = findViewById(R.id.iv_pic_operator);
+        btnContactPicker = findViewById(R.id.btn_contact_picker);
+        pulsaFramelayout = findViewById(R.id.fl_holder_input_client_number);
+        tvErrorClientNumber = findViewById(R.id.tv_error_client_number);
+
         initialTextWatcher();
         setImgOperatorInvisible();
         setBtnClearInvisible();
@@ -88,16 +86,13 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     private OnFocusChangeListener getFocusChangeListener() {
-        return new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    actionListener.onClientNumberHasFocus(((TextView) view).getText().toString());
-                    if (autoCompleteTextView.getText().length() > 0) {
-                        setBtnClearVisible();
-                    } else {
-                        setBtnClearInvisible();
-                    }
+        return (view, hasFocus) -> {
+            if (hasFocus) {
+                actionListener.onClientNumberHasFocus(((TextView) view).getText().toString());
+                if (autoCompleteTextView.getText().length() > 0) {
+                    setBtnClearVisible();
+                } else {
+                    setBtnClearInvisible();
                 }
             }
         };
@@ -292,6 +287,11 @@ public class ClientNumberInputView extends LinearLayout {
 
     public void resetInputTyped() {
         autoCompleteTextView.setText("");
+    }
+
+    public void hideClientNumberError() {
+        tvErrorClientNumber.setText("");
+        tvErrorClientNumber.setVisibility(GONE);
     }
 
     public interface ActionListener {

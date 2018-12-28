@@ -24,13 +24,11 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
-import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_OFFICIAL_VALUE;
 
 
 /**
@@ -42,16 +40,13 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private ImageView ivGoldShop;
     private ImageView ivOfficialStore;
     private ImageView ivLuckyShop;
-    private ImageView ivLocation;
     private TextView tvShopName;
-    private TextView tvShopLoc;
     private TextView tvLastOnline;
     private Button sendMsgButton;
     private LinearLayout favoriteButton;
     private TextView favoriteText;
-    private LinearLayout llRating;
     private LinearLayout llReputationMedal;
-    private ImageView lastOnlineImageView;
+    private TextView tvShopLocation;
 
     private boolean isShopFavorite = false;
 
@@ -94,15 +89,12 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         ivGoldShop = (ImageView) findViewById(R.id.iv_gold_shop);
         ivLuckyShop = (ImageView) findViewById(R.id.iv_lucky);
         tvShopName = (TextView) findViewById(R.id.tv_name);
-        tvShopLoc = (TextView) findViewById(R.id.tv_location);
         tvLastOnline = (TextView) findViewById(R.id.last_online_textview);
         sendMsgButton = (Button) findViewById(R.id.send_msg_button);
         favoriteButton = (LinearLayout) findViewById(R.id.favorite_button);
         favoriteText = (TextView) findViewById(R.id.favorite_tv);
-        llRating = (LinearLayout) findViewById(R.id.l_rating);
         llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
-        lastOnlineImageView = (ImageView) findViewById(R.id.last_online_icon);
-        ivLocation = (ImageView) findViewById(R.id.icon_location);
+        tvShopLocation = findViewById(R.id.tv_shop_location);
     }
 
     @SuppressLint("DefaultLocale")
@@ -110,12 +102,6 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull final ProductDetailData data) {
         this.productDetailData = data;
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
-        if (data.getShopInfo().getShopIsOfficial()==SHOP_OFFICIAL_VALUE) {
-            ivLocation.setImageDrawable(ContextCompat.getDrawable(getContext(),com.tokopedia.core2.R.drawable.ic_icon_authorize_grey));
-            tvShopLoc.setText(getResources().getString(com.tokopedia.core2.R.string.authorized));
-        } else {
-            tvShopLoc.setText(data.getShopInfo().getShopLocation());
-        }
         if (data.getShopInfo().getShopStats().getShopBadge() != null) generateMedal(data);
         ImageHandler.loadImage2(ivShopAva, data.getShopInfo().getShopAvatar(),
                 R.drawable.ic_default_shop_ava);
@@ -123,6 +109,9 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         displayLastLogin(data);
 
+        tvShopLocation.setText(
+                data.getShopInfo().getShopLocation()
+        );
         favoriteButton.setVisibility(data.getShopInfo().getShopIsAllowManage() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
         switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
@@ -135,7 +124,6 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
 
         ivShopAva.setOnClickListener(new ClickShopAva(data));
         tvShopName.setOnClickListener(new ClickShopName(data));
-        llRating.setOnClickListener(new ClickShopRating(data));
         sendMsgButton.setOnClickListener(new ClickShopMessage(data));
         favoriteButton.setOnClickListener(new ClickBtnFave(data));
         setVisibility(VISIBLE);
@@ -145,11 +133,12 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         if (data.getShopInfo().getShopOwnerLastLogin() != null
                 && data.getShopInfo().getShopOwnerLastLogin().length() > 0) {
 
-            lastOnlineImageView.setVisibility(VISIBLE);
-            tvLastOnline.setText(data.getShopInfo().getShopOwnerLastLogin());
+            tvLastOnline.setText(
+                    String.format(getContext().getString(R.string.value_shop_last_online),
+                            data.getShopInfo().getShopOwnerLastLogin())
+                            );
             tvLastOnline.setVisibility(VISIBLE);
         } else {
-            lastOnlineImageView.setVisibility(GONE);
             tvLastOnline.setVisibility(GONE);
         }
     }
