@@ -1,9 +1,9 @@
-mutation post_rating($msgId: String!, $rating : Int!, $timestamp : String!) {
-    postRatingV2(msgID:$msgId,rating:-1,timestamp:"123123123123"){
-      Data {
-        Message
-        IsSuccess
-        Reason
-      }
+mutation post_rating($msgId: String!, $rating: Int!, $timestamp: String!) {
+  postRatingV2(msgID: $msgId, rating: $rating, timestamp: $timestamp) {
+    Data {
+      Message
+      IsSuccess
+      Reason
     }
+  }
 }

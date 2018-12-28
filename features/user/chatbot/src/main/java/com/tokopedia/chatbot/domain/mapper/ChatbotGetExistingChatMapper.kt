@@ -18,6 +18,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.domain.pojo.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyPojo
 import javax.inject.Inject
@@ -100,7 +101,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
 
     private fun convertToInvoicesSelection(pojo: Reply): AttachInvoiceSelectionViewModel {
         val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(pojo
-                .attachment?.attributes, InvoicesSelectionPojo::class.java)
+                .attachment?.attributes, ListInvoicesSelectionPojo::class.java)
         val invoiceList = invoicesSelectionPojo.invoices
 
         val list = ArrayList<AttachInvoiceSingleViewModel>()

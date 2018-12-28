@@ -37,7 +37,7 @@ class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activi
         }
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         title = getString(R.string.string_attach_invoice_activity_title);
         super.setupLayout(savedInstanceState)
         if (supportActionBar != null) {

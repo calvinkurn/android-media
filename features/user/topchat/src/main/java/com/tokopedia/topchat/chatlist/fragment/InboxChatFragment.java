@@ -22,7 +22,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -47,6 +49,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
+import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -272,15 +275,14 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-//TODO UNCOMMENT
-//        if (getActivity() != null && getActivity().getApplication() != null) {
-//            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
-//
-//            DaggerInboxChatComponent daggerInboxChatComponent =
-//                    (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
-//                            .appComponent(appComponent).build();
-//            daggerInboxChatComponent.inject(this);
-//        }
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+
+            DaggerInboxChatComponent daggerInboxChatComponent =
+                    (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
+                            .appComponent(appComponent).build();
+            daggerInboxChatComponent.inject(this);
+        }
     }
 
     @Override
