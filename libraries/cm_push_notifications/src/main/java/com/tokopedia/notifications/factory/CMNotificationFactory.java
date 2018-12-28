@@ -41,7 +41,7 @@ public class CMNotificationFactory {
         } else {
             switch (baseNotificationModel.getType()) {
                 case CMConstant.NotificationType.GENERAL:
-                    return (new GridNotification(context.getApplicationContext(), baseNotificationModel));
+                    return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.ACTION_BUTTONS:
                     return (new ActionNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.BIG_IMAGE:

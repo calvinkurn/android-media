@@ -58,25 +58,6 @@ public class GridNotification extends BaseNotification {
                 baseNotificationModel.getAppLink()));
     }
 
-    private NotificationCompat.Builder getNotificationBuilder() {
-        NotificationCompat.Builder builder;
-        if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
-            builder = new NotificationCompat.Builder(context, baseNotificationModel.getChannelName());
-        } else {
-            builder = new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
-        }
-        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-        builder.setSmallIcon(getDrawableIcon());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannelGroup();
-            createNotificationChannel();
-            builder.setBadgeIconType(BADGE_ICON_SMALL);
-            builder.setNumber(1);
-        } else {
-            setNotificationSound(builder);
-        }
-        return builder;
-    }
 
     private PendingIntent getPersistentClickPendingIntent(int requestCode, String appLink) {
         PendingIntent resultPendingIntent;

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/status_bar_latest_event_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:tag="bigPicture">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_collapsed" ></include>
+
+        <TextView
+            android:id="@+id/tv_big_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:text="descripton njsjsd"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_big"
+            android:layout_width="350dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:id="@+id/ll_action"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:padding="@dimen/dp_10"
+                android:singleLine="true"
+                android:textColor="#de000000"
+                android:textSize="15sp"
+                android:text="Title" />
+
+
+            <TextView
+                android:id="@+id/tv_button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:padding="@dimen/dp_10"
+                android:singleLine="true"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:textSize="@dimen/notification_subtext_size"
+                android:text="Message" />
+
+            <TextView
+                android:id="@+id/tv_button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:padding="@dimen/dp_10"
+                android:singleLine="true"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:textSize="@dimen/notification_subtext_size"
+                android:text="Message" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_extra_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="extra descripton njsjsd" />
+    </LinearLayout>
+</FrameLayout>

@@ -42,6 +42,7 @@ public class ActionNotificationTest {
         model = new BaseNotificationModel();
         model.setMessage("40% discount on merchandise");
         model.setIcon("");
+        model.setType("Action");
         model.setDetailMessage("hello world");
         model.setNotificationId(1);
         button = new ActionButton();
@@ -63,11 +64,10 @@ public class ActionNotificationTest {
         );
         MockitoAnnotations.initMocks(this);
         actionNotification = Mockito.spy(new ActionNotification(context, model));
-        doReturn(2).when(actionNotification).getRequestCode();
-        doReturn(1010).when(actionNotification).getDrawableIcon();
+        doReturn(1).when(actionNotification).getRequestCode();
         //doReturn(new Notification.Builder(context)).when(actionNotification).createMainPendingIntent("abc",2);
-        doReturn(resultPendingIntent).when(actionNotification).createMainPendingIntent("xyz",2);
-        assertSame(notification,actionNotification.createNotification());
+        doReturn(resultPendingIntent).when(actionNotification).createMainPendingIntent(model,2);
+
     }
 
     @Test

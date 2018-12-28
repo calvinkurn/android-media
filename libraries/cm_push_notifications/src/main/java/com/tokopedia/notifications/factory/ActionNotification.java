@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
@@ -29,29 +31,59 @@ public class ActionNotification extends BaseNotification {
 
     @Override
     public Notification createNotification() {
-        NotificationCompat.Builder builder = getBuilder();
-        builder.setContentTitle(baseNotificationModel.getTitle());
-        builder.setContentText(baseNotificationModel.getMessage());
-        builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
-        builder.setAutoCancel(true);
-        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
-        if (baseNotificationModel.getActionButton() == null || baseNotificationModel.getActionButton().size() == 0)
-            return null;
-        addActionButton(baseNotificationModel.getActionButton(), builder);
+        NotificationCompat.Builder builder = getNotificationBuilder();
+        RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName()
+                , R.layout.layout_collapsed);
+        setCollapseData(collapsedView, baseNotificationModel);
+        RemoteViews expandedView = new RemoteViews(context.getApplicationContext().getPackageName(),
+                R.layout.layout_big_image);
+        builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(collapsedView)
+                .setCustomBigContentView(expandedView);
+        if (!TextUtils.isEmpty((baseNotificationModel.getMedia().getMediumQuality()))) {
+            expandedView.setImageViewBitmap(R.id.img_big, CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getMedia().getMediumQuality()));
+        }
+        if (hasActionButton()) {
+            addActionButton(baseNotificationModel.getActionButton(), expandedView);
+        }
         return builder.build();
     }
 
-    private void addActionButton(List<ActionButton> actionButtonList, NotificationCompat.Builder builder) {
-        if(TextUtils.isEmpty(baseNotificationModel.getMedia().getMediumQuality())){
-            setBigPictureNotification(builder, baseNotificationModel);
-        }else if (!baseNotificationModel.getDetailMessage().isEmpty())
-            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(baseNotificationModel.getDetailMessage()));
-
-        for (ActionButton actionButton : actionButtonList) {
-            builder.addAction(R.drawable.qc_launcher,
-                    actionButton.getText(), getButtonPendingIntent(actionButton, getRequestCode()));
+    private void setCollapseData(RemoteViews remoteView, BaseNotificationModel baseNotificationModel) {
+        if (TextUtils.isEmpty(baseNotificationModel.getIcon())) {
+            remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
+        } else {
+            Bitmap iconBitmap = getBitmap(baseNotificationModel.getIcon());
+            if (null != iconBitmap) {
+                remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap);
+            } else {
+                remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
+            }
         }
+        remoteView.setTextViewText(R.id.tv_collapse_title, baseNotificationModel.getTitle());
+        remoteView.setTextViewText(R.id.tv_collapsed_message, baseNotificationModel.getMessage());
+        remoteView.setOnClickPendingIntent(R.id.collapseMainView, createMainPendingIntent(baseNotificationModel,
+                getRequestCode()));
+    }
+
+    private void addActionButton(List<ActionButton> actionButtonList, RemoteViews expandedView) {
+        ActionButton actionButton;
+        expandedView.setViewVisibility(R.id.ll_action, View.VISIBLE);
+        for (int i = 0; i < actionButtonList.size(); i++) {
+            actionButton = actionButtonList.get(i);
+            switch (i) {
+                case 0:
+                    expandedView.setOnClickPendingIntent(R.id.tv_button1, getButtonPendingIntent(actionButton, getRequestCode()));
+                    break;
+                case 1:
+                    expandedView.setOnClickPendingIntent(R.id.tv_button2, getButtonPendingIntent(actionButton, getRequestCode()));
+                    break;
+                case 2:
+                    expandedView.setOnClickPendingIntent(R.id.tv_button3, getButtonPendingIntent(actionButton, getRequestCode()));
+                    break;
+            }
+        }
+
     }
 
     private PendingIntent getButtonPendingIntent(ActionButton actionButton, int requestCode) {

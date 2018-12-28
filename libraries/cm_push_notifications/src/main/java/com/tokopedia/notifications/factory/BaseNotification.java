@@ -24,6 +24,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationCacheHandler;
+import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
 
@@ -31,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -91,6 +93,27 @@ public abstract class BaseNotification {
         }
         return builder;
     }
+
+    protected NotificationCompat.Builder getNotificationBuilder() {
+        NotificationCompat.Builder builder;
+        if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
+            builder = new NotificationCompat.Builder(context, baseNotificationModel.getChannelName());
+        } else {
+            builder = new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
+        }
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        builder.setSmallIcon(getDrawableIcon());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannelGroup();
+            createNotificationChannel();
+            builder.setBadgeIconType(BADGE_ICON_SMALL);
+            builder.setNumber(1);
+        } else {
+            setNotificationSound(builder);
+        }
+        return builder;
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void silentChannel() {
@@ -307,6 +330,12 @@ public abstract class BaseNotification {
             intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, baseNotificationModel.getCustomValues().optString(CMConstant.CustomValuesKeys.COUPON_CODE));
         return intent;
     }
+
+    protected boolean hasActionButton(){
+        return  (baseNotificationModel.getActionButton() == null || baseNotificationModel.getActionButton().size() == 0);
+
+    }
+
 }
 
 
