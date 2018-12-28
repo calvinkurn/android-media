@@ -16,11 +16,7 @@ internal class PermissionUtils(context: Context, private val mCallback: Permissi
     private var mMissingPermissions: List<String> = ArrayList()
 
     init {
-        if (context !is Activity) {
-            throw RuntimeException("'context' parameter must be type of Activity")
-        }
-
-        this.mContext = context
+        this.mContext = context as Activity
     }
 
     /**
