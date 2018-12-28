@@ -18,6 +18,7 @@ import com.tokopedia.notifications.common.CmEventPost;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.model.Carousal;
+import com.tokopedia.notifications.model.Grid;
 import com.tokopedia.notifications.model.Media;
 import com.tokopedia.notifications.model.PersistentButton;
 
@@ -42,6 +43,8 @@ public class CMNotificationFactory {
             switch (baseNotificationModel.getType()) {
                 case CMConstant.NotificationType.GENERAL:
                     return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
+                case CMConstant.NotificationType.GRID_NOTIFICATION:
+                    return (new GridNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.ACTION_BUTTONS:
                     return (new ActionNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.BIG_IMAGE:
@@ -56,7 +59,6 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.CAROUSAL_NOTIFICATION:
                     return (new CarousalNotification(context.getApplicationContext(), baseNotificationModel));
             }
-
         }
         return null;
     }
@@ -102,7 +104,7 @@ public class CMNotificationFactory {
         model.setCarousalIndex(data.getInt(CMConstant.PayloadKeys.CAROUSAL_INDEX, 0));
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
         model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
-
+        model.setGridList(getGridList(data));
         return model;
     }
 
@@ -157,6 +159,19 @@ public class CMNotificationFactory {
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
             Log.e("getActions", e.getMessage());
+        }
+        return null;
+    }
+    private static List<Grid> getGridList(Bundle bundle){
+        String persistentData = bundle.getString(CMConstant.PayloadKeys.GRID_DATA);
+        if (TextUtils.isEmpty(persistentData)) {
+            return null;
+        }
+        try {
+            Type listType = new TypeToken<ArrayList<Grid>>() {
+            }.getType();
+            return new Gson().fromJson(persistentData, listType);
+        } catch (Exception e) {
         }
         return null;
     }
