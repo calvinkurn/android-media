@@ -34,9 +34,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     private val defaultsComponents: Set<String>
         get() {
             val components = HashSet<String>()
-            components.add(DDConstants.DDComponents.READ_SMS.`val`())
             components.add(DDConstants.DDComponents.READ_CONTACTS.`val`())
-            components.add(DDConstants.DDComponents.READ_CALL_LOG.`val`())
             components.add(DDConstants.DDComponents.GET_ACCOUNTS.`val`())
             components.add(DDConstants.DDComponents.APP.`val`())
             components.add(DDConstants.DDComponents.BASIC_DEVICE_DATA.`val`())
@@ -105,7 +103,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
             val info = InfoCollectServiceImpl()
             if (mComponents.contains(DDConstants.DDComponents.APP.`val`())) {
                 info.add(Application(mContext!!.packageManager))
-
             }
 
             if (mComponents.contains(DDConstants.DDComponents.GET_ACCOUNTS.`val`())) {
@@ -114,14 +111,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
 
             if (mComponents.contains(DDConstants.DDComponents.READ_CONTACTS.`val`())) {
                 info.add(Contact(mContext!!.contentResolver))
-            }
-
-            if (mComponents.contains(DDConstants.DDComponents.READ_CALL_LOG.`val`())) {
-                info.add(Call(mContext!!.contentResolver))
-            }
-
-            if (mComponents.contains(DDConstants.DDComponents.READ_SMS.`val`())) {
-                info.add(Sms(mContext!!.contentResolver))
             }
 
             if (mComponents.contains(DDConstants.DDComponents.BASIC_DEVICE_DATA.`val`())) {
@@ -133,14 +122,6 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
             return null
         }
 
-    }
-
-    fun addComponents(components: Set<String>) {
-        mComponents.addAll(components)
-    }
-
-    fun addComponents(component: String) {
-        mComponents.add(component)
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

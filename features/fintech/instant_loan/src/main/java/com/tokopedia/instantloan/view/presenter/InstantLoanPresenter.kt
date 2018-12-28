@@ -144,22 +144,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         data.addProperty(DeviceDataKeys.Common.SYSTEM_LANGUAGE, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.SYSTEM_LANGUAGE])
 
         val messages = JsonArray()
-        var message: JsonObject
-
-        if (map!![Sms.DD_SMS] != null) {
-            for (entry in map[Sms.DD_SMS] as List<HashMap<String, String>>) {
-                message = JsonObject()
-                message.addProperty(DeviceDataKeys.Sms.PHONE, entry[Telephony.Sms.Inbox.ADDRESS])
-                message.addProperty(DeviceDataKeys.Sms.CONTENT, entry[Telephony.Sms.Inbox.BODY])
-                message.addProperty(DeviceDataKeys.Sms.TYPE, entry[Telephony.Sms.Inbox.TYPE])
-                message.addProperty(DeviceDataKeys.Sms.TIME, entry[Telephony.Sms.Inbox.DATE])
-                messages.add(message)
-                if (messages.size() == 100) {
-                    break
-                }
-            }
-
-        }
         data.addProperty(DeviceDataKeys.Common.SMS, messages.toString())
 
         val contacts = JsonArray()
@@ -182,22 +166,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
         data.addProperty(DeviceDataKeys.Common.CONTACT, contacts.toString())
 
         val callLogs = JsonArray()
-        var callLog: JsonObject
-
-        if (map[Call.DD_CALL] != null) {
-            for (entry in map[Call.DD_CALL] as List<HashMap<String, String>>) {
-                if (entry == null) {
-                    continue
-                }
-                callLog = JsonObject()
-                callLog.addProperty(DeviceDataKeys.Call.PHONE, entry[CallLog.Calls.NUMBER])
-                callLog.addProperty(DeviceDataKeys.Call.TYPE, entry[CallLog.Calls.TYPE])
-                callLog.addProperty(DeviceDataKeys.Call.DURATION, entry[CallLog.Calls.DURATION])
-                callLog.addProperty(DeviceDataKeys.Call.TIME, entry[CallLog.Calls.DATE])
-                callLogs.add(callLog)
-            }
-        }
-
         data.addProperty(DeviceDataKeys.Common.CALL, callLogs.toString())
 
         val accounts = JsonArray()

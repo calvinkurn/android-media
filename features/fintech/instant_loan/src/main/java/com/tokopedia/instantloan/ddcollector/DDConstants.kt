@@ -8,9 +8,7 @@ import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.REQUIRE
 object DDConstants {
 
     enum class DDComponents private constructor(private val component: String) {
-        READ_SMS(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.READ_SMS),
         READ_CONTACTS(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.READ_CONTACTS),
-        READ_CALL_LOG(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.READ_CALL_LOG),
         GET_ACCOUNTS(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.GET_ACCOUNTS),
         WRITE_EXTERNAL_STORAGE(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.WRITE_EXTERNAL_STORAGE),
         ACCESS_COARSE_LOCATION(REQUIRE + PERMISSION_ENUM_SEPARATOR + Manifest.permission.ACCESS_COARSE_LOCATION),
@@ -31,6 +29,5 @@ object DDConstants {
         val PERMISSION_ENUM_SEPARATOR = "$-$"
         val RGEX_PERMISSION_ENUM_SEPARATOR = "\\$\\-\\$"
         val NOT_AVAILABLE = "n/a"
-        val OS_PLATFORM = "android"
     }
 }
