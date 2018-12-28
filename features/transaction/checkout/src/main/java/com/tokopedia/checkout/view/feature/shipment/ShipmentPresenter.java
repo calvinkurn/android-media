@@ -1305,7 +1305,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
+        int counter = codData == null ? -1 : codData.getCounterCod();
+        getCourierRecommendationUseCase.execute(query, counter, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
                         shipmentCartItemModel, shopShipmentList, isInitialLoad));
