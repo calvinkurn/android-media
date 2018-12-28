@@ -39,18 +39,12 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepository;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource;
-import com.tokopedia.topchat.chatroom.data.factory.ReplyFactory;
-import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
-import com.tokopedia.topchat.chatroom.data.mapper.GetReplyMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.GetUserStatusMapper;
-import com.tokopedia.topchat.chatroom.data.mapper.ReplyMessageMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotApi;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatApi;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
-import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
-import com.tokopedia.topchat.chatroom.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
@@ -112,15 +106,15 @@ public class InboxChatModule {
         return new MessageFactory(chatService, getMessageMapper, deleteMessageMapper);
     }
 
-    @InboxChatScope
-    @Provides
-    ReplyFactory provideReplyFactory(
-            ChatService chatService,
-            GetReplyMapper getReplyMapper,
-            ReplyMessageMapper replyMessageMapper,
-            GetExistingChatMapper getExistingChatMapper) {
-        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
-    }
+//    @InboxChatScope
+//    @Provides
+//    ReplyFactory provideReplyFactory(
+//            ChatService chatService,
+//            GetReplyMapper getReplyMapper,
+//            ReplyMessageMapper replyMessageMapper,
+//            GetExistingChatMapper getExistingChatMapper) {
+//        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
+//    }
 
     @InboxChatScope
     @Provides
@@ -145,12 +139,12 @@ public class InboxChatModule {
                                                SendMessageSource sendMessageSource) {
         return new MessageRepositoryImpl(messageFactory, sendMessageSource);
     }
-
-    @InboxChatScope
-    @Provides
-    ReplyRepository provideReplyRepository(ReplyFactory replyFactory) {
-        return new ReplyRepositoryImpl(replyFactory);
-    }
+//
+//    @InboxChatScope
+//    @Provides
+//    ReplyRepository provideReplyRepository(ReplyFactory replyFactory) {
+//        return new ReplyRepositoryImpl(replyFactory);
+//    }
 
     @InboxChatScope
     @Provides
