@@ -118,6 +118,7 @@ public class GridNotification extends BaseNotification {
                     getPendingIntent(getRequestCode(), gridList.get(5).getAppLink()));
         }else {
             remoteViews.setViewVisibility(R.id.iv_gridFive,View.GONE);
+            remoteViews.setViewVisibility(R.id.iv_gridSix,View.GONE);
         }
     }
 
@@ -183,3 +184,8 @@ public class GridNotification extends BaseNotification {
     }
 
 }
+
+
+//2/3:1/2
+
+//
