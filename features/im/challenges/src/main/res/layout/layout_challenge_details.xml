@@ -61,7 +61,6 @@
         android:id="@+id/cl_video_player"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cl_about"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -139,5 +138,97 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_awards"
             tools:listitem="@layout/challenges_award_item" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cl_winners"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/divider7"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@color/grey_200" />
+
+        <TextView
+            android:id="@+id/tv_winners"
+            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/ch_challenege_winners" />
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_winners"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/grey_200" />
+
+
+    <LinearLayout
+        android:id="@+id/cl_how_buzzpoints"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_how_buzz_points"
+            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/ch_generate_buzz_points"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/tv_how_buzz_points_text"
+            style="@style/TextView.Small.Black40"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:orientation="vertical"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…" />
+
+        <TextView
+            android:id="@+id/seemorebutton_buzzpoints"
+            style="@style/TextView.Micro.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/ch_see_more"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points_text" />
+    </LinearLayout>
+
 
 </LinearLayout>

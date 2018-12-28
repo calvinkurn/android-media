@@ -459,7 +459,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     public void showBuzzPointsText() {
-        buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
+        buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication())
+                .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
             Utils.generateBulletText(tvHowBuzzPointsText, buzzPointText);

@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengeMainDetailsAdapter;
@@ -245,6 +247,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
         addChallengeDetailToAdapter();
     }
 
+
     @Override
     public void renderCountDownView(String participatedText) {
         if (TextUtils.isEmpty(participatedText)) {
@@ -276,11 +279,13 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             mainDetailsAdapter = new ChallengeMainDetailsAdapter(getActivity(), challengeResult, mPresenter, isPastChallenge, this, this);
             mainRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mainRecyclerView.setAdapter(mainDetailsAdapter);
-            mainRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            mainRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    mainDetailsAdapter.onViewScrolled();
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    Log.d("Challenge", "State:---" + newState);
+                    if (newState != RecyclerView.SCROLL_STATE_IDLE)
+                        mainDetailsAdapter.onViewScrolled();
                 }
             });
 
@@ -518,8 +523,6 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
             intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, challengeId);
             startActivity(intent);
-        } else if (v.getId() == R.id.ll_continue) {
-            mPresenter.onSubmitButtonClick();
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.ch_generate_buzz_points));
         } else if (v.getId() == R.id.tv_tnc) {
