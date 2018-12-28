@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -959,7 +960,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             if (categoryDataState != null) {
                 UnifyTracking.eventClickDaftarTransaksiEvent(getActivity(),categoryDataState.getName(), categoryDataState.getName());
             }
-            RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+            if (GlobalConfig.isSellerApp()) {
+                navigateToActivity(
+                        DigitalWebActivity.newInstance(
+                                getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
+                        )
+                );
+            } else {
+                RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+            }
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_digital) {
             presenter.onHelpMenuClicked();
