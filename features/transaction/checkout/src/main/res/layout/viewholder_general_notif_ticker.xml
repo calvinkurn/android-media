@@ -38,10 +38,9 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_toEndOf="@+id/image_cod_icon"
         android:layout_toRightOf="@+id/image_cod_icon"
-        android:fontFamily="sans-serif"
+        android:fontFamily="sans-serif-medium"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
         android:text="@string/hyperlink_learn_more"
         tools:text="Pelajari selengkapnya" />
 
