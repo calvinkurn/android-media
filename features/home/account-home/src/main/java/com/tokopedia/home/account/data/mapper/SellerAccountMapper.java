@@ -21,6 +21,7 @@ import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.ArrayList;
@@ -49,12 +50,17 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
     @Override
     public SellerViewModel call(GraphqlResponse graphqlResponse) {
         AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+        DataDeposit.Response dataDepositResponse = graphqlResponse.getData(DataDeposit.Response.class);
+        DataDeposit dataDeposit = null;
+        if (graphqlResponse.getError(DataDeposit.Response.class) == null || graphqlResponse.getError(DataDeposit.Response.class).isEmpty()){
+            dataDeposit = dataDepositResponse.getDataResponse().getDataDeposit();
+        }
         SellerViewModel sellerViewModel;
         if (accountModel.getShopInfo() != null
                 && accountModel.getShopInfo().getInfo() != null
                 && !TextUtils.isEmpty(accountModel.getShopInfo().getInfo().getShopId())
                 && !accountModel.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1")) {
-            sellerViewModel = getSellerModel(context, accountModel);
+            sellerViewModel = getSellerModel(context, accountModel, dataDeposit);
             sellerViewModel.setSeller(true);
         } else {
             sellerViewModel = getEmptySellerModel();
@@ -64,7 +70,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private SellerViewModel getSellerModel(Context context, AccountModel accountModel) {
+    private SellerViewModel getSellerModel(Context context, AccountModel accountModel, DataDeposit dataDeposit) {
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
@@ -74,7 +80,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         }
 
         if(accountModel.getShopInfo() != null && accountModel.getShopInfo().getInfo() != null) {
-            items.add(getShopInfoMenu(accountModel));
+            items.add(getShopInfoMenu(accountModel, dataDeposit));
         }
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
@@ -226,13 +232,14 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         return sellerViewModel;
     }
 
-    private ShopCardViewModel getShopInfoMenu(AccountModel accountModel) {
+    private ShopCardViewModel getShopInfoMenu(AccountModel accountModel, DataDeposit dataDeposit) {
         ShopCardViewModel shopCard = new ShopCardViewModel();
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopId(accountModel.getShopInfo().getInfo().getShopId());
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+        shopCard.setDataDeposit(dataDeposit);
 
         if(accountModel.getDeposit() != null) {
             shopCard.setBalance(accountModel.getDeposit().getDepositFmt());

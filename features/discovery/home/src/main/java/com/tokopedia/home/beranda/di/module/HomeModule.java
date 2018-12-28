@@ -8,9 +8,11 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.source.CategoryListDataSource;
 import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.data.source.RecommendationListDataSource;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
@@ -43,14 +45,14 @@ public class HomeModule {
     @HomeScope
     @Provides
     protected HomePresenter homePresenter(PagingHandler pagingHandler,
-                                UserSession userSession,
-                                GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
+                                          UserSession userSession,
+                                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase) {
         return realHomePresenter(pagingHandler, userSession, getShopInfoByDomainUseCase);
     }
 
     protected HomePresenter realHomePresenter(PagingHandler pagingHandler,
-                                          UserSession userSession,
-                                          GetShopInfoByDomainUseCase getShopInfoByDomainUseCase){
+                                              UserSession userSession,
+                                              GetShopInfoByDomainUseCase getShopInfoByDomainUseCase){
         return new HomePresenter(pagingHandler, userSession, getShopInfoByDomainUseCase);
     }
 
@@ -68,10 +70,10 @@ public class HomeModule {
 
     @Provides
     protected HomeDataSource provideHomeDataSource(HomeDataApi homeDataApi,
-                                         HomeMapper homeMapper,
-                                         @ApplicationContext Context context,
-                                         CacheManager cacheManager,
-                                         Gson gson){
+                                                   HomeMapper homeMapper,
+                                                   @ApplicationContext Context context,
+                                                   CacheManager cacheManager,
+                                                   Gson gson){
         return new HomeDataSource(homeDataApi, homeMapper, context, cacheManager, gson);
     }
 
@@ -112,7 +114,7 @@ public class HomeModule {
     @HomeScope
     @Provides
     protected CategoryListDataSource provideCategoryListDataSource(DigitalEndpointService digitalEndpointService,
-                                                       CacheManager cacheManager,
+                                                                   CacheManager cacheManager,
                                                                    CategoryMapper categoryMapper){
         return new CategoryListDataSource(
                 digitalEndpointService,
@@ -134,12 +136,27 @@ public class HomeModule {
 
     @HomeScope
     @Provides
+    protected DigitalGqlApiService provideDigitalGqlApiService() {
+        return new DigitalGqlApiService();
+    }
+
+    @HomeScope
+    @Provides
+    protected RecommendationListDataSource provideRecommendationListDataSource(
+            DigitalGqlApiService digitalGqlApiService, @ApplicationContext Context context) {
+        return new RecommendationListDataSource(digitalGqlApiService, context);
+    }
+
+    @HomeScope
+    @Provides
     protected DigitalWidgetRepository providetDigitalWidgetRepository(
             StatusDataSource statusDataSource,
-            CategoryListDataSource categoryListDataSource){
+            CategoryListDataSource categoryListDataSource,
+            RecommendationListDataSource recommendationListDataSource){
         return new DigitalWidgetRepository(
                 statusDataSource,
-                categoryListDataSource
+                categoryListDataSource,
+                recommendationListDataSource
         );
     }
 }

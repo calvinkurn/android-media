@@ -7,12 +7,11 @@ import android.widget.RelativeLayout;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
 public abstract class BaseDigitalRadioChooserView<T> extends RelativeLayout {
+
     protected List<T> dataList;
     protected T dataSelected;
     protected ActionListener<T> actionListener;
@@ -38,7 +37,7 @@ public abstract class BaseDigitalRadioChooserView<T> extends RelativeLayout {
 
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
-        ButterKnife.bind(this);
+        onCreateView();
         initialViewListener();
         disableLabelText();
     }
@@ -46,6 +45,8 @@ public abstract class BaseDigitalRadioChooserView<T> extends RelativeLayout {
     public void setActionListener(ActionListener<T> actionListener) {
         this.actionListener = actionListener;
     }
+
+    protected abstract void onCreateView();
 
     protected abstract void initialViewListener();
 
@@ -70,4 +71,5 @@ public abstract class BaseDigitalRadioChooserView<T> extends RelativeLayout {
         void tracking();
 
     }
+
 }

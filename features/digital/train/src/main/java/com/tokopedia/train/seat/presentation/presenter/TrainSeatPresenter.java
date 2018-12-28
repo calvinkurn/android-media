@@ -116,7 +116,9 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
 
     @Override
     public void onRunningOutOfTime() {
-        getView().showExpiredPaymentDialog();
+        if (isViewAttached()) {
+            getView().showExpiredPaymentDialog();
+        }
     }
 
     @Override
@@ -330,8 +332,8 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                         request = new ChangeSeatMapRequest();
                         request.setBookCode(bookCode);
                         request.setName(passenger.getName());
-                        request.setSeat(passenger.getSeatViewModel().getRow() + passenger.getSeatViewModel().getColumn());
-                        request.setWagonCode(passenger.getSeatViewModel().getWagonCode());
+                        request.setSeat(changeSeat.getRow() + changeSeat.getColumn());
+                        request.setWagonCode(changeSeat.getWagonCode());
                         requests.add(request);
                     }
                     break;

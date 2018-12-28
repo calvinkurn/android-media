@@ -179,6 +179,10 @@
     <dimen name="icon_stock_width">27dp</dimen>
     <dimen name="icon_stock_height">21dp</dimen>
     <dimen name="pdp_discount_background_radius">16dp</dimen>
+    <dimen name="pdp_product_attr_background_radius">10dp</dimen>
     <dimen name="badge_count_textsize">9sp</dimen>
     <dimen name="dp_26">26dp</dimen>
+
+    <dimen name="pdp_content_padding">16dp</dimen>
+    <dimen name="pdp_title_text_size">16sp</dimen>
 </resources>

@@ -1,13 +1,13 @@
 package com.tokopedia.tracking.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 

@@ -33,6 +33,8 @@ public interface DigitalEventTracking {
         String REMOVE_DEAL_OFFER = "remove deals offer";
         String CLICK_SKIP = "click skip";
         String ERROR_TO_ADD_DEAL = "error to add deals";
+        String CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk";
+        String CLICK_RECOMMENDATION_WIDGET = "click recommendation widget";
     }
 
     interface Label {
