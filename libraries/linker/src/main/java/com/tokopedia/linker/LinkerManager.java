@@ -52,7 +52,7 @@ public class LinkerManager {
         }
     }
 
-    public void executeShareResquest(LinkerShareRequest linkerShareRequest){
+    public void executeShareRequest(LinkerShareRequest linkerShareRequest){
         if(wrapperObj != null) {
             wrapperObj.createShareUrl(linkerShareRequest, context);
         }

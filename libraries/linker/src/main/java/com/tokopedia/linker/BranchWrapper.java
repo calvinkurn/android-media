@@ -136,8 +136,10 @@ public class BranchWrapper implements WrapperInterface {
 
         if (isBranchUrlActivated(context, data.getType()) && !LinkerData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
             if (LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getshareUrl())) {
-                shareCallback.urlCreated(LinkerUtils.createShareResult(
-                        data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl()));
+                if(shareCallback != null) {
+                    shareCallback.urlCreated(LinkerUtils.createShareResult(
+                            data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl()));
+                }
             } else {
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
                 LinkProperties linkProperties = createLinkProperties(data, data.getSource(), context, userData);

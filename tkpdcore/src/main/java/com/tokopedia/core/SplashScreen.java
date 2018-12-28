@@ -225,16 +225,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         linkerDeeplinkData.setReferrable(this.getIntent().getData());
 
         LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
-                linkerDeeplinkData, new DefferedDeeplinkCallback() {
-                    @Override
-                    public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
-
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }, this));
+                linkerDeeplinkData, null, this));
     }
 }

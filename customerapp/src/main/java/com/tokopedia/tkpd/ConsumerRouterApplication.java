@@ -3305,9 +3305,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public String getDefferedDeeplinkPathIfExists() {
         String dd4Seesion = "";
-        dd4Seesion = AppsflyerContainer.getDefferedDeeplinkPathIfExists();
+        dd4Seesion = LinkerManager.getInstance().getDefferedDeeplinkForSession();
         if(TextUtils.isEmpty(dd4Seesion)){
-            dd4Seesion = LinkerManager.getInstance().getDefferedDeeplinkForSession();
+            dd4Seesion = AppsflyerContainer.getDefferedDeeplinkPathIfExists();
         }
         return dd4Seesion;
     }
