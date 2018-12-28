@@ -1,10 +1,9 @@
 package com.tokopedia.topchat.chattemplate.data.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
-import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -12,7 +11,7 @@ import rx.Observable;
  * Created by stevenfredian on 11/27/17.
  */
 
-public class EditTemplateRepositoryImpl implements EditTemplateRepository{
+public class EditTemplateRepositoryImpl implements EditTemplateRepository {
 
     private EditTemplateChatFactory templateChatFactory;
 
@@ -21,12 +20,13 @@ public class EditTemplateRepositoryImpl implements EditTemplateRepository{
     }
 
     @Override
-    public Observable<EditTemplateViewModel> editTemplate(int index, TKPDMapParam<String, Object> parameters) {
+    public Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object>
+            parameters) {
         return templateChatFactory.createCloudEditTemplateDataSource().editTemplate(index, parameters);
     }
 
     @Override
-    public Observable<EditTemplateViewModel> createTemplate(TKPDMapParam<String, Object> parameters) {
+    public Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> parameters) {
         return templateChatFactory.createCloudEditTemplateDataSource().createTemplate(parameters);
     }
 
