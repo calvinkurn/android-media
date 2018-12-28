@@ -312,18 +312,6 @@ public class InboxChatModule {
     }
 
     @InboxChatScope
-    @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
-        return logging;
-    }
-
-    @InboxChatScope
     @InboxQualifier
     @Provides
     OkHttpRetryPolicy provideOkHttpRetryPolicy() {
