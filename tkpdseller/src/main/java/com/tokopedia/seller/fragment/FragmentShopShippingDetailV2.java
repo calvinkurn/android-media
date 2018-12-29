@@ -33,7 +33,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -443,7 +443,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onDetailClick() {
-        UnifyTracking.eventConfirmShippingDetails();
+        UnifyTracking.eventConfirmShippingDetails(getActivity());
         startActivity(ShippingConfirmationDetail.createInstance(getActivity(), orderShippingList, permission, userId, invoiceUrl, invoicePdf));
     }
 
@@ -516,7 +516,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private void cancelShipping(String remark) {
-        UnifyTracking.eventConfirmShippingCancel();
+        UnifyTracking.eventConfirmShippingCancel(getActivity());
         bundle = new Bundle();
         ModelParamSelling modelParamSelling = new ModelParamSelling();
         modelParamSelling.setActionType("reject");
@@ -543,7 +543,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         modelParamSelling.setShipmentName(getAgencyName());
         modelParamSelling.setSpId(getServiceId());
         bundle.putParcelable(SellingService.MODEL_PARAM_SELLING_KEY, Parcels.wrap(modelParamSelling));
-        UnifyTracking.eventConfirmShipping();
+        UnifyTracking.eventConfirmShipping(getActivity());
         ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
     }
 

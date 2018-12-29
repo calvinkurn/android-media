@@ -8,6 +8,7 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -17,6 +18,9 @@ import com.tokopedia.design.R;
 
 /**
  * Created by meta on 15/03/18.
+ *
+ * Note: to avoid error "Fatal Exception: java.lang.IllegalArgumentException: The view is not a child of CoordinatorLayout"
+ * please use `android.support.design.widget.CoordinatorLayout` as parent layout on your xml
  */
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
@@ -66,7 +70,11 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         inflatedView.measure(0, 0);
         int height = inflatedView.getMeasuredHeight();
 
-        bottomSheetBehavior = BottomSheetBehavior.from(parent);
+        try {
+            bottomSheetBehavior = BottomSheetBehavior.from(parent);
+        } catch (IllegalArgumentException e) {
+            Log.d(BottomSheets.class.getName(), e.getMessage());
+        }
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
 
@@ -79,7 +87,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
             height = screenHeight;
         }
 
-        bottomSheetBehavior.setPeekHeight(height);
+        if (bottomSheetBehavior != null)
+            bottomSheetBehavior.setPeekHeight(height);
 
         params.height = screenHeight;
         parent.setLayoutParams(params);
@@ -103,6 +112,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     }
 
     protected void onCloseButtonClick() {
+        if (bottomSheetBehavior == null)
+            return;
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
@@ -149,7 +160,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     protected void updateHeight() {
         inflatedView.invalidate();
         inflatedView.measure(0, 0);
-        bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
+        if (bottomSheetBehavior != null)
+            bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
     }
 
     protected void updateHeight(int height) {
@@ -159,7 +171,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         inflatedView.setMinimumHeight(height);
         inflatedView.invalidate();
         inflatedView.measure(0, 0);
-        bottomSheetBehavior.setPeekHeight(height);
+        if (bottomSheetBehavior != null)
+            bottomSheetBehavior.setPeekHeight(height);
     }
 
     @Override

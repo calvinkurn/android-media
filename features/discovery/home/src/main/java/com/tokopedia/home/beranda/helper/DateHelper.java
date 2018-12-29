@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.helper;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

@@ -26,12 +26,12 @@ public class GetCategoryDetailRequestUseCase extends RestRequestUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        HashMap<String, Object> requestParams=params.getParameters();
-        String url=String.valueOf(requestParams.get(DealsHomePresenter.TAG));
-        requestParams.remove(DealsHomePresenter.TAG);
+        HashMap<String, Object> mapParams=params.getParameters();
+        String url=String.valueOf(mapParams.get(DealsHomePresenter.TAG));
+        mapParams.remove(DealsHomePresenter.TAG);
         Type token = new TypeToken<DataResponse<CategoryDetailsResponse>>() {
         }.getType();
 

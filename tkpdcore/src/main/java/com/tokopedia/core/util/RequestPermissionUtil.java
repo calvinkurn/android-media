@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.List;
 
@@ -17,7 +17,9 @@ import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by Nisie on 8/5/16.
+ * Deprecated. Use from tkpdabstraction instead.
  */
+@Deprecated
 public class RequestPermissionUtil {
 
     public static void onPermissionDenied(Context context, List<String> listPermission) {

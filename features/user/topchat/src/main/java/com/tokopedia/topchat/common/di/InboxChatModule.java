@@ -441,12 +441,13 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                     @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
                                      ChuckInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new FingerprintInterceptor(context))
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
                 .addInterceptor(errorResponseInterceptor)

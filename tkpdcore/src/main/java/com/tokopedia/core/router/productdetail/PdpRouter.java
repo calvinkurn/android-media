@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.product.model.share.ShareData;
+import com.google.gson.JsonObject;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
@@ -41,14 +42,18 @@ public interface PdpRouter {
     void openImagePreview(Context context, ArrayList<String> images, ArrayList<String>
             imageDesc, int position);
 
+    void openImagePreview(Context context, ArrayList<String> images, int position);
+
     void openImagePreviewFromChat(Context context, ArrayList<String> images,
                                   ArrayList<String> imageDesc, String title, String date);
 
     Intent getProductReputationIntent(Context context, String productId, String productName);
 
-    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest);
+    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
 
     Intent getCartIntent(Activity activity);
+
+    Intent getCheckoutIntent(Activity activity);
 
     Intent getLoginIntent(Context context);
 
@@ -61,4 +66,12 @@ public interface PdpRouter {
     int getCartCount(Context context);
 
     Intent getProductTalk(Context context, String productId);
+
+    void eventClickFilterReview(Context context,
+                                String filterName,
+                                String productId);
+
+    void eventImageClickOnReview(Context context,
+                                 String productId,
+                                 String reviewId);
 }

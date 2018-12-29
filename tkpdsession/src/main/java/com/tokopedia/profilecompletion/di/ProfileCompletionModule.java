@@ -15,6 +15,7 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -89,5 +90,11 @@ public class ProfileCompletionModule {
     AccountsService provideAccountsService(SessionHandler sessionHandler,
                                            Bundle bundle) {
         return new AccountsService(bundle);
+    }
+
+    @ProfileCompletionScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
     }
 }

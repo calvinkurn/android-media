@@ -10,7 +10,7 @@
     <string name="shop_description_label">Deskripsi Toko</string>
     <string name="shop_status_label">Status Toko</string>
     <string name="shop_settings_membership_label">Keanggotaan</string>
-    <string name="shop_settings_gold_merchant_invite">Tingkatkan efektivitas toko dengan menjadi Gold Merchant</string>
+    <string name="shop_settings_gold_merchant_invite">Tingkatkan efektivitas toko dengan menjadi %1$s</string>
     <string name="valid_until_x">Berlaku hingga %1$s</string>
     <string name="shop_image">Gambar Toko</string>
     <string name="shop_settings_max_file_size">Besar file maksimum:</string>

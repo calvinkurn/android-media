@@ -5,19 +5,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.design.component.Tabs;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -25,25 +22,27 @@ import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
+import com.tokopedia.transaction.orders.orderlist.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
-public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInitContract.Presenter>
+public class OrderListActivity extends BaseSimpleActivity
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
-    private static final String ORDER_CATEGORY = "orderCategory";
+    private static final String ORDER_CATEGORY = OrderCategory.KEY_LABEL;
     private static final int REQUEST_CODE = 100;
     private String orderCategory = "ALL";
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
+    private OrderListInitContract.Presenter presenter;
 
     @DeepLink({ApplinkConst.DEALS_ORDER, ApplinkConst.DIGITAL_ORDER,
             ApplinkConst.EVENTS_ORDER})
-    public static Intent getOrderListIntent(Context context, Bundle bundle){
+    public static Intent getOrderListIntent(Context context, Bundle bundle) {
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         String link = bundle.getString(DeepLink.URI);
@@ -54,9 +53,13 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
                 .putExtras(bundle);
     }
 
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_order_list_module;
+    }
+
     @DeepLink(ApplinkConst.FLIGHT_ORDER)
     public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
-
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
         return new Intent(context, OrderListActivity.class)
@@ -68,62 +71,10 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         return new Intent(context, OrderListActivity.class);
     }
 
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new OrderListInitPresenterImpl(this, new GraphqlUseCase());
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return false;
-    }
-
-    @Override
-    protected int getContentId() {
-        if (GlobalConfig.isSellerApp())
-            return super.getContentId();
-        return R.layout.layout_tab_secondary;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        if (GlobalConfig.isCustomerApp())
-            return 0;
-        return R.layout.activity_order_list_module;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
     protected void initVar() {
         tabLayout = findViewById(R.id.indicator);
         viewPager = findViewById(R.id.pager);
-    }
-
-    @Override
-    protected void setActionVar() {
-    }
-
-    @Override
-    protected int setDrawerPosition() {
-        return 0;
+        presenter = new OrderListInitPresenterImpl(this, new GraphqlUseCase());
     }
 
     @Override
@@ -140,34 +91,19 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        GraphqlClient.init(this);
         super.onCreate(savedInstanceState);
+        initVar();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             orderCategory = bundle.getString(ORDER_CATEGORY);
         }
-        UserSession userSession = new UserSession(getActivity());
-        if (userSession != null && !userSession.isLoggedIn()) {
-            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), REQUEST_CODE);
+        UserSession userSession = new UserSession(this);
+        if (!userSession.isLoggedIn()) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
-            initTabs();
+            presenter.getInitData();
         }
-    }
 
-    private void initTabs() {
-        removeProgressBarView();
-        int position = 0;
-        for (int i = 0; i < OrderCategory.TABS_CATEGORY.length; i++) {
-            if (orderCategory.equals(OrderCategory.TABS_CATEGORY[i])) {
-                position = i;
-            }
-            tabLayout.addTab(tabLayout.newTab().setText(OrderCategory.TABS_LABEL[i]));
-        }
-        adapter = new OrderTabAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        viewPager.setCurrentItem(position);
     }
 
     @Override
@@ -185,12 +121,23 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
 
     @Override
     public void renderTabs(List<OrderLabelList> orderLabelList) {
-        for (OrderLabelList tabContent : orderLabelList)
-            tabLayout.addTab(tabLayout.newTab().setText(tabContent.getLabel()));
-        adapter = new OrderTabAdapter(getSupportFragmentManager(), this);
+        int position = 0;
+        for (int i = 0; i < orderLabelList.size(); i++) {
+            if (orderCategory.equals(orderLabelList.get(i).getOrderCategory())) {
+                position = i;
+            }
+            tabLayout.addTab(tabLayout.newTab().setText(orderLabelList.get(i).getLabelBhasa()));
+        }
+        adapter = new OrderTabAdapter(getSupportFragmentManager(), this, orderLabelList);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        viewPager.setCurrentItem(position);
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
@@ -202,7 +149,7 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         @Override
         public void onPageSelected(int position) {
             super.onPageSelected(position);
-            KeyboardHandler.hideSoftKeyboard(getActivity());
+            KeyboardHandler.hideSoftKeyboard(OrderListActivity.this);
         }
     }
 
@@ -210,9 +157,15 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            initTabs();
+            presenter.getInitData();
         } else {
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.destroyView();
+        super.onDestroy();
     }
 }

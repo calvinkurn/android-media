@@ -6,7 +6,7 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GridProductItemViewHolder;
@@ -30,10 +30,10 @@ import com.tokopedia.topads.sdk.base.Config;
 
 public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
 
-    private final ItemClickListener itemClickListener;
+    private final ProductListener itemClickListener;
     private final Config topAdsConfig;
 
-    public ImageProductListTypeFactoryImpl(ItemClickListener itemClickListener, Config config) {
+    public ImageProductListTypeFactoryImpl(ProductListener itemClickListener, Config config) {
         this.itemClickListener = itemClickListener;
         this.topAdsConfig = config;
     }

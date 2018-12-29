@@ -178,7 +178,7 @@ public class ProductDetailActivity extends BasePresenterActivity<ProductDetailCo
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             if (extras.get(EXTRA_PARAM_IS_RESO_DETAIL) != null && extras.getBoolean(EXTRA_PARAM_IS_RESO_DETAIL)) {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickChatBox(resolutionID));
+                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoDetailClickChatBox(resolutionID));
             }
         }
         super.onBackPressed();

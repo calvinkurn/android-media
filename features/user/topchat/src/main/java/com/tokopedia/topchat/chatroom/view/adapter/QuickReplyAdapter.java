@@ -35,13 +35,9 @@ public class QuickReplyAdapter extends RecyclerView.Adapter<QuickReplyAdapter.Ho
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         final QuickReplyViewModel model = quickReplyListViewModel.getQuickReplies().get(position);
-        holder.text.setText(model.getMessage());
-        holder.text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainView.onQuickReplyClicked(model);
-            }
-        });
+        holder.text.setText(model.getText());
+        holder.text.setOnClickListener(view -> mainView.onQuickReplyClicked
+                (quickReplyListViewModel, model));
     }
 
     @Override

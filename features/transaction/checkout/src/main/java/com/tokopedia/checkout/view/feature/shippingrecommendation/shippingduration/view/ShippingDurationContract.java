@@ -29,6 +29,8 @@ public interface ShippingDurationContract {
 
         void showNoCourierAvailable(String message);
 
+        void stopTrace();
+
         Activity getActivity();
     }
 

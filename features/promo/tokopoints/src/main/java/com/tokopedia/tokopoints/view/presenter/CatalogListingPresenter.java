@@ -10,12 +10,14 @@ import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBannerOuter;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterOuter;
+import com.tokopedia.tokopoints.view.model.CatalogSubCategory;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -26,6 +28,9 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         implements CatalogListingContract.Presenter {
     private GraphqlUseCase mGetHomePageData;
     private GraphqlUseCase mGetPointData;
+    private int pointRange;
+    private int currentCategoryId = 0;
+    private int currentSubCategoryId = 0;
 
     @Inject
     public CatalogListingPresenter(GraphqlUseCase getHomePageData, GraphqlUseCase getPointData) {
@@ -45,7 +50,7 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
     }
 
     @Override
-    public void getHomePageData() {
+    public void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire) {
         if (getView() == null) {
             return;
         }
@@ -53,16 +58,22 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         mGetHomePageData.clearRequest();
         getView().showLoader();
 
-        //Adding banner query
-        Map<String, Object> variablesBanner = new HashMap<>();
-        variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
-        GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
-                CatalogBannerOuter.class,
-                variablesBanner);
-        mGetHomePageData.addRequest(graphqlRequestBanners);
+        if (isBannerRequire) {
+            Map<String, Object> variablesBanner = new HashMap<>();
+            variablesBanner.put(CommonConstant.GraphqlVariableKeys.DEVICE, CommonConstant.DEVICE_ID_BANNER);
+            GraphqlRequest graphqlRequestBanners = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_banners),
+                    CatalogBannerOuter.class,
+                    variablesBanner);
+            mGetHomePageData.addRequest(graphqlRequestBanners);
+        }
+
+        GraphqlRequest graphqlRequestTokenDetail = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
+                TokoPointDetailEntity.class);
+        mGetHomePageData.addRequest(graphqlRequestTokenDetail);
 
         Map<String, Object> variableFilter = new HashMap<>();
-        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, "");
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_CATEGORY, slugCategory);
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG_SUB_CATEGORY, slugSubCategory);
         GraphqlRequest graphqlRequestFilter = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_filter),
                 CatalogFilterOuter.class,
                 variableFilter);
@@ -71,10 +82,6 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
         GraphqlRequest graphqlRequestEgg = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_lucky_egg_details),
                 TokenDetailOuter.class);
         mGetHomePageData.addRequest(graphqlRequestEgg);
-
-        GraphqlRequest graphqlRequestTokenDetail = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_detail),
-                TokoPointDetailEntity.class);
-        mGetHomePageData.addRequest(graphqlRequestTokenDetail);
 
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -153,7 +160,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                     getView().onErrorPoint(null);
                 } else {
                     if (pointDetailEntity.getTokoPoints().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                        getView().onSuccessPoints(pointDetailEntity.getTokoPoints().getStatus().getPoints().getRewardStr());
+                        getView().onSuccessPoints(pointDetailEntity.getTokoPoints().getStatus().getPoints().getRewardStr(),
+                                pointDetailEntity.getTokoPoints().getStatus().getPoints().getReward(),
+                                pointDetailEntity.getTokoPoints().getStatus().getTier().getNameDesc(),
+                                pointDetailEntity.getTokoPoints().getStatus().getTier().getEggImageUrl());
                     }
                 }
 
@@ -162,12 +172,37 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
     }
 
     @Override
-    public int getSelectedCategoryId() {
-        return getView().getSelectedCategoryId();
+    public void setPointRangeId(int id) {
+        this.pointRange = id;
     }
 
-    public String getCategoryName(ArrayList<CatalogCategory> catalogCategories, int selectedCategoryId) {
-        for (CatalogCategory each : catalogCategories) {
+    @Override
+    public int getPointRangeId() {
+        return pointRange;
+    }
+
+    @Override
+    public void setCurrentCategoryId(int id) {
+        currentCategoryId = id;
+    }
+
+    @Override
+    public int getCurrentCategoryId() {
+        return currentCategoryId;
+    }
+
+    @Override
+    public void setCurrentSubCategoryId(int id) {
+        currentSubCategoryId = id;
+    }
+
+    @Override
+    public int getCurrentSubCategoryId() {
+        return currentSubCategoryId;
+    }
+
+    public String getCategoryName(List<CatalogSubCategory> catalogCategories, int selectedCategoryId) {
+        for (CatalogSubCategory each : catalogCategories) {
             if (each == null) {
                 continue;
             }

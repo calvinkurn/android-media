@@ -65,6 +65,7 @@ public class FlightBookingCartDataMapper {
                 }
                 data.setLuggageViewModels(luggageMetaViewModels);
                 data.setMealViewModels(mealMetaViewModels);
+                data.setMandatoryDob(entity.getAttribute().getFlightAttribute().isMandatoryDob());
                 data.setVoucherViewModel(transform(entity.getAttribute().getFlightAttribute().getVoucher()));
             } else {
                 data.setLuggageViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());

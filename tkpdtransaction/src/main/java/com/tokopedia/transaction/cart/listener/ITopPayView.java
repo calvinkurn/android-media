@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.cart.listener;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -24,6 +25,8 @@ public interface ITopPayView extends IBaseView {
     void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
 
     LocalCacheHandler getLocalCacheHandlerNotification();
+
+    Context getActivityContext();
 
     @NonNull
     String getPaymentId();

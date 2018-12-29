@@ -12,15 +12,15 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -50,7 +50,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage(boolean isInitialRender);
+        void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
@@ -72,6 +72,8 @@ public interface ShipmentContract {
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
+        void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);
+
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
         void renderErrorCheckPromoShipmentData(String message);
@@ -88,6 +90,13 @@ public interface ShipmentContract {
 
         void renderCourierStateFailed(int itemPosition);
 
+        void cancelAllCourierPromo();
+
+        void updateCourierBottomssheetHasData(List<ShippingCourierViewModel> shippingCourierViewModels, int cartPosition,
+                                              ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+
+        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
@@ -96,7 +105,13 @@ public interface ShipmentContract {
 
         Activity getActivityContext();
 
+        boolean checkCourierPromoStillExist();
 
+        void setCourierPromoApplied(int itemPosition);
+
+        void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
+
+        void showToastFailedTickerPromo(String text);
     }
 
     interface AnalyticsActionListener {
@@ -167,30 +182,44 @@ public interface ShipmentContract {
         void sendAnalyticsOnViewPromoAutoApply();
 
         void sendAnalyticsOnViewPromoManualApply(String type);
+
+        void sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(int shippingProductId);
+
+        void sendAnalyticsOnDisplayDurationThatContainPromo(boolean isCourierPromo, String duration);
+
+        void sendAnalyticsOnDisplayLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
+
+        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration);
+
+        void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment);
 
-        void processReloadCheckoutPageFromMultipleAddress(CartItemPromoHolderData cartItemPromoHolderData,
+        void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel);
+                                                          ShipmentDonationModel shipmentDonationModel,
+                                                          boolean isOneClickShipment);
 
-        void processReloadCheckoutPageBecauseOfError();
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
 
-        void processCheckShipmentPrepareCheckout();
+        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment);
 
-        void processCheckout();
+        void processCheckout(String voucherCode, boolean isOneClickShipment);
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment();
+        void checkPromoShipment(String promoCode,boolean isOneClickShipment);
 
-        void processCheckPromoCodeFromSuggestedPromo(String promoCode);
+        void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
+
+        void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition,
+                                                      boolean noToast, boolean isOneClickShipment);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
@@ -200,7 +229,10 @@ public interface ShipmentContract {
                              ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
         void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
-                                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
+                                             ShipmentDetailData shipmentDetailData,
+                                             ShipmentCartItemModel shipmentCartItemModel,
+                                             List<ShopShipment> shopShipmentList,
+                                             boolean isInitialLoad);
 
         RecipientAddressModel getRecipientAddressModel();
 
@@ -209,10 +241,6 @@ public interface ShipmentContract {
         List<ShipmentCartItemModel> getShipmentCartItemModelList();
 
         void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList);
-
-        PromoCodeAppliedData getPromoCodeAppliedData();
-
-        void setPromoCodeAppliedData(PromoCodeAppliedData promoCodeAppliedData);
 
         CartPromoSuggestion getCartPromoSuggestion();
 
@@ -238,21 +266,26 @@ public interface ShipmentContract {
 
         void cancelAutoApplyCoupon();
 
-        void changeShippingAddress(RecipientAddressModel recipientAddressModel);
+        void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
         ShipmentDonationModel getShipmentDonationModel();
-
-        void setCartItemPromoHolderData(CartItemPromoHolderData cartItemPromoHolderData);
-
-        CartItemPromoHolderData getCartItemPromoHolderData();
 
         void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
                                                int itemPosition);
 
         List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition);
 
+        void setCouponStateChanged(boolean appliedCoupon);
+
+        boolean getCouponStateChanged();
+
+        void setHasDeletePromoAfterChecKPromoCodeFinal(boolean state);
+
+        boolean getHasDeletePromoAfterChecKPromoCodeFinal();
+
+        void sendPurchaseProtectionAnalytics(CheckoutAnalyticsPurchaseProtection.Event type, String label);
     }
 
 }

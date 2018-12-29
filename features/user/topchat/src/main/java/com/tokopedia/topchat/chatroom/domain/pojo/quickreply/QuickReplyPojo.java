@@ -9,15 +9,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class QuickReplyPojo {
 
-    @SerializedName("message")
+    @SerializedName("text")
     @Expose
-    private String message;
+    private String text;
+    @SerializedName("value")
+    @Expose
+    private String value;
+    @SerializedName("action")
+    @Expose
+    private String action;
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getValue() {
+        return value;
+    }
+
+    public String getAction() {
+        return action;
     }
 }

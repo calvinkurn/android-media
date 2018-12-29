@@ -9,7 +9,9 @@ import java.util.List;
 public class OrderListInitContract {
      public interface Presenter {
 
-         void getInitData(String orderCategory, int page, int perPage);
+         void getInitData();
+
+         void destroyView();
      }
 
     public interface View {

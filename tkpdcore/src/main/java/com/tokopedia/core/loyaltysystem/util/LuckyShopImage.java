@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by ricoharisin on 9/21/15.

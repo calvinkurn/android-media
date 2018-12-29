@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textTimer"
+        android:layout_alignEnd="@+id/textTimer"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/textTimer"
+        android:indeterminate="false"
+        android:progress="80"
+        android:progressDrawable="@drawable/background_counter_timer"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="273dp" />
+
+    <TextView
+        android:id="@+id/textTimer"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_3"
+        android:paddingBottom="@dimen/dp_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_11"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/red_400"
+        android:letterSpacing="0.07"
+        tools:text="16:48:40"
+        />
+</RelativeLayout>
