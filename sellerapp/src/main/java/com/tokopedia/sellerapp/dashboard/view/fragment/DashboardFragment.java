@@ -259,7 +259,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         footerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_LOADING);
 
         sellerDashboardPresenter.getTicker();
-        sellerDashboardPresenter.getVerificationStatus();
     }
 
     void onRefresh() {
@@ -444,12 +443,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
-        if (tickers.length < 1) {
-            tickerView.setVisibility(View.GONE);
-            return;
-        }
 
-        tickerView.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
         final ArrayList<String> backgrounds = new ArrayList<>();
         for (Ticker.Tickers ticker : tickers) {
@@ -474,7 +468,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
             @Override
             public void onSelected(int position) {
-                tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
+                if (position < backgrounds.size()) {
+                    tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
+                }
             }
 
             @Override
@@ -483,6 +479,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             }
         });
         tickerView.buildView();
+        checkShowTickerView();
+
+        sellerDashboardPresenter.getVerificationStatus();
+
     }
 
     @Override
@@ -564,12 +564,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             @Override
             public void onErrorGetShopVerificationStatusWithErrorCode(String errorCode) {
                 verificationWarningTickerView.setVisibility(View.GONE);
+                checkShowTickerView();
 
             }
 
             @Override
             public void onErrorGetShopVerificationStatus(Throwable errorMessage) {
                 verificationWarningTickerView.setVisibility(View.GONE);
+                checkShowTickerView();
             }
 
             @Override
@@ -598,6 +600,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     addMessageToTickerView(tickerMessage);
                 }
 
+                checkShowTickerView();
+
             }
         };
     }
@@ -605,6 +609,14 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     private void addMessageToTickerView(String tickerMessage) {
         if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
             tickerView.addMessage(tickerMessage);
+        }
+    }
+
+    private void checkShowTickerView() {
+        if (tickerView.getCount() < 1) {
+            tickerView.setVisibility(View.GONE);
+        } else {
+            tickerView.setVisibility(View.VISIBLE);
         }
     }
 
