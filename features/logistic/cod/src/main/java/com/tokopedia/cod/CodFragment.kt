@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.transactiondata.entity.response.cod.Data
 import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
 
@@ -68,7 +69,9 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     }
 
     override fun onPayClicked(view: View) {
-        Toast.makeText(context, "confirm", Toast.LENGTH_SHORT).show()
+        val dumb = "tokopedia://thankyou/marketplace/cod?bill_amount=301.096&gateway_code=COD&gateway_logo=cod.png&gateway_name=Cash+On+Delivery&payment_detail=Total+Tagihan%2CRp+320.596%3BBiaya+Layanan%2CRp+2.500%3BPenggunaan+Voucher%2C-+Rp+22.000&shipping_duration=2-4+Hari.&shipping_logo=cod.png&total_amount=301.096&transaction_id=300922467"
+        startActivity(RouteManager.getIntent(context, dumb))
+        activity?.finish()
     }
 
     override fun navigateToThankYouPage() {
