@@ -13,10 +13,11 @@ interface CodContract {
         fun showLoading()
         fun hideLoading()
         fun onPayClicked(view: android.view.View)
-        fun navigateToThankYouPage()
+        fun navigateToThankYouPage(applink: String)
     }
 
     interface Presenter {
+        fun setView(view: View)
         fun confirmPayment()
     }
 

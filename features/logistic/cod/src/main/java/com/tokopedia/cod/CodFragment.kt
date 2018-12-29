@@ -6,17 +6,22 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.cod.di.DaggerCodComponent
 import com.tokopedia.transactiondata.entity.response.cod.Data
 import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
+import javax.inject.Inject
 
 /**
  * Created by fajarnuha on 17/12/18.
  */
 class CodFragment: BaseDaggerFragment(), CodContract.View {
+
+    @Inject lateinit var presenter: CodContract.Presenter
 
     companion object {
 
@@ -32,11 +37,14 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        presenter.setView(this)
         initView()
     }
 
     override fun initInjector() {
-
+        DaggerCodComponent.builder()
+                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
     }
 
     override fun getScreenName(): String {
@@ -69,12 +77,11 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     }
 
     override fun onPayClicked(view: View) {
-        val dumb = "tokopedia://thankyou/marketplace/cod?bill_amount=301.096&gateway_code=COD&gateway_logo=cod.png&gateway_name=Cash+On+Delivery&payment_detail=Total+Tagihan%2CRp+320.596%3BBiaya+Layanan%2CRp+2.500%3BPenggunaan+Voucher%2C-+Rp+22.000&shipping_duration=2-4+Hari.&shipping_logo=cod.png&total_amount=301.096&transaction_id=300922467"
-        startActivity(RouteManager.getIntent(context, dumb))
-        activity?.finish()
+        presenter.confirmPayment()
     }
 
-    override fun navigateToThankYouPage() {
-        Toast.makeText(context, "navigate thankyou page", Toast.LENGTH_SHORT).show()
+    override fun navigateToThankYouPage(applink: String) {
+        startActivity(RouteManager.getIntent(context, applink))
+        activity?.finish()
     }
 }
