@@ -110,7 +110,7 @@
 /libraries/youtubeutils/                @tokopedia/minion-kevin
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
-/features/promo/tokopoints              @tokopedia/india-android-team
+/features/promo/tokopoints              @tokopedia/minion-solo
 /libraries/common_network/              @ricoharisin
 /features/digital/event                 @tokopedia/india-android-team
 /features/operational/contact_us        @tokopedia/india-android-team
@@ -121,3 +121,4 @@
 /libraries/oms                          @naveengoyal87
 /features/im/challenges                 @ashwanitp
 /libraries/pagination                   @lavekush-t
+/features/promo/tokopoints_notification @tokopedia/minion-solo
