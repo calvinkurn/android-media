@@ -10,6 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
+import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.
@@ -40,6 +41,8 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
             } else {
                 outRect.bottom = 0;
             }
+        } else if (viewHolder instanceof ShipmentNotifierViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof CartVoucherPromoViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof CartTickerErrorViewHolder) {
