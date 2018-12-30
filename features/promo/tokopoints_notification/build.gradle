@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
-    artifactId = 'tokopoints'
+    artifactId = 'tokopoints-notification'
     groupId = 'com.tokopedia.tokopoints.notification'
     versionName = "${tkpdTokopointVersion}"
     artifactName = "tokopoints_notification-release"
