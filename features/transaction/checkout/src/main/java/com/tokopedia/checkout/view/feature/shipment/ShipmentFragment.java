@@ -103,6 +103,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
+    private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
+    private static final int REQUEST_CODE_COD = 1;
     private static final String SHIPMENT_TRACE = "shipment_trace";
 
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
@@ -247,7 +249,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         tvSelectPaymentMethod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shipmentAdapter.checkDropshipperValidation(0);
+                shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
             }
         });
     }
@@ -638,7 +640,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void proceedCod(View view) {
-        shipmentAdapter.checkDropshipperValidation(1);
+        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_COD);
     }
 
     @Override
@@ -1356,11 +1358,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                               int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
             switch (requestCode) {
-                case 0:
+                case REQUEST_CODE_NORMAL_CHECKOUT:
                     shipmentPresenter.processCheckShipmentPrepareCheckout(isOneClickShipment());
                     shipmentPresenter.processSaveShipmentState();
                     break;
-                case 1:
+                case REQUEST_CODE_COD:
                     shipmentPresenter.proceedCodCheckout(isOneClickShipment());
             }
 
@@ -1475,7 +1477,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChoosePaymentMethodButtonClicked() {
-        shipmentAdapter.checkDropshipperValidation(0);
+        shipmentAdapter.checkDropshipperValidation(REQUEST_CODE_NORMAL_CHECKOUT);
     }
 
     @Override

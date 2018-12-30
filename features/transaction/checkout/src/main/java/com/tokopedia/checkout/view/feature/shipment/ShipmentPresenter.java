@@ -1354,14 +1354,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(boolean isOnClickShipment) {
+    public void proceedCodCheckout(boolean isOneClickShipment) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
                         promoCodeAppliedData.getPromoCode() : "",
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
         codCheckoutUseCase.clearRequest();
-        codCheckoutUseCase.addRequest(codCheckoutUseCase.getRequest(checkoutRequest, isOnClickShipment));
+        codCheckoutUseCase.addRequest(codCheckoutUseCase.getRequest(checkoutRequest, isOneClickShipment));
         codCheckoutUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -1370,7 +1370,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
+                processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }
 
             @Override
