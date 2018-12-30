@@ -1,20 +1,21 @@
-package com.tokopedia.tokopoints.view.fragment;
+package com.tokopedia.tokopoints.notification.view;
 
 import android.app.Dialog;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.tokopoints.notification.R;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.model.PopupNotification;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.notification.model.PopupNotification;
 
-public class PopupNotificationBottomSheet extends BottomSheets {
+public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
 
     PopupNotification mData;
 
@@ -26,6 +27,11 @@ public class PopupNotificationBottomSheet extends BottomSheets {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
+
+        if (getActivity() == null) {
+            return;
+        }
+
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
@@ -38,6 +44,7 @@ public class PopupNotificationBottomSheet extends BottomSheets {
     public void initView(View view) {
         TextView count = view.findViewById(R.id.text_quota_count);
         TextView title = view.findViewById(R.id.text_title);
+        TextView desc = view.findViewById(R.id.text_desc);
         TextView notes = view.findViewById(R.id.text_notes);
         TextView sender = view.findViewById(R.id.text_sender);
         ImageView banner = view.findViewById(R.id.img_banner);
@@ -45,29 +52,35 @@ public class PopupNotificationBottomSheet extends BottomSheets {
 
         action.setText(mData.getButtonText());
 
-        if (mData.getCatalog() != null && mData.getCatalog().getTitle() != null) {
-            title.setText(mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle());
+        if (mData.getCatalog() == null || mData.getCatalog().getTitle() == null) {
+            title.setText(mData.getTitle());
+            title.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
-            title.setText(mData.getText());
+            title.setText(mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle());
         }
 
-        if (mData.getNotes() != null && !mData.getNotes().isEmpty()) {
+        if (!TextUtils.isEmpty(mData.getText())) {
+            desc.setVisibility(View.VISIBLE);
+            desc.setText(mData.getText());
+        }
+
+        if (!TextUtils.isEmpty(mData.getNotes())) {
             notes.setVisibility(View.VISIBLE);
             notes.setText("\"" + mData.getNotes() + "\"");
         }
 
-        if (mData.getSender() != null && !mData.getSender().isEmpty()) {
+        if (!TextUtils.isEmpty(mData.getSender())) {
             sender.setVisibility(View.VISIBLE);
             sender.setText("-" + mData.getSender());
         }
 
-        if (mData.getCatalog() != null
-                && mData.getCatalog().getExpired() == null
-                && mData.getCatalog().getExpired().isEmpty()) {
+        if (mData.getCatalog() == null
+                || mData.getCatalog().getExpired() == null
+                || mData.getCatalog().getExpired().isEmpty()) {
+            count.setVisibility(View.GONE);
+        } else {
             count.setVisibility(View.VISIBLE);
             count.setText(mData.getCatalog().getExpired());
-        } else {
-            count.setVisibility(View.GONE);
         }
 
         if (mData.getImageURL() != null && !mData.getImageURL().isEmpty()) {
@@ -80,7 +93,10 @@ public class PopupNotificationBottomSheet extends BottomSheets {
             }
         }
 
-        action.setOnClickListener(view1 -> RouteManager.route(action.getContext(), mData.getAppLink()));
+        action.setOnClickListener(view1 -> {
+            RouteManager.route(action.getContext(), mData.getAppLink());
+            dismiss();
+        });
     }
 
     @Override
@@ -95,11 +111,5 @@ public class PopupNotificationBottomSheet extends BottomSheets {
     @Override
     protected void onCloseButtonClick() {
         super.onCloseButtonClick();
-
-        AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_CLOSE_BUTTON,
-                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LUCKY_EGG_CLOSE_LABEL);
     }
 }

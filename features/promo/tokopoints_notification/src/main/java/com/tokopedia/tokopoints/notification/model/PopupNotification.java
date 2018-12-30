@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.model;
+package com.tokopedia.tokopoints.notification.model;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -101,6 +101,14 @@ public class PopupNotification {
 
     public void setCatalog(CouponValueEntity catalog) {
         this.catalog = catalog;
+    }
+
+    public boolean isEmpty() {
+        if (catalog == null) {
+            return title.isEmpty();
+        }
+
+        return catalog.isEmpty();
     }
 
     @Override
