@@ -37,8 +37,13 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        presenter.setView(this)
+        presenter.attachView(this)
         initView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.detachView()
     }
 
     override fun initInjector() {

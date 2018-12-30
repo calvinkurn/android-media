@@ -17,7 +17,8 @@ interface CodContract {
     }
 
     interface Presenter {
-        fun setView(view: View)
+        fun attachView(view: View)
+        fun detachView()
         fun confirmPayment()
     }
 
