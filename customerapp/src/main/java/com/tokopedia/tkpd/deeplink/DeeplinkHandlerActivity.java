@@ -369,7 +369,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     private void initBranchSession() {
 
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
-        linkerDeeplinkData.setClientId(TrackingUtils.getClientID());
+        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
         linkerDeeplinkData.setReferrable(this.getIntent().getData());
 
         LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,

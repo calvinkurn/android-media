@@ -527,8 +527,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MerchantVoucherModuleRouter,
         LoginRegisterRouter,
         LoginPhoneNumberRouter,
-        NpsRouter,
-        LinkerRouter {
+        LinkerRouter,
         TopAdsDashboardRouter,
         NpsRouter,
         DigitalRouter,
@@ -2539,7 +2538,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sharePromoLoyalty(Activity activity,PromoData promoData) {
-        ShareData shareData = ShareData.Builder.aShareData()
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(ShareData.PROMO_TYPE)
                 .setId(promoData.getSlug())
                 .setName(promoData.getTitle())

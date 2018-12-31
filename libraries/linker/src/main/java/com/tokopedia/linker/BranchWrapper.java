@@ -184,8 +184,10 @@ public class BranchWrapper implements WrapperInterface {
 
         else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.REFERRAL_WELCOME, data.getId());
-            deeplinkPath = deeplinkPath.replaceFirst(LinkerConstants.REGEX_APP_LINK,
-                    userData.getName() == null ? "" : userData.getName());
+            if(userData != null) {
+                deeplinkPath = deeplinkPath.replaceFirst(LinkerConstants.REGEX_APP_LINK,
+                        userData.getName() == null ? "" : userData.getName());
+            }
         } else if (LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.GROUPCHAT, data.getId());
             if (context.getApplicationContext() instanceof LinkerRouter) {
@@ -211,15 +213,16 @@ public class BranchWrapper implements WrapperInterface {
         } else if (desktopUrl == null) {
             linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, data.renderShareUri());
         }
+
+        linkProperties.addControlParameter(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH, deeplinkPath == null ? "" : deeplinkPath);
+        linkProperties.addControlParameter(LinkerConstants.KEY_IOS_DEEPLINK_PATH, deeplinkPath == null ? "" : deeplinkPath);
+
         if (isAndroidIosUrlActivated(context) && !(LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) ||
                 LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType()) ||
                 LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType()))) {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, data.renderShareUri());
         }
-
-        linkProperties.addControlParameter(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH, deeplinkPath == null ? "" : deeplinkPath);
-        linkProperties.addControlParameter(LinkerConstants.KEY_IOS_DEEPLINK_PATH, deeplinkPath == null ? "" : deeplinkPath);
 
         if (LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             String connector;

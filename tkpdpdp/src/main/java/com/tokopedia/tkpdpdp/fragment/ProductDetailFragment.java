@@ -51,11 +51,11 @@ import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gallery.domain.GetImageReviewUseCase;
 import com.tokopedia.gallery.viewmodel.ImageReviewItem;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.product.share.ProductData;
 import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.tkpdpdp.DescriptionActivityNew;
 import com.tokopedia.tkpdpdp.ProductInfoShortDetailActivity;
-import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.customview.ImageFromBuyerView;
 import com.tokopedia.tkpdpdp.customview.ProductInfoAttributeView;
 import com.tokopedia.tkpdpdp.customview.ProductInfoShortView;
@@ -1597,21 +1597,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             return true;
         } else if (i == R.id.action_share) {
             if (productData != null) {
-                //TODO Check relevance
                 onProductShareClicked(productData);
-                String productName = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductName()).toString();
-                String productDesc = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductDescription()).toString();
-                LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                        .setName(productName)
-                        .setTextContent(productName)
-                        .setDescription(productDesc)
-                        .setImgUri(productData.getProductImages().get(0).getImageSrc())
-                        .setPrice(productData.getInfo().getProductPrice())
-                        .setUri(productData.getInfo().getProductUrl())
-                        .setType(LinkerData.PRODUCT_TYPE)
-                        .setId(productData.getInfo().getProductId().toString())
-                        .build();
-                onProductShareClicked(shareData);
             }
             return true;
         } else if (i == R.id.action_cart) {

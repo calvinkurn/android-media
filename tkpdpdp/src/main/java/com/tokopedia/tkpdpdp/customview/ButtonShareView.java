@@ -12,8 +12,6 @@ import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -73,18 +71,6 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
 
         @Override
         public void onClick(View v) {
-            LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                    .setName(data.getInfo().getProductName())
-                    .setTextContent(data.getInfo().getProductName())
-                    .setDescription(data.getInfo().getProductDescription())
-                    .setImgUri(data.getProductImages().get(0).getImageSrc())
-                    .setPrice(data.getInfo().getProductPrice())
-                    .setUri(data.getInfo().getProductUrl())
-                    .setType(LinkerData.PRODUCT_TYPE)
-                    .setId(data.getInfo().getProductId().toString())
-                    .build();
-            //TODO : Please check relevance
-            listener.onProductShareClicked(shareData);
             listener.onProductShareClicked(data);
         }
     }

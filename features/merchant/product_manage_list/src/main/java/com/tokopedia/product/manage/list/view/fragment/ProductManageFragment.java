@@ -51,7 +51,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
@@ -778,7 +777,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     public void downloadBitmap(final ProductManageViewModel productManageViewModel){
-        //TODO check relevance
         ProductShare productShare = new ProductShare(getActivity());
 
         String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();

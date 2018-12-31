@@ -4,6 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.applink)
 
