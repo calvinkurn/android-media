@@ -15,8 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.EndLessScrollBehavior;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;

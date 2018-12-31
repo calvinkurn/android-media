@@ -38,13 +38,10 @@ import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
-import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
-import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
-import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
-import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
-import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
-import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
-import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.search.data.db.FlightComboDao;
+import com.tokopedia.flight.search.data.db.FlightJourneyDao;
+import com.tokopedia.flight.search.data.db.FlightRouteDao;
+import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
 
 import java.util.concurrent.TimeUnit;
 
@@ -127,11 +124,8 @@ public class FlightModule {
     public FlightRepository provideFlightRepository(BannerDataSource bannerDataSource,
                                                     FlightAirportDataListSource flightAirportDataListSource,
                                                     FlightAirlineDataListSource flightAirlineDataListSource,
-                                                    FlightSearchSingleDataSource flightSearchSingleDataListSource,
-                                                    FlightSearchReturnDataSource flightSearchReturnDataListSource,
                                                     FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
-                                                    FlightMetaDataDBSource flightMetaDataDBSource,
                                                     FlightAirportDataListBackgroundSource flightAirportDataListBackgroundSource,
                                                     FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
                                                     FlightBookingDataSource flightBookingDataSource,
@@ -142,8 +136,7 @@ public class FlightModule {
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
                                                     FlightCancelVoucherDataSource flightCancelVoucherDataSource) {
         return new FlightRepositoryImpl(bannerDataSource, flightAirportDataListSource, flightAirlineDataListSource,
-                flightSearchSingleDataListSource, flightSearchReturnDataListSource, getFlightClassesUseCase,
-                flightCartDataSource, flightMetaDataDBSource, flightAirportDataListBackgroundSource,
+                getFlightClassesUseCase, flightCartDataSource, flightAirportDataListBackgroundSource,
                 flightCheckVoucheCodeDataSource, flightBookingDataSource, flightAirportVersionDBSource,
                 flightOrderDataSource, flightOrderMapper, flightPassengerFactorySource, flightCancellationCloudDataSource,
                 flightCancelVoucherDataSource);

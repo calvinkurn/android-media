@@ -5,6 +5,7 @@ import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,11 @@ public class TopAdsViewModel implements Item<TopAdsTypeFactory> {
     public static final int TOP_ADS_POSITION_TYPE = -56;
     private final List<Item> list;
     private int position;
+
+    public TopAdsViewModel() {
+        list = new ArrayList<>();
+        setPosition(TOP_ADS_POSITION_TYPE);
+    }
 
     public TopAdsViewModel(List<Item> list) {
         this.list = list;

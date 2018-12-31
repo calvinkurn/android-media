@@ -7,7 +7,7 @@
 
 package com.tokopedia.core.discovery.catalog.listener;
 
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.linker.model.LinkerData;
 
 /**

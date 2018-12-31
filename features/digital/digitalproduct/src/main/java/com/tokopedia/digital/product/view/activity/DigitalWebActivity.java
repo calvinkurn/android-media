@@ -144,4 +144,5 @@ public class DigitalWebActivity extends BasePresenterActivity
             finish();
         }
     }
+
 }

@@ -29,7 +29,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.model.City;
@@ -445,13 +445,14 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendAnalyticsOnDistrictSelectionClicked();
+                // Moved to module router, this class isn't supposed to be used anymore
+                /*sendAnalyticsOnDistrictSelectionClicked();
                 Intent intent = ((TkpdCoreRouter) getActivity().getApplication())
                         .getDistrictRecommendationIntent(
                                 getActivity(), token,
                                 getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)
                         );
-                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
+                startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);*/
             }
         };
     }

@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
@@ -37,7 +38,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
     @Override
     public Boolean call(Response<DigitalDataWrapper<PurchaseData>> response) {
         if (response != null && response.body() != null && response.body().getData() != null) {
-            PurchaseTracking.digital(getMappedData(response.body().getData()));
+            PurchaseTracking.digital(MainApplication.getAppContext(), getMappedData(response.body().getData()));
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                     getTrackignBranchIOData(response.body().getData())));
             return true;

@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
@@ -82,7 +83,9 @@ public class ButtonShareView extends BaseView<ProductDetailData, ProductDetailVi
                     .setType(LinkerData.PRODUCT_TYPE)
                     .setId(data.getInfo().getProductId().toString())
                     .build();
+            //TODO : Please check relevance
             listener.onProductShareClicked(shareData);
+            listener.onProductShareClicked(data);
         }
     }
 
