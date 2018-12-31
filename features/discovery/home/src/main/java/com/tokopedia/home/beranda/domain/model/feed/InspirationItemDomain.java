@@ -20,9 +20,12 @@ public class InspirationItemDomain {
 
     private final String priceInt;
 
+    private final String categoryBreadcrumb;
+
     public InspirationItemDomain(String id, String name, String url,
                                  String clickUrl, String appUrl, String imageUrl,
-                                 String price, String recommendationType, String priceInt) {
+                                 String price, String recommendationType, String priceInt,
+                                 String categoryBreadcrumb) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -32,6 +35,7 @@ public class InspirationItemDomain {
         this.price = price;
         this.recommendationType = recommendationType;
         this.priceInt = priceInt;
+        this.categoryBreadcrumb = categoryBreadcrumb;
     }
 
     public String getId() {
@@ -68,5 +72,9 @@ public class InspirationItemDomain {
 
     public String getPriceInt() {
         return priceInt;
+    }
+
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
     }
 }

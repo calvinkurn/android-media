@@ -120,7 +120,8 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, FeedResult> {
                         recommendation.getImageUrl(),
                         recommendation.getPrice(),
                         recommendation.getRecommendationType(),
-                        recommendation.getPrice()
+                        recommendation.getPrice(),
+                        recommendation.getCategoryBreadcrumbs()
                 ));
             }
         }

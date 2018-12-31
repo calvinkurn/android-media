@@ -156,7 +156,8 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getUrl(),
                 page,
                 recommendationDomain.getPriceInt(),
-                recommendationDomain.getRecommendationType()
+                recommendationDomain.getRecommendationType(),
+                recommendationDomain.getCategoryBreadcrumb()
         );
     }
 
