@@ -1,13 +1,13 @@
 package com.tokopedia.travelcalendar.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.travelcalendar.domain.GetHolidayUseCase;
 import com.tokopedia.travelcalendar.domain.TravelCalendarProvider;
 import com.tokopedia.travelcalendar.view.TravelCalendarContract;
 import com.tokopedia.travelcalendar.view.model.HolidayResult;
 import com.tokopedia.usecase.RequestParams;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,30 +35,35 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
     }
 
     @Override
-    public void getHolidayEvents() {
-        compositeSubscription.add(
-                getHolidayUseCase.createObservable(RequestParams.EMPTY)
-                        .subscribeOn(travelCalendarProvider.computation())
-                        .unsubscribeOn(travelCalendarProvider.computation())
-                        .observeOn(travelCalendarProvider.uiScheduler())
-                        .subscribe(new Subscriber<List<HolidayResult>>() {
-                            @Override
-                            public void onCompleted() {
+    public void getDataHolidayCalendar(boolean showHoliday) {
+        if (showHoliday) {
+            compositeSubscription.add(
+                    getHolidayUseCase.createObservable(RequestParams.EMPTY)
+                            .subscribeOn(travelCalendarProvider.computation())
+                            .unsubscribeOn(travelCalendarProvider.computation())
+                            .observeOn(travelCalendarProvider.uiScheduler())
+                            .subscribe(new Subscriber<List<HolidayResult>>() {
+                                @Override
+                                public void onCompleted() {
 
-                            }
+                                }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                getView().renderErrorMessage(e);
-                            }
+                                @Override
+                                public void onError(Throwable e) {
+                                    getView().renderErrorMessage(e);
+                                }
 
-                            @Override
-                            public void onNext(List<HolidayResult> holidayResults) {
-                                getView().hideLoading();
-                                getView().renderAllHolidayEvent(holidayResults);
-                            }
-                        })
-        );
+                                @Override
+                                public void onNext(List<HolidayResult> holidayResults) {
+                                    getView().hideLoading();
+                                    getView().renderAllHolidayEvent(holidayResults);
+                                }
+                            })
+            );
+        } else {
+            getView().hideLoading();
+            getView().renderAllHolidayEvent(new ArrayList<>());
+        }
     }
 
     @Override
@@ -81,7 +86,6 @@ public class TravelCalendarPresenter extends BaseDaggerPresenter<TravelCalendarC
         if (isViewAttached()) {
             getView().renderCalendarMonthList(monthMinDate, yearMinDate, monthDeviation);
         }
-
     }
 
     @Override

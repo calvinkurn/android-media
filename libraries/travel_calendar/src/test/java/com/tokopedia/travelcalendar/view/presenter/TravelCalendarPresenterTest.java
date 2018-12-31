@@ -73,7 +73,7 @@ public class TravelCalendarPresenterTest {
                 .thenReturn(Observable.error(new MessageErrorException(message)));
 
         //when
-        presenter.getHolidayEvents();
+        presenter.getDataHolidayCalendar(true);
         //then
         Mockito.verify(view).renderErrorMessage(Mockito.anyObject());
     }
@@ -88,7 +88,7 @@ public class TravelCalendarPresenterTest {
                 .thenReturn(Observable.just(holidayResultList));
 
         //when
-        presenter.getHolidayEvents();
+        presenter.getDataHolidayCalendar(true);
         //then
         Mockito.verify(view).hideLoading();
         Mockito.verify(view).renderAllHolidayEvent(Mockito.anyList());

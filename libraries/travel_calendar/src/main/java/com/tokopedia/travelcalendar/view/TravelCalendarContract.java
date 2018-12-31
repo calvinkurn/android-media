@@ -16,7 +16,7 @@ public interface TravelCalendarContract {
 
         void renderCalendarMonthList(int monthMinDate, int yearMinDate, int monthDeviation);
 
-        void renderAllHolidayEvent(List<HolidayResult> holidayResultList);
+        void renderAllHolidayEvent(List<HolidayResult> holidayYearList);
 
         void renderErrorMessage(Throwable throwable);
 
@@ -27,7 +27,7 @@ public interface TravelCalendarContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getHolidayEvents();
+        void getDataHolidayCalendar(boolean showHoliday);
 
         void getMonthsCalendarList(Date minDate, Date maxDate);
 
