@@ -111,6 +111,10 @@ public class Jordan {
         return appsflyerContainer;
     }
 
+    public void updateFcmToken(){
+        AppsflyerContainer.newInstance((Application)context).updateFCMToken();
+    }
+
     public IAppsflyerContainer getAFContainer(){
         if(context instanceof Application)
             return AppsflyerContainer.newInstance((Application)context);
@@ -160,5 +164,6 @@ public class Jordan {
     public static final String AF_VALUE_PRODUCTGROUPTYPE = "product_group";
     public static final String VALUE_ANDROID ="Android" ;
     public static final String VALUE_IDR ="IDR" ;
+
 
 }
