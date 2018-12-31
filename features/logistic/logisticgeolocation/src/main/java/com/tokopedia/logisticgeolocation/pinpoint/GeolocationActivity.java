@@ -46,6 +46,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
 
     private Bundle mBundle;
+    private boolean isFromMarketPlace = false;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject RetrofitInteractor mRepository;
     @Inject UserSession mUser;
@@ -75,6 +76,10 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                     new CheckoutAnalyticsChangeAddress(
                             ((AbstractionRouter) getApplication()).getAnalyticTracker()
                     );
+        }
+        mBundle = getIntent().getExtras();
+        if (mBundle != null) {
+            isFromMarketPlace = mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false);
         }
 
         BaseAppComponent appComponent =
@@ -142,31 +147,31 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
 
     @Override
     public void sendAnalyticsOnDropdownSuggestionItemClicked() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickDropdownSuggestionTandaiLokasiPadaTambahAddress();
     }
 
     @Override
     public void sendAnalyticsOnSetCurrentMarkerAsCurrentPosition() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickVTandaiLokasiPadaTambahAddress();
     }
 
     @Override
     public void sendAnalyticsOnBackPressClicked() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickBackArrowTandaiLokasiPadaTambahAddress();
     }
 
     @Override
     public void sendAnalyticsOnGetCurrentLocationClicked() {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickPinButtonFromTandaiLokasi();
     }
 
     @Override
     public void sendAnalyticsOnViewErrorSetPinPointLocation(String errorMessage) {
-        if (mBundle.getBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, false))
+        if (isFromMarketPlace)
             checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(errorMessage);
     }
 
