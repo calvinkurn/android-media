@@ -122,24 +122,24 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
         mBundle = getIntent().getExtras();
         if (mBundle != null) {
             LocationPass locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
-            if (locationPass != null) {
-                if (locationPass.getLatitude() != null && !locationPass.getLatitude().isEmpty()) {
-                    fragment = GoogleMapFragment.newInstance(locationPass);
-                } else {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("address", locationPass.getDistrictName()
-                            + ", "
-                            + locationPass.getCityName());
-                    params = AuthUtil
-                            .generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), params);
-                    mRepository.generateLatLngGeoCode(
-                            params,
-                            latLongListener(this, locationPass)
-                    );
-                }
+        }
+        if (locationPass != null) {
+            if (locationPass.getLatitude() != null && !locationPass.getLatitude().isEmpty()) {
+                fragment = GoogleMapFragment.newInstance(locationPass);
             } else {
-                fragment = GoogleMapFragment.newInstanceNoLocation();
+                Map<String, String> params = new HashMap<>();
+                params.put("address", locationPass.getDistrictName()
+                        + ", "
+                        + locationPass.getCityName());
+                params = AuthUtil
+                        .generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), params);
+                mRepository.generateLatLngGeoCode(
+                        params,
+                        latLongListener(this, locationPass)
+                );
             }
+        } else {
+            fragment = GoogleMapFragment.newInstanceNoLocation();
         }
         if (fragment != null) getSupportFragmentManager()
                 .beginTransaction()
