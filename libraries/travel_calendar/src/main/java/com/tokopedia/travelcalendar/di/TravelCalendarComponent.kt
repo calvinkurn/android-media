@@ -1,8 +1,7 @@
 package com.tokopedia.travelcalendar.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity
-
+import com.tokopedia.travelcalendar.view.TravelCalendarFragment
 import dagger.Component
 
 /**
@@ -12,5 +11,7 @@ import dagger.Component
 @Component(modules = arrayOf(TravelCalendarModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface TravelCalendarComponent {
 
-    fun inject(travelCalendarActivity: TravelCalendarActivity)
+    fun inject(travelCalendarFragment: TravelCalendarFragment) {
+
+    }
 }
