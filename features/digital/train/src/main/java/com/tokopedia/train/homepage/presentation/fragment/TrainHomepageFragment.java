@@ -302,7 +302,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
         startActivityForResult(TravelCalendarActivity
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.DEPARTURE_TYPE),
+                                TravelCalendarActivity.DEPARTURE_TYPE, true),
                 DATE_PICKER_DEPARTURE_REQUEST_CODE);
     }
 
@@ -310,7 +310,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
         startActivityForResult(TravelCalendarActivity
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.RETURN_TYPE),
+                                TravelCalendarActivity.RETURN_TYPE, true),
                 DATE_PICKER_RETURN_REQUEST_CODE);
     }
 

@@ -442,7 +442,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
         startActivityForResult(TravelCalendarActivity
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.DEPARTURE_TYPE),
+                                TravelCalendarActivity.DEPARTURE_TYPE, true),
                 REQUEST_CODE_DATE_PICKER_DEPARTURE);
     }
 
@@ -450,7 +450,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
         startActivityForResult(TravelCalendarActivity
                         .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.RETURN_TYPE),
+                                TravelCalendarActivity.RETURN_TYPE, true),
                 REQUEST_CODE_DATE_PICKER_RETURN);
     }
 

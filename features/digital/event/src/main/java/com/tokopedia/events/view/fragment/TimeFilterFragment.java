@@ -143,7 +143,7 @@ public class TimeFilterFragment extends Fragment {
         } else if (id == R.id.tv_from_date) {
             Calendar now = Calendar.getInstance();
             now.add(Calendar.DAY_OF_MONTH, 90);
-            Intent calendarIntent = TravelCalendarActivity.newInstance(getContext(), new Date(), new Date(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE);
+            Intent calendarIntent = TravelCalendarActivity.newInstance(getContext(), new Date(), new Date(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE, false);
             startActivityForResult(calendarIntent, REQ_OPEN_CALENDAR);
         } else if (id == R.id.iv_close_filter) {
             closeSelf.closeFragmentSelf();
