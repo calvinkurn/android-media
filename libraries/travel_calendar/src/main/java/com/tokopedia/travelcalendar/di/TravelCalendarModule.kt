@@ -12,7 +12,7 @@ import dagger.Provides
 class TravelCalendarModule {
 
     @Provides
-    internal fun provideTravelCalendarProvider(): TravelCalendarProvider {
+    fun provideTravelCalendarProvider(): TravelCalendarProvider {
         return TravelCalendarScheduler()
     }
 }
