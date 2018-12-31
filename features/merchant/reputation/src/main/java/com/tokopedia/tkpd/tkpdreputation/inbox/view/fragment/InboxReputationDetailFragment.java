@@ -25,8 +25,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -366,7 +364,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendSmiley(int score) {
         if (GlobalConfig.isSellerApp() && score == PUAS_SCORE) {
-            AdvancedAppRatingDialog.show(getActivity(), null);
+            if(getActivity() != null &&
+                    getActivity().getApplicationContext() instanceof  ReputationRouter) {
+                ((ReputationRouter)getActivity().getApplicationContext())
+                        .showAdvancedAppRatingDialog(getActivity(), null);
+            }
         }
         refreshPage();
     }
@@ -575,7 +577,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     public void showRatingDialog(Bundle bundle) {
         if (bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
-            SimpleAppRatingDialog.show(getActivity());
+            if (getActivity() != null &&
+                    getActivity().getApplicationContext() instanceof ReputationRouter) {
+                ((ReputationRouter)getActivity().getApplicationContext())
+                        .showSimpleAppRatingDialog(getActivity());
+            }
         }
     }
 }

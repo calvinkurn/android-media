@@ -10,7 +10,7 @@ import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.deposit.fragment.DepositFragment;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractor;
@@ -22,6 +22,7 @@ import com.tokopedia.core.deposit.model.SummaryDepositParam;
 import com.tokopedia.core.deposit.model.SummaryWithdraw;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
+import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
 import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
@@ -390,7 +391,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter, M
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+    public void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails) {
         viewListener.showSaldoPrioritasFragment(sellerDetails);
     }
 

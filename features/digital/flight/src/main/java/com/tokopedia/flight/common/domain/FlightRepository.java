@@ -6,6 +6,7 @@ import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
+import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -21,10 +22,7 @@ import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequ
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight_dbflow.FlightAirportDB;
-import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.flight_dbflow.FlightPassengerDB;
-import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,23 +47,7 @@ public interface FlightRepository {
 
     Observable<FlightClassEntity> getFlightClassById(int classId);
 
-    Observable<List<FlightAirlineDB>> getAirlineList();
-
-    Observable<List<FlightAirlineDB>> getAirlineList(List<String> distinctSearchResultList);
-
     Observable<List<FlightAirlineDB>> getAirlineList(String airlineId);
-
-    Observable<Boolean> deleteFlightCacheSearch();
-
-    Observable<Boolean> deleteFlightCacheSearch(boolean isReturning);
-
-    Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams);
-
-    Observable<List<FlightMetaDataDB>> getFlightMetaData(RequestParams requestParams);
-
-    Observable<Integer> getFlightSearchCount(RequestParams requestParams);
-
-    Observable<FlightSearchSingleRouteDB> getFlightSearchById(boolean isReturning, String id);
 
     Observable<CartEntity> addCart(FlightCartRequest request, String idEmpotencyKey);
 
@@ -95,8 +77,6 @@ public interface FlightRepository {
 
     Observable<SendEmailEntity> sendEmail(Map<String, Object> params);
 
-    Observable<Boolean> isSearchCacheExpired(boolean isReturn);
-
     Observable<List<FlightPassengerDB>> getPassengerList(String passengerId);
 
     Observable<FlightPassengerDB> getSinglePassengerById(String passengerId);
@@ -109,11 +89,9 @@ public interface FlightRepository {
 
     Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
 
-    Observable<List<FlightAirlineDB>> refreshAirlines();
-
-    Observable<FlightAirlineDB> getAirlineCacheById(String airlineId);
-
     Observable<List<Passenger>> getCancelablePassenger(String invoiceId);
+
+    Observable<List<Reason>> getCancellationReasons();
 
     Observable<EstimateRefundResultEntity> estimateRefund(FlightEstimateRefundRequest object);
 

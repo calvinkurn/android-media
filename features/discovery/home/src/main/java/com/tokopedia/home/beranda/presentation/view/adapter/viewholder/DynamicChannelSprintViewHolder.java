@@ -14,11 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
@@ -46,6 +46,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private ItemAdapter itemAdapter;
     private RecyclerView recyclerView;
     private static final int spanCount = 3;
+    private Context context;
 
     public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener, CountDownView.CountDownListener countDownListener) {
         super(itemView);
@@ -69,13 +70,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount,
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.page_margin), true));
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_10), true));
     }
 
     @Override
     public void bind(final DynamicChannelViewModel element) {
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
+            listener.onServerTimeReceived(element.getChannel().getHeader().getServerTimeUnix());
             itemAdapter.setChannel(channel);
             homeChannelTitle.setText(channel.getHeader().getName());
 
@@ -86,9 +88,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             }
             setupClickListeners(channel);
 
-            if (isSprintSale(channel)) {
+            if (isSprintSale(channel) || isSprintSaleLego(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(expiredTime, countDownListener);
+                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);
@@ -102,10 +104,12 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         seeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSprintSale(channel)) {
-                    HomePageTracking.eventClickSeeAllProductSprint();
+                if (isSprintSale(channel) || isSprintSaleLego(channel)) {
+                    HomePageTracking.eventClickSeeAllProductSprint(context);
                 } else {
-                    HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                    HomePageTracking.eventClickSeeAllDynamicChannel(
+                            context,
+                            DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
             }
@@ -113,12 +117,18 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     }
 
     private static boolean isSprintSale(DynamicHomeChannel.Channels channel) {
-        return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout());
+        return DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL.equals(channel.getLayout());
+    }
+
+    private static boolean isSprintSaleLego(DynamicHomeChannel.Channels channel) {
+        return DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.equals(channel.getLayout());
     }
 
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         private final HomeCategoryListener listener;
+        private final Context context;
         private DynamicHomeChannel.Channels channel;
         private DynamicHomeChannel.Grid[] list;
 
@@ -126,6 +136,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         public ItemAdapter(Context context, HomeCategoryListener listener) {
             this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
+            this.context = context;
         }
 
         public void setChannel(DynamicHomeChannel.Channels channel) {
@@ -147,19 +158,28 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 if (grid != null) {
                     ImageHandler.loadImageThumbs(holder.getContext(),
                             holder.channelImage1, grid.getImageUrl());
+                    TextViewHelper.displayText(holder.channelName, grid.getName());
                     TextViewHelper.displayText(holder.channelPrice1, grid.getPrice());
                     TextViewHelper.displayText(holder.channelDiscount1, grid.getDiscount());
                     TextViewHelper.displayText(holder.channelBeforeDiscPrice1, grid.getSlashedPrice());
+                    TextViewHelper.displayText(holder.channelCashback, grid.getCashback());
 
                     holder.itemContainer1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (isSprintSale(channel)) {
-                                HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown()));
+                                HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
+                                        channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown()));
                                 String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
-                            } else {
-                                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));
+                            } else if(isSprintSaleLego(channel)){
+                                HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
+                                        channel.getEnhanceClickSprintSaleLegoHomePage(position, countDownView.getCurrentCountDown()));
+                                String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
+                                listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
+                            } else  {
+                                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context,
+                                        channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));
                                 String attr = channel.getHomeAttribution(position + 1, grid.getAttribution());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             }
@@ -180,8 +200,10 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView channelImage1;
+        private TextView channelName;
         private TextView channelPrice1;
         private TextView channelDiscount1;
+        private TextView channelCashback;
         private TextView channelBeforeDiscPrice1;
         private RelativeLayout itemContainer1;
         private View view;
@@ -191,6 +213,8 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             this.view = itemView;
             channelImage1 = (ImageView) itemView.findViewById(R.id.channel_image_1);
             channelPrice1 = (TextView) itemView.findViewById(R.id.channel_price_1);
+            channelCashback = (TextView) itemView.findViewById(R.id.channel_cashback);
+            channelName = (TextView) itemView.findViewById(R.id.product_name);
             channelDiscount1 = (TextView) itemView.findViewById(R.id.channel_discount_1);
             channelBeforeDiscPrice1 = (TextView) itemView.findViewById(R.id.channel_before_disc_price_1);
             itemContainer1 = itemView.findViewById(R.id.channel_item_container_1);

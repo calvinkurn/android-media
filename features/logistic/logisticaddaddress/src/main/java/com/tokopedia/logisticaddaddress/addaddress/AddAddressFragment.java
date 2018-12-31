@@ -29,6 +29,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -482,6 +483,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         address.setReceiverName(receiverNameEditText.getText().toString());
         address.setAddressStreet(addressEditText.getText().toString());
         address.setReceiverPhone(receiverPhoneEditText.getText().toString());
+        if (!TextUtils.isEmpty(districtEditText.getText())) {
+            TrackingUtils.sendMoEngageAddressEvent(getActivity(), districtEditText.getText().toString());
+        }
     }
 
     private View.OnClickListener onCityDistrictClick() {
@@ -768,7 +772,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     ? ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART
                     : ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
         }
-        return super.getScreenName();
+        return ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_USER;
     }
 
     @Override
@@ -1169,7 +1173,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void sendAnalyticsScreenName(String screenName) {
-        if (isAddAddressFromCartCheckoutMarketplace())
-            checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
     }
 }

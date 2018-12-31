@@ -2,6 +2,7 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.facebook.react.bridge.Promise;
@@ -11,6 +12,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -36,6 +39,7 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
     private static final int LOGIN_REQUEST_CODE = 1005;
+    private final Context appContext;
 
     private Context context;
     private ProgressDialog progressDialog;
@@ -43,6 +47,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public ReactNavigationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
+        this.appContext = reactContext.getApplicationContext();
     }
 
     @Override
@@ -88,8 +93,21 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
+    public void loginWithresult(Promise promise) {
+        Intent intent = RouteManager.getIntent(getCurrentActivity(), ApplinkConst.LOGIN);
+        String UserID = getUserId(getCurrentActivity().getApplicationContext());
+        if (UserID.equals("")){
+            getCurrentActivity().startActivityForResult(intent, ReactConst.REACT_LOGIN_REQUEST_CODE);
+        }
+    }
+
+    @ReactMethod
     public void getCurrentUserId(Promise promise) {
-        promise.resolve(SessionHandler.getLoginID(context));
+        promise.resolve(getUserId(context));
+    }
+
+    public static String getUserId(Context context){
+        return SessionHandler.getLoginID(context);
     }
 
 
@@ -173,7 +191,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
-        TrackingUtils.eventTrackingEnhancedEcommerce(maps);
+        TrackingUtils.eventTrackingEnhancedEcommerce(appContext, maps);
     }
 
     @ReactMethod

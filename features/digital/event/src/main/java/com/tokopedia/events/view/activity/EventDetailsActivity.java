@@ -149,6 +149,17 @@ public class EventDetailsActivity extends EventBaseActivity implements
         return null;
     }
 
+
+    protected void bindCustomViews() {
+        timeHolder = new ImageTextViewHolder();
+        locationHolder = new ImageTextViewHolder();
+        addressHolder = new ImageTextViewHolder();
+
+        ButterKnife.bind(timeHolder, timeView);
+        ButterKnife.bind(locationHolder, locationView);
+        ButterKnife.bind(addressHolder, addressView);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -374,7 +385,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

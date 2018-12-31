@@ -12,16 +12,18 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyAppsFlyer;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Validation;
-import com.tokopedia.digital.utils.data.RequestBodyAppsFlyer;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -108,9 +110,9 @@ public class DeviceUtil {
     }
 
     public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam() {
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
+        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
         RequestBodyAppsFlyer requestBodyAppsFlyer = new RequestBodyAppsFlyer();
-        requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId());
+        requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId(MainApplication.getAppContext()));
         requestBodyAppsFlyer.setDeviceId(analHandler.getAdsId());
         return requestBodyAppsFlyer;
     }

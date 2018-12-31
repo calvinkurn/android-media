@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;

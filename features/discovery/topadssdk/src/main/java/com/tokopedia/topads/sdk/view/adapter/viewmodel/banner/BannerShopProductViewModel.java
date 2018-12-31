@@ -14,16 +14,12 @@ import java.util.List;
 
 public class BannerShopProductViewModel implements Item<BannerAdsTypeFactory> {
 
-    private List<Product> productList;
+    private Product product;
     private final String appLink;
     private final String adsClickUrl;
 
-    public BannerShopProductViewModel(Cpm cpm, String appLink, String adsClickUrl) {
-        if (cpm != null && cpm.getCpmShop() != null) {
-            productList = cpm.getCpmShop().getProducts();
-        } else {
-            productList = new ArrayList<>();
-        }
+    public BannerShopProductViewModel(Product product, String appLink, String adsClickUrl) {
+        this.product = product;
         this.appLink = appLink;
         this.adsClickUrl = adsClickUrl;
     }
@@ -36,8 +32,9 @@ public class BannerShopProductViewModel implements Item<BannerAdsTypeFactory> {
         return adsClickUrl;
     }
 
-    public List<Product> getProductList() {
-        return productList;
+
+    public Product getProduct() {
+        return product;
     }
 
     @Override

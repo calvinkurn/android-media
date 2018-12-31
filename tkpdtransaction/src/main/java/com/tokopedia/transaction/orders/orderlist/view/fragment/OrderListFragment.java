@@ -12,12 +12,11 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
@@ -27,11 +26,12 @@ import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContra
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
@@ -180,27 +180,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     protected void initInjector() {
         orderListComponent = DaggerOrderListComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getActivity().getApplication ()).getBaseAppComponent())
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
         orderListComponent.inject(this);
     }
 
-
     protected void initialListener(Activity activity) {
     }
-
 
     protected void setupArguments(Bundle arguments) {
         mOrderCategory = arguments.getString(ORDER_CATEGORY);
     }
-
 
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         emptyLayout = view.findViewById(R.id.empty_view);
     }
-
 
     protected void setViewListener() {
         refreshHandler = new RefreshHandler(getActivity(), getView(), this);
@@ -281,7 +277,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderEmptyList(int typeRequest) {
-        if(typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
+        if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
             swipeToRefresh.setVisibility(View.GONE);
             emptyLayout.setVisibility(View.VISIBLE);
         }
@@ -309,11 +305,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
         };
     }
 
-
     protected void initialVar() {
         orderListAdapter = new OrderListAdapter(getActivity(), this);
     }
-
 
     protected void setActionVar() {
         initialData();
@@ -324,7 +318,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 && (orderListAdapter == null || orderListAdapter.getItemCount() == 0)) {
             refreshHandler.startRefresh();
         }
-
     }
 
     @Override
@@ -380,11 +373,16 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     }
 
-
     @Override
     public void startUri(String uri) {
         if (!uri.equals(""))
-            TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
+            try {
+                startActivity(((UnifiedOrderListRouter) getActivity()
+                        .getApplication()).getWebviewActivityWithIntent(getContext(),
+                        URLEncoder.encode(uri, "UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
     }
 
     @Override

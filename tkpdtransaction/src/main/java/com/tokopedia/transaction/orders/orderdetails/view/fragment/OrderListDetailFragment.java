@@ -24,8 +24,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
@@ -47,6 +47,8 @@ import javax.inject.Inject;
 
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -57,6 +59,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
+    public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -169,7 +172,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         if (invoice.invoiceUrl().equals("")) {
             lihat.setVisibility(View.GONE);
         }
-        lihat.setOnClickListener(view -> TransactionPurchaseRouter.startWebViewActivity(getContext(), invoice.invoiceUrl()));
+        lihat.setOnClickListener(view -> {
+            try {
+                startActivity(((UnifiedOrderListRouter)getActivity()
+                        .getApplication()).getWebviewActivityWithIntent(getContext(),
+                        URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -245,7 +256,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                TransactionPurchaseRouter.startWebViewActivity(getContext(), contactUs.helpUrl());
+                try {
+                    startActivity(((UnifiedOrderListRouter)getActivity()
+                            .getApplication()).getWebviewActivityWithIntent(getContext(),
+                            URLEncoder.encode(contactUs.helpUrl(), ORDER_LIST_URL_ENCODING)));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -317,7 +334,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 newUri = newUri.replace("idem_potency_key=", "");
                 RouteManager.route(getActivity(), newUri);
             } else if (uri != null && !uri.equals("")){
-                TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
+                try {
+                    startActivity(((UnifiedOrderListRouter) getActivity()
+                            .getApplication()).getWebviewActivityWithIntent(getContext(),
+                            URLEncoder.encode(uri, ORDER_LIST_URL_ENCODING)));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }

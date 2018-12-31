@@ -23,31 +23,31 @@ import javax.crypto.spec.SecretKeySpec;
  *         Modified by kulomady add method without params
  */
 public class AuthUtil {
-    private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
+    public static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String MAC_ALGORITHM = "HmacSHA1";
-    private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
+    public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
 
-    private static final String HEADER_CONTENT_TYPE = "Content-Type";
-    private static final String HEADER_X_METHOD = "X-Method";
-    private static final String HEADER_REQUEST_METHOD = "Request-Method";
-    private static final String HEADER_CONTENT_MD5 = "Content-MD5";
-    private static final String HEADER_DATE = "Date";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_X_METHOD = "X-Method";
+    public static final String HEADER_REQUEST_METHOD = "Request-Method";
+    public static final String HEADER_CONTENT_MD5 = "Content-MD5";
+    public static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String HEADER_USER_ID = "X-User-ID";
+    public static final String HEADER_USER_ID = "X-User-ID";
     public static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     public static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
-    private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
+    public static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
-    private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
+    public static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
-    private static final String HEADER_PATH = "x-tkpd-path";
+    private static final String HEADER_PATH = "X-Tkpd-Path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
     private static final String HEADER_SESSION_ID = "tkpd-SessionId";
-    private static final String HEADER_OS_VERSION = "os_version";
+    public static final String HEADER_OS_VERSION = "os_version";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -66,7 +66,7 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
-    public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
+    private static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
 
     /**
      * default key is KEY_WSV$
@@ -155,8 +155,45 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    public static Map<String, String> generateHeadersWithPath(
+            String path, String strParam, String method, String authKey, String contentType, String userId
+    ) {
+        Map<String, String> finalHeader = getDefaultHeaderMapOld(
+                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
+                authKey, DATE_FORMAT, userId
+        );
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_PATH, path);
+        return finalHeader;
+    }
 
-    public static TKPDMapParam<String, String> generateParamsNetwork(String userId, String deviceId, TKPDMapParam<String, String> params) {
+    public static Map<String, String> getDefaultHeaderMapOld(String path, String strParam, String method,
+                                                          String contentType, String authKey,
+                                                          String dateFormat, String userId) {
+        String date = generateDate(dateFormat);
+        String contentMD5 = generateContentMd5(strParam);
+
+        String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, contentType);
+        headerMap.put(HEADER_X_METHOD, method);
+        headerMap.put(HEADER_REQUEST_METHOD, method);
+        headerMap.put(HEADER_CONTENT_MD5, contentMD5);
+        headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
+
+        headerMap.put(HEADER_USER_ID, userId);
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        return headerMap;
+    }
+
+    public static Map<String, String> generateParamsNetwork(String userId, String deviceId, Map<String, String> params) {
         String hash = md5(userId + "~" + deviceId);
         params.put(PARAM_USER_ID, userId);
         params.put(PARAM_DEVICE_ID, deviceId);
@@ -166,7 +203,7 @@ public class AuthUtil {
         return params;
     }
 
-    private static String calculateRFC2104HMAC(String authString, String authKey) {
+    public static String calculateRFC2104HMAC(String authString, String authKey) {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
             Mac mac = Mac.getInstance(MAC_ALGORITHM);
@@ -180,11 +217,11 @@ public class AuthUtil {
         }
     }
 
-    private static String generateContentMd5(String s) {
+    public static String generateContentMd5(String s) {
         return md5(s);
     }
 
-    private static String generateDate(String dateFormat) {
+    public static String generateDate(String dateFormat) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         return simpleDateFormat.format(new Date());
     }

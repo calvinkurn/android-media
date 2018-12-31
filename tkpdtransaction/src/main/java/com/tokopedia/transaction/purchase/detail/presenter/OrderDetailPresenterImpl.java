@@ -314,8 +314,8 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     public void processFinish(Context context, String orderId, String orderStatus) {
         TKPDMapParam<String, String> orderDetailParams = new TKPDMapParam<>();
         orderDetailParams.put(ORDER_ID_KEY, orderId);
-        if (orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERED))
-                || orderStatus.equals(context.getString(com.tokopedia.core.R.string.ORDER_DELIVERY_FAILURE))) {
+        if (orderStatus.equals(context.getString(com.tokopedia.core2.R.string.ORDER_DELIVERED))
+                || orderStatus.equals(context.getString(com.tokopedia.core2.R.string.ORDER_DELIVERY_FAILURE))) {
             orderDetailInteractor.confirmDeliveryConfirm(confirmShipmentSubscriber(),
                     AuthUtil.generateParamsNetwork(context, orderDetailParams));
         } else {
@@ -423,7 +423,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showSnackbar(e.getMessage());
+                mainView.showSnackbarWithCloseButton(e.getMessage());
             }
 
             @Override

@@ -2,7 +2,7 @@ package com.tokopedia.flight.orderlist.data.cloud.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.flight.search.data.cloud.model.response.StopDetailEntity;
+import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity;
 
 import java.util.List;
 

@@ -15,5 +15,7 @@ public interface AnalyticTracker {
 
     void sendScreen(Activity activity, String screenName);
 
+    void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId);
+
     void sendEnhancedEcommerce(Map<String, Object> trackingData);
 }

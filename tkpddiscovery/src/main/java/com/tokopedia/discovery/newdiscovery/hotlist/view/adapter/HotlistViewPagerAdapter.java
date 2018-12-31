@@ -24,14 +24,14 @@ import com.tokopedia.discovery.R;
 
 public class HotlistViewPagerAdapter extends PagerAdapter {
 
-    private final ItemClickListener mItemClickListener;
+    private final HotlistListener mHotlistListener;
     private Context context;
     private String descText;
 
-    public HotlistViewPagerAdapter(Context context, String desc, ItemClickListener mItemClickListener) {
+    public HotlistViewPagerAdapter(Context context, String desc, HotlistListener mHotlistListener) {
         this.context=context;
         this.descText = desc;
-        this.mItemClickListener = mItemClickListener;
+        this.mHotlistListener = mHotlistListener;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class HotlistViewPagerAdapter extends PagerAdapter {
                     style.setSpan(new ClickableSpan() {
                         @Override
                         public void onClick(View widget) {
-                            mItemClickListener.onHotlistDescClicked(messageClickAble);
+                            mHotlistListener.onHotlistDescClicked(messageClickAble);
                         }
                     }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }

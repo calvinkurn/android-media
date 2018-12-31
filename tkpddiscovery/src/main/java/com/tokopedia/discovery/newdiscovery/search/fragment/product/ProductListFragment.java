@@ -10,8 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.BannerWebView;
@@ -22,7 +21,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -30,7 +28,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
@@ -40,11 +37,10 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.ProductListAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -62,7 +58,8 @@ import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -77,7 +74,7 @@ import javax.inject.Inject;
 
 public class ProductListFragment extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductListFragmentView,
-        ItemClickListener, WishListActionListener {
+        ProductListener, WishListActionListener {
 
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -85,6 +82,7 @@ public class ProductListFragment extends SearchSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
+    private static final String SEARCH_PRODUCT_TRACE = "search_product_trace";
     private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
     @Inject
@@ -93,7 +91,7 @@ public class ProductListFragment extends SearchSectionFragment
     private EndlessRecyclerviewListener linearLayoutLoadMoreTriggerListener;
     private EndlessRecyclerviewListener gridLayoutLoadMoreTriggerListener;
 
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSession;
     private GCMHandler gcmHandler;
     private Config topAdsConfig;
     private ProductListAdapter adapter;
@@ -104,6 +102,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
+    private PerformanceMonitoring performanceMonitoring;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
@@ -119,7 +118,7 @@ public class ProductListFragment extends SearchSectionFragment
         super.onCreate(savedInstanceState);
         similarSearchManager = SimilarSearchManager.getInstance(getContext());
         loadDataFromArguments();
-        sessionHandler = new SessionHandler(getContext());
+        userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
     }
 
@@ -178,7 +177,7 @@ public class ProductListFragment extends SearchSectionFragment
     private void initTopAdsConfig() {
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
     }
@@ -272,7 +271,7 @@ public class ProductListFragment extends SearchSectionFragment
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH); //[TODO replace source with source from parameters
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getActivity()));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         adsParams.getParam().putAll(getAdditionalParams());
 
         if (getFlagFilterHelper() != null &&
@@ -320,7 +319,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void sendProductImpressionTrackingEvent(List<Visitable> list) {
-        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "";
         List<Object> dataLayerList = new ArrayList<>();
         for (Visitable object : list) {
             if (object instanceof ProductItem) {
@@ -369,12 +368,12 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private String generateUserId() {
-        return sessionHandler.isV4Login() ? sessionHandler.getLoginID() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : null;
     }
 
     private String generateUniqueId() {
-        return sessionHandler.isV4Login() ?
-                AuthUtil.md5(sessionHandler.getLoginID()) :
+        return userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
                 AuthUtil.md5(gcmHandler.getRegistrationId());
     }
 
@@ -504,8 +503,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = SessionHandler.isV4Login(getContext()) ?
-                SessionHandler.getLoginID(getContext()) : "";
+        String userId = userSession.isLoggedIn() ?
+                userSession.getUserId() : "";
 
         SearchTracking.trackEventClickSearchResultProduct(
                 getActivity(),
@@ -579,7 +578,7 @@ public class ProductListFragment extends SearchSectionFragment
         getSelectedFilter().put(option.getKey(), mapValue);
         clearDataFilterSort();
         reloadData();
-        UnifyTracking.eventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelected);
+        UnifyTracking.eventSearchResultQuickFilter(getActivity(),option.getKey(), option.getValue(), isQuickFilterSelected);
     }
 
     @Override
@@ -600,7 +599,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),true, getQueryKey());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
@@ -614,7 +613,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
+        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),false, getQueryKey());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
@@ -623,6 +622,13 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void notifyAdapter() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void stopTracePerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
     }
 
     @Override
@@ -635,12 +641,12 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public boolean isUserHasLogin() {
-        return SessionHandler.isV4Login(getContext());
+        return userSession.isLoggedIn();
     }
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+        return userSession.getUserId();
     }
 
     @Override
@@ -680,6 +686,7 @@ public class ProductListFragment extends SearchSectionFragment
         initTopAdsParams();
         SearchParameter searchParameter
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
         presenter.loadData(searchParameter, isForceSearch(), getAdditionalParams());
     }
 

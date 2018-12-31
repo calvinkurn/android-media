@@ -3,7 +3,7 @@ package com.tokopedia.transaction.addtocart.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.apiservices.transaction.TXCartService;
 import com.tokopedia.core.network.apiservices.user.PeopleActService;

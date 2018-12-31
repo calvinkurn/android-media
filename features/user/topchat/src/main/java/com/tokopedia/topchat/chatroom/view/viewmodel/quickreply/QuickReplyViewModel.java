@@ -6,15 +6,25 @@ package com.tokopedia.topchat.chatroom.view.viewmodel.quickreply;
 
 public class QuickReplyViewModel{
 
-    private String message;
+    private String text;
+    private String value;
+    private String action;
 
-    public QuickReplyViewModel(String message) {
-
-        this.message = message;
+    public QuickReplyViewModel(String text, String value, String action) {
+        this.text = text;
+        this.value = value;
+        this.action = action;
     }
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public String getAction() {
+        return action;
+    }
 }

@@ -13,24 +13,21 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by nabillasabbaha on 2/28/18.
@@ -42,7 +39,6 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     private static final String SAVED_PRODUCT_DATA = "saved_product_data";
 
     private TopUpTokoCashView topUpTokoCashView;
-    private TopupTokoCashPresenter presenter;
     private ProgressBar progressBar;
 
     private String categoryId;
@@ -50,6 +46,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     private CategoryData categoryData;
     private Product selectedProduct;
 
+    @Inject
+    TopupTokoCashPresenter presenter;
 
     public static TopupTokoCashFragment newInstance() {
         TopupTokoCashFragment fragment = new TopupTokoCashFragment();
@@ -68,18 +66,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
-        );
-        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource);
 
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
-                getActivity(), digitalCategoryRepository
-        );
-
-        presenter = new TopupTokoCashPresenter(getCategoryByIdUseCase, this);
+        presenter.attachView(this);
 
         if (savedInstanceState == null) {
             showLoading();
@@ -98,7 +86,8 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
 
     @Override
     protected void initInjector() {
-
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
     }
 
     @Override
@@ -204,7 +193,7 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
                             selectedProduct);
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
                 if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                     String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {
@@ -220,4 +209,5 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
         super.onDestroy();
         presenter.destroyView();
     }
+
 }

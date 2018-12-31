@@ -15,6 +15,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <activity
+            android:name=".affiliate.ProductAffiliateActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+
+        <activity
             android:name=".ProductYoutubeActivity"
             android:screenOrientation="landscape" />
 
@@ -65,6 +69,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
+        <activity android:name=".DescriptionActivityNew"/>
+
+        <activity android:name=".ProductInfoShortDetailActivity"/>
     </application>
 
 </manifest>

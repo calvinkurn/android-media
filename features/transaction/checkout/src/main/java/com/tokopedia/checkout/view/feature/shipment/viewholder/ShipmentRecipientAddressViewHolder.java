@@ -71,11 +71,12 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-        if (recipientAddress.isStateExtraPaddingTop()) {
-            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_16));
+        if (recipientAddress.isFromPdp()) {
+            tvSendToMultipleAddress.setVisibility(View.GONE);
         } else {
-            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_0));
+            tvSendToMultipleAddress.setVisibility(View.VISIBLE);
         }
+
         tvChangeAddress.setVisibility(View.GONE);
         tvAddressStatus.setVisibility(View.GONE);
         tvAddressName.setVisibility(View.GONE);

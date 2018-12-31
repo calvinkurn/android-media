@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;

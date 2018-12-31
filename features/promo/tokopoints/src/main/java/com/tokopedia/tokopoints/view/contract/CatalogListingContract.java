@@ -21,8 +21,6 @@ public interface CatalogListingContract {
 
         void onSuccessBanners(List<CatalogBanner> banners);
 
-        void onSuccessPoints(String point);
-
         void onErrorPoint(String errorMessage);
 
         void hideLoader();
@@ -41,24 +39,32 @@ public interface CatalogListingContract {
 
         Resources getResources();
 
-        void refreshTab(int categoryId);
-
-        int getSelectedCategoryId();
-
-        void updateSelectedCategoryId(int id);
+        void refreshTab();
 
         boolean isAddedView();
 
         void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails);
+
+        void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getHomePageData();
+        void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire);
 
         void getPointData();
 
-        int getSelectedCategoryId();
+        void setPointRangeId(int id);
+
+        int getPointRangeId();
+
+        void setCurrentCategoryId(int id);
+
+        int getCurrentCategoryId();
+
+        void setCurrentSubCategoryId(int id);
+
+        int getCurrentSubCategoryId();
     }
 }

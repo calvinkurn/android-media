@@ -250,7 +250,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private void sendAppsFlyerATC(Map<String, Object> afValue) {
-        PaymentTracking.atcAF(afValue);
+        PaymentTracking.atcAF(view.getActivity(), afValue);
     }
 
     @Override
@@ -298,7 +298,6 @@ public class CartPresenter implements ICartPresenter {
                         }
                         try {
                             processCartAnalytics(cartData);
-                            trackCanceledCart(canceledCartItem);
                             trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -348,7 +347,6 @@ public class CartPresenter implements ICartPresenter {
                                 String.valueOf(canceledCartProduct.getProductQuantity()));
                         try {
                             processCartAnalytics(cartData);
-                            trackCanceledProduct(canceledCartItem, canceledCartProduct);
                             trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -445,7 +443,7 @@ public class CartPresenter implements ICartPresenter {
         gtmCart.addProduct(analysisProduct.getProduct());
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.REMOVE_ACTION);
-        UnifyTracking.eventATCSuccess(gtmCart);
+        UnifyTracking.eventATCSuccess(view.getActivity(), gtmCart);
     }
 
     private void addToCartAnalytic(CartProduct cartProduct,
@@ -456,7 +454,7 @@ public class CartPresenter implements ICartPresenter {
         gtmCart.addProduct(analysisProduct.getProduct());
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.ADD_ACTION);
-        UnifyTracking.eventATCSuccess(gtmCart);
+        UnifyTracking.eventATCSuccess(view.getActivity(), gtmCart);
     }
 
     @NonNull
@@ -573,8 +571,8 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void processGetTickerGTM() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_CART_TEXT);
+        if (TrackingUtils.getGtmString(view.getActivity(), AppEventTracking.GTM.TICKER_CART).equalsIgnoreCase("true")) {
+            String message = TrackingUtils.getGtmString(view.getActivity(), AppEventTracking.GTM.TICKER_CART_TEXT);
             view.renderVisibleTickerGTM(message);
         } else {
             view.renderInvisibleTickerGTM();
@@ -646,7 +644,7 @@ public class CartPresenter implements ICartPresenter {
     public void trackStep1CheckoutEE(Checkout checkoutData) {
         checkoutData.setStep("1");
         checkoutData.setCheckoutOption(PARAM_CART_PAGE_LOADED);
-        PaymentTracking.eventCartCheckoutStep1(checkoutData);
+        PaymentTracking.eventCartCheckoutStep1(view.getActivity(), checkoutData);
     }
 
     @Override
@@ -654,7 +652,7 @@ public class CartPresenter implements ICartPresenter {
         Checkout checkoutData = getCheckoutTrackingData();
         checkoutData.setStep("2");
         checkoutData.setCheckoutOption(PARAM_CLICK_PAYMENT_OPTION_BUTTON);
-        PaymentTracking.eventCartCheckoutStep2(checkoutData, paymentId);
+        PaymentTracking.eventCartCheckoutStep2(view.getActivity(), checkoutData, paymentId);
     }
 
     @Override
@@ -673,7 +671,7 @@ public class CartPresenter implements ICartPresenter {
             if (!purchases.isEmpty()) {
                 for (Purchase purchase : purchases) {
                     purchase.setTransactionID(thanksTopPayData.getParameter().getPaymentId());
-                    PaymentTracking.eventTransactionGTM(purchase);
+                    PaymentTracking.eventTransactionGTM(view.getActivity(), purchase);
                 }
             }
         }
@@ -709,32 +707,6 @@ public class CartPresenter implements ICartPresenter {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
         cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
         cache.applyEditor();
-    }
-
-    private void trackCanceledCart(CartItem canceledCartItem) {
-        if (canceledCartItem != null
-                && canceledCartItem.getCartProducts() != null
-                && !canceledCartItem.getCartProducts().isEmpty()) {
-            for (CartProduct cartProduct : canceledCartItem.getCartProducts()) {
-                trackCanceledProduct(canceledCartItem, cartProduct);
-            }
-        }
-    }
-
-    private void trackCanceledProduct(CartItem cartData, CartProduct cartProduct) {
-        if (cartData != null
-                && cartData.getCartShop() != null
-                && cartProduct != null) {
-            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
-            product.setName(cartProduct.getProductName());
-            product.setId(cartProduct.getProductId());
-            product.setUrl(cartProduct.getProductUrl());
-            product.setImageUrl(cartProduct.getProductPic());
-            product.setPrice(cartProduct.getProductPrice());
-            product.setShopId(cartData.getCartShop().getShopId());
-
-            TrackingUtils.sendMoEngageRemoveProductFromCart(product);
-        }
     }
 
     @NonNull
