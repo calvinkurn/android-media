@@ -118,11 +118,14 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     public void inflateFragment() {
+        LocationPass locationPass = null;
         Fragment fragment = null;
         mBundle = getIntent().getExtras();
+
         if (mBundle != null) {
-            LocationPass locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
+            locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
         }
+
         if (locationPass != null) {
             if (locationPass.getLatitude() != null && !locationPass.getLatitude().isEmpty()) {
                 fragment = GoogleMapFragment.newInstance(locationPass);
