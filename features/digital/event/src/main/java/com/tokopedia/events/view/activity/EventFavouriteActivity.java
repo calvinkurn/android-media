@@ -78,10 +78,10 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
         toolbar.setOverflowIcon(drawable);
 
         if (getSupportActionBar() != null)
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);
 
-        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, R.style.WebViewToolbarSubtitleText);
+        toolbar.setTitleTextAppearance(this, R.style.Toolbar_TitleText);
+        toolbar.setSubtitleTextAppearance(this, R.style.SubTitleTextAppearance);
     }
 
     @Override

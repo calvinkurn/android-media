@@ -15,6 +15,13 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = "${artifactIdTransactionAnalytics}"
+    groupId = "${groupIdTransaction}"
+    versionName = "${transactionGroupVersion}"
+    artifactName = "${artifactIdTransactionAnalytics}-release"
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -29,3 +36,4 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+apply from: "$rootProject.projectDir/publish_local.gradle"
