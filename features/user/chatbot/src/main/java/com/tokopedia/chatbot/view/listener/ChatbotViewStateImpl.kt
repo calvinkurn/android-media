@@ -9,6 +9,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -25,6 +27,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubb
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 
 /**
  * @author by nisie on 07/12/18.

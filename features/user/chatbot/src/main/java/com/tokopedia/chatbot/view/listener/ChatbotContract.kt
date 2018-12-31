@@ -18,7 +18,7 @@ interface ChatbotContract {
 
         fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String)
 
-        fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, generateStartTime: String)
+        fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, startTime: String)
 
         fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String)
                 : AttachInvoiceSentViewModel

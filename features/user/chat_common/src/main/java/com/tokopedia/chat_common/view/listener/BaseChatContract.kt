@@ -13,7 +13,7 @@ import com.tokopedia.websocket.WebSocketResponse
 
 
 interface BaseChatContract {
-    interface View : BaseListViewListener<Visitable<*>> {
+    interface View : BaseListViewListener<Visitable<*>>, CustomerView {
 
         fun onReceiveStartTypingEvent()
 
@@ -30,7 +30,7 @@ interface BaseChatContract {
 
         fun mapToVisitable(pojo: ChatSocketPojo): Visitable<*>
 
-        fun sendMessage(sendMessage: String)
+        fun sendMessage(messageId : String, sendMessage: String)
 
     }
 }

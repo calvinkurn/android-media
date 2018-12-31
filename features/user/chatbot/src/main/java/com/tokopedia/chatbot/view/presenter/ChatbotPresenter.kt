@@ -3,23 +3,29 @@ package com.tokopedia.chatbot.view.presenter
 import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_END_TYPING
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_READ_MESSAGE
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_REPLY_MESSAGE
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_TYPING
-import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
+import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
+import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
+import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
@@ -34,9 +40,11 @@ import javax.inject.Inject
  */
 class ChatbotPresenter @Inject constructor(
         var getExistingChatUseCase: GetExistingChatUseCase,
-        var userSession: UserSessionInterface,
-        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper)
-    : BaseDaggerPresenter<ChatbotContract.View>(), ChatbotContract.Presenter {
+        override var userSession: UserSessionInterface,
+        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
+        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+        private val fingerprintInterceptor: FingerprintInterceptor)
+    : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
     private var mSubscription: CompositeSubscription
 
@@ -45,9 +53,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun connectWebSocket(messageId: String) {
-        val webSocketUrl = "wss://chat.tokopedia.com/connect?os_type=1" +
-                "&device_id=" + userSession.deviceId +
-                "&user_id=" + userSession.userId
+        val webSocketUrl = ChatbotUrl.getPathWebsocket(userSession.deviceId, userSession.userId)
 
         destroyWebSocket()
 
@@ -57,6 +63,7 @@ class ChatbotPresenter @Inject constructor(
 
         val subscriber = object : WebSocketSubscriber() {
             override fun onOpen(webSocket: WebSocket) {
+                networkMode = MODE_WEBSOCKET
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
@@ -84,12 +91,15 @@ class ChatbotPresenter @Inject constructor(
             }
 
             override fun onReconnect() {
+                networkMode = MODE_WEBSOCKET
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onReconnect")
                 }
             }
 
             override fun onClose() {
+                networkMode = MODE_API
+
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onClose")
                 }
@@ -99,13 +109,13 @@ class ChatbotPresenter @Inject constructor(
 
         }
 
-        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken]?.subscribe(subscriber)
-
+        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken,
+                tkpdAuthInterceptor, fingerprintInterceptor]?.subscribe(subscriber)
 
         mSubscription.add(subscription)
     }
 
-    override fun sendRating(rating: Int,  onError: (Throwable) -> Unit,
+    override fun sendRating(rating: Int, onError: (Throwable) -> Unit,
                             onSuccess: () -> Unit) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -150,20 +160,27 @@ class ChatbotPresenter @Inject constructor(
         return chatBotWebSocketMessageMapper.map(pojo)
     }
 
-    override fun sendMessage(sendMessage: String) {
-        RxWebSocket.send(sendMessage)
-    }
-
     override fun sendInvoiceAttachment(messageId: String,
                                        invoiceLinkPojo: InvoiceLinkPojo,
                                        startTime: String) {
-        // webSocketUseCase.execute(webSocketUseCase.getParamSendInvoiceAttachment(messageId,
-//        invoice, startTime));
+        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendInvoice(messageId,
+                invoiceLinkPojo, startTime), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
-                                generateStartTime: String) {
+                                startTime: String) {
+        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendQuickReply(messageId,
+                quickReply, startTime), tkpdAuthInterceptor, fingerprintInterceptor)
+    }
 
+    override fun sendMessageWithApi(messageId : String, sendMessage: String) {
+        //TODO
+    }
+
+    override fun sendMessageWithWebsocket(messageId : String, sendMessage: String) {
+        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage),
+                tkpdAuthInterceptor,
+                fingerprintInterceptor)
     }
 
     override fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String):

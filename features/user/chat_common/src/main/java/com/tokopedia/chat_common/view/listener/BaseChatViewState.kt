@@ -18,4 +18,6 @@ interface BaseChatViewState {
 
     fun updateHeader(chatroomViewModel: ChatroomViewModel)
 
+    fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String)
+
 }

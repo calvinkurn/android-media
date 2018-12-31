@@ -1,13 +1,17 @@
 package com.tokopedia.topchat.revamp.view
 
+import android.support.annotation.NonNull
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.view.BaseChatViewStateImpl
+import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Func1
@@ -17,7 +21,7 @@ import java.util.concurrent.TimeUnit
  * @author : Steven 29/11/18
  */
 
-class TopChatViewState(var view: View) {
+class TopChatViewStateImpl(@NonNull override val view: View, presenter: TopChatRoomPresenter, toolbar: Toolbar) : BaseChatViewStateImpl(view, toolbar), TopChatViewStateImpl {
 
     private var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
     private var replyBox: RelativeLayout = view.findViewById(R.id.reply_box)

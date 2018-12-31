@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.BaseChatFragment
+import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -31,8 +32,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
-
-    lateinit var chatViewState: TopChatViewState
 
     lateinit var session : UserSessionInterface
 
@@ -59,12 +58,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         return session
     }
 
+
+    private fun getViewState(): TopChatViewStateImpl {
+        return viewState as TopChatViewStateImpl
+    }
+
     fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {
 
 //      TODO MOVE THIS TO TOPCHATVIEW STATE
 //        chatViewState.hideLoading()
 //        chatViewState.addList(listChat)
-        chatViewState.developmentView()
+        getViewState().developmentView()
 
     }
 
@@ -84,9 +88,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         dummyList.add(MessageViewModel("51", "1960918", "lawan", "User", "", "", "213123127", "213123123", true, false, false, "hi51"))
         dummyList.add(MessageViewModel("61", "7977933", "lawan", "User", "", "", "213123128", "213123123", true, false, true, "hi61"))
 
-        chatViewState.addList(dummyList)
-        chatViewState.hideLoading()
-        chatViewState.developmentView()
+        getViewState().addList(dummyList)
+        getViewState().hideLoading()
+        getViewState().developmentView()
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
@@ -118,7 +122,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        chatViewState.addMessage(visitable)
+        getViewState().addMessage(visitable)
     }
 
     companion object {
@@ -143,12 +147,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
     fun initView(view: View?) {
         view?.run {
-            chatViewState = TopChatViewState(this)
+            super.viewState = TopChatViewStateImpl(this, presenter, (activity as BaseChatToolbarActivity).getToolbar())
 
-            chatViewState?.run {
-                chatViewState.showLoading()
+            getViewState()?.run {
+                getViewState().showLoading()
                 adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
-                chatViewState.setAdapter(adapter)
+                getViewState().setAdapter(adapter)
             }
 
             hideLoading()
@@ -159,7 +163,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
     }
 
     override fun clearEditText() {
-        chatViewState.clearEditText()
+        getViewState().clearEditText()
     }
 
     override fun initInjector() {
@@ -181,7 +185,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
     }
 //
 //    override fun disableAction() {
-//        chatViewState.setActionable(false)
+//        getViewState().setActionable(false)
 //    }
 //
 //    override fun showSnackbarError(string: Unit) {
@@ -189,11 +193,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 //    }
 
     override fun addDummyMessage(visitable: Visitable<*>) {
-        chatViewState.addMessage(visitable)
+        getViewState().addMessage(visitable)
     }
 
     override fun removeDummy(visitable: Visitable<*>) {
-        chatViewState.removeDummy(visitable)
+        getViewState().removeDummy(visitable)
     }
 
 

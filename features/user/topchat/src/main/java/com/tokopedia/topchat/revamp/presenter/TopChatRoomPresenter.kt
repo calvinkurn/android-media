@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_END_TYPING
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_READ_MESSAGE
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_REPLY_MESSAGE
-import com.tokopedia.chat_common.data.WebsocketEvent.companion.EVENT_TOPCHAT_TYPING
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
@@ -36,6 +36,7 @@ class TopChatRoomPresenter @Inject constructor(
         var userSession: UserSessionInterface,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper)
     : BaseDaggerPresenter<TopChatContract.View>(), TopChatContract.Presenter {
+
     private var mSubscription: CompositeSubscription
     private lateinit var webSocketUrl: String
     lateinit var dummyList: ArrayList<Visitable<*>>
@@ -105,7 +106,7 @@ class TopChatRoomPresenter @Inject constructor(
 
         }
 
-        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken]?.subscribe(subscriber)
+        val subscription = RxWebSocket[webSocketUrl, userSession.accessToken, null, null]?.subscribe(subscriber)
 
 
         mSubscription.add(subscription)
@@ -162,7 +163,7 @@ class TopChatRoomPresenter @Inject constructor(
         return topChatRoomWebSocketMessageMapper.map(pojo)
     }
 
-    override fun sendMessage(messageText: String) {
+    override fun sendMessage(messageId: String, messageText: String) {
         if (isValidReply(messageText)) {
             val startTime = SendableViewModel.generateStartTime()
             view.clearEditText()
@@ -170,14 +171,17 @@ class TopChatRoomPresenter @Inject constructor(
             processDummyMessage(messageText, startTime)
 //            when (networkMode) {
 //                MODE_WEBSOCKET ->
-                    sendMessageWebSocket(messageText, startTime)
+            sendMessageWebSocket(messageText, startTime)
 //            }
         }
     }
 
-
     private fun sendMessageWebSocket(messageText: String, startTime: String) {
-        RxWebSocket.send(msg = generateParamSendMessage(messageText, startTime))
+        RxWebSocket.send(
+                msg = generateParamSendMessage(messageText, startTime),
+                tkpdAuthInterceptor = null,
+                fingerprintInterceptor = null
+        )
     }
 
 
