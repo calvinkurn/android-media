@@ -1,8 +1,12 @@
 package com.tokopedia.cod
 
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Html
+import android.text.Spanned
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +23,10 @@ import javax.inject.Inject
 /**
  * Created by fajarnuha on 17/12/18.
  */
-class CodFragment: BaseDaggerFragment(), CodContract.View {
+class CodFragment : BaseDaggerFragment(), CodContract.View {
 
-    @Inject lateinit var presenter: CodContract.Presenter
+    @Inject
+    lateinit var presenter: CodContract.Presenter
 
     companion object {
 
@@ -71,7 +76,7 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
     override fun initView() {
         arguments?.getParcelable<Data>(ARGUMENT_COD_DATA)?.let {
             textview_ticker_message.setText(it.message.messageInfo)
-            textview_counter_info.setText(it.counterInfo)
+            textview_counter_info.text = formatHtml(it.counterInfo)
             recycler_view_summary.run {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context)
@@ -89,4 +94,10 @@ class CodFragment: BaseDaggerFragment(), CodContract.View {
         startActivity(RouteManager.getIntent(context, applink))
         activity?.finish()
     }
+
+    @Suppress("DEPRECATION")
+    fun formatHtml(text: String): Spanned =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT) else Html.fromHtml(text)
+
 }
