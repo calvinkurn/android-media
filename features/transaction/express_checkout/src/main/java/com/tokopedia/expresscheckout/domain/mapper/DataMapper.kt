@@ -1,7 +1,7 @@
 package com.tokopedia.expresscheckout.domain.mapper
 
-import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutResponse
-import com.tokopedia.expresscheckout.domain.model.AtcExpressCheckoutModel
+import com.tokopedia.expresscheckout.data.entity.atc.AtcResponse
+import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 
 /**
  * Created by Irfan Khoirul on 17/12/18.
@@ -9,6 +9,6 @@ import com.tokopedia.expresscheckout.domain.model.AtcExpressCheckoutModel
 
 interface DataMapper {
 
-    fun convertToDomainModel(expressCheckoutResponse: ExpressCheckoutResponse): AtcExpressCheckoutModel
+    fun convertToDomainModel(atcResponse: AtcResponse): AtcResponseModel
 
 }

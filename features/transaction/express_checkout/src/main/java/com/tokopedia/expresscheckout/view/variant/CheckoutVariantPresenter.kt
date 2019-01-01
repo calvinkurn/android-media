@@ -3,17 +3,15 @@ package com.tokopedia.expresscheckout.view.variant
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutResponse
+import com.tokopedia.expresscheckout.data.entity.atc.AtcResponse
 import com.tokopedia.expresscheckout.domain.mapper.DomainModelMapper
-import com.tokopedia.expresscheckout.domain.model.AtcExpressCheckoutModel
+import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -22,7 +20,7 @@ import kotlin.collections.HashMap
 class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.View>(), CheckoutVariantContract.Presenter {
 
     private val getExpressCheckoutFormUseCase = GraphqlUseCase()
-    private lateinit var atcExpressCheckoutModel: AtcExpressCheckoutModel
+    private lateinit var atcResponseModel: AtcResponseModel
     private lateinit var domainModelMapper: DomainModelMapper
     private lateinit var viewModelMapper: ViewModelMapper
 
@@ -53,7 +51,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         params.put("shop_id", 153800)
         variables.put("params", params)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
-                R.raw.mutation_atc_express), ExpressCheckoutResponse::class.java, variables)
+                R.raw.mutation_atc_express), AtcResponse::class.java, variables)
         getExpressCheckoutFormUseCase.clearRequest()
         getExpressCheckoutFormUseCase.addRequest(graphqlRequest)
         getExpressCheckoutFormUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -70,9 +68,9 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
             override fun onNext(objects: GraphqlResponse) {
                 view.hideLoading()
-                val expressCheckoutResponse = objects.getData<ExpressCheckoutResponse>(ExpressCheckoutResponse::class.java)
-                atcExpressCheckoutModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse)
-                view.showData(viewModelMapper.convertToViewModels(atcExpressCheckoutModel))
+                val expressCheckoutResponse = objects.getData<AtcResponse>(AtcResponse::class.java)
+                atcResponseModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse)
+                view.showData(viewModelMapper.convertToViewModels(atcResponseModel))
             }
         })
 

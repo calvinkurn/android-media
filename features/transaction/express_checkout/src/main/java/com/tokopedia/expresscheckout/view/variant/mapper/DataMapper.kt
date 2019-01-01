@@ -1,15 +1,11 @@
 package com.tokopedia.expresscheckout.view.variant.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutFormData
-import com.tokopedia.expresscheckout.domain.model.AtcExpressCheckoutModel
-import com.tokopedia.expresscheckout.domain.model.ChildModel
-import com.tokopedia.expresscheckout.domain.model.OptionModel
-import com.tokopedia.expresscheckout.domain.model.VariantModel
-import com.tokopedia.transactiondata.entity.response.variantdata.Option
-import com.tokopedia.transactiondata.entity.response.variantdata.Variant
+import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
+import com.tokopedia.expresscheckout.domain.model.atc.ChildModel
+import com.tokopedia.expresscheckout.domain.model.atc.OptionModel
+import com.tokopedia.expresscheckout.domain.model.atc.VariantModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
-import com.tokopedia.transactiondata.entity.response.variantdata.Child
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -17,19 +13,19 @@ import com.tokopedia.transactiondata.entity.response.variantdata.Child
 
 interface DataMapper {
 
-    fun convertToViewModels(atcExpressCheckoutModel: AtcExpressCheckoutModel): ArrayList<Visitable<*>>
+    fun convertToViewModels(atcResponseModel: AtcResponseModel): ArrayList<Visitable<*>>
 
-    fun convertToNoteViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): NoteViewModel
+    fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteViewModel
 
-    fun convertToProductViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel,
+    fun convertToProductViewModel(atcResponseModel: AtcResponseModel,
                                   typeVariantViewModels: ArrayList<TypeVariantViewModel>): ProductViewModel
 
-    fun convertToProfileViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): ProfileViewModel
+    fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel
 
-    fun convertToQuantityViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel,
+    fun convertToQuantityViewModel(atcResponseModel: AtcResponseModel,
                                    productViewModel: ProductViewModel): QuantityViewModel
 
-    fun convertToSummaryViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): SummaryViewModel
+    fun convertToSummaryViewModel(atcResponseModel: AtcResponseModel): SummaryViewModel
 
     fun convertToTypeVariantViewModel(variantModel: VariantModel, childrenModel: ArrayList<ChildModel>): TypeVariantViewModel
 

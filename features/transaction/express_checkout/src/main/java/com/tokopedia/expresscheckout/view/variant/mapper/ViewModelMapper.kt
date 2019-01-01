@@ -2,8 +2,7 @@ package com.tokopedia.expresscheckout.view.variant.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.expresscheckout.domain.model.*
-import com.tokopedia.transactiondata.entity.response.variantdata.Child
+import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 /**
@@ -12,11 +11,11 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 
 class ViewModelMapper : DataMapper {
 
-    override fun convertToViewModels(atcExpressCheckoutModel: AtcExpressCheckoutModel): ArrayList<Visitable<*>> {
+    override fun convertToViewModels(atcResponseModel: AtcResponseModel): ArrayList<Visitable<*>> {
         var dataList: ArrayList<Visitable<*>> = ArrayList()
 
         var variantViewModelList = ArrayList<TypeVariantViewModel>()
-        var productVariantDataModels = atcExpressCheckoutModel.dataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels
+        var productVariantDataModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels
         if (productVariantDataModels != null && productVariantDataModels.isNotEmpty()) {
             val variantCombinationValidation = validateVariantCombination(productVariantDataModels[0])
             val variantChildrenValidation = validateVariantChildren(productVariantDataModels[0])
@@ -32,34 +31,34 @@ class ViewModelMapper : DataMapper {
             }
         }
 
-        if (atcExpressCheckoutModel.dataModel?.userProfileModelDefaultModel != null) {
-            dataList.add(convertToProfileViewModel(atcExpressCheckoutModel))
+        if (atcResponseModel.atcDataModel?.userProfileModelDefaultModel != null) {
+            dataList.add(convertToProfileViewModel(atcResponseModel))
         }
-        var checkoutVariantProductViewModel = convertToProductViewModel(atcExpressCheckoutModel, variantViewModelList)
+        var checkoutVariantProductViewModel = convertToProductViewModel(atcResponseModel, variantViewModelList)
         dataList.add(checkoutVariantProductViewModel)
-        dataList.add(convertToQuantityViewModel(atcExpressCheckoutModel, checkoutVariantProductViewModel))
+        dataList.add(convertToQuantityViewModel(atcResponseModel, checkoutVariantProductViewModel))
         if (variantViewModelList.isNotEmpty()) {
             dataList.addAll(variantViewModelList)
         }
-        dataList.add(convertToNoteViewModel(atcExpressCheckoutModel))
-        if (atcExpressCheckoutModel.dataModel?.userProfileModelDefaultModel != null) {
-            dataList.add(convertToSummaryViewModel(atcExpressCheckoutModel))
+        dataList.add(convertToNoteViewModel(atcResponseModel))
+        if (atcResponseModel.atcDataModel?.userProfileModelDefaultModel != null) {
+            dataList.add(convertToSummaryViewModel(atcResponseModel))
         }
 
         return dataList
     }
 
-    override fun convertToNoteViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): NoteViewModel {
+    override fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteViewModel {
         var checkoutVariantNoteViewModel = NoteViewModel()
-        checkoutVariantNoteViewModel.noteCharMax = atcExpressCheckoutModel.dataModel?.maxCharNote ?: 144
+        checkoutVariantNoteViewModel.noteCharMax = atcResponseModel.atcDataModel?.maxCharNote ?: 144
         checkoutVariantNoteViewModel.note = ""
 
         return checkoutVariantNoteViewModel
     }
 
-    override fun convertToProductViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel,
+    override fun convertToProductViewModel(atcResponseModel: AtcResponseModel,
                                            typeVariantViewModels: ArrayList<TypeVariantViewModel>): ProductViewModel {
-        val productModel: ProductModel? = atcExpressCheckoutModel.dataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
+        val productModel: ProductModel? = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
         var productViewModel = ProductViewModel()
         productViewModel.productImageUrl = productModel?.productImageSrc200Square ?: ""
         productViewModel.productName = productModel?.productName ?: ""
@@ -68,7 +67,7 @@ class ViewModelMapper : DataMapper {
             if (productModel.productInvenageValue > 0) {
                 productViewModel.maxOrderQuantity = productModel.productInvenageValue
             } else {
-                productViewModel.maxOrderQuantity = atcExpressCheckoutModel.dataModel?.maxQuantity ?: 10000
+                productViewModel.maxOrderQuantity = atcResponseModel.atcDataModel?.maxQuantity ?: 10000
             }
         }
         productViewModel.productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(productModel?.productPrice
@@ -76,7 +75,7 @@ class ViewModelMapper : DataMapper {
         var productChildList = ArrayList<ProductChild>()
         var hasSelectedDefaultVariant = false
         if (typeVariantViewModels.size > 0) {
-            var childrenModel = atcExpressCheckoutModel.dataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)?.childModels
+            var childrenModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)?.childModels
             if (childrenModel != null) {
                 for (childModel: ChildModel in childrenModel) {
                     var productChild = ProductChild()
@@ -88,7 +87,7 @@ class ViewModelMapper : DataMapper {
                     productChild.minOrder = childModel.minOrder
                     productChild.maxOrder = childModel.maxOrder
                     productChild.optionsId = childModel.optionIds ?: ArrayList()
-                    var productVariantDataModel = atcExpressCheckoutModel.dataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)
+                    var productVariantDataModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)
                     if (productVariantDataModel?.defaultChild == childModel.productId &&
                             productChild.isAvailable && !hasSelectedDefaultVariant) {
                         productChild.isSelected = true
@@ -130,7 +129,7 @@ class ViewModelMapper : DataMapper {
                         productChild.isSelected = true
                         var defaultVariantIdOptionMap = LinkedHashMap<Int, Int>()
                         for (optionId: Int in productChild.optionsId) {
-                            var variantModels = atcExpressCheckoutModel.dataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)?.variantModels
+                            var variantModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)?.variantModels
                             if (variantModels != null) {
                                 for (variantModel: VariantModel in variantModels) {
                                     var optionModels = variantModel.optionModels
@@ -215,8 +214,8 @@ class ViewModelMapper : DataMapper {
         return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
-    override fun convertToProfileViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): ProfileViewModel {
-        val userProfileModel: UserProfileModel? = atcExpressCheckoutModel.dataModel?.userProfileModelDefaultModel
+    override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
+        val userProfileModel: UserProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
         var checkoutVariantProfileViewModel = ProfileViewModel()
         checkoutVariantProfileViewModel.addressTitle = userProfileModel?.receiverName ?: ""
         checkoutVariantProfileViewModel.addressDetail = userProfileModel?.addressStreet ?: ""
@@ -226,10 +225,10 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantProfileViewModel
     }
 
-    override fun convertToQuantityViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel,
+    override fun convertToQuantityViewModel(atcResponseModel: AtcResponseModel,
                                             productViewModel: ProductViewModel): QuantityViewModel {
         var checkoutVariantQuantityViewModel = QuantityViewModel()
-        var messagesModel = atcExpressCheckoutModel.dataModel?.messagesModel
+        var messagesModel = atcResponseModel.atcDataModel?.messagesModel
         checkoutVariantQuantityViewModel.errorFieldBetween = messagesModel?.errorFieldBetween ?: ""
         checkoutVariantQuantityViewModel.errorFieldMaxChar = messagesModel?.errorFieldMaxChar ?: ""
         checkoutVariantQuantityViewModel.errorFieldRequired = messagesModel?.errorFieldRequired ?: ""
@@ -247,7 +246,7 @@ class ViewModelMapper : DataMapper {
         return checkoutVariantQuantityViewModel
     }
 
-    override fun convertToSummaryViewModel(atcExpressCheckoutModel: AtcExpressCheckoutModel): SummaryViewModel {
+    override fun convertToSummaryViewModel(atcResponseModel: AtcResponseModel): SummaryViewModel {
         var checkoutVariantSummaryViewModel = SummaryViewModel(null)
 
         return checkoutVariantSummaryViewModel

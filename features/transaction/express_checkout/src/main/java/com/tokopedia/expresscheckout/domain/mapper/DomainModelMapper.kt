@@ -1,7 +1,8 @@
 package com.tokopedia.expresscheckout.domain.mapper
 
-import com.tokopedia.expresscheckout.data.entity.ExpressCheckoutResponse
-import com.tokopedia.expresscheckout.domain.model.*
+import com.tokopedia.expresscheckout.data.entity.atc.AtcResponse
+import com.tokopedia.expresscheckout.domain.model.HeaderModel
+import com.tokopedia.expresscheckout.domain.model.atc.*
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.*
 import com.tokopedia.transactiondata.entity.response.variantdata.Child
 import com.tokopedia.transactiondata.entity.response.variantdata.Option
@@ -14,64 +15,64 @@ import com.tokopedia.transactiondata.entity.response.variantdata.Variant
 
 class DomainModelMapper : DataMapper {
 
-    override fun convertToDomainModel(expressCheckoutResponse: ExpressCheckoutResponse): AtcExpressCheckoutModel {
-        var responseModel = AtcExpressCheckoutModel()
-        responseModel.status = expressCheckoutResponse.status
-        responseModel.headerModel = getHeaderModel(expressCheckoutResponse)
-        responseModel.dataModel = getDataModel(expressCheckoutResponse)
+    override fun convertToDomainModel(atcResponse: AtcResponse): AtcResponseModel {
+        var responseModel = AtcResponseModel()
+        responseModel.status = atcResponse.status
+        responseModel.headerModel = getHeaderModel(atcResponse)
+        responseModel.atcDataModel = getDataModel(atcResponse)
         return responseModel
     }
 
-    private fun getDataModel(expressCheckoutResponse: ExpressCheckoutResponse): DataModel {
-        var dataModel = DataModel()
-        dataModel.errorCode = expressCheckoutResponse.data.errorCode
-        dataModel.errors = expressCheckoutResponse.data.errors
-        dataModel.success = expressCheckoutResponse.data.success
+    private fun getDataModel(atcResponse: AtcResponse): AtcDataModel {
+        var dataModel = AtcDataModel()
+        dataModel.errorCode = atcResponse.data.errorCode
+        dataModel.errors = atcResponse.data.errors
+        dataModel.success = atcResponse.data.success
 
         var cartModel = CartModel()
-        cartModel.errors = expressCheckoutResponse.data.cart.errors
+        cartModel.errors = atcResponse.data.cart.errors
 
         var groupShopModels = ArrayList<GroupShopModel>()
-        for (groupShop: GroupShop in expressCheckoutResponse.data.cart.groupShops) {
+        for (groupShop: GroupShop in atcResponse.data.cart.groupShops) {
             groupShopModels.add(getGroupShopModel(groupShop))
         }
         cartModel.groupShopModels = groupShopModels
 
         dataModel.cartModel = cartModel
 
-        var autoApplyModel = getAutoApplyModel(expressCheckoutResponse)
+        var autoApplyModel = getAutoApplyModel(atcResponse)
         dataModel.autoapplyModel = autoApplyModel
 
-        var donationModel = getDonationModel(expressCheckoutResponse)
+        var donationModel = getDonationModel(atcResponse)
         dataModel.donationModel = donationModel
 
-        dataModel.success = expressCheckoutResponse.data.success
-        dataModel.enablePartialCancel = expressCheckoutResponse.data.enablePartialCancel
-        dataModel.errorCode = expressCheckoutResponse.data.errorCode
-        dataModel.isCouponActive = expressCheckoutResponse.data.isCouponActive
-        dataModel.keroDiscomToken = expressCheckoutResponse.data.keroDiscomToken
-        dataModel.keroToken = expressCheckoutResponse.data.keroToken
-        dataModel.keroUnixTime = expressCheckoutResponse.data.keroUnixTime
-        dataModel.maxCharNote = expressCheckoutResponse.data.maxCharNote ?: 0
-        dataModel.maxQuantity = expressCheckoutResponse.data.maxQuantity ?: 0
+        dataModel.success = atcResponse.data.success
+        dataModel.enablePartialCancel = atcResponse.data.enablePartialCancel
+        dataModel.errorCode = atcResponse.data.errorCode
+        dataModel.isCouponActive = atcResponse.data.isCouponActive
+        dataModel.keroDiscomToken = atcResponse.data.keroDiscomToken
+        dataModel.keroToken = atcResponse.data.keroToken
+        dataModel.keroUnixTime = atcResponse.data.keroUnixTime
+        dataModel.maxCharNote = atcResponse.data.maxCharNote ?: 0
+        dataModel.maxQuantity = atcResponse.data.maxQuantity ?: 0
 
-        var messagesModel = getMessagesModel(expressCheckoutResponse)
+        var messagesModel = getMessagesModel(atcResponse)
         dataModel.messagesModel = messagesModel
 
-        var promoSuggestionModel = getPromoSuggestionModel(expressCheckoutResponse)
+        var promoSuggestionModel = getPromoSuggestionModel(atcResponse)
         dataModel.promoSuggestionModel = promoSuggestionModel
 
-        var userProfileDefaultModel = getUserProfileModel(expressCheckoutResponse)
+        var userProfileDefaultModel = getUserProfileModel(atcResponse)
         dataModel.userProfileModelDefaultModel = userProfileDefaultModel
         return dataModel
     }
 
-    private fun getHeaderModel(expressCheckoutResponse: ExpressCheckoutResponse): HeaderModel {
+    private fun getHeaderModel(atcResponse: AtcResponse): HeaderModel {
         var headerModel = HeaderModel()
-        headerModel.errorCode = expressCheckoutResponse.header.errorCode
-        headerModel.errors = expressCheckoutResponse.header.errors
-        headerModel.processTime = expressCheckoutResponse.header.processTime
-        headerModel.reason = expressCheckoutResponse.header.reason
+        headerModel.errorCode = atcResponse.header.errorCode
+        headerModel.errors = atcResponse.header.errors
+        headerModel.processTime = atcResponse.header.processTime
+        headerModel.reason = atcResponse.header.reason
         return headerModel
     }
 
@@ -268,66 +269,66 @@ class DomainModelMapper : DataMapper {
         return shipProdModel
     }
 
-    private fun getAutoApplyModel(expressCheckoutResponse: ExpressCheckoutResponse): AutoApplyModel {
+    private fun getAutoApplyModel(atcResponse: AtcResponse): AutoApplyModel {
         var autoApplyModel = AutoApplyModel()
-        autoApplyModel.code = expressCheckoutResponse.data.autoapply?.code
-        autoApplyModel.discountAmount = expressCheckoutResponse.data.autoapply?.discountAmount ?: 0
-        autoApplyModel.isCoupon = expressCheckoutResponse.data.autoapply?.isCoupon ?: 0
-        autoApplyModel.messageSuccess = expressCheckoutResponse.data.autoapply?.messageSuccess
-        autoApplyModel.promoId = expressCheckoutResponse.data.autoapply?.promoId ?: 0
-        autoApplyModel.isSuccess = expressCheckoutResponse.data.autoapply?.isSuccess
-        autoApplyModel.titleDescription = expressCheckoutResponse.data.autoapply?.titleDescription
+        autoApplyModel.code = atcResponse.data.autoapply?.code
+        autoApplyModel.discountAmount = atcResponse.data.autoapply?.discountAmount ?: 0
+        autoApplyModel.isCoupon = atcResponse.data.autoapply?.isCoupon ?: 0
+        autoApplyModel.messageSuccess = atcResponse.data.autoapply?.messageSuccess
+        autoApplyModel.promoId = atcResponse.data.autoapply?.promoId ?: 0
+        autoApplyModel.isSuccess = atcResponse.data.autoapply?.isSuccess
+        autoApplyModel.titleDescription = atcResponse.data.autoapply?.titleDescription
         return autoApplyModel
     }
 
-    private fun getDonationModel(expressCheckoutResponse: ExpressCheckoutResponse): DonationModel {
+    private fun getDonationModel(atcResponse: AtcResponse): DonationModel {
         var donationModel = DonationModel()
-        donationModel.description = expressCheckoutResponse.data.donation?.description
-        donationModel.nominal = expressCheckoutResponse.data.donation?.nominal ?: 0
-        donationModel.title = expressCheckoutResponse.data.donation?.title
+        donationModel.description = atcResponse.data.donation?.description
+        donationModel.nominal = atcResponse.data.donation?.nominal ?: 0
+        donationModel.title = atcResponse.data.donation?.title
         return donationModel
     }
 
-    private fun getMessagesModel(expressCheckoutResponse: ExpressCheckoutResponse): MessagesModel {
+    private fun getMessagesModel(atcResponse: AtcResponse): MessagesModel {
         var messagesModel = MessagesModel()
-        messagesModel.errorCheckoutPriceLimit = expressCheckoutResponse.data.messages?.errorCheckoutPriceLimit
-        messagesModel.errorFieldBetween = expressCheckoutResponse.data.messages?.errorFieldBetween
-        messagesModel.errorFieldMaxChar = expressCheckoutResponse.data.messages?.errorFieldMaxChar
-        messagesModel.errorFieldRequired = expressCheckoutResponse.data.messages?.errorFieldRequired
-        messagesModel.errorProductAvailableStock = expressCheckoutResponse.data.messages?.errorProductAvailableStock
-        messagesModel.errorProductAvailableStockDetail = expressCheckoutResponse.data.messages?.errorProductAvailableStockDetail
-        messagesModel.errorProductMaxQuantity = expressCheckoutResponse.data.messages?.errorProductMaxQuantity
-        messagesModel.errorProductMinQuantity = expressCheckoutResponse.data.messages?.errorProductMinQuantity
+        messagesModel.errorCheckoutPriceLimit = atcResponse.data.messages?.errorCheckoutPriceLimit
+        messagesModel.errorFieldBetween = atcResponse.data.messages?.errorFieldBetween
+        messagesModel.errorFieldMaxChar = atcResponse.data.messages?.errorFieldMaxChar
+        messagesModel.errorFieldRequired = atcResponse.data.messages?.errorFieldRequired
+        messagesModel.errorProductAvailableStock = atcResponse.data.messages?.errorProductAvailableStock
+        messagesModel.errorProductAvailableStockDetail = atcResponse.data.messages?.errorProductAvailableStockDetail
+        messagesModel.errorProductMaxQuantity = atcResponse.data.messages?.errorProductMaxQuantity
+        messagesModel.errorProductMinQuantity = atcResponse.data.messages?.errorProductMinQuantity
         return messagesModel
     }
 
-    private fun getPromoSuggestionModel(expressCheckoutResponse: ExpressCheckoutResponse): PromoSuggestionModel {
+    private fun getPromoSuggestionModel(atcResponse: AtcResponse): PromoSuggestionModel {
         var promoSuggestionModel = PromoSuggestionModel()
-        promoSuggestionModel.cta = expressCheckoutResponse.data.promoSuggestion?.cta
-        promoSuggestionModel.ctaColor = expressCheckoutResponse.data.promoSuggestion?.ctaColor
-        promoSuggestionModel.isVisible = expressCheckoutResponse.data.promoSuggestion?.isVisible
-        promoSuggestionModel.promoCode = expressCheckoutResponse.data.promoSuggestion?.promoCode
-        promoSuggestionModel.text = expressCheckoutResponse.data.promoSuggestion?.text
+        promoSuggestionModel.cta = atcResponse.data.promoSuggestion?.cta
+        promoSuggestionModel.ctaColor = atcResponse.data.promoSuggestion?.ctaColor
+        promoSuggestionModel.isVisible = atcResponse.data.promoSuggestion?.isVisible
+        promoSuggestionModel.promoCode = atcResponse.data.promoSuggestion?.promoCode
+        promoSuggestionModel.text = atcResponse.data.promoSuggestion?.text
         return promoSuggestionModel
     }
 
-    private fun getUserProfileModel(expressCheckoutResponse: ExpressCheckoutResponse): UserProfileModel {
+    private fun getUserProfileModel(atcResponse: AtcResponse): UserProfileModel {
         var userProfileDefaultModel = UserProfileModel()
-        userProfileDefaultModel.addressId = expressCheckoutResponse.data.userProfileDefault?.addressId
-        userProfileDefaultModel.addressStreet = expressCheckoutResponse.data.userProfileDefault?.addressStreet
-        userProfileDefaultModel.checkoutParam = expressCheckoutResponse.data.userProfileDefault?.checkoutParam
-        userProfileDefaultModel.cityName = expressCheckoutResponse.data.userProfileDefault?.cityName
-        userProfileDefaultModel.code = expressCheckoutResponse.data.userProfileDefault?.code
-        userProfileDefaultModel.description = expressCheckoutResponse.data.userProfileDefault?.description
-        userProfileDefaultModel.districtName = expressCheckoutResponse.data.userProfileDefault?.districtName
-        userProfileDefaultModel.gatewayCode = expressCheckoutResponse.data.userProfileDefault?.gatewayCode
-        userProfileDefaultModel.image = expressCheckoutResponse.data.userProfileDefault?.image
-        userProfileDefaultModel.message = expressCheckoutResponse.data.userProfileDefault?.message
-        userProfileDefaultModel.phoneNo = expressCheckoutResponse.data.userProfileDefault?.phoneNo
-        userProfileDefaultModel.provinceName = expressCheckoutResponse.data.userProfileDefault?.provinceName
-        userProfileDefaultModel.receiverName = expressCheckoutResponse.data.userProfileDefault?.receiverName
-        userProfileDefaultModel.serviceId = expressCheckoutResponse.data.userProfileDefault?.serviceId
-        userProfileDefaultModel.url = expressCheckoutResponse.data.userProfileDefault?.url
+        userProfileDefaultModel.addressId = atcResponse.data.userProfileDefault?.addressId
+        userProfileDefaultModel.addressStreet = atcResponse.data.userProfileDefault?.addressStreet
+        userProfileDefaultModel.checkoutParam = atcResponse.data.userProfileDefault?.checkoutParam
+        userProfileDefaultModel.cityName = atcResponse.data.userProfileDefault?.cityName
+        userProfileDefaultModel.code = atcResponse.data.userProfileDefault?.code
+        userProfileDefaultModel.description = atcResponse.data.userProfileDefault?.description
+        userProfileDefaultModel.districtName = atcResponse.data.userProfileDefault?.districtName
+        userProfileDefaultModel.gatewayCode = atcResponse.data.userProfileDefault?.gatewayCode
+        userProfileDefaultModel.image = atcResponse.data.userProfileDefault?.image
+        userProfileDefaultModel.message = atcResponse.data.userProfileDefault?.message
+        userProfileDefaultModel.phoneNo = atcResponse.data.userProfileDefault?.phoneNo
+        userProfileDefaultModel.provinceName = atcResponse.data.userProfileDefault?.provinceName
+        userProfileDefaultModel.receiverName = atcResponse.data.userProfileDefault?.receiverName
+        userProfileDefaultModel.serviceId = atcResponse.data.userProfileDefault?.serviceId
+        userProfileDefaultModel.url = atcResponse.data.userProfileDefault?.url
         return userProfileDefaultModel
     }
 
