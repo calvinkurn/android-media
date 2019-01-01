@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
@@ -43,9 +44,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     open lateinit var viewState: BaseChatViewState
 
     protected var messageId: String = ""
-    protected var senderId = ""
-    protected var senderName = ""
-    protected var senderRole = ""
+    protected var opponentId = ""
+    protected var opponentName = ""
+    protected var opponentRole = ""
 
     override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
         return BaseChatTypeFactoryImpl(this,
@@ -86,9 +87,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     private fun setupViewData(arguments: Bundle?, savedInstanceState: Bundle?) {
         messageId = getParamString(ApplinkConst.Chat.MESSAGE_ID, arguments, savedInstanceState)
-        senderId = getParamString(ApplinkConst.Chat.SENDER_ID, arguments, savedInstanceState)
-        senderName = getParamString(ApplinkConst.Chat.SENDER_NAME, arguments, savedInstanceState)
-        senderRole = getParamString(ApplinkConst.Chat.SENDER_ROLE, arguments, savedInstanceState)
+        opponentId = getParamString(ApplinkConst.Chat.OPPONENT_ID, arguments, savedInstanceState)
+        opponentName = getParamString(ApplinkConst.Chat.OPPONENT_NAME, arguments, savedInstanceState)
+        opponentRole = getParamString(ApplinkConst.Chat.OPPONENT_ROLE, arguments, savedInstanceState)
     }
 
     private fun getParamString(paramName: String, arguments: Bundle?,
@@ -176,7 +177,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_FILELOC, strings)
             bundle.putStringArrayList(ApplinkConst.Query.IMAGE_PREVIEW_IMAGE_DESC, ArrayList())
             bundle.putInt(ApplinkConst.Query.IMAGE_PREVIEW_IMG_POSITION, 0)
-            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_TITLE, senderName)
+            bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_TITLE, opponentName)
             bundle.putString(ApplinkConst.Query.IMAGE_PREVIEW_SUBTITLE, replyTime)
             intent.putExtras(bundle)
             startActivity(intent)
@@ -186,7 +187,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         val ROLE_SHOP = "shop"
 
-        if (!GlobalConfig.isSellerApp() || senderRole != ROLE_SHOP) {
+        if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
             activity?.run {
 
                 var routingAppLink: String = ApplinkConst.PRODUCT_INFO
@@ -218,6 +219,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        viewState.removeMessageOnReplyBox()
+        viewState.removeDummyIfExist(visitable)
         viewState.onReceiveMessageEvent(visitable)
     }
 
@@ -232,6 +235,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     abstract fun onSendButtonClicked()
 
     abstract fun getUserSession(): UserSessionInterface
+
+    open fun updateViewData(it: ChatroomViewModel){
+        this.opponentId = it.headerModel.senderId
+        this.opponentName = it.headerModel.name
+        this.opponentRole = it.headerModel.role
+    }
 
 
 }

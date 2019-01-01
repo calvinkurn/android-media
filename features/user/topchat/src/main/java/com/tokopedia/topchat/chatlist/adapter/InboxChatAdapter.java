@@ -17,7 +17,6 @@ import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.EmptyChatModel;
-import com.tokopedia.topchat.chatlist.viewmodel.TimeMachineListViewModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 
@@ -39,7 +38,6 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private EmptyModel emptyModel;
     private LoadingMoreModel loadingModel;
     private InboxChatPresenter presenter;
-    private TimeMachineListViewModel timeMachineChatModel;
     private EmptyChatModel emptyChatModel;
     private EmptyChatModel emptySearchModel;
 
@@ -53,7 +51,6 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.loadingModel = new LoadingMoreModel();
         this.presenter = presenter;
         this.listMove = new ArrayList<>();
-        this.timeMachineChatModel = new TimeMachineListViewModel("");
     }
 
     @Override
@@ -343,24 +340,8 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void showTimeMachine() {
-        if (list.size() == 1
-                && list.get(0) instanceof EmptyChatModel) {
-            ((EmptyChatModel) this.list.get(0)).setHasTimeMachine(true);
-        } else if (list.size() > 0) {
-            this.list.add(timeMachineChatModel);
-            notifyItemInserted(list.size() - 1);
-        }
-    }
-
     public void removeList(List<Pair> originList, List<DeleteChatViewModel> list) {
-        if (this.list.size() == list.size()
-                && this.list.get(1) instanceof TimeMachineListViewModel) {
-            this.list.clear();
-            this.list.add(emptyChatModel);
-            showTimeMachine();
-            notifyDataSetChanged();
-        } else if (this.list.size() == list.size()) {
+        if (this.list.size() == list.size()) {
             this.list.clear();
             this.list.add(emptyChatModel);
             notifyDataSetChanged();

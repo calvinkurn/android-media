@@ -9,6 +9,8 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -17,6 +19,11 @@ import rx.functions.Func1;
  */
 
 public class DeleteMessageMapper implements Func1<Response<TkpdResponse>, DeleteChatListViewModel> {
+
+    @Inject
+    public DeleteMessageMapper() {
+    }
+
     @Override
     public DeleteChatListViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {

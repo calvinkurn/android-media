@@ -1,11 +1,12 @@
 package com.tokopedia.topchat.chatroom.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -22,10 +23,9 @@ public class SendMessageUseCase extends UseCase<SendMessageViewModel> {
 
     private MessageRepository messageRepository;
 
-    public SendMessageUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              MessageRepository messageRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public SendMessageUseCase(MessageRepository messageRepository) {
+        super();
         this.messageRepository = messageRepository;
     }
 

@@ -20,6 +20,7 @@ import java.util.Date;
  */
 public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
 
+    private static final long MILISECONDS = 1000000;
     protected View view;
     protected TextView hour;
     protected TextView date;
@@ -49,7 +50,8 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         String hourTime;
 
         try {
-            hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()));
+            hourTime = ChatTimeConverter.formatTime(Long.parseLong(element.getReplyTime()) /
+                    MILISECONDS);
         } catch (NumberFormatException e) {
             hourTime = element.getReplyTime();
         }
@@ -70,6 +72,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
         try {
             long myTime = Long.parseLong(element.getReplyTime());
+            myTime = myTime / MILISECONDS;
             Date date = new Date(myTime);
             if (DateUtils.isToday(myTime)) {
                 time = itemView.getContext().getString(R.string.chat_today_date);

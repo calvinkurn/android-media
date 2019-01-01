@@ -19,9 +19,14 @@ object RxWebSocket {
                 accessToken)
     }
 
-    fun send(msg: String, tkpdAuthInterceptor: TkpdAuthInterceptor?,
+    fun send(msg: String,
+             tkpdAuthInterceptor: TkpdAuthInterceptor?,
              fingerprintInterceptor: FingerprintInterceptor?) {
-        RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
+        try {
+            RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
+        }catch(ignore : WebSocketException){
+            //TODO HANDLE ERROR WEBSOCKET CLOSED
+        }
     }
 
     fun send(json: JsonObject, tkpdAuthInterceptor: TkpdAuthInterceptor,

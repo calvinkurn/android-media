@@ -8,5 +8,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+        <activity
+            android:name=".attachinvoice.view.activity.AttachInvoiceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
     </application>
 </manifest>

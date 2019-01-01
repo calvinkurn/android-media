@@ -10,6 +10,8 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -18,6 +20,10 @@ import rx.functions.Func1;
  */
 
 public class EditTemplateChatMapper implements Func1<Response<TkpdResponse>, EditTemplateViewModel> {
+
+    @Inject
+    public EditTemplateChatMapper() {
+    }
 
     @Override
     public EditTemplateViewModel call(Response<TkpdResponse> response) {

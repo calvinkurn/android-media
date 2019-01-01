@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatlist.domain.pojo.message;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
 
 public class Message {
 

@@ -17,6 +17,8 @@ import com.tokopedia.topchat.common.InboxMessageConstant;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -25,6 +27,11 @@ import rx.functions.Func1;
  */
 
 public class SearchChatMapper implements Func1<Response<TkpdResponse>, InboxChatViewModel> {
+
+    @Inject
+    public SearchChatMapper() {
+    }
+
     @Override
     public InboxChatViewModel call(Response<TkpdResponse> response) {
         if (response.isSuccessful()) {

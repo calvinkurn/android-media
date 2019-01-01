@@ -43,23 +43,19 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
         return websocketMessageMapper.map(pojo)
     }
 
-    override fun detachView() {
-        super.detachView()
-        destroyWebSocket()
-    }
-
     abstract fun destroyWebSocket()
 
 
-    override fun sendMessage(messageId : String, sendMessage: String) {
+    override fun sendMessage(messageId: String, sendMessage: String, startTime: String, opponentId:
+    String) {
         if (networkMode == MODE_WEBSOCKET) {
-            sendMessageWithWebsocket(messageId, sendMessage)
+            sendMessageWithWebsocket(messageId, sendMessage, startTime, opponentId)
         } else {
-            sendMessageWithApi(messageId, sendMessage)
+            sendMessageWithApi(messageId, sendMessage, startTime)
         }
     }
 
-    abstract fun sendMessageWithWebsocket(messageId : String, sendMessage: String)
+    abstract fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String)
 
-    abstract fun sendMessageWithApi(messageId : String, sendMessage: String)
+    abstract fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String)
 }

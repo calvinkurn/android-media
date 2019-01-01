@@ -20,6 +20,8 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
                            listChat: ArrayList<Visitable<*>>) :
         BaseAdapter<BaseChatTypeFactoryImpl>(adapterTypeFactory, listChat) {
 
+    private val MILISECONDS: Long = 1000000
+
     var typingModel = TypingChatModel()
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
@@ -73,7 +75,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
         notifyItemInserted(0)
     }
 
-    fun removeTyping(){
+    fun removeTyping() {
         var isContainsTyping = this.visitables.remove(typingModel)
         if (isContainsTyping) {
             notifyItemRemoved(0)
@@ -89,13 +91,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
             if (position != visitables.size - 1) {
                 try {
                     val now = visitables[position] as BaseChatViewModel
-                    val myTime = java.lang.Long.parseLong(now.replyTime)
+                    val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
                     var prevTime: Long = 0
 
                     if (visitables[position + 1] != null
                             && visitables[position + 1] is BaseChatViewModel) {
                         val prev = visitables[position + 1] as BaseChatViewModel
-                        prevTime = java.lang.Long.parseLong(prev.replyTime)
+                        prevTime = java.lang.Long.parseLong(prev.replyTime) / MILISECONDS
                     }
 
                     (visitables[position] as BaseChatViewModel)
@@ -124,13 +126,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
 
                 val now: BaseChatViewModel = visitables[position] as BaseChatViewModel
                 var next: BaseChatViewModel = visitables[position - 1] as BaseChatViewModel
-                val myTime = java.lang.Long.parseLong(now.replyTime)
+                val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
                 var nextItemTime: Long = 0
 
                 if (visitables[position - 1] != null
                         && visitables[position - 1] is BaseChatViewModel) {
                     next = visitables[position - 1] as BaseChatViewModel
-                    nextItemTime = java.lang.Long.parseLong(next.replyTime)
+                    nextItemTime = java.lang.Long.parseLong(next.replyTime) / MILISECONDS
                 }
 
                 (visitables[position] as BaseChatViewModel)
@@ -163,13 +165,13 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
                 }
 
                 var prev: SendableViewModel? = null
-                val myTime = java.lang.Long.parseLong(now.replyTime)
+                val myTime = java.lang.Long.parseLong(now.replyTime) / MILISECONDS
                 var prevTime: Long = 0
 
                 if (visitables[position + 1] != null && visitables[position + 1] is SendableViewModel) {
                     prev = visitables.get(position + 1) as SendableViewModel
                     if (prev.replyTime != null) {
-                        prevTime = (prev!!.replyTime)!!.toLong()
+                        prevTime = (prev!!.replyTime)!!.toLong() / MILISECONDS
                     }
                 }
 
@@ -225,15 +227,28 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
         return true
     }
 
-    fun addNewMessage(item: Visitable<*>) {
+    override fun addElement(item: Visitable<*>) {
         visitables.add(0, item)
         notifyItemInserted(0)
-        if(visitables.size > 1) notifyItemRangeChanged(0, 1)
+        if (visitables.size > 1) notifyItemRangeChanged(0, 1)
     }
 
     fun removeDummy(visitable: Visitable<*>) {
-        var indexToRemove = visitables.indexOf(visitable)
-        visitables.removeAt(indexToRemove)
-        notifyItemRemoved(indexToRemove)
+        if (visitable is SendableViewModel && visitables.isNotEmpty()) {
+            val iter = visitables.iterator()
+
+            while (iter.hasNext()) {
+                val chatItem = iter.next()
+                if (chatItem is SendableViewModel
+                        && chatItem.isDummy
+                        && chatItem.startTime == visitable.startTime) {
+                    val position = this.visitables.indexOf(chatItem)
+                    this.visitables.remove(chatItem)
+                    notifyItemRemoved(position)
+                    break
+                }
+            }
+        }
     }
+
 }

@@ -32,11 +32,9 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.design.component.Menus;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
-import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -155,7 +153,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         extras.putBoolean(PARAM_WEBSOCKET, true);
         detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        if(TextUtils.equals(extras.getString(TkpdInboxRouter.CREATE_TASK_STACK), "false")) {
+        if (TextUtils.equals(extras.getString(TkpdInboxRouter.CREATE_TASK_STACK), "false")) {
             taskStackBuilder.addNextIntent(detailsIntent);
             return taskStackBuilder;
         }
@@ -214,10 +212,10 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, ChatRoomFragment.createInstance(getIntent().getExtras()),
-                        ChatRoomFragment.TAG)
-                .commit();
+//        getSupportFragmentManager().beginTransaction()
+//                .add(R.id.container, ChatRoomFragment.createInstance(getIntent().getExtras()),
+//                        ChatRoomFragment.TAG)
+//                .commit();
     }
 
     @Override
@@ -252,20 +250,20 @@ public class ChatRoomActivity extends BasePresenterActivity
 
     @Override
     public void onGetNotif(Bundle data) {
-        ChatRoomFragment chatRoomFragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
-        if (chatRoomFragment != null)
-            chatRoomFragment.restackList(data);
+//        ChatRoomFragment chatRoomFragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+//        if (chatRoomFragment != null)
+//            chatRoomFragment.restackList(data);
     }
 
     @Override
     public void onBackPressed() {
-        final ChatRoomFragment fragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(ChatRoomFragment.TAG);
-
-        if (fragment != null) {
-            fragment.onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
+//        final ChatRoomFragment fragment = (ChatRoomFragment) getSupportFragmentManager().findFragmentByTag(ChatRoomFragment.TAG);
+//
+//        if (fragment != null) {
+//            fragment.onBackPressed();
+//        } else {
+//            super.onBackPressed();
+//        }
     }
 
     public static Intent getCallingIntent(Context context, String nav, String messageId,

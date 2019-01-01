@@ -1,10 +1,12 @@
 package com.tokopedia.topchat.chatroom.data.repository;
 
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
+
+import java.util.HashMap;
+
 import rx.Observable;
 
 /**
@@ -13,9 +15,9 @@ import rx.Observable;
 
 public interface ReplyRepository {
 
-    Observable<ChatRoomViewModel> getReply(String id, TKPDMapParam<String, Object> requestParams);
+    Observable<ChatRoomViewModel> getReply(String id, HashMap<String, Object> requestParams);
 
-    Observable<ReplyActionData> replyMessage(TKPDMapParam<String, Object> parameters);
+    Observable<ReplyActionData> replyMessage(HashMap<String, Object> parameters);
 
-    Observable<ExistingChatPojo> getExistingChat(TKPDMapParam<String, Object> parameters);
+    Observable<ExistingChatPojo> getExistingChat(HashMap<String, Object> parameters);
 }

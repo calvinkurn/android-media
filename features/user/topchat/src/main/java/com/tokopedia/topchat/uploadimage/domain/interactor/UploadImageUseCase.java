@@ -1,23 +1,20 @@
 package com.tokopedia.topchat.uploadimage.domain.interactor;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topchat.R;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.topchat.common.util.ImageUploadHandlerChat;
 import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.topchat.uploadimage.domain.model.UploadImageDomain;
-import com.tokopedia.topchat.common.util.ImageUploadHandlerChat;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -47,14 +44,16 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
 
     private static final String HTTP = "http://";
     private static final String UPLOAD_ATTACHMENT = "/upload/attachment";
+    private final UserSessionInterface userSession;
 
     private ImageUploadRepository imageUploadRepository;
 
-    public UploadImageUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              ImageUploadRepository imageUploadRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public UploadImageUseCase(ImageUploadRepository imageUploadRepository, UserSessionInterface
+            userSession) {
+        super();
         this.imageUploadRepository = imageUploadRepository;
+        this.userSession = userSession;
     }
 
     @Override
@@ -72,11 +71,12 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     }
 
     private Map<String, RequestBody> generateRequestBody(RequestParams requestParams) {
+        //TODO REPLACE
         Map<String, String> paramsMap = AuthUtil.generateParams(
                 requestParams.getString(PARAM_USER_ID,
-                        SessionHandler.getLoginID(MainApplication.getAppContext())),
+                        userSession.getUserId()),
                 requestParams.getString(PARAM_DEVICE_ID,
-                        GCMHandler.getRegistrationId(MainApplication.getAppContext())),
+                        userSession.getDeviceId()),
                 new HashMap<String, String>()
         );
 
@@ -118,14 +118,14 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
         File file = null;
         try {
             byte[] temp = ImageUploadHandlerChat.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""));
-            if(ImageUploadHandlerChat.checkSizeOverLimit(temp.length, 5)){
-                throw new ErrorMessageException("Gambar melebihi 5MB");
+            if (ImageUploadHandlerChat.checkSizeOverLimit(temp.length, 5)) {
+                throw new MessageErrorException("Gambar melebihi 5MB");
             }
 
             file = ImageUploadHandlerChat.writeImageToTkpdPath(temp);
 
         } catch (IOException e) {
-            throw new RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image));
+            throw new RuntimeException("Gagal mengunggah gambar");
         }
         return RequestBody.create(MediaType.parse("image/*"),
                 file);
@@ -137,13 +137,11 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
         params.putString(PARAM_GENERATED_HOST, uploadHost);
         params.putString(PARAM_FILE_TO_UPLOAD, fileLoc);
         params.putString(PARAM_SERVER_ID, serverId);
-        String userId = requestParams.getString(PARAM_USER_ID,
-                SessionHandler.getTempLoginSession(MainApplication.getAppContext()));
+        String userId = requestParams.getString(PARAM_USER_ID, "");
         params.putString(UploadImageUseCase.PARAM_USER_ID, userId);
         params.putString(UploadImageUseCase.PARAM_IMAGE_ID, String.format("%s%s", userId, imageId));
         params.putString(UploadImageUseCase.PARAM_DEVICE_ID,
-                requestParams.getString(PARAM_DEVICE_ID,
-                        GCMHandler.getRegistrationId(MainApplication.getAppContext())));
+                requestParams.getString(PARAM_DEVICE_ID, ""));
         params.putString(UploadImageUseCase.PARAM_WEB_SERVICE, "1");
         params.putString(UploadImageUseCase.PARAM_IMAGE_ID, imageId);
         return params;

@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
 import android.support.annotation.NonNull
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
@@ -9,22 +10,23 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -41,6 +43,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            private val attachedInvoiceSelectionListener: AttachedInvoiceSelectionListener,
                            private val chatRatingListener: ChatRatingListener,
                            private val chatActionListBubbleListener: ChatActionListBubbleListener,
+                           private val quickReplyListener: QuickReplyListener,
                            override val toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar), ChatbotViewState {
 
@@ -52,6 +55,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun initView() {
         super.initView()
+
+        rvQuickReply = view.findViewById(R.id.list_quick_reply)
+        quickReplyAdapter = QuickReplyAdapter(QuickReplyListViewModel(), quickReplyListener)
+
+        rvQuickReply.layoutManager = LinearLayoutManager(rvQuickReply.context,
+                LinearLayoutManager.HORIZONTAL, false)
+        rvQuickReply.adapter = quickReplyAdapter
 
         adapter = ChatbotAdapter(ChatbotTypeFactoryImpl(imageAnnouncementListener,
                 chatLinkHandlerListener, imageUploadListener, productAttachmentListener,
@@ -89,31 +99,35 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel) {
+        super.onReceiveMessageEvent(visitable)
         showQuickReply(visitable)
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
-        adapter.addElement(generatedInvoice)
-        scrollToBottom()
+        super.onReceiveMessageEvent(generatedInvoice)
     }
 
-    override fun onSendRating(element: ChatRatingViewModel, rating: Int) {
-        //TODO DISABLE RATING BUTTON
-    }
+    override fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
+                                     chatRatingViewModel: ChatRatingViewModel,
+                                     activity: Activity,
+                                     onClickReasonRating: (String) -> Unit) {
+        val indexToUpdate = adapter.getList().indexOf(chatRatingViewModel)
+        if (adapter.getList()[indexToUpdate] is ChatRatingViewModel) {
+            (adapter.getList()[indexToUpdate] as ChatRatingViewModel).ratingStatus = rating
+            adapter.notifyItemChanged(indexToUpdate)
+        }
 
-    override fun onSuccessSendRating(element: ChatRatingViewModel, rating: Int, activity: Activity,
-                                     onClickReasonRating: Unit) {
         if (rating == ChatRatingViewModel.RATING_BAD) {
             showReasonBottomSheet(element, activity, onClickReasonRating)
         }
     }
 
-    private fun showReasonBottomSheet(element: ChatRatingViewModel, activity: Activity, onReasonClicked: Unit) {
-        //TODO
-//        if(!::reasonBottomSheet.isInitialized){
-//            reasonBottomSheet = ReasonBottomSheet.createInstance(activity, )
-//        }
-//        reasonBottomSheet.show()
+    private fun showReasonBottomSheet(element: SendRatingPojo, activity: Activity, onClickReasonRating: (String) -> Unit) {
+        if (!::reasonBottomSheet.isInitialized) {
+            reasonBottomSheet = ReasonBottomSheet.createInstance(activity,
+                    element.postRatingV2.data.listReason, onClickReasonRating)
+        }
+        reasonBottomSheet.show()
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {
@@ -121,11 +135,15 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(quickReplyListViewModel: QuickReplyListViewModel) {
-        //TODO SHOW QUICK REPLY
+        if (::quickReplyAdapter.isInitialized) {
+            quickReplyAdapter.setList(quickReplyListViewModel)
+            quickReplyAdapter.notifyDataSetChanged()
+        }
+        rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
-        return quickReplyAdapter != null && rvQuickReply != null
+        return ::quickReplyAdapter.isInitialized
     }
 
     private fun hideQuickReply() {

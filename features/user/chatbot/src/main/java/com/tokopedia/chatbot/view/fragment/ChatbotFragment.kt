@@ -30,6 +30,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
@@ -40,6 +41,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -57,7 +59,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     @Inject
     lateinit var session: UserSessionInterface
 
-    lateinit var replyEditText : EditText
+    lateinit var replyEditText: EditText
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -88,24 +90,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         super.onViewCreated(view, savedInstanceState)
         super.viewState = ChatbotViewStateImpl(view, session, this, this,
                 this, this, this,
-                this, this, (activity as BaseChatToolbarActivity).getToolbar())
+                this, this, this, (activity as BaseChatToolbarActivity).getToolbar())
         viewState.initView()
         loadInitialData()
     }
 
     override fun loadInitialData() {
-//        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChat())
+        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChat())
         presenter.connectWebSocket(messageId)
-
-        //DEVELOPMENT ONLY
-        getViewState().onSuccessLoadFirstTime(ChatroomViewModel())
-
-
     }
 
     private fun onSuccessGetExistingChat(): (ChatroomViewModel) -> Unit {
 
         return {
+            updateViewData(it)
             setCanLoadMore(it)
             getViewState().onSuccessLoadFirstTime(it)
         }
@@ -149,15 +147,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
-        val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, senderId)
+        val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime)
+        presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
+                opponentId)
     }
 
     private fun attachInvoiceRetrieved(selectedInvoice: InvoiceLinkPojo) {
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState().onShowInvoiceToChat(generatedInvoice)
-        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime)
+        presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime,
+                opponentId)
     }
 
     override fun showSearchInvoiceScreen() {
@@ -172,7 +172,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onQuickReplyClicked(quickReplyListViewModel: QuickReplyListViewModel,
                                      model: QuickReplyViewModel) {
 
-        presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime())
+        presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime(), opponentId)
 
     }
 
@@ -193,6 +193,47 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+
+    override fun onSendButtonClicked() {
+        val sendMessage = replyEditText.text.toString()
+        val startTime = SendableViewModel.generateStartTime()
+        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
+                .name, sendMessage, startTime)
+        presenter.sendMessage(messageId, sendMessage, startTime, opponentId)
+    }
+
+    override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
+        presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+    }
+
+    override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
+        presenter.sendRating(messageId, rating, element.replyTimeNano.toString(), onError(),
+                onSuccessSendRating(rating, element))
+    }
+
+    private fun onSuccessSendRating(rating: Int, element: ChatRatingViewModel): (SendRatingPojo) ->
+    Unit {
+        return {
+            (activity as Activity).run {
+                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
+                        onClickReasonRating(element.replyTimeNano.toString()))
+            }
+        }
+    }
+
+    private fun onClickReasonRating(timestamp: String): (String) -> Unit {
+        return {
+            presenter.sendReasonRating(messageId, it, timestamp, onError(),
+                    onSuccessSendReasonRating())
+        }
+    }
+
+    private fun onSuccessSendReasonRating(): (String) -> Unit {
+        return {
+            ToasterNormal.make(view, it, ToasterNormal.LENGTH_LONG).show()
+        }
+    }
+
     override fun onGoToWebView(url: String, id: String) {
         val BASE_DOMAIN_SHORTENED = "tkp.me"
 
@@ -206,12 +247,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         && !TextUtils.equals(uri.encodedPath, "/r")
                 val isNeedAuthToken = isTargetDomainTokopedia || isTargetTkpMeAndNotRedirect
 
-                if (isNeedAuthToken && RouteManager.isSupportApplink(activity, String.format
-                        ("%s?url=%s", ApplinkConst.WEBVIEW, url))) {
-
-                    RouteManager.route(activity, URLGenerator.generateURLSessionLogin(url,
-                            session.deviceId,
-                            session.userId))
+                val urlWithSession = URLGenerator.generateURLSessionLogin(url,
+                        session.deviceId,
+                        session.userId)
+                val applinkWebview = String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlWithSession)
+                if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
+                    RouteManager.route(activity, applinkWebview)
                 } else {
                     super.onGoToWebView(url, id)
                 }
@@ -232,33 +273,4 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.detachView()
     }
 
-    override fun onSendButtonClicked() {
-        val sendMessage = replyEditText.text.toString()
-
-        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                .name, sendMessage)
-        presenter.sendMessage(messageId, sendMessage)
-    }
-
-    override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
-        presenter.sendActionBubble()
-    }
-
-    override fun onClickRating(element: ChatRatingViewModel, rating: Int) {
-        (viewState as ChatbotViewState).onSendRating(element, rating)
-        presenter.sendRating(rating, onError(), onSuccessSendRating())
-    }
-
-    private fun onSuccessSendRating(): () -> Unit {
-        return {
-            (activity as Activity).run {
-                //            (viewState as ChatbotViewState).onSuccessSendRating(element, rating, this,
-//                    onClickReasonRating())
-            }
-        }
-    }
-
-    fun onClickReasonRating() {
-        presenter.sendReasonRating()
-    }
 }

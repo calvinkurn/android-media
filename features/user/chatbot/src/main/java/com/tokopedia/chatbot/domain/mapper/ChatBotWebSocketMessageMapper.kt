@@ -59,7 +59,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.message.censoredReply,
                 "",
                 TYPE_CHAT_RATING,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojo.ratingStatus,
                 pojo.message.timeStampUnixNano.toLong()
         )
@@ -101,7 +101,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 list,
                 pojo.message.censoredReply
         )
@@ -119,7 +119,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojo.startTime,
                 invoiceSentPojo.invoiceLink.attributes.title,
                 invoiceSentPojo.invoiceLink.attributes.description,
@@ -140,7 +140,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojo.message.censoredReply,
                 convertToChatActionBubbleViewModelList(pojoAttribute)
         )
@@ -167,7 +167,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 pojo.message.censoredReply,
                 pojo.attachment!!.id,
                 TYPE_QUICK_REPLY,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 convertToQuickReplyList(pojoAttribute)
         )
     }

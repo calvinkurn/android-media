@@ -1,10 +1,11 @@
 package com.tokopedia.topchat.chattemplate.data.source;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.common.chat.ChatService;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -22,11 +23,11 @@ public class CloudEditTemplateChatDataSource {
         this.chatService = chatService;
     }
 
-    public Observable<EditTemplateViewModel> editTemplate(int index, TKPDMapParam<String, Object> parameters) {
+    public Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> parameters) {
         return chatService.getApi().editTemplate(index, parameters).map(templateChatMapper);
     }
 
-    public Observable<EditTemplateViewModel> createTemplate(TKPDMapParam<String, Object> parameters) {
+    public Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> parameters) {
         return chatService.getApi().createTemplate(parameters).map(templateChatMapper);
     }
 

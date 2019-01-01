@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 
 /**
@@ -22,7 +23,6 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 open class BaseChatToolbarActivity : BaseChatActivity() {
 
     companion object {
-        val PARAM_MESSAGE_ID = "message_id"
         val PARAM_HEADER = "header"
 
         /**
@@ -33,7 +33,7 @@ open class BaseChatToolbarActivity : BaseChatActivity() {
                              label: String, senderId: String, role: String, mode: Int,
                              keyword: String, image: String): Intent {
             val intent = Intent(context, BaseChatToolbarActivity::class.java)
-            intent.putExtra(PARAM_MESSAGE_ID, messageId)
+            intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
             val model = ChatRoomHeaderViewModel()
             model.name = name
             model.label = label

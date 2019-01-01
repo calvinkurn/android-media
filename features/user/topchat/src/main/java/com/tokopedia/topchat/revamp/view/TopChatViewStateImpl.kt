@@ -5,42 +5,39 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.view.EventsWatcher
-import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
+import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Func1
+import rx.functions.Action1
 import java.util.concurrent.TimeUnit
 
 /**
  * @author : Steven 29/11/18
  */
 
-class TopChatViewStateImpl(@NonNull override val view: View, presenter: TopChatRoomPresenter, toolbar: Toolbar) : BaseChatViewStateImpl(view, toolbar), TopChatViewStateImpl {
+class TopChatViewStateImpl(
+        @NonNull override val view: View,
+        presenter: TopChatRoomPresenter,
+        private val typingListener: TypingListener,
+        toolbar: Toolbar
+) : BaseChatViewStateImpl(view, toolbar), TopChatViewState{
 
-    private var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-    private var replyBox: RelativeLayout = view.findViewById(R.id.reply_box)
-    private var actionBox: LinearLayout = view.findViewById(R.id.add_comment_area)
-    private var mainLoading: ProgressBar = view.findViewById(R.id.progress)
 
-    private var sendButton: View = view.findViewById(R.id.send_but)
-    private var replyEditText: EditText = view.findViewById(R.id.new_comment)
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
-    private var pickerButton: View = view.findViewById(R.id.image_picker)
     private var maximize: View = view.findViewById(R.id.maximize)
-    private var notifier: View = view.findViewById(R.id.notifier)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
 //    lateinit var templateAdapter: TemplateChatAdapter
 //    lateinit var templateChatTypeFactory: TemplateChatTypeFactory
-    private var replyWatcher: Observable<String>
-    private var replyIsTyping: Observable<Boolean>
 
     init {
+        initView()
+    }
+
+    override fun initView() {
+        super.initView()
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { v, hasFocus ->
@@ -48,23 +45,29 @@ class TopChatViewStateImpl(@NonNull override val view: View, presenter: TopChatR
                 scrollDownWhenInBottom()
             }
         }
-        replyWatcher = EventsWatcher.text(replyEditText)
-
-        replyIsTyping = replyWatcher.map(Func1 { t -> t.length > 0 })
-
-//        replyIsTyping.subscribe(Action1 {
-//            if (it) {
-//                minimizeTools()
-//                presenter.startTyping()
-//            }
-//        })
+//        replyWatcher = EventsWatcher.text(replyEditText)
 //
-//        replyIsTyping.debounce(2, TimeUnit.SECONDS)
-//                .subscribe { presenter.stopTyping() }
+//        replyIsTyping = replyWatcher.map(Func1 { t -> t.length > 0 })
+
+        replyIsTyping.subscribe(Action1 {
+            if (it) {
+                minimizeTools()
+                typingListener.onStartTyping()
+            }
+        })
+
+        replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                .subscribe {
+                    typingListener.onStopTyping()
+                }
 
         maximize.setOnClickListener { maximizeTools() }
+        //TODO ADD MESSAGE ID & OPPONENT ID
         sendButton.setOnClickListener {
-//            presenter.sendMessage(replyEditText.text.toString())
+//            presenter.sendMessage("",
+//                    replyEditText.text.toString(),
+//                    SendableViewModel.generateStartTime(),
+//                    "")
         }
 //
 //        templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(this))
@@ -96,14 +99,6 @@ class TopChatViewStateImpl(@NonNull override val view: View, presenter: TopChatR
         }
     }
 
-    private fun scrollToBottom() {
-        Observable.timer(250, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    recyclerView.scrollToPosition(0)
-                }
-    }
-
     private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
         return (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0
     }
@@ -125,30 +120,6 @@ class TopChatViewStateImpl(@NonNull override val view: View, presenter: TopChatR
         actionBox?.visibility = View.VISIBLE
     }
 
-    fun showLoading() {
-        mainLoading?.visibility = View.VISIBLE
-    }
-
-    fun hideLoading() {
-        mainLoading?.visibility = View.GONE
-    }
-
-    fun setAdapter(adapter: BaseChatAdapter) {
-        recyclerView.adapter = adapter
-    }
-
-    fun getAdapter(): BaseChatAdapter {
-        return recyclerView.adapter as BaseChatAdapter
-    }
-
-    fun addList(listChat: ArrayList<Visitable<*>>) {
-        getAdapter().addList(listChat)
-    }
-
-    fun getList(): List<Visitable<*>> {
-        return (recyclerView.adapter as BaseChatAdapter).getList()
-    }
-
     fun recipientTyping() {
         getAdapter().showTyping()
         scrollDownWhenInBottom()
@@ -163,7 +134,7 @@ class TopChatViewStateImpl(@NonNull override val view: View, presenter: TopChatR
     }
 
     fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addNewMessage(visitable)
+        getAdapter().addElement(visitable)
         scrollDownWhenInBottom()
     }
 
@@ -175,7 +146,4 @@ class TopChatViewStateImpl(@NonNull override val view: View, presenter: TopChatR
         }
     }
 
-    fun clearEditText() {
-        replyEditText.setText("")
-    }
 }

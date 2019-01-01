@@ -1,11 +1,13 @@
 package com.tokopedia.topchat.chatlist.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepository;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -19,8 +21,9 @@ public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
 
     private final SearchRepository searchRepository;
 
-    public SearchMessageUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, SearchRepository searchRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public SearchMessageUseCase(SearchRepository searchRepository) {
+        super();
         this.searchRepository = searchRepository;
     }
 

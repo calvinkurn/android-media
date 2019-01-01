@@ -1,12 +1,12 @@
 package com.tokopedia.topchat.chatroom.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.domain.pojo.existingchat.ExistingChatPojo;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -17,8 +17,9 @@ public class GetExistingChatUseCase extends UseCase<ExistingChatPojo> {
 
     private final ReplyRepository replyRepository;
 
-    public GetExistingChatUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ReplyRepository replyRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetExistingChatUseCase( ReplyRepository replyRepository) {
+        super();
         this.replyRepository = replyRepository;
     }
 

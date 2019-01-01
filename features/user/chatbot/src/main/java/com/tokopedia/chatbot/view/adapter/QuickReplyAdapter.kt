@@ -13,7 +13,8 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
  * @author by yfsx on 08/05/18.
  */
 
-class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewModel?, private val listener: QuickReplyListener) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
+class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewModel = QuickReplyListViewModel(),
+                        private val listener: QuickReplyListener) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): Holder {
         return Holder(LayoutInflater.from(viewGroup.context)
@@ -21,18 +22,22 @@ class QuickReplyAdapter(private var quickReplyListViewModel: QuickReplyListViewM
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val model = quickReplyListViewModel!!.quickReplies[position]
+        val model = quickReplyListViewModel.quickReplies[position]
         holder.text.text = model.text
-        holder.text.setOnClickListener { view -> listener.onQuickReplyClicked(quickReplyListViewModel!!, model) }
+        holder.text.setOnClickListener { view -> listener.onQuickReplyClicked(quickReplyListViewModel, model) }
     }
 
     override fun getItemCount(): Int {
-        return quickReplyListViewModel!!.quickReplies.size
+        return quickReplyListViewModel.quickReplies.size
     }
 
     fun clearData() {
-        quickReplyListViewModel = quickReplyListViewModel!!.EMPTY()
+        quickReplyListViewModel = quickReplyListViewModel.EMPTY()
         notifyDataSetChanged()
+    }
+
+    fun setList(quickReplyListViewModel: QuickReplyListViewModel) {
+        this.quickReplyListViewModel = quickReplyListViewModel
     }
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {

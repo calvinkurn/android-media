@@ -107,9 +107,6 @@ data class Reply(
         @SerializedName("status")
         val status: Int = 0,
         @Expose
-        @SerializedName("attachmentID")
-        val attachmentID: Int = 0,
-        @Expose
         @SerializedName("attachment")
         val attachment: Attachment?,
         @Expose
@@ -132,14 +129,10 @@ data class Attachment(
         val type: Int = 0,
         @Expose
         @SerializedName("attributes")
-        val attributes: Attributes?,
+        val attributes: String = "",
         @Expose
         @SerializedName("fallback")
         val fallback: Fallback?
-)
-
-data class Attributes(
-        val url: Any
 )
 
 data class Fallback(

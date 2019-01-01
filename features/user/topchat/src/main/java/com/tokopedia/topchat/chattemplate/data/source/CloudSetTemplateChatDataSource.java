@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.chattemplate.data.source;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+import com.tokopedia.topchat.common.chat.ChatService;
 
 import rx.Observable;
 

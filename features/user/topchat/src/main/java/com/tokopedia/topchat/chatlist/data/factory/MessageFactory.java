@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.chatlist.data.factory;
 
-import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper;
 import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper;
 import com.tokopedia.topchat.chatlist.data.source.CloudMessageDataSource;
+import com.tokopedia.topchat.common.chat.ChatService;
 
 /**
  * Created by stevenfredian on 8/31/17.

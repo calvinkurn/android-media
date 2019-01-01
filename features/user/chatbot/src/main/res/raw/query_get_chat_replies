@@ -29,9 +29,13 @@ query get_chat_replies($msgId: Int!) {
           replyTime
           status
           attachmentID
+          isOpposite
+          isHighlight
+          isRead
           attachment {
             id
             type
+            attributes
             fallback {
               message
               html

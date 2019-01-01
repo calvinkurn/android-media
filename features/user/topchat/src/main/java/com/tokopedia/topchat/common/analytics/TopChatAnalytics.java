@@ -1,6 +1,9 @@
 package com.tokopedia.topchat.common.analytics;
 
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+
+import javax.inject.Inject;
 
 /**
  * Created by stevenfredian on 11/6/17.
@@ -8,6 +11,15 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 public class TopChatAnalytics {
 
+
+    private final AnalyticTracker analyticTracker;
+
+    @Inject
+    public TopChatAnalytics(AnalyticTracker analyticTracker) {
+        this.analyticTracker = analyticTracker;
+    }
+
+    public static final String SCREEN_CHAT_LIST = "inbox-chat";
 
     public interface Category {
         public static final String PRODUCT_PAGE = "product page";
@@ -55,11 +67,25 @@ public class TopChatAnalytics {
         public static final String PRODUCT_PAGE = "message shop";
     }
 
-    public static EventTracking eventClickInboxChannel() {
-        return new EventTracking(Name.EVENT_NAME_CLICK_INBOXCHAT,
+    public void eventClickInboxChannel() {
+
+        analyticTracker.sendEventTracking(
+                Name.EVENT_NAME_CLICK_INBOXCHAT,
                 Category.EVENT_CATEGORY_INBOX_CHAT,
                 Action.EVENT_ACTION_CLICK_COMMUNITY_TAB,
-                "");
+                ""
+        );
     }
+
+    public void eventOpenTopChat() {
+
+        analyticTracker.sendEventTracking(
+                TopChatAnalytics.Name.INBOX_CHAT,
+                TopChatAnalytics.Category.INBOX_CHAT,
+                TopChatAnalytics.Action.INBOX_CHAT_CLICK,
+                ""
+        );
+    }
+
 
 }

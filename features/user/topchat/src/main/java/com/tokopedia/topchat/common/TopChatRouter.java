@@ -3,6 +3,8 @@ package com.tokopedia.topchat.common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import java.util.ArrayList;
 
@@ -19,4 +21,18 @@ public interface TopChatRouter {
 
     void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>
             imageDesc, String title, String date);
+
+    Intent getHomeIntent(Context context);
+
+    boolean isIndicatorVisible();
+
+    String getChannelFragmentTag();
+
+    Fragment getChannelFragment(Bundle bundle);
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+
 }

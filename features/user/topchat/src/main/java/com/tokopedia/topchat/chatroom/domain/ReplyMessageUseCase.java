@@ -1,11 +1,11 @@
 package com.tokopedia.topchat.chatroom.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -13,12 +13,13 @@ import rx.Observable;
  * Created by stevenfredian on 9/12/17.
  */
 
-public class ReplyMessageUseCase extends UseCase<ReplyActionData>{
+public class ReplyMessageUseCase extends UseCase<ReplyActionData> {
 
     private final ReplyRepository replyRepository;
 
-    public ReplyMessageUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ReplyRepository replyRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public ReplyMessageUseCase(ReplyRepository replyRepository) {
+        super();
         this.replyRepository = replyRepository;
     }
 

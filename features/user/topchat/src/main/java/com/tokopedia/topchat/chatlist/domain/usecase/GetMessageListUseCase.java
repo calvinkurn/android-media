@@ -1,11 +1,13 @@
 package com.tokopedia.topchat.chatlist.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -13,14 +15,13 @@ import rx.Observable;
  * Created by stevenfredian on 8/31/17.
  */
 
-public class GetMessageListUseCase extends UseCase<InboxChatViewModel>{
+public class GetMessageListUseCase extends UseCase<InboxChatViewModel> {
 
     MessageRepository messageRepository;
 
-    public GetMessageListUseCase(ThreadExecutor threadExecutor,
-                                 PostExecutionThread postExecutionThread,
-                                 MessageRepository messageRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetMessageListUseCase(MessageRepository messageRepository) {
+        super();
         this.messageRepository = messageRepository;
     }
 

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Hendri on 28/03/18.
  */
 
-class GetInvoicesResponseWrapper {
+class GetInvoicesResponsePojo {
     @SerializedName("data")
     @Expose
     var dataWrapper: GetInvoicesDataWrapper? = null

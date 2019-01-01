@@ -1,17 +1,17 @@
 package com.tokopedia.topchat.chatroom.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.topchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.topchat.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.topchat.uploadimage.domain.model.UploadImageDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -43,12 +43,11 @@ public class AttachImageUseCase extends UseCase<UploadImageDomain> {
     private UploadImageUseCase uploadImageUseCase;
     private ReplyMessageUseCase replyMessageUseCase;
 
-    public AttachImageUseCase(ThreadExecutor threadExecutor,
-                              PostExecutionThread postExecutionThread,
-                              GenerateHostUseCase generateHostUseCase,
+    @Inject
+    public AttachImageUseCase(GenerateHostUseCase generateHostUseCase,
                               UploadImageUseCase uploadImageUseCase,
                               ReplyMessageUseCase replyMessageUseCase) {
-        super(threadExecutor, postExecutionThread);
+        super();
         this.generateHostUseCase = generateHostUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
         this.replyMessageUseCase = replyMessageUseCase;

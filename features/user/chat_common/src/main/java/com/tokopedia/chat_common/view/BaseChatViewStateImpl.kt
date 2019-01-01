@@ -89,16 +89,40 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
 
     }
 
-    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String) {
+    override fun onShowStartTyping() {
+        getAdapter().showTyping()
+        scrollDownWhenInBottom()
+    }
+
+    override fun onShowStopTyping() {
+        getAdapter().removeTyping()
+    }
+
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        getAdapter().addElement(visitable)
+        scrollDownWhenInBottom()
+    }
+
+    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
         getAdapter().addElement(
                 MessageViewModel(
                         messageId,
                         userId,
                         name,
-                        SendableViewModel.generateStartTime(),
+                        startTime,
                         sendMessage
                 )
         )
+    }
+
+    override fun removeDummyIfExist(successVisitable: Visitable<*>) {
+        if (successVisitable is SendableViewModel) {
+            getAdapter().removeDummy(successVisitable)
+        }
+    }
+
+    override fun removeMessageOnReplyBox() {
+        replyEditText.setText("")
     }
 
     private fun setLabel(labelText: String) {
@@ -113,7 +137,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
             }
-            ADMIN_TAG ->{
+            ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
                 label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
             }
@@ -127,7 +151,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         }
     }
 
-    protected fun scrollToBottom() {
+    open fun scrollToBottom() {
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -162,28 +186,6 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
 
     fun getList(): List<Visitable<*>> {
         return (recyclerView.adapter as BaseChatAdapter).getList()
-    }
-
-    fun removeDummy(visitable: Visitable<*>) {
-        getAdapter().removeDummy(visitable)
-    }
-
-    fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addNewMessage(visitable)
-        scrollDownWhenInBottom()
-    }
-
-    override fun onShowStartTyping() {
-        getAdapter().showTyping()
-        scrollDownWhenInBottom()
-    }
-
-    override fun onShowStopTyping() {
-        getAdapter().removeTyping()
-    }
-
-    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun clearEditText() {

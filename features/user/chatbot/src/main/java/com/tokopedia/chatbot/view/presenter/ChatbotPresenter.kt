@@ -15,14 +15,20 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -43,7 +49,9 @@ class ChatbotPresenter @Inject constructor(
         override var userSession: UserSessionInterface,
         private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
         private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor)
+        private val fingerprintInterceptor: FingerprintInterceptor,
+        private val sendChatRatingUseCase: SendChatRatingUseCase,
+        private val sendRatingReasonUseCase: SendRatingReasonUseCase)
     : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -115,17 +123,27 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    override fun sendRating(rating: Int, onError: (Throwable) -> Unit,
-                            onSuccess: () -> Unit) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun sendRating(messageId : String, rating: Int, timestamp : String,
+                            onError: (Throwable) -> Unit,
+                            onSuccess: (SendRatingPojo) -> Unit) {
+        sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
+           messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
     }
 
-    override fun sendReasonRating() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun sendReasonRating(messageId: String, reason: String, timestamp: String,
+                                  onError: (Throwable) -> Unit,
+                                  onSuccess: (String) -> Unit) {
+        sendRatingReasonUseCase.execute(SendRatingReasonUseCase.generateParam(
+                messageId, reason, timestamp
+        ), SendRatingReasonSubscriber(onError, onSuccess) )
     }
 
-    override fun sendActionBubble() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
+                                  startTime: String, opponentId: String) {
+        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendBubbleAction(messageId, selected,
+                startTime, opponentId),
+                tkpdAuthInterceptor,
+                fingerprintInterceptor)
     }
 
     override fun destroyWebSocket() {
@@ -162,23 +180,27 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendInvoiceAttachment(messageId: String,
                                        invoiceLinkPojo: InvoiceLinkPojo,
-                                       startTime: String) {
+                                       startTime: String,
+                                       opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendInvoice(messageId,
-                invoiceLinkPojo, startTime), tkpdAuthInterceptor, fingerprintInterceptor)
+                invoiceLinkPojo, startTime, opponentId), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
-                                startTime: String) {
+                                startTime: String,
+                                opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendQuickReply(messageId,
-                quickReply, startTime), tkpdAuthInterceptor, fingerprintInterceptor)
+                quickReply, startTime, opponentId), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 
-    override fun sendMessageWithApi(messageId : String, sendMessage: String) {
+    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
         //TODO
     }
 
-    override fun sendMessageWithWebsocket(messageId : String, sendMessage: String) {
-        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage),
+    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String,
+                                          startTime: String, opponentId: String) {
+        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
+                startTime, opponentId),
                 tkpdAuthInterceptor,
                 fingerprintInterceptor)
     }
@@ -200,6 +222,8 @@ class ChatbotPresenter @Inject constructor(
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
+        sendChatRatingUseCase.unsubscribe()
+        sendRatingReasonUseCase.unsubscribe()
         super.detachView()
     }
 }

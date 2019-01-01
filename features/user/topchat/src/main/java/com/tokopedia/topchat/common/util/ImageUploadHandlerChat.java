@@ -11,8 +11,8 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.myproduct.utils.FileUtils;
-import com.tokopedia.core.util.MethodChecker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

@@ -33,10 +33,15 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel(pojo.msgId.toString(), pojo
-                .fromUid,
-                pojo.from, pojo.fromRole, ""
-                , "", "", pojo.startTime, pojo.message.censoredReply, false, false, pojo.isOpposite)
+        return MessageViewModel(pojo.msgId.toString(),
+                pojo.fromUid,
+                pojo.from,
+                pojo.fromRole,
+                "",
+                "",
+                pojo.message.timeStampUnixNano,
+                pojo.startTime,
+                pojo.message.censoredReply, false, false, !pojo.isOpposite)
     }
 
     open fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -60,7 +65,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 !pojo.isOpposite,
                 pojoAttribute.imageUrl,
                 pojoAttribute.thumbnail,
@@ -82,7 +87,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojoAttribute.productId,
                 pojoAttribute.productProfile.name,
                 pojoAttribute.productProfile.price,
@@ -102,7 +107,7 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.fromRole,
                 pojo.attachment!!.id,
                 pojo.attachment!!.type,
-                pojo.message.timeStampUnix,
+                pojo.message.timeStampUnixNano,
                 pojo.attachment!!.fallbackAttachment.message
         )
     }

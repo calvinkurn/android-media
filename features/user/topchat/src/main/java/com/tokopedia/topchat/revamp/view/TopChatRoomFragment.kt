@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -13,10 +14,8 @@ import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
@@ -28,7 +27,9 @@ import javax.inject.Inject
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
+class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
+        , TypingListener {
+
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -146,8 +147,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
     }
 
     fun initView(view: View?) {
-        view?.run {
-            super.viewState = TopChatViewStateImpl(this, presenter, (activity as BaseChatToolbarActivity).getToolbar())
+        view?.let {
+            super.viewState = TopChatViewStateImpl(it, presenter, this, (activity as BaseChatToolbarActivity).getToolbar())
 
             getViewState()?.run {
                 getViewState().showLoading()
@@ -202,7 +203,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 
 
     override fun onSendButtonClicked() {
+        val sendMessage = view?.findViewById<EditText>(R.id.new_comment)?.text.toString()
+        val startTime = SendableViewModel.generateStartTime()
+        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
+                .name, sendMessage, startTime)
+        presenter.sendMessage(messageId, sendMessage, startTime, opponentId)
+    }
 
+
+    override fun onStartTyping() {
+        presenter.startTyping()
+    }
+
+    override fun onStopTyping() {
+        presenter.stopTyping()
     }
 
     override fun onDestroy() {

@@ -2,12 +2,9 @@ package com.tokopedia.topchat.revamp.presenter
 
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -16,7 +13,9 @@ import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -33,9 +32,16 @@ import javax.inject.Inject
 
 class TopChatRoomPresenter @Inject constructor(
         var getChatUseCase: GetChatUseCase,
-        var userSession: UserSessionInterface,
+        override var userSession: UserSessionInterface,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper)
-    : BaseDaggerPresenter<TopChatContract.View>(), TopChatContract.Presenter {
+    : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
+    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private var mSubscription: CompositeSubscription
     private lateinit var webSocketUrl: String
@@ -66,6 +72,7 @@ class TopChatRoomPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
                 view.developmentView()
+                readMessage()
             }
 
             override fun onMessage(text: String) {
@@ -113,7 +120,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
 
-    fun destroyWebSocket() {
+    override fun destroyWebSocket() {
         mSubscription.clear()
         mSubscription.unsubscribe()
     }
@@ -135,8 +142,36 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    private fun readMessage() {
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
+    }
 
-    private fun processDummyMessage(messageText: String, startTime: String) {
+//    override fun startUploadImages(it: ImageUploadViewModel) {
+//
+//        uploadImageUseCase.unsubscribe()
+//        var reqParam = HashMap<String, RequestBody>()
+//        val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
+//        reqParam.put("web_service", createRequestBody("1"))
+//        reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
+//        var params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
+//        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>(){
+//            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>?) {
+//                t
+//            }
+//
+//
+//            override fun onCompleted() {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//            }
+//
+//            override fun onError(e: Throwable?) {
+//                e
+//            }
+//
+//        })
+//    }
+//
+    private fun processDummyMessage(messageText: String, startTime: String, senderId: String) {
         var dummyMessage = mapToDummyMessage(thisMessageId, messageText, startTime)
         view.addDummyMessage(dummyMessage)
         dummyList.add(dummyMessage)
@@ -163,22 +198,22 @@ class TopChatRoomPresenter @Inject constructor(
         return topChatRoomWebSocketMessageMapper.map(pojo)
     }
 
-    override fun sendMessage(messageId: String, messageText: String) {
-        if (isValidReply(messageText)) {
-            val startTime = SendableViewModel.generateStartTime()
-            view.clearEditText()
-//            view.disableAction()
-            processDummyMessage(messageText, startTime)
-//            when (networkMode) {
-//                MODE_WEBSOCKET ->
-            sendMessageWebSocket(messageText, startTime)
-//            }
-        }
-    }
+//    override fun sendMessage(messageId: String, messageText: String) {
+//        if (isValidReply(messageText)) {
+//            val startTime = SendableViewModel.generateStartTime()
+//            view.clearEditText()
+////            view.disableAction()
+//            processDummyMessage(messageText, startTime)
+////            when (networkMode) {
+////                MODE_WEBSOCKET ->
+//            sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(thisMessageId, messageText, startTime))
+////            }
+//        }
+//    }
 
-    private fun sendMessageWebSocket(messageText: String, startTime: String) {
+    private fun sendMessageWebSocket(messageText: String) {
         RxWebSocket.send(
-                msg = generateParamSendMessage(messageText, startTime),
+                msg = messageText,
                 tkpdAuthInterceptor = null,
                 fingerprintInterceptor = null
         )
@@ -193,50 +228,16 @@ class TopChatRoomPresenter @Inject constructor(
         return true
     }
 
-
-
-
     override fun detachView() {
         destroyWebSocket()
         super.detachView()
     }
 
-
-    private fun generateParamSendMessage(messageText: String, startTime: String): String {
-        val json = JsonObject()
-        json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
-        val data = JsonObject()
-        data.addProperty("message_id", Integer.valueOf(thisMessageId))
-        data.addProperty("message", messageText)
-        data.addProperty("start_time", startTime)
-        json.add("data", data)
-        return json.toString()
+    override fun startTyping() {
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamStartTyping(thisMessageId))
     }
 
-    private fun generateParamStartTyping(): String {
-        val json = JsonObject()
-        json.addProperty("code", EVENT_TOPCHAT_TYPING)
-        val data = JsonObject()
-        data.addProperty("msg_id", Integer.valueOf(thisMessageId))
-        json.add("data", data)
-        return json.toString()
-    }
-
-    private fun generateParamStopTyping(): String {
-        val json = JsonObject()
-        json.addProperty("code", EVENT_TOPCHAT_END_TYPING)
-        val data = JsonObject()
-        data.addProperty("msg_id", Integer.valueOf(thisMessageId))
-        json.add("data", data)
-        return json.toString()
-    }
-
-    private fun generateParamRead(): String {
-        val json = JsonObject()
-        json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
-        val data = JsonObject()
-        data.addProperty("msg_id", Integer.valueOf(thisMessageId))
-        json.add("data", data)
-        return json.toString()
+    override fun stopTyping() {
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
     }
 }

@@ -1,11 +1,9 @@
 package com.tokopedia.topchat.uploadimage.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.topchat.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.topchat.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.topchat.uploadimage.domain.model.UploadImageDomain;
-import com.tokopedia.topchat.uploadimage.domain.model.GenerateHostDomain;
-import com.tokopedia.topchat.uploadimage.domain.model.UploadImageDomain;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.Map;
 

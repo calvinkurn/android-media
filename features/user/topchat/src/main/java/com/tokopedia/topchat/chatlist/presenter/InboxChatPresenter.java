@@ -5,14 +5,10 @@ import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chatlist.data.TopChatUrl;
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.topchat.chatlist.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.topchat.chatlist.domain.usecase.SearchMessageUseCase;
@@ -25,8 +21,10 @@ import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
 import com.tokopedia.topchat.common.InboxMessageConstant;
+import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.revamp.view.TopChatRoomActivity;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +44,9 @@ import static com.tokopedia.topchat.chatlist.domain.usecase.SearchMessageUseCase
 public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.View>
         implements InboxChatContract.Presenter, InboxMessageConstant {
 
-    private final SessionHandler sessionHandler;
+    private final UserSessionInterface userSession;
     private final WebSocketMapper webSocketMapper;
+    private final TopChatAnalytics analytics;
     private GetMessageListUseCase getMessageListUseCase;
     private SearchMessageUseCase searchMessageUseCase;
     private DeleteMessageListUseCase deleteMessageListUseCase;
@@ -58,7 +57,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     private int chatSize;
     private List<Visitable> listFetchCache;
     private OkHttpClient client;
-    private String magicString;
     private ChatWebSocketListenerImpl listener;
     private WebSocket ws;
     private int attempt;
@@ -69,13 +67,15 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     InboxChatPresenter(GetMessageListUseCase getMessageListUseCase,
                        SearchMessageUseCase searchMessageUseCase,
                        DeleteMessageListUseCase deleteMessageListUseCase,
-                       SessionHandler sessionHandler,
-                       WebSocketMapper webSocketMapper) {
+                       UserSessionInterface userSession,
+                       WebSocketMapper webSocketMapper,
+                       TopChatAnalytics analytics) {
         this.getMessageListUseCase = getMessageListUseCase;
         this.searchMessageUseCase = searchMessageUseCase;
         this.deleteMessageListUseCase = deleteMessageListUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
         this.webSocketMapper = webSocketMapper;
+        this.analytics = analytics;
     }
 
     @Override
@@ -94,10 +94,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         attempt = 0;
 
         client = new OkHttpClient();
-        magicString = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN + TkpdBaseURL.Chat.CHAT_WEBSOCKET +
-                "?os_type=1" +
-                "&device_id=" + GCMHandler.getRegistrationId(getView().getContext()) +
-                "&user_id=" + SessionHandler.getLoginID(getView().getContext());
         listener = new ChatWebSocketListenerImpl(getView().getInterface(), webSocketMapper, true);
 
         countDownTimer = new CountDownTimer(5000, 1000) {
@@ -171,10 +167,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 getView().getAdapter().showEmptyFull(true);
             }
         }
-
-        if (!result.isHasNext() && result.isHasTimeMachine()) {
-            getView().addTimeMachine();
-        }
     }
 
     public void setCache(List<Visitable> list) {
@@ -225,10 +217,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             }
         }
 
-        if (!result.isHasNext() && result.isHasTimeMachine()) {
-            getView().addTimeMachine();
-        }
-
         getView().setMenuEnabled(false);
     }
 
@@ -265,21 +253,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         ws.close(1000, "");
         getView().dropKeyboard();
 
-        UnifyTracking.eventOpenTopChat(TopChatAnalytics.Category.INBOX_CHAT,
-                TopChatAnalytics.Action.INBOX_CHAT_CLICK,
-                TopChatAnalytics.Name.INBOX_CHAT);
-
-//        Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
-//                getView().getArguments().getString(InboxMessageConstant.PARAM_NAV),
-//                String.valueOf(listMessage.getId()),
-//                position,
-//                listMessage.getName(),
-//                listMessage.getLabel(),
-//                listMessage.getSenderId(),
-//                listMessage.getRole(),
-//                viewModel.getMode(),
-//                viewModel.getKeyword(),
-//                listMessage.getImage());
+        analytics.eventOpenTopChat();
 
         Intent intent = TopChatRoomActivity.Companion.getCallingIntent(getView().getActivity()
                 , String.valueOf(listMessage.getId())
@@ -296,16 +270,17 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToProfile(int userId) {
-        if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+        if (getView().getActivity().getApplicationContext() instanceof TopChatRouter) {
             getView().startActivity(
-                    ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
+                    ((TopChatRouter) getView().getActivity().getApplicationContext())
                             .getTopProfileIntent(getView().getActivity(), String.valueOf(userId))
             );
         }
     }
 
     public void goToShop(int shopId) {
-        Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext()).getShopPageIntent(getView().getActivity(), String.valueOf(shopId));
+        Intent intent = ((TopChatRouter) getView().getActivity().getApplicationContext()).getShopPageIntent
+                (getView().getActivity(), String.valueOf(shopId));
         getView().startActivity(intent);
     }
 
@@ -422,12 +397,13 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     @Override
     public void createWebSocket() {
         try {
-            Request request = new Request.Builder().url(magicString)
-                    .header("Origin", TkpdBaseURL.WEB_DOMAIN)
+
+            String websocketUrl = TopChatUrl.Companion.getPathWebsocket(userSession.getDeviceId(),
+                    userSession.getUserId());
+            Request request = new Request.Builder().url(websocketUrl)
+                    .header("Origin", TopChatUrl.WEB_DOMAIN)
                     .header("Accounts-Authorization",
-                            sessionHandler.getTokenType(getView().getContext())
-                                    + " " +
-                                    sessionHandler.getAuthAccessToken())
+                            "Bearer " + userSession.getAccessToken())
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;
