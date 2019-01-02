@@ -222,6 +222,10 @@ android {
     }
 }
 
+configurations {
+    compile.exclude group: 'com.tokopedia.core', module: 'core'
+}
+
 repositories {
     flatDir {
         dirs 'libs'
@@ -371,7 +375,7 @@ dependencies {
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
-        exclude group: "com.tokopedia.core"
+        exclude group: "com.tokopedia.core", module: 'core'
     }
 
     implementation rootProject.ext.viewDependencies.appIntro
