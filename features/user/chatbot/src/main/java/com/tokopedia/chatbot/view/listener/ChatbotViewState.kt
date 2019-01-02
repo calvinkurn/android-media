@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
+import android.content.Context
 import android.support.v4.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -26,7 +27,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                             chatRatingViewModel : ChatRatingViewModel,
-                            activity: Activity,
+                            context: Context,
                             onClickReasonRating: (String) -> Unit)
 
 

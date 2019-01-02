@@ -221,10 +221,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessSendRating(rating: Int, element: ChatRatingViewModel): (SendRatingPojo) ->
     Unit {
         return {
-            (activity as Activity).run {
-                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
-                        onClickReasonRating(element.replyTimeNano.toString()))
-            }
+            (activity != null).run {
+                    (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
+                            onClickReasonRating(element.replyTimeNano.toString()))
+                }
         }
     }
 

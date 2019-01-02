@@ -147,7 +147,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     }
 
     private fun scrollDownWhenInBottom() {
-        if (!checkLastCompletelyVisibleItemIsFirst()) {
+        if (checkLastCompletelyVisibleItemIsFirst()) {
             scrollToBottom()
         }
     }

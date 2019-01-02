@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
+import android.content.Context
 import android.support.annotation.NonNull
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -113,7 +114,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                                      chatRatingViewModel: ChatRatingViewModel,
-                                     activity: Activity,
+                                     context: Context,
                                      onClickReasonRating: (String) -> Unit) {
         val indexToUpdate = adapter.getList().indexOf(chatRatingViewModel)
         if (adapter.getList()[indexToUpdate] is ChatRatingViewModel) {
@@ -122,13 +123,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
 
         if (rating == ChatRatingViewModel.RATING_BAD) {
-            showReasonBottomSheet(element, activity, onClickReasonRating)
+            showReasonBottomSheet(element, context, onClickReasonRating)
         }
     }
 
-    private fun showReasonBottomSheet(element: SendRatingPojo, activity: Activity, onClickReasonRating: (String) -> Unit) {
+    private fun showReasonBottomSheet(element: SendRatingPojo, context: Context,
+                                      onClickReasonRating: (String) -> Unit) {
         if (!::reasonBottomSheet.isInitialized) {
-            reasonBottomSheet = ReasonBottomSheet.createInstance(activity,
+            reasonBottomSheet = ReasonBottomSheet.createInstance(context,
                     element.postRatingV2.data.listReason, onClickReasonRating)
         }
         reasonBottomSheet.show()

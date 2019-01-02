@@ -47,10 +47,10 @@ class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<Stri
 
     companion object {
 
-        fun createInstance(activity: Activity,
+        fun createInstance(context: Context,
                            reasons: ArrayList<String>,
                            onClickReasonRating: (String) -> Unit): ReasonBottomSheet {
-            return ReasonBottomSheet(activity, reasons, onClickReasonRating)
+            return ReasonBottomSheet(context, reasons, onClickReasonRating)
         }
     }
 }
