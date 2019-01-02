@@ -21,8 +21,8 @@ public class ImageNotification extends BaseNotification {
     @Override
     public Notification createNotification() {
         NotificationCompat.Builder builder = getBuilder();
-        builder.setContentTitle(baseNotificationModel.getTitle());
-        builder.setContentText(baseNotificationModel.getMessage());
+        builder.setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getTitle()));
+        builder.setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getMessage()));
         builder.setSmallIcon(getDrawableIcon());
         builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
         builder.setAutoCancel(true);

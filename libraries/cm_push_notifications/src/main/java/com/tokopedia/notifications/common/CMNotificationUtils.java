@@ -6,6 +6,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -67,9 +70,9 @@ public class CMNotificationUtils {
         String oldUserID = cacheHandler.getStringValue(context, CMConstant.USERID_CACHE_KEY);
         if (TextUtils.isEmpty(oldUserID)) {
             return !TextUtils.isEmpty(newUserId);
-        } else if(!TextUtils.isEmpty(oldUserID)){
+        } else if (!TextUtils.isEmpty(oldUserID)) {
             return TextUtils.isEmpty(newUserId);
-        }else if (!TextUtils.isEmpty(newUserId)) {
+        } else if (!TextUtils.isEmpty(newUserId)) {
             return !newUserId.equals(oldUserID);
         }
         return false;
@@ -159,5 +162,20 @@ public class CMNotificationUtils {
     public static boolean hasActionButton(BaseNotificationModel baseNotificationModel) {
         return (baseNotificationModel.getActionButton() != null && baseNotificationModel.getActionButton().size() > 0);
 
+    }
+
+
+    public static Spanned getSpannedTextFromStr(String str) {
+        if (null == str)
+            return new SpannableStringBuilder("");
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                return Html.fromHtml(str, Html.FROM_HTML_MODE_LEGACY);
+            } else {
+                return Html.fromHtml(str);
+            }
+        } catch (Exception e) {
+            return new SpannableStringBuilder(str);
+        }
     }
 }
