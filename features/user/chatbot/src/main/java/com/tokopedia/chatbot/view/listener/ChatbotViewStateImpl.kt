@@ -82,6 +82,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
+    override fun onSuccessLoadPrevious(it: ChatroomViewModel) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
         if (chatroomViewModel.listChat.isNotEmpty()
                 && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {

@@ -96,16 +96,23 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadInitialData() {
-        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChat())
+        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
         presenter.connectWebSocket(messageId)
     }
 
-    private fun onSuccessGetExistingChat(): (ChatroomViewModel) -> Unit {
+    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
 
         return {
             updateViewData(it)
             setCanLoadMore(it)
             getViewState().onSuccessLoadFirstTime(it)
+        }
+    }
+
+    private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
+        return {
+            setCanLoadMore(it)
+            getViewState().onSuccessLoadPrevious(it)
         }
     }
 
@@ -127,7 +134,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadData(page: Int) {
-
+        presenter.loadPrevious(messageId, page, onError(), onSuccessGetPreviousChat())
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
