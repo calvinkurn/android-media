@@ -29,7 +29,7 @@ public interface ChatApi {
     Observable<Response<TkpdResponse>> getExistingChat(@QueryMap Map<String, Object> requestParams);
 
     @GET(TkpdBaseURL.Chat.GET_MESSAGE)
-    Observable<Response<TkpdResponse>> getMessage(@QueryMap Map<String, Object> requestParams);
+    Observable<Response<TokopediaWsV4Response>> getMessage(@QueryMap Map<String, Object> requestParams);
 
     @GET(TkpdBaseURL.Chat.GET_REPLY)
     Observable<Response<TkpdResponse>> getReply(@Path("msgId") String messageId, @QueryMap Map<String, Object> requestParams);
