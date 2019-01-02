@@ -211,4 +211,6 @@ public class BaseNotificationModel {
     public void setGridList(List<Grid> gridList) {
         this.gridList = gridList;
     }
+
+
 }
