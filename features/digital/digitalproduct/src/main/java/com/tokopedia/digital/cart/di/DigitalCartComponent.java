@@ -1,6 +1,7 @@
 package com.tokopedia.digital.cart.di;
 
 import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.cart.presentation.fragment.CartDigitalFragment;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -33,4 +34,6 @@ public interface DigitalCartComponent {
     void inject(DigitalDealCheckoutFragment digitalDealCheckoutFragment);
 
     void inject(CartDigitalActivity cartDigitalActivity);
+
+    DigitalPostPaidLocalCache digitalPostPaidLocalCache();
 }

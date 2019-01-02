@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.List;
 

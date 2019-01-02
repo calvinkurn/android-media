@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewholder.CourierHeaderViewHolder;
 import com.tokopedia.checkout.view.feature.shippingoptions.viewholder.CourierTickerViewHolder;

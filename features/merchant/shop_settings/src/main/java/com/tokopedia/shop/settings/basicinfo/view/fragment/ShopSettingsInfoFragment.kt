@@ -307,7 +307,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun setUIMembership(shopBasicDataModel: ShopBasicDataModel) {
         if (shopBasicDataModel.isRegular) {
-            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_regular)
+            ivShopMembership.setImageDrawable(GMConstant.getGMRegularBadgeDrawable(activity))
             ivShopMembership.setPadding(0, 0, 0, 0)
             tvMembershipName.text = getString(R.string.label_regular_merchant)
 

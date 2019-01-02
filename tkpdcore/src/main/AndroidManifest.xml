@@ -41,7 +41,8 @@
     <uses-permission
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG"
+        tools:node="remove"/>
 
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
@@ -229,7 +230,6 @@
             android:name="com.tokopedia.core.onboarding.FreeReturnOnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.tokopedia.core.home.BrandsWebViewActivity"
             android:label="@string/title_official_store"
@@ -292,6 +292,9 @@
         <service
             android:name="com.tokopedia.core.service.DownloadService"
             android:exported="false" />
+        <service
+            android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
+            android:exported="false" > </service>
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
             android:exported="false" />

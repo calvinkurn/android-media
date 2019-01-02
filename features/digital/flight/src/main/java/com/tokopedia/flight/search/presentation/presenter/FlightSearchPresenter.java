@@ -340,7 +340,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     public void fetchSearchDataFromCloudWithDelay(FlightSearchPassDataViewModel passDataViewModel,
                                                   FlightAirportCombineModel flightAirportCombineModelList,
                                                   int delayInSecond) {
-
         getView().removeToolbarElevation();
         Subscription subscription = Observable.timer(delayInSecond, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())

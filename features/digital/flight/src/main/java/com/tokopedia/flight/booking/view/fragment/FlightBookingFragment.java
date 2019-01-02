@@ -275,7 +275,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             expiredTransactionDate = (Date) savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE);
             priceViewModel = savedInstanceState.getParcelable(KEY_PARAM_EXTRA_PRICE);
             hideFullPageLoading();
-            presenter.renderUi(flightBookingCartData, true);
+            if (flightBookingCartData != null) {
+                presenter.renderUi(flightBookingCartData, true);
+            } else {
+                presenter.initialize();
+            }
         }
     }
 
