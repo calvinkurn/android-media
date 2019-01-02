@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.item_recommendation_card.view.*
 
 /**
@@ -40,10 +42,13 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
             itemView.ivImage2.loadImage(element.image2Url)
             itemView.ivImage3.loadImage(element.image3Url)
             itemView.ivProfile.loadImageCircle(element.profileImageUrl)
-            setButtonUi(element.isFollowing, element.btnText)
             itemView.tvDescription.text = element.description
-            itemView.ivBadge.loadImage(element.badgeUrl)
             itemView.tvName.text = element.profileName
+
+            itemView.ivBadge.shouldShowWithAction(element.badgeUrl.isNotEmpty()) {
+                itemView.ivBadge.loadImage(element.badgeUrl)
+            }
+            setButtonUi(element.cta)
         }
 
         private fun initViewListener(element: RecommendationCardViewModel) {
@@ -52,13 +57,15 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
             }
         }
 
-        private fun setButtonUi(isActive: Boolean, text: String) {
-            itemView.btnFollow.text = text
-            if (isActive)
-                itemView.btnFollow.buttonCompatType = ButtonCompat.PRIMARY
-            else
+        private fun setButtonUi(cta: FollowCta) {
+            if (cta.isFollow) {
                 itemView.btnFollow.buttonCompatType = ButtonCompat.SECONDARY
-
+                itemView.btnFollow.text = cta.textTrue
+            }
+            else {
+                itemView.btnFollow.buttonCompatType = ButtonCompat.PRIMARY
+                itemView.btnFollow.text = cta.textFalse
+            }
         }
     }
 }

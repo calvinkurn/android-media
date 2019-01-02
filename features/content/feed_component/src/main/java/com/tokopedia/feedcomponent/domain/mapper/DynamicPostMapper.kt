@@ -7,7 +7,6 @@ import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.template.Template
-import com.tokopedia.feedcomponent.view.viewmodel.CardTitle
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
@@ -61,29 +60,28 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
 //    }
 
     private fun mapCardRecommendation(feed: Feed, template: Template): FeedRecommendationViewModel {
-        val cardTitle = CardTitle(
-                feed.content.cardRecommendation.title.text,
-                feed.content.cardRecommendation.title.action.action,
-                feed.content.cardRecommendation.title.action.appLink
-        )
         val cards: MutableList<RecommendationCardViewModel> = ArrayList()
-
         for (card in feed.content.cardRecommendation.items) {
+            val image1 = if (card.media.size > 0) card.media[0].thumbnail else ""
+            val image2 = if (card.media.size > 1) card.media[1].thumbnail else ""
+            val image3 = if (card.media.size > 2) card.media[2].thumbnail else ""
+
             cards.add(RecommendationCardViewModel(
-                    "",
-                    "",
-                    "",
+                    image1,
+                    image2,
+                    image3,
                     card.header.avatar,
                     card.header.avatarBadgeImage,
                     card.header.avatarTitle,
                     card.header.avatarDescription,
-                    card.header.followCta.textTrue
+                    card.header.followCta
             ))
         }
 
         return FeedRecommendationViewModel(
-                cardTitle,
-                cards
+                feed.content.cardRecommendation.title,
+                cards,
+                template
         )
     }
 

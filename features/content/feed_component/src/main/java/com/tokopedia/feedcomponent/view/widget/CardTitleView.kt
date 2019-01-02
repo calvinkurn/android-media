@@ -30,25 +30,31 @@ class CardTitleView : BaseCustomView {
     }
 
     private fun init() {
-        val view = View.inflate(context, R.layout.partial_card_title, this)
+        View.inflate(context, R.layout.partial_card_title, this)
     }
 
     fun bind(title: Title, template: TemplateTitle) {
-        text.shouldShowWithAction(template.text) {
-            text.text = title.text
-            text.setOnClickListener { onTextClick() }
-        }
-        badge.shouldShowWithAction(template.textBadge) {
-            badge.loadImage(title.textBadge)
-            badge.setOnClickListener { onTextClick() }
-        }
-        cta.shouldShowWithAction(template.ctaLink) {
-            cta.text = title.ctaLink.text
-            cta.setOnClickListener {
-                //TODO milhamj
-                Toast.makeText(context, "Title CTA clicked", Toast.LENGTH_LONG).show()
+        this.shouldShowWithAction(shouldShowTitle(template)) {
+            text.shouldShowWithAction(template.text) {
+                text.text = title.text
+                text.setOnClickListener { onTextClick() }
+            }
+            badge.shouldShowWithAction(template.textBadge) {
+                badge.loadImage(title.textBadge)
+                badge.setOnClickListener { onTextClick() }
+            }
+            cta.shouldShowWithAction(template.ctaLink) {
+                cta.text = title.ctaLink.text
+                cta.setOnClickListener {
+                    //TODO milhamj
+                    Toast.makeText(context, "Title CTA clicked", Toast.LENGTH_LONG).show()
+                }
             }
         }
+    }
+
+    private fun shouldShowTitle(template: TemplateTitle): Boolean {
+        return template.text || template.textBadge || template.ctaLink
     }
 
     private fun onTextClick() {

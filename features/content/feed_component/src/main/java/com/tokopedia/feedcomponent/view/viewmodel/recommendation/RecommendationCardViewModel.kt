@@ -1,5 +1,7 @@
 package com.tokopedia.feedcomponent.view.viewmodel.recommendation
 
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+
 /**
  * @author by yfsx on 04/12/18.
  */
@@ -11,6 +13,5 @@ data class RecommendationCardViewModel(
         val badgeUrl: String = "",
         val profileName: String = "",
         val description: String = "",
-        val btnText: String = "",
-        val isFollowing:Boolean = false
+        val cta: FollowCta = FollowCta()
 )

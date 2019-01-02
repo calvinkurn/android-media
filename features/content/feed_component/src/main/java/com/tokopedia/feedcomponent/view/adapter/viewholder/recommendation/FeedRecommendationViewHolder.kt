@@ -26,5 +26,7 @@ class FeedRecommendationViewHolder(v: View) : AbstractViewHolder<FeedRecommendat
 
         val cardAdapter = RecommendationCardAdapter(element.cards)
         itemView.recommendationRv.adapter = cardAdapter
+
+        itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
     }
 }
