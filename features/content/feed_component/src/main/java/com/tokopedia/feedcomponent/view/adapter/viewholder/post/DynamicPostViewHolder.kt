@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
+import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -67,6 +68,7 @@ class DynamicPostViewHolder(v: View)
             }
 
             itemView.authorSubtitile.shouldShowWithAction(template.avatarDate) {
+                header.avatarDate = TimeConverter.generateTime(itemView.context, header.avatarDate)
                 itemView.authorSubtitile.text = header.avatarDate
             }
 

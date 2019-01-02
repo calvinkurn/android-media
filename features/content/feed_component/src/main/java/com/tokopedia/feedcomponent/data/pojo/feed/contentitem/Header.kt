@@ -10,7 +10,7 @@ data class Header(
         @SerializedName("avatarBadgeImage")
         val avatarBadgeImage: String = "",
         @SerializedName("avatarDate")
-        val avatarDate: String = "",
+        var avatarDate: String = "",
         @SerializedName("avatarDescription")
         val avatarDescription: String = "",
         @SerializedName("avatarTitle")
