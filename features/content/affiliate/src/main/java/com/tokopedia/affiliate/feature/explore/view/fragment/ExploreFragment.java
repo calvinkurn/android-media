@@ -88,6 +88,7 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
+    private String firstCursor = "";
     private List<Visitable> tempFirstData = new ArrayList<>();
 
     private boolean isCanDoAction;
@@ -365,14 +366,16 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
-        saveFirstDataToLocal(itemList);
+        saveFirstDataToLocal(itemList, cursor);
     }
 
-    private void saveFirstDataToLocal(List<Visitable> itemList) {
+    private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor) {
         tempFirstData = itemList;
+        this.firstCursor = firstCursor;
     }
 
     private List<Visitable> getLocalFirstData() {
+        exploreParams.setCursorForLoadMore(this.firstCursor);
         return tempFirstData;
     }
 
