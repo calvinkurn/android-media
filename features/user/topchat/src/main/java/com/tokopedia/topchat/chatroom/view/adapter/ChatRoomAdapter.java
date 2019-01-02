@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom
         .ImageDualAnnouncementViewHolder;
@@ -79,8 +78,6 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             ((ImageDualAnnouncementViewHolder) holder).onViewRecycled();
         }else if (holder instanceof ProductAttachmentViewHolder) {
             ((ProductAttachmentViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof AttachedInvoiceSentViewHolder) {
-            ((AttachedInvoiceSentViewHolder) holder).onViewRecycled();
         }
     }
 

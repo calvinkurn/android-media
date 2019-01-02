@@ -1,13 +1,11 @@
 package com.tokopedia.topchat.chatroom.data.network;
 
-import com.tokopedia.topchat.attachinvoice.data.model.GetInvoicesResponseWrapper;
 import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusResponsePojo;
 
 import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 

@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
-import android.content.Context
 import android.support.annotation.NonNull
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -135,6 +134,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                     element.postRatingV2.data.listReason, onClickReasonRating)
         }
         reasonBottomSheet.show()
+    }
+
+    override fun onClickReasonRating() {
+        if (::reasonBottomSheet.isInitialized) {
+            reasonBottomSheet.dismiss()
+        }
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {

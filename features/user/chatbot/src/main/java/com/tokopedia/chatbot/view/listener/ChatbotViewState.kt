@@ -30,5 +30,7 @@ interface ChatbotViewState : BaseChatViewState {
                             activity: Activity,
                             onClickReasonRating: (String) -> Unit)
 
+    fun onClickReasonRating()
+
 
 }

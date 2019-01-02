@@ -102,7 +102,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
-
         return {
             updateViewData(it)
             setCanLoadMore(it)
@@ -231,6 +230,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onClickReasonRating(timestamp: String): (String) -> Unit {
         return {
+            (viewState as ChatbotViewState).onClickReasonRating()
             presenter.sendReasonRating(messageId, it, timestamp, onError(),
                     onSuccessSendReasonRating())
         }
