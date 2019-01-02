@@ -5,10 +5,6 @@ import android.app.Activity;
 
 import android.os.Bundle;
 
-/**
- * Created by sandeepgoyal on 02/04/18.
- */
-
 public class ContactUsHomeActivity extends Activity {
 
     @Override
