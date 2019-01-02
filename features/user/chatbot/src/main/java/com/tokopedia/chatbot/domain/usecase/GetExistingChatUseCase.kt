@@ -32,10 +32,20 @@ class GetExistingChatUseCase @Inject constructor(
     companion object {
 
         private val PARAM_MESSAGE_ID: String = "msgId"
+        private val PARAM_PAGE: String = "page"
 
-        fun generateParam(messageId: String): Map<String, Any> {
+
+        fun generateParamFirstTime(messageId: String): Map<String, Any> {
             val requestParams = HashMap<String, Any>()
             requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
+            requestParams[PARAM_PAGE] = 1
+            return requestParams
+        }
+
+        fun generateParam(messageId: String, page: Int): Map<String, Any> {
+            val requestParams = HashMap<String, Any>()
+            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
+            requestParams[PARAM_PAGE] = page
             return requestParams
         }
     }

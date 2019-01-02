@@ -123,11 +123,11 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    override fun sendRating(messageId : String, rating: Int, timestamp : String,
+    override fun sendRating(messageId: String, rating: Int, timestamp: String,
                             onError: (Throwable) -> Unit,
                             onSuccess: (SendRatingPojo) -> Unit) {
         sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
-           messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
+                messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
     }
 
     override fun sendReasonRating(messageId: String, reason: String, timestamp: String,
@@ -135,7 +135,7 @@ class ChatbotPresenter @Inject constructor(
                                   onSuccess: (String) -> Unit) {
         sendRatingReasonUseCase.execute(SendRatingReasonUseCase.generateParam(
                 messageId, reason, timestamp
-        ), SendRatingReasonSubscriber(onError, onSuccess) )
+        ), SendRatingReasonSubscriber(onError, onSuccess))
     }
 
     override fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
@@ -155,7 +155,16 @@ class ChatbotPresenter @Inject constructor(
                                  onError: (Throwable) -> Unit,
                                  onSuccess: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
-            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId),
+            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
+                    GetExistingChatSubscriber(onError, onSuccess))
+        }
+    }
+
+    override fun loadPrevious(messageId: String, page: Int,
+                              onError: (Throwable) -> Unit,
+                              onSuccess: (ChatroomViewModel) -> Unit) {
+        if (messageId.isNotEmpty()) {
+            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
                     GetExistingChatSubscriber(onError, onSuccess))
         }
     }

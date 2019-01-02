@@ -29,6 +29,12 @@ interface ChatbotContract {
                             onError: (Throwable) -> Unit,
                             onSuccess: (ChatroomViewModel) -> Unit)
 
+        fun loadPrevious(messageId: String,
+                         page: Int,
+                         onError: (Throwable) -> Unit,
+                         onSuccess: (ChatroomViewModel) -> Unit)
+
+
         fun connectWebSocket(messageId: String)
 
         fun sendRating(messageId : String, rating: Int, timestamp : String,
@@ -44,7 +50,6 @@ interface ChatbotContract {
                              opponentId: String)
 
         fun destroyWebSocket()
-
 
     }
 }
