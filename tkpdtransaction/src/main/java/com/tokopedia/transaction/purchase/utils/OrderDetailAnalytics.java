@@ -9,16 +9,20 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
-import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 
-import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.*;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_ACTION;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_CATEGORY;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.EVENT_LABEL;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_CLICK_ORDER;
+import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.VALUE_SALES_SHIPPING;
 
 /**
  * Temporary class to provide analytics in tkpdtransaction

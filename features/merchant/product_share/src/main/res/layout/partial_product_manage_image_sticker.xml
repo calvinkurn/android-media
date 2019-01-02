@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/img_source"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_sticker"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/img_source"
+        app:layout_constraintRight_toRightOf="@id/img_source">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_36">
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/rounded_green_sticker"
+                android:paddingBottom="@dimen/dp_7"
+                android:paddingLeft="@dimen/dp_72"
+                android:paddingRight="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_4"
+                tools:text="Rp 520.000"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_sticker_toped" />
+
+            <TextView
+                android:id="@+id/tv_cashback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_16"
+                tools:text="Cashback 3%"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_toRightOf="@id/tv_price"
+                android:textStyle="bold"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:textColor="@color/white"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:shadowColor="@color/grey_title"
+            android:shadowRadius="5"
+            android:shadowDy="5"
+            android:shadowDx="5"/>
+
+        <TextView
+            android:id="@+id/tv_shop_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_6"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

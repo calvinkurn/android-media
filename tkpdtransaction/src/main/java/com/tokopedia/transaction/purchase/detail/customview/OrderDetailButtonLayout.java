@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.constant.OrderDetailTypeDef;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.ButtonData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenter;
 
 /**

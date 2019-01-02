@@ -180,7 +180,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getActivity(), getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

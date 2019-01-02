@@ -3,12 +3,11 @@ package com.tokopedia.digital.product.view.presenter;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;

@@ -3,6 +3,8 @@ package com.tokopedia.transaction.router;
 import android.app.Activity;
 import android.content.Intent;
 
+import java.util.Map;
+
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 
 /**
@@ -11,6 +13,8 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 public interface ITransactionOrderDetailRouter {
 
     Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload);
+
+    void sendEventTrackingOrderDetail(Map<String, Object> eventTracking);
 
     void sendEventTracking(String event, String category, String action, String label);
 

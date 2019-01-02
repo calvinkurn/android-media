@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
@@ -22,9 +23,12 @@ import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParamet
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
+import com.tokopedia.digital.cart.fragment.DigitalPostPaidDialog;
 import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -60,6 +64,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected DigitalCartCheckoutHolderView checkoutHolderView;
     protected InputPriceHolderView inputPriceHolderView;
     protected LinearLayout inputPriceContainer;
+    private boolean isAlreadyShowPostPaidPopUp;
 
     protected P presenter;
 
@@ -106,6 +111,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void renderHachikoCoupon(String title, String message, String voucherCode) {
+        checkoutHolderView.setVoucherActionListener(this);
         checkoutHolderView.setHachikoCoupon(title, message, voucherCode);
     }
 
@@ -116,6 +122,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void renderHachikoVoucher(String voucherCode, String message) {
+        checkoutHolderView.setVoucherActionListener(this);
         checkoutHolderView.setVoucher(voucherCode, message);
     }
 
@@ -403,6 +410,35 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void setCheckoutParameter(CheckoutDataParameter.Builder builder) {
         checkoutDataParameterBuilder = builder;
+    }
+
+    @Override
+    public boolean isAlreadyShowPostPaid() {
+        return isAlreadyShowPostPaidPopUp;
+    }
+
+    @Override
+    public void showPostPaidDialog(String title,
+                                   String content,
+                                   String confirmButtonTitle,
+                                   String userId) {
+        isAlreadyShowPostPaidPopUp = true;
+        DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
+                getActivity(),
+                Dialog.Type.RETORIC,
+                DigitalPostPaidLocalCache.newInstance(getActivity()),
+                userId
+        );
+        dialog.setTitle(title);
+        dialog.setDesc(MethodChecker.fromHtml(content));
+        dialog.setBtnOk(confirmButtonTitle);
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override

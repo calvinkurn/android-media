@@ -42,6 +42,10 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     @Inject
     lateinit var presenter: ReportTalkPresenter
+
+    @Inject
+    lateinit var analytics: TalkAnalytics
+
     lateinit var reportTalkAdapter: ReportTalkAdapter
 
     var talkId: String = ""
@@ -60,6 +64,13 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         reportTalkComponent.inject(this)
         presenter.attachView(this)
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            analytics.sendScreen(this, screenName)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
