@@ -100,9 +100,10 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     /////////////////// INVOICE SELECTION
 
     private fun convertToInvoicesSelection(pojo: Reply): AttachInvoiceSelectionViewModel {
-        val invoicesSelectionPojo = GsonBuilder().create().fromJson<InvoicesSelectionPojo>(pojo
+        val invoicesSelectionPojo = GsonBuilder().create().fromJson<ListInvoicesSelectionPojo>(pojo
                 .attachment?.attributes, ListInvoicesSelectionPojo::class.java)
-        val invoiceList = invoicesSelectionPojo.invoices
+        val invoiceAttr = invoicesSelectionPojo.invoices
+        val invoiceList = invoiceAttr.invoices
 
         val list = ArrayList<AttachInvoiceSingleViewModel>()
 
