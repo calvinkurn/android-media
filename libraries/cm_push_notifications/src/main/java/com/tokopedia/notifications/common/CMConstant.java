@@ -58,6 +58,7 @@ public interface CMConstant {
         String VIBRATE = "vibrate";
         String UPDATE = "update";
         String GRID_DATA = "gridData";
+        String SUB_TEXT = "subText";
 
 
     }

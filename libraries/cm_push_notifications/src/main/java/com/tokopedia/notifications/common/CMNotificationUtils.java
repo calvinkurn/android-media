@@ -17,6 +17,8 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.notifications.factory.BaseNotification;
+import com.tokopedia.notifications.model.BaseNotificationModel;
 
 import org.w3c.dom.Text;
 
@@ -155,6 +157,11 @@ public class CMNotificationUtils {
             Log.e(TAG, String.format("Exception in image bitmap download for Url: %s", imageUrl));
         }
         return bitmap;
+    }
+
+    public static boolean hasActionButton(BaseNotificationModel baseNotificationModel) {
+        return (baseNotificationModel.getActionButton() != null && baseNotificationModel.getActionButton().size() > 0);
+
     }
 
 
