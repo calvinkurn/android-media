@@ -199,6 +199,7 @@ ext {
             searchbar                     : ":features:home:searchbar",
 
             challenges                    : ":features:im:challenges",
+//            challenges                    : ":features:im:challenges_no_op",
 
 
 
