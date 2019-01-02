@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -221,7 +222,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessSendRating(rating: Int, element: ChatRatingViewModel): (SendRatingPojo) ->
     Unit {
         return {
-            (activity != null).run {
+            (activity as Context).run {
                     (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
                             onClickReasonRating(element.replyTimeNano.toString()))
                 }

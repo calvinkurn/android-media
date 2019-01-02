@@ -25,12 +25,12 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
@@ -432,7 +432,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public RefreshHandler getRefreshHandler() {
+    public com.tokopedia.abstraction.common.utils.view.RefreshHandler getRefreshHandler() {
         return refreshHandler;
     }
 
