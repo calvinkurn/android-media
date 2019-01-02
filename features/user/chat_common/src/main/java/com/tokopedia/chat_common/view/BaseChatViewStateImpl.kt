@@ -153,13 +153,11 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
     }
 
     open fun scrollToBottom() {
-        //TODO ASK STEVEN
-//        Observable.timer(250, TimeUnit.MILLISECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe {
-//                    recyclerView.scrollToPosition(0)
-//                }
-        recyclerView.scrollToPosition(0)
+        Observable.timer(250, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    recyclerView.scrollToPosition(0)
+                }
     }
 
     private fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
