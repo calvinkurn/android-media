@@ -1651,15 +1651,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         //2. close earlier overlay if overlay is already shown, then show new overlay
         //3. show overlay if no other bottom dialog is shown
 
-        if (model.getStatus() != OVERLAY_STATUS_INACTIVE) {
-            if (channelInfoDialog != null && channelInfoDialog.isShowing())
-                createOverlayDialog(model, false);
-            else if (overlayDialog != null && overlayDialog.isShowing()) {
-                overlayDialog.dismiss();
-                createOverlayDialog(model, true);
-            } else
-                createOverlayDialog(model, true);
-        }
+        if (channelInfoDialog != null && channelInfoDialog.isShowing())
+            createOverlayDialog(model, false);
+        else if (overlayDialog != null && overlayDialog.isShowing()) {
+            overlayDialog.dismiss();
+            createOverlayDialog(model, true);
+        } else
+            createOverlayDialog(model, true);
+
     }
 
     private void createOverlayDialog(OverlayViewModel model, boolean showDialogDirectly) {
