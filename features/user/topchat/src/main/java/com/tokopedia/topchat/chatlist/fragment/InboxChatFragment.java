@@ -280,7 +280,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
             DaggerInboxChatComponent daggerInboxChatComponent =
                     (DaggerInboxChatComponent) DaggerInboxChatComponent.builder()
-                            .appComponent(appComponent).build();
+                            .baseAppComponent(appComponent).build();
             daggerInboxChatComponent.inject(this);
         }
     }
