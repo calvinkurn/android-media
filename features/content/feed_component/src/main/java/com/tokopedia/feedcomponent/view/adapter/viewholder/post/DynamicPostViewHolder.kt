@@ -4,11 +4,15 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
+import com.tokopedia.feedcomponent.data.pojo.template.Template
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
-import com.tokopedia.feedcomponent.view.viewmodel.CardTitle
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -33,37 +37,65 @@ class DynamicPostViewHolder(v: View)
             return
         }
 
-        bindTitle(element.title)
-        bindHeader(element.header)
-        bindContentList(element.contentList)
-        bindFooter(element.footer)
+        bindTitle(element.title, element.template.cardpost.title)
+        bindHeader(element.header, element.template.cardpost.header)
+        bindContentList(element.contentList, element.template)
+        bindFooter(element.footer, element.template)
     }
 
-    private fun bindTitle(title: CardTitle) {
-        itemView.titleText.shouldShowWithAction(title.titleText.isNotEmpty()) {
-            itemView.titleText.text = title.titleText
-        }
-    }
-
-    private fun bindHeader(header: Header) {
-        itemView.authorImage.loadImageCircle(header.avatar)
-        itemView.authorTitle.text = header.avatarTitle
-        itemView.authorSubtitile.text = header.avatarDate
-
-        if (header.followCta.isFollow) {
-            itemView.headerAction.text = header.followCta.textTrue
-        } else {
-            itemView.headerAction.text = header.followCta.textFalse
-        }
-        itemView.headerAction.setOnClickListener {
-            listener.onHeaderActionClick(header.followCta.isFollow)
-        }
-        itemView.menu.setOnClickListener {
-            listener.onMenuClick()
+    private fun bindTitle(title: Title, template: TemplateTitle) {
+        itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
+            itemView.cardTitle.bind(title, template)
         }
     }
 
-    private fun bindContentList(contentList: MutableList<BasePostViewModel>) {
+    private fun shouldShowTitle(template: TemplateTitle): Boolean {
+        return template.ctaLink || template.textBadge || template.ctaLink
+    }
+
+    private fun bindHeader(header: Header, template: TemplateHeader) {
+        itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
+            itemView.authorImage.shouldShowWithAction(template.avatar) {
+                itemView.authorImage.loadImageCircle(header.avatar)
+            }
+
+            itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
+                itemView.authorTitle.text = header.avatarTitle
+            }
+
+            itemView.authorSubtitile.shouldShowWithAction(template.avatarDate) {
+                itemView.authorSubtitile.text = header.avatarDate
+            }
+
+            itemView.headerAction.shouldShowWithAction(template.followCta) {
+                if (header.followCta.isFollow) {
+                    itemView.headerAction.text = header.followCta.textTrue
+                    itemView.headerAction.buttonCompatType = ButtonCompat.SECONDARY
+                } else {
+                    itemView.headerAction.text = header.followCta.textFalse
+                    itemView.headerAction.buttonCompatType = ButtonCompat.PRIMARY
+                }
+
+                itemView.headerAction.setOnClickListener {
+                    listener.onHeaderActionClick(header.followCta.isFollow)
+                }
+            }
+
+            itemView.menu.shouldShowWithAction(template.report) {
+                itemView.menu.setOnClickListener {
+                    listener.onMenuClick()
+                }
+            }
+        }
+    }
+
+    private fun shouldShowHeader(template: TemplateHeader): Boolean {
+        return template.avatar || template.avatarBadge || template.avatarDate
+                || template.avatarDescription || template.avatarTitle || template.followCta
+                || template.report
+    }
+
+    private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: Template) {
         val adapter = PostPagerAdapter()
         adapter.setList(contentList)
         itemView.contentViewPager.adapter = adapter
@@ -72,7 +104,7 @@ class DynamicPostViewHolder(v: View)
         itemView.tabLayout.visibility = if (adapter.count > 1) View.VISIBLE else View.GONE
     }
 
-    private fun bindFooter(footer: Footer) {
+    private fun bindFooter(footer: Footer, template: Template) {
         if (footer.buttonCta.text.isNotEmpty()) {
             itemView.shareSpace.gone()
             itemView.footerAction.visible()

@@ -6,12 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-data class Body (
-
-    @SerializedName("media")
+data class TemplateItem (
+    @SerializedName("ctaLink")
     @Expose
-    val media: Boolean = false,
-    @SerializedName("caption")
-    @Expose
-    val caption: Boolean = false
+    val ctaLink: Boolean = false
 )

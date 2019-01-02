@@ -2,18 +2,18 @@ package com.tokopedia.feedcomponent.data.pojo.template
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.Item
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.Title
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateItem
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 
 /**
  * @author by yfsx on 04/12/18.
  */
 data class Cardrecom (
-    @SerializedName("title")
+        @SerializedName("title")
     @Expose
-    val title: Title = Title(),
+    val title: TemplateTitle = TemplateTitle(),
 
-    @SerializedName("item")
+        @SerializedName("item")
     @Expose
-    val item: Item = Item()
+    val item: TemplateItem = TemplateItem()
 )

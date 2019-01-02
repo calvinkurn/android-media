@@ -6,13 +6,17 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by yfsx on 04/12/18.
  */
-data class Title (
-    @SerializedName("text")
+data class TemplateFooter (
+
+    @SerializedName("like")
     @Expose
-    val text: Boolean = false,
-    @SerializedName("textBadge")
+    val like: Boolean = false,
+    @SerializedName("comment")
     @Expose
-    val textBadge: Boolean = false,
+    val comment: Boolean = false,
+    @SerializedName("share")
+    @Expose
+    val share: Boolean = false,
     @SerializedName("ctaLink")
     @Expose
     val ctaLink: Boolean = false

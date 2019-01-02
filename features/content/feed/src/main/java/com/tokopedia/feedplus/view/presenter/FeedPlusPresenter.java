@@ -281,12 +281,13 @@ public class FeedPlusPresenter
 
                         @Override
                         public void onError(Throwable e) {
-
+                            getView().finishLoading();
                         }
 
                         @Override
                         public void onNext(List<Visitable<?>> visitables) {
                             getView().onSuccessGetFeedFirstPage(new ArrayList<>(visitables));
+                            getView().finishLoading();
                         }
                     }
             );

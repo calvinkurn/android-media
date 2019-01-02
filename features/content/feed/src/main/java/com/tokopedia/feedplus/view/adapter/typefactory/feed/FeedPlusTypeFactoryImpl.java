@@ -261,6 +261,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == DynamicPostViewHolder.Companion.getLAYOUT()) {
             viewHolder = new DynamicPostViewHolder(view);
         }
+        else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new FeedRecommendationViewHolder(view);
+        }
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

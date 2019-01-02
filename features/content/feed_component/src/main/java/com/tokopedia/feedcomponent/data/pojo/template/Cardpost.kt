@@ -2,28 +2,28 @@ package com.tokopedia.feedcomponent.data.pojo.template
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.Body
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.Footer
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.Header
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.Title
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 
 /**
  * @author by yfsx on 04/12/18.
  */
 data class Cardpost (
-    @SerializedName("title")
+        @SerializedName("title")
     @Expose
-    val title: Title = Title(),
+    val title: TemplateTitle = TemplateTitle(),
 
-    @SerializedName("header")
+        @SerializedName("header")
     @Expose
-    val header: Header = Header(),
+    val header: TemplateHeader = TemplateHeader(),
 
-    @SerializedName("body")
+        @SerializedName("body")
     @Expose
-    val body: Body = Body(),
+    val body: TemplateBody = TemplateBody(),
 
-    @SerializedName("footer")
+        @SerializedName("footer")
     @Expose
-    val footer: Footer = Footer()
+    val footer: TemplateFooter = TemplateFooter()
 )

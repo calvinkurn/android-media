@@ -12,6 +12,6 @@ data class FeedRecommendationViewModel (
         val cards: MutableList<RecommendationCardViewModel> = ArrayList()
 ): Visitable<DynamicPostTypeFactory> {
     override fun type(typeFactory: DynamicPostTypeFactory?): Int {
-        return 0
+        return typeFactory!!.type(this)
     }
 }

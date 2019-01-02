@@ -2,9 +2,11 @@ package com.tokopedia.feedcomponent.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
+import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
+import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.view.viewmodel.CardTitle
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -18,7 +20,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 20/12/18.
  */
-class DynamicPostMapper @Inject constructor(): Func1<GraphqlResponse, MutableList<Visitable<*>>> {
+class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableList<Visitable<*>>> {
 
     companion object {
         private const val TYPE_CARDRECOM = "cardrecom"
@@ -36,11 +38,15 @@ class DynamicPostMapper @Inject constructor(): Func1<GraphqlResponse, MutableLis
         val posts: MutableList<Visitable<*>> = ArrayList()
         feedQuery?.let {
             for (feed in it.feedv2.data) {
+                val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->
+                    templateData.id == feed.template
+                } ?: break
+
                 when (feed.type) {
                     //TODO milhamj
 //                    TYPE_CARDBANNER -> posts.add(mapCardBanner(feed))
-                    TYPE_CARDRECOM -> posts.add(mapCardRecommendation(feed))
-                    TYPE_CARDPOST -> posts.add(mapCardPost(feed))
+                    TYPE_CARDRECOM -> posts.add(mapCardRecommendation(feed, templateData.template))
+                    TYPE_CARDPOST -> posts.add(mapCardPost(feed, templateData.template))
                 }
             }
         }
@@ -51,7 +57,7 @@ class DynamicPostMapper @Inject constructor(): Func1<GraphqlResponse, MutableLis
 //
 //    }
 
-    private fun mapCardRecommendation(feed: Feed): FeedRecommendationViewModel {
+    private fun mapCardRecommendation(feed: Feed, template: Template): FeedRecommendationViewModel {
         val cardTitle = CardTitle(
                 feed.content.cardRecommendation.title.text,
                 feed.content.cardRecommendation.title.action.action,
@@ -78,14 +84,16 @@ class DynamicPostMapper @Inject constructor(): Func1<GraphqlResponse, MutableLis
         )
     }
 
-    private fun mapCardPost(feed: Feed): DynamicPostViewModel {
+    private fun mapCardPost(feed: Feed, template: Template): DynamicPostViewModel {
         val header = feed.content.cardpost.header
         val footer = feed.content.cardpost.footer
         val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body)
 
         return DynamicPostViewModel(
-                CardTitle(),
-                header
+                feed.content.cardpost.title,
+                header,
+                contentList = contentList,
+                template = template
         )
     }
 
