@@ -1704,6 +1704,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
                 startApplink(interuptViewModel.getBtnLink());
+                if (overlayDialog.isShowing()) overlayDialog.dismiss();
             });
         } else
             ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
