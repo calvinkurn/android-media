@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.home.account.AccountConstants;
@@ -38,6 +39,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 
 public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String OVO = "OVO";
+    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
+    private static final String KEY_AFFILIATE_FIRSTTIME = "KEY_AFFILIATE_FIRSTTIME";
     private Context context;
 
     @Inject
@@ -268,9 +271,10 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(infoCard);
         }
 
-        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_account_affiliate", true)) {
+//        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_account_affiliate", true)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();
-            infoCard.setIconRes(R.drawable.ic_byme);
+            LocalCacheHandler cache = new LocalCacheHandler(context.getApplicationContext(), KEY_PROFILE_BUYER);
+            infoCard.setIconRes(cache.getBoolean(KEY_AFFILIATE_FIRSTTIME , true) ? R.drawable.ic_byme_notif : R.drawable.ic_byme);
             infoCard.setMainText(context.getString(R.string.title_menu_affiliate));
             infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
             infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
@@ -278,7 +282,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 //            infoCard.setSectionTrack(CLICK_CHALLENGE);
             infoCard.setNewTxtVisiblle(View.VISIBLE);
             items.add(infoCard);
-        }
+//        }
 
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_help));
