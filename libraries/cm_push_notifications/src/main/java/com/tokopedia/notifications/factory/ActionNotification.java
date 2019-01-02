@@ -43,7 +43,7 @@ public class ActionNotification extends BaseNotification {
         if (!TextUtils.isEmpty((baseNotificationModel.getMedia().getMediumQuality()))) {
             expandedView.setImageViewBitmap(R.id.img_big, CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getMedia().getMediumQuality()));
         }
-        if (hasActionButton()) {
+        if (CMNotificationUtils.hasActionButton(baseNotificationModel)) {
             addActionButton(baseNotificationModel.getActionButton(), expandedView);
         }
         setCollapseData(expandedView, baseNotificationModel);
@@ -76,12 +76,18 @@ public class ActionNotification extends BaseNotification {
             actionButton = actionButtonList.get(i);
             switch (i) {
                 case 0:
+                    expandedView.setViewVisibility(R.id.tv_button1, View.VISIBLE);
+                    expandedView.setTextViewText(R.id.tv_button1,actionButton.getText());
                     expandedView.setOnClickPendingIntent(R.id.tv_button1, getButtonPendingIntent(actionButton, getRequestCode()));
                     break;
                 case 1:
+                    expandedView.setViewVisibility(R.id.tv_button2, View.VISIBLE);
+                    expandedView.setTextViewText(R.id.tv_button2,actionButton.getText());
                     expandedView.setOnClickPendingIntent(R.id.tv_button2, getButtonPendingIntent(actionButton, getRequestCode()));
                     break;
                 case 2:
+                    expandedView.setViewVisibility(R.id.tv_button3, View.VISIBLE);
+                    expandedView.setTextViewText(R.id.tv_button3,actionButton.getText());
                     expandedView.setOnClickPendingIntent(R.id.tv_button3, getButtonPendingIntent(actionButton, getRequestCode()));
                     break;
             }

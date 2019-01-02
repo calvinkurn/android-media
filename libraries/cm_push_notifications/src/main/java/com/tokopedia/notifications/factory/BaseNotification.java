@@ -336,11 +336,6 @@ public abstract class BaseNotification {
         return intent;
     }
 
-    protected boolean hasActionButton() {
-        return (baseNotificationModel.getActionButton() != null && baseNotificationModel.getActionButton().size() > 0);
-
-    }
-
 }
 
 
