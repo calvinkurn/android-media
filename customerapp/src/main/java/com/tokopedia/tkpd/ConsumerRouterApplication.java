@@ -810,7 +810,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return isSupportApplink(appLinks);
     }
 
-    @Override
     public Intent getIntentDeepLinkHandlerActivity() {
         return new Intent(this, DeeplinkHandlerActivity.class);
     }
@@ -1708,6 +1707,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         action,
                         label
                 ).getEvent());
+            }
+
+            @Override
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
+                }
             }
 
             @Override
