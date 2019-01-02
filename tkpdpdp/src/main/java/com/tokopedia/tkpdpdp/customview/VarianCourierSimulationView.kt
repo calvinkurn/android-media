@@ -46,6 +46,11 @@ class VarianCourierSimulationView : BaseCustomView {
     fun addProductVariant(productVariant: ProductVariant, productDetailData: ProductDetailData) {
         view_variant_field!!.setOnClickListener { listener!!.openVariantPage(0) }
         view_variant_field!!.visibility = View.VISIBLE
+        variant_courier_container.visibility = View.VISIBLE
+
+        if(view_courier_field.visibility == View.VISIBLE){
+            line.visibility = View.VISIBLE
+        }
     }
 
     fun updateVariant(variantSelected: String) {
@@ -59,9 +64,10 @@ class VarianCourierSimulationView : BaseCustomView {
 
     fun renderRateEstimation(ratesModel: RatesModel?) {
         if (ratesModel == null) {
-            showCourierRate(true)
+            showCourierRate(false)
             showShopDestination(false)
         } else {
+            variant_courier_container.visibility = View.VISIBLE;
             showCourierRate(true)
             showShopLocationView(true)
             showShopDestination(true)
@@ -75,15 +81,20 @@ class VarianCourierSimulationView : BaseCustomView {
     }
 
     fun renderRateEstimation() {
-        showCourierRate(true)
-        showShopLocationView(true)
+        showCourierRate(false)
+        showShopLocationView(false)
         showShopDestination(false)
         tv_shop_location.text = productDetailData!!.shopInfo.shopLocation;
     }
 
     private fun showCourierRate(show : Boolean) {
         when(show){
-            true -> {view_courier_field.visibility = View.VISIBLE}
+            true -> {
+                view_courier_field.visibility = View.VISIBLE
+                if(view_variant_field.visibility == View.VISIBLE){
+                    line.visibility = View.VISIBLE
+                }
+            }
             false -> {view_courier_field.visibility = View.GONE}
         }
     }
@@ -91,14 +102,10 @@ class VarianCourierSimulationView : BaseCustomView {
     private fun showShopLocationView(show : Boolean){
         when(show){
             true -> {
-                img_shop_location.visibility = View.VISIBLE
-                tv_shop_location_label.visibility = View.VISIBLE
-                tv_shop_location.visibility = View.VISIBLE
+                view_shop_address.visibility = View.VISIBLE
             }
             false -> {
-                img_shop_location.visibility = View.GONE
-                tv_shop_location_label.visibility = View.GONE
-                tv_shop_location.visibility = View.GONE
+                view_shop_address.visibility = View.GONE
             }
         }
     }
@@ -106,24 +113,12 @@ class VarianCourierSimulationView : BaseCustomView {
     private fun showShopDestination(show : Boolean){
         when(show){
             true -> {
-                img_courier.visibility = View.VISIBLE
-                tv_destination.visibility = View.VISIBLE
-                tv_destination_label.visibility = View.VISIBLE
-
-                tv_courier_label.visibility = View.VISIBLE
-                tv_courier_est_cost.visibility = View.VISIBLE
-                tv_courier_est_cost_label.visibility = View.VISIBLE
-                tv_courier_count.visibility = View.VISIBLE
+                view_destination.visibility = View.VISIBLE
+                view_courier.visibility = View.VISIBLE
             }
             false -> {
-                img_courier.visibility = View.GONE
-                tv_destination.visibility = View.GONE
-                tv_destination_label.visibility = View.GONE
-
-                tv_courier_label.visibility = View.GONE
-                tv_courier_est_cost.visibility = View.GONE
-                tv_courier_est_cost_label.visibility = View.GONE
-                tv_courier_count.visibility = View.GONE
+                view_destination.visibility = View.GONE
+                view_courier.visibility = View.GONE
             }
         }
     }

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">logisticgeolocation</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_shipping_dest">Tujuan Pengiriman</string>
+    <string name="text_information_google_map">* Pastikan lokasi google map anda sesuai dengan alamat yang anda masukan</string>
+    <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_multi_neverask">Anda tidak memberikan izin akses. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="need_permission_location" >Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
+    <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
+    <string name="dialog_cancel">BATAL</string>
+    <string name="permission_multi_denied">Anda tidak memberikan izin akses</string>
+    <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
+    <string name="wait_generate_address">Harap Tunggu . . .</string>
+    <string name="choose_this_location">Pilih lokasi ini</string>
+    <string name="hint_gojek_pick_address">Cari Lokasi</string>
+</resources>

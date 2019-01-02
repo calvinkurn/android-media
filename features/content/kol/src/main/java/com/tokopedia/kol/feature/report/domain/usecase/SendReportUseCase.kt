@@ -2,7 +2,6 @@ package com.tokopedia.kol.feature.report.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -18,21 +17,16 @@ import javax.inject.Inject
  */
 class SendReportUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
-        private val graphqlUseCase: GraphqlUseCase): UseCase<Boolean>() {
+        private val graphqlUseCase: GraphqlUseCase): UseCase<SendReportResponse>() {
 
-    override fun createObservable(params: RequestParams?): Observable<Boolean> {
+    override fun createObservable(params: RequestParams?): Observable<SendReportResponse> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_send_report)
         val request = GraphqlRequest(query, SendReportResponse::class.java, params?.parameters)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val sendReportResponse: SendReportResponse = it.getData(SendReportResponse::class.java)
-            if (sendReportResponse.feedReportSubmit.error.isEmpty().not()) {
-                throw MessageErrorException(sendReportResponse.feedReportSubmit.error)
-            }
-
-            sendReportResponse.feedReportSubmit.data.success == SUCCESS
+            it.getData<SendReportResponse>(SendReportResponse::class.java)
         }
     }
 
@@ -44,7 +38,8 @@ class SendReportUseCase @Inject constructor(
 
         private const val CONTENT_TYPE_CONTENT = "content"
 
-        private const val SUCCESS = 1
+        const val REPORT_SUCCESS = 1
+        const val ERROR_REPORT_DUPLICATE = "error_duplicate_report"
 
         fun createRequestParams(contentId: Int, reasonType: String, reasonMessage: String)
                 : RequestParams {

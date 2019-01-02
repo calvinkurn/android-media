@@ -164,7 +164,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 } else {
                     favoritePresenter.loadInitialData();
                 }
-                ScreenTracking.screen(getActivity(), getScreenName());
+                ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
             } else {
                 if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
