@@ -3,7 +3,7 @@ package com.tokopedia.expresscheckout.view.variant.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypefactory
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -15,7 +15,7 @@ class SummaryViewModel(
         var servicePrice: Int,
         var insurancePrice: Int,
         var insuranceInfo: String
-) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
+) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel?) : this(
             parcel?.readInt() ?: 0,
@@ -24,7 +24,7 @@ class SummaryViewModel(
             parcel?.readInt() ?: 0,
             parcel?.readString() ?: "")
 
-    override fun type(typeFactory: CheckoutVariantAdapterTypefactory): Int {
+    override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 

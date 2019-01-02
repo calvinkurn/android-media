@@ -3,7 +3,7 @@ package com.tokopedia.expresscheckout.view.variant.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypefactory
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -22,9 +22,9 @@ data class QuantityViewModel(
         var errorProductMaxQuantity: String,
         var errorProductMinQuantity: String,
         var isStateError: Boolean
-) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
+) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
-    override fun type(typeFactory: CheckoutVariantAdapterTypefactory): Int {
+    override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 

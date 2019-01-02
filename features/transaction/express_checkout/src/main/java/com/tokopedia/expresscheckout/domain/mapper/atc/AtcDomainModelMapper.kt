@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.domain.mapper
+package com.tokopedia.expresscheckout.domain.mapper.atc
 
 import com.tokopedia.expresscheckout.data.entity.atc.AtcResponse
 import com.tokopedia.expresscheckout.domain.model.HeaderModel
@@ -13,7 +13,7 @@ import com.tokopedia.transactiondata.entity.response.variantdata.Variant
  * Created by Irfan Khoirul on 17/12/18.
  */
 
-class DomainModelMapper : DataMapper {
+class AtcDomainModelMapper : AtcDataMapper {
 
     override fun convertToDomainModel(atcResponse: AtcResponse): AtcResponseModel {
         var responseModel = AtcResponseModel()

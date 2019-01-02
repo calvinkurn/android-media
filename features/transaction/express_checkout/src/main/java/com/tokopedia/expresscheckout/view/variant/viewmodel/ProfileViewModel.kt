@@ -3,7 +3,7 @@ package com.tokopedia.expresscheckout.view.variant.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypefactory
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -23,7 +23,7 @@ data class ProfileViewModel(
         var isDefaultProfileCheckboxChecked: Boolean,
         var isStateHasRemovedProfile: Boolean,
         var isStateHasChangedProfile: Boolean
-) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
+) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
             parcel?.readString() ?: "",
@@ -40,7 +40,7 @@ data class ProfileViewModel(
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte())
 
-    override fun type(typeFactory: CheckoutVariantAdapterTypefactory): Int {
+    override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 

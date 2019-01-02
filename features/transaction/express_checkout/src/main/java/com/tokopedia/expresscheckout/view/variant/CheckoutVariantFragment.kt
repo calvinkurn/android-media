@@ -14,7 +14,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypefactory
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import android.support.v7.widget.SimpleItemAnimator
@@ -25,7 +25,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypefactory>(),
+class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         CheckoutVariantContract.View, CheckoutVariantActionListener {
 
     val contextView: Context get() = activity!!
@@ -68,8 +68,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return false
     }
 
-    override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypefactory {
-        return CheckoutVariantAdapterTypefactory(this)
+    override fun getAdapterTypeFactory(): CheckoutVariantAdapterTypeFactory {
+        return CheckoutVariantAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -272,7 +272,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         adapter.notifyDataSetChanged()
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypefactory> {
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
         adapter = CheckoutVariantAdapter(adapterTypeFactory)
         return adapter
     }

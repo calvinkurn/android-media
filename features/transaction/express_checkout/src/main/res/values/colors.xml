@@ -2,5 +2,7 @@
 <resources>
 
     <color name="text_error_red">#d30b16</color>
+    <color name="background_main_address">#daf5db</color>
+    <color name="text_main_address">#42b549</color>
 
 </resources>

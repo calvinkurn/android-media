@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_template_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="#b8000000"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                tools:text="Template 1" />
+
+            <TextView
+                android:id="@+id/tv_main_template"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_main_address"
+                android:lineSpacingExtra="6sp"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_2"
+                android:textColor="@color/text_main_address"
+                android:textSize="10sp"
+                android:text="Utama" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_profile_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="6sp"
+            android:textColor="#8a000000"
+            android:textSize="12sp"
+            tools:text="Kantor (Tokopedia Tower Lt. 45, Jl…)" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_payment_method"
+                android:layout_width="@dimen/dp_45"
+                android:layout_height="@dimen/dp_30"
+                tools:src="@color/blue_30" />
+
+            <TextView
+                android:id="@+id/tv_payment_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="6sp"
+                android:textColor="#8a000000"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                tools:text="BCA a/n Raisa … ****2917" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_shipping_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="4sp"
+            android:textColor="#8a000000"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            tools:text="Durasi 4 jam" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check" />
+
+</LinearLayout>

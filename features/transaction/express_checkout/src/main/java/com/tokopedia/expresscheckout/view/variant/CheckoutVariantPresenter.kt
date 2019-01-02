@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.expresscheckout.data.entity.atc.AtcResponse
-import com.tokopedia.expresscheckout.domain.mapper.DomainModelMapper
+import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -21,7 +21,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
     private val getExpressCheckoutFormUseCase = GraphqlUseCase()
     private lateinit var atcResponseModel: AtcResponseModel
-    private lateinit var domainModelMapper: DomainModelMapper
+    private lateinit var domainModelMapper: AtcDomainModelMapper
     private lateinit var viewModelMapper: ViewModelMapper
 
     override fun attachView(view: CheckoutVariantContract.View?) {
@@ -39,7 +39,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 //        val dataMapper: DataMapper = ViewModelMapper()
 //        view.showData(dataMapper.convertToViewModels(response.data))
 
-        domainModelMapper = DomainModelMapper()
+        domainModelMapper = AtcDomainModelMapper()
         viewModelMapper = ViewModelMapper()
 
         view.showLoading()

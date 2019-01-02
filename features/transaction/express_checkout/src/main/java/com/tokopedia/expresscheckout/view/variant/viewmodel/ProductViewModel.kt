@@ -3,7 +3,7 @@ package com.tokopedia.expresscheckout.view.variant.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypefactory
+import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -17,7 +17,7 @@ data class ProductViewModel(
         var selectedVariantOptionsIdMap: LinkedHashMap<Int, Int> = LinkedHashMap(),
         var maxOrderQuantity: Int,
         var minOrderQuantity: Int
-) : Visitable<CheckoutVariantAdapterTypefactory>, Parcelable {
+) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel? = null) : this(
             parcel?.readString() ?: "",
@@ -33,7 +33,7 @@ data class ProductViewModel(
             parcel?.readInt() ?: 0
     )
 
-    override fun type(typeFactory: CheckoutVariantAdapterTypefactory): Int {
+    override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
