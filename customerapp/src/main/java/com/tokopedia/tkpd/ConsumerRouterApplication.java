@@ -2009,7 +2009,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isToggleBuyAgainOn() {
-        return remoteConfig.getBoolean("main_app_enable_buy_again", true);
+        return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, true);
     }
 
     @Override
