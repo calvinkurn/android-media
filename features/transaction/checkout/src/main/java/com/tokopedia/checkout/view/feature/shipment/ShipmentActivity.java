@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -120,9 +119,4 @@ public class ShipmentActivity extends BaseCheckoutActivity {
         }
     }
 
-    @SuppressLint("MissingSuperCall")
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        // Do not put super, avoid crash transactionTooLarge
-    }
 }
