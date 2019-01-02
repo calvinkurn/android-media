@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import javax.annotation.Nullable;
 
@@ -14,6 +15,7 @@ public class InstantLoanActivity extends Activity {
     }
 
     public static Intent getInstantLoanCallingIntent(Context context, Bundle bundle) {
+        Toast.makeText(context, "N0-OP module found (uncomment 'instant_loan_no_op' from respective .gradle files)", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(context, InstantLoanActivity.class);
         intent.putExtras(bundle);
         return intent;
