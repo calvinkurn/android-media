@@ -1,8 +1,5 @@
 package com.tokopedia.feedcomponent.view.viewmodel.recommendation
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory
-
 /**
  * @author by yfsx on 04/12/18.
  */
@@ -16,8 +13,4 @@ data class RecommendationCardViewModel(
         val description: String = "",
         val btnText: String = "",
         val isFollowing:Boolean = false
-) : Visitable<DynamicPostTypeFactory>{
-    override fun type(typeFactory: DynamicPostTypeFactory?): Int {
-        return 0
-    }
-}
+)

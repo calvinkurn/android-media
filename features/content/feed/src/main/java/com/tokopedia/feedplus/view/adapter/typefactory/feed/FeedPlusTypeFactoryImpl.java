@@ -5,6 +5,9 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
+        .FeedRecommendationViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
@@ -199,6 +202,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(@NotNull DynamicPostViewModel dynamicPostViewModel) {
         return DynamicPostViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(@NotNull FeedRecommendationViewModel feedRecommendationViewModel) {
+        return FeedRecommendationViewHolder.Companion.getLAYOUT();
     }
 
     @Override

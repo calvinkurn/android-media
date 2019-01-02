@@ -1,33 +1,28 @@
 package com.tokopedia.feedcomponent.data.pojo.feed.contentitem
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class Header (
-
-    @SerializedName("avatar")
-    @Expose
-    var avatar: String = "",
-    @SerializedName("avatarTitle")
-    @Expose
-    var avatarTitle: String = "",
-    @SerializedName("avatarDate")
-    @Expose
-    var avatarDate: String = "",
-    @SerializedName("avatarWeblink")
-    @Expose
-    var avatarWeblink: String = "",
-    @SerializedName("avatarApplink")
-    @Expose
-    var avatarApplink: String = "",
-    @SerializedName("avatarDescription")
-    @Expose
-    var avatarDescription: String = "",
-    @SerializedName("avatarBadgeImage")
-    @Expose
-    var avatarBadgeImage: String = "",
-    @SerializedName("reportable")
-    @Expose
-    var isReportable: Boolean = false
-
+data class Header(
+        @SerializedName("avatar")
+        val avatar: String = "",
+        @SerializedName("avatarApplink")
+        val avatarApplink: String = "",
+        @SerializedName("avatarBadgeImage")
+        val avatarBadgeImage: String = "",
+        @SerializedName("avatarDate")
+        val avatarDate: String = "",
+        @SerializedName("avatarDescription")
+        val avatarDescription: String = "",
+        @SerializedName("avatarTitle")
+        val avatarTitle: String = "",
+        @SerializedName("avatarWeblink")
+        val avatarWeblink: String = "",
+        @SerializedName("deletable")
+        val deletable: Boolean = false,
+        @SerializedName("editable")
+        val editable: Boolean = false,
+        @SerializedName("followCta")
+        val followCta: FollowCta = FollowCta(),
+        @SerializedName("reportable")
+        val reportable: Boolean = false
 )

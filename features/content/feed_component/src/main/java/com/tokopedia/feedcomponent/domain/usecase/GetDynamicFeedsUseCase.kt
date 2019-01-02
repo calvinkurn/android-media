@@ -20,9 +20,9 @@ import javax.inject.Inject
 class GetDynamicFeedsUseCase @Inject constructor(@ApplicationContext private val context: Context,
                                                  private val graphqlUseCase: GraphqlUseCase,
                                                  private val dynamicPostMapper: DynamicPostMapper)
-    : UseCase<MutableList<Visitable<Any>>>() {
+    : UseCase<MutableList<Visitable<*>>>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<MutableList<Visitable<Any>>> {
+    override fun createObservable(requestParams: RequestParams?): Observable<MutableList<Visitable<*>>> {
         val query: String = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.query_feed_dynamic

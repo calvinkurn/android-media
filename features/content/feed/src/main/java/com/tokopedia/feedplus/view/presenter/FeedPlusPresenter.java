@@ -2,10 +2,12 @@ package com.tokopedia.feedplus.view.presenter;
 
 import android.support.annotation.RestrictTo;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedsUseCase;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
@@ -15,7 +17,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
-import com.tokopedia.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
@@ -26,6 +27,9 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -49,6 +53,7 @@ public class FeedPlusPresenter
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private final GetWhitelistUseCase getWhitelistUseCase;
+    private final GetDynamicFeedsUseCase getDynamicFeedsUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -63,6 +68,7 @@ public class FeedPlusPresenter
                       FollowKolPostGqlUseCase followKolPostGqlUseCase,
                       SendVoteUseCase sendVoteUseCase,
                       GetWhitelistUseCase whitelistUseCase,
+                      GetDynamicFeedsUseCase getDynamicFeedsUseCase,
                       FeedAnalytics analytics) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
@@ -72,8 +78,9 @@ public class FeedPlusPresenter
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
-        this.getWhitelistUseCase = whitelistUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
+        this.getWhitelistUseCase = whitelistUseCase;
+        this.getDynamicFeedsUseCase = getDynamicFeedsUseCase;
         this.analytics = analytics;
     }
 
@@ -109,17 +116,7 @@ public class FeedPlusPresenter
 
     @Override
     public void fetchFirstPage() {
-        pagingHandler.resetPage();
-        viewListener.showRefresh();
-        currentCursor = "";
-
-        if (userSession != null && userSession.isLoggedIn()) {
-            getFirstPageFeedsUseCase.execute(
-                    getFirstPageFeedsUseCase.getRefreshParam(userSession),
-                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
-        } else {
-            viewListener.onUserNotLogin();
-        }
+        getFirstPageFeeds();
     }
 
     @Override
@@ -196,18 +193,7 @@ public class FeedPlusPresenter
 
     @Override
     public void refreshPage() {
-
-        pagingHandler.resetPage();
-        viewListener.showRefresh();
-        currentCursor = "";
-
-        if (userSession != null && userSession.isLoggedIn()) {
-            getFirstPageFeedsCloudUseCase.execute(
-                    getFirstPageFeedsCloudUseCase.getRefreshParam(userSession),
-                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
-        } else {
-            viewListener.onUserNotLogin();
-        }
+        getFirstPageFeeds();
     }
 
     @Override
@@ -275,4 +261,37 @@ public class FeedPlusPresenter
         return userSession.getUserId();
     }
 
+    private void getFirstPageFeeds() {
+        pagingHandler.resetPage();
+        viewListener.showRefresh();
+        currentCursor = "";
+
+        if (userSession != null && userSession.isLoggedIn()) {
+//            getFirstPageFeedsCloudUseCase.execute(
+//                    getFirstPageFeedsCloudUseCase.getRefreshParam(userSession),
+//                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
+
+            getDynamicFeedsUseCase.execute(
+                    GetDynamicFeedsUseCase.Companion.createRequestParams(userSession.getUserId()),
+                    new Subscriber<List<Visitable<?>>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Visitable<?>> visitables) {
+                            getView().onSuccessGetFeedFirstPage(new ArrayList<>(visitables));
+                        }
+                    }
+            );
+        } else {
+            viewListener.onUserNotLogin();
+        }
+    }
 }

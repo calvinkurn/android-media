@@ -5,6 +5,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.CardTitle
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
@@ -32,9 +34,9 @@ class DynamicPostViewHolder(v: View)
         }
 
         bindTitle(element.title)
-        bindHeader(element)
+        bindHeader(element.header)
         bindContentList(element.contentList)
-        bindFooter(element)
+        bindFooter(element.footer)
     }
 
     private fun bindTitle(title: CardTitle) {
@@ -43,13 +45,22 @@ class DynamicPostViewHolder(v: View)
         }
     }
 
-    private fun bindHeader(element: DynamicPostViewModel) {
-        itemView.authorImage.loadImageCircle(element.authorImage)
-        itemView.authorTitle.text = element.authorTitle
-        itemView.authorSubtitile.text = element.authorSubtitle
-        itemView.caption.text = element.caption
-        itemView.headerAction.setOnClickListener { listener.onHeaderActionClick() }
-        itemView.menu.setOnClickListener { listener.onMenuClick() }
+    private fun bindHeader(header: Header) {
+        itemView.authorImage.loadImageCircle(header.avatar)
+        itemView.authorTitle.text = header.avatarTitle
+        itemView.authorSubtitile.text = header.avatarDate
+
+        if (header.followCta.isFollow) {
+            itemView.headerAction.text = header.followCta.textTrue
+        } else {
+            itemView.headerAction.text = header.followCta.textFalse
+        }
+        itemView.headerAction.setOnClickListener {
+            listener.onHeaderActionClick(header.followCta.isFollow)
+        }
+        itemView.menu.setOnClickListener {
+            listener.onMenuClick()
+        }
     }
 
     private fun bindContentList(contentList: MutableList<BasePostViewModel>) {
@@ -61,18 +72,18 @@ class DynamicPostViewHolder(v: View)
         itemView.tabLayout.visibility = if (adapter.count > 1) View.VISIBLE else View.GONE
     }
 
-    private fun bindFooter(element: DynamicPostViewModel) {
-        if (element.footerActionText.isEmpty().not()) {
+    private fun bindFooter(footer: Footer) {
+        if (footer.buttonCta.text.isNotEmpty()) {
             itemView.shareSpace.gone()
             itemView.footerAction.visible()
-            itemView.footerAction.text = element.footerActionText
+            itemView.footerAction.text = footer.buttonCta.text
         } else {
             itemView.shareSpace.visible()
             itemView.footerAction.gone()
         }
 
-        bindLike(element.isLiked, element.likeCountNumber, element.likeCountText)
-        bindComment(element.commentCountNumber, element.commentCountText)
+        bindLike(footer.like.isChecked, footer.like.value, footer.like.fmt)
+        bindComment(footer.comment.value, footer.comment.fmt)
     }
 
     private fun bindLike(isLiked: Boolean, totalLikeNumber: Int, totalLikeText: String) {
@@ -112,7 +123,7 @@ class DynamicPostViewHolder(v: View)
     }
 
     interface DynamicPostListener {
-        fun onHeaderActionClick()
+        fun onHeaderActionClick(isFollowed: Boolean)
 
         fun onMenuClick()
 
