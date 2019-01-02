@@ -7,10 +7,10 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.di.DaggerAttachInvoiceComponent
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
@@ -57,12 +57,15 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     }
 
     override fun initInjector() {
-        val appComponent = getComponent(BaseAppComponent::class.java)
-        val daggerAttachInvoiceComponent = DaggerAttachInvoiceComponent.builder()
-                .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
-        daggerAttachInvoiceComponent.inject(this)
-        presenter.attachView(this)
-        presenter.attachActivityContract(activity)
+        if ((activity as Activity).application != null) {
+            val appComponent = ((activity as Activity).application as BaseMainApplication)
+                    .baseAppComponent
+            val daggerAttachInvoiceComponent = DaggerAttachInvoiceComponent.builder()
+                    .baseAppComponent(appComponent).build() as DaggerAttachInvoiceComponent
+            daggerAttachInvoiceComponent.inject(this)
+            presenter.attachView(this)
+            presenter.attachActivityContract(activity)
+        }
     }
 
     override fun onItemClicked(invoiceViewModel: InvoiceViewModel) {

@@ -27,7 +27,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                             chatRatingViewModel : ChatRatingViewModel,
-                            context: Context,
+                            activity: Activity,
                             onClickReasonRating: (String) -> Unit)
 
 

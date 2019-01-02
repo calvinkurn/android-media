@@ -26,11 +26,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.topchat.R;
@@ -73,6 +70,10 @@ public class InboxChatFragment extends BaseDaggerFragment
     View searchLoading;
     @Inject
     InboxChatPresenter presenter;
+
+    @Inject
+    TopChatAnalytics analytics;
+
     InboxChatAdapter adapter;
     RefreshHandler refreshHandler;
     boolean isRetryShowing = false;
@@ -118,11 +119,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     private Drawable getDetailMenuItem() {
         TextDrawable drawable = new TextDrawable(getContext());
         drawable.setText(getResources().getString(R.string.option_organize));
-        if (GlobalConfig.isSellerApp()) {
-            drawable.setTextColor(getContext().getResources().getColor(R.color.white));
-        } else {
-            drawable.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-        }
+        drawable.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
         drawable.setTextSize(16.0f);
         return drawable;
     }
@@ -385,7 +382,6 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void showError(String message) {
-        ToasterError.make(getView(), message).show();
         NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
@@ -499,9 +495,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         if (text.length() > 0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
-            UnifyTracking.eventTopChatSearch(TopChatAnalytics.Category.INBOX_CHAT,
-                    TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
-                    TopChatAnalytics.Name.INBOX_CHAT);
+            analytics.eventSearchSubmit();
             if (getActivity() instanceof InboxChatActivity) {
                 ((InboxChatActivity) getActivity()).hideIndicators();
             }

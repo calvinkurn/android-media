@@ -6,6 +6,7 @@ import android.content.Context
 import android.support.design.widget.BottomSheetDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.widget.ImageView
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.adapter.ReasonAdapter
@@ -14,9 +15,10 @@ import java.util.*
 /**
  * @author by nisie on 6/11/18.
  */
-class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<String>,
-                        private val onClickReasonRating: (String) -> Unit) : BottomSheetDialog
-(context) {
+class ReasonBottomSheet(private val activity: Activity,
+                        private val reasonList: ArrayList<String>,
+                        private val onClickReasonRating: (String) -> Unit)
+    : BottomSheetDialog(activity) {
     private var reasonRecyclerView: RecyclerView? = null
     private var closeIcon: ImageView? = null
 
@@ -25,7 +27,7 @@ class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<Stri
     }
 
     private fun init() {
-        val bottomSheetView = (context as Activity).layoutInflater.inflate(R.layout
+        val bottomSheetView = activity.layoutInflater.inflate(R.layout
                 .bottom_sheet_reason, null)
         setContentView(bottomSheetView)
 
@@ -47,10 +49,10 @@ class ReasonBottomSheet(context: Context, private val reasonList: ArrayList<Stri
 
     companion object {
 
-        fun createInstance(context: Context,
+        fun createInstance(activity: Activity,
                            reasons: ArrayList<String>,
                            onClickReasonRating: (String) -> Unit): ReasonBottomSheet {
-            return ReasonBottomSheet(context, reasons, onClickReasonRating)
+            return ReasonBottomSheet(activity, reasons, onClickReasonRating)
         }
     }
 }

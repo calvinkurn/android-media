@@ -87,5 +87,14 @@ public class TopChatAnalytics {
         );
     }
 
+    public void eventSearchSubmit() {
+        analyticTracker.sendEventTracking(
+                TopChatAnalytics.Name.INBOX_CHAT,
+                TopChatAnalytics.Category.INBOX_CHAT,
+                TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
+                ""
+        );
+    }
+
 
 }

@@ -83,8 +83,9 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
-    override fun onSuccessLoadPrevious(it: ChatroomViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onSuccessLoadPrevious(chatroomViewModel: ChatroomViewModel) {
+        hideLoading()
+        adapter.addElement(chatroomViewModel.listChat)
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
@@ -114,7 +115,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                                      chatRatingViewModel: ChatRatingViewModel,
-                                     context: Context,
+                                     activity: Activity,
                                      onClickReasonRating: (String) -> Unit) {
         val indexToUpdate = adapter.getList().indexOf(chatRatingViewModel)
         if (adapter.getList()[indexToUpdate] is ChatRatingViewModel) {
@@ -123,14 +124,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
 
         if (rating == ChatRatingViewModel.RATING_BAD) {
-            showReasonBottomSheet(element, context, onClickReasonRating)
+            showReasonBottomSheet(element, activity, onClickReasonRating)
         }
     }
 
-    private fun showReasonBottomSheet(element: SendRatingPojo, context: Context,
+    private fun showReasonBottomSheet(element: SendRatingPojo, activity: Activity,
                                       onClickReasonRating: (String) -> Unit) {
         if (!::reasonBottomSheet.isInitialized) {
-            reasonBottomSheet = ReasonBottomSheet.createInstance(context,
+            reasonBottomSheet = ReasonBottomSheet.createInstance(activity,
                     element.postRatingV2.data.listReason, onClickReasonRating)
         }
         reasonBottomSheet.show()

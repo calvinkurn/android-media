@@ -222,7 +222,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessSendRating(rating: Int, element: ChatRatingViewModel): (SendRatingPojo) ->
     Unit {
         return {
-            (activity as Context).run {
+            (activity as Activity).run {
                     (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
                             onClickReasonRating(element.replyTimeNano.toString()))
                 }
