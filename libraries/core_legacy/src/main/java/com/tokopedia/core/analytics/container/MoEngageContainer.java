@@ -241,7 +241,7 @@ public class MoEngageContainer implements IMoengageContainer {
     @Override
     public void logoutEvent() {
         if(context != null) {
-            MoEHelper.getInstance(context).logoutUser();
+            MoEHelper.getInstance(context.getApplicationContext()).logoutUser();
         }
     }
 
