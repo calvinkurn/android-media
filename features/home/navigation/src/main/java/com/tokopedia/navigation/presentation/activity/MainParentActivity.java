@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -619,6 +621,27 @@ public class MainParentActivity extends BaseActivity implements
                 }
 
                 Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+            }
+
+            // Note: applink/deeplink router already in DeeplinkHandlerActivity.
+            // Applink should not be passed to home because the analytics at home might be triggered.
+            // It is better to use TaskStackBuilder to build taskstack for home, rather than passwing to home directly.
+            // Below code is still maintained to ensure no deeplink/applink uri is lost
+            try {
+                Intent applinkIntent = new Intent(this, MainParentActivity.class);
+                applinkIntent.setData(Uri.parse(applink));
+                if (getIntent() != null && getIntent().getExtras() != null) {
+                    Intent newIntent = getIntent();
+                    newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+                    newIntent.removeExtra(DeepLink.REFERRER_URI);
+                    newIntent.removeExtra(DeepLink.URI);
+                    newIntent.removeExtra(ApplinkRouter.EXTRA_APPLINK);
+                    if (newIntent.getExtras() != null)
+                        applinkIntent.putExtras(newIntent.getExtras());
+                }
+                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
+            } catch (ActivityNotFoundException ex) {
+                ex.printStackTrace();
             }
 
             presenter.setIsRecurringApplink(true);

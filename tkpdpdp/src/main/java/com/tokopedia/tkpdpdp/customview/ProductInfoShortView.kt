@@ -64,12 +64,10 @@ class ProductInfoShortView : BaseCustomView {
                 intent.productDetailData = data
             }
 
-            listener?.onProductInfoShortClicked(intent,
-                    view_preorder,
-                    view_min_order,
-                    view_condition
-                    )
+            listener?.onProductInfoShortClicked(intent)
         }
+
+        label_seller_textview.setOnClickListener(null)
 
         view_detail_product_info_short.visibility = View.VISIBLE
     }

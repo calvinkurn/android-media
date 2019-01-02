@@ -713,6 +713,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void showPromoContainer() {
+        containerPromo.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void goToCartPage(ProductDigitalData productDigitalData) {
         DigitalCheckoutPassData digitalCheckoutPassData = presenter.generateCheckoutPassData2(productDigitalData,
                 categoryId,
@@ -878,6 +883,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     }
                 }
                 if (isFromWidget) {
+                    isFromWidget = false;
                     presenter.processGetHelpUrlData(categoryId);
                     presenter.processGetCategoryAndBannerData(
                             categoryId, operatorId, productId, clientNumber);
