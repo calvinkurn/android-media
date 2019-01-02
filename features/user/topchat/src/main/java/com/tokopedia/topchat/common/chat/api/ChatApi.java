@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.common.chat.api;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
@@ -48,12 +49,12 @@ public interface ChatApi {
 
     @Headers("Cookie:_SID_TOKOPEDIA_")
     @GET(TkpdBaseURL.Chat.SEARCH)
-    Observable<Response<TkpdResponse>> searchChat(@QueryMap Map<String, Object> requestParams);
+    Observable<Response<TokopediaWsV4Response>> searchChat(@QueryMap Map<String, Object> requestParams);
 
 
     @Headers("Content-Type: application/json")
     @POST(TkpdBaseURL.Chat.DELETE)
-    Observable<Response<TkpdResponse>> deleteMessage(@Body JsonObject parameters);
+    Observable<Response<TokopediaWsV4Response>> deleteMessage(@Body JsonObject parameters);
 
     @FormUrlEncoded
     @Headers("Cookie:_SID_TOKOPEDIA_")
