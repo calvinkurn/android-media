@@ -2,6 +2,7 @@
 include "libraries:analytics"
 include "libraries:applink"
 include "libraries:base_adapter"
+include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"
 include "libraries:cache_api"
 include "libraries:camera_view"

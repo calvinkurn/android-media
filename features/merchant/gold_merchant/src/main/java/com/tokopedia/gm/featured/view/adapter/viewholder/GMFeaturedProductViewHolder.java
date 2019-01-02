@@ -10,15 +10,14 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.base.list.seller.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.featured.constant.GMFeaturedProductTypeView;
 import com.tokopedia.gm.featured.helper.ItemTouchHelperViewHolder;
 import com.tokopedia.gm.featured.helper.OnStartDragListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 
 /**
  * Created by normansyahputa on 9/8/17.

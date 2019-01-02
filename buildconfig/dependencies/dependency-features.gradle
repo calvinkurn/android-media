@@ -163,6 +163,10 @@ ext {
             nps                           : ":features:common:nps",
             developerOptions              : ":features:common:developer_options",
 
+            broadcastMessage            : ":features:communication:broadcast_message",
+//            broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
+            broadcastMessageCommon      : ":features:communication:broadcast_message_common",
+
             feed                          : ":features:content:feed",
             explore                       : ":features:content:explore",
             interestPick                  : ":features:content:interest_pick",
