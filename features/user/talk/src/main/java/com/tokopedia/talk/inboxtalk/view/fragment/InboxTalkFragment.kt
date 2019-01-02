@@ -2,6 +2,7 @@ package com.tokopedia.talk.inboxtalk.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -11,6 +12,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -38,6 +43,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -71,6 +77,9 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: InboxTalkPresenter
 
+    @Inject
+    lateinit var analytics: TalkAnalytics
+
     companion object {
         fun newInstance(nav: String): InboxTalkFragment {
             val fragment = InboxTalkFragment()
@@ -96,6 +105,13 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_inbox, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            analytics.sendScreen(this, screenName)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -611,7 +627,8 @@ open class InboxTalkFragment : BaseDaggerFragment(),
         if (allowReply) {
             context?.run {
                 this@InboxTalkFragment.startActivityForResult(
-                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
+                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this,
+                                TalkDetailsActivity.SOURCE_INBOX)
                         , REQUEST_GO_TO_DETAIL)
             }
         } else {
@@ -642,6 +659,43 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
         goToDetailTalk(talkId, shopId, allowReply)
+    }
+
+    override fun shouldHandleUrlManually(url: String): Boolean {
+        val urlManualHandlingList = arrayOf("tkp.me", "tokopedia.me", "tokopedia.link")
+        return Arrays.asList(*urlManualHandlingList).contains(url)
+    }
+
+    override fun onGoToWebView(url: String, id: String) {
+        if (url.isNotEmpty() && activity != null) {
+            KeyboardHandler.DropKeyboard(activity, view)
+
+            when {
+                RouteManager.isSupportApplink(activity, url) -> RouteManager.route(activity, url)
+                isBranchIOLink(url) -> handleBranchIOLinkClick(url)
+                else -> {
+                    val applinkRouter = activity!!.applicationContext as ApplinkRouter
+                    applinkRouter.goToApplinkActivity(activity,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                }
+            }
+        }
+    }
+
+    override fun handleBranchIOLinkClick(url: String) {
+        activity?.run {
+            val talkRouter = this.applicationContext as TalkRouter
+            val intent = talkRouter.getSplashScreenIntent(this)
+            intent.putExtra("branch", url)
+            intent.putExtra("branch_force_new_session", true)
+            startActivity(intent)
+        }
+    }
+
+    override fun isBranchIOLink(url: String): Boolean {
+        val BRANCH_IO_HOST = "tokopedia.link"
+        val uri = Uri.parse(url)
+        return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
     override fun onDestroy() {

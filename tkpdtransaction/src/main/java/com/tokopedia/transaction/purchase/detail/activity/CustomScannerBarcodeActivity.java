@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IBarcodeScannerReceiptShippingAnalyticListener;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.utils.TransactionTrackingUtil;
-import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 
 /**

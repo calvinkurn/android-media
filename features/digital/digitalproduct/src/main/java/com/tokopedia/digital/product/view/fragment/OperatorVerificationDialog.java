@@ -306,4 +306,5 @@ public class OperatorVerificationDialog extends DialogFragment {
         }
         return message;
     }
+
 }

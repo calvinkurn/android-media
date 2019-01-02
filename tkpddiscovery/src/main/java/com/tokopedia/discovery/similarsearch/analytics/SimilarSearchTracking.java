@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.similarsearch.analytics;
 
+import android.content.Context;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -16,8 +18,8 @@ import java.util.Map;
 
 public class SimilarSearchTracking extends UnifyTracking {
 
-    public static void eventProductLongPress(String keyword,String productId) {
-        sendGTMEvent(new EventTracking(
+    public static void eventProductLongPress(Context context, String keyword, String productId) {
+        sendGTMEvent(context, new EventTracking(
                 SimilarSearchAppEventTracking.Event.GenericClickSearchResult,
                 SimilarSearchAppEventTracking.Category.EventSearchResult,
                 SimilarSearchAppEventTracking.Action.EventLongPressProduct,
@@ -25,8 +27,8 @@ public class SimilarSearchTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventUserSeeSimilarProduct(String productId, List<Object> productsItem) {
-        TrackingUtils.eventTrackingEnhancedEcommerce(new SimilarSearchEventTracking(
+    public static void eventUserSeeSimilarProduct(Context context, String productId, List<Object> productsItem) {
+        TrackingUtils.eventTrackingEnhancedEcommerce(context, new SimilarSearchEventTracking(
                 SimilarSearchAppEventTracking.Event.GenericProductView,
                 SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventImpressionProduct,
@@ -39,9 +41,9 @@ public class SimilarSearchTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventClickSimilarProduct(String screenName,String productsId,Object productsItem) {
+    public static void eventClickSimilarProduct(Context context, String screenName,String productsId,Object productsItem) {
         try {
-            TrackingUtils.eventTrackingEnhancedEcommerce(new SimilarSearchEventTracking(
+            TrackingUtils.eventTrackingEnhancedEcommerce(context, new SimilarSearchEventTracking(
                     SimilarSearchAppEventTracking.Event.GenericProductClick,
                     SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                     SimilarSearchAppEventTracking.Action.EventClickSimilarProduct,
@@ -57,8 +59,8 @@ public class SimilarSearchTracking extends UnifyTracking {
             e.printStackTrace();
         }
     }
-    public static void eventUserSeeNoSimilarProduct(String productId,String screenName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventUserSeeNoSimilarProduct(Context context, String productId,String screenName) {
+        sendGTMEvent(context, new EventTracking(
                 SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
                 SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventNoSimilarProduct,
@@ -66,8 +68,8 @@ public class SimilarSearchTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventAddWishList(String productId) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddWishList(Context context, String productId) {
+        sendGTMEvent(context, new EventTracking(
                 SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
                 SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventAddWishList,
@@ -75,8 +77,8 @@ public class SimilarSearchTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventRemoveWishList(String productId) {
-        sendGTMEvent(new EventTracking(
+    public static void eventRemoveWishList(Context context, String productId) {
+        sendGTMEvent(context, new EventTracking(
                 SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
                 SimilarSearchAppEventTracking.Category.EventSimilarProduct,
                 SimilarSearchAppEventTracking.Action.EventRemoveWishList,

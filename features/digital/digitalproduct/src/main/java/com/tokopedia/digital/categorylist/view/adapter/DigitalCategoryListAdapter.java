@@ -11,16 +11,12 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemDataError;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemHeader;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 7/3/17.
@@ -34,7 +30,6 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
             R.layout.view_holder_digital_category_item_empty_digital_module;
     public static final int TYPE_HOLDER_CATEGORY_ITEM_ERROR =
             R.layout.view_holder_item_empty;
-
 
     private List<Object> dataList = new ArrayList<>();
     private final Fragment hostFragment;
@@ -160,34 +155,33 @@ public class DigitalCategoryListAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     static class DigitalCategoryItem extends RecyclerView.ViewHolder {
-        @BindView(R2.id.iv_icon)
         ImageView ivIcon;
-        @BindView(R2.id.tv_category_name)
         TextView tvName;
 
         DigitalCategoryItem(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            ivIcon = itemView.findViewById(R.id.iv_icon);
+            tvName = itemView.findViewById(R.id.tv_category_name);
         }
     }
 
     static class DigitalCategoryItemEmpty extends RecyclerView.ViewHolder {
-        @BindView(R2.id.iv_icon)
         ImageView ivIcon;
-        @BindView(R2.id.tv_category_name)
         TextView tvName;
 
         DigitalCategoryItemEmpty(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            ivIcon = itemView.findViewById(R.id.iv_icon);
+            tvName = itemView.findViewById(R.id.tv_category_name);
         }
     }
 
     static class DigitalCategoryErrorResult extends RecyclerView.ViewHolder {
+
         DigitalCategoryErrorResult(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
         }
+
     }
 
     public interface ActionListener {

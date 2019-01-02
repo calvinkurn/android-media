@@ -189,7 +189,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
 
-    private List<ShipmentData> shipmentDataList;
+    private List<Object> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
@@ -389,14 +389,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
-                               List<ShipmentData> shipmentDataList,
+                               List<Object> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
                                RatesDataConverter ratesDataConverter,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
         if (this.shipmentDataList == null) {
             this.shipmentDataList = shipmentDataList;
         }
-        renderMarginFirstItem(shipmentCartItemModel);
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
@@ -438,15 +437,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         ShowCaseContentPosition.UNDEFINED)
                 );
             }
-        }
-    }
-
-    private void renderMarginFirstItem(ShipmentCartItemModel shipmentCartItemModel) {
-        // Only set margin for first item on multiple address
-        if (shipmentCartItemModel.isStateHasExtraMarginTop()) {
-            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16));
-        } else {
-            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_0));
         }
     }
 

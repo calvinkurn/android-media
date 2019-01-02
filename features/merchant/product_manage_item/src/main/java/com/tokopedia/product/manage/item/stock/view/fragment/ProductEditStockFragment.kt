@@ -65,7 +65,7 @@ class ProductEditStockFragment : Fragment() {
                     setResult()
                 } else {
                     decimalInputViewStock.requestFocus()
-                    UnifyTracking.eventAddProductError(AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS)
+                    UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS)
                 }
             }}
 

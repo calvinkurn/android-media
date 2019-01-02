@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import com.tokopedia.core2.R;
 
 public class ForceUpdate extends Activity {
 

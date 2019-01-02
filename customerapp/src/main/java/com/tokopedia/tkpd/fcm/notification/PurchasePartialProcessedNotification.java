@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
