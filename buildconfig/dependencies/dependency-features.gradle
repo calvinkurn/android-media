@@ -189,6 +189,7 @@ ext {
             wishlistCommon                : ":features:discovery:wishlist_common",
 
             instantLoan                   : ":features:fintech:instant_loan",
+//            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                  : ":features:fintech:mitra_toppers",
             saldodetails                  : ":features:fintech:saldo_details",
             tokoCash                      : ":features:fintech:tokocash",
@@ -200,8 +201,6 @@ ext {
 
             challenges                    : ":features:im:challenges",
 //            challenges                    : ":features:im:challenges_no_op",
-
-
 
             logisticdata                  : ":features:logistic:logisticdata",
 //            logisticdata                : ":features:logistic:logisticdata_no_op",

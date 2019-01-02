@@ -32,6 +32,7 @@ include "features:discovery:recentview"
 include "features:fintech:mitra_toppers"
 include "features:fintech:reksa_dana"
 include "features:fintech:instant_loan"
+//include "features:fintech:instant_loan_no_op"
 include "features:fintech:saldo_details"
 include "features:fintech:tokocash"
 
