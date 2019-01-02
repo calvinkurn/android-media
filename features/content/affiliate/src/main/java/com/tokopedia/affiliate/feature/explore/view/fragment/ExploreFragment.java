@@ -393,7 +393,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetMoreData(List<ExploreViewModel> itemList, String cursor) {
+    public void onSuccessGetMoreData(List<Visitable> itemList, String cursor) {
         adapter.hideLoading();
         adapter.addElement(itemList);
         if (TextUtils.isEmpty(cursor)) {
