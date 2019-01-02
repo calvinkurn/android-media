@@ -46,6 +46,7 @@ public class ActionNotification extends BaseNotification {
         if (hasActionButton()) {
             addActionButton(baseNotificationModel.getActionButton(), expandedView);
         }
+        setCollapseData(expandedView, baseNotificationModel);
         return builder.build();
     }
 
@@ -67,6 +68,8 @@ public class ActionNotification extends BaseNotification {
     }
 
     private void addActionButton(List<ActionButton> actionButtonList, RemoteViews expandedView) {
+
+
         ActionButton actionButton;
         expandedView.setViewVisibility(R.id.ll_action, View.VISIBLE);
         for (int i = 0; i < actionButtonList.size(); i++) {

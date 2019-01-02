@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.applink.RouteManager;
@@ -61,13 +62,14 @@ public abstract class BaseNotification {
 
     protected NotificationCompat.Builder getBuilder() {
         NotificationCompat.Builder builder;
-        if (!baseNotificationModel.isUpdateExisting()) {
-
-        }
         if (baseNotificationModel.getChannelName() != null && !baseNotificationModel.getChannelName().isEmpty()) {
             builder = new NotificationCompat.Builder(context, baseNotificationModel.getChannelName());
         } else {
             builder = new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
+        }
+
+        if (!TextUtils.isEmpty(baseNotificationModel.getSubText())) {
+            builder.setSubText(baseNotificationModel.getSubText());
         }
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         if (baseNotificationModel.isUpdateExisting()) {
@@ -100,6 +102,9 @@ public abstract class BaseNotification {
             builder = new NotificationCompat.Builder(context, baseNotificationModel.getChannelName());
         } else {
             builder = new NotificationCompat.Builder(context, CMConstant.NotificationGroup.CHANNEL_ID);
+        }
+        if (!TextUtils.isEmpty(baseNotificationModel.getSubText())) {
+            builder.setSubText(baseNotificationModel.getSubText());
         }
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         builder.setSmallIcon(getDrawableIcon());
@@ -331,8 +336,8 @@ public abstract class BaseNotification {
         return intent;
     }
 
-    protected boolean hasActionButton(){
-        return  (baseNotificationModel.getActionButton() == null || baseNotificationModel.getActionButton().size() == 0);
+    protected boolean hasActionButton() {
+        return (baseNotificationModel.getActionButton() != null && baseNotificationModel.getActionButton().size() > 0);
 
     }
 

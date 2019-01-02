@@ -105,6 +105,7 @@ public class CMNotificationFactory {
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
         model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
         model.setGridList(getGridList(data));
+        model.setSubText(data.getString(CMConstant.PayloadKeys.SUB_TEXT));
         return model;
     }
 
