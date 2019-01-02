@@ -68,7 +68,7 @@ class TrackingMapper(context: Context) {
         return result.toString()
     }
 
-    fun transform(tracking: Tracking) : JSONObject {
+    private fun transform(tracking: Tracking) : JSONObject {
         val item = JSONObject(tracking.event)
         item.put("iris_session_id", tracking.sessionId)
         return item

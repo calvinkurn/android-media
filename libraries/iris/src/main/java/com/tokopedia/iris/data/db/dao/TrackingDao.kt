@@ -15,7 +15,7 @@ interface TrackingDao {
     fun getFromOldest(limit: Int): List<Tracking>
 
     @Delete
-    fun delete(datas: List<Tracking>)
+    fun delete(dataTracking: List<Tracking>)
 
     @Insert
     fun insert(tracking: Tracking): Long
