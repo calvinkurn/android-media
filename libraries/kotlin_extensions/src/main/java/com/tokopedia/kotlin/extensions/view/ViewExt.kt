@@ -1,25 +1,33 @@
-package com.tokopedia.kol.common.util
+package com.tokopedia.kotlin.extensions.view
 
 import android.content.Context
 import android.support.annotation.StringRes
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.kol.R
+import com.tokopedia.kotlin.extensions.R
 
 /**
  * @author by milhamj on 15/11/18.
  */
+
+fun View.show() {
+    this.visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    this.visibility = View.GONE
+}
+
+fun View.invisible() {
+    this.visibility = View.INVISIBLE
+}
 
 fun View.showLoading() {
     try {
@@ -48,7 +56,7 @@ fun View.showErrorToaster(errorMessage: String) {
     this.showErrorToaster(errorMessage, null as String?) { }
 }
 
-fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int, action: () -> Unit) {
+fun View.showErrorToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_try_again, action: () -> Unit) {
     this.showErrorToaster(errorMessage, context.getString(actionMessage), action)
 }
 
@@ -66,7 +74,7 @@ fun View.showNormalToaster(errorMessage: String) {
     this.showNormalToaster(errorMessage, null as String?) { }
 }
 
-fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int, action: () -> Unit) {
+fun View.showNormalToaster(errorMessage: String, @StringRes actionMessage: Int = R.string.title_ok, action: () -> Unit) {
     this.showNormalToaster(errorMessage, context.getString(actionMessage), action)
 }
 
@@ -88,28 +96,4 @@ fun View.showEmptyState(errorMessage: String, action: () -> Unit) {
     NetworkErrorHelper.showEmptyState(this.context, this, errorMessage) {
         action()
     }
-}
-
-fun View.show() {
-    this.visibility = View.VISIBLE
-}
-
-fun View.hide() {
-    this.visibility = View.GONE
-}
-
-fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun afterTextChanged(editable: Editable?) {
-            afterTextChanged(editable?.toString() ?: "")
-        }
-
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-        override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-    })
-}
-
-fun Throwable.debugTrace() {
-    if (GlobalConfig.isAllowDebuggingTools()) printStackTrace()
 }
