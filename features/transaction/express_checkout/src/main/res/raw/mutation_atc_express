@@ -1,5 +1,5 @@
 mutation ATCExpress($params: AtcExpressParams) {
-  atcExpress(params: $params) {
+  ATCExpress(params: $params) {
     status
     error_message
     data {
