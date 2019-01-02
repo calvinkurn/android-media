@@ -270,7 +270,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_account_affiliate", true)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();
-            infoCard.setIconRes(R.drawable.ic_challenge_trophy);
+            infoCard.setIconRes(R.drawable.ic_byme);
             infoCard.setMainText(context.getString(R.string.title_menu_affiliate));
             infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
             infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
