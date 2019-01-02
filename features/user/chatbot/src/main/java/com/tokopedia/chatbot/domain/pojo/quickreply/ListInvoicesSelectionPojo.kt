@@ -8,7 +8,7 @@ import com.tokopedia.chatbot.domain.pojo.InvoicesSelectionPojo
  */
 class ListInvoicesSelectionPojo {
     @SerializedName("invoice_list")
-    var invoices: InvoicesSelectionPojo = InvoicesSelectionPojo(),
+    var invoices: InvoicesSelectionPojo = InvoicesSelectionPojo()
     @SerializedName("has_next")
     var hasNext: Boolean = false
 }
