@@ -1,4 +1,4 @@
-mutation atcExpress($params: String!) {
+mutation atcExpress($params: AtcExpressParams!) {
   atcExpress(params: $params) {
     status
     error_message
