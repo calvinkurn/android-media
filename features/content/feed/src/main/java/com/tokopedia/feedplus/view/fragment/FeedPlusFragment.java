@@ -1135,7 +1135,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 }
                 like.setValue(like.getValue() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE);
         }
     }
 
@@ -1183,7 +1183,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             } catch (NumberFormatException ignored) {
             }
             comment.setValue(comment.getValue() + totalNewComment);
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT);
         }
     }
 
@@ -1368,9 +1368,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onLikeClick(int position, int id, boolean isLiked) {
         if (isLiked) {
-            onLikeKolClicked(position, id);
-        } else {
             onUnlikeKolClicked(position, id);
+        } else {
+            onLikeKolClicked(position, id);
         }
     }
 

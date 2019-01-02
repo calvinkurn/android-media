@@ -28,6 +28,10 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_dynamic_post
+
+        const val PAYLOAD_LIKE = 13
+        const val PAYLOAD_COMMENT = 14
+        const val PAYLOAD_FOLLOW = 15
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -41,6 +45,19 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
         bindCaption(element.caption, element.template.cardpost.body)
         bindContentList(element.contentList, element.template.cardpost.body)
         bindFooter(element.id, element.footer, element.template.cardpost.footer)
+    }
+
+    override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
+            return
+        }
+
+        when (payloads[0] as Int) {
+            PAYLOAD_LIKE -> bindLike(element.footer.like)
+            PAYLOAD_COMMENT -> bindComment(element.footer.comment)
+            else -> bind(element)
+        }
     }
 
     private fun bindTitle(title: Title, template: TemplateTitle) {
@@ -128,7 +145,9 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
             if (template.like) {
                 itemView.likeIcon.visible()
                 itemView.likeText.visible()
-                bindLike(id, footer.like)
+                itemView.likeIcon.setOnClickListener { listener?.onLikeClick(adapterPosition, id, footer.like.isChecked) }
+                itemView.likeText.setOnClickListener { listener?.onLikeClick(adapterPosition, id, footer.like.isChecked) }
+                bindLike(footer.like)
             } else {
                 itemView.likeIcon.gone()
                 itemView.likeText.gone()
@@ -137,7 +156,9 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
             if (template.comment) {
                 itemView.commentIcon.visible()
                 itemView.commentText.visible()
-                bindComment(id, footer.comment)
+                itemView.commentIcon.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
+                itemView.commentText.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
+                bindComment(footer.comment)
             } else {
                 itemView.commentIcon.gone()
                 itemView.commentText.gone()
@@ -159,9 +180,7 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
         return template.comment || template.ctaLink || template.like || template.share
     }
 
-    private fun bindLike(id: Int, like: Like) {
-        itemView.likeIcon.setOnClickListener { listener?.onLikeClick(adapterPosition, id, like.isChecked) }
-        itemView.likeText.setOnClickListener { listener?.onLikeClick(adapterPosition, id, like.isChecked) }
+    private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
@@ -187,9 +206,7 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
         }
     }
 
-    private fun bindComment(id: Int, comment: Comment) {
-        itemView.commentIcon.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
-        itemView.commentText.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
+    private fun bindComment(comment: Comment) {
         itemView.commentText.text =
                 if (comment.value == 0) getString(R.string.kol_action_comment)
                 else comment.fmt
