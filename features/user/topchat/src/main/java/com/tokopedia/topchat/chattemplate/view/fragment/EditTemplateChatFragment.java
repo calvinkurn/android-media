@@ -19,9 +19,11 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
@@ -105,7 +107,8 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
             if (allowDelete == ENABLE_DELETE) {
                 showDialogDelete();
             } else {
-                showError(getActivity().getString(R.string.minimum_template_chat_warning));
+                showError(new MessageErrorException(getActivity().getString(R.string
+                        .minimum_template_chat_warning)));
             }
 
             return true;
@@ -262,12 +265,8 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showError(String error) {
-        if (error.equals("")) {
-            SnackbarManager.make(getActivity(), getActivity().getString(R.string.default_request_error_bad_request), Snackbar.LENGTH_LONG).show();
-        } else {
-            SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();
-        }
+    public void showError(Throwable error) {
+        SnackbarManager.make(getActivity(), ErrorHandler.getErrorMessage(getContext(), error), Snackbar.LENGTH_LONG).show();
     }
 
     @Override

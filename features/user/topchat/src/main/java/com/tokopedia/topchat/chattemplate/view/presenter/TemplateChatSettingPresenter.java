@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chattemplate.view.presenter;
 
 import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase;
