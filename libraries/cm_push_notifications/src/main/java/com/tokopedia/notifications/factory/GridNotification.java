@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.model.Grid;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
@@ -119,8 +120,8 @@ public class GridNotification extends BaseNotification {
                 remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
             }
         }
-        remoteView.setTextViewText(R.id.tv_collapse_title, baseNotificationModel.getTitle());
-        remoteView.setTextViewText(R.id.tv_collapsed_message, baseNotificationModel.getMessage());
+        remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getTitle()));
+        remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getMessage()));
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, getPendingIntent(getRequestCode(),
                 baseNotificationModel.getAppLink()));
     }
