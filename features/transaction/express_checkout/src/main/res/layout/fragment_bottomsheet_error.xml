@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.01"
+        android:lineSpacingExtra="4sp"
+        android:textColor="#8a000000"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        tools:text="OVO Points &amp; Cash Anda tidak mencukupi untuk transkasi Ini. Silakan ganti metode pembayaran." />
+
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/btn_action"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:text="Pilih Metode Pembayaran Lain"
+        app:buttonCompatSize="medium"
+        app:buttonCompatType="primary" />
+
+</LinearLayout>

@@ -18,6 +18,8 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import android.support.v7.widget.SimpleItemAnimator
+import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
+import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
 
@@ -26,13 +28,14 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
  */
 
 class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
-        CheckoutVariantContract.View, CheckoutVariantActionListener {
+        CheckoutVariantContract.View, CheckoutVariantActionListener, ErrorBottomsheetsActionListener {
 
     val contextView: Context get() = activity!!
     lateinit var list: List<Visitable<*>>
     lateinit var presenter: CheckoutVariantPresenter
     lateinit var adapter: CheckoutVariantAdapter
     lateinit var recyclerView: RecyclerView
+    lateinit var errorBottomSheets: ErrorBottomsheets
     var isDataLoaded = false
 
     companion object {
@@ -53,6 +56,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(CheckoutVariantItemDecorator())
         (recyclerView.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
+
+        errorBottomSheets = ErrorBottomsheets()
+        errorBottomSheets.actionListener = this
+
         return view
     }
 
@@ -246,6 +253,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
+    override fun onActionButtonClicked() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getScreenName(): String? {
         return null
     }
@@ -263,6 +274,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun showToasterError(message: String?) {
         ToasterError.make(view, message
                 ?: contextView.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showBottomsheetError(title: String, message: String, action: String) {
+        errorBottomSheets.setError(title, message, action)
+        if (errorBottomSheets.isVisible) {
+            errorBottomSheets.dismiss()
+        }
+        errorBottomSheets.show(fragmentManager, title)
     }
 
     override fun showData(arrayList: ArrayList<Visitable<*>>) {

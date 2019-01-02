@@ -18,6 +18,8 @@ interface CheckoutVariantContract {
 
         fun showData(arrayList: ArrayList<Visitable<*>>)
 
+        fun showBottomsheetError(title: String, message: String, action: String)
+
         fun showToasterError(message: String?)
 
         fun showGetListError(t: Throwable?)
