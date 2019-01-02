@@ -377,7 +377,7 @@ public class ExploreFragment
 
     private List<Visitable> getLocalFirstData() {
         return persistentCacheManager.get(KEY_DATA_FIRST_QUERY,
-                (new TypeToken<ArrayList<Visitable>>() {}).getType(),
+                (new TypeToken<List<Visitable>>() {}).getType(),
                 new ArrayList<>());
     }
 
