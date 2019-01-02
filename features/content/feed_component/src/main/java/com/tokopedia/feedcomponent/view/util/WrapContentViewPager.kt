@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager
  */
 class WrapContentViewPager : TouchViewPager {
 
-    private val currentView: View? = null
+    private var currentView: View? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -22,11 +22,16 @@ class WrapContentViewPager : TouchViewPager {
             return
         }
         var height = 0
-        currentView.measure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-        val h = currentView.measuredHeight
+        currentView?.measure(widthMeasureSpec, View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+        val h = currentView?.measuredHeight ?: 0
         if (h > height) height = h
         modifiedHeight = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
         super.onMeasure(widthMeasureSpec, modifiedHeight)
+    }
+
+    fun measureCurrentView(currentView: View) {
+        this.currentView = currentView
+        requestLayout()
     }
 }

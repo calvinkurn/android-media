@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.CardTitle
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -30,6 +31,8 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
         private const val POST_GRID = "productgrid"
 
         private const val CONTENT_IMAGE = "image"
+        private const val CONTENT_VOTE = "vote"
+        private const val CONTENT_YOUTUBE = "youtube"
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -85,31 +88,42 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
     }
 
     private fun mapCardPost(feed: Feed, template: Template): DynamicPostViewModel {
-        val header = feed.content.cardpost.header
-        val footer = feed.content.cardpost.footer
         val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body)
 
         return DynamicPostViewModel(
                 feed.content.cardpost.title,
-                header,
-                contentList = contentList,
-                template = template
+                feed.content.cardpost.header,
+                feed.content.cardpost.footer,
+                feed.content.cardpost.body.caption,
+                contentList,
+                template
         )
     }
 
     private fun mapPostContent(body: Body): MutableList<BasePostViewModel> {
         val list = ArrayList<BasePostViewModel>()
+
+        //TODO milhamj delete this
+        list.add(ImagePostViewModel("https://nmac.to/wp-content/uploads/2016/09/errorm.png"))
         for (media in body.media) {
             when (media.type) {
-                CONTENT_IMAGE -> mapPostImage(media)
+                CONTENT_IMAGE -> list.add(mapPostImage(media))
+                CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
             }
         }
+
         return list
     }
 
-    private fun mapPostImage(media: Media): BasePostViewModel {
+    private fun mapPostImage(media: Media): ImagePostViewModel {
         return ImagePostViewModel(
                 media.thumbnail
+        )
+    }
+
+    private fun mapPostYoutube(media: Media): YoutubeViewModel {
+        return YoutubeViewModel(
+                media.id
         )
     }
 }

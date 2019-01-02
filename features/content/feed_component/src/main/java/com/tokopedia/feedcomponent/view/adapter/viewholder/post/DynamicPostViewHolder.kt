@@ -6,10 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Caption
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
-import com.tokopedia.feedcomponent.data.pojo.template.Template
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
@@ -24,7 +26,7 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 class DynamicPostViewHolder(v: View)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
-    lateinit var listener: DynamicPostListener
+    var listener: DynamicPostListener? = null
 
     companion object {
         @LayoutRes
@@ -39,8 +41,9 @@ class DynamicPostViewHolder(v: View)
 
         bindTitle(element.title, element.template.cardpost.title)
         bindHeader(element.header, element.template.cardpost.header)
-        bindContentList(element.contentList, element.template)
-        bindFooter(element.footer, element.template)
+        bindCaption(element.caption, element.template.cardpost.body)
+        bindContentList(element.contentList, element.template.cardpost.body)
+        bindFooter(element.footer, element.template.cardpost.footer)
     }
 
     private fun bindTitle(title: Title, template: TemplateTitle) {
@@ -77,13 +80,13 @@ class DynamicPostViewHolder(v: View)
                 }
 
                 itemView.headerAction.setOnClickListener {
-                    listener.onHeaderActionClick(header.followCta.isFollow)
+                    listener?.onHeaderActionClick(header.followCta.isFollow)
                 }
             }
 
             itemView.menu.shouldShowWithAction(template.report) {
                 itemView.menu.setOnClickListener {
-                    listener.onMenuClick()
+                    listener?.onMenuClick()
                 }
             }
         }
@@ -95,32 +98,72 @@ class DynamicPostViewHolder(v: View)
                 || template.report
     }
 
-    private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: Template) {
-        val adapter = PostPagerAdapter()
-        adapter.setList(contentList)
-        itemView.contentViewPager.adapter = adapter
-        itemView.contentViewPager.offscreenPageLimit = adapter.count
-        itemView.tabLayout.setupWithViewPager(itemView.contentViewPager)
-        itemView.tabLayout.visibility = if (adapter.count > 1) View.VISIBLE else View.GONE
+    private fun bindCaption(caption: Caption, template: TemplateBody) {
+        itemView.caption.shouldShowWithAction(template.caption) {
+            itemView.caption.text = caption.text
+        }
     }
 
-    private fun bindFooter(footer: Footer, template: Template) {
-        if (footer.buttonCta.text.isNotEmpty()) {
-            itemView.shareSpace.gone()
-            itemView.footerAction.visible()
-            itemView.footerAction.text = footer.buttonCta.text
-        } else {
-            itemView.shareSpace.visible()
-            itemView.footerAction.gone()
+    private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: TemplateBody) {
+        itemView.contentLayout.shouldShowWithAction(template.media) {
+            val adapter = PostPagerAdapter()
+            adapter.setList(contentList)
+            itemView.contentViewPager.adapter = adapter
+            itemView.contentViewPager.offscreenPageLimit = adapter.count
+            itemView.tabLayout.setupWithViewPager(itemView.contentViewPager)
+            itemView.tabLayout.visibility = if (adapter.count > 1) View.VISIBLE else View.GONE
         }
+    }
 
-        bindLike(footer.like.isChecked, footer.like.value, footer.like.fmt)
-        bindComment(footer.comment.value, footer.comment.fmt)
+    private fun bindFooter(footer: Footer, template: TemplateFooter) {
+        itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
+            if (template.ctaLink && footer.buttonCta.text.isNotEmpty()) {
+                itemView.shareSpace.gone()
+                itemView.footerAction.visible()
+                itemView.footerAction.text = footer.buttonCta.text
+                itemView.footerAction.setOnClickListener { listener?.onFooterActionClick() }
+            } else {
+                itemView.shareSpace.visible()
+                itemView.footerAction.gone()
+            }
+
+            if (template.like) {
+                itemView.likeIcon.visible()
+                itemView.likeText.visible()
+                bindLike(footer.like.isChecked, footer.like.value, footer.like.fmt)
+            } else {
+                itemView.likeIcon.gone()
+                itemView.likeText.gone()
+            }
+
+            if (template.comment) {
+                itemView.commentIcon.visible()
+                itemView.commentText.visible()
+                bindComment(footer.comment.value, footer.comment.fmt)
+            } else {
+                itemView.commentIcon.gone()
+                itemView.commentText.gone()
+            }
+
+            if (template.share) {
+                itemView.shareIcon.visible()
+                itemView.shareText.visible()
+                itemView.shareIcon.setOnClickListener { listener?.onShareClick() }
+                itemView.shareText.setOnClickListener { listener?.onShareClick() }
+            } else {
+                itemView.shareIcon.gone()
+                itemView.shareText.gone()
+            }
+        }
+    }
+
+    private fun shouldShowFooter(template: TemplateFooter): Boolean {
+        return template.comment || template.ctaLink || template.like || template.share
     }
 
     private fun bindLike(isLiked: Boolean, totalLikeNumber: Int, totalLikeText: String) {
-        itemView.likeIcon.setOnClickListener { listener.onLikeClick() }
-        itemView.likeText.setOnClickListener { listener.onLikeClick() }
+        itemView.likeIcon.setOnClickListener { listener?.onLikeClick() }
+        itemView.likeText.setOnClickListener { listener?.onLikeClick() }
         when {
             isLiked -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
@@ -147,8 +190,8 @@ class DynamicPostViewHolder(v: View)
     }
 
     private fun bindComment(totalCommentNumber: Int, totalCommentText: String) {
-        itemView.commentIcon.setOnClickListener { listener.onCommentClick() }
-        itemView.commentText.setOnClickListener { listener.onCommentClick() }
+        itemView.commentIcon.setOnClickListener { listener?.onCommentClick() }
+        itemView.commentText.setOnClickListener { listener?.onCommentClick() }
         itemView.commentText.text =
                 if (totalCommentNumber == 0) getString(R.string.kol_action_comment)
                 else totalCommentText

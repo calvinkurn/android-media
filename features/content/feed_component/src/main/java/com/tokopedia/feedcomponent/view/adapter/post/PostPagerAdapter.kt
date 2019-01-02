@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostVie
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
+import com.tokopedia.feedcomponent.view.util.WrapContentViewPager
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
@@ -20,6 +21,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 class PostPagerAdapter : PagerAdapter() {
 
     private val itemList: MutableList<BasePostViewModel> = ArrayList()
+    private var currentPosition = -1
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
@@ -45,6 +47,18 @@ class PostPagerAdapter : PagerAdapter() {
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container.removeView(`object` as View)
+    }
+
+    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+        super.setPrimaryItem(container, position, `object`)
+        if (position != currentPosition) {
+            val view = `object` as View?
+            val pager = container as WrapContentViewPager?
+            if (view != null) {
+                currentPosition = position
+                pager?.measureCurrentView(view)
+            }
+        }
     }
 
     override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
