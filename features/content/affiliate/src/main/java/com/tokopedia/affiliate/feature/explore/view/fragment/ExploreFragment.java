@@ -88,8 +88,7 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private FrameLayout layoutEmpty;
-    private SaveInstanceCacheManager cacheManager;
-    private PersistentCacheManager persistentCacheManager;
+    private List<Visitable> tempFirstData = new ArrayList<>();
 
     private boolean isCanDoAction;
 
@@ -129,8 +128,6 @@ public class ExploreFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
-        persistentCacheManager = new PersistentCacheManager(getActivity(), true);
         presenter.attachView(this);
         initView();
         initListener();
@@ -372,13 +369,11 @@ public class ExploreFragment
     }
 
     private void saveFirstDataToLocal(List<Visitable> itemList) {
-        persistentCacheManager.put(KEY_DATA_FIRST_QUERY, itemList);
+        tempFirstData = itemList;
     }
 
     private List<Visitable> getLocalFirstData() {
-        return persistentCacheManager.get(KEY_DATA_FIRST_QUERY,
-                (new TypeToken<List<Visitable>>() {}).getType(),
-                new ArrayList<>());
+        return tempFirstData;
     }
 
     @Override
@@ -398,7 +393,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetMoreData(List<Visitable> itemList, String cursor) {
+    public void onSuccessGetMoreData(List<ExploreViewModel> itemList, String cursor) {
         adapter.hideLoading();
         adapter.addElement(itemList);
         if (TextUtils.isEmpty(cursor)) {
