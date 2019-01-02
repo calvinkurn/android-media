@@ -185,17 +185,22 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
         if (!TextUtils.isEmpty(trainPassengerViewModel.getIdNumber()))
             idNumberEt.setText(trainPassengerViewModel.getIdNumber());
         if (!TextUtils.isEmpty(trainPassengerViewModel.getBirthDate())) {
-            Date date = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                    trainPassengerViewModel.getBirthDate());
-            birthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date);
-            String birthdateString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, date);
-            Calendar calendar = TravelDateUtil.getCurrentCalendar();
-            calendar.setTime(date);
-            year = calendar.get(Calendar.YEAR);
-            month = calendar.get(Calendar.MONTH);
-            dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            birthDateEt.setText(birthdateString);
+            birthDateEt.setText(getBirthDateStringPassenger());
         }
+    }
+
+    private String getBirthDateStringPassenger() {
+        Date date = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                trainPassengerViewModel.getBirthDate());
+        birthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date);
+        String birthdateString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, date);
+        Calendar calendar = TravelDateUtil.getCurrentCalendar();
+        calendar.setTime(date);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+        return year > 1 ? birthdateString : "";
     }
 
     @Override
