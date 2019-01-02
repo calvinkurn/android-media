@@ -2,6 +2,8 @@
 include "features:common:nps"
 include "features:common:developer_options"
 
+include "features:communication:broadcast_message_common"
+
 include "features:content:affiliate"
 //include "features:content:affiliate_no_op"
 include "features:content:affiliate_common"

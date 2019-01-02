@@ -84,17 +84,16 @@ class TalkModule {
                             tkpdAuthInterceptor: TkpdAuthInterceptor): OkHttpClient {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(chuckInterceptor)
-            builder.addInterceptor(debugInterceptor)
-            builder.addInterceptor(httpLoggingInterceptor)
-        }
-
         builder.addInterceptor(fingerprintInterceptor)
         builder.addInterceptor(tkpdAuthInterceptor)
         builder.addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
         builder.addInterceptor(ErrorResponseInterceptor(TalkErrorResponse::class.java))
 
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(chuckInterceptor)
+            builder.addInterceptor(debugInterceptor)
+            builder.addInterceptor(httpLoggingInterceptor)
+        }
         return builder.build()
     }
 

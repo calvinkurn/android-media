@@ -3,10 +3,8 @@ package com.tokopedia.topads.keyword.view.presenter;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
@@ -19,6 +17,8 @@ import com.tokopedia.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.topads.keyword.view.model.KeywordPositiveParam;
 import com.tokopedia.topads.keyword.view.model.NegativeKeywordAd;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
 import java.util.ArrayList;
 import java.util.List;

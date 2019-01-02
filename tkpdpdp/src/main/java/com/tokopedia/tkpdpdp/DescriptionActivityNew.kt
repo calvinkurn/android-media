@@ -99,7 +99,7 @@ class DescriptionActivityNew : AppCompatActivity(),
     private fun setUpByConfiguration(configuration: Configuration) {
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED)) {
-                val productId : String = intent.getParcelableExtra<Parcelable>(EXTRA_PRODUCT_ID).toString()
+                val productId : String = intent.getStringExtra(EXTRA_PRODUCT_ID) ?: ""
                 UnifyTracking.eventPDPOrientationChanged(this, productId)
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, java.lang.Boolean.TRUE)
                 localCacheHandler.applyEditor()
