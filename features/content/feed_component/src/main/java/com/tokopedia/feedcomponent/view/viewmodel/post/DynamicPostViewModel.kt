@@ -12,6 +12,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory
  * @author by milhamj on 28/11/18.
  */
 data class DynamicPostViewModel(
+        val id: Int = 0,
         val title: Title = Title(),
         val header: Header = Header(),
         val footer: Footer = Footer(),

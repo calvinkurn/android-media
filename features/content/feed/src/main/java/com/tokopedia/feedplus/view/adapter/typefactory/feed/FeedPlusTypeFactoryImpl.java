@@ -5,8 +5,11 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
@@ -55,9 +58,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
-import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
@@ -76,6 +76,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final FeedPlus.View.Kol kolViewListener;
     private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
+    private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
     private final FeedAnalytics analytics;
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
@@ -85,6 +86,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.kolViewListener = context;
         this.kolPostListener = context;
         this.pollingViewListener = context;
+        this.dynamicPostListener = context;
         this.analytics = analytics;
     }
 
@@ -260,6 +262,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new WhitelistViewHolder(view, viewListener);
         else if (type == DynamicPostViewHolder.Companion.getLAYOUT()) {
             viewHolder = new DynamicPostViewHolder(view);
+            ((DynamicPostViewHolder) viewHolder).setListener(dynamicPostListener);
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
             viewHolder = new FeedRecommendationViewHolder(view);

@@ -89,6 +89,7 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
         val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost.body)
 
         return DynamicPostViewModel(
+                feed.id,
                 feed.content.cardpost.title,
                 feed.content.cardpost.header,
                 feed.content.cardpost.footer,

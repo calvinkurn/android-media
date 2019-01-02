@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Caption
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeader
@@ -24,8 +21,7 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(v: View)
-    : AbstractViewHolder<DynamicPostViewModel>(v) {
+class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     var listener: DynamicPostListener? = null
 
@@ -44,7 +40,7 @@ class DynamicPostViewHolder(v: View)
         bindHeader(element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body)
         bindContentList(element.contentList, element.template.cardpost.body)
-        bindFooter(element.footer, element.template.cardpost.footer)
+        bindFooter(element.id, element.footer, element.template.cardpost.footer)
     }
 
     private fun bindTitle(title: Title, template: TemplateTitle) {
@@ -117,7 +113,7 @@ class DynamicPostViewHolder(v: View)
         }
     }
 
-    private fun bindFooter(footer: Footer, template: TemplateFooter) {
+    private fun bindFooter(id: Int, footer: Footer, template: TemplateFooter) {
         itemView.footer.shouldShowWithAction(shouldShowFooter(template)) {
             if (template.ctaLink && footer.buttonCta.text.isNotEmpty()) {
                 itemView.shareSpace.gone()
@@ -132,7 +128,7 @@ class DynamicPostViewHolder(v: View)
             if (template.like) {
                 itemView.likeIcon.visible()
                 itemView.likeText.visible()
-                bindLike(footer.like.isChecked, footer.like.value, footer.like.fmt)
+                bindLike(id, footer.like)
             } else {
                 itemView.likeIcon.gone()
                 itemView.likeText.gone()
@@ -141,7 +137,7 @@ class DynamicPostViewHolder(v: View)
             if (template.comment) {
                 itemView.commentIcon.visible()
                 itemView.commentText.visible()
-                bindComment(footer.comment.value, footer.comment.fmt)
+                bindComment(id, footer.comment)
             } else {
                 itemView.commentIcon.gone()
                 itemView.commentText.gone()
@@ -163,20 +159,20 @@ class DynamicPostViewHolder(v: View)
         return template.comment || template.ctaLink || template.like || template.share
     }
 
-    private fun bindLike(isLiked: Boolean, totalLikeNumber: Int, totalLikeText: String) {
-        itemView.likeIcon.setOnClickListener { listener?.onLikeClick() }
-        itemView.likeText.setOnClickListener { listener?.onLikeClick() }
+    private fun bindLike(id: Int, like: Like) {
+        itemView.likeIcon.setOnClickListener { listener?.onLikeClick(adapterPosition, id, like.isChecked) }
+        itemView.likeText.setOnClickListener { listener?.onLikeClick(adapterPosition, id, like.isChecked) }
         when {
-            isLiked -> {
+            like.isChecked -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
-                itemView.likeText.text = totalLikeText
+                itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
                 )
             }
-            totalLikeNumber > 0 -> {
+            like.value > 0 -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
-                itemView.likeText.text = totalLikeText
+                itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
                 )
@@ -191,12 +187,12 @@ class DynamicPostViewHolder(v: View)
         }
     }
 
-    private fun bindComment(totalCommentNumber: Int, totalCommentText: String) {
-        itemView.commentIcon.setOnClickListener { listener?.onCommentClick() }
-        itemView.commentText.setOnClickListener { listener?.onCommentClick() }
+    private fun bindComment(id: Int, comment: Comment) {
+        itemView.commentIcon.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
+        itemView.commentText.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
         itemView.commentText.text =
-                if (totalCommentNumber == 0) getString(R.string.kol_action_comment)
-                else totalCommentText
+                if (comment.value == 0) getString(R.string.kol_action_comment)
+                else comment.fmt
     }
 
     interface DynamicPostListener {
@@ -204,9 +200,9 @@ class DynamicPostViewHolder(v: View)
 
         fun onMenuClick()
 
-        fun onLikeClick()
+        fun onLikeClick(position: Int, id: Int, isLiked: Boolean)
 
-        fun onCommentClick()
+        fun onCommentClick(position: Int, id: Int)
 
         fun onShareClick()
 

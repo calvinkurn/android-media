@@ -29,6 +29,10 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.api.FeedUrl;
@@ -95,7 +99,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
-        KolPostListener.View.ViewHolder {
+        KolPostListener.View.ViewHolder,
+        DynamicPostViewHolder.DynamicPostListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -1096,7 +1101,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLikeDislikeKolPost(int rowNumber) {
-        if (adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
             kolViewModel.setLiked(!(kolViewModel.isLiked()));
             if (kolViewModel.isLiked()) {
@@ -1107,6 +1113,29 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         adapter.getlist().get(rowNumber)).getTotalLike() - 1);
             }
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
+        }
+
+        if (adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
+            Like like = model.getFooter().getLike();
+            like.setChecked(!like.isChecked());
+            if (like.isChecked()) {
+                try {
+                    int likeValue = Integer.valueOf(like.getFmt()) + 1;
+                    like.setFmt(String.valueOf(likeValue));
+                } catch (NumberFormatException ignored) {
+                }
+                like.setValue(like.getValue() + 1);
+            } else {
+                try {
+                    int likeValue = Integer.valueOf(like.getFmt()) - 1;
+                    like.setFmt(String.valueOf(likeValue));
+                } catch (NumberFormatException ignored) {
+                }
+                like.setValue(like.getValue() - 1);
+            }
+            adapter.notifyItemChanged(rowNumber);
         }
     }
 
@@ -1141,6 +1170,20 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT);
+        }
+
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
+                && adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
+            Comment comment = model.getFooter().getComment();
+            try {
+                int commentValue = Integer.valueOf(comment.getFmt()) + totalNewComment;
+                comment.setFmt(String.valueOf(commentValue));
+            } catch (NumberFormatException ignored) {
+            }
+            comment.setValue(comment.getValue() + totalNewComment);
+            adapter.notifyItemChanged(rowNumber);
         }
     }
 
@@ -1310,5 +1353,39 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public AbstractionRouter getAbstractionRouter() {
         return abstractionRouter;
+    }
+
+    @Override
+    public void onHeaderActionClick(boolean isFollowed) {
+
+    }
+
+    @Override
+    public void onMenuClick() {
+
+    }
+
+    @Override
+    public void onLikeClick(int position, int id, boolean isLiked) {
+        if (isLiked) {
+            onLikeKolClicked(position, id);
+        } else {
+            onUnlikeKolClicked(position, id);
+        }
+    }
+
+    @Override
+    public void onCommentClick(int position, int id) {
+        onGoToKolComment(position, id);
+    }
+
+    @Override
+    public void onShareClick() {
+
+    }
+
+    @Override
+    public void onFooterActionClick() {
+
     }
 }
