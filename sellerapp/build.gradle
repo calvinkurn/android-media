@@ -123,9 +123,11 @@ android {
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles 'proguard-rules.txt'
+            ext.enableHansel=false
         }
         release {
             signingConfig signingConfigs.debug
+            ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
@@ -366,8 +368,10 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
+        exclude group: "com.tokopedia.core"
     }
 
     implementation rootProject.ext.viewDependencies.appIntro
