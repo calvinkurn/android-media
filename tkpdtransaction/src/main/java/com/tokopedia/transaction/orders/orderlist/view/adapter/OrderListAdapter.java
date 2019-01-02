@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Color;
@@ -28,10 +28,11 @@ import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
-import com.tokopedia.transaction.orders.orderlist.data.Popup;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.ListAdapterPresenterImpl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,14 +130,19 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             button.setOnClickListener(view -> {
                 String newUri = actionButton.uri();
                 if (newUri.startsWith(KEY_URI)) {
-                    if(newUri.contains(KEY_URI_PARAMETER)) {
+                    if (newUri.contains(KEY_URI_PARAMETER)) {
                         Uri url = Uri.parse(newUri);
                         newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
                         newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
                     }
                     RouteManager.route(context, newUri);
-                } else if (newUri != null && !newUri.equals("")) {
-                    TransactionPurchaseRouter.startWebViewActivity(context, newUri);
+                } else if (!newUri.equals("")) {
+                    try {
+                        context.startActivity(((UnifiedOrderListRouter) context.getApplicationContext()).getWebviewActivityWithIntent(context,
+                                URLEncoder.encode(newUri, "UTF-8")));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
@@ -264,15 +270,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void addCancelReplacementMenu(List<DotMenuList> item, PopupMenu popup) {
-        if (true) {
-            popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan");
-            popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail");
-        }
-    }
+        popup.getMenu().add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan");
+        popup.getMenu().add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail");
 
-    private int getMenuId(List<DotMenuList> item) {
-        int MenuID = R.menu.order_status_menu_list;
-        return MenuID;
     }
 
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {

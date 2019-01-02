@@ -24,7 +24,6 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
@@ -101,7 +100,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(categoryListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();
@@ -150,7 +149,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getDepartementId());
+                    UnifyTracking.eventShowMoreCategory(v.getContext(), categoryHeaderModel.getDepartementId());
                     categoryAdapter.addDataChild(categoryHeaderModel.getChildCategoryModelList()
                             .subList(9, categoryHeaderModel.getChildCategoryModelList().size()));
                     expandLayout.setVisibility(View.GONE);

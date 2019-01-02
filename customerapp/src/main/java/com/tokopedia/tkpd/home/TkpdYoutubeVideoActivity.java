@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,11 +17,20 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.adapter.SlidingImageBannerAdapter;
 import com.tokopedia.tkpd.home.analytics.HomeGATracking;
+import com.tokopedia.tkpd.home.model.VideoPushBannerModel;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         YouTubePlayer.OnInitializedListener {
@@ -30,6 +40,10 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     private YouTubePlayerView youTubeView;
     private ImageView imgClose;
     private TextView tvHeadTitle, tvTitle, tvDesc, btnCta;
+    private SlidingImageBannerAdapter adapter;
+    private TouchViewPager viewPager;
+    private CirclePageIndicator circlePageIndicator;
+
 
     private String videoUrlKey = "video_url";
     private String videoCtaKey = "video_cta";
@@ -40,6 +54,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
 
     private String videoUrl;
     private String videoLand;
+    private List<VideoPushBannerModel> bannerModeList;
 
     @DeepLink(ApplinkConst.PLAY_NOTIFICATION_VIDEO)
     public static Intent getNotifVodeoApplinkCallingIntent(Context context, Bundle bundle) {
@@ -65,19 +80,21 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         tvTitle = findViewById(R.id.tv_title);
         tvDesc = findViewById(R.id.tv_desc);
         btnCta = findViewById(R.id.btn_cta);
+        viewPager = findViewById(R.id.v_push_bannerpager);
+        circlePageIndicator = findViewById(R.id.v_pager_indicator);
 
         imgClose.setOnClickListener(v -> finish());
 
         btnCta.setOnClickListener(v -> {
             if (!TextUtils.isEmpty(videoLand)) {
                 RouteManager.route(TkpdYoutubeVideoActivity.this, videoLand);
-                HomeGATracking.eventClickCTAButton();
+                HomeGATracking.eventClickCTAButton(v.getContext());
             }
             finish();
         });
 
         extractValues(getIntent().getExtras());
-        HomeGATracking.eventYoutubeVideoImpression();
+        HomeGATracking.eventYoutubeVideoImpression(this);
     }
 
     @Override
@@ -103,8 +120,8 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             if (!TextUtils.isEmpty(videoUrl)) {
                 mPlayer = player;
                 player.loadVideo(videoUrl);
-            }else{
-                SnackbarManager.make(TkpdYoutubeVideoActivity.this,getString(R.string.video_not_play_error),Snackbar.LENGTH_LONG).show();
+            } else {
+                SnackbarManager.make(TkpdYoutubeVideoActivity.this, getString(R.string.video_not_play_error), Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -132,7 +149,48 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             tvDesc.setText(bundle.getString(videoDescKey, ""));
             btnCta.setText(bundle.getString(videoCtaKey, ""));
             videoLand = bundle.getString(videoLandKey, "");
+            String jsonArray = bundle.getString("banner", "");
+            if (!TextUtils.isEmpty(jsonArray)) {
+                setBannerAdapter(jsonArray);
+            }
+
+
         }
         youTubeView.initialize(getString(com.tokopedia.tkpdpdp.R.string.GOOGLE_API_KEY), this);
+    }
+
+    private void setBannerAdapter(String jsonArray) {
+
+        Type listType = new TypeToken<List<VideoPushBannerModel>>() {
+        }.getType();
+        bannerModeList = new Gson().fromJson(jsonArray, listType);
+        if (bannerModeList != null && bannerModeList.size() > 0) {
+            viewPager.setVisibility(View.VISIBLE);
+            if (bannerModeList.size() > 1) {
+                circlePageIndicator.setVisibility(View.VISIBLE);
+            }
+            adapter = new SlidingImageBannerAdapter(TkpdYoutubeVideoActivity.this, bannerModeList, tvHeadTitle.getText().toString());
+            viewPager.setAdapter(adapter);
+            circlePageIndicator.setViewPager(viewPager);
+            HomeGATracking.eventClickVideoBannerImpression(tvHeadTitle.getText().toString() + "_" + bannerModeList.get(0).getBannerName() + "_" + 1);
+
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    HomeGATracking.eventClickVideoBannerImpression(tvHeadTitle.getText().toString() + "_" + bannerModeList.get(position).getBannerName() + "_" + (position + 1));
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+        }
+
     }
 }

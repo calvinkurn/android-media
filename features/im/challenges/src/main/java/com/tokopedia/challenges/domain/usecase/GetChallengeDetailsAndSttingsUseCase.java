@@ -9,6 +9,7 @@ import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class GetChallengeDetailsAndSttingsUseCase extends RestRequestSupportInte
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
 

@@ -1,6 +1,8 @@
 package com.tokopedia.tkpdreactnative.react.app;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,8 +10,11 @@ import android.view.KeyEvent;
 
 import com.facebook.react.ReactApplication;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpdreactnative.R;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
 
 /**
  *
@@ -78,6 +83,17 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ReactConst.REACT_LOGIN_REQUEST_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                String UserID = ReactNavigationModule.getUserId(this);
+                ((IReactNativeRouter) getApplication()).sendLoginEmitter(UserID);
+            }
+        }
     }
 
     @Override

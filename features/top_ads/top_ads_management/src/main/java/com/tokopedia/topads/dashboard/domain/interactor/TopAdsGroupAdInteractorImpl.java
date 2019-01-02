@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.data.model.request.DataRequest;

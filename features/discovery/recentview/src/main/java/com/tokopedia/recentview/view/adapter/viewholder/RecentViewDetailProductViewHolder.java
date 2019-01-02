@@ -1,7 +1,7 @@
 package com.tokopedia.recentview.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
-import android.support.v7.content.res.AppCompatResources;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.recentview.R;
 import com.tokopedia.recentview.view.adapter.LabelsAdapter;
 import com.tokopedia.recentview.view.listener.RecentView;
@@ -128,18 +127,22 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         shopName.setText(MethodChecker.fromHtml(element.getShopName()));
 
         if (element.isOfficial()) {
-            iconLocation.setImageDrawable(AppCompatResources.getDrawable(MainApplication.getAppContext(),com.tokopedia.core.R.drawable.ic_icon_authorize_grey));
-            shopLocation.setText(MainApplication.getAppContext().getResources().getString(R.string.authorized)
-            );
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_badge_authorize));
+            shopLocation.setText(itemView.getContext().getString(R.string.title_badge_authorized));
         } else {
             shopLocation.setText(element.getShopLocation());
-            iconLocation.setImageDrawable(AppCompatResources.getDrawable(MainApplication.getAppContext(), com.tokopedia.core.R.drawable.ic_icon_location_grey));
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_icon_location_grey));
         }
 
         mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail(String.valueOf(element.getProductId()));
+                viewListener.onGoToProductDetail(
+                        String.valueOf(element.getProductId()),
+                        element.getName(),
+                        element.getPrice(),
+                        element.getImageSource()
+                );
                 viewListener.sendRecentViewClickTracking(element);
             }
         });

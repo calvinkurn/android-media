@@ -18,12 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
 
@@ -40,7 +42,7 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
 
 
     private LocalAdsClickListener itemClickListener;
-    private ImageView shopImage;
+    private ImpressedImageView shopImage;
     private TextView shopTitle;
     private TextView shopSubtitle;
     private TextView favTxt;
@@ -57,7 +59,7 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         context = itemView.getContext();
-        shopImage = (ImageView) itemView.findViewById(R.id.shop_image);
+        shopImage = (ImpressedImageView) itemView.findViewById(R.id.shop_image);
         shopTitle = (TextView) itemView.findViewById(R.id.shop_title);
         shopSubtitle = (TextView) itemView.findViewById(R.id.shop_subtitle);
         shopListImage = (RecyclerView) itemView.findViewById(R.id.image_list);
@@ -107,7 +109,7 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
             }
 
             if (shop.isGoldShopBadge()) {
-                shopTitle.setText(spannedBadgeString(title, R.drawable.ic_gold));
+                shopTitle.setText(spannedBadgeString(title, GMConstant.getGMDrawableResource(context)));
             } else if (shop.isShop_is_official()) {
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_official));
             } else {

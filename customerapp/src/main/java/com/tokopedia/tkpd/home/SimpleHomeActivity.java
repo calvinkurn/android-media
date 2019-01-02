@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
@@ -108,6 +109,12 @@ public class SimpleHomeActivity extends TActivity
                 if (isFragmentCreated(WishListFragment.FRAGMENT_TAG)) {
                     Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is created !!!");
                     Fragment wishListFragment = WishListFragment.newInstance();
+                    if (getIntent().hasExtra(Constants.FROM_APP_SHORTCUTS)) {
+                        boolean isFromAppShortCut = getIntent().getBooleanExtra(WishListFragment.FROM_APP_SHORTCUTS, false);
+                        Bundle args = new Bundle();
+                        args.putBoolean(WishListFragment.FROM_APP_SHORTCUTS, isFromAppShortCut);
+                        wishListFragment.setArguments(args);
+                    }
                     moveToFragment(wishListFragment, true, WishListFragment.FRAGMENT_TAG);
                 } else {
                     Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is not created !!!");
@@ -155,15 +162,13 @@ public class SimpleHomeActivity extends TActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        simpleHome.saveDataBeforeRotate(outState);
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        simpleHome.saveDataBeforeRotate(outState);
+        Bundle bundle = new Bundle();
+        super.onSaveInstanceState(bundle);
+        if (!TooLargeTool.isPotentialCrash(bundle)) {
+            outState.putAll(bundle);
+            simpleHome.saveDataBeforeRotate(outState);
+        }
     }
 
     @Override

@@ -43,6 +43,7 @@ public class UserSession implements UserSessionInterface {
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
     private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
+    private static final String HAS_PASSWORD = "HAS_PASSWORD";
 
     private Context context;
 
@@ -92,8 +93,23 @@ public class UserSession implements UserSessionInterface {
         return shopId;
     }
 
+    @Override
+    public String getShopName() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(SHOP_NAME, "");
+    }
+
+    @Override
     public boolean hasShop() {
         return !TextUtils.isEmpty(getShopId()) && !DEFAULT_EMPTY_SHOP_ID.equals(getShopId());
+    }
+
+    @Override
+    public boolean isGoldMerchant() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_GOLD_MERCHANT, false);
     }
 
     public String getName() {
@@ -113,6 +129,10 @@ public class UserSession implements UserSessionInterface {
         return sharedPrefs.getString(TEMP_USER_ID, "");
     }
 
+    /**
+     * Saved from FCMCacheManager
+     * @return gcm id / device id
+     */
     public String getDeviceId() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(GCM_STORAGE, Context.MODE_PRIVATE);
         return sharedPrefs.getString(GCM_ID, "");
@@ -200,13 +220,6 @@ public class UserSession implements UserSessionInterface {
         editor.apply();
     }
 
-    public void setIsMsisdnVerified(boolean isMsisdnVerified) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
-        editor.apply();
-    }
-
     public void setPhoneNumber(String phoneNumber) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -281,6 +294,77 @@ public class UserSession implements UserSessionInterface {
     public void setFirstTimeUserOnboarding(boolean isFirstTime) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, isFirstTime).apply();
+    }
+
+    public void setToken(String accessToken, String tokenType, String refreshToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(ACCESS_TOKEN, accessToken);
+        editor.putString(TOKEN_TYPE, tokenType);
+        editor.putString(REFRESH_TOKEN, refreshToken);
+        editor.apply();
+    }
+
+    @Override
+    public void setLoginSession(boolean isLogin, String userId, String fullName,
+                                String shopId, boolean isMsisdnVerified, String shopName,
+                                String email, boolean isGoldMerchant, String phoneNumber) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_LOGIN, isLogin);
+        editor.putString(LOGIN_ID, userId);
+        editor.putString(GTM_LOGIN_ID, userId);
+        editor.putString(FULL_NAME, fullName);
+        editor.putString(SHOP_ID, shopId);
+        editor.putString(SHOP_NAME, shopName);
+        editor.putString(EMAIL, email);
+        editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
+        editor.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
+        editor.putString(PHONE_NUMBER, phoneNumber);
+
+        editor.apply();
+    }
+
+    @Override
+    public void setIsMSISDNVerified(boolean isMsisdnVerified) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
+        editor.apply();
+    }
+
+    @Override
+    public void setTempPhoneNumber(String userPhone) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_PHONE_NUMBER, userPhone);
+        editor.apply();
+
+    }
+
+    @Override
+    public void setTempLoginEmail(String email) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_EMAIL, email);
+        editor.apply();
+    }
+
+    @Override
+    public void setHasPassword(boolean hasPassword) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(HAS_PASSWORD, hasPassword);
+        editor.apply();
+
+    }
+
+    @Override
+    public void setProfilePicture(String profilePicture) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(PROFILE_PICTURE, profilePicture);
+        editor.apply();
     }
 
     public void logoutSession() {

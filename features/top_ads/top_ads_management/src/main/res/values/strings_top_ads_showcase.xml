@@ -1,33 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- TOP ADS HOME -->
-    <string name="topads_showcase_home_title_1">Iklan TopAds</string>
-    <string name="topads_showcase_home_desc_1">Anda dapat melihat detail iklan dan melakukan pengaturan di sini.</string>
-    <string name="topads_showcase_home_title_2">TopAds Toko</string>
-    <string name="topads_showcase_home_desc_2">Iklankan toko Anda agar semakin banyak yang memfavoritkan toko Anda.</string>
-    <string name="topads_showcase_home_title_3">Tambah Kredit</string>
-    <string name="topads_showcase_home_desc_3">Tambah Kredit TopAds Anda untuk dapat melakukan iklan.</string>
-    <string name="topads_showcase_home_title_4">Tanggal Statistik</string>
-    <string name="topads_showcase_home_desc_4">Pilih tanggal untuk atur tampilan statistik iklan Anda.</string>
-    <string name="topads_showcase_home_title_5">Statistik Iklan</string>
-    <string name="topads_showcase_home_desc_5">Pantau performa iklan Anda pada tampilan statistik ini. Filter data iklan yang ingin ditampilkan
-        dan pilih periode untuk melihat data pada waktu tertentu.</string>
-    <string name="topads_showcase_home_title_6">Tambah Iklan</string>
-    <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan iklan Anda.</string>
-    <string name="topads_showcase_home_title_7">Rangkuman Data</string>
-    <string name="topads_showcase_home_desc_7">Filter data iklan yang ingin ditampilkan.</string>
-    <string name="topads_showcase_home_title_8">Grup Iklan</string>
-    <string name="topads_showcase_home_desc_8">Kelompokan iklan Anda dalam grup dan nikmati kemudahan mengatur iklan dalam sekali pengaturan.</string>
-    <string name="topads_showcase_home_title_9">TopAds Kata Kunci</string>
-    <string name="topads_showcase_home_desc_9">Gunakan kata kunci agar iklan Anda dapat tampil pada pencarian yang sesuai.</string>
-
-    <!-- TOP ADS STATISTIK -->
-    <string name="topads_showcase_statistics_title_1">Atur Periode</string>
-    <string name="topads_showcase_statistics_desc_1">Atur tampilan statistik berdasarkan periode yang dipilih.</string>
-    <string name="topads_showcase_statistics_title_2">Statistik</string>
-    <string name="topads_showcase_statistics_desc_2">Lihat performa toko Anda, geser layar untuk melihat data statistik lain.</string>
-
     <!-- TOP ADS GROUP LIST -->
     <string name="topads_showcase_group_list_title_1">Pencarian</string>
     <string name="topads_showcase_group_list_desc_1">Memudahkan Anda dalam mencari nama grup.</string>

@@ -9,6 +9,7 @@ import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.instantloan.data.model.response.ResponseBannerOffer;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
+import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class GetBannersUserCase extends RestRequestSupportInterceptorUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
 
         List<RestRequest> restRequestList = new ArrayList<>();
 

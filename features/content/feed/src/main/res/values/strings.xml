@@ -36,7 +36,7 @@
     <string name="see_all_promo">Lihat Semua\nPromo</string>
     <string name="return_to_feed">Kembali ke Feed</string>
     <string name="recent_view">Terakhir Dilihat</string>
-    <string name="you_have_new_feed">Feed baru</string>
+    <string name="you_have_new_feed">Post Terbaru</string>
     <string name="share_gplus">Google+</string>
     <string name="share_fb">Facebook</string>
     <string name="share_twitter">Twitter</string>
@@ -70,4 +70,6 @@
     <string name="total_voter">%s telah memilih</string>
 
     <string name="string_btn_whitelist">Buat Post</string>
+
+    <string name="feed_content_reported">Konten sudah dilaporkan</string>
 </resources>

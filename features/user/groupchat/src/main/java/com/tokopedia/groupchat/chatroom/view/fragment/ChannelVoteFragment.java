@@ -254,7 +254,12 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
                     ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
                             (getActivity(), voteInfoViewModel.getVoteInfoUrl());
-                    analytics.eventActionClickVoteInfo();
+                    if(getActivity() instanceof GroupChatActivity) {
+                        analytics.eventActionClickVoteInfo
+                                (String.format("%s - %s"
+                                        , ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getChannelId()
+                                        , voteInfoViewModel.getVoteInfoUrl()));
+                    }
                 }
 
             }
@@ -329,11 +334,13 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             loading.setVisibility(View.VISIBLE);
             getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
+            presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element
+                        , ((GroupChatActivity) getActivity()).getChannelInfoViewModel().getGroupChatToken());
 
             if (getActivity() != null
                     && getActivity() instanceof GroupChatContract.View
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null) {
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
+                    && !voted) {
                 analytics.eventClickVote(
                         element.getType(),
                         ((GroupChatContract.View) getActivity()).

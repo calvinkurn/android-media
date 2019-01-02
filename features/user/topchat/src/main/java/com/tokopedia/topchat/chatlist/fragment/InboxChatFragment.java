@@ -562,7 +562,7 @@ public class InboxChatFragment extends BaseDaggerFragment
         if (text.length() > 0) {
             presenter.initSearch(text);
             searchLoading.setVisibility(View.VISIBLE);
-            UnifyTracking.eventTopChatSearch(TopChatAnalytics.Category.INBOX_CHAT,
+            UnifyTracking.eventTopChatSearch(getActivity(),TopChatAnalytics.Category.INBOX_CHAT,
                     TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
                     TopChatAnalytics.Name.INBOX_CHAT);
             if (getActivity() instanceof InboxChatActivity) {

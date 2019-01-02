@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-
-    <View
-        android:id="@+id/top_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/kol_post_shadow_size"
-        android:visibility="gone"
-        android:background="@drawable/shadow_bottom"/>
 
     <FrameLayout
         android:id="@+id/container_view"
@@ -23,6 +16,6 @@
         <com.tokopedia.kol.feature.post.view.widget.BaseKolView
             android:id="@+id/base_kol_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </FrameLayout>
 </LinearLayout>

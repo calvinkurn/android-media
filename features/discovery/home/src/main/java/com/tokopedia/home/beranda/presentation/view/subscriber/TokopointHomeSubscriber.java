@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 
 import rx.Subscriber;
@@ -8,7 +8,7 @@ import rx.Subscriber;
 /**
  * Created by meta on 16/07/18.
  */
-public class TokopointHomeSubscriber extends Subscriber<TokoPointDrawerData> {
+public class TokopointHomeSubscriber extends Subscriber<TokopointHomeDrawerData> {
 
     private HomeContract.Presenter presenter;
 
@@ -25,7 +25,7 @@ public class TokopointHomeSubscriber extends Subscriber<TokoPointDrawerData> {
     }
 
     @Override
-    public void onNext(TokoPointDrawerData tokoPointDrawerData) {
+    public void onNext(TokopointHomeDrawerData tokoPointDrawerData) {
         presenter.updateHeaderTokoPointData(tokoPointDrawerData);
     }
 }

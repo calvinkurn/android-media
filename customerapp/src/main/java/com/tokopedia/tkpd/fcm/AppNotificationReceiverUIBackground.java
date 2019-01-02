@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -23,8 +22,8 @@ import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.pushnotif.PushNotification;

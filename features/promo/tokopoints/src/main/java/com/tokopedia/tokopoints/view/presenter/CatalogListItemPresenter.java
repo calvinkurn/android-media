@@ -33,21 +33,19 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
     private GraphqlUseCase mFetchCatalogStatusUseCase;
-    private GraphqlUseCase mStartSendGift;
+    private int pointRange=0;
 
     @Inject
     public CatalogListItemPresenter(GraphqlUseCase getHomePageData,
                                     GraphqlUseCase saveCouponUseCase,
                                     GraphqlUseCase validateCouponUseCase,
                                     GraphqlUseCase fetchCatalogStatusUseCase,
-                                    GraphqlUseCase startSendGift,
                                     GraphqlUseCase redeemCouponUseCase) {
         this.mGetHomePageData = getHomePageData;
         this.mSaveCouponUseCase = saveCouponUseCase;
         this.mValidateCouponUseCase = validateCouponUseCase;
         this.mRedeemCouponUseCase = redeemCouponUseCase;
         this.mFetchCatalogStatusUseCase = fetchCatalogStatusUseCase;
-        this.mStartSendGift = startSendGift;
     }
 
     @Override
@@ -71,24 +69,22 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
         if (mFetchCatalogStatusUseCase != null) {
             mFetchCatalogStatusUseCase.unsubscribe();
         }
-
-        if (mStartSendGift != null) {
-            mStartSendGift.unsubscribe();
-        }
     }
 
     @Override
-    public void getCatalog(int categoryId, int sortId) {
+    public void getCatalog(int categoryId, int subCategoryId, boolean showLoader) {
         mGetHomePageData.clearRequest();
+        if(showLoader)
         getView().showLoader();
 
         //Adding request for main query
         Map<String, Object> variablesMain = new HashMap<>();
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, 1);  //Default page size always will be 1
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, getPageSize());  //Default page size always will be 1
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.SORT_ID, sortId);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SORT_ID, getSortId()); //Default page sort id
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, categoryId);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, 0); //Point range will be zero for all catalog
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SUB_CATEGORY_ID, subCategoryId);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, getPointsRange()); //Point range will be zero for all catalog
 
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_listing),
                 CatalogListingOuter.class,
@@ -118,6 +114,18 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                 }
             }
         });
+    }
+
+    private int getPointsRange() {
+        return pointRange;
+    }
+
+    private int getSortId() {
+        return 1;
+    }
+
+    private int getPageSize() {
+        return 1;  //default page size
     }
 
     @Override
@@ -280,56 +288,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
         getView().showRedeemCouponDialog(cta, code, title);
     }
 
-    @Override
-    public void startSendGift(int id, String title, String pointStr) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, id);
-        variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 1);
-
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.tp_gql_pre_validate_redeem),
-                PreValidateRedeemBase.class,
-                variables);
-        mStartSendGift.clearRequest();
-        mStartSendGift.addRequest(request);
-        mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                //NA
-            }
-
-            @Override
-            public void onNext(GraphqlResponse response) {
-                PreValidateRedeemBase data = response.getData(PreValidateRedeemBase.class);
-                if (data != null
-                        && data.getPreValidateRedeem() != null
-                        && data.getPreValidateRedeem().getIsValid() == 1) {
-                    getView().gotoSendGiftPage(id, title, pointStr);
-                } else {
-                    //show error
-                    List<GraphqlError> errors = response.getError(PreValidateRedeemBase.class);
-
-                    String errorTitle = getView().getAppContext().getString(R.string.tp_send_gift_failed_title);
-                    String errorMessage = getView().getAppContext().getString(R.string.tp_send_gift_failed_message);
-
-                    if (errors != null && errors.size() > 0) {
-                        String[] mesList = errors.get(0).getMessage().split("|");
-                        if (mesList.length == 3) {
-                            errorTitle = mesList[0];
-                            errorMessage = mesList[1];
-                        } else if (mesList.length == 2) {
-                            errorMessage = mesList[0];
-                        }
-                    }
-
-                    getView().onPreValidateError(errorTitle, errorMessage);
-                }
-            }
-        });
+    public void setPointRange(int pointRange) {
+        this.pointRange=pointRange;
     }
 }

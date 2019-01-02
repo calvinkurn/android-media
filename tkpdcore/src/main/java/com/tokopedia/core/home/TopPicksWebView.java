@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;

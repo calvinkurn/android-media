@@ -49,12 +49,15 @@ import rx.schedulers.Schedulers;
  */
 
 public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSheetContract.View> implements ShareBottomSheetContract.Presenter {
+
     PostMapBranchUrlUseCase postMapBranchUrlUseCase;
     private static final String PACKAGENAME_WHATSAPP = "com.whatsapp";
     private static final String PACKAGENAME_FACEBOOK = "com.facebook.katana";
     private static final String PACKAGENAME_LINE = "jp.naver.line.android";
     private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus";
     private static final String PACKAGENAME_INSTAGRAM = "com.instagram.android";
+    private static final String BRANCH_LINK_FORMAT_HTTPS="https://tokopedia.link";
+    private static final String BRANCH_LINK_FORMAT_HTTP="http://tokopedia.link";
 
     private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP, PACKAGENAME_INSTAGRAM,
             PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
@@ -80,6 +83,8 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView() == null || getView().getActivity() == null) return;
+
                 shareLink(isChallenge, branchUrl, title, packageName);
             }
         });
@@ -91,16 +96,26 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         if (challengeItem == null) {
             return;
         }
-        String url = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId());
-        getView().showProgress("Please wait");
-        ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), name, challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
-            @Override
-            public void onGenerateLink(String shareContents, String shareUri) {
-                getView().hideProgress();
-                shareLink(true, shareUri, challengeItem.getTitle(), packageName);
-            }
-        });
+        String url = null;
+        if (challengeItem.getSharing() != null && challengeItem.getSharing().getMetaTags() != null) {
+            url = challengeItem.getSharing().getMetaTags().getOgUrl();
+        }
 
+        if (TextUtils.isEmpty(url)) {
+            url = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId());
+        }
+        if (url.startsWith(BRANCH_LINK_FORMAT_HTTPS) || url.startsWith(BRANCH_LINK_FORMAT_HTTP)) {
+            shareLink(true, url, challengeItem.getTitle(), packageName);
+        } else {
+            getView().showProgress(getView().getActivity().getString(R.string.ch_please_wait));
+            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), name, challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(),challengeItem.getSharing().getMetaTags().getOgDescription(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
+                @Override
+                public void onGenerateLink(String shareContents, String shareUri) {
+                    getView().hideProgress();
+                    shareLink(true, shareUri, challengeItem.getTitle(), packageName);
+                }
+            });
+        }
     }
 
     @Override
@@ -113,11 +128,11 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         if (TextUtils.isEmpty(url)) {
             url = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId());
         }
-        if (url.startsWith("https://tokopedia.link") || url.startsWith("http://tokopedia.link")) {
+        if (url.startsWith(BRANCH_LINK_FORMAT_HTTPS) || url.startsWith(BRANCH_LINK_FORMAT_HTTP)) {
             shareLink(false, url, submissionItem.getTitle(), packageName);
         } else {
-            getView().showProgress("Please wait");
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), name, submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
+            getView().showProgress(getView().getActivity().getString(R.string.ch_please_wait));
+            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), name, submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(),submissionItem.getSharing().getMetaTags().getOgDescription(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
@@ -228,6 +243,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
                     @Override
                     public void onNext(File file) {
+                        if (getView() == null || getView().getActivity() == null) return;
                         getView().hideProgress();
                         if (file != null)
                             createInstagramIntent(title, contains, file, isVideo);
@@ -243,7 +259,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                     @Override
                     public File call(String url) {
                         if (URLUtil.isNetworkUrl(url)) {
-                            if (!isViewAttached()) {
+                            if (getView() == null || getView().getActivity() == null) {
                                 return null;
                             }
                             FutureTarget<File> future = Glide.with(getView().getActivity())

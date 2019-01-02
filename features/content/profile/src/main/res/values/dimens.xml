@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="profile_avatar_header">64dp</dimen>
+    <dimen name="profile_footer_space">52dp</dimen>
+</resources>

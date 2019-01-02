@@ -1,8 +1,6 @@
 package com.tokopedia.instantloan.view.presenter;
 
-import android.provider.CallLog;
 import android.provider.ContactsContract;
-import android.provider.Telephony;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,9 +15,7 @@ import com.tokopedia.instantloan.ddcollector.PermissionResultCallback;
 import com.tokopedia.instantloan.ddcollector.account.Account;
 import com.tokopedia.instantloan.ddcollector.app.Application;
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData;
-import com.tokopedia.instantloan.ddcollector.call.Call;
 import com.tokopedia.instantloan.ddcollector.contact.Contact;
-import com.tokopedia.instantloan.ddcollector.sms.Sms;
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
@@ -71,7 +67,9 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                if (isViewAttached()) {
+                    getView().onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                }
             }
 
             @Override
@@ -112,7 +110,9 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().onErrorPhoneDataUploaded(ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                    if (isViewAttached()) {
+                        getView().onErrorPhoneDataUploaded(ErrorHandler.getErrorMessage(getView().getAppContext(), e));
+                    }
                 }
 
                 @Override
@@ -141,25 +141,6 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
         data.addProperty(DeviceDataKeys.SYSTEM_LANGUAGE, ((ArrayList<Map<String, String>>) map.get(BasicDeviceData.DD_BASIC_DEVICE_DATA)).get(0).get(BasicDeviceData.SYSTEM_LANGUAGE));
 
         JsonArray messages = new JsonArray();
-        JsonObject message;
-
-        if (map.get(Sms.DD_SMS) != null) {
-            for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Sms.DD_SMS)) {
-                if (entry == null) {
-                    continue;
-                }
-                message = new JsonObject();
-                message.addProperty(DeviceDataKeys.Sms.PHONE, entry.get(Telephony.Sms.Inbox.ADDRESS));
-                message.addProperty(DeviceDataKeys.Sms.CONTENT, entry.get(Telephony.Sms.Inbox.BODY));
-                message.addProperty(DeviceDataKeys.Sms.TYPE, entry.get(Telephony.Sms.Inbox.TYPE));
-                message.addProperty(DeviceDataKeys.Sms.TIME, entry.get(Telephony.Sms.Inbox.DATE));
-                messages.add(message);
-                if (messages.size() == 100) {
-                    break;
-                }
-            }
-
-        }
         data.addProperty(DeviceDataKeys.SMS, messages.toString());
 
         JsonArray contacts = new JsonArray();
@@ -182,21 +163,6 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
         data.addProperty(DeviceDataKeys.CONTACT, contacts.toString());
 
         JsonArray callLogs = new JsonArray();
-        JsonObject callLog;
-
-        if (map.get(Call.DD_CALL) != null) {
-            for (Map<String, String> entry : (List<HashMap<String, String>>) map.get(Call.DD_CALL)) {
-                if (entry == null) {
-                    continue;
-                }
-                callLog = new JsonObject();
-                callLog.addProperty(DeviceDataKeys.Call.PHONE, entry.get(CallLog.Calls.NUMBER));
-                callLog.addProperty(DeviceDataKeys.Call.TYPE, entry.get(CallLog.Calls.TYPE));
-                callLog.addProperty(DeviceDataKeys.Call.DURATION, entry.get(CallLog.Calls.DURATION));
-                callLog.addProperty(DeviceDataKeys.Call.TIME, entry.get(CallLog.Calls.DATE));
-                callLogs.add(callLog);
-            }
-        }
 
         data.addProperty(DeviceDataKeys.CALL, callLogs.toString());
 

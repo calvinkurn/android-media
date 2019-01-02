@@ -10,9 +10,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.instantloan.ddcollector.account.Account;
 import com.tokopedia.instantloan.ddcollector.app.Application;
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData;
-import com.tokopedia.instantloan.ddcollector.call.Call;
 import com.tokopedia.instantloan.ddcollector.contact.Contact;
-import com.tokopedia.instantloan.ddcollector.sms.Sms;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -109,14 +107,6 @@ public class DDCollectorManager implements PermissionResultCallback {
                 info.add(new Contact(mContext.getContentResolver()));
             }
 
-            if (mComponents.contains(DDConstants.DDComponents.READ_CALL_LOG.val())) {
-                info.add(new Call(mContext.getContentResolver()));
-            }
-
-            if (mComponents.contains(DDConstants.DDComponents.READ_SMS.val())) {
-                info.add(new Sms(mContext.getContentResolver()));
-            }
-
             if (mComponents.contains(DDConstants.DDComponents.BASIC_DEVICE_DATA.val())) {
                 info.add(new BasicDeviceData(mContext, (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE)));
             }
@@ -137,9 +127,7 @@ public class DDCollectorManager implements PermissionResultCallback {
 
     private Set<String> getDefaultsComponents() {
         Set<String> components = new HashSet<>();
-        components.add(DDConstants.DDComponents.READ_SMS.val());
         components.add(DDConstants.DDComponents.READ_CONTACTS.val());
-        components.add(DDConstants.DDComponents.READ_CALL_LOG.val());
         components.add(DDConstants.DDComponents.GET_ACCOUNTS.val());
         components.add(DDConstants.DDComponents.APP.val());
         components.add(DDConstants.DDComponents.BASIC_DEVICE_DATA.val());

@@ -41,9 +41,21 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
         return typeFactory.createViewHolder(view, viewType);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position) {
         holder.bind(list.get(position));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(list.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
     }
 
     @Override
@@ -105,8 +117,8 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
 
             if (oldItem instanceof KolPostViewModel) {
                 return newItem instanceof KolPostViewModel
-                        && ((KolPostViewModel) oldItem).getKolId()
-                        == ((KolPostViewModel) oldItem).getKolId();
+                        && ((KolPostViewModel) oldItem).getContentId()
+                        == ((KolPostViewModel) oldItem).getContentId();
             } else if (oldItem instanceof KolCommentViewModel) {
                 return newItem instanceof KolCommentViewModel
                         && ((KolCommentViewModel) oldItem).getId()

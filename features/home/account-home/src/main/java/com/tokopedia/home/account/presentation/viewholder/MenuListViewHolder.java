@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.label.LabelView;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
@@ -31,7 +32,13 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
 
     @Override
     public void bind(MenuListViewModel element) {
-        layout.setOnClickListener(v -> listener.onMenuListClicked(element));
+        layout.setOnClickListener(v -> {
+            if (element.getApplink().equalsIgnoreCase(AccountConstants.Navigation.TOPADS)){
+                listener.onTopAdsMenuClicked();
+            } else {
+                listener.onMenuListClicked(element);
+            }
+        });
         labelView.setTitle(element.getMenu());
         labelView.setBadgeCounter(element.getCount());
         labelView.setSubTitle(element.getMenuDescription());

@@ -4,20 +4,15 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.design.text.SpinnerCounterInputView;
-import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.design.text.CounterInputView;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
@@ -52,7 +47,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     private boolean isOfficialStore;
     private ListenerDialogEditPrice listenerDialogEditPrice;
 
-    private SpinnerCounterInputView spinnerCounterInputViewPrice;
+    private CounterInputView counterInputView;
     private TextView saveButton;
     private TextView cancelButton;
 
@@ -103,7 +98,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_product_manage_edit_price, container, false);
-        spinnerCounterInputViewPrice = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
+        counterInputView = view.findViewById(R.id.counter_input_view);
         saveButton = (TextView) view.findViewById(R.id.string_picker_dialog_confirm);
         cancelButton = (TextView) view.findViewById(R.id.string_picker_dialog_cancel);
 
@@ -111,14 +106,13 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (isPriceValid() && listenerDialogEditPrice != null) {
-                    UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
+                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
                     listenerDialogEditPrice.onSubmitEditPrice(productId,
-                            formatDecimal(spinnerCounterInputViewPrice.getCounterValue()),
-                            spinnerCounterInputViewPrice.getSpinnerValue(),
-                            spinnerCounterInputViewPrice.getSpinnerEntry());
+                            formatDecimal(counterInputView.getDoubleValue()),
+                            "1", "Rp");
                     dismiss();
                 } else {
-                    spinnerCounterInputViewPrice.requestFocus();
+                    counterInputView.requestFocus();
                 }
             }
         });
@@ -126,67 +120,18 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 dismiss();
-                UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
+                UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
             }
         });
 
-        idrTextWatcher = new CurrencyIdrTextWatcher(spinnerCounterInputViewPrice.getCounterEditText()) {
+        idrTextWatcher = new CurrencyIdrTextWatcher(counterInputView.getEditText()) {
             @Override
             public void onNumberChanged(double number) {
                 isPriceValid();
             }
         };
-        usdTextWatcher = new CurrencyUsdTextWatcher(spinnerCounterInputViewPrice.getCounterEditText()) {
-            @Override
-            public void onNumberChanged(double number) {
-                isPriceValid();
-            }
-        };
-        spinnerCounterInputViewPrice.addTextChangedListener(idrTextWatcher);
-        spinnerCounterInputViewPrice.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
-            @Override
-            public void onItemChanged(int position, String entry, String value) {
-                setTextWatcher(value);
-            }
-
-            private void setTextWatcher(String spinnerValue) {
-                spinnerCounterInputViewPrice.removeTextChangedListener(idrTextWatcher);
-                spinnerCounterInputViewPrice.removeTextChangedListener(usdTextWatcher);
-                if (spinnerValue.equalsIgnoreCase(spinnerCounterInputViewPrice.getContext().getString(R.string.product_currency_value_idr))) {
-                    spinnerCounterInputViewPrice.addTextChangedListener(idrTextWatcher);
-                } else {
-                    spinnerCounterInputViewPrice.addTextChangedListener(usdTextWatcher);
-                }
-            }
-        });
-        spinnerCounterInputViewPrice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                spinnerCounterInputViewPrice.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onItemClicked(position);
-                    }
-                });
-            }
-
-            private void onItemClicked(int position) {
-                if (!isGoldMerchant && spinnerCounterInputViewPrice.getSpinnerValue(position).equalsIgnoreCase(spinnerCounterInputViewPrice.getContext().getString(R.string.product_currency_value_usd))) {
-                    spinnerCounterInputViewPrice.setSpinnerValue(spinnerCounterInputViewPrice.getContext().getString(R.string.product_currency_value_idr));
-                    Snackbar.make(spinnerCounterInputViewPrice.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
-                            .setActionTextColor(ContextCompat.getColor(spinnerCounterInputViewPrice.getContext(), R.color.green_400))
-                            .show();
-                    return;
-                }
-                spinnerCounterInputViewPrice.setCounterValue(Double.parseDouble(spinnerCounterInputViewPrice.getContext().getString(R.string.product_default_counter_text)));
-                EditText editText = spinnerCounterInputViewPrice.getCounterEditText();
-                editText.setSelection(editText.getText().length());
-                spinnerCounterInputViewPrice.setCounterError(null);
-            }
-        });
-
-        spinnerCounterInputViewPrice.setSpinnerValue(String.valueOf(productCurrencyId));
-        spinnerCounterInputViewPrice.setCounterValue(Double.valueOf(productPrice));
+        counterInputView.addTextChangedListener(idrTextWatcher);
+        counterInputView.setValue(Double.valueOf(productPrice));
         return view;
     }
 
@@ -194,27 +139,22 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         double priceValue = getPriceValue();
         int currencyType = getCurrencyType();
         if (!ProductPriceRangeUtils.isPriceValid(priceValue, currencyType, isOfficialStore )) {
-            spinnerCounterInputViewPrice.setCounterError(
-                    spinnerCounterInputViewPrice.getContext().getString(R.string.product_error_product_price_not_valid,
+            counterInputView.setError(
+                    counterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
                             ProductPriceRangeUtils.getMinPriceString(currencyType, isOfficialStore),
                             ProductPriceRangeUtils.getMaxPriceString(currencyType, isOfficialStore)));
             return false;
         }
-        spinnerCounterInputViewPrice.setCounterError(null);
+        counterInputView.setError(null);
         return true;
     }
 
     public double getPriceValue() {
-        return spinnerCounterInputViewPrice.getCounterValue();
+        return counterInputView.getDoubleValue();
     }
 
     public int getCurrencyType() {
-        if (spinnerCounterInputViewPrice.getSpinnerTextView().getSpinnerValue()
-                .equalsIgnoreCase(spinnerCounterInputViewPrice.getContext().getString(R.string.product_currency_value_idr))) {
-            return CurrencyTypeDef.TYPE_IDR;
-        } else {
-            return CurrencyTypeDef.TYPE_USD;
-        }
+        return CurrencyTypeDef.TYPE_IDR;
     }
 
     private String formatDecimal(double productPrice) {

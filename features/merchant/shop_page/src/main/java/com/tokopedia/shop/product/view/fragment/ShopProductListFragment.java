@@ -439,7 +439,11 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     private boolean isOwner(){
-        return shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId());
+        String shopId = "";
+        if (shopInfo != null && shopInfo.getInfo() != null) {
+            shopId = shopInfo.getInfo().getShopId();
+        }
+        return shopProductListPresenter.isMyShop(shopId);
     }
 
     @Override
