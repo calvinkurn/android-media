@@ -1,21 +1,17 @@
 package com.tokopedia.topchat.chatlist.listener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
-import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
-import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
-import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
+import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
+import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 
 import java.util.List;
 
@@ -25,7 +21,7 @@ import java.util.List;
 
 public class InboxChatContract {
 
-    public interface View extends CustomerView{
+    public interface View extends CustomerView {
 
         String getNav();
 
@@ -96,7 +92,7 @@ public class InboxChatContract {
         void reloadNotifDrawer();
     }
 
-    public interface Presenter extends CustomerPresenter<View>{
+    public interface Presenter extends CustomerPresenter<View> {
         void createWebSocket();
 
         void resetAttempt();
