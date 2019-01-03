@@ -22,7 +22,6 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Gene
                 ReactConst.Screen.OFFICIAL_STORE,
                 context.getString(com.tokopedia.tkpd.R.string.react_native_banner_official_title),
                 bundle
-
         );
     }
 
@@ -63,10 +62,11 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Gene
 
     @Override
     protected String getToolbarTitle() {
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            return getIntent().getExtras().getString(EXTRA_TITLE);
-        }
-
-        return "";
+        return "Tokopedia RN";
+//        if (getIntent() != null && getIntent().getExtras() != null) {
+//            return getIntent().getExtras().getString(EXTRA_TITLE);
+//        }
+//
+//        return "";
     }
 }
