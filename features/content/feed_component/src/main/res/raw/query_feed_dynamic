@@ -33,11 +33,14 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               avatarBadgeImage
               avatarDescription
               reportable
+              editable
               deletable
               followCta {
                 isFollow
                 textTrue
                 textFalse
+                authorID
+                authorType
               }
             }
             media {
@@ -123,12 +126,14 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             avatarBadgeImage
             avatarDescription
             reportable
-            deletable
             editable
+            deletable
             followCta {
+              isFollow
               textTrue
               textFalse
-              isFollow
+              authorID
+              authorType
             }
           }
           body {
@@ -139,6 +144,10 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               webLink
               thumbnail
               thumbnailLarge
+              totalItems
+              isVoted
+              totalVoter
+              totalVoterFmt
               items {
                 id
                 text
@@ -184,6 +193,81 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
       tracking {
         id
         type
+        topads {
+          id
+          ad_ref_key
+          redirect
+          sticker_id
+          sticker_image
+          product_click_url
+          shop_click_url
+          product {
+            id
+            name
+            image {
+              m_url
+              s_url
+              xs_url
+              m_ecs
+              s_ecs
+              xs_ecs
+              __typename
+            }
+            uri
+            relative_uri
+            price_format
+            count_talk_format
+            count_review_format
+            category {
+              id
+              __typename
+            }
+            product_preorder
+            product_wholesale
+            free_return
+            product_cashback
+            product_cashback_rate
+            product_rating
+            __typename
+          }
+          shop {
+            id
+            name
+            domain
+            tagline
+            location
+            city
+            image_product {
+              product_id
+              product_name
+              image_url
+              __typename
+            }
+            image_shop {
+              cover_ecs
+              s_ecs
+              xs_ecs
+              s_url
+              xs_url
+              __typename
+            }
+            gold_shop
+            lucky_shop
+            shop_is_official
+            owner_id
+            is_owner
+            badges {
+              title
+              image_url
+              __typename
+            }
+            uri
+            gold_shop_badge
+            __typename
+          }
+          applinks
+          __typename
+        }
       }
       template
     }
