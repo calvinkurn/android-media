@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/gray_background"
+    android:id="@+id/ll_mainPersist"
     android:gravity="center_horizontal|center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/dp_5">
@@ -139,7 +140,7 @@
     <ImageView
         android:id="@+id/image_icon5"
         android:layout_width="@dimen/dp_36"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/dp_36"
         android:padding="@dimen/dp_11"
         android:src="@drawable/ic_close_black" />
 </LinearLayout>

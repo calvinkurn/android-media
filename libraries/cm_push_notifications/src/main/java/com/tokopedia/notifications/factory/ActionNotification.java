@@ -109,28 +109,4 @@ public class ActionNotification extends BaseNotification {
         }
         return resultPendingIntent;
     }
-
-
-    private void setBigPictureNotification(NotificationCompat.Builder builder, BaseNotificationModel baseNotificationModel) {
-        Bitmap bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.getMedia().getMediumQuality());
-        if (null != bitmap) {
-            builder.setLargeIcon(bitmap);
-            NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle()
-                    .setSummaryText(baseNotificationModel.getDetailMessage())
-                    .bigLargeIcon(getBlankBitmap())
-                    .bigPicture(bitmap);
-            if (!TextUtils.isEmpty(baseNotificationModel.getMessage()))
-                bigPictureStyle.setSummaryText(baseNotificationModel.getMessage());
-            builder.setStyle(bigPictureStyle);
-        } else {
-            //TODO use fallbackUrl
-        }
-    }
-
-    private Bitmap getBlankBitmap() {
-        int w = 72, h = 72;
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        return Bitmap.createBitmap(w, h, conf);
-    }
-
 }

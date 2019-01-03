@@ -32,7 +32,7 @@ public class PersistentNotification extends BaseNotification {
         NotificationCompat.Builder builder = getBuilder();
         builder.setContentTitle(baseNotificationModel.getTitle());
         builder.setSmallIcon(getDrawableIcon());
-        builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
+        builder.setContentIntent(getPersistentClickPendingIntent(getRequestCode()));
         builder.setAutoCancel(false);
         builder.setOngoing(true);
         if (baseNotificationModel.getPersistentButtonList() == null || baseNotificationModel.getPersistentButtonList().size() == 0)
@@ -86,6 +86,7 @@ public class PersistentNotification extends BaseNotification {
         persistentButton = new PersistentButton();
         persistentButton.setAppLink(baseNotificationModel.getAppLink());
         persistentButton.setAppLogo(true);
+        remoteView.setOnClickPendingIntent(R.id.lin_container_1, getPersistentClickPendingIntent(persistentButton, getRequestCode()));
         remoteView.setOnClickPendingIntent(R.id.image_icon6, getPersistentClickPendingIntent(persistentButton, getRequestCode()));
 
 
@@ -118,6 +119,30 @@ public class PersistentNotification extends BaseNotification {
         intent.setAction(CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK);
         intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
         intent.putExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA, persistentButton);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            resultPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
+        return resultPendingIntent;
+    }
+
+    private PendingIntent getPersistentClickPendingIntent(int requestCode) {
+        PendingIntent resultPendingIntent;
+        Intent intent = new Intent(context, CMBroadcastReceiver.class);
+        intent.setAction(CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK);
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.getNotificationId());
+        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.getAppLink());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             resultPendingIntent = PendingIntent.getBroadcast(
                     context,
