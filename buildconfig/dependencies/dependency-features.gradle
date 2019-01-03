@@ -193,6 +193,7 @@ ext {
             wishlistCommon                : ":features:discovery:wishlist_common",
 
             instantLoan                   : ":features:fintech:instant_loan",
+//            instantLoan                   : ":features:fintech:instant_loan_no_op",
             mitraToppers                  : ":features:fintech:mitra_toppers",
             saldodetails                  : ":features:fintech:saldo_details",
             tokoCash                      : ":features:fintech:tokocash",
@@ -203,8 +204,7 @@ ext {
             searchbar                     : ":features:home:searchbar",
 
             challenges                    : ":features:im:challenges",
-
-
+//            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                  : ":features:logistic:logisticdata",
 //            logisticdata                : ":features:logistic:logisticdata_no_op",
@@ -250,6 +250,7 @@ ext {
 //            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
 
             contactUs                     : ":features:operational:contact_us",
+//            contactUs                     : ":features:operational:contact_us_no_op",
 
             payment                       : ":features:payment:payment",
 //            payment                     : ":features:payment:payment_no_op",
@@ -264,6 +265,7 @@ ext {
             gamification           : ":features:promo:gamification",
             merchantVoucher        : ":features:promo:merchant_voucher",
             tokopoints             : ":features:promo:tokopoints",
+//            tokopoints             : ":features:promo:tokopoints_no_op",
             promoCheckout           : ":features:promo:promo_checkout",
             promoCheckoutCommon     : ":features:promo:promo_checkout_common",
 
