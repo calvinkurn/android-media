@@ -124,6 +124,7 @@ public class CMNotificationFactory {
         try {
             return new Gson().fromJson(actions, Media.class);
         } catch (Exception e) {
+            Log.e(TAG, "CM-getMedia", e);
         }
         return null;
     }
@@ -136,7 +137,7 @@ public class CMNotificationFactory {
         try {
             return new JSONObject(values);
         } catch (Exception e) {
-            Log.e("getCustomValues", e.getMessage());
+            Log.e(TAG, "CM-getCustomValues", e);
         }
         return null;
     }
@@ -151,7 +152,7 @@ public class CMNotificationFactory {
             }.getType();
             return new Gson().fromJson(actions, listType);
         } catch (Exception e) {
-            Log.e("getActions", e.getMessage());
+            Log.e(TAG, "CM-getActionButtons", e);
         }
         return null;
     }
@@ -166,7 +167,8 @@ public class CMNotificationFactory {
             }.getType();
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
-            Log.e("getActions", e.getMessage());
+
+            Log.e(TAG, "CM-getPersistentNotificationData", e);
         }
         return null;
     }
@@ -181,6 +183,7 @@ public class CMNotificationFactory {
             }.getType();
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
+            Log.e(TAG, "CM-getGridList", e);
         }
         return null;
     }
@@ -194,7 +197,7 @@ public class CMNotificationFactory {
         try {
             return new JSONObject(values);
         } catch (Exception e) {
-            Log.e("getVideoData", e.getMessage());
+            Log.e(TAG, "CM-getVideoNotificationData", e);
         }
         return null;
     }
@@ -212,7 +215,8 @@ public class CMNotificationFactory {
             }.getType();
             return new Gson().fromJson(carousalData, listType);
         } catch (Exception e) {
-            Log.e("getCarousalList", e.getMessage());
+
+            Log.e(TAG, "CM-getCarousalList", e);
         }
         return null;
     }

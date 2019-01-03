@@ -47,10 +47,6 @@ public class CMUserHandler {
         try {
             String userId = getUserId();
             String gAdId = getGoogleAdId();
-
-
-            Log.d(TAG, "UserState:" + CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()));
-
             if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
                     CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
                     CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId)) {
@@ -67,7 +63,6 @@ public class CMUserHandler {
                 updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted: sendFcmTokenToServer ");
                     }
 
                     @Override

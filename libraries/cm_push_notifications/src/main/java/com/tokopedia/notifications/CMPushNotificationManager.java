@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.notifications.common.CMConstant;
 
 import java.util.Map;
@@ -50,7 +51,7 @@ public class CMPushNotificationManager {
      * @param token
      */
     public void setFcmTokenCMNotif(String token) {
-        Log.i(TAG, "token: " + token);
+        CommonUtils.dumper("token: " + token);
         if (mContext == null) {
             return;
         }
@@ -72,15 +73,13 @@ public class CMPushNotificationManager {
             throw new IllegalArgumentException("Kindly invoke init before calling notification library");
         }
         try {
-            if (null == extras) {
-                Log.e(TAG, "CMPushNotificationManager: No Intent extra available");
-            } else if (extras.containsKey(CMConstant.PayloadKeys.SOURCE)) {
+            if (null != extras && extras.containsKey(CMConstant.PayloadKeys.SOURCE)) {
                 String confirmationValue =
                         extras.get(CMConstant.PayloadKeys.SOURCE);
                 return confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE);
             }
         } catch (Exception e) {
-            Log.e(TAG, "CMPushNotificationManager: isFromMoEngagePlatform ", e);
+            Log.e(TAG, "CMPushNotificationManager: isFromCMNotificationPlatform",e);
         }
         return false;
     }

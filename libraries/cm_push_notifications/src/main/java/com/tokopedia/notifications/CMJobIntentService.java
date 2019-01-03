@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
+import android.util.Log;
 
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.factory.BaseNotification;
@@ -42,6 +43,7 @@ public class CMJobIntentService extends JobIntentService {
                 }
             }
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -53,7 +55,7 @@ public class CMJobIntentService extends JobIntentService {
             notificationManager.notify(baseNotification.baseNotificationModel.getNotificationId(), notification);
     }
 
-    private void handleSilentPush(Bundle data){
+    private void handleSilentPush(Bundle data) {
         //TODO handle Silent Push...
     }
 

@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.CarousalUtilities;
@@ -113,7 +114,7 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Activity.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Tokopedia", contents);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(context, "Coupon code copied " + contents, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.tv_coupon_code_copied) + contents, Toast.LENGTH_LONG).show();
     }
 
     private void handleNotificationClick(Context context, Intent intent, int notificationId) {
@@ -172,7 +173,6 @@ public class CMBroadcastReceiver extends BroadcastReceiver {
             NotificationManagerCompat.from(context.getApplicationContext()).cancel(notificationId);
             context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
             CarousalUtilities.deleteCarousalImageDirectory(context);
-
         } catch (Exception e) {
         }
 

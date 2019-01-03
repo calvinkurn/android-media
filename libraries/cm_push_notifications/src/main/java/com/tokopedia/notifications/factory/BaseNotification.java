@@ -17,23 +17,18 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationCacheHandler;
-import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -337,21 +332,3 @@ public abstract class BaseNotification {
     }
 
 }
-
-
-//    protected Boolean isAllowBell() {
-//        LocalCacheHandler cache = new LocalCacheHandler(context, Constant.CACHE_DELAY);
-//        long prevTime = cache.getLong(Constant.PREV_TIME);
-//        long currTIme = System.currentTimeMillis();
-//        if (currTIme - prevTime > 15000) {
-//            cache.putLong(Constant.PREV_TIME, currTIme);
-//            cache.applyEditor();
-//            return true;
-//        }
-//        return false;
-//    }
-
-//    protected Boolean isAllowVibrate() {
-//        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-//        return settings.getBoolean(Constant.Settings.NOTIFICATION_VIBRATE, false);
-//    }
