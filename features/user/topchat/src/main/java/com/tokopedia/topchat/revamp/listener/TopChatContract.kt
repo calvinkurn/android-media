@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.revamp.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 
 /**
@@ -18,6 +19,10 @@ interface TopChatContract {
 
         fun clearEditText()
 
+        fun getStringResource(id: Int): String
+
+        fun showSnackbarError(stringResource: String)
+
 
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
     }
@@ -28,6 +33,12 @@ interface TopChatContract {
         fun startTyping()
 
         fun stopTyping()
+
+        fun getExistingChat(
+                messageId: String,
+                onError: (Throwable) -> Unit,
+                onSuccess: (ChatroomViewModel) -> Unit
+        )
 
     }
 }

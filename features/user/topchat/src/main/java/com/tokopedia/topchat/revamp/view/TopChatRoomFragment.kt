@@ -9,17 +9,19 @@ import android.widget.EditText
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
-import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -28,8 +30,7 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener {
-
+        , TypingListener, SendButtonListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -37,8 +38,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     lateinit var session : UserSessionInterface
 
     private lateinit var actionBox: View
-
-    private lateinit var adapter: BaseChatAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +47,25 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun loadInitialData() {
+        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
         presenter.connectWebSocket(messageId)
+    }
+
+
+    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
+        return {
+            updateViewData(it)
+            setCanLoadMore(it)
+            getViewState().onSuccessLoadFirstTime(it)
+        }
+    }
+
+    private fun onError(): (Throwable) -> Unit {
+        return {
+            if (view != null) {
+                ToasterError.make(view, ErrorHandler.getErrorMessage(view!!.context, it)).show()
+            }
+        }
     }
 
     override fun getScreenName(): String {
@@ -62,15 +79,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun getViewState(): TopChatViewStateImpl {
         return viewState as TopChatViewStateImpl
-    }
-
-    fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {
-
-//      TODO MOVE THIS TO TOPCHATVIEW STATE
-//        chatViewState.hideLoading()
-//        chatViewState.addList(listChat)
-        getViewState().developmentView()
-
     }
 
     override fun developmentView() {
@@ -148,18 +156,25 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     fun initView(view: View?) {
         view?.let {
-            super.viewState = TopChatViewStateImpl(it, presenter, this, (activity as BaseChatToolbarActivity).getToolbar())
+            super.viewState = TopChatViewStateImpl(
+                    it,
+                    presenter,
+                    this,
+                    this,
+                    this,
+                    this,
+                    this,
+                    this,
+                    (activity as BaseChatToolbarActivity).getToolbar()
+            )
 
-            getViewState()?.run {
-                getViewState().showLoading()
-                adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
-                getViewState().setAdapter(adapter)
-            }
+//            getViewState()?.run {
+//                getViewState().showLoading()
+//                adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
+//                getViewState().setAdapter(adapter)
+//            }
 
             hideLoading()
-            arguments?.run {
-                //            presenter.getChatUseCase(this.getString("message_id", ""))
-            }
         }
     }
 
@@ -210,6 +225,24 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId)
     }
 
+    override fun getStringResource(id: Int): String {
+        activity?.let {
+            return it.getString(id)
+        }
+        return ""
+    }
+
+    override fun showSnackbarError(stringResource: String) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun setCanLoadMore(chatroomViewModel: ChatroomViewModel) {
+        if (chatroomViewModel.canLoadMore) {
+            enableLoadMore()
+        } else {
+            disableLoadMore()
+        }
+    }
 
     override fun onStartTyping() {
         presenter.startTyping()
@@ -217,6 +250,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onStopTyping() {
         presenter.stopTyping()
+    }
+
+    override fun onSendClicked(message: String, generateStartTime: String) {
+        presenter.sendMessage(messageId, message, generateStartTime, "")
     }
 
     override fun onDestroy() {

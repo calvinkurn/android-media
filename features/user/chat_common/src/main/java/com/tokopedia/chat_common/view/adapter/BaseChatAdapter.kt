@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.TypingChatModel
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
@@ -233,6 +234,10 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
         if (visitables.size > 1) notifyItemRangeChanged(0, 1)
     }
 
+    fun addNewMessage(item: Visitable<*>){
+        addElement(item)
+    }
+
     fun removeDummy(visitable: Visitable<*>) {
         if (visitable is SendableViewModel && visitables.isNotEmpty()) {
             val iter = visitables.iterator()
@@ -246,6 +251,20 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl,
                     this.visitables.remove(chatItem)
                     notifyItemRemoved(position)
                     break
+                }
+            }
+        }
+    }
+
+    fun changeReadStatus() {
+        for (i in visitables.indices) {
+            val currentItem = visitables.get(i)
+            if (currentItem is MessageViewModel && currentItem.isSender) {
+                if ((visitables.get(i) as MessageViewModel).isRead) {
+                    break
+                } else {
+                    (visitables.get(i) as MessageViewModel).isRead = true
+                    notifyItemRangeChanged(i, 1)
                 }
             }
         }

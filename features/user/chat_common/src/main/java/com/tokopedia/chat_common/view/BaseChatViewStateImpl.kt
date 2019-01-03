@@ -176,7 +176,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         recyclerView.adapter = adapter
     }
 
-    fun getAdapter(): BaseChatAdapter {
+    open fun getAdapter(): BaseChatAdapter {
         return recyclerView.adapter as BaseChatAdapter
     }
 
@@ -197,4 +197,8 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         replyBox.visibility = View.VISIBLE
     }
 
+
+    override fun onReceiveRead() {
+        getAdapter().changeReadStatus()
+    }
 }

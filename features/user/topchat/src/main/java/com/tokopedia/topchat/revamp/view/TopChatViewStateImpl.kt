@@ -8,12 +8,20 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
+import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import rx.functions.Action1
 import java.util.concurrent.TimeUnit
-
 /**
  * @author : Steven 29/11/18
  */
@@ -21,11 +29,17 @@ import java.util.concurrent.TimeUnit
 class TopChatViewStateImpl(
         @NonNull override val view: View,
         presenter: TopChatRoomPresenter,
+        private val imageAnnouncementListener: ImageAnnouncementListener,
+        private val chatLinkHandlerListener: ChatLinkHandlerListener,
+        private val imageUploadListener: ImageUploadListener,
+        private val productAttachmentListener: ProductAttachmentListener,
         private val typingListener: TypingListener,
+        private val sendListener: SendButtonListener,
         toolbar: Toolbar
-) : BaseChatViewStateImpl(view, toolbar), TopChatViewState{
+) : BaseChatViewStateImpl(view, toolbar), TopChatViewState {
 
 
+    private lateinit var adapter: TopChatRoomAdapter
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
@@ -45,10 +59,6 @@ class TopChatViewStateImpl(
                 scrollDownWhenInBottom()
             }
         }
-//        replyWatcher = EventsWatcher.text(replyEditText)
-//
-//        replyIsTyping = replyWatcher.map(Func1 { t -> t.length > 0 })
-
         replyIsTyping.subscribe(Action1 {
             if (it) {
                 minimizeTools()
@@ -62,13 +72,15 @@ class TopChatViewStateImpl(
                 }
 
         maximize.setOnClickListener { maximizeTools() }
-        //TODO ADD MESSAGE ID & OPPONENT ID
+
         sendButton.setOnClickListener {
-//            presenter.sendMessage("",
-//                    replyEditText.text.toString(),
-//                    SendableViewModel.generateStartTime(),
-//                    "")
+            sendListener.onSendClicked(replyEditText.text.toString(),
+                    SendableViewModel.generateStartTime())
         }
+
+        adapter = TopChatRoomAdapter(TopChatTypeFactoryImpl(imageAnnouncementListener
+                , chatLinkHandlerListener, imageUploadListener, productAttachmentListener), ArrayList())
+        setAdapter(adapter)
 //
 //        templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(this))
 //        templateRecyclerView.setHasFixedSize(true)
@@ -120,13 +132,8 @@ class TopChatViewStateImpl(
         actionBox?.visibility = View.VISIBLE
     }
 
-    fun recipientTyping() {
-        getAdapter().showTyping()
-        scrollDownWhenInBottom()
-    }
-
-    fun recipientStopTyping() {
-        getAdapter().removeTyping()
+    override fun getAdapter(): TopChatRoomAdapter {
+        return super.getAdapter() as TopChatRoomAdapter
     }
 
     fun removeDummy(visitable: Visitable<*>) {
@@ -134,7 +141,7 @@ class TopChatViewStateImpl(
     }
 
     fun addMessage(visitable: Visitable<*>) {
-        getAdapter().addElement(visitable)
+        getAdapter().addNewMessage(visitable)
         scrollDownWhenInBottom()
     }
 
@@ -146,4 +153,28 @@ class TopChatViewStateImpl(
         }
     }
 
+    fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel) {
+        hideLoading()
+        getAdapter().addList(viewModel.listChat)
+        scrollToBottom()
+        updateHeader(viewModel)
+        showReplyBox()
+        showActionButtons()
+        checkShowQuickReply(viewModel)
+    }
+
+    private fun showActionButtons() {
+        pickerButton.visibility = View.VISIBLE
+        attachProductButton.visibility = View.VISIBLE
+        maximizeButton.visibility = View.GONE
+    }
+
+
+    private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
+//        if (chatroomViewModel.listChat.isNotEmpty()
+//                && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
+//            showQuickReply(chatroomViewModel.listChat[0] as QuickReplyListViewModel)
+//        }
+    }
 }
+

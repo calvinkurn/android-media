@@ -76,9 +76,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     open fun prepareListener() {
-//        send_.setOnClickListener {
-//           onSendButtonClicked()
-//        }
+        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
+            onSendButtonClicked()
+        }
     }
 
     private fun prepareView(view: View) {
@@ -229,7 +229,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveReadEvent() {
-        return
+        viewState.onReceiveRead()
     }
 
     abstract fun onSendButtonClicked()

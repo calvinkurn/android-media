@@ -3,8 +3,6 @@ package com.tokopedia.topchat.revamp.di
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.chat_common.data.api.ChatRoomApi
-import com.tokopedia.chat_common.domain.GetChatUseCase
-import com.tokopedia.chat_common.domain.mapper.GetChatMapper
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -42,13 +40,6 @@ class TopChatRoomModule {
     @Provides
     internal fun provideChatRoomApi(@Named("retrofit") retrofit: Retrofit): ChatRoomApi {
         return retrofit.create(ChatRoomApi::class.java)
-    }
-
-
-    @TopChatRoomScope
-    @Provides
-    internal fun provideGetChatUseCase(api: ChatRoomApi, mapper: GetChatMapper): GetChatUseCase {
-        return GetChatUseCase()
     }
 
     @TopChatRoomScope

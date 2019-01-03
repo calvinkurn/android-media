@@ -4,17 +4,20 @@ import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
-import com.tokopedia.chat_common.domain.GetChatUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
+import com.tokopedia.topchat.revamp.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,19 +38,12 @@ class TopChatRoomPresenter @Inject constructor(
         override var userSession: UserSessionInterface,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
-    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     private var mSubscription: CompositeSubscription
+
     private lateinit var webSocketUrl: String
     lateinit var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
-
     init {
         mSubscription = CompositeSubscription()
         dummyList = arrayListOf()
@@ -71,7 +67,6 @@ class TopChatRoomPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
-                view.developmentView()
                 readMessage()
             }
 
@@ -119,11 +114,11 @@ class TopChatRoomPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-
     override fun destroyWebSocket() {
         mSubscription.clear()
         mSubscription.unsubscribe()
     }
+
 
     override fun mappingEvent(response: WebSocketResponse, messageId: String) {
         val pojo: ChatSocketPojo = Gson().fromJson(response.getData(), ChatSocketPojo::class.java)
@@ -135,12 +130,27 @@ class TopChatRoomPresenter @Inject constructor(
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
-                getDummyOnList(pojo)?.let {
-                    view.removeDummy(it)
+                if(!pojo.isOpposite){
+                    getDummyOnList(pojo)?.let {
+                        view.removeDummy(it)
+                    }
+                }else {
+                    readMessage()
                 }
             }
         }
     }
+
+    override fun getExistingChat(
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onSuccess: (ChatroomViewModel) -> Unit) {
+        if (messageId.isNotEmpty()) {
+            getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
+                    GetChatSubscriber(onError, onSuccess))
+        }
+    }
+
 
     private fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
@@ -171,7 +181,7 @@ class TopChatRoomPresenter @Inject constructor(
 //        })
 //    }
 //
-    private fun processDummyMessage(messageText: String, startTime: String, senderId: String) {
+    private fun processDummyMessage(messageText: String, startTime: String) {
         var dummyMessage = mapToDummyMessage(thisMessageId, messageText, startTime)
         view.addDummyMessage(dummyMessage)
         dummyList.add(dummyMessage)
@@ -183,14 +193,17 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
-        for (i in 0.. dummyList.size){
-            var temp = (dummyList[i] as MessageViewModel)
-            if(temp.startTime == pojo.startTime
-                    && temp.messageId == pojo.msgId.toString()
-                    && temp.message.equals(pojo.message.originalReply)){
-                return temp
+        dummyList.isNotEmpty().let {
+            for (i in 0.. dummyList.size){
+                var temp = (dummyList[i] as MessageViewModel)
+                if(temp.startTime == pojo.startTime
+                        && temp.messageId == pojo.msgId.toString()
+                        && temp.message.equals(pojo.message.originalReply)){
+                    return temp
+                }
             }
         }
+
         return null
     }
 
@@ -211,6 +224,20 @@ class TopChatRoomPresenter @Inject constructor(
 //        }
 //    }
 
+    override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
+        if (isValidReply(sendMessage)) {
+            view.clearEditText()
+//            view.disableAction()
+            processDummyMessage(sendMessage, startTime)
+            sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime))
+            sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+        }
+    }
+
+    override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun sendMessageWebSocket(messageText: String) {
         RxWebSocket.send(
                 msg = messageText,
@@ -222,7 +249,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     private fun isValidReply(message: String): Boolean {
         if (message.trim { it <= ' ' }.isEmpty()) {
-//            view.showSnackbarError(view.getStringResource(R.string.error_empty_product))
+            view.showSnackbarError(view.getStringResource(R.string.error_empty_product))
             return false
         }
         return true
