@@ -113,23 +113,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             updateViewData(it)
-            setCanLoadMore(it)
+            renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
         }
     }
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
-            setCanLoadMore(it)
-            getViewState().onSuccessLoadPrevious(it)
-        }
-    }
-
-    private fun setCanLoadMore(chatroomViewModel: ChatroomViewModel) {
-        if (chatroomViewModel.canLoadMore) {
-            enableLoadMore()
-        } else {
-            disableLoadMore()
+            renderList(it.listChat, it.canLoadMore)
         }
     }
 

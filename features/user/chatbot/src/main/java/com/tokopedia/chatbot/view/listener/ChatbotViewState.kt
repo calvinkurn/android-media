@@ -17,8 +17,6 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 interface ChatbotViewState : BaseChatViewState {
     fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel)
 
-    fun onSuccessLoadPrevious(it: ChatroomViewModel)
-
     fun onCheckToHideQuickReply(visitable: Visitable<*>)
 
     fun onReceiveQuickReplyEvent(visitable: QuickReplyListViewModel)

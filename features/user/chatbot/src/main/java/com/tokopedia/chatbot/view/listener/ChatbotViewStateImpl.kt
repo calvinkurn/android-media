@@ -51,18 +51,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
-        hideLoading()
-        adapter.addElement(chatroomViewModel.listChat)
         scrollToBottom()
         updateHeader(chatroomViewModel)
         showReplyBox()
         showActionButtons()
         checkShowQuickReply(chatroomViewModel)
-    }
-
-    override fun onSuccessLoadPrevious(chatroomViewModel: ChatroomViewModel) {
-        adapter.hideLoading()
-        adapter.addElement(chatroomViewModel.listChat)
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
