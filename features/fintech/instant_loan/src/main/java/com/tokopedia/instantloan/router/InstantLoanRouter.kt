@@ -9,6 +9,5 @@ import android.content.Intent
 
 interface InstantLoanRouter {
     val isInstantLoanEnabled: Boolean
-    fun getInstantLoanActivityIntent(context: Context): Intent
     fun getLoginIntent(context: Context?): Intent
 }
