@@ -34,7 +34,7 @@ class CardTitleView : BaseCustomView {
     }
 
     fun bind(title: Title, template: TemplateTitle) {
-        this.shouldShowWithAction(shouldShowTitle(template)) {
+        titleLayout.shouldShowWithAction(shouldShowTitle(template)) {
             text.shouldShowWithAction(template.text) {
                 text.text = title.text
                 text.setOnClickListener { onTextClick() }
