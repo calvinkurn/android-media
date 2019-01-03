@@ -21,6 +21,8 @@ class BannerViewHolder(v: View) : AbstractViewHolder<BannerViewModel>(v) {
 
     override fun bind(element: BannerViewModel) {
         adapter.setData(element.itemViewModels)
+
+        itemView.cardTitle.bind(element.title, element.template.cardbanner.title)
     }
 
     companion object {

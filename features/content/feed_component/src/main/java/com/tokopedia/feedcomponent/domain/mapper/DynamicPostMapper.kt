@@ -7,6 +7,8 @@ import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.template.Template
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
@@ -45,8 +47,7 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
                 } ?: break
 
                 when (feed.type) {
-                    //TODO milhamj
-//                    TYPE_CARDBANNER -> posts.add(mapCardBanner(feed))
+                    TYPE_CARDBANNER -> posts.add(mapCardBanner(feed, templateData.template))
                     TYPE_CARDRECOM -> posts.add(mapCardRecommendation(feed, templateData.template))
                     TYPE_CARDPOST -> posts.add(mapCardPost(feed, templateData.template))
                 }
@@ -55,9 +56,28 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
         return posts
     }
 
-//    private fun mapCardBanner(feed: Feed) {
-//
-//    }
+    private fun mapCardBanner(feed: Feed, template: Template): BannerViewModel {
+        val bannerList: MutableList<BannerItemViewModel> = ArrayList()
+        for (media in feed.content.cardbanner.body.media) {
+            val id = try {
+                media.id.toInt()
+            } catch (e: NumberFormatException) {
+                0
+            }
+
+            bannerList.add(BannerItemViewModel(
+                    id,
+                    media.thumbnail,
+                    media.appLink
+            ))
+        }
+
+        return BannerViewModel(
+                bannerList,
+                feed.content.cardbanner.title,
+                template
+        )
+    }
 
     private fun mapCardRecommendation(feed: Feed, template: Template): FeedRecommendationViewModel {
         val cards: MutableList<RecommendationCardViewModel> = ArrayList()

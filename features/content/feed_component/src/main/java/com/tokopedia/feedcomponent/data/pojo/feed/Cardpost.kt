@@ -23,5 +23,4 @@ data class Cardpost(
         @SerializedName("footer")
         @Expose
         val footer: Footer = Footer()
-
 )

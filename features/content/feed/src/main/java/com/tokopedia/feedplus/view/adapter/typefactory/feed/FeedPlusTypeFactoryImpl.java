@@ -215,7 +215,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(@NotNull BannerViewModel bannerViewModel) {
-        return 0;
+        return BannerViewHolder.Companion.getLAYOUT();
     }
 
     @Override
