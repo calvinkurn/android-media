@@ -19,12 +19,12 @@ import android.widget.TextView;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
@@ -33,7 +33,7 @@ import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback;
-import com.tokopedia.topchat.common.di.DaggerTemplateChatComponent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,7 +181,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
     @Override
     public void setTemplate(List<Visitable> listTemplate) {
         adapter.setList(listTemplate);
-        if(listTemplate != null) prepareResult();
+        if (listTemplate != null) prepareResult();
     }
 
     @Override
@@ -199,7 +199,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             Bundle bundle = new Bundle();
             bundle.putString(InboxMessageConstant.PARAM_MESSAGE, message);
             bundle.putInt(InboxMessageConstant.PARAM_POSITION, position);
-            bundle.putInt(InboxMessageConstant.PARAM_NAV, adapter.getList().size()-1);
+            bundle.putInt(InboxMessageConstant.PARAM_NAV, adapter.getList().size() - 1);
             bundle.putStringArrayList(InboxMessageConstant.PARAM_ALL, adapter.getListString());
             if (message == null) {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, CREATE);
@@ -232,9 +232,9 @@ public class TemplateChatFragment extends BaseDaggerFragment
         adapter.revertArrange(to, from);
     }
 
-    public ArrayList<Integer> arrangeList(int from, int to){
+    public ArrayList<Integer> arrangeList(int from, int to) {
         ArrayList<Integer> arrayList = new ArrayList<>();
-        for (int i = 0; i < adapter.getList().size()-1; i++) {
+        for (int i = 0; i < adapter.getList().size() - 1; i++) {
             arrayList.add(i + 1);
         }
 
@@ -321,9 +321,9 @@ public class TemplateChatFragment extends BaseDaggerFragment
     }
 
     private void prepareResultSwitch() {
-        if(switchTemplate.isChecked()){
+        if (switchTemplate.isChecked()) {
             prepareResult();
-        }else {
+        } else {
             Intent intent = new Intent();
             intent.putStringArrayListExtra(LIST_RESULT, new ArrayList<String>());
             getActivity().setResult(Activity.RESULT_OK, intent);
