@@ -31,8 +31,8 @@ public class RichNotification extends BaseNotification {
         NotificationCompat.Builder builder = getBuilder();
         if (null == builder)
             return null;
-        builder.setContentTitle(baseNotificationModel.getTitle());
-        builder.setContentText(baseNotificationModel.getMessage());
+        builder.setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getTitle()));
+        builder.setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getMessage()));
         builder.setSmallIcon(getDrawableIcon());
         builder.setContentIntent(createMainPendingIntent(baseNotificationModel, getRequestCode()));
         builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.getNotificationId(), getRequestCode()));
@@ -79,7 +79,7 @@ public class RichNotification extends BaseNotification {
             NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
             bigPictureStyle.setBigContentTitle(baseNotificationModel.getTitle());
             if (baseNotificationModel.getDetailMessage() != null) {
-                bigPictureStyle.setSummaryText(baseNotificationModel.getDetailMessage());
+                bigPictureStyle.setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getDetailMessage()));
             }
             bigPictureStyle.bigPicture(bitmap);
             bigPictureStyle.bigLargeIcon(getBlankBitmap());

@@ -26,7 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#ef9a9a"
                 android:scaleType="fitXY" />
 
             <ImageView
@@ -34,7 +33,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#a4e4ac"
                 android:scaleType="fitXY" />
 
             <ImageView
@@ -42,7 +40,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#a4e4ac"
                 android:scaleType="fitXY" />
 
         </LinearLayout>
@@ -59,7 +56,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#a79999"
                 android:scaleType="fitXY" />
 
             <ImageView
@@ -67,7 +63,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#afdef7"
                 android:scaleType="fitXY" />
 
 
@@ -76,7 +71,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#a4e4ac"
                 android:scaleType="fitXY" />
         </LinearLayout>
     </LinearLayout>

@@ -36,11 +36,12 @@ public class ImageNotification extends BaseNotification {
         if (null != bitmap) {
             builder.setLargeIcon(bitmap);
             NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle()
-                    .setSummaryText(baseNotificationModel.getDetailMessage())
+                    .setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getDetailMessage()))
                     .bigLargeIcon(getBlankBitmap())
                     .bigPicture(bitmap);
             if (!TextUtils.isEmpty(baseNotificationModel.getMessage()))
-                bigPictureStyle.setSummaryText(baseNotificationModel.getMessage());
+                bigPictureStyle.setSummaryText(CMNotificationUtils
+                        .getSpannedTextFromStr(baseNotificationModel.getMessage()));
             builder.setStyle(bigPictureStyle);
         } else {
             //TODO use fallbackUrl

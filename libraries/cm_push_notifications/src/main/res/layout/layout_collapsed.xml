@@ -26,8 +26,7 @@
             android:fadingEdge="horizontal"
             android:singleLine="true"
             android:textColor="#de000000"
-            android:textSize="15sp"
-            tools:text="Title" />
+            android:textSize="15sp"/>
 
 
         <TextView
@@ -38,15 +37,13 @@
             android:fadingEdge="horizontal"
             android:singleLine="true"
             android:textColor="@color/secondary_text_default_material_light"
-            android:textSize="@dimen/notification_subtext_size"
-            tools:text="Message" />
+            android:textSize="@dimen/notification_subtext_size"/>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_icon_collapsed"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_gravity="end|right"
-        tools:background="#705d64" />
+        android:layout_gravity="end|right" />
 
 </FrameLayout>
