@@ -198,8 +198,6 @@ public interface TkpdCoreRouter {
 
     Intent getInboxTalkCallingIntent(Context context);
 
-    void refereshFcmTokenToCMNotif(String token);
-
     Intent getAutomaticResetPasswordIntent(Context context, String email);
 
 }
