@@ -2,6 +2,7 @@ package com.tokopedia.topchat.revamp.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 
 /**
@@ -42,6 +43,8 @@ interface TopChatContract {
                 onError: (Throwable) -> Unit,
                 onSuccess: (ChatroomViewModel) -> Unit
         )
+
+        fun startUploadImages(it: ImageUploadViewModel)
 
     }
 }

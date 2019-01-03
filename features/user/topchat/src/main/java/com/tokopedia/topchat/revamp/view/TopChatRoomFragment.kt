@@ -3,6 +3,7 @@ package com.tokopedia.topchat.revamp.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +19,17 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -33,7 +39,7 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener, ChatRoomContract.View.TemplateChatListener {
+        , TypingListener, SendButtonListener, ImagePickerListener, ChatRoomContract.View.TemplateChatListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -170,6 +176,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     this,
                     this,
                     this,
+                    this,
                     (activity as BaseChatToolbarActivity).getToolbar()
             )
 
@@ -288,12 +295,56 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().setTemplate(null)
     }
 
+    override fun pickImageToUpload() {
+        activity?.let {
+            val builder = ImagePickerBuilder(it.getString(com.tokopedia.topchat.R.string.choose_image),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true, null, null)
+            val intent = ImagePickerActivity.getIntent(getContext(), builder)
+            startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
             100 -> {
                 presenter.getTemplate()
             }
+
+            TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
+                if (resultCode != Activity.RESULT_OK || data == null) {
+                    return
+                }
+                processImagePathToUpload(data)?.let {
+                    //                    chatViewState.addMessage(it)
+                    presenter.startUploadImages(it)
+                }
+            }
         }
     }
+
+    private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
+
+        val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+        if (imagePathList == null || imagePathList.size <= 0) {
+            return null
+        }
+        val imagePath = imagePathList[0]
+        if (!TextUtils.isEmpty(imagePath)) {
+            val temp = generateChatViewModelWithImage(imagePath)
+            return temp
+        }
+        return null
+    }
+
+    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
+        return ImageUploadViewModel(
+                arguments!!.getString(BaseChatToolbarActivity.Companion.PARAM_SENDER_ID),
+                (System.currentTimeMillis()/1000).toString(),
+                imageUrl,
+                SendableViewModel.generateStartTime()
+        )
+    }
+
 }

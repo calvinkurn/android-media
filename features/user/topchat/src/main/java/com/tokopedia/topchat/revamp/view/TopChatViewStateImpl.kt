@@ -23,6 +23,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
 import rx.functions.Action1
 import java.util.concurrent.TimeUnit
@@ -40,6 +41,7 @@ class TopChatViewStateImpl(
         private val typingListener: TypingListener,
         private val sendListener: SendButtonListener,
         private val templateListener: ChatRoomContract.View.TemplateChatListener,
+        private val imagePickerListener: ImagePickerListener,
         toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar), TopChatViewState {
 
@@ -93,9 +95,9 @@ class TopChatViewStateImpl(
         templateRecyclerView.adapter = templateAdapter
         templateRecyclerView.visibility = View.GONE
 
-//        pickerButton.setOnClickListener {
-//            contractView.pickImageToUpload()
-//        }
+        pickerButton.setOnClickListener {
+            imagePickerListener.pickImageToUpload()
+        }
     }
 
     private fun minimizeTools() {

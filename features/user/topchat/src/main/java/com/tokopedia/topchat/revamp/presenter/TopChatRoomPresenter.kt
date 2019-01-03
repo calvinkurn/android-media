@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
@@ -15,6 +16,8 @@ import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
+import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
@@ -23,10 +26,13 @@ import com.tokopedia.topchat.revamp.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
+import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
@@ -41,6 +47,7 @@ class TopChatRoomPresenter @Inject constructor(
         var getChatUseCase: GetChatUseCase,
         override var userSession: UserSessionInterface,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
+        var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
@@ -186,31 +193,35 @@ class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
 
-//    override fun startUploadImages(it: ImageUploadViewModel) {
-//
-//        uploadImageUseCase.unsubscribe()
-//        var reqParam = HashMap<String, RequestBody>()
-//        val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
-//        reqParam.put("web_service", createRequestBody("1"))
-//        reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
-//        var params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
-//        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>(){
-//            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>?) {
-//                t
-//            }
-//
-//
-//            override fun onCompleted() {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//            }
-//
-//            override fun onError(e: Throwable?) {
-//                e
-//            }
-//
-//        })
-//    }
-//
+    override fun startUploadImages(it: ImageUploadViewModel) {
+
+        uploadImageUseCase.unsubscribe()
+        var reqParam = HashMap<String, RequestBody>()
+        val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
+        reqParam.put("web_service", createRequestBody("1"))
+        reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
+        var params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
+        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>(){
+            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>?) {
+                t
+            }
+
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                e
+            }
+
+        })
+    }
+
+    private fun createRequestBody(content: String): RequestBody {
+        return RequestBody.create(MediaType.parse("text/plain"), content)
+    }
+
     private fun processDummyMessage(messageText: String, startTime: String) {
         var dummyMessage = mapToDummyMessage(thisMessageId, messageText, startTime)
         view.addDummyMessage(dummyMessage)

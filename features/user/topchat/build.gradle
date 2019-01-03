@@ -46,6 +46,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
+    implementation project(rootProject.ext.libraries.imageuploader)
 
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
