@@ -31,6 +31,7 @@ import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
 import com.tokopedia.inbox.rescenter.shipping.model.EditAWBRequest;
+import com.tokopedia.inbox.rescenter.shipping.model.EditAWBResponse;
 import com.tokopedia.inbox.rescenter.shipping.model.InputAWBRequest;
 import com.tokopedia.inbox.rescenter.shipping.model.InputAWBResponse;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
@@ -398,7 +399,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.edit_awb_request), InputAWBResponse.class, variables);
+                R.raw.edit_awb_request), EditAWBResponse.class, variables);
         graphqlUseCase.addRequest(graphqlRequest);
 
         variables.put("input", editAWBRequest);
@@ -424,9 +425,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             public void onNext(GraphqlResponse graphqlResponse) {
 
                 if (graphqlResponse != null) {
-                    InputAWBResponse inputAWBResponse = graphqlResponse.getData(InputAWBResponse.class);
-                    if (inputAWBResponse != null) {
-                        editAWBRequest.setCacheKey(inputAWBResponse.getResInputValidationResponse().getCacheKey());
+                    EditAWBResponse editAWBResponse = graphqlResponse.getData(EditAWBResponse.class);
+                    if (editAWBResponse != null) {
+                        editAWBRequest.setCacheKey(editAWBResponse.getResInputValidationResponse().getCacheKey());
                         resEditSubmit(editAWBRequest, params);
                     }
                 }
