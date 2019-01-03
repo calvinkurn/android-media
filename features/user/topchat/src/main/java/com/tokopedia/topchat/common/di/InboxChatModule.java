@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -23,6 +24,7 @@ import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthIntercept
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
@@ -439,12 +441,13 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                     @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
                                      ChuckInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new FingerprintInterceptor(context))
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(AuthUtil.KEY.KEY_WSV4))
                 .addInterceptor(errorResponseInterceptor)
@@ -537,6 +540,18 @@ public class InboxChatModule {
     @Provides
     UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @InboxChatScope
+    @Provides
+    GraphqlUseCase provideGraphqlUseCase(){
+        return new GraphqlUseCase();
+    }
+
+    @Provides
+    GetChatBlastSellerMetaDataUseCase provideGetChatBlastSellerMetaDataUseCase(GraphqlUseCase graphqlUseCase,
+                                                                               @ApplicationContext Context context){
+        return new GetChatBlastSellerMetaDataUseCase(graphqlUseCase, context);
     }
 
     @InboxChatScope

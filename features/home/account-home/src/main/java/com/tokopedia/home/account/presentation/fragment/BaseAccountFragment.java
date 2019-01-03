@@ -7,10 +7,13 @@ import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.analytics.TrackAnalytics;
+import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -26,6 +29,9 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+
+import java.util.HashMap;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -85,10 +91,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
                 ((AccountHomeRouter) getContext().getApplicationContext()).goToCreateMerchantRedirect(getContext());
             }
-        } else if (applink.equals(AccountConstants.Navigation.MITRA_TOPPERS)
-                && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getMitraToppersActivityIntent
-                    (getContext()));
         }
 
         return false;
@@ -142,7 +144,15 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(), item.getMainText());
+
+        if (getContext() != null && getContext().getString(R.string.title_menu_loan)
+                .equalsIgnoreCase(item.getMainText())) {
+            TrackAnalytics.sendEvent(FirebaseEvent.SellerHome.HOMEPAGE_AKUN_PENJUAL_CLICK,
+                    new HashMap<>(), getContext());
+        }
+
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
+                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
     }
 
@@ -192,8 +202,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTokopediaPayRightItemClicked(String label, String applink, TokopediaPayBSModel bsData) {
+    public void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
+
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
+        sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
+                AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
+                String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccStatus));
 
         if (applink != null && applink.startsWith("http")) {
             openApplink(String.format("%s?url=%s",
@@ -237,15 +251,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onTopadsInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).
-                    gotoTopAdsDashboard(getContext());
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, TopAdsCommonConstant.TOPADS_SELLER_CENTER));
         }
     }
 
     @Override
     public void onGMInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, AccountHomeUrl.GOLD_MERCHANT));
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, GMConstant.getGMEduUrl(getContext())));
         }
     }
 
@@ -288,6 +301,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         }
     }
 
+    private void sendOVOTracking(String title, String section, String item) {
+        if (accountAnalytics == null)
+            return;
+
+        if (title == null || section == null || item == null)
+            return;
+
+        accountAnalytics.eventClickOVOPayLater(
+                title.toLowerCase(),
+                section.toLowerCase(),
+                item.toLowerCase());
+    }
+
     private void sendTracking(String title, String section, String item) {
         if (accountAnalytics == null)
             return;
@@ -311,5 +337,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onTickerClosed() {
 
+    }
+
+    @Override
+    public void onTopAdsMenuClicked() {
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+            ((AccountHomeRouter) getContext().getApplicationContext()).
+                    gotoTopAdsDashboard(getContext());
+        }
     }
 }

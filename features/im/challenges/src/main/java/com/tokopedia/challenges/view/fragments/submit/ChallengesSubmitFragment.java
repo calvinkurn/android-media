@@ -1,6 +1,5 @@
 package com.tokopedia.challenges.view.fragments.submit;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -21,13 +20,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
@@ -47,15 +44,7 @@ import com.tokopedia.imagepicker.picker.main.view.VideoPickerActivity;
 import java.io.File;
 import java.util.ArrayList;
 
-
 import javax.inject.Inject;
-
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
@@ -66,7 +55,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
-@RuntimePermissions
 public class ChallengesSubmitFragment extends BaseDaggerFragment implements IChallengesSubmitContract.View {
 
     private ImageView mSelectedImage;
@@ -98,6 +86,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private String channelDesc;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
+    private final static String SCREEN_NAME = "challenges/submit_challenge";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -384,43 +373,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         return null;
     }
 
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionVideoPicker() {
-        startActivityForResult(
-                ((ChallengesModuleRouter) ((getActivity()).getApplication())).getGalleryVideoIntent(getActivity()),
-                REQUEST_CODE_VIDEO
-        );
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionVideoImagePicker() {
-        startActivityForResult(
-                ((ChallengesModuleRouter) ((getActivity()).getApplication())).getGalleryVideoImageIntent(getActivity()),
-                REQUEST_CODE_IMAGE_VIDEO
-        );
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ChallengesSubmitFragmentPermissionsDispatcher.onRequestPermissionsResult(ChallengesSubmitFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        ((ChallengesModuleRouter) ((getActivity()).getApplication())).onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        ((ChallengesModuleRouter) ((getActivity()).getApplication())).onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        ((ChallengesModuleRouter) ((getActivity()).getApplication())).onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
     @Override
     public String getChallengeId() {
         return channelId;
@@ -471,5 +423,11 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public void onDestroyView() {
         presenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
+        super.onResume();
     }
 }

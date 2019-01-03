@@ -1,13 +1,11 @@
 package com.tokopedia.core.router.digitalmodule;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 
 /**
  * @author anggaprasetiyo on 2/23/17.
@@ -16,8 +14,6 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
  */
 
 public interface IDigitalModuleRouter {
-
-    int REQUEST_CODE_CART_DIGITAL = 216;
     int REQUEST_CODE_LOGIN = 221;
     int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 217;
     int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 218;
@@ -30,8 +26,6 @@ public interface IDigitalModuleRouter {
     int PAYMENT_SUCCESS = 5;
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
-
-    Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
     Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle);
 

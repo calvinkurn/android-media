@@ -324,6 +324,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(FULL_NAME, fullName);
         editor.putString(SHOP_ID, shopId);
         editor.putString(SHOP_NAME, shopName);
+        editor.putString(EMAIL, email);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.putBoolean(HAS_SHOWN_SALDO_WARNING, false);
         editor.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);

@@ -3,7 +3,7 @@ package com.tokopedia.discovery.catalog.presenter;
 import android.app.Activity;
 
 import com.tokopedia.discovery.catalog.model.CatalogImage;
-import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 
 import java.util.List;
 

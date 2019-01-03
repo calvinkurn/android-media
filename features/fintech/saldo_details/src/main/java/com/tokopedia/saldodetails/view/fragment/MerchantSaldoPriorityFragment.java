@@ -258,27 +258,30 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         }
         int list_size = anchorList.size();
         for (int i = list_size - 1; i >= 0; i--) {
-            View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
-            TextView anchorLabel = view.findViewById(R.id.anchor_label);
 
-            anchorLabel.setText(anchorList.get(i).getLabel());
-            anchorLabel.setTag(anchorList.get(i).getUrl());
+            GqlAnchorListResponse gqlAnchorListResponse = anchorList.get(i);
+            if (gqlAnchorListResponse != null) {
+                View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
+                TextView anchorLabel = view.findViewById(R.id.anchor_label);
 
-            try {
-                anchorLabel.setTextColor(Color.parseColor(anchorList.get(i).getColor()));
-            } catch (Exception e) {
-                anchorLabel.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+                anchorLabel.setText(gqlAnchorListResponse.getLabel());
+                anchorLabel.setTag(gqlAnchorListResponse.getUrl());
+
+                try {
+                    anchorLabel.setTextColor(Color.parseColor(gqlAnchorListResponse.getColor()));
+                } catch (Exception e) {
+                    anchorLabel.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+                }
+
+                anchorLabel.setOnClickListener(v -> {
+                    saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.getText().toString());
+                    RouteManager.route(context, String.format("%s?url=%s",
+                            ApplinkConst.WEBVIEW,
+                            gqlAnchorListResponse.getUrl()));
+                });
+
+                spActionListLinearLayout.addView(view);
             }
-
-            int finalI = i;
-            anchorLabel.setOnClickListener(v -> {
-                saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.getText().toString());
-                RouteManager.route(context, String.format("%s?url=%s",
-                        ApplinkConst.WEBVIEW,
-                        anchorList.get(finalI).getUrl()));
-            });
-
-            spActionListLinearLayout.addView(view);
         }
     }
 

@@ -7,6 +7,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 
 import java.util.concurrent.TimeUnit;
 

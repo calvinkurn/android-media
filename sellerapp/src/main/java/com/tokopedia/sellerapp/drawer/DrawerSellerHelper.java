@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -26,6 +27,9 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.gm.common.constant.GMParamConstant;
+import com.tokopedia.gm.resource.GMConstant;
+import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -145,7 +149,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
-        if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
+        if (!TrackingUtils.getBoolean(context, AppEventTracking.GTM.CONTACT_US)) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
                     R.drawable.ic_help,
                     TkpdState.DrawerPosition.HELP,
@@ -280,15 +284,16 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
-        DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
-                R.drawable.ic_goldmerchant_drawer,
+        String gm = context.getString(GMConstant.getGMTitleResource(context));
+        DrawerGroup gmMenu = new DrawerGroup(gm,
+                GMConstant.getGMDrawerDrawableResource(context),
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
                 drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                 0);
 
         String gmString = isGoldMerchant ?
-                context.getString(R.string.extend_gold_merchant) :
-                context.getString(R.string.upgrade_gold_merchant);
+                context.getString(R.string.extend_gold_merchant, gm) :
+                context.getString(R.string.upgrade_gold_merchant, gm);
 
         gmMenu.add(new DrawerItem(gmString,
                 TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
@@ -402,11 +407,15 @@ public class DrawerSellerHelper extends DrawerHelper
             boolean isNeedToCloseActivity = true;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
-                    UnifyTracking.eventDrawerSellerHome();
+                    UnifyTracking.eventDrawerSellerHome(context);
                     context.startActivity(DashboardActivity.createInstance(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
-                    UnifyTracking.eventClickGoldMerchantViaDrawer();
+                    if (context.getApplication() instanceof AbstractionRouter){
+                        new GMTracking((AbstractionRouter) context.getApplication())
+                                .sendClickHamburgerMenuEvent(item.label);
+                    }
+                    UnifyTracking.eventClickGoldMerchantViaDrawer(context);
                     context.startActivity(GmSubscribeHomeActivity.getCallingIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
@@ -448,7 +457,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
                     context.startActivity(((IDigitalModuleRouter) context.getApplication())
                             .instanceIntentDigitalCategoryList());
-                    UnifyTracking.eventClickPaymentAndTopupOnDrawer();
+                    UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
                     if (remoteConfig.getBoolean(RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
@@ -458,10 +467,10 @@ public class DrawerSellerHelper extends DrawerHelper
                                 .instanceIntentDigitalWeb(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                         + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST);
                     context.startActivity(intent);
-                    UnifyTracking.eventClickDigitalTransactionListOnDrawer();
+                    UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
-                    UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DRAFT_PRODUCT);
+                    UnifyTracking.eventDrawerClick(context, AppEventTracking.EventLabel.DRAFT_PRODUCT);
                     context.startActivity(new Intent(context, ProductDraftListActivity.class));
                     break;
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:
@@ -473,7 +482,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:
                     intent = new Intent(context, GMStatisticDashboardActivity.class);
                     context.startActivity(intent);
-                    UnifyTracking.eventClickGMStat();
+                    UnifyTracking.eventClickGMStat(context);
                     break;
                 case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
                     Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
@@ -481,13 +490,13 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(mitraToppersIntent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-                    UnifyTracking.eventDrawerTopads();
+                    UnifyTracking.eventDrawerTopads(context);
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                     if (isGoldMerchant) {
-                        UnifyTracking.eventClickMenuFeaturedProduct();
+                        UnifyTracking.eventClickMenuFeaturedProduct(context);
                         intent = new Intent(context, GMFeaturedProductActivity.class);
                         context.startActivity(intent);
                     } else {
@@ -496,7 +505,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
-                    UnifyTracking.eventClickMenuSellerInfo();
+                    UnifyTracking.eventClickMenuSellerInfo(context);
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
                     break;
@@ -522,19 +531,35 @@ public class DrawerSellerHelper extends DrawerHelper
     private void showDialogActionGoToGMSubscribe() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(R.string.featured_product_title);
-        alertDialog.setMessage(R.string.featured_product_desc_should_gold_merchant);
+        alertDialog.setMessage(context.getString(R.string.featured_product_desc_should_gold_merchant,
+                context.getString(GMConstant.getGMTitleResource(context))));
         alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (selectedPosition != TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND) {
+                    sendGMAnalyticDialogEvent(true);
+
                     if (context.getApplication() instanceof SellerModuleRouter) {
-                        ((SellerModuleRouter) context.getApplication()).goToGMSubscribe(context);
+                        Intent gmIntent = ((SellerModuleRouter) context.getApplication()).getGMHomeIntent(context);
+                        gmIntent.putExtra(GMParamConstant.PARAM_KEY_FROM_FEATURE, true);
+                        context.startActivity(gmIntent);
                     }
                 }
             }
         });
-        alertDialog.setNegativeButton(R.string.title_cancel, null);
+        alertDialog.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                sendGMAnalyticDialogEvent(false);
+            }
+        });
         alertDialog.show();
+    }
+
+    private void sendGMAnalyticDialogEvent(boolean isSubscribing) {
+        if (context.getApplication() instanceof AbstractionRouter){
+            new GMTracking((AbstractionRouter) context.getApplication()).sendClickManageProductDialogEvent(isSubscribing);
+        }
     }
 
     @Override

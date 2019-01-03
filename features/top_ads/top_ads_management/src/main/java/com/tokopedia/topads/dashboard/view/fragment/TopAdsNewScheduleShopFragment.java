@@ -68,9 +68,9 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
 
     private void trackerScheduleShop() {
         if(detailAd.isScheduled()){
-            UnifyTracking.eventTopAdsShopAddPromoShowTime(AppEventTracking.EventLabel.SHOWTIME_SETUP);
+            UnifyTracking.eventTopAdsShopAddPromoShowTime(getActivity(), AppEventTracking.EventLabel.SHOWTIME_SETUP);
         }else{
-            UnifyTracking.eventTopAdsShopAddPromoShowTime(AppEventTracking.EventLabel.SHOWTIME_AUTO);
+            UnifyTracking.eventTopAdsShopAddPromoShowTime(getActivity(), AppEventTracking.EventLabel.SHOWTIME_AUTO);
         }
     }
 

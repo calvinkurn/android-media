@@ -18,21 +18,22 @@ import android.view.MenuItem;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
@@ -40,7 +41,6 @@ import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
-import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +108,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                     // go to empty state if all data has been deleted
                                     resetPageAndSearch();
                                 }
-                                UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
+                                UnifyTracking.eventDraftProductClicked(ProductDraftListFragment.this.getActivity(), AppEventTracking.EventLabel.DELETE_DRAFT);
                             }
                         }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -202,7 +202,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         } else {
             intent = ProductDraftAddActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
         }
-        UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
+        UnifyTracking.eventDraftProductClicked(getActivity(), AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivity(intent);
     }
 
@@ -311,7 +311,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onEmptyButtonClicked() {
-        UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
+        UnifyTracking.eventDraftProductClicked(getActivity(), AppEventTracking.EventLabel.ADD_PRODUCT);
         startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
     }
 

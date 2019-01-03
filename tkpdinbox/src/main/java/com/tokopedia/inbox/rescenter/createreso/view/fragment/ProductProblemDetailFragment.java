@@ -162,12 +162,12 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
 
         btnSave.setOnClickListener(view -> {
             presenter.btnSaveClicked(false);
-            UnifyTracking.eventCreateResoStep1Save();
+            UnifyTracking.eventCreateResoStep1Save(getActivity());
         });
 
         btnSaveAndChooseOther.setOnClickListener(view -> {
             presenter.btnSaveClicked(true);
-            UnifyTracking.eventCreateResoStep1SaveAndChooseOther();
+            UnifyTracking.eventCreateResoStep1SaveAndChooseOther(getActivity());
         });
 
         btnCancel.setOnClickListener(view -> getActivity().finish());

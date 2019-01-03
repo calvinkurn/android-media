@@ -3,11 +3,10 @@ package com.tokopedia.flight.detail.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight_dbflow.FlightAirlineDB;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
-import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class FlightDetailViewModel implements Parcelable {
     private int countChild;
     private int countInfant;
     private List<FlightDetailRouteViewModel> routeList;
-    private List<FlightAirlineDB> airlineDataList;
+    private List<FlightAirlineViewModel> airlineDataList;
 
     public FlightDetailViewModel() {
     }
@@ -72,34 +71,7 @@ public class FlightDetailViewModel implements Parcelable {
         countInfant = in.readInt();
         routeList = in.createTypedArrayList(FlightDetailRouteViewModel.CREATOR);
         isRefundable = (RefundableEnum) in.readSerializable();
-        airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
-    }
-
-    public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel) {
-        if (flightSearchViewModel != null) {
-            setId(flightSearchViewModel.getId());
-            setDepartureAirport(flightSearchViewModel.getDepartureAirport());
-            setDepartureAirportCity(flightSearchViewModel.getDepartureAirportCity());
-            setArrivalAirport(flightSearchViewModel.getArrivalAirport());
-            setArrivalAirportCity(flightSearchViewModel.getArrivalAirportCity());
-            setTotalTransit(flightSearchViewModel.getTotalTransit());
-            setTotal(flightSearchViewModel.getTotal());
-            setTotalNumeric(flightSearchViewModel.getTotalNumeric());
-            setBeforeTotal(flightSearchViewModel.getBeforeTotal());
-            setIsRefundable(flightSearchViewModel.isRefundable());
-            setAdultNumericPrice(flightSearchViewModel.getFare().getAdultNumeric());
-            setChildNumericPrice(flightSearchViewModel.getFare().getChildNumeric());
-            setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
-            FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
-            FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
-            setRouteList(mapper.transform(flightSearchViewModel.getRouteList(), flightSearchViewModel.getAirlineList()));
-            setDepartureTime(flightSearchViewModel.getDepartureTime());
-            setArrivalTime(flightSearchViewModel.getArrivalTime());
-            setAirlineDataList(flightSearchViewModel.getAirlineList());
-            return this;
-        } else {
-            return null;
-        }
+        airlineDataList = in.createTypedArrayList(FlightAirlineViewModel.CREATOR);
     }
 
     public FlightDetailViewModel build(FlightJourneyViewModel flightJourneyViewModel) {
@@ -332,11 +304,11 @@ public class FlightDetailViewModel implements Parcelable {
         parcel.writeTypedList(airlineDataList);
     }
 
-    public List<FlightAirlineDB> getAirlineDataList() {
+    public List<FlightAirlineViewModel> getAirlineDataList() {
         return airlineDataList;
     }
 
-    public void setAirlineDataList(List<FlightAirlineDB> airlineDataList) {
+    public void setAirlineDataList(List<FlightAirlineViewModel> airlineDataList) {
         this.airlineDataList = airlineDataList;
     }
 }
