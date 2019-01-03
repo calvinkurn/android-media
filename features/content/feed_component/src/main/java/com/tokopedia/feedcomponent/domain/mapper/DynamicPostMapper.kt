@@ -12,6 +12,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollOptionViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
@@ -32,8 +34,8 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
         private const val POST_GRID = "productgrid"
 
         private const val CONTENT_IMAGE = "image"
-        private const val CONTENT_VOTE = "vote"
         private const val CONTENT_YOUTUBE = "youtube"
+        private const val CONTENT_VOTE = "vote"
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -121,7 +123,7 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
     }
 
     private fun mapPostContent(body: Body): MutableList<BasePostViewModel> {
-        val list = ArrayList<BasePostViewModel>()
+        val list: MutableList<BasePostViewModel> = ArrayList()
 
         //TODO milhamj delete this
         list.add(ImagePostViewModel("https://res.cloudinary.com/he2ebbhcc/image/upload/c_fill,f_auto,g_center,h_500,w_500/v1477492779/1158.jpg"))
@@ -129,6 +131,7 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
+                CONTENT_VOTE -> list.add(mapPostPoll(media))
             }
         }
 
@@ -144,6 +147,31 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
     private fun mapPostYoutube(media: Media): YoutubeViewModel {
         return YoutubeViewModel(
                 media.id
+        )
+    }
+
+    private fun mapPostPoll(media: Media): PollViewModel {
+        val options: MutableList<PollOptionViewModel> = ArrayList()
+
+        for (item in media.mediaItems) {
+            val percentageNumber = try {
+                item.percentage.toInt()
+            } catch (e: NumberFormatException) {
+                0
+            }
+
+            options.add(PollOptionViewModel(
+                    item.id,
+                    item.text,
+                    item.thumbnail,
+                    item.applink,
+                    item.percentage,
+                    percentageNumber
+            ))
+        }
+
+        return PollViewModel(
+                optionList = options
         )
     }
 }

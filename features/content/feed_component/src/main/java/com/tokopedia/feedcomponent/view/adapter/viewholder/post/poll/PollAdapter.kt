@@ -31,6 +31,7 @@ class PollAdapter : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
     override fun getItemCount() = optionList.size
 
     override fun onBindViewHolder(holder: OptionViewHolder, position: Int) {
+        holder.bind(optionList[position])
     }
 
     fun setList(list: MutableList<PollOptionViewModel>) {

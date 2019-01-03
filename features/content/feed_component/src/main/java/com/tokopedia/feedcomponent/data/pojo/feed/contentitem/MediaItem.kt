@@ -35,6 +35,12 @@ data class MediaItem (
     @Expose
     var thumbnail:String = "",
 
+    @SerializedName("percentage")
+    val percentage: String = "",
+
+    @SerializedName("isSelected")
+    val isSelected: Boolean = false,
+
     @SerializedName("position")
     @Expose
     var position:List<Float> = ArrayList()

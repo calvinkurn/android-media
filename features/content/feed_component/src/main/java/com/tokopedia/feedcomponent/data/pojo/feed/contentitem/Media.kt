@@ -28,7 +28,7 @@ data class Media (
     @SerializedName("isSelected")
     @Expose
     var isIsSelected: Boolean = false,
-    @SerializedName("mediaItems")
+    @SerializedName("items")
     @Expose
     var mediaItems: List<MediaItem> = ArrayList()
 )

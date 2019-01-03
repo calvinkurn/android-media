@@ -19,13 +19,10 @@ class BannerViewHolder(v: View)
     var cardTitleListener: CardTitleView.CardTitleListener? = null
     private val adapter: BannerAdapter = BannerAdapter()
 
-    init {
-        itemView.bannerRv.adapter = adapter
-    }
-
     override fun bind(element: BannerViewModel) {
         adapter.setData(element.itemViewModels)
         adapter.listener = this
+        itemView.bannerRv.adapter = adapter
 
         itemView.cardTitle.bind(element.title, element.template.cardbanner.title)
         itemView.cardTitle.listener = cardTitleListener
