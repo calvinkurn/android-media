@@ -104,32 +104,3 @@ public interface CMConstant {
     }
 
 }
-
-
-/*
-    String NOTIFICATION_CUSTOM_VALUES = "custom_values";
-    String FCM_EXTRA_CONFIRMATION_KEY = "isFromCM";
-    String FCM_EXTRA_CONFIRMATION_VALUE = "cm_toko";
-    String GENERAL = "ANDROID_GENERAL_CHANNEL";
-    String EXTRA_APPLINK_FROM_PUSH = "applink_from_cm_notif";
-    String EXTRA_NOTIFICATION_TYPE = "notif_type";
-    String NOTIFICATION_ACTION_BUTTONS = "actionButton";
-    String NOTIFICATION_PERSISTENT = "persButton";
-
-    interface NotificationId {
-        int GENERAL = 501;
-        int BIG_IMAGE = 502;
-        int PERSISTENT = 503;
-        int CUSTOM = 504;
-        int IN_APP = 505;
-        int CAROUSEL = 506;
-        int VIDEO = 507;
-        int ACTION_BUTTONS = 508;
-    }
-
-
-        /*
-        String CUSTOM = "cm_custom";
-        String IN_APP = "cm_in_app";
-        String CAROUSEL = "cm_carousel";
-        String VIDEO = "cm_video";*/

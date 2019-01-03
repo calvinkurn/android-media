@@ -3,7 +3,6 @@ package com.tokopedia.notifications.common;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.notifications.CMPushNotificationManager;
 
 /**
  * Created by Ashwani Tyagi on 24/10/18.

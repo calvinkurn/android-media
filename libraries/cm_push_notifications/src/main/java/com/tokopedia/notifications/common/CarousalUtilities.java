@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class CarousalUtilities {
 
+    static final String IMAGE_DIR = "imageDir";
+
 
     public static void downloadImages(Context context, List<Carousal> carousalList) {
         for (Carousal carousal : carousalList) {
@@ -44,14 +46,12 @@ public class CarousalUtilities {
     public static String carousalSaveBitmapToInternalStorage(Context context, Bitmap bitmapImage, String fileName) {
         boolean fileSaved = false;
         ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        File directory = cw.getDir(IMAGE_DIR, Context.MODE_PRIVATE);
         File imagePath = new File(directory, fileName + ".png");
 
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(imagePath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fileSaved = true;
         } catch (Exception e) {
@@ -60,7 +60,6 @@ public class CarousalUtilities {
             try {
                 fos.close();
             } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         if (fileSaved)
@@ -81,7 +80,6 @@ public class CarousalUtilities {
             File f = new File(path);
             b = BitmapFactory.decodeStream(new FileInputStream(f));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
         return b;
     }
@@ -89,12 +87,10 @@ public class CarousalUtilities {
     public static void deleteCarousalImageDirectory(Context context) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
-            File dir = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            if (dir.isDirectory())
-            {
+            File dir = cw.getDir(IMAGE_DIR, Context.MODE_PRIVATE);
+            if (dir.isDirectory()) {
                 String[] children = dir.list();
-                for (int i = 0; i < children.length; i++)
-                {
+                for (int i = 0; i < children.length; i++) {
                     new File(dir, children[i]).delete();
                 }
             }
