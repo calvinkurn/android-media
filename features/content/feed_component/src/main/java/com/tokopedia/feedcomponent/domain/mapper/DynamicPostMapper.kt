@@ -166,12 +166,26 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
                     item.thumbnail,
                     item.applink,
                     item.percentage,
-                    percentageNumber
+                    percentageNumber,
+                    checkIfPollOptionSelected(media.isVoted, item.isSelected)
             ))
         }
 
         return PollViewModel(
-                optionList = options
+                media.id,
+                media.totalVoterFmt,
+                media.isVoted,
+                options
         )
+    }
+
+    private fun checkIfPollOptionSelected(isVoted: Boolean, isSelected: Boolean): Int {
+        return if (isVoted && isSelected) {
+            PollOptionViewModel.SELECTED
+        } else if (isVoted) {
+            PollOptionViewModel.UNSELECTED
+        } else {
+            PollOptionViewModel.DEFAULT
+        }
     }
 }
