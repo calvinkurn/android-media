@@ -346,7 +346,7 @@ public class ExploreFragment
     }
 
     @Override
-    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+    public void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch) {
         layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
@@ -366,7 +366,7 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         searchView.addTextWatcherToSearch();
         presenter.unsubscribeAutoComplete();
-        saveFirstDataToLocal(itemList, cursor);
+        if (!isSearch) saveFirstDataToLocal(itemList, cursor);
     }
 
     private void saveFirstDataToLocal(List<Visitable> itemList, String firstCursor) {
