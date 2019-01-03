@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
                             private var cardTitleListener: CardTitleView.CardTitleListener,
                             private var youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                            private var pollOptionListener: PollAdapter.PollOptionListener) 
+                            private var pollOptionListener: PollAdapter.PollOptionListener)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     companion object {
@@ -37,6 +37,9 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
         const val PAYLOAD_LIKE = 13
         const val PAYLOAD_COMMENT = 14
         const val PAYLOAD_FOLLOW = 15
+
+        const val MAX_CHAR = 140
+        const val CAPTION_END = 100
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -121,14 +124,26 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
 
     private fun bindCaption(caption: Caption, template: TemplateBody) {
         itemView.caption.shouldShowWithAction(template.caption) {
-            itemView.caption.text = caption.text
+            if (caption.text.length > MAX_CHAR) {
+                val captionText = caption.text.substring(0, CAPTION_END)
+                        .replace("(\r\n|\n)", "<br />")
+                        .plus("... ")
+                        .plus("<font color='#42b549'><b>")
+                        .plus(caption.buttonName)
+                        .plus("</b></font>")
+
+                itemView.caption.text = MethodChecker.fromHtml(captionText)
+                itemView.caption.setOnClickListener { listener.onCaptionClick(caption.appLink) }
+            } else {
+                itemView.caption.text = caption.text
+            }
         }
     }
 
     private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: TemplateBody) {
         itemView.contentLayout.shouldShowWithAction(template.media) {
             contentList.forEach { it.rowNumber = adapterPosition }
-            
+
             val adapter = PostPagerAdapter(youtubePostListener, pollOptionListener)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
@@ -224,6 +239,8 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
         fun onHeaderActionClick(isFollowed: Boolean)
 
         fun onMenuClick()
+
+        fun onCaptionClick(redirectUrl: String)
 
         fun onLikeClick(position: Int, id: Int, isLiked: Boolean)
 

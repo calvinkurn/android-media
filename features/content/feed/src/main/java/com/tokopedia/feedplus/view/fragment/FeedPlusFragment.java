@@ -1376,6 +1376,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onCaptionClick(@NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+    }
+
+    @Override
     public void onLikeClick(int position, int id, boolean isLiked) {
         if (isLiked) {
             onUnlikeKolClicked(position, id);
