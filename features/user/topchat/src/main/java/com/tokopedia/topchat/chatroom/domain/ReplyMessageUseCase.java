@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.domain;
 
-import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

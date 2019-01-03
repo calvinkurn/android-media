@@ -5,10 +5,8 @@ import android.text.TextUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
-import com.tokopedia.topchat.chatroom.domain.pojo.chatactionballoon
-        .ChatActionBalloonSelectionAttachmentAttributes;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatactionballoon.ChatActionPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponseData;
@@ -107,7 +105,7 @@ public class WebSocketMapper {
             case TYPE_INVOICES_SELECTION:
                 return convertToInvoiceSelection(pojo.getData(), jsonAttributes);
             case TYPE_CHAT_BALLOON_ACTION:
-                return convertToChatActionSelectionBubbleModel(pojo.getData(),jsonAttributes);
+                return convertToChatActionSelectionBubbleModel(pojo.getData(), jsonAttributes);
             case TYPE_QUICK_REPLY_SEND:
                 return convertToMessageViewModel(pojo.getData());
             default:
@@ -116,7 +114,7 @@ public class WebSocketMapper {
     }
 
     private ChatActionSelectionBubbleViewModel convertToChatActionSelectionBubbleModel
-            (WebSocketResponseData pojo , JsonObject jsonAttribute) {
+            (WebSocketResponseData pojo, JsonObject jsonAttribute) {
         ChatActionBalloonSelectionAttachmentAttributes pojoAttribute = new GsonBuilder().create().
                 fromJson(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes.class);
         return new ChatActionSelectionBubbleViewModel(
@@ -135,7 +133,7 @@ public class WebSocketMapper {
     private List<ChatActionBubbleViewModel> convertToChatActionBubbleViewModelList(
             ChatActionBalloonSelectionAttachmentAttributes pojo) {
         ArrayList<ChatActionBubbleViewModel> result = new ArrayList<>();
-        for(ChatActionPojo item : pojo.getChatActions()) {
+        for (ChatActionPojo item : pojo.getChatActions()) {
             result.add(new ChatActionBubbleViewModel(item.getMessage()));
         }
         return result;
