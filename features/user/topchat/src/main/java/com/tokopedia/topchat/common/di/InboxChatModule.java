@@ -65,11 +65,14 @@ import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
+import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
+import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
+import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
@@ -564,5 +567,11 @@ public class InboxChatModule {
     @Provides
     GetUserStatusUseCase provideUserStatusUseCase(TopChatApi topChatApi, GetUserStatusMapper mapper){
         return new GetUserStatusUseCase(topChatApi,mapper);
+    }
+
+    @InboxChatScope
+    @Provides
+    ChatSettingsInterface.Presenter provideChatSettingsPresenter(GraphqlUseCase graphqlUseCase, ChatSettingsAnalytics chatSettingsAnalytics) {
+        return new ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics);
     }
 }
