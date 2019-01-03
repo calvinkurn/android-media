@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -33,6 +35,8 @@ import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
+import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
+import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -87,11 +91,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return view
     }
 
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
+        return  ChatbotAdapter(ChatbotTypeFactoryImpl(this,
+                this, this, this,
+                this, this, this))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(view, session, this, this,
-                this, this, this,
-                this, this, this, (activity as BaseChatToolbarActivity).getToolbar())
+        super.viewState = ChatbotViewStateImpl(view, session, this,
+                (activity as BaseChatToolbarActivity).getToolbar(), adapter)
         viewState.initView()
         loadInitialData()
     }
