@@ -74,7 +74,8 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
                     card.header.avatarBadgeImage,
                     card.header.avatarTitle,
                     card.header.avatarDescription,
-                    card.header.followCta
+                    card.header.followCta,
+                    template.cardrecom.item
             ))
         }
 

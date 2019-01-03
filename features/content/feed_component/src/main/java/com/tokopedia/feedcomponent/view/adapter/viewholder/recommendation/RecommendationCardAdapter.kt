@@ -8,9 +8,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_recommendation_card.view.*
 
 /**
@@ -48,7 +46,13 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
             itemView.ivBadge.shouldShowWithAction(element.badgeUrl.isNotEmpty()) {
                 itemView.ivBadge.loadImage(element.badgeUrl)
             }
-            setButtonUi(element.cta)
+
+            if (element.template.ctaLink) {
+                itemView.btnFollow.visible()
+                setButtonUi(element.cta)
+            } else {
+                itemView.btnFollow.invisible()
+            }
         }
 
         private fun initViewListener(element: RecommendationCardViewModel) {
@@ -61,8 +65,7 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
             if (cta.isFollow) {
                 itemView.btnFollow.buttonCompatType = ButtonCompat.SECONDARY
                 itemView.btnFollow.text = cta.textTrue
-            }
-            else {
+            } else {
                 itemView.btnFollow.buttonCompatType = ButtonCompat.PRIMARY
                 itemView.btnFollow.text = cta.textFalse
             }
