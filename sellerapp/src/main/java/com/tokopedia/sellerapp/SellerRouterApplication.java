@@ -81,7 +81,6 @@ import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -1666,13 +1665,12 @@ public abstract class SellerRouterApplication extends MainApplication
         TrackingUtils.eventPushUserID();
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userId);
-
+//        TODO Check whether to send event or not
 //        UserData userData = new UserData();
 //        userData.setUserId(userId);
 //        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
 //                userId));
 
-        //BranchSdkUtils.sendLoginEvent(applicationContext);
     }
 
     @Override

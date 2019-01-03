@@ -26,6 +26,11 @@ public class CacheUtil {
         localCacheHandler.putString(key, value);
     }
 
+    public static void removeValueFromCache(Context context, String store, String key){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, store);
+        localCacheHandler.clearCache(key);
+    }
+
     public static String getValueFromCache(Context context, String store, String key){
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, store);
         return localCacheHandler.getString(key);

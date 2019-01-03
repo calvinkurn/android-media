@@ -38,8 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
 import com.tokopedia.core2.R;
 import com.tokopedia.user.session.UserSession;
 
@@ -214,14 +212,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     private void getBranchDefferedDeeplink() {
-
-        UserSession userSession = new UserSession(this);
-        UserData userData = new UserData();
-        userData.setUserId(userSession.getUserId());
-
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
-                userData));
-
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
         linkerDeeplinkData.setReferrable(this.getIntent().getData());

@@ -23,7 +23,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.share.adapter.ShareAdapter;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.ShareSocmedHandler;

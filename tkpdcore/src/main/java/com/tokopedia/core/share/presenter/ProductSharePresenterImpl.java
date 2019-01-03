@@ -15,7 +15,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.share.listener.ShareView;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.ShareSocmedHandler;

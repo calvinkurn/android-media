@@ -34,7 +34,6 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.CacheUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
@@ -133,10 +132,6 @@ import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkM
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 
 import org.json.JSONObject;
-
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
-
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,

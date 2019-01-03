@@ -7,7 +7,6 @@ import com.tokopedia.core.referral.listener.FriendsWelcomeView;
 import com.tokopedia.core.util.CacheUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.remoteconfig.RemoteConfigKey;

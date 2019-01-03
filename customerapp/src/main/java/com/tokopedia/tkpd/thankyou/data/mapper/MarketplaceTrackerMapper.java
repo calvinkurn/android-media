@@ -6,7 +6,6 @@ import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.linker.LinkerConstants;
@@ -256,7 +255,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         branchIOPayment.setOrderId(String.valueOf(orderData.getOrderId()));
         branchIOPayment.setShipping(String.valueOf((int)orderData.getShippingPrice()));
         branchIOPayment.setRevenue(String.valueOf((int)paymentData.getPaymentAmount()));
-        branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
+        branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_MARKETPLACE);
         branchIOPayment.setItemPrice(String.valueOf(orderData.getItemPrice()));
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
             HashMap<String, String> product = new HashMap<>();

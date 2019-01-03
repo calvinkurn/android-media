@@ -32,7 +32,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.service.HUDIntent;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
@@ -44,7 +43,6 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
-import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
 public abstract class MainApplication extends MainRouterApplication{
@@ -365,11 +363,14 @@ public abstract class MainApplication extends MainRouterApplication{
         LinkerManager.initLinkerManager(getApplicationContext());
 
         UserSession userSession = new UserSession(this);
-        UserData userData = new UserData();
-        userData.setUserId(userSession.getUserId());
 
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
-                userData));
+        if(userSession.isLoggedIn()) {
+            UserData userData = new UserData();
+            userData.setUserId(userSession.getUserId());
+
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                    userData));
+        }
     }
 
     private void initFirebase() {

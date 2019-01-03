@@ -4,7 +4,6 @@ import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.linker.LinkerConstants;
@@ -115,7 +114,7 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
             branchIOPayment.setRevenue(String.valueOf(parseStringToInt(data.getEcommerce().getPurchase().getActionField().getRevenue())));
             branchIOPayment.setOrderId(data.getEcommerce().getPurchase().getActionField().getId());
         }
-        branchIOPayment.setProductType(BranchSdkUtils.PRODUCTTYPE_DIGITAL);
+        branchIOPayment.setProductType(LinkerConstants.PRODUCTTYPE_DIGITAL);
         if (isPurchaseValid(data) && data.getEcommerce().getPurchase().getProducts() != null) {
             for (Product product : data.getEcommerce().getPurchase().getProducts()) {
                 HashMap<String, String> localProduct = new HashMap<>();

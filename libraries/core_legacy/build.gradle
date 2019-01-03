@@ -64,9 +64,6 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.analyticsDependencies.branch) {
-        exclude module: 'answers-shim'
-    }
     implementation rootProject.ext.analyticsDependencies.logentries
 
     implementation project(rootProject.ext.libraries.analytics)

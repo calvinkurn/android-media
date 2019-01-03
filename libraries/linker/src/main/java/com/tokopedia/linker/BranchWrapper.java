@@ -42,45 +42,50 @@ public class BranchWrapper implements WrapperInterface {
 
     @Override
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
-        generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
-                context, linkerShareRequest.getShareCallbackInterface(),
-                ((LinkerShareData)linkerShareRequest.getDataObj()).getUserData());
+        if(linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
+            generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                    context, linkerShareRequest.getShareCallbackInterface(),
+                    ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+        }
     }
 
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
         if (branch == null) {
-            if(linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+            if(linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
                         LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_INIT_FAILED, null));
             }
         } else {
             try {
-                branch.setRequestMetadata(LinkerConstants.KEY_GA_CLIENT_ID,
-                        ((LinkerDeeplinkData)linkerDeeplinkRequest.getDataObj()).getClientId());
-                branch.initSession(new Branch.BranchReferralInitListener() {
-                    @Override
-                    public void onInitFinished(JSONObject referringParams, BranchError error) {
-                        if (error == null) {
-                            String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
-                            String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
-                            if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")) {
-                                deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
-                            }
-                            if(linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                                linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                        LinkerUtils.createDeeplinkData(deeplink, promoCode));
-                            }
-                        } else {
-                            if(linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                                linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
-                                        LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
-                            }
-                        }
-                    }
-                }, ((LinkerDeeplinkData)linkerDeeplinkRequest.getDataObj()).getReferrable(),
-                        ((LinkerDeeplinkData)linkerDeeplinkRequest.getDataObj()).getActivity());
+                if(linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDataObj() != null &&
+                        linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData) {
+                    branch.setRequestMetadata(LinkerConstants.KEY_GA_CLIENT_ID,
+                            ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getClientId());
+                    branch.initSession(new Branch.BranchReferralInitListener() {
+                                           @Override
+                                           public void onInitFinished(JSONObject referringParams, BranchError error) {
+                                               if (error == null) {
+                                                   String deeplink = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH);
+                                                   String promoCode = referringParams.optString(LinkerConstants.BRANCH_PROMOCODE_KEY);
+                                                   if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://")) {
+                                                       deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
+                                                   }
+                                                   if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+                                                       linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
+                                                               LinkerUtils.createDeeplinkData(deeplink, promoCode));
+                                                   }
+                                               } else {
+                                                   if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
+                                                       linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
+                                                               LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
+                                                   }
+                                               }
+                                           }
+                                       }, ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getReferrable(),
+                            ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
+                }
             } catch (Exception e) {
                 if(linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                     linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -94,29 +99,41 @@ public class BranchWrapper implements WrapperInterface {
     public void sendEvent(LinkerGenericRequest linkerGenericRequest, Context context) {
         switch (linkerGenericRequest.getEventId()){
             case LinkerConstants.EVENT_USER_IDENTITY:
-                UserData userData = (UserData) linkerGenericRequest.getDataObj();
-                if(userData != null) {
-                    String userId = userData.getUserId();
-                    if (userId != null && !userId.isEmpty() && !(" ".equals(userId))) {
-                        BranchHelper.sendIdentityEvent(userId);
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof UserData) {
+                    UserData userData = (UserData) linkerGenericRequest.getDataObj();
+                    if (userData != null) {
+                        String userId = userData.getUserId();
+                        if (userId != null && !userId.isEmpty() && !(" ".equals(userId))) {
+                            BranchHelper.sendIdentityEvent(userId);
+                        }
                     }
                 }
                 break;
             case LinkerConstants.EVENT_USER_REGISTRATION_VAL:
-                BranchHelper.sendRegisterEvent(
-                        (UserData) linkerGenericRequest.getDataObj(),
-                        context);
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof UserData) {
+                    BranchHelper.sendRegisterEvent(
+                            (UserData) linkerGenericRequest.getDataObj(),
+                            context);
+                }
                 break;
             case LinkerConstants.EVENT_LOGOUT_VAL:
                 BranchHelper.sendLogoutEvent();
                 break;
             case LinkerConstants.EVENT_LOGIN_VAL:
-                BranchHelper.sendLoginEvent(context, (UserData) linkerGenericRequest.getDataObj());
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof UserData) {
+                    BranchHelper.sendLoginEvent(context, (UserData) linkerGenericRequest.getDataObj());
+                }
                 break;
             case LinkerConstants.EVENT_COMMERCE_VAL:
-                BranchHelper.sendCommerceEvent(
-                        ((LinkerCommerceData)linkerGenericRequest.getDataObj()).getPaymentData(),
-                        context, ((LinkerCommerceData)linkerGenericRequest.getDataObj()).getUserData());
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerCommerceData) {
+                    BranchHelper.sendCommerceEvent(
+                            ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getPaymentData(),
+                            context, ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getUserData());
+                }
                 break;
         }
     }

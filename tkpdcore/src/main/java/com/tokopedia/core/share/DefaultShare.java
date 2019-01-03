@@ -8,8 +8,6 @@ import android.os.Build;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;

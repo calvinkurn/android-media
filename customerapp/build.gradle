@@ -424,9 +424,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation (rootProject.ext.analyticsDependencies.branch) {
-        exclude module: 'answers-shim'
-    }
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }

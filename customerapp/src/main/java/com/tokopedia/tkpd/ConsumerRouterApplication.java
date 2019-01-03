@@ -153,7 +153,6 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
@@ -1280,7 +1279,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getBranchAutoApply(Activity activity) {
-        return BranchSdkUtils.getAutoApplyCouponIfAvailable(activity);
+        return "";
+        //TODO shift it into a use case
+//        return BranchSdkUtils.getAutoApplyCouponIfAvailable(activity);
     }
 
     @Override
@@ -3398,18 +3399,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         com.tokopedia.user.session.UserSession userSession = new com.tokopedia.user.session.UserSession(this);
 
-        UserData userData = new UserData();
-        userData.setUserId(userSession.getUserId());
-        userData.setEmail(userSession.getEmail());
-        userData.setPhoneNumber(userSession.getPhoneNumber());
+        if(userSession.isLoggedIn()) {
+            UserData userData = new UserData();
+            userData.setUserId(userSession.getUserId());
+            userData.setEmail(userSession.getEmail());
+            userData.setPhoneNumber(userSession.getPhoneNumber());
 
-        //Identity Event
-        LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData));
+            //Identity Event
+            LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData));
 
-        //Login Event
-        LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData));
+            //Login Event
+            LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData));
+        }
     }
 
     @Override
