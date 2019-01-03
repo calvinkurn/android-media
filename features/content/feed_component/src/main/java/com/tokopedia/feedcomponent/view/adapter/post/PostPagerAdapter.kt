@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostVie
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.util.WrapContentViewPager
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
@@ -18,7 +19,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 /**
  * @author by milhamj on 9/21/18.
  */
-class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.YoutubePostListener)
+class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+                       private val pollOptionListener: PollAdapter.PollOptionListener)
     : PagerAdapter() {
 
     private val itemList: MutableList<BasePostViewModel> = ArrayList()
@@ -34,7 +36,7 @@ class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.Youtub
         val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
             is ImagePostViewModel -> ImagePostViewHolder() as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder() as BasePostViewHolder<BasePostViewModel>
-            is PollViewModel -> PollViewHolder() as BasePostViewHolder<BasePostViewModel>
+            is PollViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")

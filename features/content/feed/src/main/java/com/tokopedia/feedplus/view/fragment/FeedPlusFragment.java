@@ -33,6 +33,8 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
@@ -107,7 +109,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
         KolPostListener.View.ViewHolder,
         DynamicPostViewHolder.DynamicPostListener,
         BannerViewHolder.BannerListener,
-        CardTitleView.CardTitleListener {
+        CardTitleView.CardTitleListener,
+        YoutubeViewHolder.YoutubePostListener,
+        PollAdapter.PollOptionListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -1065,9 +1069,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVoteOptionClicked(int rowNumber, String pollId,
-                                    PollOptionViewModel optionViewModel) {
-        presenter.sendVote(rowNumber, pollId, optionViewModel);
+    public void onVoteOptionClicked(int rowNumber, String pollId, String optionId) {
+        presenter.sendVote(rowNumber, pollId, optionId);
     }
 
     @Override
@@ -1286,7 +1289,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessSendVote(int rowNumber, PollOptionViewModel selectedOption,
+    public void onSuccessSendVote(int rowNumber, String optionId,
                                   VoteStatisticDomainModel voteStatisticDomainModel) {
         if (adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof PollViewModel) {
@@ -1294,12 +1297,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
             pollViewModel.setVoted(true);
             pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
 
-            int selectedIndex = pollViewModel.getOptionViewModels().indexOf(selectedOption);
             for (int i = 0; i < pollViewModel.getOptionViewModels().size(); i++) {
                 PollOptionViewModel pollOptionViewModel
                         = pollViewModel.getOptionViewModels().get(i);
 
-                pollOptionViewModel.setSelected(selectedIndex == i ?
+                pollOptionViewModel.setSelected(optionId.equals(pollOptionViewModel.getOptionId()) ?
                         PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
 
                 String newPercentage
@@ -1398,16 +1400,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onYoutubeThumbnailClick(@NotNull String youtubeId) {
-        if (getContext() != null) {
-            RouteManager.route(
-                    getContext(),
-                    ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
-            );
-        }
-    }
-
-    @Override
     public void onBannerItemClick(int position, @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
     }
@@ -1425,5 +1417,27 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onTitleCtaClick(@NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
+    }
+
+    @Override
+    public void onYoutubeThumbnailClick(@NotNull String youtubeId) {
+        if (getContext() != null) {
+            RouteManager.route(
+                    getContext(),
+                    ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
+            );
+        }
+    }
+
+    @Override
+    public void onPollOptionClick(int rowNumber, @NotNull String pollId,
+                                  @NotNull String optionId, boolean isVoted,
+                                  @NotNull String redirectLink) {
+
+        if (isVoted) {
+            onGoToLink(redirectLink);
+        } else {
+            onVoteOptionClicked(rowNumber, pollId, optionId);
+        }
     }
 }

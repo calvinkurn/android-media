@@ -9,5 +9,6 @@ data class GridPostViewModel(
         val itemList: MutableList<GridItemViewModel> = ArrayList(),
         val actionText: String = "",
         val actionLink: String = "",
-        val totalItems: Int = 0
+        val totalItems: Int = 0,
+        override var rowNumber: Int = 0
 ) : BasePostViewModel

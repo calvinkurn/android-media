@@ -19,7 +19,6 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
@@ -249,10 +248,10 @@ public class FeedPlusPresenter
     }
 
     @Override
-    public void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel) {
+    public void sendVote(int rowNumber, String pollId, String optionId) {
         sendVoteUseCase.execute(
-                SendVoteUseCase.createParamsV1(pollId, optionViewModel.getOptionId()),
-                new SendVoteSubscriber(rowNumber, optionViewModel, getView())
+                SendVoteUseCase.createParamsV1(pollId, optionId),
+                new SendVoteSubscriber(rowNumber, optionId, getView())
         );
     }
 

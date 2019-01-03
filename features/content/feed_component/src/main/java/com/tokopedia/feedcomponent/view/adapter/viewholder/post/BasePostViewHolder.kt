@@ -13,7 +13,7 @@ abstract class BasePostViewHolder<T : BasePostViewModel> {
 
     lateinit var itemView: View
     lateinit var context: Context
-    var position = 0
+    var pagerPosition = 0
 
     abstract var layoutRes: Int
 
@@ -22,7 +22,7 @@ abstract class BasePostViewHolder<T : BasePostViewModel> {
     fun inflate(container: ViewGroup, element: T, position: Int): View {
         this.itemView = LayoutInflater.from(container.context).inflate(layoutRes, container, false)
         this.context = itemView.context
-        this.position = position
+        this.pagerPosition = position
         bind(element)
         return itemView
     }

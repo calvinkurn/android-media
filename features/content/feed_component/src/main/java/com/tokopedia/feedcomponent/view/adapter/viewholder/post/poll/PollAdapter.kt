@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollOptionViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_poll_option.view.*
@@ -19,13 +20,15 @@ import kotlinx.android.synthetic.main.item_poll_option.view.*
 /**
  * @author by milhamj on 12/12/18.
  */
-class PollAdapter : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
+class PollAdapter(private val rowNumber: Int, private val pollViewModel: PollViewModel,
+                  private val listener: PollOptionListener)
+    : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
 
     private val optionList: MutableList<PollOptionViewModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poll_option, parent, false)
-        return PollAdapter.OptionViewHolder(view)
+        return PollAdapter.OptionViewHolder(view, rowNumber, pollViewModel, listener)
     }
 
     override fun getItemCount() = optionList.size
@@ -40,7 +43,12 @@ class PollAdapter : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
         notifyDataSetChanged()
     }
 
-    class OptionViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class OptionViewHolder(v: View,
+                           private val rowNumber: Int,
+                           private val pollViewModel: PollViewModel,
+                           private val listener: PollOptionListener?)
+        : RecyclerView.ViewHolder(v) {
+
         fun bind(element: PollOptionViewModel) {
             val context = itemView.context
             if (element.selected == PollOptionViewModel.DEFAULT) {
@@ -63,7 +71,8 @@ class PollAdapter : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
 
             itemView.option.text = element.option
             itemView.percent.text = element.percentageText
-            ImageHandler.loadImageWithTarget(itemView.imageView.context,
+            ImageHandler.loadImageWithTarget(
+                    itemView.imageView.context,
                     element.imageUrl,
                     object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(arg0: Bitmap, arg1: GlideAnimation<in Bitmap>) {
@@ -81,21 +90,16 @@ class PollAdapter : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
                             }
 
                         }
-                    })
+                    }
+            )
 
             itemView.setOnClickListener {
-                //TODO milhamj do on poll clicked
-//                val trackingPromoCode: String
-//                if (pollViewModel.isVoted()) {
-//                    viewListener.onGoToLink(element.getRedirectLink())
-//                    trackingPromoCode = pollViewModel.getKolProfileUrl()
-//                } else {
-//                    viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element)
-//                    trackingPromoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY
-//                }
-//
-//                viewListener.trackEEPoll(element, trackingPromoCode, rowNumber, pollViewModel)
+                listener?.onPollOptionClick(rowNumber, pollViewModel.pollId, element.optionId, pollViewModel.voted, element.redirectLink)
             }
         }
+    }
+
+    interface PollOptionListener {
+        fun onPollOptionClick(rowNumber: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String)
     }
 }

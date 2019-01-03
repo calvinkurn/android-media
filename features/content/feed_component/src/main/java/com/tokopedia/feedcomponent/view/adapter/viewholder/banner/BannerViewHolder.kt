@@ -12,16 +12,15 @@ import kotlinx.android.synthetic.main.item_banner.view.*
  * @author by milhamj on 08/05/18.
  */
 
-class BannerViewHolder(v: View)
+class BannerViewHolder(v: View, 
+                       private var listener: BannerListener, 
+                       private var cardTitleListener: CardTitleView.CardTitleListener)
     : AbstractViewHolder<BannerViewModel>(v), BannerAdapter.BannerItemListener {
 
-    var listener: BannerListener? = null
-    var cardTitleListener: CardTitleView.CardTitleListener? = null
-    private val adapter: BannerAdapter = BannerAdapter()
+    private val adapter: BannerAdapter = BannerAdapter(this)
 
     override fun bind(element: BannerViewModel) {
         adapter.setData(element.itemViewModels)
-        adapter.listener = this
         itemView.bannerRv.adapter = adapter
 
         itemView.cardTitle.bind(element.title, element.template.cardbanner.title)
@@ -29,7 +28,7 @@ class BannerViewHolder(v: View)
     }
 
     override fun onBannerItemClick(position: Int, redirectUrl: String) {
-        listener?.onBannerItemClick(position, redirectUrl)
+        listener.onBannerItemClick(position, redirectUrl)
     }
 
     companion object {

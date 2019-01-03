@@ -14,9 +14,9 @@ import java.util.*
  * @author by milhamj on 08/05/18.
  */
 
-class BannerAdapter: RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
+class BannerAdapter(private var listener: BannerItemListener)
+    : RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
 
-    var listener: BannerItemListener? = null
     private var itemViewModels: List<BannerItemViewModel> = ArrayList()
 
 

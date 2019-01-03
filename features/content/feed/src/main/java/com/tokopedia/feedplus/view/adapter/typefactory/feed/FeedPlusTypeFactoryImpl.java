@@ -8,8 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
@@ -82,6 +84,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
     private final BannerViewHolder.BannerListener bannerListener;
     private final CardTitleView.CardTitleListener cardTitleListener;
+    private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
+    private final PollAdapter.PollOptionListener pollOptionListener;
     private final FeedAnalytics analytics;
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
@@ -94,6 +98,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.dynamicPostListener = context;
         this.bannerListener = context;
         this.cardTitleListener = context;
+        this.youtubePostListener = context;
+        this.pollOptionListener = context;
         this.analytics = analytics;
     }
 
@@ -273,18 +279,13 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == WhitelistViewHolder.LAYOUT)
             viewHolder = new WhitelistViewHolder(view, viewListener);
         else if (type == DynamicPostViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new DynamicPostViewHolder(view);
-            ((DynamicPostViewHolder) viewHolder).setListener(dynamicPostListener);
-            ((DynamicPostViewHolder) viewHolder).setCardTitleListener(cardTitleListener);
+            viewHolder = new DynamicPostViewHolder(view, dynamicPostListener, cardTitleListener, youtubePostListener, pollOptionListener);
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new FeedRecommendationViewHolder(view);
-            ((FeedRecommendationViewHolder) viewHolder).setCardTitleListener(cardTitleListener);
+            viewHolder = new FeedRecommendationViewHolder(view, cardTitleListener);
         }
         else if (type == BannerViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new BannerViewHolder(view);
-            ((BannerViewHolder) viewHolder).setListener(bannerListener);
-            ((BannerViewHolder) viewHolder).setCardTitleListener(cardTitleListener);
+            viewHolder = new BannerViewHolder(view, bannerListener, cardTitleListener);
         }
         else
             viewHolder = super.createViewHolder(view, type);

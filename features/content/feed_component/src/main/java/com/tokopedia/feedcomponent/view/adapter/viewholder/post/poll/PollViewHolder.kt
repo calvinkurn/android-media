@@ -9,12 +9,13 @@ import kotlinx.android.synthetic.main.item_post_poll.view.*
 /**
  * @author by milhamj on 10/12/18.
  */
-class PollViewHolder : BasePostViewHolder<PollViewModel>() {
+class PollViewHolder(private val pollOptionListener: PollAdapter.PollOptionListener)
+    : BasePostViewHolder<PollViewModel>() {
+
     override var layoutRes = R.layout.item_post_poll
 
-    private val adapter = PollAdapter()
-
     override fun bind(element: PollViewModel) {
+        val adapter = PollAdapter(element.rowNumber, element, pollOptionListener)
         adapter.setList(element.optionList)
         itemView.optionRv.adapter = adapter
 

@@ -53,10 +53,10 @@ class YoutubeViewHolder(private val listener: YoutubePostListener) : BasePostVie
     }
 
     private fun onThumbnailClicked(element: YoutubeViewModel) {
-        listener.onThumbnailClick(element.youtubeId)
+        listener.onYoutubeThumbnailClick(element.youtubeId)
     }
 
     interface YoutubePostListener {
-        fun onThumbnailClick(youtubeId: String)
+        fun onYoutubeThumbnailClick(youtubeId: String)
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -23,10 +24,11 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(v), YoutubeViewHolder.YoutubePostListener {
-
-    var listener: DynamicPostListener? = null
-    var cardTitleListener: CardTitleView.CardTitleListener? = null
+class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
+                            private var cardTitleListener: CardTitleView.CardTitleListener,
+                            private var youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+                            private var pollOptionListener: PollAdapter.PollOptionListener) 
+    : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     companion object {
         @LayoutRes
@@ -99,13 +101,13 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
                 }
 
                 itemView.headerAction.setOnClickListener {
-                    listener?.onHeaderActionClick(header.followCta.isFollow)
+                    listener.onHeaderActionClick(header.followCta.isFollow)
                 }
             }
 
             itemView.menu.shouldShowWithAction(template.report) {
                 itemView.menu.setOnClickListener {
-                    listener?.onMenuClick()
+                    listener.onMenuClick()
                 }
             }
         }
@@ -125,7 +127,9 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
 
     private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: TemplateBody) {
         itemView.contentLayout.shouldShowWithAction(template.media) {
-            val adapter = PostPagerAdapter(this)
+            contentList.forEach { it.rowNumber = adapterPosition }
+            
+            val adapter = PostPagerAdapter(youtubePostListener, pollOptionListener)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count
@@ -140,7 +144,7 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
                 itemView.shareSpace.gone()
                 itemView.footerAction.visible()
                 itemView.footerAction.text = footer.buttonCta.text
-                itemView.footerAction.setOnClickListener { listener?.onFooterActionClick() }
+                itemView.footerAction.setOnClickListener { listener.onFooterActionClick() }
             } else {
                 itemView.shareSpace.visible()
                 itemView.footerAction.gone()
@@ -149,8 +153,8 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
             if (template.like) {
                 itemView.likeIcon.visible()
                 itemView.likeText.visible()
-                itemView.likeIcon.setOnClickListener { listener?.onLikeClick(adapterPosition, id, footer.like.isChecked) }
-                itemView.likeText.setOnClickListener { listener?.onLikeClick(adapterPosition, id, footer.like.isChecked) }
+                itemView.likeIcon.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
+                itemView.likeText.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 bindLike(footer.like)
             } else {
                 itemView.likeIcon.gone()
@@ -160,8 +164,8 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
             if (template.comment) {
                 itemView.commentIcon.visible()
                 itemView.commentText.visible()
-                itemView.commentIcon.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
-                itemView.commentText.setOnClickListener { listener?.onCommentClick(adapterPosition, id) }
+                itemView.commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
+                itemView.commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 bindComment(footer.comment)
             } else {
                 itemView.commentIcon.gone()
@@ -171,8 +175,8 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
             if (template.share) {
                 itemView.shareIcon.visible()
                 itemView.shareText.visible()
-                itemView.shareIcon.setOnClickListener { listener?.onShareClick() }
-                itemView.shareText.setOnClickListener { listener?.onShareClick() }
+                itemView.shareIcon.setOnClickListener { listener.onShareClick() }
+                itemView.shareText.setOnClickListener { listener.onShareClick() }
             } else {
                 itemView.shareIcon.gone()
                 itemView.shareText.gone()
@@ -216,10 +220,6 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
                 else comment.fmt
     }
 
-    override fun onThumbnailClick(youtubeId: String) {
-        listener?.onYoutubeThumbnailClick(youtubeId)
-    }
-
     interface DynamicPostListener {
         fun onHeaderActionClick(isFollowed: Boolean)
 
@@ -232,7 +232,5 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
         fun onShareClick()
 
         fun onFooterActionClick()
-
-        fun onYoutubeThumbnailClick(youtubeId: String)
     }
 }

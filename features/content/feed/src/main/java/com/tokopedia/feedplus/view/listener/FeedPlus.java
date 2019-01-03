@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
@@ -69,8 +68,7 @@ public interface FeedPlus {
         interface Polling {
             UserSessionInterface getUserSession();
 
-            void onVoteOptionClicked(int rowNumber, String pollId,
-                                     PollOptionViewModel optionViewModel);
+            void onVoteOptionClicked(int rowNumber, String pollId, String optionId);
 
             void onGoToLink(String link);
 
@@ -180,7 +178,7 @@ public interface FeedPlus {
 
         void onGoToLogin();
 
-        void onSuccessSendVote(int rowNumber, PollOptionViewModel optionViewModel,
+        void onSuccessSendVote(int rowNumber, String optionId,
                                VoteStatisticDomainModel voteStatisticDomainModel);
 
         void onErrorSendVote(String message);
@@ -208,7 +206,7 @@ public interface FeedPlus {
 
         void unlikeKol(int id, int rowNumber, View.Kol kolListener);
 
-        void sendVote(int rowNumber, String pollId, PollOptionViewModel optionViewModel);
+        void sendVote(int rowNumber, String pollId, String optionId);
 
         void followKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);

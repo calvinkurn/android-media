@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.main.item_feed_recommendation.view.*
 /**
  * @author by milhamj on 20/12/18.
  */
-class FeedRecommendationViewHolder(v: View) : AbstractViewHolder<FeedRecommendationViewModel>(v) {
-
-    var cardTitleListener: CardTitleView.CardTitleListener? = null
+class FeedRecommendationViewHolder(v: View,
+                                   private var cardTitleListener: CardTitleView.CardTitleListener)
+    : AbstractViewHolder<FeedRecommendationViewModel>(v) {
 
     companion object {
         @LayoutRes
