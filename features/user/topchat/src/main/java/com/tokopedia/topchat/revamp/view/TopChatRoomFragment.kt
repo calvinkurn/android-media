@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.revamp.view
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,8 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
@@ -30,7 +33,7 @@ import javax.inject.Inject
  */
 
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
-        , TypingListener, SendButtonListener {
+        , TypingListener, SendButtonListener, ChatRoomContract.View.TemplateChatListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -57,6 +60,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             updateViewData(it)
             setCanLoadMore(it)
             getViewState().onSuccessLoadFirstTime(it)
+            presenter.getTemplate()
         }
     }
 
@@ -165,6 +169,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     this,
                     this,
                     this,
+                    this,
                     (activity as BaseChatToolbarActivity).getToolbar()
             )
 
@@ -259,5 +264,36 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun addTemplateString(message: String?) {
+        message?.let {
+            getViewState().addTemplateString(message)
+        }
+    }
+
+    override fun goToSettingTemplate() {
+        val intent = TemplateChatActivity.createInstance(context)
+        activity?.run {
+            startActivityForResult(intent, 100)
+            overridePendingTransition(com.tokopedia.topchat.R.anim.pull_up, android.R.anim.fade_out)
+        }
+    }
+
+    override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
+        getViewState().setTemplate(list)
+    }
+
+    override fun onErrorGetTemplate() {
+        getViewState().setTemplate(null)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            100 -> {
+                presenter.getTemplate()
+            }
+        }
     }
 }

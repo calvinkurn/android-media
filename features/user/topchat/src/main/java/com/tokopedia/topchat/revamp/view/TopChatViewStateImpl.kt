@@ -15,7 +15,11 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncem
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel
+import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
+import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
+import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.revamp.view.adapter.TopChatTypeFactoryImpl
@@ -35,6 +39,7 @@ class TopChatViewStateImpl(
         private val productAttachmentListener: ProductAttachmentListener,
         private val typingListener: TypingListener,
         private val sendListener: SendButtonListener,
+        private val templateListener: ChatRoomContract.View.TemplateChatListener,
         toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar), TopChatViewState {
 
@@ -43,8 +48,8 @@ class TopChatViewStateImpl(
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
-//    lateinit var templateAdapter: TemplateChatAdapter
-//    lateinit var templateChatTypeFactory: TemplateChatTypeFactory
+    lateinit var templateAdapter: TemplateChatAdapter
+    lateinit var templateChatTypeFactory: TemplateChatTypeFactory
 
     init {
         initView()
@@ -81,13 +86,13 @@ class TopChatViewStateImpl(
         adapter = TopChatRoomAdapter(TopChatTypeFactoryImpl(imageAnnouncementListener
                 , chatLinkHandlerListener, imageUploadListener, productAttachmentListener), ArrayList())
         setAdapter(adapter)
-//
-//        templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(this))
-//        templateRecyclerView.setHasFixedSize(true)
-//        templateRecyclerView.layoutManager = LinearLayoutManager(contractView.context, LinearLayoutManager.HORIZONTAL, false)
-//        templateRecyclerView.adapter = templateAdapter
-//        templateRecyclerView.visibility = View.GONE
-//
+
+        templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(templateListener))
+        templateRecyclerView.setHasFixedSize(true)
+        templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        templateRecyclerView.adapter = templateAdapter
+        templateRecyclerView.visibility = View.GONE
+
 //        pickerButton.setOnClickListener {
 //            contractView.pickImageToUpload()
 //        }
@@ -175,6 +180,22 @@ class TopChatViewStateImpl(
 //                && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
 //            showQuickReply(chatroomViewModel.listChat[0] as QuickReplyListViewModel)
 //        }
+    }
+
+    fun setTemplate(listTemplate: List<Visitable<Any>>?) {
+        if(listTemplate == null){
+            templateRecyclerView.visibility = View.GONE
+        }
+        templateAdapter.list = listTemplate
+        templateRecyclerView.visibility = View.VISIBLE
+    }
+
+    fun addTemplateString(message: String) {
+        val text = replyEditText.getText().toString()
+        val index = replyEditText.getSelectionStart()
+        replyEditText.setText(String.format("%s %s %s", text.substring(0, index), message, text
+                .substring(index)))
+        replyEditText.setSelection(message.length + text.substring(0, index).length + 1)
     }
 }
 

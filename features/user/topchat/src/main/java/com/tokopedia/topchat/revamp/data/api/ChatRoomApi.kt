@@ -1,8 +1,9 @@
-package com.tokopedia.chat_common.data.api
+package com.tokopedia.topchat.revamp.data.api
 
 import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -53,8 +54,8 @@ interface ChatRoomApi {
 //    @GET(ChatUrl.GET_TOPCHAT_NOTIFICATION)
 //    fun getNotification(@QueryMap params: HashMap<String, Any>): Observable<Response<DataResponse<>>>
 //
-//    @GET(ChatUrl.GET_TEMPLATE)
-//    fun getTemplate(@QueryMap parameters: HashMap<String, Any>): Observable<Response<DataResponse<>>>
+    @GET(ChatUrl.GET_TEMPLATE)
+    fun getTemplate(@QueryMap parameters: HashMap<String, Any>): Observable<Response<DataResponse<TemplateData>>>
 //
 //    @FormUrlEncoded
 //    @PUT(ChatUrl.UPDATE_TEMPLATE)

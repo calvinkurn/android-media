@@ -23,6 +23,9 @@ interface TopChatContract {
 
         fun showSnackbarError(stringResource: String)
 
+        fun onSuccessGetTemplate(it: List<Visitable<Any>>)
+
+        fun onErrorGetTemplate()
 
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
     }

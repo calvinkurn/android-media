@@ -16,8 +16,11 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
+import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
 import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
 import com.tokopedia.topchat.revamp.domain.usecase.GetChatUseCase
+import com.tokopedia.topchat.revamp.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,6 +29,7 @@ import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import okhttp3.WebSocket
 import okio.ByteString
+import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
@@ -36,7 +40,8 @@ import javax.inject.Inject
 class TopChatRoomPresenter @Inject constructor(
         var getChatUseCase: GetChatUseCase,
         override var userSession: UserSessionInterface,
-        private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper)
+        private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
+        private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     private var mSubscription: CompositeSubscription
@@ -151,6 +156,31 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    fun getTemplate() {
+        getTemplateChatRoomUseCase.execute(object : Subscriber<GetTemplateViewModel>(){
+            override fun onNext(t: GetTemplateViewModel?) {
+                var templateList = arrayListOf<Visitable<Any>>()
+                t?.let {
+                    if(t.isEnabled){
+                        t.listTemplate?.let {
+                            templateList.addAll(it)
+                        }
+                    }
+                }
+                templateList.add(TemplateChatModel(false) as Visitable<Any>)
+                view.onSuccessGetTemplate(templateList)
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                view.onErrorGetTemplate()
+            }
+
+        })
+    }
 
     private fun readMessage() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
@@ -194,11 +224,10 @@ class TopChatRoomPresenter @Inject constructor(
 
     private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
         dummyList.isNotEmpty().let {
-            for (i in 0.. dummyList.size){
+            for (i in 0 until dummyList.size){
                 var temp = (dummyList[i] as MessageViewModel)
-                if(temp.startTime == pojo.startTime
-                        && temp.messageId == pojo.msgId.toString()
-                        && temp.message.equals(pojo.message.originalReply)){
+                 if(temp.startTime == pojo.startTime
+                        && temp.messageId == pojo.msgId.toString()){
                     return temp
                 }
             }

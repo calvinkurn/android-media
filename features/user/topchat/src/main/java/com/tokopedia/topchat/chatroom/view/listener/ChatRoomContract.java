@@ -33,6 +33,11 @@ public class ChatRoomContract {
 
     public interface View extends CustomerView {
 
+        interface TemplateChatListener {
+            void addTemplateString(String message);
+            void goToSettingTemplate();
+        }
+
         Bundle getArguments();
 
         void setHeader();
@@ -95,10 +100,6 @@ public class ChatRoomContract {
         boolean isMyMessage(String fromUid);
 
         void setTemplate(List<Visitable> listTemplate);
-
-        void addTemplateString(String message);
-
-        void goToSettingTemplate();
 
         void onGoToGallery(Attachment attachment, String fullTime);
 
