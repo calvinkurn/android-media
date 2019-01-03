@@ -39,8 +39,6 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 
 public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private static final String OVO = "OVO";
-    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
-    private static final String KEY_AFFILIATE_FIRSTTIME = "KEY_AFFILIATE_FIRSTTIME";
     private Context context;
 
     @Inject
@@ -273,8 +271,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_account_affiliate", true)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();
-            LocalCacheHandler cache = new LocalCacheHandler(context.getApplicationContext(), KEY_PROFILE_BUYER);
-            infoCard.setIconRes(cache.getBoolean(KEY_AFFILIATE_FIRSTTIME , true) ? R.drawable.ic_byme_notif : R.drawable.ic_byme);
+            infoCard.setIconRes(R.drawable.ic_byme_notif);
             infoCard.setMainText(context.getString(R.string.title_menu_affiliate));
             infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
             infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);

@@ -47,8 +47,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final String OVO = "OVO";
-    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
-    private static final String KEY_AFFILIATE_FIRSTTIME = "KEY_AFFILIATE_FIRSTTIME";
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
@@ -146,11 +144,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         sendTracking(item.getTitleTrack(), item.getSectionTrack(),
                 item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
-        if (item.getMainText().equals(getActivity().getResources().getString(R.string.title_menu_affiliate))) {
-            LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_PROFILE_BUYER);
-            cache.putBoolean(KEY_AFFILIATE_FIRSTTIME, false);
-            cache.applyEditor();
-        }
     }
 
     @Override
