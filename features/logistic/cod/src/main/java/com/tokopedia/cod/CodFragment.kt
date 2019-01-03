@@ -1,5 +1,6 @@
 package com.tokopedia.cod
 
+import android.app.Activity.RESULT_OK
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -92,7 +93,10 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
 
     override fun navigateToThankYouPage(applink: String) {
         startActivity(RouteManager.getIntent(context, applink))
-        activity?.finish()
+        activity?.run {
+            setResult(RESULT_OK)
+            finish()
+        }
     }
 
     @Suppress("DEPRECATION")

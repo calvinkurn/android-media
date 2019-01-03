@@ -103,8 +103,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
+
     private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
-    private static final int REQUEST_CODE_COD = 1;
+    private static final int REQUEST_CODE_COD = 164;
     private static final String SHIPMENT_TRACE = "shipment_trace";
 
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
@@ -654,7 +655,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void navigateToCodConfirmationPage(Data data) {
         Intent intent = checkoutModuleRouter.getCodPageIntent(getContext(), data);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_COD);
     }
 
     @Override
@@ -851,6 +852,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromCourierPinpoint(resultCode, data);
         } else if (requestCode == REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS) {
             onResultFromMultipleAddress(resultCode, data);
+        } else if (requestCode == REQUEST_CODE_COD) {
+            onResultFromCod(resultCode);
         }
     }
 
@@ -899,6 +902,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 getActivity().setResult(resultCode);
                 getActivity().finish();
             }
+        }
+    }
+
+    private void onResultFromCod(int resultCode) {
+        if (resultCode == Activity.RESULT_OK && getActivity() != null) {
+            getActivity().setResult(resultCode);
+            getActivity().finish();
+        } else {
+            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickShipment());
         }
     }
 
