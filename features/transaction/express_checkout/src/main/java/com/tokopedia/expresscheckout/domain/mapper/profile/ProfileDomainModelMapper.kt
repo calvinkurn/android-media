@@ -1,7 +1,7 @@
 package com.tokopedia.expresscheckout.domain.mapper.profile
 
-import com.tokopedia.expresscheckout.data.entity.Header
-import com.tokopedia.expresscheckout.data.entity.profile.*
+import com.tokopedia.expresscheckout.data.entity.response.Header
+import com.tokopedia.expresscheckout.data.entity.response.profile.*
 import com.tokopedia.expresscheckout.domain.model.HeaderModel
 import com.tokopedia.expresscheckout.domain.model.profile.*
 

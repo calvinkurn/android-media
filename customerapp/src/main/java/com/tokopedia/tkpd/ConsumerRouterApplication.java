@@ -402,6 +402,7 @@ import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
@@ -1058,8 +1059,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getExpressCheckoutIntent(Activity activity) {
-        return CheckoutVariantActivity.Companion.createIntent(activity);
+    public Intent getExpressCheckoutIntent(Activity activity, AtcRequest atcRequest) {
+        return CheckoutVariantActivity.Companion.createIntent(activity, atcRequest);
     }
 
     @Override

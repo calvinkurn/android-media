@@ -1,6 +1,6 @@
 package com.tokopedia.expresscheckout.domain.mapper.checkout
 
-import com.tokopedia.expresscheckout.data.entity.checkout.*
+import com.tokopedia.expresscheckout.data.entity.response.checkout.*
 import com.tokopedia.expresscheckout.domain.model.HeaderModel
 import com.tokopedia.expresscheckout.domain.model.checkout.*
 

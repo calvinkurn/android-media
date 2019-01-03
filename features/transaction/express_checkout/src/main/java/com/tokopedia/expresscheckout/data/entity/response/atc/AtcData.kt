@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.data.entity.atc
+package com.tokopedia.expresscheckout.data.entity.response.atc
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply

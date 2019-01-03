@@ -1,6 +1,6 @@
 package com.tokopedia.expresscheckout.domain.usecase
 
-import com.tokopedia.expresscheckout.data.entity.atc.AtcData
+import com.tokopedia.expresscheckout.data.entity.response.atc.AtcData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

@@ -11,6 +11,7 @@ import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest;
 
 import rx.Observable;
 
@@ -55,7 +56,7 @@ public interface PdpRouter {
 
     Intent getCheckoutIntent(Activity activity);
 
-    Intent getExpressCheckoutIntent(Activity activity);
+    Intent getExpressCheckoutIntent(Activity activity, AtcRequest atcRequest);
 
     Intent getLoginIntent(Context context);
 

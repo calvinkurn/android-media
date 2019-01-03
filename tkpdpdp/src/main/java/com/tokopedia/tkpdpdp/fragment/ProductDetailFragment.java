@@ -62,6 +62,7 @@ import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.VarianCourierSimulationView;
 import com.tokopedia.tkpdpdp.customview.WholesaleInstallmentView;
 import com.tokopedia.tkpdpdp.domain.GetMostHelpfulReviewUseCase;
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
@@ -780,10 +781,19 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onBuyClick(String source) {
-        if (getActivity() != null) {
-            Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                    .getExpressCheckoutIntent(getActivity());
-            startActivity(intent);
+        try {
+            if (getActivity() != null) {
+                AtcRequest atcRequest = new AtcRequest();
+                atcRequest.setShopId(Integer.parseInt(productData.getShopInfo().getShopId()));
+                atcRequest.setProductId(Integer.parseInt(productPass.getProductId()));
+                atcRequest.setNotes("");
+                atcRequest.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
+                Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                        .getExpressCheckoutIntent(getActivity(), atcRequest);
+                startActivity(intent);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
 /*

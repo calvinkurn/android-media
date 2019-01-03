@@ -22,6 +22,7 @@ import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.view.errorview.ErrorBottomsheetsActionListener
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel
 import com.tokopedia.expresscheckout.view.variant.viewmodel.TypeVariantViewModel
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -39,8 +40,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     var isDataLoaded = false
 
     companion object {
-        fun createInstance(): CheckoutVariantFragment {
-            return CheckoutVariantFragment()
+        val ARGUMENT_ATC_REQUEST = "ARGUMENT_ATC_REQUEST"
+
+        fun createInstance(atcRequest: AtcRequest): CheckoutVariantFragment {
+            val bundle = Bundle()
+            bundle.putParcelable(ARGUMENT_ATC_REQUEST, atcRequest)
+            val fragment = CheckoutVariantFragment()
+            fragment.arguments = bundle
+
+            return fragment
         }
     }
 
@@ -267,7 +275,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun loadData(page: Int) {
         if (!isDataLoaded) {
-            presenter.loadExpressCheckoutData()
+            presenter.loadExpressCheckoutData(arguments?.get(ARGUMENT_ATC_REQUEST) as AtcRequest)
         }
     }
 

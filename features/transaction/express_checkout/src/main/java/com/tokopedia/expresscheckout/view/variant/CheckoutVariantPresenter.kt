@@ -1,9 +1,11 @@
 package com.tokopedia.expresscheckout.view.variant
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.data.entity.atc.AtcResponse
+import com.tokopedia.expresscheckout.data.entity.request.AtcRequest
+import com.tokopedia.expresscheckout.data.entity.response.atc.AtcResponse
 import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
 import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
@@ -33,7 +35,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
         super.detachView()
     }
 
-    override fun loadExpressCheckoutData() {
+    override fun loadExpressCheckoutData(atcRequest: AtcRequest) {
 //        var json = FileUtils().readRawTextFile(view.getActivityContext(), R.raw.response_ok_triple_variant)
 //        var response: ExpressCheckoutResponse = Gson().fromJson(json, ExpressCheckoutResponse::class.java)
 //        val dataMapper: DataMapper = ViewModelMapper()
@@ -44,12 +46,7 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
 
         view.showLoading()
         val variables = HashMap<String, Any?>()
-        val params = HashMap<String, Any>()
-        params.put("product_id", 4975978)
-        params.put("quantity", 1)
-        params.put("notes", "")
-        params.put("shop_id", 153800)
-        variables.put("params", params)
+        variables.put("params", Gson().toJson(atcRequest))
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getActivityContext()?.resources,
                 R.raw.mutation_atc_express), AtcResponse::class.java, variables)
         getExpressCheckoutFormUseCase.clearRequest()

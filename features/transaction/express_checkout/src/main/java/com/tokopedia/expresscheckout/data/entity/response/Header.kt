@@ -1,4 +1,4 @@
-package com.tokopedia.expresscheckout.data.entity
+package com.tokopedia.expresscheckout.data.entity.response
 
 import com.google.gson.annotations.SerializedName
 

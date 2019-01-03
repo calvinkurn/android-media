@@ -1,5 +1,5 @@
-mutation atc_express($params: AtcExpressParams) {
-  atc_express(params: $params) {
+mutation atcExpress($params: AtcExpressParams) {
+  atcExpress(params: $params) {
     status
     error_message
     data {
@@ -169,16 +169,6 @@ mutation atc_express($params: AtcExpressParams) {
       }
       max_quantity
       max_char_note
-      messages {
-        ErrorCheckoutPriceLimit
-        ErrorFieldBetween
-        ErrorFieldMaxChar
-        ErrorFieldRequired
-        ErrorProductAvailableStock
-        ErrorProductAvailableStockDetail
-        ErrorProductMaxQuantity
-        ErrorProductMinQuantity
-      }
     }
   }
 }
