@@ -32,8 +32,7 @@ public class GetMessageMapper implements Func1<Response<DataResponse<MessageData
         if (response.isSuccessful() &&
                 response.body().getHeader() == null ||
                 (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()
-                ) || (response.body().getHeader() != null && response.body().getHeader().getMessages()
-                .get(0).equals(""))) {
+                ) || (response.body().getHeader() != null && response.body().getHeader().getMessages().get(0).equals(""))) {
             MessageData pojo = response.body().getData();
             return convertToDomain(pojo);
         } else {

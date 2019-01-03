@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.data.mapper;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.domain.pojo.search.RepliesContent;
 import com.tokopedia.topchat.chatlist.domain.pojo.search.SearchedMessage;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
@@ -20,20 +21,20 @@ import rx.functions.Func1;
  * Created by stevenfredian on 10/18/17.
  */
 
-public class SearchChatMapper implements Func1<Response<TokopediaWsV4Response>, InboxChatViewModel> {
+public class SearchChatMapper implements Func1<Response<DataResponse<SearchedMessage>>, InboxChatViewModel> {
 
     @Inject
     public SearchChatMapper() {
     }
 
     @Override
-    public InboxChatViewModel call(Response<TokopediaWsV4Response> response) {
+    public InboxChatViewModel call(Response<DataResponse<SearchedMessage>> response) {
         //TODO MAKE ERROR INTERCEPTOR
-        if (response.isSuccessful()
-                && !response.body().isNullData()
-                && (response.body().getErrorMessageJoined().equals("")
-                || !response.body().isNullData() && response.body().getErrorMessages() == null)) {
-            SearchedMessage data = response.body().convertDataObj(SearchedMessage.class);
+        if (response.isSuccessful() &&
+                response.body().getHeader() == null ||
+                (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()
+                ) || (response.body().getHeader() != null && response.body().getHeader().getMessages().get(0).equals(""))) {
+            SearchedMessage data = response.body().getData();
             return convertToDomain(data);
         } else {
             throw new RuntimeException(String.valueOf(response.code()));

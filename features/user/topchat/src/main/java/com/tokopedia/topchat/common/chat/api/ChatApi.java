@@ -6,6 +6,9 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
+import com.tokopedia.topchat.chatlist.domain.pojo.search.SearchedMessage;
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData;
 
 import java.util.Map;
 
@@ -37,12 +40,13 @@ public interface ChatApi {
 
     @Headers("Cookie:_SID_TOKOPEDIA_")
     @GET(TkpdBaseURL.Chat.SEARCH)
-    Observable<Response<TokopediaWsV4Response>> searchChat(@QueryMap Map<String, Object> requestParams);
-
+    Observable<Response<DataResponse<SearchedMessage>>> searchChat(@QueryMap Map<String, Object>
+                                                                           requestParams);
 
     @Headers("Content-Type: application/json")
     @POST(TkpdBaseURL.Chat.DELETE)
-    Observable<Response<TokopediaWsV4Response>> deleteMessage(@Body JsonObject parameters);
+    Observable<Response<DataResponse<DeleteChatListViewModel>>> deleteMessage(@Body JsonObject
+                                                                                      parameters);
 
     @FormUrlEncoded
     @Headers("Cookie:_SID_TOKOPEDIA_")
@@ -50,20 +54,24 @@ public interface ChatApi {
     Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> requestParams);
 
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
-    Observable<Response<TokopediaWsV4Response>> getTemplate(@QueryMap Map<String, Object> parameters);
+    Observable<Response<DataResponse<TemplateData>>> getTemplate(@QueryMap Map<String, Object>
+                                                                         parameters);
 
     @FormUrlEncoded
     @PUT(TkpdBaseURL.Chat.UPDATE_TEMPLATE)
-    Observable<Response<TokopediaWsV4Response>> editTemplate(@Path("index") int index, @FieldMap Map<String, Object> jsonObject);
+    Observable<Response<DataResponse<TemplateData>>> editTemplate(@Path("index") int index,
+                                                                  @FieldMap Map<String, Object> jsonObject);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Chat.CREATE_TEMPLATE)
-    Observable<Response<TokopediaWsV4Response>> createTemplate(@FieldMap Map<String, Object> parameters);
+    Observable<Response<DataResponse<TemplateData>>> createTemplate(@FieldMap Map<String, Object>
+                                                                            parameters);
 
     @Headers("Content-Type: application/json")
     @PUT(TkpdBaseURL.Chat.SET_TEMPLATE)
-    Observable<Response<TokopediaWsV4Response>> setTemplate(@Body JsonObject parameters);
+    Observable<Response<DataResponse<TemplateData>>> setTemplate(@Body JsonObject parameters);
 
     @HTTP(method = "DELETE", path = TkpdBaseURL.Chat.DELETE_TEMPLATE, hasBody = true)
-    Observable<Response<TokopediaWsV4Response>> deleteTemplate(@Path("index") int index, @Body JsonObject object);
+    Observable<Response<DataResponse<TemplateData>>> deleteTemplate(@Path("index") int index,
+                                                                    @Body JsonObject object);
 }
