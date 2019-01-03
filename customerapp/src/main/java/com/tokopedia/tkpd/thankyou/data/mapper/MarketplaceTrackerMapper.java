@@ -38,6 +38,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private List<String> shopTypes;
     private PaymentData paymentData;
     private RequestParams requestParams;
+    private static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
 
     public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes, RequestParams requestParams) {
         this.sessionHandler = sessionHandler;
@@ -109,8 +110,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setCouponCode(couponCode);
         purchase.setItemPrice(String.valueOf(orderData.getItemPrice()));
         purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
-        purchase.setCurrentSite(checkCurrentSite(requestParams));
-
+        purchase.setCurrentSite(TOKOPEDIA_MARKETPLACE);
 
         for (Product product : getProductList(orderData)) {
             purchase.addProduct(addCouponToProduct(product.getProduct(), couponCode));
@@ -163,12 +163,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return "";
-    }
-
-    private String checkCurrentSite(RequestParams requestParams) {
-        String platform = requestParams.getString(ThanksTrackerConst.Key.PLATFORM, "");
-        String currentSite = "tokopedia" + platform;
-        return currentSite;
     }
     
     private String getPaymentType(PaymentMethod paymentMethod) {

@@ -650,6 +650,7 @@ public class GTMContainer implements IGTMContainer {
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
                         Purchase.LOGISTIC_TYPE, purchase.getLogisticType(),
                         Purchase.USER_ID, purchase.getUserId(),
+                        Purchase.CURRENT_SITE, purchase.getCurrentSite(),
                         AppEventTracking.ECOMMERCE, DataLayer.mapOf(
                                 Purchase.PURCHASE, purchase.getPurchase()
                         )
@@ -671,6 +672,7 @@ public class GTMContainer implements IGTMContainer {
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
                         Purchase.USER_ID, purchase.getUserId(),
                         Purchase.PAYMENT_STATUS, purchase.getPaymentStatus(),
+                        Purchase.CURRENT_SITE, purchase.getCurrentSite(),
                         AppEventTracking.ECOMMERCE, DataLayer.mapOf(
                                 Purchase.PURCHASE, purchase.getPurchase()
                         )
