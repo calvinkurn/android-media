@@ -24,6 +24,7 @@ import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.DaggerTkpdPaySettingComponent;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
+import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 
@@ -44,6 +45,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     WalletPref walletPref;
 
     private AccountAnalytics accountAnalytics;
+    private VccUserStatus vccUserStatus;
 
     public static Fragment createInstance() {
         return new TkpdPaySettingFragment();
@@ -82,8 +84,13 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID,
                     walletModel.getText()));
         }
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCARD_ID,
-                getString(R.string.title_tokocard_setting)));
+
+        vccUserStatus = walletPref.retrieveVccUserStatus();
+        if(vccUserStatus != null && vccUserStatus.getTitle() != null && !vccUserStatus.getTitle().isEmpty()) {
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_OVO_PAY_LATER_ID,
+                    vccUserStatus.getTitle()));
+        }
+
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,
                 getString(R.string.title_saldo_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_BANK_ACCOUNT_ID,
@@ -131,8 +138,11 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     accountAnalytics.eventClickPaymentSetting(BALANCE);
                     router.goToSaldo(getActivity());
                     break;
-                case SettingConstant.SETTING_TOKOCARD_ID:
-                    String url = walletPref.getTokoSwipeUrl();
+                case SettingConstant.SETTING_OVO_PAY_LATER_ID:
+                    accountAnalytics.eventClickOVOPayLater(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
+                            AccountConstants.Analytics.OVO_PAY_LATER_CLICK,
+                            String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccUserStatus.getStatus()));
+                    String url = vccUserStatus.getRedirectionUrl();
                     if (URLUtil.isValidUrl(url)) {
                         RouteManager.route(getActivity(), String.format("%s?url=%s",
                                 ApplinkConst.WEBVIEW, url));

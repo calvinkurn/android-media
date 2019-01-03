@@ -545,7 +545,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ScreenTracking.screen(getActivity(), getScreenName());
+        ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
 
         if (requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL
                 && resultCode == OpportunityDetailFragment.RESULT_DELETED
@@ -633,7 +633,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && getActivity() != null) {
-            ScreenTracking.screen(getActivity(),getScreenName());
+            ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
 
             startShowCase();
         }

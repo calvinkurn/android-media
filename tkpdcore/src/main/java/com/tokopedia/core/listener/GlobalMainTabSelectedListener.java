@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 public class GlobalMainTabSelectedListener implements TabLayout.OnTabSelectedListener {
     private static final String TAG = GlobalMainTabSelectedListener.class.getSimpleName();
     private final ViewPager viewPager;
-    private Activity activity;
+    protected Activity activity;
 
     public GlobalMainTabSelectedListener(ViewPager mViewPager) {
         this.viewPager = mViewPager;

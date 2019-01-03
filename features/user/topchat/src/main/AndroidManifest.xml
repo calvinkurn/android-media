@@ -39,6 +39,9 @@
             android:label="@string/chat_incoming_settings"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity
+            android:name=".attachproduct.view.activity.BroadcastMessageAttachProductActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -542,6 +543,18 @@ public class InboxChatModule {
     @Provides
     UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @InboxChatScope
+    @Provides
+    GraphqlUseCase provideGraphqlUseCase(){
+        return new GraphqlUseCase();
+    }
+
+    @Provides
+    GetChatBlastSellerMetaDataUseCase provideGetChatBlastSellerMetaDataUseCase(GraphqlUseCase graphqlUseCase,
+                                                                               @ApplicationContext Context context){
+        return new GetChatBlastSellerMetaDataUseCase(graphqlUseCase, context);
     }
 
     @InboxChatScope

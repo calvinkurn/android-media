@@ -25,6 +25,7 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
         implements MyCouponListingContract.Presenter, CatalogPurchaseRedemptionPresenter {
     private GraphqlUseCase mGetCoupon;
     private GraphqlUseCase mSaveCouponUseCase;
+    private int categoryId=0;
 
     @Inject
     public MyCouponListingPresenter(GraphqlUseCase getCoupon, GraphqlUseCase saveCouponUseCase) {
@@ -40,8 +41,17 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
     }
 
     @Override
-    public void getCoupons(int categoryID) {
-        getView().populateCoupons(categoryID);
+    public void getCoupons(int categoryId) {
+        getView().populateCoupons(categoryId);
+    }
+
+    @Override
+    public void setCategoryId(int categoryId) {
+        this.categoryId=categoryId;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
     }
 
     @Override

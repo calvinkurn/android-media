@@ -4,14 +4,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.base.list.seller.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.product.manage.list.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 

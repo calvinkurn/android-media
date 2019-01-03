@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.network.api;
 
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.transaction.network.TransactionUrl;
 
 import java.util.Map;
@@ -8,7 +8,6 @@ import java.util.Map;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import rx.Observable;
 
