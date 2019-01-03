@@ -271,7 +271,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(infoCard);
         }
 
-//        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_account_affiliate", true)) {
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_account_affiliate", true)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();
             LocalCacheHandler cache = new LocalCacheHandler(context.getApplicationContext(), KEY_PROFILE_BUYER);
             infoCard.setIconRes(cache.getBoolean(KEY_AFFILIATE_FIRSTTIME , true) ? R.drawable.ic_byme_notif : R.drawable.ic_byme);
@@ -279,10 +279,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
             infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
             infoCard.setTitleTrack(PEMBELI);
-//            infoCard.setSectionTrack(CLICK_CHALLENGE);
-            infoCard.setNewTxtVisiblle(View.VISIBLE);
             items.add(infoCard);
-//        }
+        }
 
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_help));
