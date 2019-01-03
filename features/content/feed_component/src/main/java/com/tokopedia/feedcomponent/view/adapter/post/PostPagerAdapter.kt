@@ -18,7 +18,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 /**
  * @author by milhamj on 9/21/18.
  */
-class PostPagerAdapter : PagerAdapter() {
+class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.YoutubePostListener)
+    : PagerAdapter() {
 
     private val itemList: MutableList<BasePostViewModel> = ArrayList()
     private var currentPosition = -1
@@ -34,7 +35,7 @@ class PostPagerAdapter : PagerAdapter() {
             is ImagePostViewModel -> ImagePostViewHolder() as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder() as BasePostViewHolder<BasePostViewModel>
             is PollViewModel -> PollViewHolder() as BasePostViewHolder<BasePostViewModel>
-            is YoutubeViewModel -> YoutubeViewHolder() as BasePostViewHolder<BasePostViewModel>
+            is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))
@@ -67,9 +68,5 @@ class PostPagerAdapter : PagerAdapter() {
         this.itemList.clear()
         this.itemList.addAll(imageList)
         notifyDataSetChanged()
-    }
-
-    interface ContentClickListener {
-        fun onContentClick(position: Int)
     }
 }

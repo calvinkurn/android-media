@@ -64,6 +64,7 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.view.activity.KolPostYouTubeActivity;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
@@ -77,6 +78,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +118,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+    private static final String YOUTUBE_URL = "{youtube_url}";
 
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -1387,5 +1391,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onFooterActionClick() {
 
+    }
+
+    @Override
+    public void onYoutubeThumbnailClick(@NotNull String youtubeId) {
+        if (getContext() != null) {
+            RouteManager.route(
+                    getContext(),
+                    ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
+            );
+        }
     }
 }

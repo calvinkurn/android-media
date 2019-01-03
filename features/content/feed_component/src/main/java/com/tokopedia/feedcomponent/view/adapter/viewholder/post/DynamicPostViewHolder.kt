@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeade
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -21,7 +22,7 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(v) {
+class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(v), YoutubeViewHolder.YoutubePostListener {
 
     var listener: DynamicPostListener? = null
 
@@ -121,7 +122,7 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
 
     private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: TemplateBody) {
         itemView.contentLayout.shouldShowWithAction(template.media) {
-            val adapter = PostPagerAdapter()
+            val adapter = PostPagerAdapter(this)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count
@@ -212,6 +213,10 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
                 else comment.fmt
     }
 
+    override fun onThumbnailClick(youtubeId: String) {
+        listener?.onYoutubeThumbnailClick(youtubeId)
+    }
+
     interface DynamicPostListener {
         fun onHeaderActionClick(isFollowed: Boolean)
 
@@ -224,5 +229,7 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
         fun onShareClick()
 
         fun onFooterActionClick()
+
+        fun onYoutubeThumbnailClick(youtubeId: String)
     }
 }

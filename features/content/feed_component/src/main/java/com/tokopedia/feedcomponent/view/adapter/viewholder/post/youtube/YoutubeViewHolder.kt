@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube
 
 import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
@@ -15,7 +14,7 @@ import kotlinx.android.synthetic.main.item_post_youtube.view.*
 /**
  * @author by milhamj on 14/12/18.
  */
-class YoutubeViewHolder : BasePostViewHolder<YoutubeViewModel>() {
+class YoutubeViewHolder(private val listener: YoutubePostListener) : BasePostViewHolder<YoutubeViewModel>() {
     override var layoutRes = R.layout.item_post_youtube
 
     private var youTubeThumbnailLoader: YouTubeThumbnailLoader? = null
@@ -29,6 +28,7 @@ class YoutubeViewHolder : BasePostViewHolder<YoutubeViewModel>() {
                             itemView.youtubeThumbnail.visible()
                             itemView.youtubeThumbnail.setOnClickListener { onThumbnailClicked(element) }
                             youTubeThumbnailLoader = loader
+
                             destroyReleaseProcess()
                             itemView.ivPlay.visible()
                             itemView.progressBar.gone()
@@ -53,6 +53,10 @@ class YoutubeViewHolder : BasePostViewHolder<YoutubeViewModel>() {
     }
 
     private fun onThumbnailClicked(element: YoutubeViewModel) {
-        RouteManager.route(itemView.context, element.youtubeId)
+        listener.onThumbnailClick(element.youtubeId)
+    }
+
+    interface YoutubePostListener {
+        fun onThumbnailClick(youtubeId: String)
     }
 }
