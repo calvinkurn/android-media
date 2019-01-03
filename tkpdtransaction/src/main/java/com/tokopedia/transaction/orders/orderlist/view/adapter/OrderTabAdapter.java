@@ -15,6 +15,7 @@ import java.util.List;
 
 public class OrderTabAdapter extends FragmentStatePagerAdapter {
     private static final String ORDER_CATEGORY = OrderCategory.KEY_LABEL;
+    private static final String ORDER_TAB_LIST = "TAB_LIST";
     Listener listener;
     List<OrderLabelList> mOrderLabelList;
 
@@ -33,7 +34,9 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Bundle arg = new Bundle();
         String orderCategory = mOrderLabelList.get(position).getOrderCategory();
+        OrderLabelList orderLabelList = mOrderLabelList.get(position);
         arg.putString(ORDER_CATEGORY, orderCategory);
+        arg.putParcelable(ORDER_TAB_LIST, orderLabelList);
         Fragment fragment;
         if(orderCategory.equals(OrderCategory.FLIGHTS)) {
             if(listener.getAppContext() instanceof UnifiedOrderListRouter)

@@ -293,4 +293,14 @@
     <string name="barcode_label_two">(tap untuk perbesar)</string>
     <string name="barcode_image_content_description">Barcode Image</string>
     <string name="protection_count_label">Biaya Proteksi Gadget (%d barang)</string>
+    <string name="belanja_order_status_waiting">Menunggu Konfirmasi</string>
+    <string name="belanja_order_status_processed">Pesanan Diproses</string>
+    <string name="belanja_order_status_shipped">Sedang Dikirim</string>
+    <string name="belanja_order_status_delivered">Sampai Tujuan</string>
+    <string name="belanja_order_status_complaint">Pesanan Dikomplain</string>
+    <string name="belanja_order_status_finished">Pesanan Selesai</string>
+    <string name="belanja_order_status_cancelled">Pesanan Dibatalkan</string>
+    <string name="belanja_order_status_replacement">Pencarian Pengganti</string>
+    <string name="filter">Filter</string>
+
 </resources>
