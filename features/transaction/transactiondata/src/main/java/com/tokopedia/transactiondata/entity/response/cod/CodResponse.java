@@ -8,46 +8,22 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CodResponse {
 
-    @SerializedName("header")
+    @SerializedName("validate_checkout_cod")
     @Expose
-    private Header header;
-    @SerializedName("data")
-    @Expose
-    private DataStatus data;
-    @SerializedName("status")
-    @Expose
-    private String status;
+    private ValidateCheckoutCod validateCheckoutCod;
 
     public CodResponse() {
     }
 
-    public CodResponse(Header header, DataStatus data, String status) {
-        this.header = header;
-        this.data = data;
-        this.status = status;
+    public CodResponse(ValidateCheckoutCod validateCheckoutCod) {
+        this.validateCheckoutCod = validateCheckoutCod;
     }
 
-    public DataStatus getData() {
-        return data;
+    public ValidateCheckoutCod getValidateCheckoutCod() {
+        return validateCheckoutCod;
     }
 
-    public void setData(DataStatus data) {
-        this.data = data;
-    }
-
-    public Header getHeader() {
-        return header;
-    }
-
-    public void setHeader(Header header) {
-        this.header = header;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setValidateCheckoutCod(ValidateCheckoutCod validateCheckoutCod) {
+        this.validateCheckoutCod = validateCheckoutCod;
     }
 }
