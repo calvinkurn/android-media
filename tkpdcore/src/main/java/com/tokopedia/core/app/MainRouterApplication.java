@@ -22,60 +22,6 @@ public abstract class MainRouterApplication extends BaseMainApplication implemen
     SessionHandler sessionHandler;
 
     @Override
-    public Class<?> getInboxTalkActivityClass() {
-        return null;
-//        return InboxRouter.getInboxTalkActivityClass();
-    }
-
-    @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return null;
-//        return SellerAppRouter.getSellerHomeActivity(context);
-    }
-
-    @Override
-    public Intent getInboxTalkActivityIntentReal(Context context) {
-        return null;
-//        return InboxRouter.getInboxTalkActivityIntent(context);
-    }
-
-    @Override
-    public IAppNotificationReceiver getAppNotificationReceiver() {
-        return null;
-//        return SellerAppRouter.getAppNotificationReceiver();
-    }
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        return null;
-//        return InboxRouter.getInboxMessageActivityClass();
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        return null;
-//        return InboxRouter.getInboxResCenterActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return null;
-//        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
-    }
-
-    @Override
-    public Class getSellingActivityClassReal() {
-        return null;
-//        return SellerRouter.getSellingActivityClass();
-    }
-
-    @Override
-    public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return null;
-//        return SellerRouter.getActivitySellingTransactionList(mContext);
-    }
-
-    @Override
     public SessionHandler legacySessionHandler() {
         if(sessionHandler == null) {
             final com.tokopedia.core.util.SessionHandler mSessionHandler
