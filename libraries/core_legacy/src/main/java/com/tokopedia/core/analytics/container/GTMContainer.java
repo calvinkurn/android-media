@@ -631,7 +631,8 @@ public class GTMContainer implements IGTMContainer {
                         "eventLabel", null,
                         "products", null,
                         "promotions", null,
-                        "ecommerce", null
+                        "ecommerce", null,
+                        "currentSite", null
                 )
         );
     }
