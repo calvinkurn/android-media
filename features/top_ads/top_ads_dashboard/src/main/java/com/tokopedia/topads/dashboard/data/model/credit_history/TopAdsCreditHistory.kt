@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.data.model.credit_history
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.common.data.response.Error
 
 data class TopAdsCreditHistory(
         @SerializedName("credit_history")
@@ -21,26 +22,18 @@ data class TopAdsCreditHistory(
         val totalUsedFmt: String = ""
 ) {
 
-    data class Response(
+    data class CreditsResponse(
+            @SerializedName("topadsCreditHistory")
+            @Expose
+            val response: Response = Response()
+    )
+
+    data class Response (
             @SerializedName("data")
             @Expose
             val dataHistory: TopAdsCreditHistory = TopAdsCreditHistory(),
 
             @Expose
             @SerializedName("errors")
-            val errors: List<CreditError> = listOf())
-
-    data class CreditError(
-            @SerializedName("code")
-            @Expose
-            val code: String = "",
-
-            @SerializedName("detail")
-            @Expose
-            val detail: String = "",
-
-            @SerializedName("title")
-            @Expose
-            val title: String = ""
-    )
+            val errors: List<Error> = listOf())
 }

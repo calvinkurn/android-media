@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsAddCreditFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
+import com.tokopedia.topads.dashboard.view.fragment.credit.TopAdsCreditHistoryFragment
 
 import dagger.Component
 
@@ -16,6 +17,6 @@ import dagger.Component
 interface TopAdsDashboardComponent {
 
     fun inject(topAdsDashboardFragment: TopAdsDashboardFragment)
-
     fun inject(topAdsAddCreditFragment: TopAdsAddCreditFragment)
+    fun inject(topAdsCreditHistoryFragment: TopAdsCreditHistoryFragment)
 }

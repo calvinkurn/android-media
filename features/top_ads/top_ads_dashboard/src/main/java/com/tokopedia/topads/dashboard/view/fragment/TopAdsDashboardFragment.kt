@@ -51,6 +51,7 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.dashboard.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
@@ -186,6 +187,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                         router?.openTopAdsDashboardApplink(it)
                     }
                 }}}
+
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
         setHasOptionsMenu(true)
@@ -378,6 +380,13 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun initShopInfoComponent() {
         text_view_add_deposit.setOnClickListener { goToAddCredit() }
         date_label_view.setOnClickListener { onDateLayoutClicked() }
+        text_view_credit_history.setOnClickListener { goToCreditHistory() }
+    }
+
+    private fun goToCreditHistory() {
+        context?.let {
+            startActivity(TopAdsCreditHistoryActivity.createInstance(it))
+        }
     }
 
     private fun onDateLayoutClicked() {

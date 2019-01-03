@@ -1,18 +1,112 @@
 package com.tokopedia.topads.dashboard.view.fragment.credit
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.design.utils.DateLabelUtils
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.credit_history.CreditHistory
+import com.tokopedia.topads.dashboard.data.model.credit_history.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
+import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditHistoryTypeFactory
+import com.tokopedia.topads.dashboard.view.viewmodel.TopAdsCreditHistoryViewModel
+import kotlinx.android.synthetic.main.partial_credit_history_header.*
+import java.util.*
+import javax.inject.Inject
 
 class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditHistoryTypeFactory>() {
 
+    @Inject
+    lateinit var viewModel: TopAdsCreditHistoryViewModel
+    private var startDate: Date? = null
+    private var endDate: Date? = null
+
+    companion object {
+        fun createInstance() = TopAdsCreditHistoryFragment()
+    }
+
+    override fun onStart() {
+        context?.let {
+            GraphqlClient.init(it)
+        }
+        super.onStart()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topads_credit_history, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getRecyclerView(view).addItemDecoration(DividerItemDecoration(activity))
+        selected_date.setOnClickListener { onDateClicked() }
+    }
+
+    private fun onDateClicked() {
+        if (startDate == null && endDate == null) return
+
+        activity?.let {
+            startActivityForResult(getDateSelectionIntent(it, startDate!!, endDate!!), DatePickerConstant.REQUEST_CODE_DATE)
+        }
+    }
+
+    private fun getDateSelectionIntent(activity: Activity, startDate: Date, endDate: Date): Intent {
+        val maxCalendar = Calendar.getInstance()
+        maxCalendar.set(Calendar.HOUR_OF_DAY, 23)
+        maxCalendar.set(Calendar.MINUTE, 59)
+        maxCalendar.set(Calendar.SECOND, 59)
+
+        val minCalendar = Calendar.getInstance()
+        minCalendar.add(Calendar.YEAR, -1)
+        minCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        minCalendar.set(Calendar.MINUTE, 0)
+        minCalendar.set(Calendar.SECOND, 0)
+        minCalendar.set(Calendar.MILLISECOND, 0)
+
+
+        return Intent(context, DatePickerActivity::class.java).apply {
+            putExtra(DatePickerConstant.EXTRA_START_DATE, startDate.time)
+            putExtra(DatePickerConstant.EXTRA_END_DATE, endDate.time)
+
+            putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, minCalendar.timeInMillis)
+            putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, maxCalendar.timeInMillis)
+            putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, TopAdsCommonConstant.MAX_DATE_RANGE)
+
+            putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, TopAdsDatePeriodUtil.getPeriodRangeList(activity))
+            putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, viewModel.lastSelectionDatePickerIndex)
+            putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, viewModel.lastSelectionDatePickerType)
+
+            putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, getString(R.string.title_date_picker))
+        }
+    }
+
+    override fun callInitialLoadAutomatically() = false
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.isDateUpdated(startDate, endDate)){
+            startDate = viewModel.startDate
+            endDate = viewModel.endDate
+            updateDateLabelView(startDate!!, endDate!!)
+            loadInitialData()
+        }
+    }
+
+    private fun updateDateLabelView(startDate: Date, endDate: Date) {
+        context?.let {
+            selected_date.text = DateLabelUtils.getRangeDateFormatted(it, startDate.time, endDate.time)
+        }
     }
 
     override fun getAdapterTypeFactory() =  TopAdsCreditHistoryTypeFactory()
@@ -21,13 +115,49 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
     }
 
-    override fun loadData(page: Int) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == DatePickerConstant.REQUEST_CODE_DATE && data != null) {
+            val sDate = data.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1)
+            val eDate = data.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1)
+            val lastSelection = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1)
+            val selectionType = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE)
+            if (sDate != -1L && eDate != -1L) {
+                startDate = Date(sDate)
+                endDate = Date(eDate)
+                viewModel.saveDate(startDate!!, endDate!!)
+                viewModel.saveSelectionDatePicker(selectionType, lastSelection)
+                updateDateLabelView(startDate!!, endDate!!)
+                loadInitialData()
+            }
+        }
+    }
 
+    override fun loadData(page: Int) {
+        viewModel.getCreditHistory(GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history), startDate, endDate,
+                this::onSuccessGetCredit, this::onErrorGetCredit)
     }
 
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
+        getComponent(TopAdsDashboardComponent::class.java).inject(this)
+    }
 
+    fun onSuccessGetCredit(creditHistory: TopAdsCreditHistory){
+        topads_credit_addition.text = creditHistory.totalAdditionFmt
+        topads_credit_used.text = creditHistory.totalUsedFmt
+        card_credit_summary.visibility = View.VISIBLE
+        super.renderList(creditHistory.creditHistory)
+    }
+
+    fun onErrorGetCredit(t: Throwable){
+        super.showGetListError(t)
+        card_credit_summary.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        viewModel.clearJob()
+        super.onDestroy()
     }
 }
