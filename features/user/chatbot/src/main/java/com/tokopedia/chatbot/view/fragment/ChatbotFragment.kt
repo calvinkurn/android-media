@@ -106,6 +106,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadInitialData() {
+        showLoading()
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
         presenter.connectWebSocket(messageId)
     }

@@ -3,7 +3,6 @@ package com.tokopedia.chatbot.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.chat_common.BaseChatAdapter
 
 /**
  * @author by nisie on 27/11/18.
@@ -12,4 +11,14 @@ import com.tokopedia.chat_common.BaseChatAdapter
 class ChatbotAdapter(adapterTypeFactory: ChatbotTypeFactoryImpl)
     : BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
+    override fun showLoading() {
+        if (!isLoading) {
+            if (isShowLoadingMore) {
+                visitables.add(0, loadingMoreModel)
+            } else {
+                visitables.add(0, loadingModel)
+            }
+            notifyItemInserted(0)
+        }
+    }
 }
