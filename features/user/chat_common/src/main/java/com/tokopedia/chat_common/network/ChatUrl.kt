@@ -6,14 +6,15 @@ import com.tokopedia.network.constant.TkpdBaseURL
  * @author : Steven 29/11/18
  */
 
-var CHATBOT_BASE_URL = "https://api.tokopedia.com/";
-var TOPCHAT = "https://chat.tokopedia.com/";
-var TOPCHAT_BASE_URL = TkpdBaseURL.JS_DOMAIN;
-var CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com"
-
 class ChatUrl {
 
     companion object {
+
+        var CHATBOT_BASE_URL = "https://api.tokopedia.com/";
+        var TOPCHAT = "https://chat.tokopedia.com/";
+        var TOPCHAT_BASE_URL = TkpdBaseURL.JS_DOMAIN;
+        var CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com"
+
         const val CONNECT_WEBSOCKET = "/connect"
         const val GET_MESSAGE = "/tc/v1/list_message"
         const val GET_REPLY = "/tc/v2/list_reply/{msgId}"

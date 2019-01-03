@@ -4,6 +4,8 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusDataPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusResponsePojo;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -12,6 +14,11 @@ import rx.functions.Func1;
  */
 public class GetUserStatusMapper implements Func1<Response<GetUserStatusResponsePojo>,
         GetUserStatusDataPojo> {
+
+    @Inject
+    public GetUserStatusMapper() {
+    }
+
     @Override
     public GetUserStatusDataPojo call(Response<GetUserStatusResponsePojo> response) {
         if (response.isSuccessful()

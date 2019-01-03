@@ -3,9 +3,9 @@ package com.tokopedia.topchat.revamp.di
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.chat_common.network.CHATBOT_BASE_URL
-import com.tokopedia.chat_common.network.TOPCHAT
-import com.tokopedia.chat_common.network.TOPCHAT_BASE_URL
+import com.tokopedia.chat_common.network.ChatUrl.Companion.CHATBOT_BASE_URL
+import com.tokopedia.chat_common.network.ChatUrl.Companion.TOPCHAT
+import com.tokopedia.chat_common.network.ChatUrl.Companion.TOPCHAT_BASE_URL
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.constant.TkpdBaseURL

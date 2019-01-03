@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chattemplate.data.factory;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.source.CloudGetTemplateChatDataSource;
 import com.tokopedia.topchat.chattemplate.data.source.CloudSetTemplateChatDataSource;
-import com.tokopedia.topchat.common.chat.ChatService;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
 
 import javax.inject.Inject;
 
@@ -14,19 +14,19 @@ import javax.inject.Inject;
 public class TemplateChatFactory {
 
     private TemplateChatMapper templateChatMapper;
-    private ChatService chatService;
+    private ChatApi chatApi;
 
     @Inject
-    public TemplateChatFactory(TemplateChatMapper templateChatMapper, ChatService chatService) {
+    public TemplateChatFactory(TemplateChatMapper templateChatMapper, ChatApi chatApi) {
         this.templateChatMapper = templateChatMapper;
-        this.chatService = chatService;
+        this.chatApi = chatApi;
     }
 
     public CloudGetTemplateChatDataSource createCloudGetTemplateDataSource() {
-        return new CloudGetTemplateChatDataSource(templateChatMapper, chatService);
+        return new CloudGetTemplateChatDataSource(templateChatMapper, chatApi);
     }
 
     public CloudSetTemplateChatDataSource createCloudSetTemplateDataSource() {
-        return new CloudSetTemplateChatDataSource(templateChatMapper, chatService);
+        return new CloudSetTemplateChatDataSource(templateChatMapper, chatApi);
     }
 }

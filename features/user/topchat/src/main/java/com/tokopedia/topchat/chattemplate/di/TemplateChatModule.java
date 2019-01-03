@@ -29,7 +29,7 @@ import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
-import com.tokopedia.topchat.common.chat.ChatService;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -137,27 +137,26 @@ public class TemplateChatModule {
                 .build();
     }
 
-
     @TemplateChatScope
     @Provides
-    ChatService provideChatService(@InboxQualifier Retrofit retrofit) {
-        return new ChatService(retrofit);
+    ChatApi provideChatApi(@InboxQualifier Retrofit retrofit) {
+        return retrofit.create(ChatApi.class);
     }
 
     @TemplateChatScope
     @Provides
     TemplateChatFactory provideTemplateChatFactory(
-            ChatService chatService,
+            ChatApi chatApi,
             TemplateChatMapper templateChatMapper) {
-        return new TemplateChatFactory(templateChatMapper, chatService);
+        return new TemplateChatFactory(templateChatMapper, chatApi);
     }
 
     @TemplateChatScope
     @Provides
     EditTemplateChatFactory provideEditTemplateChatFactory(
-            ChatService chatService,
+            ChatApi chatApi,
             EditTemplateChatMapper templateChatMapper) {
-        return new EditTemplateChatFactory(templateChatMapper, chatService);
+        return new EditTemplateChatFactory(templateChatMapper, chatApi);
     }
 
     @TemplateChatScope

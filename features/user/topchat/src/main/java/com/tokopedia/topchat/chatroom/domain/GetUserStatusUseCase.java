@@ -1,11 +1,8 @@
 package com.tokopedia.topchat.chatroom.domain;
 
 import com.tokopedia.topchat.chatroom.data.mapper.GetUserStatusMapper;
-import com.tokopedia.topchat.chatroom.data.mapper.SetChatRatingMapper;
-import com.tokopedia.topchat.chatroom.data.network.ChatBotApi;
 import com.tokopedia.topchat.chatroom.data.network.TopChatApi;
 import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusDataPojo;
-import com.tokopedia.topchat.chatroom.domain.pojo.getuserstatus.GetUserStatusResponsePojo;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

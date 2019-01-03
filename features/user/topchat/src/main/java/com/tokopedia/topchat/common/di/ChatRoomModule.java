@@ -36,7 +36,7 @@ import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
-import com.tokopedia.topchat.common.chat.ChatService;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.topchat.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.topchat.uploadimage.data.mapper.UploadImageMapper;
@@ -150,39 +150,27 @@ public class ChatRoomModule {
                 .build();
     }
 
-
     @InboxChatScope
     @Provides
-    ChatService provideChatService(@InboxQualifier Retrofit retrofit) {
-        return new ChatService(retrofit);
+    ChatApi provideChatApi(@InboxQualifier Retrofit retrofit) {
+        return retrofit.create(ChatApi.class);
     }
-
 
     @InboxChatScope
     @Provides
     MessageFactory provideMessageFactory(
-            ChatService chatService,
+            ChatApi chatApi,
             GetMessageMapper getMessageMapper,
             DeleteMessageMapper deleteMessageMapper) {
-        return new MessageFactory(chatService, getMessageMapper, deleteMessageMapper);
+        return new MessageFactory(chatApi, getMessageMapper, deleteMessageMapper);
     }
-
-//    @InboxChatScope
-//    @Provides
-//    ReplyFactory provideReplyFactory(
-//            ChatService chatService,
-//            GetReplyMapper getReplyMapper,
-//            ReplyMessageMapper replyMessageMapper,
-//            GetExistingChatMapper getExistingChatMapper) {
-//        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
-//    }
 
     @InboxChatScope
     @Provides
     TemplateChatFactory provideTemplateFactory(
-            ChatService chatService,
+            ChatApi chatApi,
             TemplateChatMapper templateChatMapper) {
-        return new TemplateChatFactory(templateChatMapper, chatService);
+        return new TemplateChatFactory(templateChatMapper, chatApi);
     }
 
     @InboxChatScope
@@ -227,12 +215,6 @@ public class ChatRoomModule {
                                                SendMessageSource sendMessageSource) {
         return new MessageRepositoryImpl(messageFactory, sendMessageSource);
     }
-//
-//    @InboxChatScope
-//    @Provides
-//    ReplyRepository provideReplyRepository(ReplyFactory replyFactory) {
-//        return new ReplyRepositoryImpl(replyFactory);
-//    }
 
     @InboxChatScope
     @Provides
