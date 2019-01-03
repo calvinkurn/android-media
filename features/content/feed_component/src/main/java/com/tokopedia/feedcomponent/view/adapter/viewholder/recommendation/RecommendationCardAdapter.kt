@@ -43,11 +43,10 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
             itemView.tvDescription.text = element.description
             itemView.tvName.text = element.profileName
 
-            itemView.ivBadge.shouldShowWithAction(element.badgeUrl.isNotEmpty()) {
-                itemView.ivBadge.loadImage(element.badgeUrl)
-            }
+            setBadge(element.badgeUrl)
 
-            if (element.template.ctaLink) {
+            //TODO milhamj change true
+            if (true) {
                 itemView.btnFollow.visible()
                 setButtonUi(element.cta)
             } else {
@@ -58,6 +57,18 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
         private fun initViewListener(element: RecommendationCardViewModel) {
             itemView.btnFollow.setOnClickListener {
 
+            }
+        }
+
+        private fun setBadge(badgeUrl: String) {
+            val layoutParams = itemView.tvName.layoutParams as ViewGroup.MarginLayoutParams
+            if (badgeUrl.isNotEmpty()) {
+                itemView.ivBadge.visible()
+                itemView.ivBadge.loadImage(badgeUrl)
+                layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+            } else {
+                itemView.ivBadge.gone()
+                layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_0).toInt()
             }
         }
 
