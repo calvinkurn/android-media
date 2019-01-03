@@ -9,7 +9,7 @@
     app:cardUseCompatPadding="true">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="220dp"
+        android:layout_width="@dimen/feed_recommendation_width"
         android:layout_height="wrap_content">
 
         <com.tokopedia.design.image.SquareImageView
