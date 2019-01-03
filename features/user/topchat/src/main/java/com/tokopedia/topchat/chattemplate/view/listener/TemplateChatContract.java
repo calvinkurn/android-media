@@ -33,7 +33,7 @@ public class TemplateChatContract {
 
         void successRearrange();
 
-        void showError(String errorMessage);
+        void showError(Throwable errorMessage);
 
         void successSwitch();
 

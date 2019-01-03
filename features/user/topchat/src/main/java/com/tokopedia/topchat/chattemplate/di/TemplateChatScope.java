@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.common.di;
+package com.tokopedia.topchat.chattemplate.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

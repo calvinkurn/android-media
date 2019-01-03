@@ -1,8 +1,7 @@
 package com.tokopedia.topchat.chattemplate.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.domain.usecase.CreateTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.DeleteTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.EditTemplateUseCase;
@@ -29,11 +28,16 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
     private final DeleteTemplateUseCase deleteTemplateUseCase;
 
     @Inject
-    EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase, CreateTemplateUseCase createTemplateUseCase, DeleteTemplateUseCase deleteTemplateUseCase) {
+    EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase,
+                              CreateTemplateUseCase createTemplateUseCase,
+                              DeleteTemplateUseCase deleteTemplateUseCase) {
         this.editTemplateUseCase = editTemplateUseCase;
         this.createTemplateUseCase = createTemplateUseCase;
         this.deleteTemplateUseCase = deleteTemplateUseCase;
     }
+
+    @Inject
+    private ChatTemplateAnalytics analytics;
 
     @Override
     public void attachView(EditTemplateChatContract.View view) {
@@ -69,9 +73,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                 @Override
                 public void onNext(EditTemplateViewModel editTemplateViewModel) {
                     if (editTemplateViewModel.isSuccess()) {
-                        UnifyTracking.eventClickTemplate(TopChatAnalytics.Category.ADD_TEMPLATE,
-                                TopChatAnalytics.Action.UPDATE_TEMPLATE,
-                                TopChatAnalytics.Name.INBOX_CHAT);
+                        analytics.eventClickTemplate();
                         getView().onResult(editTemplateViewModel, index, s);
                         getView().finish();
                     } else {

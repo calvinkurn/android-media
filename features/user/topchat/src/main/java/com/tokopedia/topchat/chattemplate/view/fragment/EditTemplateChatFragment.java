@@ -19,11 +19,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
@@ -229,11 +230,14 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerTemplateChatComponent daggerTemplateChatComponent =
-                (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                        .appComponent(appComponent).build();
-        daggerTemplateChatComponent.inject(this);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
+                    .getBaseAppComponent();
+            DaggerTemplateChatComponent daggerTemplateChatComponent =
+                    (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
+                            .baseAppComponent(appComponent).build();
+            daggerTemplateChatComponent.inject(this);
+        }
     }
 
     @Override

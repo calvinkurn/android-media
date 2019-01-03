@@ -1,13 +1,7 @@
 package com.tokopedia.topchat.chattemplate.data.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.topchat.R;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
@@ -24,37 +18,25 @@ import rx.functions.Func1;
  * Created by stevenfredian on 11/27/17.
  */
 
-public class TemplateChatMapper implements Func1<Response<TkpdResponse>, GetTemplateViewModel> {
+public class TemplateChatMapper implements Func1<Response<TokopediaWsV4Response>, GetTemplateViewModel> {
 
     @Inject
     public TemplateChatMapper() {
     }
 
     @Override
-    public GetTemplateViewModel call(Response<TkpdResponse> response) {
-        if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
-                TemplateData data = response.body().convertDataObj(TemplateData.class);
-                return convertToDomain(data);
-            } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
-                }
-            }
+    public GetTemplateViewModel call(Response<TokopediaWsV4Response> response) {
+        //TODO ADD ERROR INTERCEPTOR
+        if (response.isSuccessful()
+                && !response.body().isNullData()
+                && response.body().getErrorMessageJoined().equals("")
+                || !response.body().isNullData() && response.body().getErrorMessages() == null) {
+            TemplateData data = response.body().convertDataObj(TemplateData.class);
+            return convertToDomain(data);
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
-            if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
-            } else {
-                throw new RuntimeException(String.valueOf(response.code()));
-            }
+            throw new RuntimeException(String.valueOf(response.code()));
         }
+
     }
 
     private GetTemplateViewModel convertToDomain(TemplateData data) {

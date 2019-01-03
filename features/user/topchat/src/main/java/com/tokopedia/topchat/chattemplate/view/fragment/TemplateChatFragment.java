@@ -17,7 +17,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -164,11 +167,15 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerTemplateChatComponent daggerTemplateChatComponent =
-                (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                        .appComponent(appComponent).build();
-        daggerTemplateChatComponent.inject(this);
+
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
+                    .getBaseAppComponent();
+            DaggerTemplateChatComponent daggerTemplateChatComponent =
+                    (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
+                            .baseAppComponent(appComponent).build();
+            daggerTemplateChatComponent.inject(this);
+        }
     }
 
     @Override
@@ -264,8 +271,8 @@ public class TemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showError(String errorMessage) {
-        snackbarError.setText(errorMessage);
+    public void showError(Throwable errorMessage) {
+        snackbarError.setText(ErrorHandler.getErrorMessage(getContext(), errorMessage));
         snackbarError.show();
     }
 

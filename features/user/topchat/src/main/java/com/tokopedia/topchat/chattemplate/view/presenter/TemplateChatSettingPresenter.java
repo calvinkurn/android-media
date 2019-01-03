@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chattemplate.view.presenter;
 import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.domain.usecase.SetAvailabilityTemplateUseCase;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
@@ -91,7 +90,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
             @Override
             public void onError(Throwable e) {
-                getView().showError(ErrorHandler.getErrorMessage(e));
+                getView().showError(e);
                 getView().setChecked(!enabled);
                 getView().finishLoading();
             }
@@ -119,7 +118,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
             @Override
             public void onError(Throwable e) {
-                getView().showError(ErrorHandler.getErrorMessage(e));
+                getView().showError(e);
                 getView().revertArrange(from, to);
                 getView().finishLoading();
             }

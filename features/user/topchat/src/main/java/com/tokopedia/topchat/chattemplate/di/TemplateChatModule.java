@@ -1,5 +1,11 @@
-package com.tokopedia.topchat.common.di;
+package com.tokopedia.topchat.chattemplate.di;
 
+import android.content.Context;
+
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
@@ -19,6 +25,21 @@ import dagger.Provides;
 
 @Module
 public class TemplateChatModule {
+
+
+    @TemplateChatScope
+    @Provides
+    AnalyticTracker provideAnalyticTracker(
+            @ApplicationContext Context context) {
+        return ((AbstractionRouter) context).getAnalyticTracker();
+    }
+
+    @TemplateChatScope
+    @Provides
+    ChuckInterceptor provideChuckInterceptor(
+            @ApplicationContext Context context) {
+        return new ChuckInterceptor(context);
+    }
 
     @TemplateChatScope
     @Provides
