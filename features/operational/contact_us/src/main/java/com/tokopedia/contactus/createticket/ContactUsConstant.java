@@ -5,11 +5,11 @@ package com.tokopedia.contactus.createticket;
  */
 public interface ContactUsConstant {
 
-    String PARAM_URL = "PARAM_URL";
+    String EXTRAS_PARAM_URL = "EXTRAS_PARAM_URL";
     String PARAM_REDIRECT = "PARAM_REDIRECT";
     String PARAM_LAST_CATEGORY_ID = "PARAM_LAST_CATEGORY_ID";
     String PARAM_PATH = "PARAM_PATH";
-    String IS_CHAT_BOT = "IS_CHAT_BOT";
+    String EXTRAS_IS_CHAT_BOT = "EXTRAS_IS_CHAT_BOT";
      int ID_NEW_USER = 101;
      int ID_BUYER = 102;
      int ID_SELLER = 103;

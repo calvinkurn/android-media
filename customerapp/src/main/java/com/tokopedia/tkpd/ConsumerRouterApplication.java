@@ -1222,18 +1222,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity) {
-        Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL,
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
                 URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
         return intent;
     }
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
-        Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL,
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
-        intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
+        extras.putString(ContactUsActivity.EXTRAS_PARAM_TOOLBAR_TITLE, toolbarTitle);
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
         return intent;
     }
 
@@ -1288,9 +1290,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
-        Intent intent = new Intent(activity, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL,
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL,
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(activity, extras);
         return intent;
     }
 
@@ -2176,7 +2179,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getContactUsIntent(Context context) {
-        return new Intent(context, ContactUsHomeActivity.class);
+        return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }
 
     @Override
@@ -2724,6 +2727,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getContactUsBaseURL() {
+        return TkpdBaseURL.ContactUs.URL_HELP;
+    }
+
+    @Override
     public Intent getChatBotIntent(Context context, String messageId) {
         return ChatRoomActivity.getChatBotIntent(context, messageId);
     }
@@ -2734,17 +2742,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getHelpUsIntent(Context context) {
-        return new Intent(context, ContactUsActivity.class);
+        return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }
 
 
     @Override
     public Intent getHelpPageActivity(Context context, String url, boolean isFromChatBot) {
-        Intent intent = new Intent(context, ContactUsActivity.class);
-        intent.putExtra(ContactUsConstant.PARAM_URL, URLGenerator.generateURLContactUs(
+        Bundle extras = new Bundle();
+        extras.putString(ContactUsConstant.EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(
                 TextUtils.isEmpty(url) ? TkpdBaseURL.BASE_CONTACT_US : url, context
         ));
-        intent.putExtra(ContactUsConstant.IS_CHAT_BOT, isFromChatBot);
+        extras.putBoolean(ContactUsConstant.EXTRAS_IS_CHAT_BOT, isFromChatBot);
+        Intent intent = ContactUsHomeActivity.getContactUsHomeIntent(context, extras);
         return intent;
     }
 
