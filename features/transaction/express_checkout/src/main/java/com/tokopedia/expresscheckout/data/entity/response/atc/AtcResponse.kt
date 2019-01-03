@@ -15,5 +15,8 @@ data class AtcResponse(
         val data: AtcData,
 
         @SerializedName("status")
-        val status: String
+        val status: String,
+
+        @SerializedName("error_message")
+        val errorMessage: ArrayList<String>
 )

@@ -1,9 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
