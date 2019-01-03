@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 
@@ -10,4 +11,6 @@ interface DynamicPostTypeFactory {
     fun type(dynamicPostViewModel: DynamicPostViewModel): Int
 
     fun type(feedRecommendationViewModel: FeedRecommendationViewModel): Int
+
+    fun type(bannerViewModel: BannerViewModel): Int
 }

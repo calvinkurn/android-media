@@ -1,6 +1,6 @@
 query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String) {
-  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source){
-  	 data {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source) {
+    data {
       id
       createTime
       type
@@ -33,7 +33,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               avatarBadgeImage
               avatarDescription
               reportable
+              deletable
               followCta {
+                isFollow
                 textTrue
                 textFalse
               }
@@ -84,9 +86,19 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               webLink
             }
           }
+          body {
+            media {
+              id
+              type
+              appLink
+              webLink
+              thumbnail
+              thumbnailLarge
+            }
+          }
         }
-        cardpost{
-          title{
+        cardpost {
+          title {
             text
             textBadge
             isClicked
@@ -95,7 +107,7 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               appLink
               webLink
             }
-            action{
+            action {
               event
               action
               appLink
@@ -111,6 +123,8 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             avatarBadgeImage
             avatarDescription
             reportable
+            deletable
+            editable
             followCta {
               textTrue
               textFalse

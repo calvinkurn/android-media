@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -36,9 +38,9 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
         }
 
         private fun initView(element: RecommendationCardViewModel) {
-            itemView.ivImage1.loadImage(element.image1Url)
-            itemView.ivImage2.loadImage(element.image2Url)
-            itemView.ivImage3.loadImage(element.image3Url)
+            loadImageOrDefault(itemView.ivImage1, element.image1Url)
+            loadImageOrDefault(itemView.ivImage2, element.image2Url)
+            loadImageOrDefault(itemView.ivImage3, element.image3Url)
             itemView.ivProfile.loadImageCircle(element.profileImageUrl)
             itemView.tvDescription.text = element.description
             itemView.tvName.text = element.profileName
@@ -79,6 +81,16 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
             } else {
                 itemView.btnFollow.buttonCompatType = ButtonCompat.PRIMARY
                 itemView.btnFollow.text = cta.textFalse
+            }
+        }
+
+        private fun loadImageOrDefault(imageView: ImageView, imageUrl: String) {
+            if (imageUrl.isNotEmpty()) {
+                imageView.loadImage(imageUrl)
+            } else {
+                imageView.setBackgroundColor(
+                        MethodChecker.getColor(imageView.context, R.color.feed_image_default)
+                )
             }
         }
     }

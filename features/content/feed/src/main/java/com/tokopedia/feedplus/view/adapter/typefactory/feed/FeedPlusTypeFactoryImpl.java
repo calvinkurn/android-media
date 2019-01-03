@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
@@ -212,6 +214,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(@NotNull BannerViewModel bannerViewModel) {
+        return 0;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -266,6 +273,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
             viewHolder = new FeedRecommendationViewHolder(view);
+        }
+        else if (type == BannerViewHolder.Companion.getLAYOUT()) {
+            viewHolder = new BannerViewHolder(view);
         }
         else
             viewHolder = super.createViewHolder(view, type);
