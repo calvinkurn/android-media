@@ -86,7 +86,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
         }
 
         vccUserStatus = walletPref.retrieveVccUserStatus();
-        if(vccUserStatus != null) {
+        if(vccUserStatus != null && vccUserStatus.getTitle() != null && !vccUserStatus.getTitle().isEmpty()) {
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_OVO_PAY_LATER_ID,
                     vccUserStatus.getTitle()));
         }

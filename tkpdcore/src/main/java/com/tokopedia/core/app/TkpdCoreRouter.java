@@ -189,8 +189,6 @@ public interface TkpdCoreRouter {
 
     String getDesktopLinkGroupChat();
 
-    Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
-
     Intent getWithdrawIntent(Context context);
 
     String getStringRemoteConfig(String key);
@@ -199,8 +197,6 @@ public interface TkpdCoreRouter {
     Intent getSettingBankIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
-
-    void refereshFcmTokenToCMNotif(String token);
 
     Intent getAutomaticResetPasswordIntent(Context context, String email);
 

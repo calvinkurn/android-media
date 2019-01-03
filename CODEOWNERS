@@ -108,16 +108,22 @@
 /libraries/push_notification/           @ricoharisin
 /libraries/user_session/                @tokopedia/minion-kevin
 /libraries/youtubeutils/                @tokopedia/minion-kevin
+
+/features/user/updateinactivephone      @tokopedia/india-android-team
+/libraries/common_network/              @ricoharisin
+
+/features/digital/event                 @tokopedia/minion-darth
+/features/operational/contact_us        @tokopedia/minion-darth
+/features/digital/digital_deals         @tokopedia/minion-darth
+/libraries/oms                          @tokopedia/minion-darth
+
+/features/fintech/instant_loan          @tokopedia/minion-solo
+/features/fintech/saldo_details         @tokopedia/minion-solo
+/features/promo/tokopoints              @tokopedia/minion-solo
+
+/features/im/challenges                 @tokopedia/minion-yoda
+
+/libraries/pagination                   @lavekush-t
 /libraries/common_network/              @lavekush-t
 /libraries/graphql/                     @lavekush-t
-/features/promo/tokopoints              @tokopedia/india-android-team
-/libraries/common_network/              @ricoharisin
-/features/digital/event                 @tokopedia/india-android-team
-/features/operational/contact_us        @tokopedia/india-android-team
-/features/digital/digital_deals         @tokopedia/india-android-team
-/features/fintech/instant_loan          @tokopedia/india-android-team
-/features/user/updateinactivephone      @tokopedia/india-android-team
-/features/fintech/saldo_details          @tokopedia/india-android-team
-/libraries/oms                          @naveengoyal87
-/features/im/challenges                 @ashwanitp
-/libraries/pagination                   @lavekush-t
+

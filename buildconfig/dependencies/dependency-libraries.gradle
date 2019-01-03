@@ -46,6 +46,7 @@ ext {
             graphql           : ":libraries:graphql",
             imagePicker       : ":libraries:image_picker",
             imageuploader     : ":libraries:imageuploader",
+            kotlinExtensions  : ":libraries:kotlin_extensions",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",
@@ -61,5 +62,6 @@ ext {
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
+            cmnotification    :":libraries:cm_push_notifications"
     ]
 }

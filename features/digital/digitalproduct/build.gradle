@@ -84,12 +84,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation 'dnsjava:dnsjava:2.1.8'
-    implementation('com.exotel:verification:0.2.0@aar') {
-        transitive = true
-        changing = true
-        exclude group: 'com.google.code.gson', module: 'gson'
-    }
     implementation project(rootProject.ext.libraries.core_legacy)
 }
 

@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.notifications.model.Grid;
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver;
@@ -33,7 +34,6 @@ public class GridNotification extends BaseNotification {
     @Override
     public Notification createNotification() {
         NotificationCompat.Builder builder = getNotificationBuilder();
-        builder.setSubText("Test Title Live Now");
         RemoteViews collapsedView = new RemoteViews(context.getApplicationContext().getPackageName()
                 , R.layout.layout_collapsed);
         setCollapseData(collapsedView, baseNotificationModel);
@@ -49,20 +49,7 @@ public class GridNotification extends BaseNotification {
     }
 
     private void setGridData(RemoteViews remoteViews) {
-        if (TextUtils.isEmpty(baseNotificationModel.getIcon())) {
-            remoteViews.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
-        } else {
-            Bitmap iconBitmap = getBitmap(baseNotificationModel.getIcon());
-            if (null != iconBitmap) {
-                remoteViews.setImageViewBitmap(R.id.iv_icon_collapsed, iconBitmap);
-            } else {
-                remoteViews.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
-            }
-        }
-        remoteViews.setTextViewText(R.id.tv_collapse_title, baseNotificationModel.getTitle());
-        remoteViews.setTextViewText(R.id.tv_collapsed_message, baseNotificationModel.getMessage());
-        remoteViews.setOnClickPendingIntent(R.id.collapseMainView, getPendingIntent(getRequestCode(),
-                baseNotificationModel.getAppLink()));
+        setCollapseData(remoteViews, baseNotificationModel);
 
         int count = baseNotificationModel.getGridList().size();
         List<Grid> gridList = baseNotificationModel.getGridList();
@@ -116,9 +103,9 @@ public class GridNotification extends BaseNotification {
             }
             remoteViews.setOnClickPendingIntent(R.id.iv_gridSix,
                     getPendingIntent(getRequestCode(), gridList.get(5).getAppLink()));
-        }else {
-            remoteViews.setViewVisibility(R.id.iv_gridFive,View.GONE);
-            remoteViews.setViewVisibility(R.id.iv_gridSix,View.GONE);
+        } else {
+            remoteViews.setViewVisibility(R.id.iv_gridFive, View.GONE);
+            remoteViews.setViewVisibility(R.id.iv_gridSix, View.GONE);
         }
     }
 
@@ -133,8 +120,8 @@ public class GridNotification extends BaseNotification {
                 remoteView.setImageViewBitmap(R.id.iv_icon_collapsed, getBitmapLargeIcon());
             }
         }
-        remoteView.setTextViewText(R.id.tv_collapse_title, baseNotificationModel.getTitle());
-        remoteView.setTextViewText(R.id.tv_collapsed_message, baseNotificationModel.getMessage());
+        remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getTitle()));
+        remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.getMessage()));
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, getPendingIntent(getRequestCode(),
                 baseNotificationModel.getAppLink()));
     }
