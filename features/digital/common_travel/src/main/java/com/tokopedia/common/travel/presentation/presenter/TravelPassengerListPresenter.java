@@ -7,6 +7,7 @@ import com.tokopedia.common.travel.domain.UpdateTravelPassengerUseCase;
 import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.presentation.contract.TravelPassengerListContract;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -89,15 +90,28 @@ public class TravelPassengerListPresenter extends BaseDaggerPresenter<TravelPass
                         R.string.error_msg_pick_passenger_data_not_valid);
             }
         } else {
-            getView().showMessageErrorInSnackBar(R.string.error_message_choose_passenger);
+            getView().showMessageErrorInSnackBar(
+                    getErrorMessageCantPickPassenger(passengerBooking.getPaxType()));
         }
+    }
+
+    private int getErrorMessageCantPickPassenger(int paxType) {
+        if (paxType == TravelBookingPassenger.ADULT) {
+            return R.string.error_message_choose_passenger_adult;
+        } else if (paxType == TravelBookingPassenger.CHILD) {
+            return R.string.error_message_choose_passenger_child;
+        } else if (paxType == TravelBookingPassenger.INFANT) {
+            return R.string.error_message_choose_passenger_infant;
+        }
+        return R.string.error_message_choose_passenger;
     }
 
     private boolean isPassengerDataValid(TravelPassenger travelPassenger) {
         boolean isValid = true;
         if (travelPassenger.getName() == null || travelPassenger.getName().length() == 0) {
             isValid = false;
-        } else if (travelPassenger.getIdNumber() == null || travelPassenger.getIdNumber().length() == 0) {
+        } else if (travelPassenger.getPaxType() == TravelBookingPassenger.ADULT &&
+                (travelPassenger.getIdNumber() == null || travelPassenger.getIdNumber().length() == 0)) {
             isValid = false;
         }
         return isValid;
