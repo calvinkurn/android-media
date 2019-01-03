@@ -37,7 +37,6 @@ public class GetMessageMapper implements Func1<Response<TokopediaWsV4Response>, 
                 || !response.body().isNullData() && response.body().getErrorMessages() == null) {
             MessageData data = response.body().convertDataObj(MessageData.class);
             return convertToDomain(data);
-
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
