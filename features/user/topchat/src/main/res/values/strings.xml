@@ -5,6 +5,7 @@
     <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
     <string name="total_invoice">Total: </string>
 
+    <string name="string_attach_product_choose_button_text">Pilih (%1$s/%2$s)</string>
     <!--Chat List -->
     <string name="title_personal">Personal</string>
     <string name="title_community">Channel</string>
@@ -64,6 +65,7 @@ yang ditemukan</string>
     <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
     <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
     <string name="title_reason_bottom_sheet">Beritahu kami apa yang salah?</string>
+    <string name="template_subtitle_attach_product">Toko %1$s</string>
     <string name="topchat_online_status_desc">Online</string>
     <string name="topchat_online_minutes_ago">Terakhir online %1$d menit yang lalu</string>
     <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
@@ -76,4 +78,6 @@ yang ditemukan</string>
     <string name="delete_conversation">Hapus Percakapan</string>
     <string name="delete_chat_question">Hapus chat?</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
+    <string name="bm_title">Broadcast Chat</string>
+    <string name="bm_showcase_desc">Promosikan barang atau toko melalui chat ke followers Anda dengan fitur baru ini</string>
 </resources>
