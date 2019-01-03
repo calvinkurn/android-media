@@ -61,7 +61,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onSuccessLoadPrevious(chatroomViewModel: ChatroomViewModel) {
-        hideLoading()
+        adapter.hideLoading()
         adapter.addElement(chatroomViewModel.listChat)
     }
 
