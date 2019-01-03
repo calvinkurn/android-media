@@ -26,18 +26,18 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
     private final EditTemplateUseCase editTemplateUseCase;
     private final CreateTemplateUseCase createTemplateUseCase;
     private final DeleteTemplateUseCase deleteTemplateUseCase;
+    private final ChatTemplateAnalytics analytics;
 
     @Inject
     EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase,
                               CreateTemplateUseCase createTemplateUseCase,
-                              DeleteTemplateUseCase deleteTemplateUseCase) {
+                              DeleteTemplateUseCase deleteTemplateUseCase,
+                              ChatTemplateAnalytics analytics) {
         this.editTemplateUseCase = editTemplateUseCase;
         this.createTemplateUseCase = createTemplateUseCase;
         this.deleteTemplateUseCase = deleteTemplateUseCase;
+        this.analytics = analytics;
     }
-
-    @Inject
-    private ChatTemplateAnalytics analytics;
 
     @Override
     public void attachView(EditTemplateChatContract.View view) {
