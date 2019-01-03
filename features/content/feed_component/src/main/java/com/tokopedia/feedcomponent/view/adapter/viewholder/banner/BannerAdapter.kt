@@ -14,14 +14,16 @@ import java.util.*
  * @author by milhamj on 08/05/18.
  */
 
-class BannerAdapter : RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
+class BannerAdapter: RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
+
+    var listener: BannerItemListener? = null
     private var itemViewModels: List<BannerItemViewModel> = ArrayList()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemLayoutView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_banner_item, parent, false)
-        return ViewHolder(itemLayoutView)
+        return ViewHolder(itemLayoutView, listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -37,13 +39,16 @@ class BannerAdapter : RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class ViewHolder(v: View, val listener: BannerItemListener?) : RecyclerView.ViewHolder(v) {
         fun bind(element: BannerItemViewModel) {
             itemView.banner.loadImage(element.imageUrl)
             itemView.setOnClickListener {
-//                val adapterPosition = holder.adapterPosition
-//                viewListener.onContentProductLinkClicked(itemViewModels[adapterPosition].redirectUrl)
+                listener?.onBannerItemClick(adapterPosition, element.redirectUrl)
             }
         }
+    }
+
+    interface BannerItemListener {
+        fun onBannerItemClick(position: Int, redirectUrl: String)
     }
 }

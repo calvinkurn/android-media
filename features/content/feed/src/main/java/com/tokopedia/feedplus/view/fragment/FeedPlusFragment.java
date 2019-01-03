@@ -31,6 +31,7 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedplus.FeedModuleRouter;
@@ -103,7 +104,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostListener.View.ViewHolder,
-        DynamicPostViewHolder.DynamicPostListener {
+        DynamicPostViewHolder.DynamicPostListener,
+        BannerViewHolder.BannerListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -1401,5 +1403,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
             );
         }
+    }
+
+    @Override
+    public void onBannerItemClick(int position, @NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
     }
 }

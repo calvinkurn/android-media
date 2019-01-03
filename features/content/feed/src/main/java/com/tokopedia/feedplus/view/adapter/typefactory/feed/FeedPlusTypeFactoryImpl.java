@@ -79,6 +79,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
+    private final BannerViewHolder.BannerListener bannerListener;
     private final FeedAnalytics analytics;
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
@@ -89,6 +90,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.kolPostListener = context;
         this.pollingViewListener = context;
         this.dynamicPostListener = context;
+        this.bannerListener = context;
         this.analytics = analytics;
     }
 
@@ -276,6 +278,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         }
         else if (type == BannerViewHolder.Companion.getLAYOUT()) {
             viewHolder = new BannerViewHolder(view);
+            ((BannerViewHolder) viewHolder).setListener(bannerListener);
         }
         else
             viewHolder = super.createViewHolder(view, type);

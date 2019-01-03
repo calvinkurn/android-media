@@ -113,7 +113,6 @@ public class FeedPlusPresenter
         getWhitelistUseCase.unsubscribe();
     }
 
-
     @Override
     public void fetchFirstPage() {
         getFirstPageFeeds();
