@@ -294,10 +294,6 @@ public class InboxChatModule {
     Retrofit provideChatRetrofit(OkHttpClient okHttpClient,
                                  Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ChatUrl.Companion.getTOPCHAT())
-                .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
     }

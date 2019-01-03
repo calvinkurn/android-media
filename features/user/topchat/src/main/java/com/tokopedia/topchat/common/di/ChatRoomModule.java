@@ -181,36 +181,6 @@ public class ChatRoomModule {
 
     @InboxChatScope
     @Provides
-    GetMessageMapper provideGetMessageMapper() {
-        return new GetMessageMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    ReplyMessageMapper provideReplyMessageMapper() {
-        return new ReplyMessageMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    DeleteMessageMapper provideDeleteMessageMapper() {
-        return new DeleteMessageMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    TemplateChatMapper provideTemplateChatMapper() {
-        return new TemplateChatMapper();
-    }
-
-    @InboxChatScope
-    @Provides
-    GetExistingChatMapper provideGetExistingMapper() {
-        return new GetExistingChatMapper();
-    }
-
-    @InboxChatScope
-    @Provides
     MessageRepository provideMessageRepository(MessageFactory messageFactory,
                                                SendMessageSource sendMessageSource) {
         return new MessageRepositoryImpl(messageFactory, sendMessageSource);

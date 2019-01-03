@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
+import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
 
 import java.util.Map;
 
@@ -26,7 +28,7 @@ import rx.Observable;
 
 public interface ChatApi {
     @GET(TkpdBaseURL.Chat.GET_MESSAGE)
-    Observable<Response<TokopediaWsV4Response>> getMessage(@QueryMap Map<String, Object> requestParams);
+    Observable<Response<DataResponse<MessageData>>> getMessage(@QueryMap Map<String, Object> requestParams);
 
     @FormUrlEncoded
     @Headers("Cookie:_SID_TOKOPEDIA_")

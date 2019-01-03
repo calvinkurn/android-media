@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatlist.data.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.ListMessage;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
@@ -18,29 +18,28 @@ import rx.functions.Func1;
  * Created by stevenfredian on 8/31/17.
  */
 
-public class GetMessageMapper implements Func1<Response<TokopediaWsV4Response>, InboxChatViewModel> {
-
-    private static final String ERROR = "error";
-    private static final String ERROR_DESCRIPTION = "error_description";
+public class GetMessageMapper implements Func1<Response<DataResponse<MessageData>>,
+        InboxChatViewModel> {
 
     @Inject
     public GetMessageMapper() {
     }
 
     @Override
-    public InboxChatViewModel call(Response<TokopediaWsV4Response> response) {
+    public InboxChatViewModel call(Response<DataResponse<MessageData>> response) {
         //TODO MAKE ERROR INTERCEPTOR
 
-        if (response.isSuccessful()
-                && (!response.body().isNullData()
-                && response.body().getErrorMessageJoined().equals(""))
-                || !response.body().isNullData() && response.body().getErrorMessages() == null) {
-            MessageData data = response.body().convertDataObj(MessageData.class);
-            return convertToDomain(data);
+        if (response.isSuccessful() &&
+                response.body().getHeader() == null ||
+                (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()
+                ) || (response.body().getHeader() != null && response.body().getHeader().getMessages()
+                .get(0).equals(""))) {
+            MessageData pojo = response.body().getData();
+            return convertToDomain(pojo);
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
-        }
 
+        }
     }
 
     private InboxChatViewModel convertToDomain(MessageData data) {
