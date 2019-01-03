@@ -1,9 +1,6 @@
 package com.tokopedia.instantloan.view.presenter
 
-import android.provider.CallLog
 import android.provider.ContactsContract
-import android.provider.Telephony
-
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
@@ -18,21 +15,15 @@ import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
 import com.tokopedia.instantloan.ddcollector.account.Account
 import com.tokopedia.instantloan.ddcollector.app.Application
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
-import com.tokopedia.instantloan.ddcollector.call.Call
 import com.tokopedia.instantloan.ddcollector.contact.Contact
-import com.tokopedia.instantloan.ddcollector.sms.Sms
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
 import com.tokopedia.user.session.UserSession
-
-import java.lang.reflect.Type
-import java.util.ArrayList
-import java.util.HashMap
-
-import javax.inject.Inject
-
 import rx.Subscriber
+import java.lang.reflect.Type
+import java.util.*
+import javax.inject.Inject
 
 class InstantLoanPresenter @Inject
 constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCase,
@@ -102,9 +93,9 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
 
     override fun startDataCollection() {
         view.showLoaderIntroDialog()
-        DDCollectorManager.getsInstance()?.init(view.getAppContext(), mPermissionRequestCallback)
+        DDCollectorManager.getsInstance().init(view.getActivityContext(), mPermissionRequestCallback)
 
-        DDCollectorManager.getsInstance()!!.process(object : OnDeviceDataReady {
+        DDCollectorManager.getsInstance().process(object : OnDeviceDataReady {
             override fun callback(data: Map<String, Any?>?) {
                 mPostPhoneDataUseCase.setBody(getPhoneDataPayload(data))
                 mPostPhoneDataUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {

@@ -73,7 +73,7 @@ internal class PermissionUtils(context: Context, private val mCallback: Permissi
         return missingPermissions
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    fun onRequestPermissionsResult(requestCode: Int,requiredPermission: List<String>, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_REQUEST_CODE -> if (grantResults.size > 0) {
                 val permissionExeuted = HashMap<String, Int>()
@@ -84,10 +84,14 @@ internal class PermissionUtils(context: Context, private val mCallback: Permissi
 
                 val pendingPermissions = ArrayList<String>()
 
-                for (i in mMissingPermissions.indices) {
-                    if (permissionExeuted[mMissingPermissions[i]] != PackageManager.PERMISSION_GRANTED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(mContext, mMissingPermissions[i])) {
-                            pendingPermissions.add(mMissingPermissions[i])
+                if(mMissingPermissions.size == 0) {
+                    this.mMissingPermissions = getMissingPermission(requiredPermission)
+                }
+
+                for (i in this.mMissingPermissions.indices) {
+                    if (permissionExeuted[this.mMissingPermissions[i]] != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(mContext, this.mMissingPermissions[i])) {
+                            pendingPermissions.add(this.mMissingPermissions[i])
                         }
                     }
                 }

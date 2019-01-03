@@ -6,16 +6,11 @@ import android.content.Context
 import android.location.LocationManager
 import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.REQUIRE
 import com.tokopedia.instantloan.ddcollector.DDConstants.Constant.RGEX_PERMISSION_ENUM_SEPARATOR
-
 import com.tokopedia.instantloan.ddcollector.account.Account
 import com.tokopedia.instantloan.ddcollector.app.Application
 import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
-import com.tokopedia.instantloan.ddcollector.call.Call
 import com.tokopedia.instantloan.ddcollector.contact.Contact
-import com.tokopedia.instantloan.ddcollector.sms.Sms
-
-import java.util.ArrayList
-import java.util.HashSet
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -44,7 +39,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
             return components
         }
 
-    private val dangerousPermissions: List<String>
+    val dangerousPermissions: List<String>
         get() {
             val permissions = ArrayList<String>()
             for (permission in mComponents) {
@@ -124,8 +119,8 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
 
     }
 
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        mPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    fun onRequestPermissionsResult(requestCode: Int,requiredPermissions: List<String>, permissions: Array<String>, grantResults: IntArray) {
+        mPermissionUtils.onRequestPermissionsResult(requestCode, requiredPermissions, permissions, grantResults)
     }
 
     override fun permissionGranted(requestCode: Int) {
@@ -142,7 +137,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     }
 
     companion object {
-        private var sInstance: DDCollectorManager? = null
+        private var sInstance: DDCollectorManager
         private var mIsInitialized: Boolean = false
 
 
@@ -151,7 +146,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
             sInstance = DDCollectorManager()
         }
 
-        fun getsInstance(): DDCollectorManager? {
+        fun getsInstance(): DDCollectorManager {
             return sInstance
         }
     }

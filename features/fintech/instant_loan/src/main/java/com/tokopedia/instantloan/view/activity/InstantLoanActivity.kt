@@ -26,7 +26,7 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.BannerEntity
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager
-import com.tokopedia.instantloan.network.InstantLoanUrl
+import com.tokopedia.instantloan.ddcollector.PermissionResultCallback
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHODS_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
@@ -43,7 +43,6 @@ import com.tokopedia.instantloan.view.presenter.OnGoingLoanPresenter
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.user.session.UserSession
-import java.util.*
 import javax.inject.Inject
 
 class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, BannerContractor.View, OnGoingLoanContractor.View, DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick, View.OnClickListener {
@@ -347,9 +346,13 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         }
     }
 
+    private var mRequiredPermission: List<String> = ArrayList()
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         sendPermissionDeniedGTMEvent(permissions, grantResults)
-        DDCollectorManager.getsInstance()!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        DDCollectorManager.getsInstance().init(this, mPermissionRequestCallback)
+        this.mRequiredPermission = DDCollectorManager.getsInstance().dangerousPermissions
+        DDCollectorManager.getsInstance().onRequestPermissionsResult(requestCode, mRequiredPermission, permissions, grantResults)
     }
 
     private fun sendBannerImpressionEvent(position: Int) {
@@ -410,6 +413,36 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         fun createIntent(context: Context): Intent {
             return Intent(context, InstantLoanActivity::class.java)
+        }
+    }
+
+    private val mPermissionRequestCallback = object : PermissionResultCallback {
+
+        override fun permissionGranted(requestCode: Int) {
+
+        }
+
+        override fun permissionDenied(requestCode: Int) {
+            val fragment: Fragment = instantLoanItemList.get(0).fragment!!
+
+            try {
+                (fragment as DanaInstantFragment).hideIntroDialog()
+                fragment.hideLoaderIntroDialog()
+            } catch (e: Exception) {
+
+            }
+
+        }
+
+        override fun neverAskAgain(requestCode: Int) {
+            val fragment: Fragment = instantLoanItemList.get(0).fragment!!
+
+            try {
+                (fragment as DanaInstantFragment).hideIntroDialog()
+                fragment.hideLoaderIntroDialog()
+            } catch (e: Exception) {
+
+            }
         }
     }
 
