@@ -100,8 +100,9 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
     }
 
     @Override
-    public void submitEditPassengerData() {
+    public void submitEditPassengerData(String idPassenger) {
         if (isAllDataValid()) {
+            editTravelPassengerUseCase.setIdPassengerPrevious(idPassenger);
             compositeSubscription.add(
                     editTravelPassengerUseCase.createObservable(
                             editTravelPassengerUseCase.create(getView().getRequestParamEditPassenger(),
@@ -109,7 +110,7 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
                             .subscribeOn(travelProvider.computation())
                             .unsubscribeOn(travelProvider.computation())
                             .observeOn(travelProvider.computation())
-                            .subscribe(new Subscriber<TravelPassenger>() {
+                            .subscribe(new Subscriber<Boolean>() {
                                 @Override
                                 public void onCompleted() {
 
@@ -122,7 +123,7 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
                                 }
 
                                 @Override
-                                public void onNext(TravelPassenger travelPassenger) {
+                                public void onNext(Boolean isUpdated) {
                                     getView().navigateToPassengerList();
                                 }
                             })

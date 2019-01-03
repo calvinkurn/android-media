@@ -103,7 +103,7 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
                 if (typePage == TravelPassengerUpdateActivity.ADD_PASSENGER_TYPE) {
                     presenter.submitAddPassengerData();
                 } else if (typePage == TravelPassengerUpdateActivity.EDIT_PASSENGER_TYPE) {
-                    presenter.submitEditPassengerData();
+                    presenter.submitEditPassengerData(trainPassengerViewModel.getIdPassenger());
                 }
             }
         });

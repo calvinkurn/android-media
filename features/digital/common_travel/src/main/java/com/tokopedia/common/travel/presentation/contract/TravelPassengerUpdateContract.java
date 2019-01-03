@@ -51,7 +51,7 @@ public interface TravelPassengerUpdateContract {
 
         void submitAddPassengerData();
 
-        void submitEditPassengerData();
+        void submitEditPassengerData(String idPassenger);
 
         void onChangeBirthdate(int year, int month, int dayOfMonth);
 

@@ -18,4 +18,7 @@ public interface ITravelPassengerRepository {
                                                              boolean resetDb);
 
     Observable<Boolean> updatePassenger(boolean isSelected, String idPassenger);
+
+    Observable<Boolean> updateDataTravelPassenger(String idPassenger,
+                                                  TravelPassengerEntity travelPassengerEntity);
 }
