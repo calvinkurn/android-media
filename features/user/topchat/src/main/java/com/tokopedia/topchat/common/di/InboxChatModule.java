@@ -225,8 +225,8 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    ChatService provideChatService() {
-        return new ChatService();
+    ChatService provideChatService(@InboxQualifier Retrofit retrofit) {
+        return new ChatService(retrofit);
     }
 
     @InboxChatScope

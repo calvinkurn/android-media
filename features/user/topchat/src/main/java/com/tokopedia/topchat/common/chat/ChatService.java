@@ -17,13 +17,16 @@ import retrofit2.Retrofit;
 
 public class ChatService extends AuthService<ChatApi> {
 
+    private final Retrofit retrofit;
+
     @Inject
-    public ChatService() {
+    public ChatService(Retrofit retrofit) {
+        this.retrofit = retrofit;
     }
 
     @Override
     protected void initApiService(Retrofit retrofit) {
-        api = retrofit.create(ChatApi.class);
+        api = this.retrofit.create(ChatApi.class);
     }
 
     @Override
