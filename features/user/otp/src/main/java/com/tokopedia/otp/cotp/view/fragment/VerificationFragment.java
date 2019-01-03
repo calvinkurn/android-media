@@ -103,8 +103,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Inject
     VerificationPresenter presenter;
 
-    @Inject
-    IncomingSmsReceiver smsReceiver;
+//    @Inject
+//    IncomingSmsReceiver smsReceiver;
 
     @Inject
     OTPAnalytics analytics;
@@ -143,7 +143,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
 
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_OTP);
-        smsReceiver.setListener(this);
+//        smsReceiver.setListener(this);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         super.onResume();
         if (viewModel != null
                 && viewModel.getType().equals(RequestOtpUseCase.MODE_SMS)) {
-            smsReceiver.registerSmsReceiver(getActivity());
+//            smsReceiver.registerSmsReceiver(getActivity());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 showCheckSMSPermission();
             }
@@ -161,11 +161,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onPause() {
         super.onPause();
-        if (smsReceiver != null
-                && viewModel != null
-                && viewModel.getType().equals(RequestOtpUseCase.MODE_SMS)) {
-            getActivity().unregisterReceiver(smsReceiver);
-        }
+//        if (smsReceiver != null
+//                && viewModel != null
+//                && viewModel.getType().equals(RequestOtpUseCase.MODE_SMS)) {
+//            getActivity().unregisterReceiver(smsReceiver);
+//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -600,7 +600,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onReceiveOTP(String otpCode) {
-        processOTPSMS(otpCode);
+//        processOTPSMS(otpCode);
     }
 
     @Override

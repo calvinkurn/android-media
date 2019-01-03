@@ -72,7 +72,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
     private LocalCacheHandler cacheHandler;
     private CountDownTimer countDownTimer;
     private ProgressBar progressBar;
-    private IncomingSmsReceiver incomingSmsReceiver;
+//    private IncomingSmsReceiver incomingSmsReceiver;
 
     @Inject
     RequestOTPWalletPresenter presenter;
@@ -106,9 +106,9 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
         }
 
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_PHONE_VERIF_TIMER);
-        incomingSmsReceiver = new IncomingSmsReceiver();
-        incomingSmsReceiver.setListener(getReceiverSMSListener());
-        incomingSmsReceiver.registerSmsReceiver(getActivity());
+//        incomingSmsReceiver = new IncomingSmsReceiver();
+//        incomingSmsReceiver.setListener(getReceiverSMSListener());
+//        incomingSmsReceiver.registerSmsReceiver(getActivity());
 
         listener.setTitlePage(getResources().getString(R.string.tokocash_toolbar_verification));
         walletPhoneNumber.setText(presenter.getUserPhoneNumber());
@@ -289,7 +289,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
         return new IncomingSmsReceiver.ReceiveSMSListener() {
             @Override
             public void onReceiveOTP(String otpCode) {
-                validateCodeOTP(otpCode);
+//                validateCodeOTP(otpCode);
             }
         };
     }
@@ -327,8 +327,8 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
             countDownTimer.cancel();
             countDownTimer = null;
         }
-        if (incomingSmsReceiver != null)
-            getActivity().unregisterReceiver(incomingSmsReceiver);
+//        if (incomingSmsReceiver != null)
+//            getActivity().unregisterReceiver(incomingSmsReceiver);
 
         cacheHandler = null;
         presenter.onDestroyView();
