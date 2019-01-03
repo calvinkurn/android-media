@@ -54,11 +54,11 @@ public class GoldMerchantRedirectActivity extends TActivity{
             public void onClick(View v) {
                 Intent launchIntent = getPackageManager().getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
                 if(launchIntent != null){
-                    UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
+                    UnifyTracking.eventClickGMSwitcher(v.getContext(), AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.OPEN_APP);
                     startActivity(launchIntent);
                 }
                 else {
-                    UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.DOWNLOAD_APP);
+                    UnifyTracking.eventClickGMSwitcher(v.getContext(),AppEventTracking.EventLabel.OPEN_TOP_SELLER+AppEventTracking.EventLabel.DOWNLOAD_APP);
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + TOP_SELLER_APPLICATION_PACKAGE)));
                 }
             }

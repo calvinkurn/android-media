@@ -55,6 +55,10 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void setImpressionOffset(int offset){
+        typeFactory.setOffset(offset);
+    }
+
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();

@@ -20,6 +20,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -57,6 +58,7 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
+    implementation project(rootProject.ext.libraries.core_legacy)
 }
 
 apply from: '../../../publish_local.gradle'

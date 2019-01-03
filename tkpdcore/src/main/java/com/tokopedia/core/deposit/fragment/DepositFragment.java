@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -46,40 +46,17 @@ import butterknife.BindView;
 public class DepositFragment extends BasePresenterFragment<DepositFragmentPresenter>
         implements DepositFragmentView {
 
-    @BindView(R2.id.total_balance)
     TextView totalBalance;
-
-    @BindView(R2.id.start_date)
     EditText startDate;
-
-    @BindView(R2.id.end_date)
     EditText endDate;
-
-    @BindView(R2.id.search_button)
     TextView searchButton;
-
-    @BindView(R2.id.withdraw_button)
     TextView drawButton;
-
-    @BindView(R2.id.balance_list)
     RecyclerView listViewBalance;
-
-    @BindView(R2.id.main_view)
     View mainView;
-
-    @BindView(R2.id.deposit_header)
     RelativeLayout topSlideOffBar;
-
-    @BindView(R2.id.review_warning_layout)
     RelativeLayout reviewWarning;
-
-    @BindView(R2.id.amount_review)
     TextView amountBeingReviewed;
-
-    @BindView(R2.id.topup_button)
     TextView topupButton;
-
-    @BindView(R2.id.saldo_prioritas_widget)
     FrameLayout saldoFrameLayout;
 
     DepositScreenListener depositScreenListener;
@@ -158,6 +135,19 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     @Override
     protected void initView(View view) {
+        totalBalance = view.findViewById(R.id.total_balance);
+        startDate = view.findViewById(R.id.start_date);
+        endDate = view.findViewById(R.id.end_date);
+        searchButton = view.findViewById(R.id.search_button);
+        drawButton = view.findViewById(R.id.withdraw_button);
+        listViewBalance = view.findViewById(R.id.balance_list);
+        mainView = view.findViewById(R.id.main_view);
+        topSlideOffBar = view.findViewById(R.id.deposit_header);
+        reviewWarning = view.findViewById(R.id.review_warning_layout);
+        amountBeingReviewed = view.findViewById(R.id.amount_review);
+        topupButton = view.findViewById(R.id.topup_button);
+        saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
+
         this.refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
         snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_INDEFINITE);
 
@@ -193,7 +183,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventDepositTopUp();
+                UnifyTracking.eventDepositTopUp(getActivity());
                 Bundle bundle = new Bundle();
                 bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
                 Intent intent = new Intent(context, LoyaltyDetail.class);

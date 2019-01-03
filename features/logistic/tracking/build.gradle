@@ -5,6 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
+
 buildscript {
     repositories {
         mavenCentral()
@@ -14,22 +15,32 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
+project.ext {
+    artifactId = "${artifactIdLogisticTracking}"
+    groupId = "${groupIdLogistic}"
+    versionName = "${logisticGroupVersion}"
+    artifactName = "${artifactIdLogisticTracking}-release"
+}
+
 dependencies {
+    implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+
     implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.multiDex
 
-    // TODO remove this when possible
-    implementation project(rootProject.ext.features.core)
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

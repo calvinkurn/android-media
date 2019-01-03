@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
@@ -73,6 +75,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Inject
     public CatalogListItemPresenter mPresenter;
+    private SwipeToRefresh mSwipeToRefresh;
 
     public static Fragment newInstance(int categoryId, int subCategoryId, boolean isPointsAvailable) {
         Fragment fragment = new CatalogListItemFragment();
@@ -93,6 +96,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
+        mSwipeToRefresh =rootView.findViewById(R.id.swipe_refresh_layout);
         if(getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_membership_and_egg));
         }else{
@@ -108,12 +112,18 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         mPresenter.attachView(this);
         view.findViewById(R.id.text_failed_action).setOnClickListener(this);
         view.findViewById(R.id.text_empty_action).setOnClickListener(this);
+        mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSubCategoryId(), false);
+            }
+        });
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.text_failed_action) {
-            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSubCategoryId());
+            mPresenter.getCatalog(getCurrentCategoryId(), getCurrentSubCategoryId(), true);
         } else if (view.getId() == R.id.text_empty_action) {
             openWebView(CommonConstant.WebLink.INFO);
         }
@@ -132,11 +142,13 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public void showLoader() {
         mContainer.setDisplayedChild(CONTAINER_LOADER);
+        mSwipeToRefresh.setRefreshing(false);
     }
 
     @Override
     public void showError() {
         mContainer.setDisplayedChild(CONTAINER_ERROR);
+        mSwipeToRefresh.setRefreshing(false);
     }
 
     @Override
@@ -152,6 +164,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Override
     public void hideLoader() {
         mContainer.setDisplayedChild(CONTAINER_DATA);
+        mSwipeToRefresh.setRefreshing(false);
     }
 
     @Override

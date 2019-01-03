@@ -50,6 +50,7 @@
     <string name="appupdate_update">Update</string>
     <string name="appupdate_later">Nanti</string>
     <string name="appupdate_close">Tutup</string>
+    <string name="retry_label">Ulangi</string>
 
     <!-- Permission Util -->
     <string name="dialog_cancel">BATAL</string>

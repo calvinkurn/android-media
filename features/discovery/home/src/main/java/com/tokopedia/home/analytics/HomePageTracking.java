@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.Promotion;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,11 +67,47 @@ public class HomePageTracking {
         return ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
     }
 
+    // GA request
+    // replaced by eventPromoImpression(Context context, List<Promotion>promotions) to cater one shot GA.
+    @Deprecated
     public static void eventPromoImpression(Context context,
                                             Promotion promotion) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEnhancedEcommerce(promotion.getImpressionDataLayer());
+        }
+    }
+
+    public static void eventPromoImpression(Context context,
+                                            List<Promotion> promotions) {
+        if (promotions == null || promotions.size() == 0) {
+            return;
+        }
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < promotions.size(); i++) {
+            Promotion promotion = promotions.get(i);
+            list.add(promotion.getImpressionDataLayerItem());
+        }
+        if (list.size() == 0) {
+            return;
+        }
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "slider banner impression",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray()
+                                    )
+                            )
+                    ),
+                    "attribution", "1 - sliderBanner"
+            );
+            tracker.sendEnhancedEcommerce(map);
         }
     }
 
@@ -403,7 +440,8 @@ public class HomePageTracking {
                                         legoAndCuratedList.toArray(new Object[legoAndCuratedList.size()])
                                 )
                         )
-                )
+                ),
+                "attribution", "2 - homeBanner"
         );
         tracker.sendEnhancedEcommerce(data);
     }

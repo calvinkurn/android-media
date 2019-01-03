@@ -186,10 +186,10 @@ public class EventsHomeActivity extends EventBaseActivity
         toolbar.setOverflowIcon(drawable);
 
         if (getSupportActionBar() != null)
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_black);
 
-        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, R.style.WebViewToolbarSubtitleText);
+        toolbar.setTitleTextAppearance(this, R.style.Toolbar_TitleText);
+        toolbar.setSubtitleTextAppearance(this, R.style.SubTitleTextAppearance);
     }
 
     @Override
@@ -229,7 +229,8 @@ public class EventsHomeActivity extends EventBaseActivity
 
     @Override
     public void showLoginSnackbar(String message) {
-        Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_LONG).setAction(getResources().getString(R.string.title_activity_login), new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_LONG).setAction(getResources().
+                getString(R.string.label_login_button), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showProgressBar();

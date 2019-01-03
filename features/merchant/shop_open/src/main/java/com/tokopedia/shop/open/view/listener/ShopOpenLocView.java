@@ -1,8 +1,8 @@
 package com.tokopedia.shop.open.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 
 /**
  * Created by normansyahputa on 1/2/18.

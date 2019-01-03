@@ -2,7 +2,10 @@ package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -22,19 +25,37 @@ public class ImpressedImageView extends AppCompatImageView {
     private static final String TAG = ImpressedImageView.class.getSimpleName();
     private ProductImage image;
     private ViewHintListener hintListener;
+    private float radius = 8.0f;
+    private Path path;
+    private RectF rect;
+    private int offset;
 
     public ImpressedImageView(Context context) {
         super(context);
+        init();
     }
 
     public ImpressedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         registerObserver(this);
+    }
+
+    private void init() {
+        path = new Path();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        rect = new RectF(0, 0, this.getWidth(), this.getHeight());
+        path.addRoundRect(rect, radius, radius, Path.Direction.CW);
+        canvas.clipPath(path);
+        super.onDraw(canvas);
     }
 
     @Override
@@ -58,6 +79,10 @@ public class ImpressedImageView extends AppCompatImageView {
         });
     }
 
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
     private boolean isVisible(final View view) {
         if (view == null) {
             return false;
@@ -65,7 +90,7 @@ public class ImpressedImageView extends AppCompatImageView {
         if (!view.isShown()) {
             return false;
         }
-        Rect screen = new Rect(0, 0, getScreenWidth(), getScreenHeight());
+        Rect screen = new Rect(0, 0, getScreenWidth(), getOffsetHeight());
 
         int[] location = new int[2];
         view.getLocationOnScreen(location);
@@ -78,13 +103,20 @@ public class ImpressedImageView extends AppCompatImageView {
         }
     }
 
+    private int getOffsetHeight() {
+        if(offset > 0){
+            return getScreenHeight() - offset;
+        } else {
+            return getScreenHeight() - getResources().getDimensionPixelOffset(R.dimen.dp_45);
+        }
+    }
+
     private int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     private int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels -
-                getResources().getDimensionPixelOffset(R.dimen.dp_45);
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     public void setViewHintListener(ViewHintListener hintListener) {

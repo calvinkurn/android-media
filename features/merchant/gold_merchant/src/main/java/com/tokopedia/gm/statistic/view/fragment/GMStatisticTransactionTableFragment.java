@@ -15,9 +15,11 @@ import com.db.williamchart.util.GMStatisticUtil;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;
@@ -31,8 +33,6 @@ import com.tokopedia.gm.statistic.view.adapter.GMStatisticTransactionTableAdapte
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 
 import java.util.Date;
 
@@ -151,7 +151,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
     }
 
     @Override
-    protected BaseListAdapter getNewAdapter() {
+    protected BaseListAdapter<GMStatisticTransactionTableModel> getNewAdapter() {
         GMStatisticTransactionTableAdapter adapter = new GMStatisticTransactionTableAdapter();
         adapter.setSortBy(sortBy);
         return adapter;
@@ -213,7 +213,7 @@ public class GMStatisticTransactionTableFragment extends BaseListDateFragment<GM
 
                 loadData();
 
-                UnifyTracking.eventClickGMStatFilterTypeProductSold(itemTitle);
+                UnifyTracking.eventClickGMStatFilterTypeProductSold(getActivity(), itemTitle);
             }
         });
     }
