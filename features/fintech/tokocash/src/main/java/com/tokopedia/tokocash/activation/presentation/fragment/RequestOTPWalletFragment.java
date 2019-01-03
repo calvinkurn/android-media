@@ -261,13 +261,13 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
         inputOtp.requestFocus();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RequestOTPWalletFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                RequestOTPWalletFragment.this, requestCode, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        RequestOTPWalletFragmentPermissionsDispatcher.onRequestPermissionsResult(
+//                RequestOTPWalletFragment.this, requestCode, grantResults);
+//    }
 
 //    private IncomingSmsReceiver.ReceiveSMSListener getReceiverSMSListener() {
 //        return new IncomingSmsReceiver.ReceiveSMSListener() {
