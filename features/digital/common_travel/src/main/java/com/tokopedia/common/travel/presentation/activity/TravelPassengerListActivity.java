@@ -57,7 +57,6 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
         } else {
             super.onBackPressed();
         }
-        overridePendingTransition(R.anim.travel_anim_stay,R.anim.travel_slide_out_up);
     }
 
     @Override
@@ -87,11 +86,6 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
         } else {
             return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    protected boolean isShowCloseButton() {
-        return true;
     }
 
     @Override

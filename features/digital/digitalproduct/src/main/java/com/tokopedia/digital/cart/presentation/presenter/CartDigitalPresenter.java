@@ -23,19 +23,14 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.digital.cart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.R;
-import com.tokopedia.digital.analytics.NOTPTracking;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
-import com.tokopedia.digital.cart.presentation.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
@@ -55,8 +50,6 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-import static com.tokopedia.digital.cart.presentation.model.NOTPExotelVerification.FIREBASE_NOTP_REMOTE_CONFIG_KEY;
-
 /**
  * @author anggaprasetiyo on 2/24/17.
  */
@@ -71,6 +64,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private DigitalRouter digitalRouter;
+    private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
 
     @Inject
     public CartDigitalPresenter(
@@ -80,7 +74,10 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             DigitalAddToCartUseCase digitalAddToCartUseCase,
             DigitalCheckoutUseCase digitalCheckoutUseCase,
             DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-            DigitalRouter digitalRouter) {
+            DigitalRouter digitalRouter,
+            DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+
+
         this.cartDigitalInteractor = iCartDigitalInteractor;
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
@@ -88,6 +85,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         this.digitalRouter = digitalRouter;
         this.userSession = userSession;
         this.digitalAnalytics = digitalAnalytics;
+        this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
     }
 
     @Override
@@ -178,16 +176,6 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
                 getView().getGeneratedAuthParamNetwork(paramGetCart),
                 getSubscriberCartInfo()
         );
-    }
-
-    @Override
-    public void callPermissionCheckSuccess() {
-        needToVerifyOTP();
-    }
-
-    @Override
-    public void callPermissionCheckFail() {
-        getView().interruptRequestTokenVerification();
     }
 
     @Override
@@ -434,6 +422,14 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
                     getView().setCartDigitalInfo(cartDigitalInfoData);
                     startOTPProcess();
                 } else {
+                    if (cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
+                            && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+                        getView().showPostPaidDialog(
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                                cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
+                        );
+                    }
                     getView().renderAddToCartData(cartDigitalInfoData);
                 }
             }
@@ -442,53 +438,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
 
     private void startOTPProcess() {
-        if (GlobalConfig.isSellerApp() && isNOTPEnabled()) {
-            Log.e(TAG, "nOTP Enabled");
-            getView().checkCallPermissionForNOTP();
-        } else {
-
-            if (GlobalConfig.isSellerApp()) {
-                Log.e(TAG, "nOTP Disabled");
-                NOTPTracking.eventNOTPConfiguration(true, false, false);
-            }
-            getView().interruptRequestTokenVerification();
-        }
-    }
-
-
-    /*
-    TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
-     */
-    private boolean isNOTPEnabled() {
-        // add here different conditions
-        return digitalRouter.getBooleanRemoteConfig(FIREBASE_NOTP_REMOTE_CONFIG_KEY, true);
-
-    }
-
-    /*
-        TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
-     */
-    private void needToVerifyOTP() {
-        getView().showProgressLoading("", getView().getApplicationContext().getResources().getString(R.string.msg_verification));
-        NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), getView().getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
-            @Override
-            public void onVerificationSuccess() {
-                getView().hideProgressLoading();
-                NOTPTracking.eventSuccessNOTPVerification(SessionHandler.getPhoneNumber());
-                if (getView().getActivity() != null) {
-                    processPatchOtpCart(getView().getPassData().getCategoryId());
-                }
-            }
-
-            @Override
-            public void onVerificationFail() {
-                getView().hideProgressLoading();
-                NOTPTracking.eventFailNOTPVerification(SessionHandler.getPhoneNumber());
-                if (getView().getActivity() != null) {
-                    getView().interruptRequestTokenVerification();
-                }
-            }
-        });
+        getView().interruptRequestTokenVerification();
     }
 
     @NonNull
@@ -532,6 +482,16 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 getView().renderCartDigitalInfoData(cartDigitalInfoData);
+
+                if (!getView().isAlreadyShowPostPaid()
+                        && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
+                        && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+                    getView().showPostPaidDialog(
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
+                            cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
+                    );
+                }
             }
         };
     }

@@ -6,9 +6,9 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.common.travel.R;
+import com.tokopedia.common.travel.data.TravelPassengerRepository;
 import com.tokopedia.common.travel.data.entity.ResponseTravelEditPassenger;
 import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
-import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -24,20 +24,28 @@ import rx.functions.Func1;
 /**
  * Created by nabillasabbaha on 23/11/18.
  */
-public class EditTravelPassengerUseCase extends BaseTravelPassengerUseCase<TravelPassenger> {
+public class EditTravelPassengerUseCase extends BaseTravelPassengerUseCase<Boolean> {
 
     private GraphqlUseCase graphqlUseCase;
     private Context context;
+    private String idPassengerPrevious;
+    private ITravelPassengerRepository repository;
 
     @Inject
     public EditTravelPassengerUseCase(GraphqlUseCase graphqlUseCase,
-                                      @ApplicationContext Context context) {
+                                      @ApplicationContext Context context,
+                                      TravelPassengerRepository repository) {
         this.graphqlUseCase = graphqlUseCase;
         this.context = context;
+        this.repository = repository;
+    }
+
+    public void setIdPassengerPrevious(String idPassengerPrevious) {
+        this.idPassengerPrevious = idPassengerPrevious;
     }
 
     @Override
-    public Observable<TravelPassenger> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
         return Observable.just(requestParams)
                 .flatMap(new Func1<RequestParams, Observable<GraphqlResponse>>() {
                     @Override
@@ -68,14 +76,10 @@ public class EditTravelPassengerUseCase extends BaseTravelPassengerUseCase<Trave
                         return responseTravelEditPassenger.getTravelPassengerEntity();
                     }
                 })
-                .map(new Func1<TravelPassengerEntity, TravelPassenger>() {
+                .flatMap(new Func1<TravelPassengerEntity, Observable<Boolean>>() {
                     @Override
-                    public TravelPassenger call(TravelPassengerEntity travelPassengerEntity) {
-                        TravelPassenger travelPassenger = new TravelPassenger();
-                        travelPassenger.setId(travelPassengerEntity.getId());
-                        travelPassenger.setTravelId(travelPassengerEntity.getTravelId());
-                        travelPassenger.setName(travelPassengerEntity.getName());
-                        return travelPassenger;
+                    public Observable<Boolean> call(TravelPassengerEntity travelPassengerEntity) {
+                        return repository.updateDataTravelPassenger(idPassengerPrevious, travelPassengerEntity);
                     }
                 });
     }

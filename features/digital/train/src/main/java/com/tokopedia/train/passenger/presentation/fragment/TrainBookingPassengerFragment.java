@@ -237,7 +237,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 travelTrip.setTravelPassengerBooking(convertTrainPassengerViewModel(trainPassengerViewModel));
                 startActivityForResult(TravelPassengerListActivity.callingIntent(getActivity(),
                         travelTrip, resetPassengerListSelected), PASSENGER_LIST_REQUEST_CODE);
-                getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());

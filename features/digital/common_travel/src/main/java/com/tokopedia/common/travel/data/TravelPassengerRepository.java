@@ -54,7 +54,7 @@ public class TravelPassengerRepository implements ITravelPassengerRepository {
                                                     .transform(travelPassengerEntity);
 
                                             TravelPassengerTable passengerDbTable = travelPassengerDao
-                                                    .findTravelPassenger(travelPassengerEntity.getName());
+                                                    .findTravelPassengerByName(travelPassengerEntity.getName());
                                             if (passengerDbTable != null) {
                                                 passengerEntityTable.setIdPassenger(passengerDbTable.getIdPassenger());
                                                 passengerEntityTable.setSelected(passengerDbTable.getSelected());
@@ -80,6 +80,27 @@ public class TravelPassengerRepository implements ITravelPassengerRepository {
                     @Override
                     public Boolean call(String s) {
                         return travelPassengerDao.updateTravelPassenger(isSelected ? 1 : 0, idPassenger) == 1;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<Boolean> updateDataTravelPassenger(String idPassenger, TravelPassengerEntity travelPassengerEntity) {
+        return Observable.just(travelPassengerEntity)
+                .flatMap(new Func1<TravelPassengerEntity, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(TravelPassengerEntity travelPassengerEntity) {
+                        TravelPassengerTable passengerEntityTable = mapper
+                                .transform(travelPassengerEntity);
+
+                        TravelPassengerTable passengerDbTable = travelPassengerDao
+                                .findTravelPassengerByIdPassenger(idPassenger);
+                        if (passengerDbTable != null) {
+                            passengerEntityTable.setIdPassenger(passengerDbTable.getIdPassenger());
+                            passengerEntityTable.setSelected(passengerDbTable.getSelected());
+                            travelPassengerDao.update(passengerEntityTable);
+                        }
+                        return Observable.just(true);
                     }
                 });
     }

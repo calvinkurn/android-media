@@ -40,7 +40,10 @@
     </string-array>
     <string name="travel_title_sort_search">Urutkan</string>
     <string name="menu_passenger_list">Edit</string>
-    <string name="error_message_choose_passenger">Kategori umur penumpang tidak sesuai</string>
+    <string name="error_message_choose_passenger">Kategori penumpang tidak sesuai.</string>
+    <string name="error_message_choose_passenger_adult">Penumpang tidak sesuai dengan kategori dewasa.</string>
+    <string name="error_message_choose_passenger_child">Penumpang tidak sesuai dengan kategori anak.</string>
+    <string name="error_message_choose_passenger_infant">Penumpang tidak sesuai dengan kategori bayi.</string>
     <string name="add_passenger_title_page">Tambah Data Penumpang</string>
     <string name="edit_passenger_title_page">Edit Data Penumpang</string>
     <string name="dialog_delete_passenger_title">Hapus Data Penumpang</string>
@@ -58,7 +61,7 @@
     <string name="error_message_pick_adult_passenger">Umur penumpang dewasa harus diatas 3 tahun.</string>
     <string name="title_edit_passenger_list">Edit Penumpang</string>
     <string name="account_default">(Utama)</string>
-    <string name="account_chosen">(Terpilih)</string>
+    <string name="account_chosen">Terpilih</string>
     <string name="salutation_mister_string">Tn</string>
     <string name="salutation_mrs_string">Ny</string>
     <string name="salutation_miss_string">Nn</string>

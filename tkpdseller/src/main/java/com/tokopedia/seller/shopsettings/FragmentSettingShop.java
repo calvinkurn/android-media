@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -104,7 +105,7 @@ public class FragmentSettingShop extends TkpdFragment{
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		if (isVisibleToUser && isAdded() && getActivity() !=null) {
-			ScreenTracking.screen(getActivity(),getScreenName());
+			ScreenTracking.screen(MainApplication.getAppContext(),getScreenName());
 		}
 		super.setUserVisibleHint(isVisibleToUser);
 	}

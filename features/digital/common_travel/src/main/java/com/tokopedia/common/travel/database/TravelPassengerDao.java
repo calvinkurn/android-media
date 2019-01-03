@@ -26,7 +26,10 @@ public interface TravelPassengerDao {
     int update(TravelPassengerTable travelPassengerTable);
 
     @Query("SELECT * FROM TravelPassengerTable WHERE name = :name")
-    TravelPassengerTable findTravelPassenger(String name);
+    TravelPassengerTable findTravelPassengerByName(String name);
+
+    @Query("SELECT * FROM TravelPassengerTable WHERE idPassenger = :idPassenger")
+    TravelPassengerTable findTravelPassengerByIdPassenger(String idPassenger);
 
     @Query("UPDATE TravelPassengerTable SET selected = :isSelected WHERE idPassenger = :idPassenger")
     int updateTravelPassenger(int isSelected, String idPassenger);
