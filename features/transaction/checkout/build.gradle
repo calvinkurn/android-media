@@ -2,12 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = "${artifactIdCheckout}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionCheckoutVersion}"
-    artifactName = "${artifactIdCheckout}-release"
-}
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -20,6 +14,13 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+project.ext {
+    artifactId = "${artifactIdCheckout}"
+    groupId = "${groupIdTransaction}"
+    versionName = "${transactionGroupVersion}"
+    artifactName = "${artifactIdCheckout}-release"
 }
 
 dependencies {
@@ -42,7 +43,8 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.districtRecommendation)
+    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
+    implementation project(rootProject.ext.features.logisticinsurance)
     implementation project(rootProject.ext.features.wishlistCommon)
 
     implementation rootProject.ext.playServicesDependencies.perfMon
@@ -69,3 +71,4 @@ dependencies {
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
 }
+apply from: "$rootProject.projectDir/publish_local.gradle"

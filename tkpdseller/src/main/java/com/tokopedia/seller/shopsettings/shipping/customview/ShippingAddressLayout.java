@@ -10,9 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
@@ -31,6 +30,7 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     TextView phoneNumber;
     TextView phoneNumberTitle;
     TextView phoneNumberButton;
+    private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     private EditShippingPresenter presenter;
     private EditShippingViewListener mainView;
@@ -119,7 +119,7 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
     }
 
     public void setGoogleMapData(Intent data){
-        LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+        LocationPass locationPass = data.getParcelableExtra(EXTRA_EXISTING_LOCATION);
         if(locationPass != null && locationPass.getLatitude() != null) {
             presenter.getShopInformation().setShopLatitude(locationPass.getLatitude());
             presenter.getShopInformation().setShopLongitude(locationPass.getLongitude());
