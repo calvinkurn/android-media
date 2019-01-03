@@ -275,9 +275,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == DynamicPostViewHolder.Companion.getLAYOUT()) {
             viewHolder = new DynamicPostViewHolder(view);
             ((DynamicPostViewHolder) viewHolder).setListener(dynamicPostListener);
+            ((DynamicPostViewHolder) viewHolder).setCardTitleListener(cardTitleListener);
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
             viewHolder = new FeedRecommendationViewHolder(view);
+            ((FeedRecommendationViewHolder) viewHolder).setCardTitleListener(cardTitleListener);
         }
         else if (type == BannerViewHolder.Companion.getLAYOUT()) {
             viewHolder = new BannerViewHolder(view);
