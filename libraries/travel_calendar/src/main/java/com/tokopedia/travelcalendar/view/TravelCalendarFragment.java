@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment implements Travel
     private List<Integer> yearTabList;
     private CustomViewQuickFilterView monthQuickFilter;
     private List<QuickFilterItem> quickFilterItemList;
-    private Map<CustomViewQuickFilterItem, Integer> mapDate;
+    private LinkedHashMap<CustomViewQuickFilterItem, Integer> mapDate;
     private HolidayWidgetView holidayWidgetView;
     private boolean showHoliday;
     private ProgressBar progressBar;
@@ -128,7 +129,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment implements Travel
 
     private void setDataTabCalendar(int month, int year, int monthDeviation) {
         yearTabList = new ArrayList<>();
-        mapDate = new HashMap<>();
+        mapDate = new LinkedHashMap<>();
         Calendar loopCalendar = (Calendar) currentCalendar.clone();
         loopCalendar.set(Calendar.DATE, 1);
         yearTabList.add(year);
@@ -136,7 +137,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment implements Travel
         for (int i = 0; i < monthDeviation; i++) {
             loopCalendar.set(Calendar.MONTH, month);
             loopCalendar.set(Calendar.YEAR, year);
-            String monthName = new SimpleDateFormat("MMMM", Locale.ENGLISH).format(loopCalendar.getTime());
+            String monthName = new SimpleDateFormat("MMMM", DateCalendarUtil.DEFAULT_LOCALE).format(loopCalendar.getTime());
             mapDate.put(convertQuickFilterItems(month, monthName), year);
 
             if (month > 10) {
@@ -154,8 +155,8 @@ public class TravelCalendarFragment extends BaseDaggerFragment implements Travel
         calendarNow.setTime(selectedDate);
 
         boolean selected;
-        String yearDateNow = new SimpleDateFormat("yyyy", Locale.ENGLISH).format(calendarNow.getTime());
-        String monthDateNow = new SimpleDateFormat("MMMM", Locale.ENGLISH).format(calendarNow.getTime());
+        String yearDateNow = new SimpleDateFormat("yyyy", DateCalendarUtil.DEFAULT_LOCALE).format(calendarNow.getTime());
+        String monthDateNow = new SimpleDateFormat("MMMM", DateCalendarUtil.DEFAULT_LOCALE).format(calendarNow.getTime());
         this.year = Integer.valueOf(yearDateNow);
         for (int i = 0; i < yearTabList.size(); i++) {
             selected = yearDateNow.equals(String.valueOf(yearTabList.get(i)));

@@ -2,11 +2,14 @@ package com.tokopedia.travelcalendar.view;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by nabillasabbaha on 15/05/18.
  */
 public class DateCalendarUtil {
+
+    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
     public static Date getZeroTimeDate(Date fecha) {
         Date res = fecha;
