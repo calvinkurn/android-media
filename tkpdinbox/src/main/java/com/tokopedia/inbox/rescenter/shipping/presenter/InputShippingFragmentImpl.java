@@ -8,6 +8,9 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -33,6 +36,7 @@ import com.tokopedia.inbox.rescenter.shipping.model.InputAWBResponse;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.model.NewUploadResCenterImageData;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
+import com.tokopedia.inbox.rescenter.shipping.model.ResKurirListResponse;
 import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
@@ -44,8 +48,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 import dagger.Lazy;
 import okhttp3.MediaType;
@@ -73,13 +75,11 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private boolean isShippingRefValid = false;
     private boolean isShippingSpinnerValid = false;
     private boolean isListAttachmentValid = false;
-    @Inject
-    private Lazy<GraphqlUseCase> graphqlProvider;
     private GraphqlUseCase graphqlUseCase;
 
 
     public InputShippingFragmentImpl(InputShippingFragmentView viewListener) {
-        graphqlUseCase = graphqlProvider.get();
+        graphqlUseCase = new GraphqlUseCase();
         this.viewListener = viewListener;
         this.cacheManager = new GlobalCacheManager();
         this.retrofit = new RetrofitInteractorImpl();
@@ -132,7 +132,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private void requestShippingList() {
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
-                R.raw.get_kurir_list), ResCenterKurir.class);
+                R.raw.get_kurir_list), ResKurirListResponse.class);
         graphqlUseCase.addRequest(graphqlRequest);
 
         showLoading(true);
@@ -155,7 +155,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
             public void onNext(GraphqlResponse graphqlResponse) {
 
                 if (graphqlResponse != null) {
-                    ResCenterKurir resCenterKurir = graphqlResponse.getData(ResCenterKurir.class);
+                    ResKurirListResponse resKurirListResponse = graphqlResponse.getData(ResKurirListResponse.class);
+                    JsonObject shippingList = resKurirListResponse.getGetShippingListRespose().getAsJsonObject("data");
+                    Gson gson = new Gson();
+                    ResCenterKurir resCenterKurir = gson.fromJson(shippingList, ResCenterKurir.class);
 
                     storeCacheKurirList(resCenterKurir);
                     renderInputShippingForm(resCenterKurir);
@@ -300,10 +303,9 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         inputAWBRequest.setResId(Integer.parseInt(params.getResolutionID()));
         inputAWBRequest.setAwbNum(params.getShippingNumber());
         inputAWBRequest.setCourierId(Integer.parseInt(params.getShippingID()));
-        if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0)
-           inputAWBRequest.setAttachmentCount(params.getAttachmentList().size());
 
         Map<String, Object> variables = new HashMap<>();
+        variables.put("input", inputAWBRequest);
 
 
         GraphqlRequest graphqlRequest = new
@@ -399,7 +401,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                 R.raw.edit_awb_request), InputAWBResponse.class, variables);
         graphqlUseCase.addRequest(graphqlRequest);
 
-
+        variables.put("input", editAWBRequest);
         viewListener.dropKeyBoard();
         showLoading(true);
         showMainPage(false);
@@ -469,9 +471,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     private void resInputSubmit(InputAWBRequest inputAWBRequest, ShippingParamsPostModel params) {
-        if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0)
-            inputAWBRequest.setAttachmentCount(params.getAttachmentList().size());
-
         List<String> imageList = new ArrayList<>();
 
         Map<String, Object> variables = new HashMap<>();
@@ -479,10 +478,11 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0) {
             inputAWBRequest.setAttachmentCount(params.getAttachmentList().size());
             getObservableUploadingFile(viewListener.getActivity(), params);
-            for (AttachmentResCenterVersion2DB attachment: params.getAttachmentList())
+            for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
                 imageList.add(attachment.imagePath);
             inputAWBRequest.setPictures(imageList);
         }
+        variables.put("input", inputAWBRequest);
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
                 R.raw.input_awb_request), InputAWBResponse.class, variables);
@@ -529,10 +529,11 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         if (params.getAttachmentList() != null && params.getAttachmentList().size() > 0) {
             editAWBRequest.setAttachmentCount(params.getAttachmentList().size());
             getObservableUploadingFile(viewListener.getActivity(), params);
-            for (AttachmentResCenterVersion2DB attachment: params.getAttachmentList())
+            for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
                 imageList.add(attachment.imagePath);
             editAWBRequest.setPictures(imageList);
         }
+        variables.put("input", editAWBRequest);
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(viewListener.getActivity().getResources(),
                 R.raw.edit_awb_request), InputAWBResponse.class, variables);
@@ -568,7 +569,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
 
-    //ToDO Remove Core Dependency
     private Observable<ShippingParamsPostModel> getObservableUploadingFile(Context context, ShippingParamsPostModel passData) {
         return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<ShippingParamsPostModel, List<AttachmentResCenterVersion2DB>, ShippingParamsPostModel>() {
             @Override
@@ -579,7 +579,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         });
     }
 
-    //ToDO Remove Core Dependency
     private Observable<List<AttachmentResCenterVersion2DB>> doUploadFile(final Context context, final ShippingParamsPostModel inputModel) {
         return Observable
                 .from(inputModel.getAttachmentList())
