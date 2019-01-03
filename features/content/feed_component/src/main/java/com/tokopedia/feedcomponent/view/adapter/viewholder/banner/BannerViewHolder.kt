@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import kotlinx.android.synthetic.main.item_banner.view.*
 
 /**
@@ -15,6 +16,7 @@ class BannerViewHolder(v: View)
     : AbstractViewHolder<BannerViewModel>(v), BannerAdapter.BannerItemListener {
 
     var listener: BannerListener? = null
+    var cardTitleListener: CardTitleView.CardTitleListener? = null
     private val adapter: BannerAdapter = BannerAdapter()
 
     init {
@@ -26,6 +28,7 @@ class BannerViewHolder(v: View)
         adapter.listener = this
 
         itemView.cardTitle.bind(element.title, element.template.cardbanner.title)
+        itemView.cardTitle.listener = cardTitleListener
     }
 
     override fun onBannerItemClick(position: Int, redirectUrl: String) {

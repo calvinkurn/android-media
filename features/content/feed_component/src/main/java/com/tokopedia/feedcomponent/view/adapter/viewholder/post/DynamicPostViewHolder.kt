@@ -16,6 +16,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(v), YoutubeViewHolder.YoutubePostListener {
 
     var listener: DynamicPostListener? = null
+    var cardTitleListener: CardTitleView.CardTitleListener? = null
 
     companion object {
         @LayoutRes
@@ -65,6 +67,7 @@ class DynamicPostViewHolder(v: View) : AbstractViewHolder<DynamicPostViewModel>(
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
             itemView.cardTitle.bind(title, template)
         }
+        itemView.cardTitle.listener = cardTitleListener
     }
 
     private fun shouldShowTitle(template: TemplateTitle): Boolean {

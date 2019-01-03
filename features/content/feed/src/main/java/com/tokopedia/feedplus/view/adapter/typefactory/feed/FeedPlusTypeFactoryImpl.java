@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
+import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
@@ -80,6 +81,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
     private final BannerViewHolder.BannerListener bannerListener;
+    private final CardTitleView.CardTitleListener cardTitleListener;
     private final FeedAnalytics analytics;
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
@@ -91,6 +93,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.pollingViewListener = context;
         this.dynamicPostListener = context;
         this.bannerListener = context;
+        this.cardTitleListener = context;
         this.analytics = analytics;
     }
 
@@ -279,6 +282,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == BannerViewHolder.Companion.getLAYOUT()) {
             viewHolder = new BannerViewHolder(view);
             ((BannerViewHolder) viewHolder).setListener(bannerListener);
+            ((BannerViewHolder) viewHolder).setCardTitleListener(cardTitleListener);
         }
         else
             viewHolder = super.createViewHolder(view, type);

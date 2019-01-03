@@ -3,9 +3,9 @@ package com.tokopedia.feedcomponent.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Toast
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Action
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -16,6 +16,13 @@ import kotlinx.android.synthetic.main.partial_card_title.view.*
  * @author by milhamj on 02/01/19.
  */
 class CardTitleView : BaseCustomView {
+
+    companion object {
+        const val ACTION_POPUP = "popuptopads"
+        const val ACTION_REDIRECT = "redirectpage"
+    }
+
+    var listener: CardTitleListener? = null
 
     constructor(context: Context) : super(context) {
         init()
@@ -37,17 +44,16 @@ class CardTitleView : BaseCustomView {
         titleLayout.shouldShowWithAction(shouldShowTitle(template)) {
             text.shouldShowWithAction(template.text) {
                 text.text = title.text
-                text.setOnClickListener { onTextClick() }
+                text.setOnClickListener { onTextClick(title.action) }
             }
-            badge.shouldShowWithAction(template.textBadge) {
+            badge.shouldShowWithAction(template.textBadge && title.textBadge.isNotEmpty()) {
                 badge.loadImage(title.textBadge)
-                badge.setOnClickListener { onTextClick() }
+                badge.setOnClickListener { onTextClick(title.action) }
             }
             cta.shouldShowWithAction(template.ctaLink) {
                 cta.text = title.ctaLink.text
                 cta.setOnClickListener {
-                    //TODO milhamj
-                    Toast.makeText(context, "Title CTA clicked", Toast.LENGTH_LONG).show()
+                    listener?.onTitleCtaClick(title.ctaLink.appLink)
                 }
             }
         }
@@ -57,8 +63,18 @@ class CardTitleView : BaseCustomView {
         return template.text || template.textBadge || template.ctaLink
     }
 
-    private fun onTextClick() {
-        //TODO milhamj
-        Toast.makeText(context, "Title Text clicked", Toast.LENGTH_LONG).show()
+    private fun onTextClick(action: Action) {
+        when(action.action.toLowerCase()) {
+            ACTION_POPUP -> listener?.onActionPopup()
+            ACTION_REDIRECT -> listener?.onActionRedirect(action.appLink)
+        }
+    }
+
+    interface CardTitleListener {
+        fun onActionPopup()
+
+        fun onActionRedirect(redirectUrl: String)
+
+        fun onTitleCtaClick(redirectUrl: String)
     }
 }

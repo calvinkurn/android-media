@@ -34,6 +34,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.api.FeedUrl;
@@ -105,7 +106,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostListener.View.ViewHolder,
         DynamicPostViewHolder.DynamicPostListener,
-        BannerViewHolder.BannerListener {
+        BannerViewHolder.BannerListener,
+        CardTitleView.CardTitleListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -1407,6 +1409,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onBannerItemClick(int position, @NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+    }
+
+    @Override
+    public void onActionPopup() {
+        onInfoClicked();
+    }
+
+    @Override
+    public void onActionRedirect(@NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+    }
+
+    @Override
+    public void onTitleCtaClick(@NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
     }
 }

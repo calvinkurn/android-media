@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.item_feed_recommendation.view.*
 
@@ -12,6 +13,8 @@ import kotlinx.android.synthetic.main.item_feed_recommendation.view.*
  * @author by milhamj on 20/12/18.
  */
 class FeedRecommendationViewHolder(v: View) : AbstractViewHolder<FeedRecommendationViewModel>(v) {
+
+    var cardTitleListener: CardTitleView.CardTitleListener? = null
 
     companion object {
         @LayoutRes
@@ -28,5 +31,6 @@ class FeedRecommendationViewHolder(v: View) : AbstractViewHolder<FeedRecommendat
         itemView.recommendationRv.adapter = cardAdapter
 
         itemView.cardTitle.bind(element.title, element.template.cardrecom.title)
+        itemView.cardTitle.listener = cardTitleListener
     }
 }

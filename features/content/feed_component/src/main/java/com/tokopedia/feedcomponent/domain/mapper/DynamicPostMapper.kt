@@ -124,7 +124,7 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
         val list = ArrayList<BasePostViewModel>()
 
         //TODO milhamj delete this
-        list.add(ImagePostViewModel("https://nmac.to/wp-content/uploads/2016/09/errorm.png"))
+        list.add(ImagePostViewModel("https://res.cloudinary.com/he2ebbhcc/image/upload/c_fill,f_auto,g_center,h_500,w_500/v1477492779/1158.jpg"))
         for (media in body.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
