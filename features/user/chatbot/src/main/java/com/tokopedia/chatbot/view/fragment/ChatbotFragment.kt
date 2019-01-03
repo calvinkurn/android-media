@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -92,7 +91,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return  ChatbotAdapter(ChatbotTypeFactoryImpl(this,
+        return ChatbotAdapter(ChatbotTypeFactoryImpl(this,
                 this, this, this,
                 this, this, this))
     }
@@ -116,15 +115,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             updateViewData(it)
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
+            checkShowLoading(it.canLoadMore)
         }
     }
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
             renderList(it.listChat, it.canLoadMore)
+            checkShowLoading(it.canLoadMore)
         }
     }
 
+    fun checkShowLoading(canLoadMore: Boolean) {
+        if (canLoadMore) super.showLoading()
+    }
 
     private fun onError(): (Throwable) -> Unit {
         return {
@@ -223,9 +227,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     Unit {
         return {
             (activity as Activity).run {
-                    (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
-                            onClickReasonRating(element.replyTimeNano.toString()))
-                }
+                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
+                        onClickReasonRating(element.replyTimeNano.toString()))
+            }
         }
     }
 
