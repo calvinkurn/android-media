@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.expresscheckout.R
-import com.tokopedia.expresscheckout.data.entity.request.AtcRequest
 import com.tokopedia.expresscheckout.data.entity.response.atc.AtcResponse
 import com.tokopedia.expresscheckout.domain.mapper.atc.AtcDomainModelMapper
 import com.tokopedia.expresscheckout.domain.model.atc.AtcResponseModel
@@ -12,6 +11,7 @@ import com.tokopedia.expresscheckout.view.variant.mapper.ViewModelMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 

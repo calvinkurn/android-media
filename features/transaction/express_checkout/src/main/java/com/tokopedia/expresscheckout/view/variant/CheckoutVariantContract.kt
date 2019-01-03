@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.expresscheckout.data.entity.request.AtcRequest
+import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
