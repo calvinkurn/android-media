@@ -13,9 +13,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.CodCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
-import com.tokopedia.usecase.RequestParams;
 
 import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -53,16 +54,12 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
                 R.raw.checkout_cod_query
         );
 
-        return new GraphqlRequest(
-                query,
-                CodResponse.class,
-                getParam(param).getParameters()
-        );
+        return new GraphqlRequest(query, CodResponse.class, getParam(param));
     }
 
-    private RequestParams getParam(String json) {
-        RequestParams params = RequestParams.create();
-        params.putString(PARAM_CHECKOUT_PARAMS, json);
+    private Map<String, Object> getParam(String json) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(PARAM_CHECKOUT_PARAMS, json);
         return params;
     }
 
