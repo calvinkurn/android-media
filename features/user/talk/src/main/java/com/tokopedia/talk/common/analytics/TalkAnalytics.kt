@@ -1,7 +1,6 @@
 package com.tokopedia.talk.common.analytics
 
 import android.app.Activity
-import android.support.v4.app.FragmentActivity
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import javax.inject.Inject
@@ -37,6 +36,133 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
     fun sendScreen(activity: Activity, screenName: String) {
         tracker.sendScreen(activity, screenName)
     }
+
+    fun trackClickReplyButton(talkId: String) {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click on reply discussion",
+                talkId
+        )
+    }
+
+    fun trackClickReplyButtonFromShop(talkId: String) {
+        tracker.sendEventTracking(
+                EVENT_CLICK_SHOP_PAGE,
+                CATEGORY_SHOP_PAGE,
+                "click on reply discussion box",
+                talkId
+        )
+    }
+
+    fun trackClickAttachProduct() {
+        //TODO CHECK PRODUCT_LABEL
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "attach product",
+                ""
+        )
+    }
+
+    fun trackClickProduct() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click link / photo product",
+                ""
+
+        )
+    }
+
+    fun trackClickProductFromAttachment() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click link / photo from talk",
+                ""
+        )
+    }
+
+    fun trackClickProductFromAttachmentFromShop() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_SHOP_PAGE,
+                CATEGORY_SHOP_PAGE,
+                "click product link from talk on shop page",
+                ""
+        )
+    }
+
+    fun trackSelectTab(tabName: String) {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click on tab",
+                tabName
+        )
+    }
+
+    fun trackClickFilter(filter: String) {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "choose filter",
+                filter
+        )
+    }
+
+    fun trackClickOnMenuDelete() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click three balls menu",
+                "delete talk"
+        )
+    }
+
+    fun trackClickOnMenuFollow() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click three balls menu",
+                "follow talk"
+        )
+    }
+
+    fun trackClickOnMenuUnfollow() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click three balls menu",
+                "unfollow talk"
+        )
+    }
+
+    fun trackClickOnMenuReport() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click three balls menu",
+                "click on laporkan"
+        )
+    }
+
+    fun trackClickUserProfile() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_INBOX_CHAT,
+                CATEGORY_INBOX_TALK,
+                "click user profile from talk on inbox",
+                ""
+        )
+    }
+
+    fun trackClickUserProfileFromShop() {
+        tracker.sendEventTracking(
+                EVENT_CLICK_SHOP_PAGE,
+                CATEGORY_SHOP_PAGE,
+                "click user profile from talk on shop page",
+                ""
+        )}
 
     companion object {
         fun createInstance(analyticTracker: AnalyticTracker): TalkAnalytics {
