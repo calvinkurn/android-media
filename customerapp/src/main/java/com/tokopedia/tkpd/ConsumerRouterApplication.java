@@ -235,7 +235,6 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -832,7 +831,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
         Uri originUri = Uri.parse(originUrl);
         Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
-        if(!originUri.isOpaque()) {
+        if (!originUri.isOpaque()) {
             if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
                 uriBuilder.appendQueryParameter(
                         AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
@@ -1135,7 +1134,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title) {
-        TrackingUtils.eventImpressionPromoList(this,dataLayerSinglePromoCodeList, title);
+        TrackingUtils.eventImpressionPromoList(this, dataLayerSinglePromoCodeList, title);
     }
 
     @Override
@@ -1363,7 +1362,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent goToOrderDetail(Context context, String orderId) {
-        return OrderDetailActivity.createSellerInstance(context, orderId);
+        return new Intent();//OrderDetailActivity.createSellerInstance(context, orderId);
 
     }
 
@@ -1710,17 +1709,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             }
 
             @Override
-            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
+            public void sendScreen(Activity activity, final String screenName) {
                 if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
-                            shopType, pageType, productId);
+                    ScreenTracking.sendScreen(activity, () -> screenName);
                 }
             }
 
             @Override
-            public void sendScreen(Activity activity, final String screenName) {
+            public void sendCustomScreen(Activity activity, String screenName, String shopID, String shopType, String pageType, String productId) {
                 if (activity != null && !TextUtils.isEmpty(screenName)) {
-                    ScreenTracking.sendScreen(activity, () -> screenName);
+                    ScreenTracking.eventCustomScreen(activity, screenName, shopID,
+                            shopType, pageType, productId);
                 }
             }
 
@@ -1914,12 +1913,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent navigateToGeoLocationActivityRequest(Context context, LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, false);
+        return new Intent();//GeolocationActivity.createInstance(context, locationPass, false);
     }
 
     @Override
     public Intent getGeolocationIntent(Context context, LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, true);
+        return new Intent();//GeolocationActivity.createInstance(context, locationPass, true);
     }
 
     @Override
@@ -2061,7 +2060,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             boolean couponActive, String additionalStringData, int pageTracking
     ) {
-        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(),couponActive, "", false, pageTracking);
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", false, pageTracking);
     }
 
     @Override
@@ -2499,7 +2498,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendAnalyticsGroupChat(String url, String error) {
-        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+        if (remoteConfig.getBoolean("groupchat_analytics", false)) {
             AnalyticsLog.logGroupChatWebSocketError(getAppContext(), url, error);
         }
     }
@@ -2522,7 +2521,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sharePromoLoyalty(Activity activity,PromoData promoData) {
+    public void sharePromoLoyalty(Activity activity, PromoData promoData) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.PROMO_TYPE)
                 .setId(promoData.getSlug())
@@ -2778,7 +2777,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart) {
-        return GeolocationActivity.createInstance(context, locationMap, isFromMarketplaceCart);
+        return new Intent();//GeolocationActivity.createInstance(context, locationMap, isFromMarketplaceCart);
     }
 
     @Override
@@ -3311,7 +3310,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
-                                                    String source) {
+                                      String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
     }
 
@@ -3425,12 +3424,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventCouponChosen(Context context, String title) {
-        UnifyTracking.eventCouponChosen(this,title);
+        UnifyTracking.eventCouponChosen(this, title);
     }
 
     @Override
-    public void sendEventDigitalEventTracking(Context context,String text, String failmsg) {
-        UnifyTracking.eventDigitalEventTracking(this,text, failmsg);
+    public void sendEventDigitalEventTracking(Context context, String text, String failmsg) {
+        UnifyTracking.eventDigitalEventTracking(this, text, failmsg);
     }
 
     @Override
@@ -3476,13 +3475,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void eventTopAdsProductClickKeywordDashboard() {}
+    public void eventTopAdsProductClickKeywordDashboard() {
+    }
 
     @Override
-    public void eventTopAdsProductClickProductDashboard() {}
+    public void eventTopAdsProductClickProductDashboard() {
+    }
 
     @Override
-    public void eventTopAdsProductClickGroupDashboard() {}
+    public void eventTopAdsProductClickGroupDashboard() {
+    }
 
     @Override
     public void eventTopAdsProductAddBalance() {
