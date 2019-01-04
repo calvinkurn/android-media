@@ -111,10 +111,6 @@ public class Jordan {
         return appsflyerContainer;
     }
 
-    public void updateFcmToken(){
-        AppsflyerContainer.newInstance((Application)context).updateFCMToken();
-    }
-
     public IAppsflyerContainer getAFContainer(){
         if(context instanceof Application)
             return AppsflyerContainer.newInstance((Application)context);
