@@ -6,16 +6,6 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdTravel']
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'common_travel'
     groupId = 'com.tokopedia.common.travel'
