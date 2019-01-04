@@ -1686,6 +1686,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
                 startApplink(interuptViewModel.getImageLink());
                 analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle());
+                if (overlayDialog.isShowing()) overlayDialog.dismiss();
             });
         } else
             ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
