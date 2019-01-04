@@ -55,10 +55,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
 
     @Override
     public boolean isFromCMNotificationPlatform(Map<String ,String > extra) {
-        if (CMPushNotificationManager.getInstance().isFromCMNotificationPlatform(extra)) {
-            return true;
-        }
-        return false;
+        return CMPushNotificationManager.getInstance().isFromCMNotificationPlatform(extra);
     }
 
     public void onNotificationReceived(String from, Bundle bundle) {
