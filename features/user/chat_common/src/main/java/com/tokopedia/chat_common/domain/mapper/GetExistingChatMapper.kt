@@ -109,6 +109,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
         //TODO chatItemPojoByDateByTime.attachment imgurl& imgthumbnail
+
         return ImageUploadViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),

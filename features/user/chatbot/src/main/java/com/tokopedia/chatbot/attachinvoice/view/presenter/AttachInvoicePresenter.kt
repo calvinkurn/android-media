@@ -17,7 +17,8 @@ class AttachInvoicePresenter @Inject constructor(private val useCase: GetInvoice
     internal var view: AttachInvoiceContract.View? = null
 
     override fun loadInvoiceData(query: String, userId: String, page: Int, messageId: Int, context: Context) {
-        useCase.execute(GetInvoiceListUseCase.createRequestParam(query, page, messageId), AttachInvoicesLoadInvoiceDataSubscriber(view!!))
+        useCase.execute(GetInvoiceListUseCase.createRequestParam(query, page, messageId),
+                AttachInvoicesLoadInvoiceDataSubscriber(view!!))
     }
 
     override fun attachView(view: AttachInvoiceContract.View) {
