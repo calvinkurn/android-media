@@ -5,7 +5,7 @@ import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper;
 import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.common.chat.ChatService;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
 
 import java.util.HashMap;
 
@@ -17,21 +17,22 @@ import rx.Observable;
 
 public class CloudMessageDataSource {
 
-    private ChatService chatService;
+    private ChatApi chatApi;
     private GetMessageMapper getMessageMapper;
     private DeleteMessageMapper deleteMessageMapper;
 
-    public CloudMessageDataSource(ChatService chatService, GetMessageMapper getMessageMapper, DeleteMessageMapper deleteMessageMapper) {
-        this.chatService = chatService;
+    public CloudMessageDataSource(ChatApi chatApi, GetMessageMapper getMessageMapper,
+                                  DeleteMessageMapper deleteMessageMapper) {
+        this.chatApi = chatApi;
         this.getMessageMapper = getMessageMapper;
         this.deleteMessageMapper = deleteMessageMapper;
     }
 
     public Observable<InboxChatViewModel> getMessage(HashMap<String, Object> requestParams) {
-        return chatService.getApi().getMessage(requestParams).map(getMessageMapper);
+        return chatApi.getMessage(requestParams).map(getMessageMapper);
     }
 
     public Observable<DeleteChatListViewModel> deleteMessage(JsonObject parameters) {
-        return chatService.getApi().deleteMessage(parameters).map(deleteMessageMapper);
+        return chatApi.deleteMessage(parameters).map(deleteMessageMapper);
     }
 }

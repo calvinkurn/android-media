@@ -3,24 +3,27 @@ package com.tokopedia.topchat.common.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -41,8 +44,6 @@ import com.tokopedia.topchat.chatlist.data.repository.SearchRepositoryImpl;
 import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource;
 import com.tokopedia.topchat.chatroom.data.mapper.GetUserStatusMapper;
 import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper;
-import com.tokopedia.topchat.chatroom.data.network.ChatBotApi;
-import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatApi;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
@@ -51,7 +52,7 @@ import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
-import com.tokopedia.topchat.common.chat.ChatService;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
@@ -70,6 +71,8 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -85,52 +88,40 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    AnalyticTracker provideAnalyticTracker(
-            @ApplicationContext Context context) {
+    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
         return ((AbstractionRouter) context).getAnalyticTracker();
     }
 
     @InboxChatScope
     @Provides
-    ChuckInterceptor provideChuckInterceptor(
-            @ApplicationContext Context context) {
+    ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
         return new ChuckInterceptor(context);
     }
 
     @InboxChatScope
     @Provides
     MessageFactory provideMessageFactory(
-            ChatService chatService,
+            ChatApi chatApi,
             GetMessageMapper getMessageMapper,
             DeleteMessageMapper deleteMessageMapper) {
-        return new MessageFactory(chatService, getMessageMapper, deleteMessageMapper);
+        return new MessageFactory(chatApi, getMessageMapper, deleteMessageMapper);
     }
-
-//    @InboxChatScope
-//    @Provides
-//    ReplyFactory provideReplyFactory(
-//            ChatService chatService,
-//            GetReplyMapper getReplyMapper,
-//            ReplyMessageMapper replyMessageMapper,
-//            GetExistingChatMapper getExistingChatMapper) {
-//        return new ReplyFactory(chatService, getReplyMapper, replyMessageMapper, getExistingChatMapper);
-//    }
 
     @InboxChatScope
     @Provides
     SearchFactory provideSearchFactory(
-            ChatService chatService,
+            ChatApi chatApi,
             SearchChatMapper searchChatMapper) {
-        return new SearchFactory(chatService, searchChatMapper);
+        return new SearchFactory(chatApi, searchChatMapper);
     }
 
 
     @InboxChatScope
     @Provides
     TemplateChatFactory provideTemplateFactory(
-            ChatService chatService,
+            ChatApi chatApi,
             TemplateChatMapper templateChatMapper) {
-        return new TemplateChatFactory(templateChatMapper, chatService);
+        return new TemplateChatFactory(templateChatMapper, chatApi);
     }
 
     @InboxChatScope
@@ -139,12 +130,6 @@ public class InboxChatModule {
                                                SendMessageSource sendMessageSource) {
         return new MessageRepositoryImpl(messageFactory, sendMessageSource);
     }
-//
-//    @InboxChatScope
-//    @Provides
-//    ReplyRepository provideReplyRepository(ReplyFactory replyFactory) {
-//        return new ReplyRepositoryImpl(replyFactory);
-//    }
 
     @InboxChatScope
     @Provides
@@ -220,18 +205,6 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    ChatService provideChatService() {
-        return new ChatService();
-    }
-
-    @InboxChatScope
-    @Provides
-    KunyitService provideKunyitService() {
-        return new KunyitService();
-    }
-
-    @InboxChatScope
-    @Provides
     SendMessageMapper provideSendMessageMapper() {
         return new SendMessageMapper();
     }
@@ -239,9 +212,9 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    SendMessageSource provideSendMessageSource(ChatService chatService,
+    SendMessageSource provideSendMessageSource(ChatApi chatApi,
                                                SendMessageMapper sendMessageMapper) {
-        return new SendMessageSource(chatService, sendMessageMapper);
+        return new SendMessageSource(chatApi, sendMessageMapper);
     }
 
     @InboxChatScope
@@ -320,7 +293,7 @@ public class InboxChatModule {
     @Provides
     Retrofit provideChatRetrofit(OkHttpClient okHttpClient,
                                  Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(ChatBotUrl.BASE_URL)
+        return retrofitBuilder.baseUrl(ChatUrl.Companion.getTOPCHAT())
                 .client(okHttpClient)
                 .build();
     }
@@ -331,6 +304,10 @@ public class InboxChatModule {
     Retrofit provideChatRetrofitJsDomain(OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TopChatUrl.TOPCHAT_JS_API)
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
     }
@@ -341,6 +318,10 @@ public class InboxChatModule {
     Retrofit provideWsRetrofitDomain(OkHttpClient okHttpClient,
                                      Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
     }
@@ -351,8 +332,18 @@ public class InboxChatModule {
     Retrofit provideTomeRetrofitDomain(OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN)
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
+    }
+
+    @InboxChatScope
+    @Provides
+    ChatApi provideChatApi(@InboxQualifier Retrofit retrofit) {
+        return retrofit.create(ChatApi.class);
     }
 
     @InboxChatScope
@@ -363,20 +354,8 @@ public class InboxChatModule {
 
     @InboxChatScope
     @Provides
-    ChatBotApi provideChatRatingApi(@InboxQualifier Retrofit retrofit) {
-        return retrofit.create(ChatBotApi.class);
-    }
-
-    @InboxChatScope
-    @Provides
     UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
-    }
-
-    @InboxChatScope
-    @Provides
-    GetUserStatusMapper provideGetUserStatusMapper() {
-        return new GetUserStatusMapper();
     }
 
     @InboxChatScope

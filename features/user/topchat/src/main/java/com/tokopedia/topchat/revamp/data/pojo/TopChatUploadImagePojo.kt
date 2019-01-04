@@ -13,10 +13,10 @@ data class TopChatImageUploadPojo(
         var data: TopChatImageUploadDataPojo? = null,
         @SerializedName("server_process_time")
         @Expose
-        var serverProcessTime: String? = null,
+        var serverProcessTime: String = "",
         @SerializedName("status")
         @Expose
-        var status: String? = null
+        var status: String = ""
 ) {
 
 
@@ -27,16 +27,16 @@ data class TopChatImageUploadPojo(
             var messageStatus: String? = null,
             @SerializedName("pic_obj")
             @Expose
-            var picObj: String? = null,
+            var picObj: String = "",
             @SerializedName("pic_src")
             @Expose
-            var picSrc: String? = null,
+            var picSrc: String = "",
             @SerializedName("server_id")
             @Expose
-            var serverId: String? = null,
+            var serverId: String = "",
             @SerializedName("success")
             @Expose
-            var success: String? = null
+            var success: String =""
 
     )
 }

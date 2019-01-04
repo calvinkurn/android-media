@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
+import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
 
 /**
  * @author : Steven 11/12/18
@@ -27,6 +29,8 @@ interface TopChatContract {
         fun onSuccessGetTemplate(it: List<Visitable<Any>>)
 
         fun onErrorGetTemplate()
+
+        fun onSuccessUploadImage(t: ImageUploadDomainModel<TopChatImageUploadPojo>)
 
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
     }

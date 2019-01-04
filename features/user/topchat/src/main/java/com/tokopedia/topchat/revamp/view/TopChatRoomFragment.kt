@@ -23,6 +23,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
@@ -31,6 +32,7 @@ import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
+import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -322,6 +324,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 }
             }
         }
+    }
+
+    override fun onSuccessUploadImage(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
+
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {

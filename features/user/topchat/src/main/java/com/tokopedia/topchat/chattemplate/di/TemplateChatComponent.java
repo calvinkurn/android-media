@@ -1,8 +1,7 @@
-package com.tokopedia.topchat.common.di;
+package com.tokopedia.topchat.chattemplate.di;
 
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.topchat.chattemplate.view.fragment.EditTemplateChatFragment;
-import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
 import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
 
 import dagger.Component;
@@ -12,7 +11,7 @@ import dagger.Component;
  */
 
 @TemplateChatScope
-@Component(modules = TemplateChatModule.class, dependencies = AppComponent.class)
+@Component(modules = TemplateChatModule.class, dependencies = BaseAppComponent.class)
 public interface TemplateChatComponent {
     void inject(TemplateChatFragment fragment);
 

@@ -12,8 +12,8 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_ME
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.network.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -202,8 +202,12 @@ class TopChatRoomPresenter @Inject constructor(
         reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
         var params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
         uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>(){
-            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>?) {
-                t
+            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
+                t.dataResultImageUpload.data?.run {
+                    sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
+                            this.picSrc, it.startTime))
+                }
+
             }
 
 

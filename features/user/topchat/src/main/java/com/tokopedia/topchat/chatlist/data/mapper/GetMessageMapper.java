@@ -1,13 +1,7 @@
 package com.tokopedia.topchat.chatlist.data.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.topchat.R;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.ListMessage;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
@@ -24,39 +18,26 @@ import rx.functions.Func1;
  * Created by stevenfredian on 8/31/17.
  */
 
-public class GetMessageMapper implements Func1<Response<TkpdResponse>, InboxChatViewModel> {
-
-    private static final String ERROR = "error";
-    private static final String ERROR_DESCRIPTION = "error_description";
+public class GetMessageMapper implements Func1<Response<DataResponse<MessageData>>,
+        InboxChatViewModel> {
 
     @Inject
     public GetMessageMapper() {
     }
 
     @Override
-    public InboxChatViewModel call(Response<TkpdResponse> response) {
-        if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
-                MessageData data = response.body().convertDataObj(MessageData.class);
-                return convertToDomain(data);
-            }else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
-                }
-            }
+    public InboxChatViewModel call(Response<DataResponse<MessageData>> response) {
+        //TODO MAKE ERROR INTERCEPTOR
+
+        if (response.isSuccessful() &&
+                response.body().getHeader() == null ||
+                (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()
+                ) || (response.body().getHeader() != null && response.body().getHeader().getMessages().get(0).equals(""))) {
+            MessageData pojo = response.body().getData();
+            return convertToDomain(pojo);
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
-            if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
-            } else {
-                throw new RuntimeException(String.valueOf(response.code()));
-            }
+            throw new RuntimeException(String.valueOf(response.code()));
+
         }
     }
 

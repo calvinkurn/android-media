@@ -53,7 +53,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
                 holder.bind(list!![position])
                 holder.itemView.setOnClickListener { v ->
                     selectedListener.onInvoiceSelected(
-                            AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![adapterPosition])
+                            AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(list!![position])
                     )
                 }
             } else if (position == list!!.size) {

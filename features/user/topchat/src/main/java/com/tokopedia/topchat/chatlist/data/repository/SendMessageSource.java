@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatlist.data.repository;
 
 import com.tokopedia.topchat.chatroom.data.mapper.SendMessageMapper;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
-import com.tokopedia.topchat.common.chat.ChatService;
+import com.tokopedia.topchat.common.chat.api.ChatApi;
 
 import java.util.HashMap;
 
@@ -15,17 +15,17 @@ import rx.Observable;
  */
 
 public class SendMessageSource {
-    private ChatService chatService;
+    private ChatApi chatApi;
     private SendMessageMapper sendMessageMapper;
 
     @Inject
-    public SendMessageSource(ChatService chatService, SendMessageMapper sendMessageMapper) {
-        this.chatService = chatService;
+    public SendMessageSource(ChatApi chatApi, SendMessageMapper sendMessageMapper) {
+        this.chatApi = chatApi;
         this.sendMessageMapper = sendMessageMapper;
     }
 
     public Observable<SendMessageViewModel> sendMessage(HashMap<String, Object> requestParams) {
-        return chatService.getApi()
+        return chatApi
                 .sendMessage(requestParams)
                 .map(sendMessageMapper);
     }

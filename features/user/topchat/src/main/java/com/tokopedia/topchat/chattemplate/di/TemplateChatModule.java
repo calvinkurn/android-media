@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.common.di;
+package com.tokopedia.topchat.chattemplate.di;
 
 import android.content.Context;
 
@@ -14,8 +14,6 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.di.qualifier.InboxQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
 import com.tokopedia.network.NetworkRouter;
@@ -23,25 +21,15 @@ import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
-import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
-import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper;
-import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper;
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepository;
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
-import com.tokopedia.topchat.chatlist.data.repository.SendMessageSource;
-import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
-import com.tokopedia.topchat.chatroom.data.mapper.GetReplyMapper;
-import com.tokopedia.topchat.chatroom.data.mapper.ReplyMessageMapper;
+import com.tokopedia.topchat.chattemplate.data.factory.EditTemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
+import com.tokopedia.topchat.chattemplate.data.mapper.EditTemplateChatMapper;
 import com.tokopedia.topchat.chattemplate.data.mapper.TemplateChatMapper;
+import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository;
+import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepositoryImpl;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
-import com.tokopedia.topchat.uploadimage.data.factory.ImageUploadFactory;
-import com.tokopedia.topchat.uploadimage.data.mapper.GenerateHostMapper;
-import com.tokopedia.topchat.uploadimage.data.mapper.UploadImageMapper;
-import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepository;
-import com.tokopedia.topchat.uploadimage.data.repository.ImageUploadRepositoryImpl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -60,31 +48,30 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 @Module
-public class ChatRoomModule {
+public class TemplateChatModule {
 
-
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
     UserSessionInterface provideUserSessionInterface(
             @ApplicationContext Context context) {
         return new UserSession(context);
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
     NetworkRouter provideNetworkRouter(
             @ApplicationContext Context context) {
         return (NetworkRouter) context;
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
     AnalyticTracker provideAnalyticTracker(
             @ApplicationContext Context context) {
         return ((AbstractionRouter) context).getAnalyticTracker();
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
     ChuckInterceptor provideChuckInterceptor(
             @ApplicationContext Context context) {
@@ -97,7 +84,7 @@ public class ChatRoomModule {
         return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
     OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
@@ -126,7 +113,7 @@ public class ChatRoomModule {
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 1;
 
-    @InboxChatScope
+    @TemplateChatScope
     @InboxQualifier
     @Provides
     OkHttpRetryPolicy provideOkHttpRetryPolicy() {
@@ -136,7 +123,7 @@ public class ChatRoomModule {
                 NET_RETRY);
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @InboxQualifier
     @Provides
     Retrofit provideChatRetrofit(OkHttpClient okHttpClient,
@@ -150,65 +137,38 @@ public class ChatRoomModule {
                 .build();
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
     ChatApi provideChatApi(@InboxQualifier Retrofit retrofit) {
         return retrofit.create(ChatApi.class);
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
-    MessageFactory provideMessageFactory(
-            ChatApi chatApi,
-            GetMessageMapper getMessageMapper,
-            DeleteMessageMapper deleteMessageMapper) {
-        return new MessageFactory(chatApi, getMessageMapper, deleteMessageMapper);
-    }
-
-    @InboxChatScope
-    @Provides
-    TemplateChatFactory provideTemplateFactory(
+    TemplateChatFactory provideTemplateChatFactory(
             ChatApi chatApi,
             TemplateChatMapper templateChatMapper) {
         return new TemplateChatFactory(templateChatMapper, chatApi);
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
-    GetReplyMapper provideGetReplyMapper(UserSessionInterface userSession) {
-        return new GetReplyMapper(userSession);
+    EditTemplateChatFactory provideEditTemplateChatFactory(
+            ChatApi chatApi,
+            EditTemplateChatMapper templateChatMapper) {
+        return new EditTemplateChatFactory(templateChatMapper, chatApi);
     }
 
-    @InboxChatScope
-    @Provides
-    MessageRepository provideMessageRepository(MessageFactory messageFactory,
-                                               SendMessageSource sendMessageSource) {
-        return new MessageRepositoryImpl(messageFactory, sendMessageSource);
-    }
-
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
     TemplateRepository provideTemplateRepository(TemplateChatFactory templateChatFactory) {
         return new TemplateRepositoryImpl(templateChatFactory);
     }
 
-    @InboxChatScope
+    @TemplateChatScope
     @Provides
-    ImageUploadRepository
-    provideImageUploadRepository(ImageUploadFactory imageUploadFactory) {
-        return new ImageUploadRepositoryImpl(imageUploadFactory);
+    EditTemplateRepository provideEditTemplateRepository(EditTemplateChatFactory templateChatFactory) {
+        return new EditTemplateRepositoryImpl(templateChatFactory);
     }
 
-    @InboxChatScope
-    @Provides
-    ImageUploadFactory
-    provideImageUploadFactory(GenerateHostActService generateHostActService,
-                              UploadImageService uploadImageService,
-                              GenerateHostMapper generateHostMapper,
-                              UploadImageMapper uploadImageMapper) {
-        return new ImageUploadFactory(generateHostActService,
-                uploadImageService,
-                generateHostMapper,
-                uploadImageMapper);
-    }
 }

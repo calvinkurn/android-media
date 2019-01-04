@@ -14,5 +14,7 @@ class TopChatUrl {
 
         const val WEBSOCKET_URL = "wss://chat.tokopedia.com/connect"
         const val WEB_DOMAIN = "https://www.tokopedia.com/"
+        const val BASE_URL = "https://chat.tokopedia.com/"
+
     }
 }

@@ -9,13 +9,13 @@ import rx.Subscriber
  * @author by nisie on 21/12/18.
  */
 
-class SendRatingReasonSubscriber(val onError: (Throwable) -> Unit,
+class SendRatingReasonSubscriber(val onErrorSendReason: (Throwable) -> Unit,
                                  val onSuccess: (String) -> Unit)
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, SendReasonRatingPojo::class.java,
-                routingOnNext(graphqlResponse), onError)
+                routingOnNext(graphqlResponse), onErrorSendReason)
     }
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
@@ -30,7 +30,7 @@ class SendRatingReasonSubscriber(val onError: (Throwable) -> Unit,
     }
 
     override fun onError(e: Throwable) {
-        onError(e)
+        onErrorSendReason(e)
     }
 
 }

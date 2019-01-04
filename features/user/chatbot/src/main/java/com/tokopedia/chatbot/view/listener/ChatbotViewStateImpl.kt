@@ -82,8 +82,9 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
-    override fun onSuccessLoadPrevious(it: ChatroomViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onSuccessLoadPrevious(chatroomViewModel: ChatroomViewModel) {
+        hideLoading()
+        adapter.addElement(chatroomViewModel.listChat)
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
@@ -126,12 +127,19 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    private fun showReasonBottomSheet(element: SendRatingPojo, activity: Activity, onClickReasonRating: (String) -> Unit) {
+    private fun showReasonBottomSheet(element: SendRatingPojo, activity: Activity,
+                                      onClickReasonRating: (String) -> Unit) {
         if (!::reasonBottomSheet.isInitialized) {
             reasonBottomSheet = ReasonBottomSheet.createInstance(activity,
                     element.postRatingV2.data.listReason, onClickReasonRating)
         }
         reasonBottomSheet.show()
+    }
+
+    override fun onClickReasonRating() {
+        if (::reasonBottomSheet.isInitialized) {
+            reasonBottomSheet.dismiss()
+        }
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {

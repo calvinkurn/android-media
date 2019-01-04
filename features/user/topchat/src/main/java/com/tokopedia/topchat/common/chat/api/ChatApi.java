@@ -1,8 +1,14 @@
 package com.tokopedia.topchat.common.chat.api;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
+import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
+import com.tokopedia.topchat.chatlist.domain.pojo.search.SearchedMessage;
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData;
 
 import java.util.Map;
 
@@ -24,17 +30,8 @@ import rx.Observable;
  */
 
 public interface ChatApi {
-    @GET(TkpdBaseURL.Chat.GET_EXISTING_CHAT)
-    Observable<Response<TkpdResponse>> getExistingChat(@QueryMap Map<String, Object> requestParams);
-
     @GET(TkpdBaseURL.Chat.GET_MESSAGE)
-    Observable<Response<TkpdResponse>> getMessage(@QueryMap Map<String, Object> requestParams);
-
-    @GET(TkpdBaseURL.Chat.GET_REPLY)
-    Observable<Response<TkpdResponse>> getReply(@Path("msgId") String messageId, @QueryMap Map<String, Object> requestParams);
-
-    @GET(TkpdBaseURL.Chat.GET_USER_CONTACT)
-    Observable<String> getUserContact(@Path("msgIds") String messageIds, @QueryMap Map<String, Object> requestParams);
+    Observable<Response<DataResponse<MessageData>>> getMessage(@QueryMap Map<String, Object> requestParams);
 
     @FormUrlEncoded
     @Headers("Cookie:_SID_TOKOPEDIA_")
@@ -42,42 +39,39 @@ public interface ChatApi {
     Observable<Response<TkpdResponse>> reply(@FieldMap Map<String, Object> requestParams);
 
     @Headers("Cookie:_SID_TOKOPEDIA_")
-    @GET(TkpdBaseURL.Chat.LISTEN_WEBSOCKET)
-    Observable<Response<TkpdResponse>> listenWebSocket(@QueryMap Map<String, Object> mapParam);
-
-
-    @Headers("Cookie:_SID_TOKOPEDIA_")
     @GET(TkpdBaseURL.Chat.SEARCH)
-    Observable<Response<TkpdResponse>> searchChat(@QueryMap Map<String, Object> requestParams);
-
+    Observable<Response<DataResponse<SearchedMessage>>> searchChat(@QueryMap Map<String, Object>
+                                                                           requestParams);
 
     @Headers("Content-Type: application/json")
     @POST(TkpdBaseURL.Chat.DELETE)
-    Observable<Response<TkpdResponse>> deleteMessage(@Body JsonObject parameters);
+    Observable<Response<DataResponse<DeleteChatListViewModel>>> deleteMessage(@Body JsonObject
+                                                                                      parameters);
 
     @FormUrlEncoded
     @Headers("Cookie:_SID_TOKOPEDIA_")
     @POST(TkpdBaseURL.Chat.SEND_MESSAGE)
     Observable<Response<TkpdResponse>> sendMessage(@FieldMap Map<String, Object> requestParams);
 
-    @GET(TkpdBaseURL.Chat.GET_TOPCHAT_NOTIFICATION)
-    Observable<Response<TkpdResponse>> getNotification(@QueryMap Map<String, Object> params);
-
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)
-    Observable<Response<TkpdResponse>> getTemplate(@QueryMap Map<String, Object> parameters);
+    Observable<Response<DataResponse<TemplateData>>> getTemplate(@QueryMap Map<String, Object>
+                                                                         parameters);
 
     @FormUrlEncoded
     @PUT(TkpdBaseURL.Chat.UPDATE_TEMPLATE)
-    Observable<Response<TkpdResponse>> editTemplate(@Path("index") int index, @FieldMap Map<String, Object> jsonObject);
+    Observable<Response<DataResponse<TemplateData>>> editTemplate(@Path("index") int index,
+                                                                  @FieldMap Map<String, Object> jsonObject);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Chat.CREATE_TEMPLATE)
-    Observable<Response<TkpdResponse>> createTemplate(@FieldMap Map<String, Object> parameters);
+    Observable<Response<DataResponse<TemplateData>>> createTemplate(@FieldMap Map<String, Object>
+                                                                            parameters);
 
     @Headers("Content-Type: application/json")
     @PUT(TkpdBaseURL.Chat.SET_TEMPLATE)
-    Observable<Response<TkpdResponse>> setTemplate(@Body JsonObject parameters);
+    Observable<Response<DataResponse<TemplateData>>> setTemplate(@Body JsonObject parameters);
 
     @HTTP(method = "DELETE", path = TkpdBaseURL.Chat.DELETE_TEMPLATE, hasBody = true)
-    Observable<Response<TkpdResponse>> deleteTemplate(@Path("index") int index, @Body JsonObject object);
+    Observable<Response<DataResponse<TemplateData>>> deleteTemplate(@Path("index") int index,
+                                                                    @Body JsonObject object);
 }

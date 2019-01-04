@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -101,7 +102,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
-
         return {
             updateViewData(it)
             setCanLoadMore(it)
@@ -222,14 +222,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     Unit {
         return {
             (activity as Activity).run {
-                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
-                        onClickReasonRating(element.replyTimeNano.toString()))
-            }
+                    (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
+                            onClickReasonRating(element.replyTimeNano.toString()))
+                }
         }
     }
 
     private fun onClickReasonRating(timestamp: String): (String) -> Unit {
         return {
+            (viewState as ChatbotViewState).onClickReasonRating()
             presenter.sendReasonRating(messageId, it, timestamp, onError(),
                     onSuccessSendReasonRating())
         }
