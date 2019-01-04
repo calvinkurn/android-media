@@ -16,6 +16,6 @@ object TrackingExecutors{
     }
 
     val executor by lazy {
-        Executors.newSingleThreadExecutor().asCoroutineDispatcher() + handler
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     }
 }

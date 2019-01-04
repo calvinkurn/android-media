@@ -43,6 +43,12 @@ class SendTrackQueueService : Service(), CoroutineScope {
 
     var screenName: String? = null
     var needClearScreenName: Boolean = false
+    val handler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, ex ->
+            decreaseCounter()
+        }
+    }
+
     companion object {
         var atomicInteger = AtomicInteger()
         const val TAG = "TrackQueueService"
@@ -57,7 +63,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
 
     // allowing only 1 thread at a time
     override val coroutineContext: CoroutineContext by lazy {
-        TrackingExecutors.executor
+        TrackingExecutors.executor + handler
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -126,20 +132,25 @@ class SendTrackQueueService : Service(), CoroutineScope {
                 screenName = null
             }
             clearScreenNameIfNeeded()
-            withTimeout(1000L) {
-                deleteScreenNameJob?.join()
-                deleteEEFullJob.join()
-                deleteEEJob.join()
-                deleteRegularJob.join()
-            }
-            atomicInteger.getAndDecrement()
+            deleteScreenNameJob?.join()
+            deleteEEFullJob.join()
+            deleteEEJob.join()
+            deleteRegularJob.join()
+            decreaseCounter()
             Log.i(TAG, "End")
             stopSelf()
         }
         return Service.START_NOT_STICKY
     }
 
-    fun clearScreenNameIfNeeded(){
+    fun decreaseCounter() {
+        val value = atomicInteger.getAndDecrement()
+        if (value < 0) {
+            atomicInteger.set(0)
+        }
+    }
+
+    fun clearScreenNameIfNeeded() {
         if (needClearScreenName) {
             trackingOptimizerRouter?.sendEventTracking(mutableMapOf<String, Any?>().apply { put(SCREEN_NAME, null) })
             needClearScreenName = false

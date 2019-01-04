@@ -16,7 +16,7 @@ import kotlin.coroutines.experimental.CoroutineContext
 class TrackingQueue(val context: Context) : CoroutineScope{
 
     override val coroutineContext: CoroutineContext
-        get() = TrackingExecutors.executor
+        get() = TrackingExecutors.executor + TrackingExecutors.handler
 
     val trackingRepository: ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
             TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
