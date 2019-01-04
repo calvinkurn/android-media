@@ -150,12 +150,12 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri applink = intent.getData();
-        presenter.processUTM(applink);
+        presenter.processUTM(this, applink);
         if (deepLinkDelegate.supportsUri(applink.toString())) {
             deepLinkDelegate.dispatchFrom(this, intent);
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
-                UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                UnifyTracking.eventPersonalizedClicked(this, bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }
     }

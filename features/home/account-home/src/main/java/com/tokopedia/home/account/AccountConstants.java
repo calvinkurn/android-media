@@ -86,6 +86,9 @@ public class AccountConstants {
         public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
         public static final String CLICK_KYC_PENDING = "click on lihat status";
         public static final String EVENT_SALDO_OVO = "clickSaldo";
+        public static final String EVENT_CLICK_SAMPAI = "clickRegister";
+        public static final String EVENT_CATEGORY_SAMPAI = "register tokopedia corner";
+        public static final String EVENT_ACTION_SAMPAI = "click button daftar";
         public static final String OVO_PAY_LATER_CATEGORY = "fin - android main screen";
         public static final String OVO_PAY_LATER_CLICK = "ovo - pay later click";
         public static final String OVO_PAY_LATER_LABEL = "success - %s";
