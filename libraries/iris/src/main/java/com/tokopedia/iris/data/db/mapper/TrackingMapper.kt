@@ -1,36 +1,31 @@
 package com.tokopedia.iris.data.db.mapper
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.provider.Settings
+import com.tokopedia.iris.KEY_CONTAINER
+import com.tokopedia.iris.KEY_EVENT_GA
 import com.tokopedia.iris.data.db.table.Tracking
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 
 /**
  * Created by meta on 23/11/18.
  */
-class TrackingMapper(context: Context) {
+class TrackingMapper {
 
-    @SuppressLint("HardwareIds")
-    var uniqueDeviceId: String = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-
-    fun transform(track: String, sessionId: String, userId: String) : String {
+    fun transformSingleEvent(track: String, sessionId: String, userId: String, deviceId: String) : String {
 
         val result = JSONObject()
         val data = JSONArray()
         val row = JSONObject()
         val event = JSONArray()
 
-        val item = JSONObject(track)
-        item.put("iris_session_id", sessionId)
-        event.put(item)
+        event.put(addSessionToEvent(track, sessionId))
 
-        row.put("device_id", uniqueDeviceId)
+        row.put("device_id", deviceId)
         row.put("user_id", userId)
         row.put("event_data", event)
-        row.put("container", "gtm")
-        row.put("event_ga", "default_app")
+        row.put("container", KEY_CONTAINER)
+        row.put("event_ga", KEY_EVENT_GA)
 
         data.put(row)
 
@@ -38,14 +33,14 @@ class TrackingMapper(context: Context) {
         return result.toString()
     }
 
-    fun transform(tracking: List<Tracking>) : String {
+    fun transformListEvent(tracking: List<Tracking>) : String {
         val result = JSONObject()
         val data = JSONArray()
         val row = JSONObject()
         var event = JSONArray()
         for (i in tracking.indices) {
             val item = tracking[i]
-            event.put(transform(item))
+            event.put(addSessionToEvent(item.event, item.sessionId))
             val nextItem: Tracking? = try {
                 tracking[i+1]
             } catch (e: IndexOutOfBoundsException) {
@@ -57,10 +52,10 @@ class TrackingMapper(context: Context) {
                     row.put("event_data", event)
                     data.put(row)
                 }
-                row.put("device_id", uniqueDeviceId)
+                row.put("device_id", item.deviceId)
                 row.put("user_id", item.userId)
-                row.put("container", "gtm")
-                row.put("event_ga", "default_app")
+                row.put("container", KEY_CONTAINER)
+                row.put("event_ga", KEY_EVENT_GA)
                 event = JSONArray()
             }
         }
@@ -68,9 +63,13 @@ class TrackingMapper(context: Context) {
         return result.toString()
     }
 
-    private fun transform(tracking: Tracking) : JSONObject {
-        val item = JSONObject(tracking.event)
-        item.put("iris_session_id", tracking.sessionId)
-        return item
+    fun addSessionToEvent(event: String, sessionId: String) : JSONObject {
+        return try {
+            var item = JSONObject(event)
+            item.put("iris_session_id", sessionId)
+            item
+        } catch (e: JSONException) {
+            JSONObject()
+        }
     }
 }

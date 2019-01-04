@@ -34,18 +34,22 @@ class IrisAnalytics(context: Context) : Iris {
     override fun saveEvent(map: Map<String, Any>) {
         GlobalScope.launch(context = Dispatchers.IO) {
             // convert map to json then save as string
-            trackingRepository.saveEvent(JSONObject(map).toString(), session.getSessionId(), session.getUserId())
+            trackingRepository.saveEvent(JSONObject(map).toString(), session)
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
         GlobalScope.launch(context = Dispatchers.IO) {
-            trackingRepository.sendSingleEvent(JSONObject(map).toString(), session.getSessionId(), session.getUserId())
+            trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
         }
     }
 
     override fun setUserId(userId: String) {
         session.setUserId(userId)
+    }
+
+    override fun setDeviceId(deviceId: String) {
+        session.setDeviceId(deviceId)
     }
 
     private fun setWorkManager(config: Configuration) {

@@ -2,6 +2,7 @@ package com.tokopedia.iris.data
 
 import android.content.Context
 import android.util.Log
+import com.tokopedia.iris.Session
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -19,14 +20,14 @@ class TrackingRepository (
 
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
 
-    fun saveEvent(data: String, sessionId: String, userId: String) = trackingDao.insert(Tracking(data, sessionId, userId))
+    fun saveEvent(data: String, session: Session) = trackingDao.insert(Tracking(data, session.getSessionId(), session.getUserId(), session.getDeviceId()))
 
     fun getFromOldest(maxRow: Int) = trackingDao.getFromOldest(maxRow)
 
     fun delete(data: List<Tracking>) = trackingDao.delete(data)
 
-    fun sendSingleEvent(data: String, sessionId: String, userId: String) {
-        val dataRequest = TrackingMapper(context).transform(data, sessionId, userId)
+    fun sendSingleEvent(data: String, session: Session) {
+        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
         val service = ApiService(context).makeRetrofitService()
         GlobalScope.launch {
             val requestBody = ApiService.parse(dataRequest)

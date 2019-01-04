@@ -27,9 +27,7 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
 
         if (trackings.isNotEmpty()) {
 
-            val request: String = TrackingMapper(context).transform(trackings)
-
-            Log.d("Oka Worker", "doWork() Hit Server $request")
+            val request: String = TrackingMapper().transformListEvent(trackings)
 
             val service = ApiService(context).makeRetrofitService()
 
@@ -38,9 +36,8 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                 val response = service.sendMultiEvent(requestBody)
                 response.await()
             }
-            Log.d("Iris", response.body().toString())
             if (response.isSuccessful) {
-                trackingRepository.delete(trackings)
+                //trackingRepository.delete(trackings)
                 return Result.SUCCESS
             }
         }

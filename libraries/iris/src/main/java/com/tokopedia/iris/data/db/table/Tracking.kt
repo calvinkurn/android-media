@@ -11,6 +11,7 @@ data class Tracking (
     val event: String,
     val sessionId: String,
     val userId: String,
+    val deviceId: String,
     val timeStamp: Long = Calendar.getInstance().timeInMillis
 ) {
     @PrimaryKey(autoGenerate = true)
