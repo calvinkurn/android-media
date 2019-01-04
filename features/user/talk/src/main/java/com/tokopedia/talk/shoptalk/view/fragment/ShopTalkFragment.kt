@@ -362,12 +362,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         presenter.markTalkNotFraud(talkId)
     }
 
-    override fun onGoToPdpFromProductName(productId: String) {
-        analytics.trackClickProduct()
-        onGoToPdp(productId)
-    }
-
-    override fun onGoToPdpFromProductAvatar(productId: String) {
+    override fun onGoToPdpFromProductItemHeader(productId: String) {
         analytics.trackClickProduct()
         onGoToPdp(productId)
     }

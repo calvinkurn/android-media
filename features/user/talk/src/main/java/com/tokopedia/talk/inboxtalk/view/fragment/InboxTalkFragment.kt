@@ -590,12 +590,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
         swipeToRefresh.isEnabled = true
     }
 
-    override fun onGoToPdpFromProductName(productId: String) {
-        analytics.trackClickProduct()
-        onGoToPdp(productId)
-    }
-
-    override fun onGoToPdpFromProductAvatar(productId: String) {
+    override fun onGoToPdpFromProductItemHeader(productId: String) {
         analytics.trackClickProduct()
         onGoToPdp(productId)
     }

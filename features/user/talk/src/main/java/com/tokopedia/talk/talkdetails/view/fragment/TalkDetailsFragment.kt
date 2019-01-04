@@ -139,7 +139,6 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         attachProductButton = view.findViewById(R.id.add_url)
         attachProductButton.setOnClickListener {
             if (userSession.isLoggedIn) {
-                analytics.trackClickAttachProduct()
                 goToAttachProductScreen()
             } else {
                 goToLogin()
@@ -311,7 +310,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private fun goToAttachProductScreen() {
         val intent = AttachProductActivity.createInstance(context, shopId, "",
-                userSession.shopId == shopId)
+                userSession.shopId == shopId, AttachProductActivity.SOURCE_TALK)
         startActivityForResult(intent, GO_TO_ATTACH_PRODUCT_REQ_CODE)
     }
 
@@ -380,7 +379,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
         when (itemMenu.title) {
             getString(R.string.menu_report_comment) -> {
-                analytics.trackClickOnMenuReport()
+                analytics.trackClickOnMenuReportInDetail(source)
                 goToReportTalkPage(talkId, shopId, productId, commentId)
             }
             getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId, talkId, commentId)
@@ -389,7 +388,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        analytics.trackClickProductFromAttachment()
+        analytics.trackClickProductFromAttachmentInDetail(source)
         onGoToPdp(attachProduct.productId.toString())
     }
 
@@ -434,7 +433,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             getString(R.string.menu_follow_talk) -> showFollowTalkDialog(alertDialog, talkId)
             getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(alertDialog, talkId)
             getString(R.string.menu_report_talk) -> {
-                analytics.trackClickOnMenuReport()
+                analytics.trackClickOnMenuReportInDetail(source)
                 goToReportTalkPage(talkId, shopId, productId,"")
             }
         }
@@ -444,7 +443,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private fun showDeleteTalkDialog(alertDialog: Dialog, shopId: String, talkId: String) {
         context?.run {
-            analytics.trackClickOnMenuDelete()
+            analytics.trackClickOnMenuDeleteInDetail(source)
             talkDialog.createDeleteTalkDialog(
                     this,
                     alertDialog,
@@ -459,7 +458,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
 
         context?.run {
-            analytics.trackClickOnMenuFollow()
+            analytics.trackClickOnMenuFollowInDetail(source)
             talkDialog.createFollowTalkDialog(
                     this,
                     alertDialog,
@@ -474,7 +473,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     private fun showUnfollowTalkDialog(alertDialog: Dialog, talkId: String) {
         context?.run {
-            analytics.trackClickOnMenuUnfollow()
+            analytics.trackClickOnMenuUnfollowInDetail(source)
             talkDialog.createUnfollowTalkDialog(
                     this,
                     alertDialog,
@@ -487,7 +486,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
-        analytics.trackClickOnMenuDelete()
+        analytics.trackClickOnMenuDeleteInDetail(source)
 
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -544,12 +543,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
 
-    override fun onGoToPdpFromProductName(productId: String) {
-        analytics.trackClickProduct()
-        onGoToPdp(productId)
-    }
-
-    override fun onGoToPdpFromProductAvatar(productId: String) {
+    override fun onGoToPdpFromProductItemHeader(productId: String) {
         analytics.trackClickProduct()
         onGoToPdp(productId)
     }
@@ -645,7 +639,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToUserProfile(userId: String) {
-        analytics.trackClickUserProfile()
+        analytics.trackClickUserProfileInDetail(source)
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
             this@TalkDetailsFragment.startActivity(intent)

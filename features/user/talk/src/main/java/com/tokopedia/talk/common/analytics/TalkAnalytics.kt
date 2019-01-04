@@ -71,17 +71,24 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
                 CATEGORY_INBOX_TALK,
                 "click link / photo product",
                 ""
-
         )
     }
 
     fun trackClickProductFromAttachment() {
         tracker.sendEventTracking(
-                EVENT_CLICK_INBOX_CHAT,
-                CATEGORY_INBOX_TALK,
+                EVENT_CLICK_SHOP_PAGE,
+                CATEGORY_SHOP_PAGE,
                 "click link / photo from talk",
                 ""
         )
+    }
+
+    fun trackClickProductFromAttachmentInDetail(source: String) {
+        if (source == TalkDetailsActivity.SOURCE_SHOP) {
+            trackClickProductFromAttachmentFromShop()
+        } else {
+            trackClickProductFromAttachment()
+        }
     }
 
     fun trackClickProductFromAttachmentFromShop() {
@@ -111,6 +118,7 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
         )
     }
 
+
     fun trackClickOnMenuDelete() {
         tracker.sendEventTracking(
                 EVENT_CLICK_INBOX_CHAT,
@@ -118,6 +126,19 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
                 "click three balls menu",
                 "delete talk"
         )
+    }
+
+    fun trackClickOnMenuDeleteInDetail(source: String) {
+        if (source == TalkDetailsActivity.SOURCE_SHOP) {
+            tracker.sendEventTracking(
+                    EVENT_CLICK_SHOP_PAGE,
+                    CATEGORY_SHOP_PAGE,
+                    "click three balls menu",
+                    "delete talk"
+            )
+        } else {
+            trackClickOnMenuDelete()
+        }
     }
 
     fun trackClickOnMenuFollow() {
@@ -129,6 +150,20 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
         )
     }
 
+
+    fun trackClickOnMenuFollowInDetail(source: String) {
+        if (source == TalkDetailsActivity.SOURCE_SHOP) {
+            tracker.sendEventTracking(
+                    EVENT_CLICK_SHOP_PAGE,
+                    CATEGORY_SHOP_PAGE,
+                    "click three balls menu",
+                    "follow talk"
+            )
+        } else {
+            trackClickOnMenuFollow()
+        }
+    }
+
     fun trackClickOnMenuUnfollow() {
         tracker.sendEventTracking(
                 EVENT_CLICK_INBOX_CHAT,
@@ -138,6 +173,19 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
         )
     }
 
+    fun trackClickOnMenuUnfollowInDetail(source: String) {
+        if (source == TalkDetailsActivity.SOURCE_SHOP) {
+            tracker.sendEventTracking(
+                    EVENT_CLICK_SHOP_PAGE,
+                    CATEGORY_SHOP_PAGE,
+                    "click three balls menu",
+                    "unfollow talk"
+            )
+        } else {
+            trackClickOnMenuUnfollow()
+        }
+    }
+
     fun trackClickOnMenuReport() {
         tracker.sendEventTracking(
                 EVENT_CLICK_INBOX_CHAT,
@@ -145,6 +193,20 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
                 "click three balls menu",
                 "click on laporkan"
         )
+    }
+
+
+    fun trackClickOnMenuReportInDetail(source: String) {
+        if (source == TalkDetailsActivity.SOURCE_SHOP) {
+            tracker.sendEventTracking(
+                    EVENT_CLICK_SHOP_PAGE,
+                    CATEGORY_SHOP_PAGE,
+                    "click three balls menu",
+                    "click on laporkan"
+            )
+        } else {
+            trackClickOnMenuReport()
+        }
     }
 
     fun trackClickUserProfile() {
@@ -162,7 +224,16 @@ class TalkAnalytics @Inject constructor(val tracker: AnalyticTracker) {
                 CATEGORY_SHOP_PAGE,
                 "click user profile from talk on shop page",
                 ""
-        )}
+        )
+    }
+
+    fun trackClickUserProfileInDetail(source: String) {
+        if (source == TalkDetailsActivity.SOURCE_SHOP) {
+            trackClickUserProfileFromShop()
+        } else {
+            trackClickUserProfile()
+        }
+    }
 
     companion object {
         fun createInstance(analyticTracker: AnalyticTracker): TalkAnalytics {
