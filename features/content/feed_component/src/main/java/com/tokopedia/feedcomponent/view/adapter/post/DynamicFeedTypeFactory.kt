@@ -7,7 +7,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 /**
  * @author by milhamj on 03/12/18.
  */
-interface DynamicPostTypeFactory {
+interface DynamicFeedTypeFactory {
     fun type(dynamicPostViewModel: DynamicPostViewModel): Int
 
     fun type(feedRecommendationViewModel: FeedRecommendationViewModel): Int

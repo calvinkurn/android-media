@@ -6,7 +6,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
 import com.tokopedia.feedcomponent.data.pojo.template.Template
-import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory
+import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 
 /**
  * @author by milhamj on 28/11/18.
@@ -20,9 +20,9 @@ data class DynamicPostViewModel(
         var contentList: MutableList<BasePostViewModel> = ArrayList(),
         val template: Template = Template()
 
-) : Visitable<DynamicPostTypeFactory> {
+) : Visitable<DynamicFeedTypeFactory> {
     
-    override fun type(typeFactory: DynamicPostTypeFactory?): Int {
+    override fun type(typeFactory: DynamicFeedTypeFactory?): Int {
         return typeFactory!!.type(this)
     }
 }

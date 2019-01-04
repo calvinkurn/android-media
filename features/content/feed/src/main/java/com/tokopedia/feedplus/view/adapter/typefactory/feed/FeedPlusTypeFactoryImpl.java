@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.post.DynamicPostTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
@@ -73,7 +73,7 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
-        implements FeedPlusTypeFactory, KolPostTypeFactory, DynamicPostTypeFactory {
+        implements FeedPlusTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
 
     private final FeedPlus.View viewListener;
     private final TopAdsItemClickListener topAdsItemClickListener;
