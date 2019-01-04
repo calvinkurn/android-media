@@ -34,7 +34,7 @@
                 android:layout_height="@dimen/dp_0"
                 android:adjustViewBounds="true"
                 android:background="@color/white"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +71,7 @@
         android:textColor="@color/orange_red"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:text="Rp 3.121.500"
         tools:visibility="visible" />
 

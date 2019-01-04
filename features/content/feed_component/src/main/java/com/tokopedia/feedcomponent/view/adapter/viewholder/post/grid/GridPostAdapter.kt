@@ -22,6 +22,7 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
 
     companion object {
         private const val MAX_FEED_SIZE = 6
+        private const val MAX_FEED_SIZE_SMALL = 3
         private const val LAST_FEED_POSITION = 5
         private const val LAST_FEED_POSITION_SMALL = 2
     }
@@ -31,7 +32,13 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
         return GridItemViewHolder(view)
     }
 
-    override fun getItemCount() = gridPostViewModel.itemList.size
+    override fun getItemCount() : Int {
+        return when {
+            gridPostViewModel.itemList.size >= MAX_FEED_SIZE -> MAX_FEED_SIZE
+            gridPostViewModel.itemList.size >= MAX_FEED_SIZE_SMALL -> MAX_FEED_SIZE_SMALL
+            else -> gridPostViewModel.itemList.size
+        }
+    }
 
     override fun onBindViewHolder(holder: GridItemViewHolder, position: Int) {
         holder.bindImage(gridPostViewModel.itemList[position].thumbnail)

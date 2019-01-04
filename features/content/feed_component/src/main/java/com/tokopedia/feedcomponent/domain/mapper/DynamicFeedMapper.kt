@@ -12,6 +12,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollOptionViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollViewModel
@@ -37,13 +39,14 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val CONTENT_IMAGE = "image"
         private const val CONTENT_YOUTUBE = "youtube"
         private const val CONTENT_VOTE = "vote"
+        private const val CONTENT_GRID = "productgrid"
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun call(t: GraphqlResponse?): DynamicFeedDomainModel {
         val feedQuery = t?.getData<FeedQuery?>(FeedQuery::class.java)
         val posts: MutableList<Visitable<*>> = ArrayList()
-        var lastCursor: String = ""
+        var lastCursor = ""
         feedQuery?.let {
             for (feed in it.feedv2.data) {
                 val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->
@@ -139,6 +142,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
                 CONTENT_YOUTUBE -> list.add(mapPostYoutube(media))
                 CONTENT_VOTE -> list.add(mapPostPoll(media))
+                CONTENT_GRID -> list.add(mapPostGrid(media))
             }
         }
 
@@ -183,6 +187,28 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 media.totalVoterFmt,
                 media.isVoted,
                 options
+        )
+    }
+
+    private fun mapPostGrid(media: Media): GridPostViewModel {
+        val itemList: MutableList<GridItemViewModel> = ArrayList()
+
+        for (item in media.mediaItems) {
+            itemList.add(GridItemViewModel(
+                    item.id,
+                    item.text,
+                    item.price,
+                    item.applink,
+                    item.thumbnail
+            ))
+        }
+
+        //TODO milhamj wait from API
+        return GridPostViewModel(
+                itemList,
+                "Lihat Lainnya",
+                media.appLink,
+                media.totalItems
         )
     }
 
