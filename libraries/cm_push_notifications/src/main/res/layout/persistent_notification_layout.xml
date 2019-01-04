@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_mainPersist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/gray_background"
-    android:id="@+id/ll_mainPersist"
-    android:gravity="center_horizontal|center_vertical"
+    android:gravity="center"
     android:orientation="horizontal"
     android:padding="@dimen/dp_5">
 
@@ -26,10 +26,10 @@
             android:id="@+id/image_icon1"
             android:layout_width="@dimen/cm_dp_28"
             android:layout_height="@dimen/cm_dp_28"
-            android:paddingBottom="@dimen/dp_3"
             android:paddingLeft="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_3"
             android:scaleType="fitCenter" />
 
         <TextView
@@ -45,22 +45,22 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lin_container_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/image_icon2"
             android:layout_width="@dimen/cm_dp_28"
             android:layout_height="@dimen/cm_dp_28"
-            android:paddingBottom="@dimen/dp_2"
             android:paddingLeft="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_2"
             android:scaleType="fitCenter" />
 
         <TextView
@@ -76,22 +76,22 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lin_container_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/image_icon3"
             android:layout_width="@dimen/cm_dp_28"
             android:layout_height="@dimen/cm_dp_28"
-            android:paddingBottom="@dimen/dp_2"
             android:paddingLeft="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_2"
             android:scaleType="fitCenter" />
 
         <TextView
@@ -107,22 +107,22 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/lin_container_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/image_icon4"
             android:layout_width="@dimen/cm_dp_28"
             android:layout_height="@dimen/cm_dp_28"
-            android:paddingBottom="@dimen/dp_2"
             android:paddingLeft="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
             android:paddingTop="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_2"
             android:scaleType="fitCenter" />
 
         <TextView

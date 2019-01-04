@@ -76,9 +76,7 @@ public class CMNotificationFactory {
             String channelId = baseNotificationModel.getChannelName();
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel = manager.getNotificationChannel(channelId);
-            if (null != channel && channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
-                return true;
-            }
+            return null != channel && channel.getImportance() == NotificationManager.IMPORTANCE_NONE;
         } catch (NullPointerException e) {
         }
         return false;

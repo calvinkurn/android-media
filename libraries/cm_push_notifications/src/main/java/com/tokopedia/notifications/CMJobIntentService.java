@@ -56,7 +56,7 @@ public class CMJobIntentService extends JobIntentService {
     }
 
     private void handleSilentPush(Bundle data) {
-        //TODO handle Silent Push...
+
     }
 
 }
