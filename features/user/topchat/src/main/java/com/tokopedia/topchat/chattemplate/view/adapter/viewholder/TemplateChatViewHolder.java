@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
-import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 
 /**
  * Created by stevenfredian on 11/29/17.
@@ -20,11 +19,11 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
     @LayoutRes
     public static final int LAYOUT = R.layout.item_template_chat_layout;
 
-    ChatRoomContract.View viewListener;
+    ChatRoomContract.View.TemplateChatListener viewListener;
     TextView textHolder;
     ImageView icon;
 
-    public TemplateChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
+    public TemplateChatViewHolder(View itemView, ChatRoomContract.View.TemplateChatListener viewListener) {
         super(itemView);
         textHolder = itemView.findViewById(R.id.text);
         icon = itemView.findViewById(R.id.setting);

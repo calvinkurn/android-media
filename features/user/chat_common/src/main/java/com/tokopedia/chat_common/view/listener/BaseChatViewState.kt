@@ -25,4 +25,5 @@ interface BaseChatViewState {
 
     fun removeMessageOnReplyBox()
 
+    fun onReceiveRead()
 }

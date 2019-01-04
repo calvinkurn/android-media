@@ -408,7 +408,8 @@
 //        });
 //    }
 //
-//    private View.OnClickListener generateSendClickListener() {
+//    private View.OnClickListener generateSendCl
+// ickListener() {
 //        return new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {

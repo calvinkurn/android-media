@@ -3,7 +3,7 @@ package com.tokopedia.topchat.revamp.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.chat_common.data.api.ChatRoomApi
+import com.tokopedia.topchat.revamp.data.api.ChatRoomApi
 import dagger.Component
 
 /**

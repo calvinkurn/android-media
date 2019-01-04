@@ -8,7 +8,6 @@ import okhttp3.WebSocket
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import javax.inject.Inject
 
 
 /**
@@ -16,8 +15,8 @@ import javax.inject.Inject
  * WebSocketUtil based on okhttp and RxJava
  * Core Feature : WebSocket will be auto reconnection onFailed.
  */
-class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                                                  fingerprintInterceptor: FingerprintInterceptor,
+class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthInterceptor?,
+                                                  fingerprintInterceptor: FingerprintInterceptor?,
                                                   private val delay: Int,
                                                   private val maxRetries: Int,
                                                   private val pingInterval: Int) {
@@ -32,8 +31,12 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
     init {
 
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-        builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(fingerprintInterceptor)
+        tkpdAuthInterceptor?.let {
+            builder.addInterceptor(it)
+        }
+        fingerprintInterceptor?.let {
+            builder.addInterceptor(it)
+        }
         client = builder.build()
     }
 
@@ -90,8 +93,8 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
         private var instance: RxWebSocketUtil? = null
 
         @JvmOverloads
-        fun getInstance(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                        fingerprintInterceptor: FingerprintInterceptor, delay: Int =
+        fun getInstance(tkpdAuthInterceptor: TkpdAuthInterceptor?,
+                        fingerprintInterceptor: FingerprintInterceptor?, delay: Int =
                                 DEFAULT_DELAY, maxRetries: Int = DEFAULT_MAX_RETRIES, pingInterval: Int = DEFAULT_PING): RxWebSocketUtil? {
             if (instance == null) {
                 instance = RxWebSocketUtil(tkpdAuthInterceptor, fingerprintInterceptor, delay,
@@ -99,5 +102,6 @@ class RxWebSocketUtil private constructor(tkpdAuthInterceptor: TkpdAuthIntercept
             }
             return instance
         }
+
     }
 }

@@ -12,16 +12,16 @@ import rx.Observable
  */
 object RxWebSocket {
 
-    operator fun get(url: String, accessToken: String, tkpdAuthInterceptor: TkpdAuthInterceptor,
-                     fingerprintInterceptor: FingerprintInterceptor):
+    operator fun get(url: String, accessToken: String, tkpdAuthInterceptor: TkpdAuthInterceptor?,
+                     fingerprintInterceptor: FingerprintInterceptor?):
             Observable<WebSocketInfo>? {
         return RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.getWebSocketInfo(url,
                 accessToken)
     }
 
     fun send(msg: String,
-             tkpdAuthInterceptor: TkpdAuthInterceptor,
-             fingerprintInterceptor: FingerprintInterceptor) {
+             tkpdAuthInterceptor: TkpdAuthInterceptor?,
+             fingerprintInterceptor: FingerprintInterceptor?) {
         try {
             RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
         }catch(ignore : WebSocketException){

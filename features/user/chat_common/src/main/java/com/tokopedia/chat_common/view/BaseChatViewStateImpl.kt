@@ -54,9 +54,8 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         maximizeButton = view.findViewById(R.id.maximize)
         attachProductButton = view.findViewById(R.id.add_url)
 
-        (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
-
+        (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         replyEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 scrollDownWhenInBottom()
@@ -177,7 +176,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         recyclerView.adapter = adapter
     }
 
-    fun getAdapter(): BaseChatAdapter {
+    open fun getAdapter(): BaseChatAdapter {
         return recyclerView.adapter as BaseChatAdapter
     }
 
@@ -198,4 +197,8 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
         replyBox.visibility = View.VISIBLE
     }
 
+
+    override fun onReceiveRead() {
+        getAdapter().changeReadStatus()
+    }
 }

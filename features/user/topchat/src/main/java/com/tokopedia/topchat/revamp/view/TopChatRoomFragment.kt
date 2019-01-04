@@ -1,43 +1,83 @@
 package com.tokopedia.topchat.revamp.view
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import com.tokopedia.abstraction.AbstractionRouter
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
-import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.BaseChatFragment
+import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
+import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.topchat.revamp.di.DaggerChatComponent
+import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
+import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
+import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
+import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
+class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
+        , TypingListener, SendButtonListener, ImagePickerListener, ChatRoomContract.View.TemplateChatListener {
 
+    @Inject
     lateinit var presenter: TopChatRoomPresenter
-
-    lateinit var chatViewState: TopChatViewState
 
     lateinit var session : UserSessionInterface
 
     private lateinit var actionBox: View
 
-    private lateinit var adapter: BaseChatAdapter
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.attachView(this)
         initView(view)
+        loadInitialData()
+    }
+
+    override fun loadInitialData() {
+        presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime())
+        presenter.connectWebSocket(messageId)
+    }
+
+
+    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
+        return {
+            updateViewData(it)
+            setCanLoadMore(it)
+            getViewState().onSuccessLoadFirstTime(it)
+            presenter.getTemplate()
+        }
+    }
+
+    private fun onError(): (Throwable) -> Unit {
+        return {
+            if (view != null) {
+                ToasterError.make(view, ErrorHandler.getErrorMessage(view!!.context, it)).show()
+            }
+        }
     }
 
     override fun getScreenName(): String {
@@ -48,13 +88,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         return session
     }
 
-    fun onSuccessGetChat(listChat: ArrayList<Visitable<*>>) {
 
-//      TODO MOVE THIS TO TOPCHATVIEW STATE
-//        chatViewState.hideLoading()
-//        chatViewState.addList(listChat)
-        chatViewState.developmentView()
-
+    private fun getViewState(): TopChatViewStateImpl {
+        return viewState as TopChatViewStateImpl
     }
 
     override fun developmentView() {
@@ -73,9 +109,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
         dummyList.add(MessageViewModel("51", "1960918", "lawan", "User", "", "", "213123127", "213123123", true, false, false, "hi51"))
         dummyList.add(MessageViewModel("61", "7977933", "lawan", "User", "", "", "213123128", "213123123", true, false, true, "hi61"))
 
-        chatViewState.addList(dummyList)
-        chatViewState.hideLoading()
-        chatViewState.developmentView()
+        getViewState().addList(dummyList)
+        getViewState().hideLoading()
+        getViewState().developmentView()
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
@@ -107,7 +143,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        chatViewState.addMessage(visitable)
+        getViewState().addMessage(visitable)
     }
 
     companion object {
@@ -131,20 +167,33 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
     }
 
     fun initView(view: View?) {
-        view?.run {
-            //            chatViewState = TopChatViewState(this, presenter)
-//        }
-            chatViewState?.run {
-                chatViewState.showLoading()
-                adapter = BaseChatAdapter(adapterTypeFactory)
-                chatViewState.setAdapter(adapter)
-            }
+        view?.let {
+            super.viewState = TopChatViewStateImpl(
+                    it,
+                    presenter,
+                    this,
+                    this,
+                    this,
+                    this,
+                    this,
+                    this,
+                    this,
+                    this,
+                    (activity as BaseChatToolbarActivity).getToolbar()
+            )
+
+//            getViewState()?.run {
+//                getViewState().showLoading()
+//                adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
+//                getViewState().setAdapter(adapter)
+//            }
 
             hideLoading()
-            arguments?.run {
-                //            presenter.getChatUseCase(this.getString("message_id", ""))
-            }
         }
+    }
+
+    override fun clearEditText() {
+        getViewState().clearEditText()
     }
 
     override fun initInjector() {
@@ -154,29 +203,154 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 //                .build()
 //                .inject(this)
 
+        if (activity != null && (activity as Activity).application != null) {
+            val chatRoomComponent = DaggerTopChatRoomComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+            val chatComponent
+                    = DaggerChatComponent.builder().topChatRoomComponent(chatRoomComponent).build()
+            chatComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 //
-//    override fun getNetworkMode(): Int {
-//        return 1
-//    }
-//
 //    override fun disableAction() {
-//        chatViewState.setActionable(false)
+//        getViewState().setActionable(false)
 //    }
 //
 //    override fun showSnackbarError(string: Unit) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
-//
-//    override fun addDummyMessage(visitable: Visitable<*>) {
-//        chatViewState.addMessage(visitable)
-//    }
-//
-//    override fun removeDummy(visitable: Visitable<*>) {
-//        chatViewState.removeDummy(visitable)
-//    }
+
+    override fun addDummyMessage(visitable: Visitable<*>) {
+        getViewState().addMessage(visitable)
+    }
+
+    override fun removeDummy(visitable: Visitable<*>) {
+        getViewState().removeDummy(visitable)
+    }
+
 
     override fun onSendButtonClicked() {
-        //TODO SEND BUTTON CLICK LISTENER
+        val sendMessage = view?.findViewById<EditText>(R.id.new_comment)?.text.toString()
+        val startTime = SendableViewModel.generateStartTime()
+        getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
+                .name, sendMessage, startTime)
+        presenter.sendMessage(messageId, sendMessage, startTime, opponentId)
     }
+
+    override fun getStringResource(id: Int): String {
+        activity?.let {
+            return it.getString(id)
+        }
+        return ""
+    }
+
+    override fun showSnackbarError(stringResource: String) {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun setCanLoadMore(chatroomViewModel: ChatroomViewModel) {
+        if (chatroomViewModel.canLoadMore) {
+            enableLoadMore()
+        } else {
+            disableLoadMore()
+        }
+    }
+
+    override fun onStartTyping() {
+        presenter.startTyping()
+    }
+
+    override fun onStopTyping() {
+        presenter.stopTyping()
+    }
+
+    override fun onSendClicked(message: String, generateStartTime: String) {
+        presenter.sendMessage(messageId, message, generateStartTime, "")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
+    override fun addTemplateString(message: String?) {
+        message?.let {
+            getViewState().addTemplateString(message)
+        }
+    }
+
+    override fun goToSettingTemplate() {
+        val intent = TemplateChatActivity.createInstance(context)
+        activity?.run {
+            startActivityForResult(intent, 100)
+            overridePendingTransition(com.tokopedia.topchat.R.anim.pull_up, android.R.anim.fade_out)
+        }
+    }
+
+    override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
+        getViewState().setTemplate(list)
+    }
+
+    override fun onErrorGetTemplate() {
+        getViewState().setTemplate(null)
+    }
+
+    override fun pickImageToUpload() {
+        activity?.let {
+            val builder = ImagePickerBuilder(it.getString(com.tokopedia.topchat.R.string.choose_image),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true, null, null)
+            val intent = ImagePickerActivity.getIntent(getContext(), builder)
+            startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            100 -> {
+                presenter.getTemplate()
+            }
+
+            TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
+                if (resultCode != Activity.RESULT_OK || data == null) {
+                    return
+                }
+                processImagePathToUpload(data)?.let {
+                    //                    chatViewState.addMessage(it)
+                    presenter.startUploadImages(it)
+                }
+            }
+        }
+    }
+
+    override fun onSuccessUploadImage(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
+
+    }
+
+    private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
+
+        val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+        if (imagePathList == null || imagePathList.size <= 0) {
+            return null
+        }
+        val imagePath = imagePathList[0]
+        if (!TextUtils.isEmpty(imagePath)) {
+            val temp = generateChatViewModelWithImage(imagePath)
+            return temp
+        }
+        return null
+    }
+
+    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
+        return ImageUploadViewModel(
+                arguments!!.getString(BaseChatToolbarActivity.Companion.PARAM_SENDER_ID),
+                (System.currentTimeMillis()/1000).toString(),
+                imageUrl,
+                SendableViewModel.generateStartTime()
+        )
+    }
+
 }

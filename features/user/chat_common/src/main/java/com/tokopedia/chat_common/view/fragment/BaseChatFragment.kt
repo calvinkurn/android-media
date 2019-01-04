@@ -30,7 +30,6 @@ import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_chatroom.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -77,8 +76,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     open fun prepareListener() {
-        send_but.setOnClickListener {
-           onSendButtonClicked()
+        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
+            onSendButtonClicked()
         }
     }
 
@@ -230,7 +229,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveReadEvent() {
-        return
+        viewState.onReceiveRead()
     }
 
     abstract fun onSendButtonClicked()

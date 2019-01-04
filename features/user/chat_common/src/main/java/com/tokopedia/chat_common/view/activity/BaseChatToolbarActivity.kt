@@ -23,6 +23,8 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 open class BaseChatToolbarActivity : BaseChatActivity() {
 
     companion object {
+        public val PARAM_MESSAGE_ID = "message_id"
+        public val PARAM_SENDER_ID = "sender_id"
         val PARAM_HEADER = "header"
 
         /**
