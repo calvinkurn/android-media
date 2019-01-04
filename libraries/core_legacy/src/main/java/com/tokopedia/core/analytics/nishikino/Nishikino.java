@@ -13,11 +13,9 @@ import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton
  */
 public class Nishikino {
 
-    private Context context;
     private IGTMContainer gtmContainer;
 
     private Nishikino (Context context) {
-        this.context = context;
         this.gtmContainer = GTMContainer.newInstance(context);
     }
 

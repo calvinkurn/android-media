@@ -29,14 +29,14 @@ public class IndexScreenTracking extends TrackingUtils {
     private static final String APP_LIST_SEPARATOR = "-";
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(30);
 
-    public static void sendScreen(Activity activity,
+    public static void sendScreen(Context context,
                                   ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
         try {
             ScreenTrackingBuilder
-                    .newInstance(activity, openScreenAnalytics, getAfUniqueId(activity))
-                    .setNetworkSpeed(getNetworkSpeed(activity))
-                    .setKeyCompetitorIntelligence(getCIData(activity))
-                    .execute(activity);
+                    .newInstance(context, openScreenAnalytics, getAfUniqueId(context))
+                    .setNetworkSpeed(getNetworkSpeed(context))
+                    .setKeyCompetitorIntelligence(getCIData(context))
+                    .execute(context);
         } catch (Exception e) {
             e.printStackTrace();
         }

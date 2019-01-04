@@ -62,6 +62,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -201,7 +202,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication());
+        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication(),
+                new TrackingQueue(getContext()));
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
         shopProductListPresenter.attachView(this, this);
     }
@@ -780,6 +782,12 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
             loadInitialData();
             needReloadData = false;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        shopPageTracking.sendAllTrackingQueue();
     }
 
     @Override

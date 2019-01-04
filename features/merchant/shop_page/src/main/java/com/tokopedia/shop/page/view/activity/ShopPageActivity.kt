@@ -47,6 +47,7 @@ import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import javax.inject.Inject
@@ -151,7 +152,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         GraphqlClient.init(this)
         initInjector()
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-        shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter)
+        shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter,
+                TrackingQueue(this))
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
         intent.run {
@@ -349,6 +351,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         swipeToRefresh.isRefreshing = false
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shopPageTracking.sendAllTrackingQueue()
     }
 
     private fun addFeed() {

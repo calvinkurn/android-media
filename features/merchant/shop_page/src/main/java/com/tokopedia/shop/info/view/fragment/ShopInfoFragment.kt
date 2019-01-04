@@ -30,6 +30,7 @@ import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.fragment_shop_info.*
 import kotlinx.android.synthetic.main.partial_shop_info_delivery.*
 import kotlinx.android.synthetic.main.partial_shop_info_description.*
@@ -59,7 +60,8 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopPageTracking = ShopPageTrackingBuyer(activity!!.application as AbstractionRouter)
+        shopPageTracking = ShopPageTrackingBuyer(activity!!.application as AbstractionRouter,
+                TrackingQueue(context!!))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -281,5 +283,10 @@ class ShopInfoFragment : BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder
                 refreshUIFirstTime()
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shopPageTracking.sendAllTrackingQueue()
     }
 }

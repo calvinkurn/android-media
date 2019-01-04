@@ -11,6 +11,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 import com.tokopedia.shop.analytic.model.ListTitleTypeDef;
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +40,9 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAG
 
 public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
 
-    public ShopPageTrackingBuyer(AbstractionRouter shopTrackingRouter) {
-        super(shopTrackingRouter);
+    public ShopPageTrackingBuyer(AbstractionRouter shopTrackingRouter,
+                                 TrackingQueue trackingQueue) {
+        super(shopTrackingRouter, trackingQueue);
     }
 
     private List<Object> createProductListMap(List<ShopProductViewModel> shopProductViewModelList,
@@ -70,7 +72,7 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
             );
         }
 
-        return DataLayer.listOf(list.toArray(new Object[list.size()]));
+        return list;
     }
 
     private HashMap<String, Object> createProductImpressionMap(String event, String category, String action, String label,

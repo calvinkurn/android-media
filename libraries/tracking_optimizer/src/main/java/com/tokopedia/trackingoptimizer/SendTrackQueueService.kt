@@ -1,0 +1,192 @@
+package com.tokopedia.trackingoptimizer
+
+import android.app.Service
+import android.content.Context
+import android.content.Intent
+import android.os.IBinder
+import android.util.Log
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_ACTION
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_CATEGORY
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_LABEL
+import com.tokopedia.trackingoptimizer.constant.Constant.Companion.SCREEN_NAME
+import com.tokopedia.trackingoptimizer.db.model.*
+import com.tokopedia.trackingoptimizer.gson.GsonSingleton
+import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
+import com.tokopedia.trackingoptimizer.model.EventModel
+import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
+import com.tokopedia.trackingoptimizer.repository.ITrackingRepository
+import com.tokopedia.trackingoptimizer.repository.TrackingRepository
+import kotlinx.coroutines.experimental.*
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.experimental.CoroutineContext
+
+/**
+ * Created by hendry on 27/12/18.
+ */
+class SendTrackQueueService : Service(), CoroutineScope {
+
+    val trackingRepository: ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
+            TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
+        TrackingRepository(this)
+    }
+
+    val trackingOptimizerRouter: TrackingOptimizerRouter? by lazy {
+        val application = this.application
+        if (application is TrackingOptimizerRouter) {
+            application
+        } else {
+            null
+        }
+    }
+
+    var screenName: String? = null
+    var needClearScreenName: Boolean = false
+    companion object {
+        var atomicInteger = AtomicInteger()
+        const val TAG = "TrackQueueService"
+        const val TAG_EE = "TrackQueueServiceEE"
+        fun start(context: Context) {
+            // allowing only 1 service at a time
+            if (atomicInteger.get() < 1) {
+                context.startService(Intent(context, SendTrackQueueService::class.java))
+            }
+        }
+    }
+
+    // allowing only 1 thread at a time
+    override val coroutineContext: CoroutineContext by lazy {
+        TrackingExecutors.executor
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
+
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        atomicInteger.getAndIncrement()
+        launch {
+            Log.i(TAG, "Start")
+            val screenNameDbModelList = trackingRepository.getAllScreenName()
+
+            var deleteScreenNameJob: Job? = null
+            if (screenNameDbModelList != null && screenNameDbModelList.isNotEmpty()) {
+                val screenNameDbModel = screenNameDbModelList[0]
+                screenName = screenNameDbModel.screenName
+                val customModel = ScreenCustomModel(screenNameDbModel.shopId,
+                        screenNameDbModel.shopType,
+                        screenNameDbModel.pageType,
+                        screenNameDbModel.productId)
+                if (customModel.hasCustom()) {
+                    trackingOptimizerRouter?.sendTrackCustomAuth(this@SendTrackQueueService,
+                            screenNameDbModel.shopId!!,
+                            screenNameDbModel.shopType!!,
+                            screenNameDbModel.pageType!!,
+                            screenNameDbModel.productId!!)
+                } else {
+                    trackingOptimizerRouter?.sendTrackDefaultAuth()
+                }
+                deleteScreenNameJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+                    trackingRepository.deleteScreenName()
+                }
+            }
+
+            val eeFullModelList = trackingRepository.getAllEEFull()
+            val deleteEEFullJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+                trackingRepository.deleteEEFull()
+            }
+            eeFullModelList?.run {
+                map {
+                    sendTracking(it)
+                }
+            }
+            val eeModelList = trackingRepository.getAllEE()
+            val deleteEEJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+                trackingRepository.deleteEE()
+            }
+            eeModelList?.run {
+                map {
+                    sendTracking(it)
+                }
+            }
+            val regularModelList = trackingRepository.getAllRegular()
+            val deleteRegularJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
+                trackingRepository.deleteRegular()
+            }
+            regularModelList?.run {
+                map {
+                    sendTracking(it)
+                }
+            }
+            // send screen name individually
+            if (!screenName.isNullOrEmpty()) {
+                trackingOptimizerRouter?.sendScreenName(screenName!!)
+                needClearScreenName = true
+                screenName = null
+            }
+            clearScreenNameIfNeeded()
+            withTimeout(1000L) {
+                deleteScreenNameJob?.join()
+                deleteEEFullJob.join()
+                deleteEEJob.join()
+                deleteRegularJob.join()
+            }
+            atomicInteger.getAndDecrement()
+            Log.i(TAG, "End")
+            stopSelf()
+        }
+        return Service.START_NOT_STICKY
+    }
+
+    fun clearScreenNameIfNeeded(){
+        if (needClearScreenName) {
+            trackingOptimizerRouter?.sendEventTracking(mutableMapOf<String, Any?>().apply { put(SCREEN_NAME, null) })
+            needClearScreenName = false
+        }
+    }
+
+    fun sendTracking(it: TrackingDbModel) {
+        if (trackingOptimizerRouter == null) {
+            return
+        }
+        clearScreenNameIfNeeded()
+        var hasSent = false
+        val map = mutableMapOf<String, Any?>()
+        val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,
+                object : TypeToken<EventModel>() {}.type)
+        map.put(EVENT, eventModel.event)
+        map.put(EVENT_CATEGORY, eventModel.category)
+        map.put(EVENT_ACTION, eventModel.action)
+        map.put(EVENT_LABEL, eventModel.label)
+        //merge with screen name
+        if (!screenName.isNullOrEmpty()) {
+            map.put(SCREEN_NAME, screenName)
+            screenName = null
+            needClearScreenName = true
+        }
+        val customDimensionMap = HashMapJsonUtil.jsonToMap(it.customDimension)
+        if (customDimensionMap != null && customDimensionMap.isNotEmpty()) {
+            map.putAll(customDimensionMap)
+        }
+        if (it is TrackingEEDbModel || it is TrackingEEFullDbModel) {
+            var enhanceECommerceMap: HashMap<String, Any>? = null
+            if (it is TrackingEEDbModel) {
+                enhanceECommerceMap = HashMapJsonUtil.jsonToMap(it.enhanceEcommerce)
+            } else if (it is TrackingEEFullDbModel) {
+                enhanceECommerceMap = HashMapJsonUtil.jsonToMap(it.enhanceEcommerce)
+            }
+            if (enhanceECommerceMap != null && enhanceECommerceMap.isNotEmpty()) {
+                map.putAll(enhanceECommerceMap)
+                Log.i(TAG_EE, "${eventModel.event} size ${HashMapJsonUtil.findList(enhanceECommerceMap)?.size}")
+                trackingOptimizerRouter?.sendEnhanceECommerceTracking(map)
+                hasSent = true
+            }
+        }
+        if (!hasSent) {
+            Log.i(TAG, "$map")
+            trackingOptimizerRouter?.sendEventTracking(map)
+        }
+    }
+}
+

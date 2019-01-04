@@ -24,6 +24,7 @@ import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import javax.inject.Inject;
 
@@ -54,7 +55,8 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getContext().getApplicationContext());
+        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getContext().getApplicationContext(),
+                new TrackingQueue(getContext()));
         shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopFavouriteListPresenter.attachView(this);
     }
@@ -155,6 +157,12 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
         if (shopFavouriteListPresenter != null) {
             shopFavouriteListPresenter.detachView();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        shopPageTracking.sendAllTrackingQueue();
     }
 
     @Override

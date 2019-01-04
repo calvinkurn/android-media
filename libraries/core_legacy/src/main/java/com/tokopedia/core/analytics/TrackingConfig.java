@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.tokopedia.core.analytics.appsflyer.Jordan;
@@ -49,7 +50,7 @@ public abstract class TrackingConfig {
      * Initialize container to start at first time apps launched
      * @param what type container (GTM, Appsflyer, MoEngage)
      */
-    public static void runFirstTime(Context context, AnalyticsKind what, SessionHandler sessionHandler){
+    public static void runFirstTime(Application context, AnalyticsKind what, SessionHandler sessionHandler){
         switch (what){
             case GTM:
                 getGTMEngine(context).loadContainer();
