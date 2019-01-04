@@ -1,0 +1,10 @@
+mutation addChatBlastSeller($message: String!, $mtImageUrl: String!, $hasProducts: Boolean!, $productsPayload: [TopchatBlastProductAttachment]) {
+    chatSendBlastSeller(
+        message: $message,
+        mtImageUrl: $mtImageUrl,
+        hasProducts: $hasProducts,
+        productsPayload:$productsPayload) {
+            success
+            blastId
+        }
+}

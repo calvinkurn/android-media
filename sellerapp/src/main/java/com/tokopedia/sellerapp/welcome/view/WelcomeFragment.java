@@ -172,7 +172,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        UserAuthenticationAnalytics.setActiveLogin();
+        UserAuthenticationAnalytics.setActiveLogin(getActivity());
         showProgress(false);
         presenter.initialize(getActivity());
         presenter.initData();
@@ -268,7 +268,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 }
                 getActivity().getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                UserAuthenticationAnalytics.setActiveAuthenticationMedium(listProvider.get(position).getName());
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(getActivity(), listProvider.get(position).getName());
             }
         };
     }

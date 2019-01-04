@@ -1,6 +1,6 @@
 package com.tokopedia.gm.statistic.view.listener;
 
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
 
 /**

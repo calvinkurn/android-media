@@ -60,4 +60,5 @@ public class RemoteConfigKey {
     public static final String REFERRAL_HELP_LINK_CONTENT_TITLE= "app_apa_itu_tokocash_referral_content_title";
     public static final String REFERRAL_HELP_LINK_CONTENT_SUBTITLE= "app_apa_itu_tokocash_referral_content_subtitle";
     public static final String MAIN_APP_ENABLE_BUY_AGAIN = "main_app_enable_buy_again";
+    public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
 }

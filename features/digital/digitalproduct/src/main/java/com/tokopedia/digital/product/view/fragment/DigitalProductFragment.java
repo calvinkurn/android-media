@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -54,7 +55,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
@@ -960,7 +960,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             if (categoryDataState != null) {
                 UnifyTracking.eventClickDaftarTransaksiEvent(getActivity(),categoryDataState.getName(), categoryDataState.getName());
             }
-            RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+            if (GlobalConfig.isSellerApp()) {
+                navigateToActivity(
+                        DigitalWebActivity.newInstance(
+                                getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
+                        )
+                );
+            } else {
+                RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+            }
             return true;
         } else if (item.getItemId() == R.id.action_menu_help_digital) {
             presenter.onHelpMenuClicked();
