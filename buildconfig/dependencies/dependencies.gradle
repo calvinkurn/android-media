@@ -123,14 +123,6 @@ ext {
             deeplinkDispatchProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkDispatchVersion}"
     ]
 
-    apolloDependencies = [
-            apolloPlugin        : "com.apollographql.apollo:gradle-plugin:$apolloVersion",
-            apolloAndroidSupport: "com.apollographql.apollo:apollo-android-support:$apolloVersion",
-            apolloRuntime       : "com.apollographql.apollo:apollo-runtime:$apolloVersion",
-            apolloRxSupport     : "com.apollographql.apollo:apollo-rx-support:$apolloVersion",
-            apolloRx2Support    : "com.apollographql.apollo:apollo-rx2-support:$apolloVersion",
-    ]
-
     miscDependencies = [
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
             facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
