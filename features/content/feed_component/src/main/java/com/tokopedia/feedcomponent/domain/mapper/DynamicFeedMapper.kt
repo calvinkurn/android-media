@@ -34,8 +34,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val TYPE_CARDPOST = "cardpost"
         private const val TYPE_CARDBANNER = "cardbanner"
 
-        private const val POST_GRID = "productgrid"
-
         private const val CONTENT_IMAGE = "image"
         private const val CONTENT_YOUTUBE = "youtube"
         private const val CONTENT_VOTE = "vote"
@@ -135,8 +133,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     private fun mapPostContent(body: Body): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
 
-        //TODO milhamj delete this
-        list.add(ImagePostViewModel("https://res.cloudinary.com/he2ebbhcc/image/upload/c_fill,f_auto,g_center,h_500,w_500/v1477492779/1158.jpg"))
         for (media in body.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
