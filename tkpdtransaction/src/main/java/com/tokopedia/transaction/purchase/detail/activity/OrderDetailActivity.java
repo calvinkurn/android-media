@@ -839,11 +839,6 @@ public class OrderDetailActivity extends TActivity
     public void onSuccessBuyAgain(String message, OrderDetailData data) {
         showSnackbar(message);
         orderDetailAnalytics.sendAnalyticBuyAgain(data);
-        if (getApplication() instanceof ITransactionOrderDetailRouter) {
-            Intent intent = ((ITransactionOrderDetailRouter) getApplication())
-                    .getCartIntent(this);
-            startActivity(intent);
-        }
     }
 
     @Override
