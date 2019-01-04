@@ -47,23 +47,20 @@ public class TravelPassengerRepository implements ITravelPassengerRepository {
                                     .map(travelPassengerTables -> mapper.transformTable(travelPassengerTables));
                         } else {
                             return Observable.from(travelPassengerEntities)
-                                    .map(new Func1<TravelPassengerEntity, Boolean>() {
-                                        @Override
-                                        public Boolean call(TravelPassengerEntity travelPassengerEntity) {
-                                            TravelPassengerTable passengerEntityTable = mapper
-                                                    .transform(travelPassengerEntity);
+                                    .map(travelPassengerEntity -> {
+                                        TravelPassengerTable passengerEntityTable = mapper
+                                                .transform(travelPassengerEntity);
 
-                                            TravelPassengerTable passengerDbTable = travelPassengerDao
-                                                    .findTravelPassengerByName(travelPassengerEntity.getName());
-                                            if (passengerDbTable != null) {
-                                                passengerEntityTable.setIdPassenger(passengerDbTable.getIdPassenger());
-                                                passengerEntityTable.setSelected(passengerDbTable.getSelected());
-                                                travelPassengerDao.update(passengerEntityTable);
-                                            } else {
-                                                travelPassengerDao.insert(passengerEntityTable);
-                                            }
-                                            return true;
+                                        TravelPassengerTable passengerDbTable = travelPassengerDao
+                                                .findTravelPassengerByName(travelPassengerEntity.getName());
+                                        if (passengerDbTable != null) {
+                                            passengerEntityTable.setIdPassenger(passengerDbTable.getIdPassenger());
+                                            passengerEntityTable.setSelected(passengerDbTable.getSelected());
+                                            travelPassengerDao.update(passengerEntityTable);
+                                        } else {
+                                            travelPassengerDao.insert(passengerEntityTable);
                                         }
+                                        return true;
                                     })
                                     .toList()
                                     .map(integers -> travelPassengerDao.findAllTravelPassenger())
@@ -76,32 +73,26 @@ public class TravelPassengerRepository implements ITravelPassengerRepository {
     @Override
     public Observable<Boolean> updatePassenger(boolean isSelected, String idPassenger) {
         return Observable.just(idPassenger)
-                .map(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String s) {
-                        return travelPassengerDao.updateTravelPassenger(isSelected ? 1 : 0, idPassenger) == 1;
-                    }
+                .map(idPassengerString -> {
+                    return travelPassengerDao.updateTravelPassenger(isSelected ? 1 : 0, idPassenger) == 1;
                 });
     }
 
     @Override
     public Observable<Boolean> updateDataTravelPassenger(String idPassenger, TravelPassengerEntity travelPassengerEntity) {
         return Observable.just(travelPassengerEntity)
-                .flatMap(new Func1<TravelPassengerEntity, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(TravelPassengerEntity travelPassengerEntity) {
-                        TravelPassengerTable passengerEntityTable = mapper
-                                .transform(travelPassengerEntity);
+                .flatMap(passengerEntity -> {
+                    TravelPassengerTable passengerEntityTable = mapper
+                            .transform(passengerEntity);
 
-                        TravelPassengerTable passengerDbTable = travelPassengerDao
-                                .findTravelPassengerByIdPassenger(idPassenger);
-                        if (passengerDbTable != null) {
-                            passengerEntityTable.setIdPassenger(passengerDbTable.getIdPassenger());
-                            passengerEntityTable.setSelected(passengerDbTable.getSelected());
-                            travelPassengerDao.update(passengerEntityTable);
-                        }
-                        return Observable.just(true);
+                    TravelPassengerTable passengerDbTable = travelPassengerDao
+                            .findTravelPassengerByIdPassenger(idPassenger);
+                    if (passengerDbTable != null) {
+                        passengerEntityTable.setIdPassenger(passengerDbTable.getIdPassenger());
+                        passengerEntityTable.setSelected(passengerDbTable.getSelected());
+                        travelPassengerDao.update(passengerEntityTable);
                     }
+                    return Observable.just(true);
                 });
     }
 }
