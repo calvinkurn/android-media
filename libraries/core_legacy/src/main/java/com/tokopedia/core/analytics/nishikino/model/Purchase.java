@@ -20,6 +20,7 @@ public class Purchase {
     public static final String USER_ID = "userId";
     public static final String PURCHASE = "purchase";
     public static final String DEFAULT_CURRENCY_VALUE = "IDR";
+    public static final String CURRENT_SITE = "currentSite";
 
     public static final String ID = "id";
 
