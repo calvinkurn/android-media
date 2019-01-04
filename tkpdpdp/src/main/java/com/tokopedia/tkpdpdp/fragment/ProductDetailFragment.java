@@ -236,6 +236,8 @@ import static com.tokopedia.tkpdpdp.VariantActivity.SELECTED_VARIANT_RESULT_STAY
 import static com.tokopedia.tkpdpdp.constant.ConstantKey.ARGS_STATE_RESULT_PDP_MODAL;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
+import static com.tokopedia.transaction.common.data.expresscheckout.Constant.EXTRA_MESSAGES_ERROR;
+import static com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_ERROR;
 
 
 /**
@@ -260,6 +262,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final int REQUEST_CODE_LOGIN_USE_VOUCHER = 562;
     public static final int REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563;
     public static final int REQUEST_CODE_MERCHANT_VOUCHER = 564;
+    public static final int REQUEST_CODE_ATC_EXPRESS = 565;
 
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
@@ -790,7 +793,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 atcRequest.setQuantity(Integer.parseInt(productData.getInfo().getProductMinOrder()));
                 Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                         .getExpressCheckoutIntent(getActivity(), atcRequest);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -978,7 +981,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         productData.setProductImageUrl(data.getProductImages().get(0).getImageSrc());
         productData.setShopUrl(data.getShopInfo().getShopUrl());
 
-        productShare.share(productData, ()->{
+        productShare.share(productData, () -> {
             showProgressLoading();
             return Unit.INSTANCE;
         }, () -> {
@@ -1069,7 +1072,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductInfoShortClicked(Intent intent){
+    public void onProductInfoShortClicked(Intent intent) {
         intent.setClass(getActivityContext(), ProductInfoShortDetailActivity.class);
         startActivity(intent);
         getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
@@ -1769,6 +1772,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             }
             break;
+            case REQUEST_CODE_ATC_EXPRESS:
+                if (resultCode == RESULT_CODE_ERROR) {
+                    ToasterError.make(getView(), data.getStringExtra(EXTRA_MESSAGES_ERROR));
+                }
+                break;
             default:
                 break;
         }
@@ -2686,13 +2694,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onImageFromBuyerClick(int viewType, String reviewId) {
-        if(viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE){
+        if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE) {
             ProductPageTracking.eventClickReviewOnBuyersImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId()),
                     reviewId
             );
-        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER){
+        } else if (viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
             ProductPageTracking.eventClickReviewOnSeeAllImage(
                     getActivity(),
                     String.valueOf(productData.getInfo().getProductId())
@@ -2711,7 +2719,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ImageReviewGalleryActivity.Companion.moveTo(getActivity(), imageUrlList, position);
     }
 
-    public void routeToReviewGallery(){
+    public void routeToReviewGallery() {
         if (getActivity() != null) {
             ImageReviewGalleryActivity.Companion.moveTo(getActivity(),
                     productData.getInfo().getProductId());
@@ -2733,7 +2741,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private String getUserId(){
+    private String getUserId() {
         return userSession.getUserId();
     }
 }

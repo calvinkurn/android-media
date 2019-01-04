@@ -1,6 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
@@ -37,6 +38,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     lateinit var adapter: CheckoutVariantAdapter
     lateinit var recyclerView: RecyclerView
     lateinit var errorBottomSheets: ErrorBottomsheets
+    lateinit var fragmentListener: CheckoutVariantFragmentListener
     var isDataLoaded = false
 
     companion object {
@@ -69,6 +71,11 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomSheets.actionListener = this
 
         return view
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        fragmentListener = context as CheckoutVariantFragmentListener
     }
 
     override fun showLoading() {
@@ -282,6 +289,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun showToasterError(message: String?) {
         ToasterError.make(view, message
                 ?: contextView.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun finishWithError(messages: String) {
+        fragmentListener.finishWithResult(messages)
     }
 
     override fun showBottomsheetError(title: String, message: String, action: String) {

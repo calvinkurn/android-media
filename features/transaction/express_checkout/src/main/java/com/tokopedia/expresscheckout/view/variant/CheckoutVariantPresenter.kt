@@ -75,6 +75,8 @@ class CheckoutVariantPresenter : BaseDaggerPresenter<CheckoutVariantContract.Vie
                 if (expressCheckoutResponse.atcExpress.status.equals("OK")) {
                     atcResponseModel = domainModelMapper.convertToDomainModel(expressCheckoutResponse.atcExpress)
                     view.showData(viewModelMapper.convertToViewModels(atcResponseModel))
+                } else {
+                    view.finishWithError(expressCheckoutResponse.atcExpress.errorMessage.joinToString(". "))
                 }
             }
         })

@@ -25,6 +25,8 @@ interface CheckoutVariantContract {
 
         fun showGetListError(t: Throwable?)
 
+        fun finishWithError(messages: String)
+
         fun getActivityContext(): Context?
     }
 

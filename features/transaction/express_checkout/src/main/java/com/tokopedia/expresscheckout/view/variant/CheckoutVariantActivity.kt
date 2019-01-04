@@ -5,8 +5,10 @@ import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.transaction.common.data.expresscheckout.AtcRequest
+import com.tokopedia.transaction.common.data.expresscheckout.Constant.EXTRA_MESSAGES_ERROR
+import com.tokopedia.transaction.common.data.expresscheckout.Constant.RESULT_CODE_ERROR
 
-class CheckoutVariantActivity : BaseSimpleActivity() {
+class CheckoutVariantActivity : BaseSimpleActivity(), CheckoutVariantFragmentListener {
 
     companion object {
         val EXTRA_ATC_REQUEST = "EXTRA_ATC_REQUEST"
@@ -23,6 +25,13 @@ class CheckoutVariantActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         return CheckoutVariantFragment.createInstance(intent.extras[EXTRA_ATC_REQUEST] as AtcRequest)
+    }
+
+    override fun finishWithResult(messages: String) {
+        val intentResult = Intent()
+        intentResult.putExtra(EXTRA_MESSAGES_ERROR, messages)
+        setResult(RESULT_CODE_ERROR, intentResult)
+        finish()
     }
 
 }
