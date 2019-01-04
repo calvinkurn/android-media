@@ -1668,7 +1668,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         View view = createOverlayView(model);
         overlayDialog.setCustomContentView(view, "", model.isCloseable());
         overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
-        if (showDialogDirectly) {
+        if (showDialogDirectly) {3
             showOverlayDialogOnScreen();
         }
         analytics.eventViewOverlay(model.getChannelId());
@@ -1700,14 +1700,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         else
             ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
-            ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
-            ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
+        ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
+        ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
+        ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
+            if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
                 startApplink(interuptViewModel.getBtnLink());
-                if (overlayDialog.isShowing()) overlayDialog.dismiss();
-            });
-        } else
-            ((ButtonCompat) view.findViewById(R.id.btnCta)).setVisibility(View.GONE);
+            }
+            if (overlayDialog.isShowing()) overlayDialog.dismiss();
+        });
         return view;
     }
 
