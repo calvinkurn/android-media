@@ -83,7 +83,8 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
         if (id == R.id.tv_custom_reason) {
             if (selectedButton != null)
                 selectedButton.setSelected(false);
-            btnSend.setVisibility(View.GONE);
+            btnSend.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
+            btnSend.setClickable(false);
             if (v != selectedButton) {
                 v.setSelected(true);
                 selectedButton = v;
@@ -121,9 +122,11 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() >= 15) {
-                    btnSend.setVisibility(View.VISIBLE);
+                    btnSend.setClickable(true);
+                    btnSend.setBackgroundResource(R.drawable.rounded_rectangle_greenbutton_solid);
                 } else {
-                    btnSend.setVisibility(View.GONE);
+                    btnSend.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
+                    btnSend.setClickable(false);
                 }
             }
 
@@ -144,11 +147,13 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
             this.ratingId = ratingId;
             tvLabelCustom.setVisibility(View.GONE);
             editText.setVisibility(View.GONE);
-            btnSend.setVisibility(View.VISIBLE);
+            btnSend.setBackgroundResource(R.drawable.rounded_rectangle_greenbutton_solid);
+            btnSend.setClickable(true);
         } else {
             selectedButton = null;
             this.ratingId = 0;
-            btnSend.setVisibility(View.GONE);
+            btnSend.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
+            btnSend.setClickable(false);
         }
     }
 
