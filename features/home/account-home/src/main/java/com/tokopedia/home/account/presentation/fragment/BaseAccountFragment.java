@@ -353,7 +353,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             cache.applyEditor();
             Intent intent = new Intent(BROADCAST_ACCOUNT);
             intent.putExtra(PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED, true);
-            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).sendBroadcast(intent);
         }
     }
 }
