@@ -32,8 +32,8 @@ public class CMNotificationUtils {
 
 
     public static boolean tokenUpdateRequired(Context context, String newToken) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        String oldToken = cacheHandler.getStringValue(context, CMConstant.FCM_TOKEN_CACHE_KEY);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        String oldToken = cacheHandler.getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY);
         if (TextUtils.isEmpty(oldToken)) {
             return true;
 
@@ -44,8 +44,8 @@ public class CMNotificationUtils {
     }
 
     public static String getUserStatus(Context context, String userId) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        String oldUserId = cacheHandler.getStringValue(context, CMConstant.USERID_CACHE_KEY);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        String oldUserId = cacheHandler.getStringValue(CMConstant.USERID_CACHE_KEY);
         if (TextUtils.isEmpty(userId)) {
             if (TextUtils.isEmpty(oldUserId)) {
                 return "";
@@ -58,8 +58,8 @@ public class CMNotificationUtils {
     }
 
     public static boolean mapTokenWithUserRequired(Context context, String newUserId) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        String oldUserID = cacheHandler.getStringValue(context, CMConstant.USERID_CACHE_KEY);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        String oldUserID = cacheHandler.getStringValue(CMConstant.USERID_CACHE_KEY);
         if (TextUtils.isEmpty(oldUserID)) {
             return !TextUtils.isEmpty(newUserId);
         } else if (!TextUtils.isEmpty(oldUserID)) {
@@ -71,8 +71,8 @@ public class CMNotificationUtils {
     }
 
     public static boolean mapTokenWithGAdsIdRequired(Context context, String gAdsId) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        String oldGAdsId = cacheHandler.getStringValue(context, CMConstant.GADSID_CACHE_KEY);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        String oldGAdsId = cacheHandler.getStringValue(CMConstant.GADSID_CACHE_KEY);
         if (TextUtils.isEmpty(gAdsId)) {
             return false;
 
@@ -83,8 +83,8 @@ public class CMNotificationUtils {
     }
 
     public static boolean mapTokenWithAppVersionRequired(Context context, int appVersion) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        int oldAppVersion = cacheHandler.getIntValue(context, CMConstant.APP_VERSION_CACHE_KEY);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        int oldAppVersion = cacheHandler.getIntValue(CMConstant.APP_VERSION_CACHE_KEY);
 
         CommonUtils.dumper("CMUser-APP_VERSION" + oldAppVersion + "#new-" + appVersion);
         if (oldAppVersion == appVersion)
@@ -93,33 +93,33 @@ public class CMNotificationUtils {
     }
 
     public static String getUniqueAppId(Context context) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        String appId = cacheHandler.getStringValue(context, CMConstant.UNIQUE_APP_ID_CACHE_KEY);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        String appId = cacheHandler.getStringValue(CMConstant.UNIQUE_APP_ID_CACHE_KEY);
         if (TextUtils.isEmpty(appId)) {
             appId = UUID.randomUUID().toString();
-            cacheHandler.saveStringValue(context, CMConstant.UNIQUE_APP_ID_CACHE_KEY, appId);
+            cacheHandler.saveStringValue(CMConstant.UNIQUE_APP_ID_CACHE_KEY, appId);
         }
         return appId;
     }
 
     public static void saveToken(Context context, String token) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        cacheHandler.saveStringValue(context, CMConstant.FCM_TOKEN_CACHE_KEY, token);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        cacheHandler.saveStringValue(CMConstant.FCM_TOKEN_CACHE_KEY, token);
     }
 
     public static void saveUserId(Context context, String userId) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        cacheHandler.saveStringValue(context, CMConstant.USERID_CACHE_KEY, userId);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        cacheHandler.saveStringValue(CMConstant.USERID_CACHE_KEY, userId);
     }
 
     public static void saveGAdsIdId(Context context, String gAdsId) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        cacheHandler.saveStringValue(context, CMConstant.GADSID_CACHE_KEY, gAdsId);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        cacheHandler.saveStringValue(CMConstant.GADSID_CACHE_KEY, gAdsId);
     }
 
     public static void saveAppVersion(Context context, int version) {
-        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
-        cacheHandler.saveIntValue(context, CMConstant.APP_VERSION_CACHE_KEY, version);
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler(context);
+        cacheHandler.saveIntValue(CMConstant.APP_VERSION_CACHE_KEY, version);
     }
 
     public static long getCurrentLocalTimeStamp() {

@@ -290,12 +290,12 @@ public abstract class BaseNotification {
 
     protected int getRequestCode() {
         if (cacheHandler == null)
-            cacheHandler = new CMNotificationCacheHandler();
-        int requestCode = cacheHandler.getIntValue(context, CM_REQUEST_CODE);
+            cacheHandler = new CMNotificationCacheHandler(context);
+        int requestCode = cacheHandler.getIntValue( CM_REQUEST_CODE);
         if (requestCode < 3000 || requestCode > 4000) {
             requestCode = 3000;
         }
-        cacheHandler.saveIntValue(context, CM_REQUEST_CODE, requestCode + 1);
+        cacheHandler.saveIntValue(CM_REQUEST_CODE, requestCode + 1);
         return requestCode;
     }
 
