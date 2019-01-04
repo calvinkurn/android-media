@@ -25,6 +25,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 
 /**
@@ -98,6 +99,11 @@ public class GroupChatTypeFactoryImpl extends BaseAdapterTypeFactory implements 
 
     @Override
     public int type(OverlayViewModel viewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(OverlayCloseViewModel overlayCloseViewModel) {
         return 0;
     }
 

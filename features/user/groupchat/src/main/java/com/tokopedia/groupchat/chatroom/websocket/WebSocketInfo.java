@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.AdminMsg;
 import com.tokopedia.groupchat.chatroom.domain.pojo.EventHandlerPojo;
@@ -127,6 +128,8 @@ public class WebSocketInfo {
                 return mapToParticipant(data);
             case OverlayViewModel.TYPE:
                 return mapToOverlay(data);
+            case OverlayCloseViewModel.TYPE:
+                return mapToOverlayClose(data);
             default:
                 return null;
         }
@@ -410,6 +413,14 @@ public class WebSocketInfo {
         }
         Gson gson = new Gson();
         return gson.fromJson(data, OverlayViewModel.class);
+    }
+
+    private Visitable mapToOverlayClose(JsonObject data) {
+        if (TextUtils.isEmpty(data.toString())) {
+            return new OverlayCloseViewModel();
+        }
+        Gson gson = new Gson();
+        return gson.fromJson(data, OverlayCloseViewModel.class);
     }
 
     static WebSocketInfo createReconnect() {

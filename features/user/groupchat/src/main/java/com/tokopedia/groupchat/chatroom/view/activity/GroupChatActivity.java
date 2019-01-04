@@ -92,6 +92,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
@@ -126,9 +127,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final String TOKOPEDIA_GROUPCHAT_APPLINK = "groupchat";
 
     private static final String APPLINK_DATA = "APPLINK_DATA";
-    private static final String APPLINK_CHAT = "?tab=1";
-    private static final String APPLINK_VOTE = "?tab=2";
-    private static final String APPLINK_INFO = "?tab=3";
+    private static final String APPLINK_CHAT = "?tab=chat";
+    private static final String APPLINK_VOTE = "?tab=vote";
+    private static final String APPLINK_INFO = "?tab=info";
     private static final int OVERLAY_STATUS_INACTIVE = 0;
 
     Dialog exitDialog;
@@ -1634,6 +1635,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             handleParticipant((ParticipantViewModel) map);
         } else if (map instanceof OverlayViewModel) {
             showOverlayDialog((OverlayViewModel)map);
+        } else if (map instanceof OverlayCloseViewModel) {
+            closeOverlayDialog();
         }
 
         if (currentFragmentIsChat()) {
@@ -1654,7 +1657,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (channelInfoDialog != null && channelInfoDialog.isShowing())
             createOverlayDialog(model, false);
         else if (overlayDialog != null && overlayDialog.isShowing()) {
-            overlayDialog.dismiss();
+            closeOverlayDialog();
             createOverlayDialog(model, true);
         } else
             createOverlayDialog(model, true);
@@ -1686,7 +1689,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
                 startApplink(interuptViewModel.getImageLink());
                 analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle());
-                if (overlayDialog.isShowing()) overlayDialog.dismiss();
+                closeOverlayDialog();
             });
         } else
             ((ImageView)view.findViewById(R.id.ivImage)).setVisibility(View.GONE);
@@ -1707,7 +1710,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
                 startApplink(interuptViewModel.getBtnLink());
             }
-            if (overlayDialog.isShowing()) overlayDialog.dismiss();
+            closeOverlayDialog();
         });
         return view;
     }
@@ -1724,6 +1727,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private boolean isTokopediaGroupChatApplink(String applink) {
         return applink.contains(TOKOPEDIA_APPLINK) && applink.contains(TOKOPEDIA_GROUPCHAT_APPLINK);
+    }
+
+    private void closeOverlayDialog() {
+        if (overlayDialog != null && overlayDialog.isShowing()) overlayDialog.dismiss();
     }
 
     @Override
