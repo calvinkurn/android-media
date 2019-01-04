@@ -27,7 +27,7 @@
 
     <string name="train_select_passenger_adult_subtitle">(Lebih dari 3 tahun)</string>
     <string name="train_select_passenger_adult_title">Dewasa</string>
-    <string name="train_select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
+    <string name="train_select_passenger_infant_subtitle">(Kurang dari 3 tahun)</string>
     <string name="train_select_passenger_infant_title">Bayi</string>
     <string name="train_select_passenger_total_passenger_error_message">Total Penumpang maksimal 8 penumpang (Dewasa dan Anak)</string>
     <string name="train_select_passenger_adult_cant_be_greater_than_four_error_message">Total Penumpang Dewasa maksimal 4 penumpang</string>
