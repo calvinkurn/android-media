@@ -145,7 +145,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
             airlineName.setText(getString(R.string.flight_label_multi_maskapai));
         } else if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() == 1) {
-            airlineName.setText(flightJourneyViewModel.getAirlineDataList().get(0).getName());
+            airlineName.setText(flightJourneyViewModel.getAirlineDataList().get(0).getShortName());
         }
         if (flightJourneyViewModel.getAddDayArrival() > 0) {
             duration.setText(String.format("| %s - %s (+%sh)", flightJourneyViewModel.getDepartureTime(),
