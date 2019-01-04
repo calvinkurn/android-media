@@ -1,4 +1,4 @@
-query TokopointsNotification($type: String!) {
+query TokopointsNotification($type: String) {
   tokopoints {
     popupNotif(type: $type) {
       title

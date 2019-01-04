@@ -41,6 +41,7 @@ public class TokoPointsNotificationManager {
             @Override
             public void onNext(GraphqlResponse response) {
                 TokoPointDetailEntity data = response.getData(TokoPointDetailEntity.class);
+
                 if (data == null
                         || data.getTokoPoints() == null
                         || data.getTokoPoints().getPopupNotif() == null

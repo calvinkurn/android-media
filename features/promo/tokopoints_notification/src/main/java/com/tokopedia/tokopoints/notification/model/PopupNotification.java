@@ -104,7 +104,7 @@ public class PopupNotification {
     }
 
     public boolean isEmpty() {
-        if (catalog == null) {
+        if (catalog == null || catalog.isEmpty()) {
             return title.isEmpty();
         }
 
