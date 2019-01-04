@@ -284,7 +284,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
         if ((getActivity().getApplicationContext() instanceof AbstractionRouter)) {
             AbstractionRouter abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-            if(source == AttachProductActivity.SOURCE_TALK){
+            if(source.equals(AttachProductActivity.SOURCE_TALK)){
                 abstractionRouter.getAnalyticTracker().sendEventTracking(
                         AttachProductAnalytics.getEventCheckProductTalk(productId).getEvent()
                 );
