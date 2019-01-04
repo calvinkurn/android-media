@@ -371,7 +371,9 @@ public class TickerView extends BaseCustomView {
                 if (tickerViewPager != null) {
                     tickerViewPager.setCurrentItem(0);
                     tickerViewPager.measureCurrentView(tickerViewPager.getChildAt(0));
-                    setVisibility(VISIBLE);
+                    if(listMessage.size() > 0) {
+                        setVisibility(VISIBLE);
+                    }
                 }
             }
         }, DEFAULT_POST_DELAYED_VALUE);
