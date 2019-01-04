@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.analytics.TrackAnalytics;
+import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
@@ -29,6 +31,8 @@ import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 
+import java.util.HashMap;
+
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
@@ -37,6 +41,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
+import com.tokopedia.user_identification_common.KycCommonUrl;
 
 /**
  * @author okasurya on 7/26/18.
@@ -140,6 +145,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
+
+        if (getContext() != null && getContext().getString(R.string.title_menu_loan)
+                .equalsIgnoreCase(item.getMainText())) {
+            TrackAnalytics.sendEvent(FirebaseEvent.SellerHome.HOMEPAGE_AKUN_PENJUAL_CLICK,
+                    new HashMap<>(), getContext());
+        }
+
         sendTracking(item.getTitleTrack(), item.getSectionTrack(),
                 item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
@@ -334,5 +346,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             ((AccountHomeRouter) getContext().getApplicationContext()).
                     gotoTopAdsDashboard(getContext());
         }
+    }
+
+    @Override
+    public void onShopStatusInfoButtonClicked() {
+        RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
     }
 }

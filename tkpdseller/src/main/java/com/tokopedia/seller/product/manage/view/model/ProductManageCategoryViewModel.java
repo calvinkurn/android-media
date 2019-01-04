@@ -3,8 +3,8 @@ package com.tokopedia.seller.product.manage.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
-import com.tokopedia.product.manage.item.common.util.ItemType;
 
 /**
  * Created by zulfikarrahman on 10/10/17.

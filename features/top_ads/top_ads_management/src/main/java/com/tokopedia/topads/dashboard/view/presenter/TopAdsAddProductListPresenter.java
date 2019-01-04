@@ -1,20 +1,20 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.model.ProductDomain;
 import com.tokopedia.topads.dashboard.domain.model.ProductListDomain;
-import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.TopAdsSearchProductView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdsProductModelMapper;
 import com.tokopedia.topads.dashboard.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
-import com.tokopedia.product.manage.item.common.util.ItemType;
 
 import java.util.ArrayList;
 import java.util.List;
