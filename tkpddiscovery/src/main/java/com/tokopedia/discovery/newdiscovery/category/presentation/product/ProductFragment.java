@@ -724,14 +724,6 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-        ProductItem productItem = new ProductItem();
-        productItem.setWishlisted(data.getProduct().isWishlist());
-        productItem.setProductID(data.getProduct().getId());
-        presenter.handleWishlistButtonClicked(productItem);
-    }
-
-    @Override
     public void onCategoryClick(ChildCategoryModel child) {
         UnifyTracking.eventLevelCategory(getActivity(),productViewModel.getCategoryHeaderModel().getDepartementId()
                 , child.getCategoryId());
