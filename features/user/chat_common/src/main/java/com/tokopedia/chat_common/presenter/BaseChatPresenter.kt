@@ -58,4 +58,6 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
     abstract fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String)
 
     abstract fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String)
+
+
 }

@@ -136,7 +136,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View {
 //        }
             chatViewState?.run {
                 chatViewState.showLoading()
-                adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
+                adapter = BaseChatAdapter(adapterTypeFactory)
                 chatViewState.setAdapter(adapter)
             }
 

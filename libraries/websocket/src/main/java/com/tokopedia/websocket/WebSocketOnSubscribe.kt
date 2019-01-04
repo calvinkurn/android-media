@@ -52,7 +52,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
                 }
             }
 
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response) {
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 if (showLog) {
                     Log.e(logTag, t!!.toString() + webSocket.request().url().uri().path)
                 }
@@ -77,7 +77,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
 
         subscriber.add(object : MainThreadSubscription() {
             override fun onUnsubscribe() {
-                webSocket?.let {  it.close(3000, "close WebSocket")}
+                webSocket?.close(3000, "close WebSocket")
                 if (showLog) {
                     Log.d(logTag, "$url --> onUnsubscribe ")
                 }

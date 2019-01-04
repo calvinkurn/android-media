@@ -123,6 +123,12 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
+    override fun sendReadEvent(messageId: String) {
+        RxWebSocket.send(SendWebsocketParam.getReadMessage(messageId),
+                tkpdAuthInterceptor,
+                fingerprintInterceptor)
+    }
+
     override fun sendRating(messageId: String, rating: Int, timestamp: String,
                             onError: (Throwable) -> Unit,
                             onSuccess: (SendRatingPojo) -> Unit) {
