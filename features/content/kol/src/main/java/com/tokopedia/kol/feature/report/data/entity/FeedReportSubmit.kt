@@ -7,7 +7,10 @@ data class FeedReportSubmit(
         @SerializedName("data")
         @Expose
         val data: FeedReportData = FeedReportData(),
-        @SerializedName("error")
+        @SerializedName("error_message")
         @Expose
-        val error: String = ""
+        val errorMessage: String = "",
+        @SerializedName("error_type")
+        @Expose
+        val errorType: String = ""
 )

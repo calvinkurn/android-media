@@ -597,8 +597,10 @@ public class SessionHandler {
     }
 
     public void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
-        TrackingUtils.eventMoEngageLogoutUser(context);
+        if(context != null) {
+            PasswordGenerator.clearTokenStorage(context);
+            TrackingUtils.eventMoEngageLogoutUser(context);
+        }
         clearUserData();
     }
 
