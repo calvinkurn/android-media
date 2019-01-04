@@ -283,7 +283,6 @@ public class ExploreFragment
         dropKeyboard();
         searchView.removeSearchTextWatcher();
         exploreParams.resetSearch();
-//        loadFirstData(true);
         populateLocalDataToAdapter();
     }
 
