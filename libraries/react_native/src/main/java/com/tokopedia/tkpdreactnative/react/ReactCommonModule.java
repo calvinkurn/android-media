@@ -9,6 +9,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -18,6 +19,8 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
 /**
  * @author ricoharisin .
@@ -44,17 +47,27 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showBootingLoaderReactPage() {
-        if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
-            ((ReactNativeView) getCurrentActivity()).showLoaderReactPage();
-        }
+    public void showBootingLoaderReactPage(Promise promise) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
+                    ((ReactNativeView) getCurrentActivity()).showLoaderReactPage();
+                }
+            }
+        });
     }
 
     @ReactMethod
-    public void hideBootingLoaderReactPage() {
-        if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
-            ((ReactNativeView) getCurrentActivity()).hideLoaderReactPage();
-        }
+    public void hideBootingLoaderReactPage(Promise promise) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
+                    ((ReactNativeView) getCurrentActivity()).hideLoaderReactPage();
+                }
+            }
+        });
     }
 
     @ReactMethod
