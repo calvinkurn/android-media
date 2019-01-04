@@ -2,9 +2,7 @@ package com.tokopedia.chatbot.attachinvoice.view.subscriber
 
 
 import android.util.Log
-import com.tokopedia.chatbot.attachinvoice.domain.usecase.AttachInvoicesUseCase
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
-import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 
 import rx.Subscriber
