@@ -63,16 +63,13 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
 
         private fun initViewListener(element: RecommendationCardViewModel) {
             itemView.btnFollow.setOnClickListener {
-                when (element.cta.authorType) {
-                    FollowCta.AUTHOR_USER -> {
-                        if (element.cta.isFollow) {
-                            listener.onUnfollowUser(positionInFeed, adapterPosition, element.cta.authorID)
-                        } else {
-                            listener.onFollowUser(positionInFeed, adapterPosition, element.cta.authorID)
-                        }
-                    }
-                    FollowCta.AUTHOR_SHOP -> listener.onToggleFavoriteShop(positionInFeed, element.cta.authorID)
-                }
+                listener.onRecommendationActionClick(
+                        positionInFeed,
+                        adapterPosition,
+                        element.cta.authorID,
+                        element.cta.authorType,
+                        element.cta.isFollow
+                )
             }
         }
 
@@ -110,10 +107,6 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
     }
 
     interface RecommendationCardListener {
-        fun onFollowUser(positionInFeed: Int, adapterPosition: Int, userId: String)
-
-        fun onUnfollowUser(positionInFeed: Int, adapterPosition: Int, userId: String)
-
-        fun onToggleFavoriteShop(positionInFeed: Int, shopId: String)
+        fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean)
     }
 }

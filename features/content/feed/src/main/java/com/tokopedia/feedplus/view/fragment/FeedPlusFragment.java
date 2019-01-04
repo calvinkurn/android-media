@@ -30,9 +30,9 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
@@ -1091,6 +1091,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
             kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
         }
+
+        if (adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
+            model.getHeader().getFollowCta().setFollow(
+                    !model.getHeader().getFollowCta().isFollow()
+            );
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW);
+        }
     }
 
     @Override
@@ -1353,8 +1361,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onHeaderActionClick(boolean isFollowed) {
+    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
+                                    boolean isFollow) {
 
+        if (type.equals(FollowCta.AUTHOR_USER)) {
+            int userIdInt = 0;
+            try {
+                userIdInt = Integer.valueOf(id);
+            } catch (NumberFormatException ignored) {
+            }
+
+            if (isFollow) {
+                onUnfollowKolClicked(positionInFeed, userIdInt);
+            } else {
+                onFollowKolClicked(positionInFeed, userIdInt);
+            }
+
+        } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
+            presenter.toggleFavoriteShop(positionInFeed, id);
+        }
     }
 
     @Override
@@ -1434,27 +1459,24 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFollowUser(int positionInFeed, int adapterPosition, @NotNull String userId) {
-        int userIdInt = 0;
-        try {
-            userIdInt = Integer.valueOf(userId);
-        } catch (NumberFormatException ignored) {
-        }
-        onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
-    }
+    public void onRecommendationActionClick(int positionInFeed, int adapterPosition,
+                                            @NonNull String id, @NonNull String type,
+                                            boolean isFollow) {
+        if (type.equals(FollowCta.AUTHOR_USER)) {
+            int userIdInt = 0;
+            try {
+                userIdInt = Integer.valueOf(id);
+            } catch (NumberFormatException ignored) {
+            }
 
-    @Override
-    public void onUnfollowUser(int positionInFeed, int adapterPosition, @NotNull String userId) {
-        int userIdInt = 0;
-        try {
-            userIdInt = Integer.valueOf(userId);
-        } catch (NumberFormatException ignored) {
-        }
-        onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
-    }
+            if (isFollow) {
+                onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
+            } else {
+                onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
+            }
 
-    @Override
-    public void onToggleFavoriteShop(int positionInFeed, @NotNull String shopId) {
-        presenter.toggleFavoriteShop(positionInFeed, shopId);
+        } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
+            presenter.toggleFavoriteShop(positionInFeed, id);
+        }
     }
 }

@@ -64,6 +64,7 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
         when (payloads[0] as Int) {
             PAYLOAD_LIKE -> bindLike(element.footer.like)
             PAYLOAD_COMMENT -> bindComment(element.footer.comment)
+            PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             else -> bind(element)
         }
     }
@@ -95,17 +96,7 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
             }
 
             itemView.headerAction.shouldShowWithAction(template.followCta) {
-                if (header.followCta.isFollow) {
-                    itemView.headerAction.text = header.followCta.textTrue
-                    itemView.headerAction.buttonCompatType = ButtonCompat.SECONDARY
-                } else {
-                    itemView.headerAction.text = header.followCta.textFalse
-                    itemView.headerAction.buttonCompatType = ButtonCompat.PRIMARY
-                }
-
-                itemView.headerAction.setOnClickListener {
-                    listener.onHeaderActionClick(header.followCta.isFollow)
-                }
+                bindFollow(header.followCta)
             }
 
             itemView.menu.shouldShowWithAction(template.report) {
@@ -115,6 +106,26 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
             }
         }
     }
+
+    private fun bindFollow(followCta: FollowCta) {
+        if (followCta.isFollow) {
+            itemView.headerAction.text = followCta.textTrue
+            itemView.headerAction.buttonCompatType = ButtonCompat.SECONDARY
+        } else {
+            itemView.headerAction.text = followCta.textFalse
+            itemView.headerAction.buttonCompatType = ButtonCompat.PRIMARY
+        }
+
+        itemView.headerAction.setOnClickListener {
+            listener.onHeaderActionClick(
+                    adapterPosition,
+                    followCta.authorID,
+                    followCta.authorType,
+                    followCta.isFollow
+            )
+        }
+    }
+
 
     private fun shouldShowHeader(template: TemplateHeader): Boolean {
         return template.avatar || template.avatarBadge || template.avatarDate
@@ -236,7 +247,7 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
     }
 
     interface DynamicPostListener {
-        fun onHeaderActionClick(isFollowed: Boolean)
+        fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
 
         fun onMenuClick()
 
