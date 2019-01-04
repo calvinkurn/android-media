@@ -19,9 +19,9 @@ import com.tokopedia.digital.R;
 
 public class InputPriceHolderView extends LinearLayout {
 
-    TextView inputPriceInfo;
-    EditText inputPriceEdittext;
-    TextView errorInputError;
+    private TextView inputPriceInfo;
+    private EditText inputPriceEdittext;
+    private TextView errorInputError;
 
     private Context context;
     private long priceInput = 0;
@@ -48,9 +48,11 @@ public class InputPriceHolderView extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
+
         View view = LayoutInflater.from(context).inflate(
                 R.layout.view_holder_checkout_input_price_digital_module, this, true
         );
+
         inputPriceInfo = view.findViewById(R.id.input_price_info);
         inputPriceEdittext = view.findViewById(R.id.input_price_edittext);
         errorInputError = view.findViewById(R.id.error_input_price);
@@ -114,4 +116,5 @@ public class InputPriceHolderView extends LinearLayout {
 
         void disableCheckoutButton();
     }
+
 }

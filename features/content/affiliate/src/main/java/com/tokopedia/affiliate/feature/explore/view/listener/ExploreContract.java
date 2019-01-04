@@ -74,5 +74,7 @@ public interface ExploreContract {
         void checkAffiliateQuota(String productId, String adId);
 
         void getAutoComplete(String keyword);
+
+        void unsubscribeAutoComplete();
     }
 }
