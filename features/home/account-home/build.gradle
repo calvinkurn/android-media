@@ -23,6 +23,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)

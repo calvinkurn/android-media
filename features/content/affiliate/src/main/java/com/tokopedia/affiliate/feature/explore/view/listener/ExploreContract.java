@@ -27,7 +27,7 @@ public interface ExploreContract {
 
         void hideLoading();
 
-        void onSuccessGetFirstData(List<Visitable> itemList, String cursor);
+        void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch);
 
         void onErrorGetFirstData(String error);
 

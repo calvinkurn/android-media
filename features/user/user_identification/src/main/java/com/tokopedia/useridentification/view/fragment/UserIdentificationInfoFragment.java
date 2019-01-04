@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
@@ -290,7 +291,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 analytics.eventClickTermsSuccessPage();
-                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
             }
         };
     }

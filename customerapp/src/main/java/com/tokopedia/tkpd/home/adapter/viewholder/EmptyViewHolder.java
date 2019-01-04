@@ -87,8 +87,4 @@ public class EmptyViewHolder extends RecyclerView.ViewHolder implements
 
     }
 
-    @Override
-    public void onAddWishList(int position, Data data) {
-        //TODO: next implement wishlist action
-    }
 }
