@@ -29,26 +29,20 @@ public class MapUrlUseCase extends UseCase<WhitelistItem> {
     @Override
     public Observable<WhitelistItem> createObservable(final RequestParams requestParams) {
         return deeplinkRepository.mapUrl()
-                .flatMapIterable(new Func1<List<WhitelistItem>, Iterable<WhitelistItem>>() {
-                    @Override
-                    public Iterable<WhitelistItem> call(List<WhitelistItem> whitelistItems) {
-                        return whitelistItems;
-                    }
-                })
-                .firstOrDefault(new WhitelistItem(null, null), new Func1<WhitelistItem, Boolean>() {
-                    @Override
-                    public Boolean call(WhitelistItem whitelistItem) {
-                        String applink = findApplink(whitelistItem,
-                                requestParams.getString(KEY_FINAL_SEGMENTS, ""));
-                        return !TextUtils.isEmpty(applink);
-                    }
+                .flatMapIterable((Func1<List<WhitelistItem>, Iterable<WhitelistItem>>) whitelistItems -> whitelistItems)
+                .firstOrDefault(new WhitelistItem(null, null), whitelistItem -> {
+                    String applink = findApplink(whitelistItem,
+                            requestParams.getString(KEY_FINAL_SEGMENTS, ""));
+                    return !TextUtils.isEmpty(applink);
                 });
     }
 
     private String findApplink(WhitelistItem whitelistItem, String finalSegments) {
         if (whitelistItem != null) {
-            if (whitelistItem.path.startsWith(finalSegments)) {
-                return whitelistItem.applink;
+            if (!finalSegments.isEmpty()) {
+                if (whitelistItem.path.equals(finalSegments)) {
+                    return whitelistItem.applink;
+                }
             }
         }
         return null;

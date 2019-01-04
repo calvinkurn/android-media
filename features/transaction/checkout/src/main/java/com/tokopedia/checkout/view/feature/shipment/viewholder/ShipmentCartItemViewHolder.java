@@ -101,7 +101,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
 
         mRlPurchaseProtection.setVisibility(cartItem.isProtectionAvailable() ? View.VISIBLE : View.GONE);
-        if(cartItem.isProtectionAvailable()) {
+        if (cartItem.isProtectionAvailable()) {
             mTvPPPMore.setText(cartItem.getProtectionLinkText());
             mTvPPPMore.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -55,6 +55,8 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import com.tokopedia.core2.R2;
+import com.tokopedia.core2.R;
 
 @RuntimePermissions
 public class PreviewProductImage extends TActivity {

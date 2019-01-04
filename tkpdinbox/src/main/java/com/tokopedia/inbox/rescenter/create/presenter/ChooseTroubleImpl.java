@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.create.presenter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.inbox.rescenter.create.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.create.interactor.RetrofitInteractor;

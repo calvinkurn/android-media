@@ -1,6 +1,7 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -23,6 +24,8 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationVie
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +46,17 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
     public static final String ARGUMENT_COD_HISTORY = "ARGUMENT_COD_HISTORY";
 
+    private static final String CHOOSE_COURIER_TRACE = "choose_courier_trace";
+
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llContent;
     private RecyclerView rvDuration;
 
     private ShippingDurationBottomsheetListener shippingDurationBottomsheetListener;
+
+    private PerformanceMonitoring chooseCourierTracePerformance;
+    private boolean isChooseCourierTraceStopped;
 
     @Inject
     ShippingDurationContract.Presenter presenter;
@@ -103,6 +111,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     protected String title() {
         return getString(R.string.title_bottomsheet_shipment_duration);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
     }
 
     @Override
@@ -220,6 +234,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public void showNoCourierAvailable(String message) {
         shippingDurationBottomsheetListener.onNoCourierAvailable(message);
         dismiss();
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isChooseCourierTraceStopped) {
+            chooseCourierTracePerformance.stopTrace();
+            isChooseCourierTraceStopped = true;
+        }
     }
 
     @Override

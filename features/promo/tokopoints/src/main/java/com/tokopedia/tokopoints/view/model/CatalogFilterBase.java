@@ -28,6 +28,14 @@ public class CatalogFilterBase {
         return sortType;
     }
 
+    public List<CatalogFilterPointRange> getPointRanges() {
+        return pointRanges;
+    }
+
+    public void setPointRanges(List<CatalogFilterPointRange> pointRanges) {
+        this.pointRanges = pointRanges;
+    }
+
     public void setSortType(List<CatalogSortType> sortType) {
         this.sortType = sortType;
     }

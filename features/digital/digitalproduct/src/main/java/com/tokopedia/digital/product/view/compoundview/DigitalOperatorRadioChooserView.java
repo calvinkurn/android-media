@@ -9,39 +9,37 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
 public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
-    @BindView(R2.id.tv_label_chooser)
-    TextView tvLabel;
-    @BindView(R2.id.rg_chooser_operator)
-    RadioGroup radioGroupOparator;
-    @BindView(R2.id.tv_error_chooser)
-    TextView tvErrorOperator;
+    private TextView tvLabel;
+    private RadioGroup radioGroupOparator;
+    private TextView tvErrorOperator;
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalOperatorRadioChooserView(Context context) {
         super(context);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalOperatorRadioChooserView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalOperatorRadioChooserView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected void onCreateView() {
+        tvLabel = findViewById(R.id.tv_label_chooser);
+        radioGroupOparator = findViewById(R.id.rg_chooser_operator);
+        tvErrorOperator = findViewById(R.id.tv_error_chooser);
     }
 
     @Override

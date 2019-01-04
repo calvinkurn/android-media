@@ -23,8 +23,6 @@ public interface AccountHomeRouter {
 
     Intent getManageProfileIntent(Context context);
 
-    Intent getChangePasswordIntent(Context context);
-
     Intent getManageAddressIntent(Context context);
 
     void goToShopEditor(Context context);

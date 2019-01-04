@@ -14,6 +14,14 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
+project.ext {
+    artifactId = "${artifactIdTransactionData}"
+    groupId = "${groupIdTransaction}"
+    versionName = "${transactionGroupVersion}"
+    artifactName = "${artifactIdTransactionData}-release"
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -23,5 +31,9 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+apply from: "$rootProject.projectDir/publish_local.gradle"

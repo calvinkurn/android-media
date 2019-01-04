@@ -21,7 +21,7 @@
         android:background="@drawable/feed_container_rounded_corners_border"
         tools:src="@drawable/ic_check_green_24dp" />
 
-    <ImageView
+    <com.tokopedia.gm.resource.GMImageView
         android:id="@+id/gold_merchant"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
@@ -33,7 +33,6 @@
         android:layout_toRightOf="@+id/shop_avatar"
         android:textSize="@dimen/fontvs"
         android:visibility="gone"
-        app:srcCompat="@drawable/ic_gold"
         tools:visibility="gone" />
 
     <ImageView
