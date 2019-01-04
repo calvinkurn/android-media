@@ -50,7 +50,7 @@ public class CheckoutAnalyticsAddToCart extends TransactionAnalytics {
         );
     }
 
-    public void flushEnhancedECommerceAddToCart(String eventLabel, String eventAction) {
+    public void flushEnhancedECommerceAddToCart() {
         sendEnhancedEcommerce(
                 DataLayer.mapOf(
                         Key.E_COMMERCE, null,

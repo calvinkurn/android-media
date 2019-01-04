@@ -2544,7 +2544,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                                 String eventLabel) {
         checkoutAnalyticsAddToCart.eventClickAtcAddToCartClickBayarOnAtcSuccess();
         checkoutAnalyticsAddToCart.enhancedECommerceAddToCart(cartMap, eventLabel, eventAction);
-        checkoutAnalyticsAddToCart.flushEnhancedECommerceAddToCart(eventLabel, eventAction);
+        checkoutAnalyticsAddToCart.flushEnhancedECommerceAddToCart();
     }
 
     @Override

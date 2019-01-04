@@ -324,7 +324,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    private void flushEnhancedECommerceGoToCheckoutStep1(String eventLabel) {
+    private void flushEnhancedECommerceGoToCheckoutStep1() {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.E_COMMERCE, null,
                 Key.CURRENT_SITE, null
@@ -334,27 +334,27 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
-        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
-        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
-        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
-        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap) {
         enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
-        flushEnhancedECommerceGoToCheckoutStep1(EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+        flushEnhancedECommerceGoToCheckoutStep1();
     }
 
     //PHASE 2

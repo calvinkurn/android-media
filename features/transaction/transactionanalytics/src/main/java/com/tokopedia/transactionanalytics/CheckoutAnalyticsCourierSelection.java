@@ -322,7 +322,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    public void flushEnhancedECommerceGoToCheckoutStep2(String transactionId) {
+    public void flushEnhancedECommerceGoToCheckoutStep2() {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.E_COMMERCE, null,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
