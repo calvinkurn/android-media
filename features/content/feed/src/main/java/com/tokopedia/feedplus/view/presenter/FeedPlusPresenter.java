@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.feedcomponent.domain.model.DynamicFeedsDomainModel;
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedsUseCase;
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel;
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
@@ -50,7 +50,7 @@ public class FeedPlusPresenter
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private final GetWhitelistUseCase getWhitelistUseCase;
-    private final GetDynamicFeedsUseCase getDynamicFeedsUseCase;
+    private final GetDynamicFeedUseCase getDynamicFeedUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
@@ -65,7 +65,7 @@ public class FeedPlusPresenter
                       FollowKolPostGqlUseCase followKolPostGqlUseCase,
                       SendVoteUseCase sendVoteUseCase,
                       GetWhitelistUseCase whitelistUseCase,
-                      GetDynamicFeedsUseCase getDynamicFeedsUseCase,
+                      GetDynamicFeedUseCase getDynamicFeedUseCase,
                       FeedAnalytics analytics) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
@@ -77,7 +77,7 @@ public class FeedPlusPresenter
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
         this.getWhitelistUseCase = whitelistUseCase;
-        this.getDynamicFeedsUseCase = getDynamicFeedsUseCase;
+        this.getDynamicFeedUseCase = getDynamicFeedUseCase;
         this.analytics = analytics;
     }
 
@@ -130,9 +130,9 @@ public class FeedPlusPresenter
 //                        currentCursor),
 //                new GetFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
 
-        getDynamicFeedsUseCase.execute(
-                GetDynamicFeedsUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor),
-                new Subscriber<DynamicFeedsDomainModel>() {
+        getDynamicFeedUseCase.execute(
+                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor),
+                new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -144,7 +144,7 @@ public class FeedPlusPresenter
                     }
 
                     @Override
-                    public void onNext(DynamicFeedsDomainModel model) {
+                    public void onNext(DynamicFeedDomainModel model) {
                         getView().updateCursor(model.getCursor());
                         getView().onSuccessGetFeed(new ArrayList<>(model.getPostList()));
                         getView().finishLoading();
@@ -287,9 +287,9 @@ public class FeedPlusPresenter
 //                    getFirstPageFeedsCloudUseCase.getRefreshParam(userSession),
 //                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
 
-            getDynamicFeedsUseCase.execute(
-                    GetDynamicFeedsUseCase.Companion.createRequestParams(userSession.getUserId()),
-                    new Subscriber<DynamicFeedsDomainModel>() {
+            getDynamicFeedUseCase.execute(
+                    GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId()),
+                    new Subscriber<DynamicFeedDomainModel>() {
                         @Override
                         public void onCompleted() {
 
@@ -301,7 +301,7 @@ public class FeedPlusPresenter
                         }
 
                         @Override
-                        public void onNext(DynamicFeedsDomainModel model) {
+                        public void onNext(DynamicFeedDomainModel model) {
                             getView().updateCursor(model.getCursor());
                             getView().onSuccessGetFeedFirstPage(new ArrayList<>(model.getPostList()));
                             getView().finishLoading();

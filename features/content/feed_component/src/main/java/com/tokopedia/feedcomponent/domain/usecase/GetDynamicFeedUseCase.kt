@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
-import com.tokopedia.feedcomponent.domain.mapper.DynamicPostMapper
-import com.tokopedia.feedcomponent.domain.model.DynamicFeedsDomainModel
+import com.tokopedia.feedcomponent.domain.mapper.DynamicFeedMapper
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -17,12 +17,12 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 18/12/18.
  */
-class GetDynamicFeedsUseCase @Inject constructor(@ApplicationContext private val context: Context,
-                                                 private val graphqlUseCase: GraphqlUseCase,
-                                                 private val dynamicPostMapper: DynamicPostMapper)
-    : UseCase<DynamicFeedsDomainModel>() {
+class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val context: Context,
+                                                private val graphqlUseCase: GraphqlUseCase,
+                                                private val dynamicPostMapper: DynamicFeedMapper)
+    : UseCase<DynamicFeedDomainModel>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedsDomainModel> {
+    override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedDomainModel> {
         val query: String = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.query_feed_dynamic

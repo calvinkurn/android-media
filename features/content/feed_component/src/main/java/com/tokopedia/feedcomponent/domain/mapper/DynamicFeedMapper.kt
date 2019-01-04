@@ -7,7 +7,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.template.Template
-import com.tokopedia.feedcomponent.domain.model.DynamicFeedsDomainModel
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 20/12/18.
  */
-class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedsDomainModel> {
+class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedDomainModel> {
 
     companion object {
         private const val TYPE_CARDRECOM = "cardrecom"
@@ -40,7 +40,7 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun call(t: GraphqlResponse?): DynamicFeedsDomainModel {
+    override fun call(t: GraphqlResponse?): DynamicFeedDomainModel {
         val feedQuery = t?.getData<FeedQuery?>(FeedQuery::class.java)
         val posts: MutableList<Visitable<*>> = ArrayList()
         var lastCursor: String = ""
@@ -59,7 +59,7 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
             lastCursor = it.feedv2.meta.lastCursor
         }
-        return DynamicFeedsDomainModel(
+        return DynamicFeedDomainModel(
                 posts,
                 lastCursor
         )
