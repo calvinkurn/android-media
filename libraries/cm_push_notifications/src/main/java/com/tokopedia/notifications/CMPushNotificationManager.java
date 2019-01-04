@@ -90,21 +90,7 @@ public class CMPushNotificationManager {
      * @param remoteMessage
      */
     public void handlePushPayload(RemoteMessage remoteMessage) {
-        if (null == remoteMessage)
-            return;
-        if (mContext == null) {
-            throw new IllegalArgumentException("Kindly invoke init before calling notification library");
-        }
-        if (null == remoteMessage.getData())
-            return;
-        try {
-            if (isFromCMNotificationPlatform(remoteMessage.getData())) {
-                Bundle bundle = convertMapToBundle(remoteMessage.getData());
-                CMJobIntentService.enqueueWork(mContext, bundle);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e);
-        }
+
     }
 
     private Bundle convertMapToBundle(Map<String, String> map) {
