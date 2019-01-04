@@ -1305,7 +1305,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
-        getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
+        int counter = codData == null ? -1 : codData.getCounterCod();
+        getCourierRecommendationUseCase.execute(query, counter, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
                         shipmentCartItemModel, shopShipmentList, isInitialLoad));
@@ -1377,9 +1378,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
                 CodResponse response = graphqlResponse.getData(CodResponse.class);
-                if (getView() != null && response.getData() != null &&
-                        response.getData().getData() != null) {
-                    Data data = response.getData().getData();
+                if (getView() != null && response.getValidateCheckoutCod().getData() != null &&
+                        response.getValidateCheckoutCod().getData().getData() != null) {
+                    Data data = response.getValidateCheckoutCod().getData().getData();
                     if (!TextUtils.isEmpty(data.getErrorMessage())) {
                         // go to cod confirmation page
                         getView().navigateToCodConfirmationPage(data);

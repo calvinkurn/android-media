@@ -6,13 +6,11 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Html
 import android.text.Spanned
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cod.di.DaggerCodComponent
@@ -91,7 +89,8 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
     }
 
     override fun navigateToThankYouPage(applink: String) {
-        startActivity(RouteManager.getIntent(context, applink))
+        val intent = RouteManager.getIntent(context, applink)
+        startActivity(intent)
         activity?.finish()
     }
 

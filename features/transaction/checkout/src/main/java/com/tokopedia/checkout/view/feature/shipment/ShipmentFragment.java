@@ -103,8 +103,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
+
     private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
-    private static final int REQUEST_CODE_COD = 1;
+    private static final int REQUEST_CODE_COD = 1218;
     private static final String SHIPMENT_TRACE = "shipment_trace";
 
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
@@ -1668,9 +1669,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
-            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                    recipientAddressModel, cartPosition);
+            if (shipmentPresenter.getCodData() != null) {
+                // if cod available
+                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                        recipientAddressModel, cartPosition, shipmentPresenter.getCodData().getCounterCod());
+            } else {
+                shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
+                        shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                        recipientAddressModel, cartPosition);
+            }
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {

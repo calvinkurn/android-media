@@ -8,17 +8,15 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
-import com.tokopedia.checkout.view.di.scope.CartScope;
-import com.tokopedia.checkout.view.feature.shipment.di.ShipmentScope;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.CodCheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.cod.CodResponse;
-import com.tokopedia.usecase.RequestParams;
 
 import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -56,16 +54,12 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
                 R.raw.checkout_cod_query
         );
 
-        return new GraphqlRequest(
-                query,
-                CodResponse.class,
-                getParam(param).getParameters()
-        );
+        return new GraphqlRequest(query, CodResponse.class, getParam(param));
     }
 
-    private RequestParams getParam(String json) {
-        RequestParams params = RequestParams.create();
-        params.putString(PARAM_CHECKOUT_PARAMS, json);
+    private Map<String, Object> getParam(String json) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(PARAM_CHECKOUT_PARAMS, json);
         return params;
     }
 
