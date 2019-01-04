@@ -727,12 +727,12 @@ public class MainParentActivity extends BaseActivity implements
 
     private void registerAccountAffiliateClickedReceiver() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_FEED);
-        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(newFeedClickedReceiver, intentFilter);
+        intentFilter.addAction(BROADCAST_ACCOUNT);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(affiliateClickReceiver, intentFilter);
     }
 
     private void unRegisterAccountAffiliatClickedReceiver() {
-        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
+        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(affiliateClickReceiver);
     }
 
 
