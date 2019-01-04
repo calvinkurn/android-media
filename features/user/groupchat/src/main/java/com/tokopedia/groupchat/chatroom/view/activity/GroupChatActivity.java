@@ -1668,7 +1668,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         View view = createOverlayView(model);
         overlayDialog.setCustomContentView(view, "", model.isCloseable());
         overlayDialog.setCanceledOnTouchOutside(model.isCloseable());
-        if (showDialogDirectly) {3
+        if (showDialogDirectly) {
             showOverlayDialogOnScreen();
         }
         analytics.eventViewOverlay(model.getChannelId());
