@@ -14,6 +14,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpdreactnative.R;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,6 +44,20 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void showBootingLoaderReactPage() {
+        if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
+            ((ReactNativeView) getCurrentActivity()).showLoaderReactPage();
+        }
+    }
+
+    @ReactMethod
+    public void hideBootingLoaderReactPage() {
+        if (getCurrentActivity() != null && getCurrentActivity() instanceof ReactNativeView) {
+            ((ReactNativeView) getCurrentActivity()).hideLoaderReactPage();
+        }
+    }
+
+    @ReactMethod
     public void getYoutubeApiKey(Promise promise){
         promise.resolve(ReactConst.YOUTUBE_API_KEY);
     }
@@ -68,6 +83,7 @@ public class ReactCommonModule extends ReactContextBaseJavaModule {
                     });
         }
     }
+
     @ReactMethod
     public void shareImageWithText(String imageLocalPath, String description, String websiteUrl){
         Uri imageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider",

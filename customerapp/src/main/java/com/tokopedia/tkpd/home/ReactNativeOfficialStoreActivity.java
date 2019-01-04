@@ -62,11 +62,10 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Gene
 
     @Override
     protected String getToolbarTitle() {
-        return "Tokopedia RN";
-//        if (getIntent() != null && getIntent().getExtras() != null) {
-//            return getIntent().getExtras().getString(EXTRA_TITLE);
-//        }
-//
-//        return "";
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            return getIntent().getExtras().getString(EXTRA_TITLE);
+        }
+
+        return "";
     }
 }
