@@ -1073,13 +1073,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onErrorFollowKol(String errorMessage, final int id, final int status, final int
             rowNumber) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
-            if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
-                presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
-            else
-                presenter.followKol(id, rowNumber, FeedPlusFragment.this);
-
-        }).showRetrySnackbar();
+        ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_try_again, v -> {
+                    if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
+                        presenter.unfollowKol(id, rowNumber, FeedPlusFragment.this);
+                    else
+                        presenter.followKol(id, rowNumber, FeedPlusFragment.this);
+                })
+                .show();
     }
 
     @Override
