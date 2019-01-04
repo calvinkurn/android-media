@@ -41,6 +41,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
+import com.tokopedia.user_identification_common.KycCommonUrl;
 
 /**
  * @author okasurya on 7/26/18.
@@ -345,5 +346,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             ((AccountHomeRouter) getContext().getApplicationContext()).
                     gotoTopAdsDashboard(getContext());
         }
+    }
+
+    @Override
+    public void onShopStatusInfoButtonClicked() {
+        RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
     }
 }
