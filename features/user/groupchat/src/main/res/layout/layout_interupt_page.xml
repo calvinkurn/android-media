@@ -21,7 +21,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:textSize="@dimen/sp_14"
         android:fontFamily="sans-serif"
-        android:textStyle="normal"
+        android:textStyle="bold"
         android:textColor="@color/black_70"
         android:lineSpacingExtra="4sp"
         android:lines="1"
