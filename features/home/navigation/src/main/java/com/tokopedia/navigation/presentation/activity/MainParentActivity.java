@@ -279,7 +279,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onPause();
         unregisterBroadcastHockeyApp();
         unRegisterNewFeedClickedReceiver();
-        unRegisterAccountAffiliatClickedReceiver();
+        unRegisterAccountAffiliateClickedReceiver();
     }
 
     @Override
@@ -731,7 +731,7 @@ public class MainParentActivity extends BaseActivity implements
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).registerReceiver(affiliateClickReceiver, intentFilter);
     }
 
-    private void unRegisterAccountAffiliatClickedReceiver() {
+    private void unRegisterAccountAffiliateClickedReceiver() {
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(affiliateClickReceiver);
     }
 

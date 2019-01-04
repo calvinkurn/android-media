@@ -146,12 +146,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onInfoCardClicked(InfoCardViewModel item) {
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
-                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
-        openApplink(item.getApplink());
         if (item.getMainText().equals(getActivity().getResources().getString(R.string.title_menu_affiliate))) {
             handleChangeStateAffiliateItem();
         }
+        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
+                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
+        openApplink(item.getApplink());
+
     }
 
     @Override
