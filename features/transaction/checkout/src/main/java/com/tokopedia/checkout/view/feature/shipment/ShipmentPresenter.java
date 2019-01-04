@@ -52,7 +52,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationMo
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
@@ -163,7 +163,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              IVoucherCouponMapper voucherCouponMapper,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
                              CheckoutAnalyticsPurchaseProtection analyticsPurchaseProtection
-                             ) {
+    ) {
         this.checkPromoCodeFinalUseCase = checkPromoCodeFinalUseCase;
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
@@ -333,7 +333,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setShipmentCartItemModelList(getView()
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
 
-        if(cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
+        if (cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
             isPurchaseProtectionPage = true;
             sendPurchaseProtectionAnalytics(
                     CheckoutAnalyticsPurchaseProtection.Event.IMPRESSION_PELAJARI,
@@ -634,35 +634,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                    getView().renderErrorCheckPromoShipmentData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                    getView().renderErrorCheckPromoShipmentData(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof CartResponseErrorException) {
-                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                } else if (e instanceof CartResponseDataNullException) {
-                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                } else if (e instanceof CartHttpErrorException) {
-                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
-                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                }else if (e instanceof CheckPromoCodeException) {
-                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
-                } else {
-                    getView().renderErrorCheckPromoShipmentData(
-                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                    );
+                if (getView() != null) {
+                    getView().renderErrorCheckPromoShipmentData(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
                 }
             }
 
             @Override
             public void onNext(DataVoucher dataVoucher) {
                 getView().renderCheckPromoShipmentDataSuccess(voucherCouponMapper.convertPromoCodeCartShipmentData(dataVoucher));
-                if(TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getMessage().getState()) == TickerCheckoutView.State.FAILED) {
+                if (TickerCheckoutUtilKt.mapToStatePromoCheckout(dataVoucher.getMessage().getState()) == TickerCheckoutView.State.FAILED) {
                     getView().showToastFailedTickerPromo(dataVoucher.getMessage().getText());
                     getView().cancelAllCourierPromo();
                 }
@@ -715,7 +695,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
                     analyticsActionListener.sendAnalyticsCheckoutStep2(generateCheckoutAnalyticsStep2DataLayer(checkoutRequest), checkoutData.getTransactionId());
-                    if(isPurchaseProtectionPage) {
+                    if (isPurchaseProtectionPage) {
                         analyticsPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
                                         ConstantTransactionAnalytics.EventLabel.SUCCESS_TICKED_PPP :

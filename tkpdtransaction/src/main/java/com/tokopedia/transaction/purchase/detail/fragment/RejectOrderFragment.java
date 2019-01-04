@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 
 /**
  * Created by kris on 1/2/18. Tokopedia
