@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -83,5 +84,11 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
         if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             mPermissionListener = null;
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Do not put super, avoid crash transactionTooLarge
     }
 }
