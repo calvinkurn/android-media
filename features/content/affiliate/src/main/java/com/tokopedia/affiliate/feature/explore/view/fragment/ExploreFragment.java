@@ -42,8 +42,6 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
