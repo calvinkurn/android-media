@@ -254,7 +254,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (item.getQuantity() == 0) {
                         itemView.findViewById(R.id.ll_details4).setVisibility(View.GONE);
                     } else {
-                        tvRightNumberOfBooking.setText(String.valueOf(item.getQuantity()));
+                        tvRightNumberOfBooking.setText(String.valueOf(metaDataInfo.getTotalTicketCount()));
                     }
                     if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
                         tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));

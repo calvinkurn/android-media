@@ -21,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.BuildConfig;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -50,7 +51,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View passwordMenu;
     private View kycSeparator;
     private View kycMenu;
+    private View sampaiMenu;
     private View mainView;
+    private View sampaiSeparator;
     private ProgressBar progressBar;
 
     @Inject
@@ -76,6 +79,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
         kycMenu = view.findViewById(R.id.label_view_kyc);
+        sampaiMenu = view.findViewById(R.id.label_view_sampai);
+        sampaiSeparator = view.findViewById(R.id.separator_sampai);
         mainView = view.findViewById(R.id.main_view);
         progressBar = view.findViewById(R.id.progress_bar);
         kycSeparator = view.findViewById(R.id.separator_kyc);
@@ -146,9 +151,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_ADDRESS_ID));
         passwordMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
-        kycMenu.setOnClickListener((view1) ->
-            onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
-
+        kycMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
+        sampaiMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_ACCOUNT_SAMPAI_ID));
     }
 
     @Override
@@ -183,6 +189,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 case SettingConstant.SETTING_ACCOUNT_KYC_ID:
                     onKycMenuClicked();
                     break;
+                case SettingConstant.SETTING_ACCOUNT_SAMPAI_ID:
+                    goToTokopediaCorner();
                 default:
                     break;
             }
@@ -192,6 +200,14 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private void goToKyc() {
         if (getActivity() != null) {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
+            getActivity().startActivity(intent);
+        }
+    }
+
+    private void goToTokopediaCorner() {
+        if (getActivity() != null) {
+            accountAnalytics.eventClickTokopediaCornerSetting();
+            Intent intent = RouteManager.getIntent(getActivity(), AccountHomeUrl.APPLINK_TOKOPEDIA_CORNER);
             getActivity().startActivity(intent);
         }
     }
@@ -234,6 +250,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 .isIdentityEnabled() ? View.VISIBLE : View.GONE);
         kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
                 .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+        sampaiMenu.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+        sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
         hideLoading();
     }
 

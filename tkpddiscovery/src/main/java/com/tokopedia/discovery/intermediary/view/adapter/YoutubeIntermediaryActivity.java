@@ -40,7 +40,7 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
     }
 
     private void setSideBarAvailability() {
-        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
+        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core2.R.string.GOOGLE_API_KEY),
                 onSingleVideoInitializedListener());
     }
 
@@ -139,7 +139,7 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
     }
 
     public void onInitiazlizeVideo(int videoIndex) {
-        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
+        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core2.R.string.GOOGLE_API_KEY),
                 onInitializedListener());
     }
 

@@ -1,8 +1,6 @@
 package com.tokopedia.payment.fingerprint.view;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;

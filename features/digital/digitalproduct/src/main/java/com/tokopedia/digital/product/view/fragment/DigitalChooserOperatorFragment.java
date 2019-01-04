@@ -14,34 +14,26 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
-import com.tokopedia.digital.product.domain.interactor.GetOperatorsByCategoryIdUseCase;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.adapter.OperatorChooserAdapter;
-import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.presenter.IOperatorChooserPresenter;
+import com.tokopedia.digital.product.view.presenter.OperatorChooserContract;
 import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
+import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOperatorChooserPresenter> implements
-        IOperatorChooserView {
+public class DigitalChooserOperatorFragment extends BasePresenterFragment<OperatorChooserContract.Presenter> implements
+        OperatorChooserContract.View {
 
     private final String TAG = DigitalChooserOperatorFragment.class.getSimpleName();
 
@@ -53,12 +45,9 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     private static final String EXTRA_STATE_OPERATOR_STYLE_VIEW =
             "EXTRA_STATE_OPERATOR_STYLE_VIEW";
 
-    @BindView(R2.id.rv_list_chooser)
-    RecyclerView rvOperatorList;
-    @BindView(R2.id.field_search)
-    EditText fieldSearch;
-    @BindView(R2.id.pb_main_loading)
-    ProgressBar pbMainLoading;
+    private RecyclerView rvOperatorList;
+    private EditText fieldSearch;
+    private ProgressBar pbMainLoading;
 
     private CompositeSubscription compositeSubscription;
 
@@ -72,6 +61,9 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     private String categoryName;
 
     private ActionListener actionListener;
+
+    @Inject
+    OperatorChooserPresenter presenter;
 
     public interface ActionListener {
         void onOperatorItemSelected(Operator operator);
@@ -115,26 +107,18 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     }
 
     @Override
+    protected void initInjector() {
+        super.initInjector();
+
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
+    }
+
+    @Override
     protected void initialPresenter() {
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
-        DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
-
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalGqlApiService, new GlobalCacheManager(), new ProductDigitalMapper()
-        );
-
-        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(categoryDetailDataSource);
-
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
-                getActivity(), digitalCategoryRepository
-        );
-
-        GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase = new GetOperatorsByCategoryIdUseCase(
-                getCategoryByIdUseCase
-        );
-
-        presenter = new OperatorChooserPresenter(this, getOperatorsByCategoryIdUseCase);
+        presenter.attachView(this);
     }
 
     @Override
@@ -168,6 +152,10 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
 
     @Override
     protected void initView(View view) {
+        rvOperatorList = view.findViewById(R.id.rv_list_chooser);
+        fieldSearch = view.findViewById(R.id.field_search);
+        pbMainLoading = view.findViewById(R.id.pb_main_loading);
+
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
@@ -238,7 +226,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    UnifyTracking.eventClickSearchBar(categoryName, categoryName);
+                    UnifyTracking.eventClickSearchBar(getActivity(),categoryName, categoryName);
                 }
             }
         };

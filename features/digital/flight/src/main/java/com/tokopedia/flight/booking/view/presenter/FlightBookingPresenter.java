@@ -31,11 +31,11 @@ import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.search.data.cloud.model.response.Fare;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCase;
-import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
+import com.tokopedia.flight.search.data.api.single.response.Fare;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -391,16 +391,16 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             @Override
                             public Observable<FlightBookingCartData> call(FlightBookingCartData flightBookingCartData) {
                                 List<Fare> fares = new ArrayList<>();
-                                Fare departureFare = new Fare();
-                                departureFare.setAdultNumeric(flightBookingCartData.getDepartureTrip().getAdultNumericPrice());
-                                departureFare.setChildNumeric(flightBookingCartData.getDepartureTrip().getChildNumericPrice());
-                                departureFare.setInfantNumeric(flightBookingCartData.getDepartureTrip().getInfantNumericPrice());
+                                Fare departureFare = new Fare("", "", "",
+                                        flightBookingCartData.getDepartureTrip().getAdultNumericPrice(),
+                                        flightBookingCartData.getDepartureTrip().getChildNumericPrice(),
+                                        flightBookingCartData.getDepartureTrip().getInfantNumericPrice());
                                 fares.add(departureFare);
                                 if (flightBookingCartData.getReturnTrip() != null) {
-                                    Fare returnFare = new Fare();
-                                    returnFare.setAdultNumeric(flightBookingCartData.getReturnTrip().getAdultNumericPrice());
-                                    returnFare.setChildNumeric(flightBookingCartData.getReturnTrip().getChildNumericPrice());
-                                    returnFare.setInfantNumeric(flightBookingCartData.getReturnTrip().getInfantNumericPrice());
+                                    Fare returnFare = new Fare("", "", "",
+                                            flightBookingCartData.getReturnTrip().getAdultNumericPrice(),
+                                            flightBookingCartData.getReturnTrip().getChildNumericPrice(),
+                                            flightBookingCartData.getReturnTrip().getInfantNumericPrice());
                                     fares.add(returnFare);
                                 }
                                 FlightSearchPassDataViewModel searchPassDataViewModel = getView().getCurrentBookingParamViewModel().getSearchParam();
@@ -886,20 +886,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     private boolean isMandatoryDoB() {
         FlightBookingCartData flightBookingCartData = getView().getCurrentCartPassData();
-
-        if (flightBookingCartData.getDepartureTrip() != null)
-            for (FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
-                if (data.isAirlineMandatoryDOB() == 1)
-                    return true;
-            }
-
-        if (flightBookingCartData.getReturnTrip() != null)
-            for (FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
-                if (data.isAirlineMandatoryDOB() == 1)
-                    return true;
-            }
-
-        return false;
+        return flightBookingCartData.isMandatoryDob();
     }
 
     private boolean validatePassengerData() {

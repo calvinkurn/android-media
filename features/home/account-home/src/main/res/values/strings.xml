@@ -25,6 +25,7 @@
     <string name="title_password_setting">Kata Sandi</string>
     <string name="title_kyc_setting">Dokumen Data Diri</string>
     <string name="title_address_setting">Daftar Alamat</string>
+    <string name="title_sampai_project">Tokopedia Corner</string>
     <string name="screentitle_account_setting">Atur Akun</string>
     <string name="title_shop_info_setting">Informasi</string>
     <string name="title_shop_etalase_setting">Etalase</string>
@@ -171,7 +172,6 @@
         <b>Menguntungkan</b>.</string>
     <string name="top_features">Top Features</string>
     <string name="topads_desc">Media iklan Produk dan Toko</string>
-    <string name="gold_merchant">Gold Merchant</string>
     <string name="gold_merchant_desc">Fitur-fitur Berjualan Eksklusif</string>
     <string name="seller_center">Seller Center</string>
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>

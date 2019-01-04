@@ -1,6 +1,7 @@
 package com.tokopedia.tracking.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.tracking.adapter.TrackingHistoryAdapter;
@@ -83,12 +84,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.tracking_page_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadingScreen = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
@@ -174,6 +175,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         NetworkErrorHelper.showEmptyState(getActivity(), rootView,
                 () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
     }
+
 
     private void initialHistoryView() {
         trackingHistory.setVisibility(View.GONE);

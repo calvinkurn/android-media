@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
 
     @DeepLink({ApplinkConst.PROMO_SALE, ApplinkConst.PROMO_SALE_NO_SLASH})
     public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(SALE_PROMO);
+        ScreenTracking.screen(context, SALE_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -38,9 +39,10 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
         );
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        // no-op
+    protected void onSaveInstanceState(Bundle outState) {
+        // Do not put super, avoid crash transactionTooLarge
     }
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})

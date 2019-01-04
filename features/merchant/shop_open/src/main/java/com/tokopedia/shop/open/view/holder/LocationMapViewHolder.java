@@ -234,7 +234,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             googleMap.getUiSettings().setMapToolbarEnabled(false);
             googleMap.addMarker(
                     new MarkerOptions().position(latLng)
-                            .icon(BitmapDescriptorFactory.fromResource(com.tokopedia.core.R.drawable.ic_icon_pointer_toped))
+                            .icon(BitmapDescriptorFactory.fromResource(com.tokopedia.core2.R.drawable.ic_icon_pointer_toped))
             ).setDraggable(false);
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {

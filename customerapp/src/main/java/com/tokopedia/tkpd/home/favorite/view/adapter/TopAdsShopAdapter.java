@@ -86,8 +86,8 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             Glide.with(context)
                     .load(ecs)
                     .dontAnimate()
-                    .placeholder(com.tokopedia.core.R.drawable.loading_page)
-                    .error(com.tokopedia.core.R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.core2.R.drawable.loading_page)
+                    .error(com.tokopedia.core2.R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .override(375, 97)
@@ -148,7 +148,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
             public void onClick(View view) {
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
-                UnifyTracking.eventFavoriteViewRecommendation();
+                UnifyTracking.eventFavoriteViewRecommendation(view.getContext());
                 Intent intent = ShopPageActivity.createIntent(context, item.getShopId());
                 context.startActivity(intent);
             }

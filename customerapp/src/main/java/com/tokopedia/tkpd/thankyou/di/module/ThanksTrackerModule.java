@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.thankyou.di.module;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -100,8 +99,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    ThanksTracker.Presenter provideThanksAnalyticsPresenter(ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
+    ThanksTracker.Presenter provideThanksAnalyticsPresenter(@ApplicationContext Context context, ThankYouPageTrackerUseCase thankYouPageTrackerUseCase,
                                                             Gson gson) {
-        return new ThanksTrackerPresenter(thankYouPageTrackerUseCase, gson);
+        return new ThanksTrackerPresenter(context, thankYouPageTrackerUseCase, gson);
     }
 }

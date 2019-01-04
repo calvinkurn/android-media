@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
@@ -26,6 +27,7 @@ import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
+import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
 import javax.inject.Inject;
@@ -36,7 +38,8 @@ import javax.inject.Inject;
 
 public class UserIdentificationInfoFragment extends BaseDaggerFragment
         implements UserIdentificationInfo.View,
-        GetApprovalStatusSubscriber.GetApprovalStatusListener {
+        GetApprovalStatusSubscriber.GetApprovalStatusListener,
+        UserIdentificationInfoActivity.Listener {
 
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
 
@@ -48,6 +51,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     private TextView button;
     private boolean isSourceSeller;
     private UserIdentificationAnalytics analytics;
+    private int statusCode;
 
     @Inject
     UserIdentificationInfo.Presenter presenter;
@@ -121,6 +125,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetShopVerificationStatus(int status) {
         hideLoading();
+        statusCode = status;
         switch (status) {
             case KYCConstant.STATUS_REJECTED:
                 showStatusRejected();
@@ -224,6 +229,29 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return this;
     }
 
+    @Override
+    public void onTrackBackPressed() {
+        switch (statusCode) {
+            case KYCConstant.STATUS_REJECTED:
+                analytics.eventClickBackRejectedPage();
+                break;
+            case KYCConstant.STATUS_PENDING:
+                analytics.eventClickBackPendingPage();
+                break;
+            case KYCConstant.STATUS_VERIFIED:
+                analytics.eventClickBackSuccessPage();
+                break;
+            case KYCConstant.STATUS_EXPIRED:
+                analytics.eventClickOnBackOnBoarding();
+                break;
+            case KYCConstant.STATUS_NOT_VERIFIED:
+                analytics.eventClickOnBackOnBoarding();
+                break;
+            default:
+                break;
+        }
+    }
+
     private View.OnClickListener onGoToFormActivityButton(int status) {
         return new View.OnClickListener() {
             @Override
@@ -253,6 +281,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         if (requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == Activity.RESULT_OK) {
             getStatusInfo();
             NetworkErrorHelper.showGreenSnackbar(getActivity(), getString(R.string.text_notification_success_upload));
+            analytics.eventViewSuccessSnackbarPendingPage();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -261,7 +290,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteManager.route(getActivity(), KycUrl.APPLINK_TERMS_AND_CONDITION);
+                analytics.eventClickTermsSuccessPage();
+                RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
             }
         };
     }
