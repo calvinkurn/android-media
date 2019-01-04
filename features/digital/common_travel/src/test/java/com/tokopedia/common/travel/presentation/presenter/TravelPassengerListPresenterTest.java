@@ -141,7 +141,7 @@ public class TravelPassengerListPresenterTest {
         presenter.selectPassenger(travelPassengerList.get(0), travelPassengerList.get(1));
         //then
         Assert.assertNotEquals(travelPassengerList.get(0).getPaxType(), travelPassengerList.get(1).getPaxType());
-        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_choose_passenger);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_choose_passenger);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class TravelPassengerListPresenterTest {
         Assert.assertEquals(travelPassengerList.get(0).getPaxType(), travelPassengerList.get(1).getPaxType());
         Assert.assertEquals(travelPassengerList.get(1).getIdNumber(), "");
 
-        Mockito.verify(view).showActionErrorInSnackBar(travelPassengerList.get(1), R.string.error_msg_pick_passenger_data_not_valid);
+        Mockito.verify(view).showActionErrorInSnackBar(travelPassengerList.get(1), R.string.travel_error_msg_pick_passenger_data_not_valid);
     }
 
     @Test

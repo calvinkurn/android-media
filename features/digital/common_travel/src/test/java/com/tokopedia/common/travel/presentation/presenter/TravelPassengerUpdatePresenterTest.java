@@ -10,7 +10,6 @@ import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.common.travel.utils.TravelPassengerValidator;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
-import com.tokopedia.usecase.RequestParams;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -558,7 +557,7 @@ public class TravelPassengerUpdatePresenterTest {
         //when
         presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
         //then
-        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_pick_infant_passenger);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_pick_infant_passenger);
     }
 
     @Test
@@ -592,7 +591,7 @@ public class TravelPassengerUpdatePresenterTest {
         //when
         presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
         //then
-        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_pick_adult_passenger);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_pick_adult_passenger);
     }
 
     @Test

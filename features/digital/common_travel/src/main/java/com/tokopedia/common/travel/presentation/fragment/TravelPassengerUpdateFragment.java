@@ -159,13 +159,13 @@ public class TravelPassengerUpdateFragment extends BaseDaggerFragment
     }
 
     private void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.adult_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.travel_adult_spinner_titles);
         spTitle.setEntries(entries);
         spTitle.setValues(entries);
     }
 
     private void renderSpinnerForInfant() {
-        String[] entries = getResources().getStringArray(R.array.child_infant_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.travel_child_infant_spinner_titles);
         spTitle.setEntries(entries);
         spTitle.setValues(entries);
     }

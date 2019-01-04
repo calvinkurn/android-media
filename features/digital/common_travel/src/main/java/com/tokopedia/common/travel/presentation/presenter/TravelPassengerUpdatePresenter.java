@@ -86,13 +86,13 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
         if (getView().getPaxType() == TravelBookingPassenger.INFANT) {
             if (dateSelected.before(getView().getUpperBirthDate()) ||
                     dateSelected.after(getView().getLowerBirthDate())) {
-                getView().showMessageErrorInSnackBar(R.string.error_message_pick_infant_passenger);
+                getView().showMessageErrorInSnackBar(R.string.travel_error_msg_pick_infant_passenger);
             } else {
                 getView().showBirthdateChange(dateSelected);
             }
         } else if (getView().getPaxType() == TravelBookingPassenger.ADULT) {
             if (dateSelected.after(getView().getLowerBirthDate())) {
-                getView().showMessageErrorInSnackBar(R.string.error_message_pick_adult_passenger);
+                getView().showMessageErrorInSnackBar(R.string.travel_error_msg_pick_adult_passenger);
             } else {
                 getView().showBirthdateChange(dateSelected);
             }
@@ -118,8 +118,9 @@ public class TravelPassengerUpdatePresenter extends BaseDaggerPresenter<TravelPa
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    if (isViewAttached())
+                                    if (isViewAttached()) {
                                         getView().showMessageErrorInSnackBar(e);
+                                    }
                                 }
 
                                 @Override

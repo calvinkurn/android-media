@@ -56,10 +56,10 @@ public abstract class BaseTravelPassengerAdapter extends RecyclerView.Adapter {
             itemViewHolder.passengerName.setTextColor(context.getResources().getColor(R.color.black));
         }
 
-        String statusPassenger = context.getString(R.string.account_default);
+        String statusPassenger = context.getString(R.string.travel_account_default);
         int colorStatus = R.color.font_black_disabled_38;
         if (travelPassenger.isSelected()) {
-            statusPassenger = context.getString(R.string.account_chosen);
+            statusPassenger = context.getString(R.string.travel_account_chosen);
             colorStatus = R.color.black_24;
         }
         itemViewHolder.passengerStatus.setText(statusPassenger);
@@ -84,11 +84,11 @@ public abstract class BaseTravelPassengerAdapter extends RecyclerView.Adapter {
 
     protected String getSalutationString(int title) {
         if (title == TravelPassengerTitle.TUAN) {
-            return context.getString(R.string.salutation_mister_string);
+            return context.getString(R.string.travel_salutation_mister_string);
         } else if (title == TravelPassengerTitle.NYONYA) {
-            return context.getString(R.string.salutation_mrs_string);
+            return context.getString(R.string.travel_salutation_mrs_string);
         } else {
-            return context.getString(R.string.salutation_miss_string);
+            return context.getString(R.string.travel_salutation_miss_string);
         }
     }
 }

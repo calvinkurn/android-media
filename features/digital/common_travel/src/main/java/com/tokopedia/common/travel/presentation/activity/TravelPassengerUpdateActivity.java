@@ -9,9 +9,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.common.travel.R;
-import com.tokopedia.common.travel.constant.TravelPlatformType;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerUpdateFragment;
-import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.presentation.model.TravelTrip;
 
 public class TravelPassengerUpdateActivity extends BaseSimpleActivity implements TravelPassengerUpdateFragment.ActionListener {
@@ -43,9 +41,9 @@ public class TravelPassengerUpdateActivity extends BaseSimpleActivity implements
     }
 
     private void setTitlePage() {
-        String title = getString(R.string.edit_passenger_title_page);
+        String title = getString(R.string.travel_edit_passenger_title_page);
         if (getIntent().getIntExtra(TYPE_PASSENGER_PAGE, 0) == ADD_PASSENGER_TYPE) {
-            title = getString(R.string.add_passenger_title_page);
+            title = getString(R.string.travel_add_passenger_title_page);
         }
         updateTitle(title);
     }

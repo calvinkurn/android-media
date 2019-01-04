@@ -57,7 +57,7 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
             travelTrip = (TravelTrip) getIntent().getParcelableExtra(TRAVEL_TRIP);
         }
 
-        updateTitle(getString(R.string.title_list_passenger_page));
+        updateTitle(getString(R.string.travel_title_list_passenger_page));
     }
 
     @Override

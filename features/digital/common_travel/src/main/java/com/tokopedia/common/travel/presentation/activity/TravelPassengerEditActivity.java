@@ -32,7 +32,7 @@ public class TravelPassengerEditActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        updateTitle(getString(R.string.title_edit_passenger_list));
+        updateTitle(getString(R.string.travel_title_edit_passenger_list));
     }
 
     @Override

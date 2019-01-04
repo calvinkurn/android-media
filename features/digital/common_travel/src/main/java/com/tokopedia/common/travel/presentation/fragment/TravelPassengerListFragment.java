@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.di.CommonTravelComponent;
 import com.tokopedia.common.travel.presentation.activity.TravelPassengerListActivity;
@@ -30,6 +29,7 @@ import com.tokopedia.common.travel.presentation.presenter.TravelPassengerListPre
 import com.tokopedia.common.travel.utils.CommonTravelUtils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.GraphqlClient;
 
 import java.util.List;
@@ -140,7 +140,7 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
     public void showActionErrorInSnackBar(TravelPassenger travelPassenger, int resId) {
         ToasterError.make(getActivity().findViewById(android.R.id.content),
                 getString(resId), BaseToaster.LENGTH_LONG)
-                .setAction(getActivity().getString(R.string.action_snackbar_error_edit), new View.OnClickListener() {
+                .setAction(getActivity().getString(R.string.travel_action_snackbar_error_edit), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         travelTrip.setTravelPassengerBooking(travelPassenger);
@@ -211,9 +211,9 @@ public class TravelPassengerListFragment extends BaseDaggerFragment
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == ADD_PASSENGER_REQUEST_CODE) {
-                NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(R.string.success_add_passenger_msg));
+                ToasterNormal.show(getActivity(), getString(R.string.travel_success_add_passenger_msg));
             } else if (requestCode == EDIT_PASSENGER_REQUEST_CODE) {
-                NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(R.string.success_edit_passenger_msg));
+                ToasterNormal.show(getActivity(), getString(R.string.travel_success_edit_passenger_msg));
             }
             resetPassengerListSelected = false;
         }

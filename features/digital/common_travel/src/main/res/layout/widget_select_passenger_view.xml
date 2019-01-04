@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/WidgetSelectPassengerView"
+    style="@style/TravelWidgetSelectPassengerView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_passenger_icon"
-        style="@style/WidgetSelectPassengerViewIcon"
+        style="@style/TravelWidgetSelectPassengerViewIcon"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
