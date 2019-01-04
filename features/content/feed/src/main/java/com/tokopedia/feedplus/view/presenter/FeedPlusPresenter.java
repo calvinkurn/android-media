@@ -2,11 +2,11 @@ package com.tokopedia.feedplus.view.presenter;
 
 import android.support.annotation.RestrictTo;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedsDomainModel;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedsUseCase;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
@@ -16,7 +16,6 @@ import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
-import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
@@ -28,7 +27,6 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -121,14 +119,38 @@ public class FeedPlusPresenter
     public void fetchNextPage() {
         pagingHandler.nextPage();
 
-        if (currentCursor == null)
+        if (currentCursor == null) {
             return;
-        getFeedsUseCase.execute(
-                getFeedsUseCase.getFeedPlusParam(
-                        pagingHandler.getPage(),
-                        userSession,
-                        currentCursor),
-                new GetFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
+        }
+
+//        getFeedsUseCase.execute(
+//                getFeedsUseCase.getFeedPlusParam(
+//                        pagingHandler.getPage(),
+//                        userSession,
+//                        currentCursor),
+//                new GetFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
+
+        getDynamicFeedsUseCase.execute(
+                GetDynamicFeedsUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor),
+                new Subscriber<DynamicFeedsDomainModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().finishLoading();
+                    }
+
+                    @Override
+                    public void onNext(DynamicFeedsDomainModel model) {
+                        getView().updateCursor(model.getCursor());
+                        getView().onSuccessGetFeed(new ArrayList<>(model.getPostList()));
+                        getView().finishLoading();
+                    }
+                }
+        );
     }
 
     public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
@@ -267,7 +289,7 @@ public class FeedPlusPresenter
 
             getDynamicFeedsUseCase.execute(
                     GetDynamicFeedsUseCase.Companion.createRequestParams(userSession.getUserId()),
-                    new Subscriber<List<Visitable<?>>>() {
+                    new Subscriber<DynamicFeedsDomainModel>() {
                         @Override
                         public void onCompleted() {
 
@@ -279,8 +301,9 @@ public class FeedPlusPresenter
                         }
 
                         @Override
-                        public void onNext(List<Visitable<?>> visitables) {
-                            getView().onSuccessGetFeedFirstPage(new ArrayList<>(visitables));
+                        public void onNext(DynamicFeedsDomainModel model) {
+                            getView().updateCursor(model.getCursor());
+                            getView().onSuccessGetFeedFirstPage(new ArrayList<>(model.getPostList()));
                             getView().finishLoading();
                         }
                     }

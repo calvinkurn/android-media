@@ -7,6 +7,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Body
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
 import com.tokopedia.feedcomponent.data.pojo.template.Template
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedsDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
@@ -24,7 +25,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 20/12/18.
  */
-class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableList<Visitable<*>>> {
+class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedsDomainModel> {
 
     companion object {
         private const val TYPE_CARDRECOM = "cardrecom"
@@ -39,9 +40,10 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun call(t: GraphqlResponse?): MutableList<Visitable<*>> {
+    override fun call(t: GraphqlResponse?): DynamicFeedsDomainModel {
         val feedQuery = t?.getData<FeedQuery?>(FeedQuery::class.java)
         val posts: MutableList<Visitable<*>> = ArrayList()
+        var lastCursor: String = ""
         feedQuery?.let {
             for (feed in it.feedv2.data) {
                 val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->
@@ -54,8 +56,13 @@ class DynamicPostMapper @Inject constructor() : Func1<GraphqlResponse, MutableLi
                     TYPE_CARDPOST -> posts.add(mapCardPost(feed, templateData.template))
                 }
             }
+
+            lastCursor = it.feedv2.meta.lastCursor
         }
-        return posts
+        return DynamicFeedsDomainModel(
+                posts,
+                lastCursor
+        )
     }
 
     private fun mapCardBanner(feed: Feed, template: Template): BannerViewModel {

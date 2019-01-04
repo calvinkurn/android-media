@@ -1,12 +1,12 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
 import android.content.Context
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.domain.mapper.DynamicPostMapper
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedsDomainModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -20,9 +20,9 @@ import javax.inject.Inject
 class GetDynamicFeedsUseCase @Inject constructor(@ApplicationContext private val context: Context,
                                                  private val graphqlUseCase: GraphqlUseCase,
                                                  private val dynamicPostMapper: DynamicPostMapper)
-    : UseCase<MutableList<Visitable<*>>>() {
+    : UseCase<DynamicFeedsDomainModel>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<MutableList<Visitable<*>>> {
+    override fun createObservable(requestParams: RequestParams?): Observable<DynamicFeedsDomainModel> {
         val query: String = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.query_feed_dynamic
