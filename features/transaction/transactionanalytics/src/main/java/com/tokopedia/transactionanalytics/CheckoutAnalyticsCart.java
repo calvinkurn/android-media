@@ -326,10 +326,6 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
     private void flushEnhancedECommerceGoToCheckoutStep1(String eventLabel) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
-                Key.EVENT, EventName.CHECKOUT,
-                Key.EVENT_CATEGORY, EventCategory.CART,
-                Key.EVENT_ACTION, EventAction.CLICK_CHECKOUT,
-                Key.EVENT_LABEL, eventLabel,
                 Key.E_COMMERCE, null,
                 Key.CURRENT_SITE, null
         );
