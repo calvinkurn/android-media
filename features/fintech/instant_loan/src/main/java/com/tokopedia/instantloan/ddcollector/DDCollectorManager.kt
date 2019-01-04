@@ -23,7 +23,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     private var mContext: Context? = null
     private val mExecutorService: ExecutorService
     private var mCallback: OnDeviceDataReady? = null
-    private lateinit var mPermissionUtils: PermissionUtils
+    private var mPermissionUtils: PermissionUtils? = null
     private lateinit var permissionResultCallback: PermissionResultCallback
 
     private val defaultsComponents: Set<String>
@@ -71,14 +71,14 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
 
         this.mCallback = callback
 
-        if (mPermissionUtils.isPermissionsGranted(mDangerousComponents!!)) {
+        if (mPermissionUtils!!.isPermissionsGranted(mDangerousComponents!!)) {
             loadDeviceData()
         } else {
-            mPermissionUtils.checkPermission(mDangerousComponents!!, PermissionUtils.PERMISSION_REQUEST_CODE)
+            mPermissionUtils!!.checkPermission(mDangerousComponents!!, PermissionUtils.PERMISSION_REQUEST_CODE)
         }
     }
 
-    private fun loadDeviceData() {
+    fun loadDeviceData() {
         val callable = Callable<Map<String, Any?>> {
             val data = collectDD()
 
@@ -120,7 +120,7 @@ class DDCollectorManager private constructor() : PermissionResultCallback {
     }
 
     fun onRequestPermissionsResult(requestCode: Int,requiredPermissions: List<String>, permissions: Array<String>, grantResults: IntArray) {
-        mPermissionUtils.onRequestPermissionsResult(requestCode, requiredPermissions, permissions, grantResults)
+        mPermissionUtils!!.onRequestPermissionsResult(requestCode, requiredPermissions, permissions, grantResults)
     }
 
     override fun permissionGranted(requestCode: Int) {

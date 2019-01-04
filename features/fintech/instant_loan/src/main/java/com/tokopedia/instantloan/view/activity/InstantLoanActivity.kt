@@ -350,7 +350,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         sendPermissionDeniedGTMEvent(permissions, grantResults)
-        DDCollectorManager.getsInstance().init(this, mPermissionRequestCallback)
         this.mRequiredPermission = DDCollectorManager.getsInstance().dangerousPermissions
         DDCollectorManager.getsInstance().onRequestPermissionsResult(requestCode, mRequiredPermission, permissions, grantResults)
     }
@@ -416,35 +415,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         }
     }
 
-    private val mPermissionRequestCallback = object : PermissionResultCallback {
-
-        override fun permissionGranted(requestCode: Int) {
-
-        }
-
-        override fun permissionDenied(requestCode: Int) {
-            val fragment: Fragment = instantLoanItemList.get(0).fragment!!
-
-            try {
-                (fragment as DanaInstantFragment).hideIntroDialog()
-                fragment.hideLoaderIntroDialog()
-            } catch (e: Exception) {
-
-            }
-
-        }
-
-        override fun neverAskAgain(requestCode: Int) {
-            val fragment: Fragment = instantLoanItemList.get(0).fragment!!
-
-            try {
-                (fragment as DanaInstantFragment).hideIntroDialog()
-                fragment.hideLoaderIntroDialog()
-            } catch (e: Exception) {
-
-            }
-        }
-    }
 
     object DeepLinkIntents {
         @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
