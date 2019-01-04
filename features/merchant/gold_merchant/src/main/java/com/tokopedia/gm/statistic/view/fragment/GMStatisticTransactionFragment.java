@@ -78,7 +78,7 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         gmStatisticProductListText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickGMStatProductSoldTransaction();
+                UnifyTracking.eventClickGMStatProductSoldTransaction(getActivity());
 
                 Intent intent = new Intent(getActivity(), GMStatisticTransactionTableActivity.class);
                 startActivity(intent);
@@ -191,9 +191,9 @@ public class GMStatisticTransactionFragment extends GMStatisticBaseDatePickerFra
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == DatePickerConstant.REQUEST_CODE_DATE && intent != null) {
             if (isCompareDate()) {
-                UnifyTracking.eventClickGMStatDatePickerWCompareTransaction();
+                UnifyTracking.eventClickGMStatDatePickerWCompareTransaction(getActivity());
             } else {
-                UnifyTracking.eventClickGMStatDatePickerWOCompareTransaction();
+                UnifyTracking.eventClickGMStatDatePickerWOCompareTransaction(getActivity());
             }
         }
     }

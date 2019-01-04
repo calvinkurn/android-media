@@ -2,7 +2,7 @@ package com.tokopedia.seller.shopsettings.notes.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.notes.interactor.ManageShopNotesRetrofitInteractor;
 import com.tokopedia.seller.shopsettings.notes.interactor.ManageShopNotesRetrofitInteractorImpl;

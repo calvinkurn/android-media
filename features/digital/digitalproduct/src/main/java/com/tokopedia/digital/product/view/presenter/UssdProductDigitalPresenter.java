@@ -3,12 +3,12 @@ package com.tokopedia.digital.product.view.presenter;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
 
@@ -26,8 +26,8 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
 
     @Override
     public DigitalCheckoutPassData generateCheckoutPassData(
-            Operator operator, PulsaBalance pulsaBalance, String categoryId,String categoryName,
-            String productId,boolean isInstantCheckout) {
+            Operator operator, PulsaBalance pulsaBalance, String categoryId, String categoryName,
+            String productId, boolean isInstantCheckout) {
         return new DigitalCheckoutPassData.Builder()
                 .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                 .categoryId(categoryId)
@@ -42,18 +42,19 @@ public class UssdProductDigitalPresenter implements IUssdProductDigitalPresenter
                 .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                 .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                 .voucherCodeCopied("")
+                .source(DigitalCheckoutPassData.PARAM_NATIVE)
                 .build();
     }
 
     @Override
     public void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData) {
         if (view.isUserLoggedIn()) {
-            if (view.getMainApplication() instanceof IDigitalModuleRouter) {
-                IDigitalModuleRouter digitalModuleRouter =
-                        (IDigitalModuleRouter) view.getMainApplication();
+            if (view.getMainApplication() instanceof DigitalRouter) {
+                DigitalRouter digitalModuleRouter =
+                        (DigitalRouter) view.getMainApplication();
                 view.navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
                 );
             }
         } else {

@@ -2,9 +2,9 @@
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <ProgressBar
@@ -13,12 +13,18 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/tp_margin_large" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_coupons"
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/tp_margin_xsmall"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_coupons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/tp_margin_xsmall"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <include layout="@layout/layout_tp_network_error_large" />
 

@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,7 +24,7 @@ import android.widget.ViewFlipper;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-public class SwipeCardView extends CardView implements View.OnTouchListener {
+public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
     private final static int MIN_SWIPE_AMOUNT_PX = 10;
     private final static int CONTAINER_TEXT = 0;

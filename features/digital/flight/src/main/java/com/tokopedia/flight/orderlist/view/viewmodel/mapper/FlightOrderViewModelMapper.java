@@ -3,7 +3,6 @@ package com.tokopedia.flight.orderlist.view.viewmodel.mapper;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.common.util.FlightStatusOrderType;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderFailedViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderInProcessViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderRefundViewModel;
@@ -30,17 +29,15 @@ public class FlightOrderViewModelMapper {
             switch (flightOrder.getStatus()) {
                 case FlightStatusOrderType.CONFIRMED:
                 case FlightStatusOrderType.FINISHED:
-                    for (FlightOrderJourney journey : flightOrder.getJourneys()) {
-                        FlightOrderSuccessViewModel successViewModel = new FlightOrderSuccessViewModel();
-                        successViewModel.setCreateTime(flightOrder.getCreateTime());
-                        successViewModel.setId(flightOrder.getId());
-                        successViewModel.setOrderJourney(journey);
-                        successViewModel.setTitle(flightOrder.getStatusString());
-                        successViewModel.setCancellations(flightOrder.getCancellations());
-                        successViewModel.setStatus(flightOrder.getStatus());
-                        successViewModel.setPdf(flightOrder.getPdf());
-                        visitables.add(successViewModel);
-                    }
+                    FlightOrderSuccessViewModel successViewModel = new FlightOrderSuccessViewModel();
+                    successViewModel.setCreateTime(flightOrder.getCreateTime());
+                    successViewModel.setId(flightOrder.getId());
+                    successViewModel.setOrderJourney(flightOrder.getJourneys());
+                    successViewModel.setTitle(flightOrder.getStatusString());
+                    successViewModel.setCancellations(flightOrder.getCancellations());
+                    successViewModel.setStatus(flightOrder.getStatus());
+                    successViewModel.setPdf(flightOrder.getPdf());
+                    visitables.add(successViewModel);
                     break;
                 case FlightStatusOrderType.EXPIRED:
                 case FlightStatusOrderType.FAILED:

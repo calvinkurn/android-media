@@ -16,11 +16,12 @@ buildscript {
 }
 
 project.ext {
-    artifactId = 'withdraw'
-    groupId = 'com.tokopedia.withdraw'
-    versionName = "${tkpdWithdrawVersion}"
-    artifactName = "withdraw-release"
+    artifactId = "${artifactIdWithdraw}"
+    groupId = "${groupIdPayment}"
+    versionName = "${paymentGroupVersion}"
+    artifactName = "${artifactIdWithdraw}-release"
 }
+
 
 dependencies {
 
@@ -28,12 +29,16 @@ dependencies {
     implementation project(rootProject.ext.features.changepassword)
 
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -49,7 +54,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

@@ -1,9 +1,9 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -15,14 +15,12 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -71,12 +69,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-        if (recipientAddress.isStateExtraPaddingTop()) {
-            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_16));
-        } else {
-            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_0));
-        }
-
         if (recipientAddress.isFromPdp()) {
             tvSendToMultipleAddress.setVisibility(View.GONE);
         } else {

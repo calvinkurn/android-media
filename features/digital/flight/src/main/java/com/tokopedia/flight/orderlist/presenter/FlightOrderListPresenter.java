@@ -216,21 +216,33 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
         boolean isRefundable = false;
         for (FlightCancellationJourney item : items) {
-            if (item.isRefundable()) isRefundable = true;
+            if (item.isRefundable()) {
+                isRefundable = true;
+            }
         }
 
         if (isRefundable) {
-            getView().showRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items, flightOrderSuccessViewModel.getOrderJourney().getDepartureTime());
+            getView().showRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items,
+                    flightOrderSuccessViewModel.getOrderJourney());
         } else {
-            getView().showNonRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items, flightOrderSuccessViewModel.getOrderJourney().getDepartureTime());
+            getView().showNonRefundableCancelDialog(flightOrderSuccessViewModel.getId(), items,
+                    flightOrderSuccessViewModel.getOrderJourney());
         }
     }
 
     @Override
-    public void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item) {
-        if (isDepartureDateMoreThan6Hours(
-                FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, departureTime))) {
-            getView().goToCancellationPage(invoiceId, item);
+    public void checkIfFlightCancellable(List<FlightOrderJourney> orderJourneyList, String invoiceId, List<FlightCancellationJourney> items) {
+        boolean canGoToCancelPage = false;
+
+        for (FlightOrderJourney item : orderJourneyList) {
+            if (isDepartureDateMoreThan6Hours(
+                    FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.getDepartureTime()))) {
+                canGoToCancelPage = true;
+            }
+        }
+
+        if (canGoToCancelPage) {
+            getView().goToCancellationPage(invoiceId, items);
         } else {
             getView().showLessThan6HoursDialog();
         }
@@ -265,7 +277,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         getView().navigateToWebview(FlightUrl.AIRLINES_CONTACT_URL);
     }
 
-    private List<FlightCancellationJourney> transformOrderToCancellation(FlightOrderJourney flightOrderJourney) {
+    private List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourney) {
         return flightOrderToCancellationJourneyMapper.transform(flightOrderJourney);
     }
 

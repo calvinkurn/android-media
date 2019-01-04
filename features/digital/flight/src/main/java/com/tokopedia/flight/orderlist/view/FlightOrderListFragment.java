@@ -47,6 +47,7 @@ import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
@@ -351,7 +352,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final String departureTime) {
+    public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final List<FlightOrderJourney> orderJourneyList) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
@@ -361,7 +362,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.checkIfFlightCancellable(departureTime, invoiceId, item);
+                presenter.checkIfFlightCancellable(orderJourneyList, invoiceId, item);
                 dialog.dismiss();
             }
         });
@@ -376,7 +377,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final String departureTime) {
+    public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final List<FlightOrderJourney> orderJourneyList) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
@@ -385,7 +386,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.checkIfFlightCancellable(departureTime, invoiceId, item);
+                presenter.checkIfFlightCancellable(orderJourneyList, invoiceId, item);
                 dialog.dismiss();
             }
         });
@@ -400,10 +401,10 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> item) {
+    public void goToCancellationPage(String invoiceId, List<FlightCancellationJourney> items) {
         startActivityForResult(FlightCancellationActivity.createIntent(getContext(),
                 invoiceId,
-                item
+                items
         ), REQUEST_CODE_CANCELLATION);
     }
 

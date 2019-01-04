@@ -36,5 +36,10 @@ class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphql
                 putInt(TopAdsCommonConstant.PARAM_SHOP_ID, shopId.toInt())
                 putString(PARAM_QUERY, query)
             }
+
+        @JvmStatic
+        fun createGraphqlRequest(query: String, requestParams: RequestParams): GraphqlRequest {
+            return GraphqlRequest(query, DataDeposit.Response::class.java, requestParams.parameters)
+        }
     }
 }

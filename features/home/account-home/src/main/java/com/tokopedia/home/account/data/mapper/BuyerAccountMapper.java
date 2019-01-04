@@ -116,7 +116,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
             tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
-
+            tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
             if (accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.ACTIVE)) {
                 tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(accountModel.getVccUserStatus().getBody()), true));
             } else {
