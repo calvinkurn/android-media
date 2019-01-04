@@ -75,8 +75,6 @@ public interface FeedPlus {
             void trackEEPoll(PollOptionViewModel element, String trackingPromoCode, int rowNumber, PollViewModel pollViewModel);
         }
 
-        void setFirstCursor(String firstCursor);
-
         void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 
         void onGoToProductDetailFromProductUpload(
@@ -196,7 +194,7 @@ public interface FeedPlus {
 
         void refreshPage();
 
-        void checkNewFeed(String cursor);
+        void setCursor(String cursor);
 
         void followKol(int id, int rowNumber, View.Kol kolListener);
 

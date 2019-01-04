@@ -185,18 +185,14 @@ public class FeedPlusPresenter
         });
     }
 
-    public void setCursor(String currentCursor) {
-        this.currentCursor = currentCursor;
+    @Override
+    public void setCursor(String cursor) {
+        this.currentCursor = cursor;
     }
 
     @Override
     public void refreshPage() {
         getFirstPageFeeds();
-    }
-
-    @Override
-    public void checkNewFeed(String firstCursor) {
-
     }
 
     @Override

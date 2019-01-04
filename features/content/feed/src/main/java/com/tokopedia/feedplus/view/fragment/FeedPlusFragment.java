@@ -138,7 +138,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private TopAdsInfoBottomSheet infoBottomSheet;
-    private String firstCursor = "";
     private int loginIdInt;
 
     @Inject
@@ -178,8 +177,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getActivity() != null) GraphqlClient.init(getActivity());
         ((FeedModuleRouter) getActivity().getApplicationContext()).startTrace("feed_trace");
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null && savedInstanceState.getString(FIRST_CURSOR) != null)
-            firstCursor = savedInstanceState.getString(FIRST_CURSOR, "");
         initVar();
         setRetainInstance(true);
     }
@@ -188,7 +185,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(FIRST_CURSOR, firstCursor);
     }
 
     private void initVar() {
@@ -352,11 +348,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         if (layoutManager != null)
             layoutManager = null;
-    }
-
-    @Override
-    public void setFirstCursor(String firstCursor) {
-        this.firstCursor = firstCursor;
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name,
@@ -771,8 +762,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-        if (firstCursor == null)
-            firstCursor = "";
         if (getUserVisibleHint() && presenter != null) {
             loadData(getUserVisibleHint());
         }
@@ -787,8 +776,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 presenter.fetchFirstPage();
                 ((FeedModuleRouter) getActivity().getApplicationContext()).stopTrace("feed_trace");
 
-                presenter.checkNewFeed(firstCursor);
-
                 isLoadedOnce = !isLoadedOnce;
             }
 
@@ -799,8 +786,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (firstCursor == null)
-            firstCursor = "";
         loadData(isVisibleToUser);
 
     }
