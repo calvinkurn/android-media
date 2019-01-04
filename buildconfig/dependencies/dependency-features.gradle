@@ -290,6 +290,7 @@ ext {
             loginregister                 : ":features:user:loginregister",
             sessioncommon                 : ":features:user:sessioncommon",
             notifCenter                   : ":features:user:notifcenter",
+//            notifCenter                   : ":features:user:notifcenter_no_op",
             otp                           : ":features:user:otp",
             phoneVerification             : ":features:user:phoneverification",
             settingbank                   : ":features:user:settingbank",
