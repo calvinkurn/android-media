@@ -142,7 +142,7 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
 
     private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: TemplateBody) {
         itemView.contentLayout.shouldShowWithAction(template.media) {
-            contentList.forEach { it.rowNumber = adapterPosition }
+            contentList.forEach { it.positionInFeed = adapterPosition }
 
             val adapter = PostPagerAdapter(youtubePostListener, pollOptionListener)
             adapter.setList(contentList)

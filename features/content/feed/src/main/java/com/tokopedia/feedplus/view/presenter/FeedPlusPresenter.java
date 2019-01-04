@@ -273,6 +273,29 @@ public class FeedPlusPresenter
         );
     }
 
+    @Override
+    public void toggleFavoriteShop(int rowNumber, String shopId) {
+        doFavoriteShopUseCase.execute(
+                ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean success) {
+
+                    }
+                }
+        );
+    }
+
     public String getUserId() {
         return userSession.getUserId();
     }

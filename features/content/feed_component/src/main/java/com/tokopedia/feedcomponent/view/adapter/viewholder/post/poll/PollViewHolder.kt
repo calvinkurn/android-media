@@ -15,7 +15,7 @@ class PollViewHolder(private val pollOptionListener: PollAdapter.PollOptionListe
     override var layoutRes = R.layout.item_post_poll
 
     override fun bind(element: PollViewModel) {
-        val adapter = PollAdapter(element.rowNumber, element, pollOptionListener)
+        val adapter = PollAdapter(element.positionInFeed, element, pollOptionListener)
         adapter.setList(element.optionList)
         itemView.optionRv.adapter = adapter
 

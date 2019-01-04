@@ -7,5 +7,5 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
  */
 data class ImagePostViewModel (
         val image: String = "",
-        override var rowNumber: Int = 0
+        override var positionInFeed: Int = 0
 ) : BasePostViewModel

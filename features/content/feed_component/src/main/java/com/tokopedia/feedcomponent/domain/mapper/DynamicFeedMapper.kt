@@ -184,7 +184,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
         return PollViewModel(
                 media.id,
-                media.totalVoterFmt,
+                media.text,
                 media.isVoted,
                 options
         )
@@ -206,7 +206,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         //TODO milhamj wait from API
         return GridPostViewModel(
                 itemList,
-                "Lihat Lainnya",
+                media.text,
                 media.appLink,
                 media.totalItems
         )

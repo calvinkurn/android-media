@@ -31,11 +31,14 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
@@ -68,7 +71,6 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.kol.feature.post.view.activity.KolPostYouTubeActivity;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
@@ -108,7 +110,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         TopAdsItemClickListener, TopAdsInfoClickListener,
         KolPostListener.View.ViewHolder,
         DynamicPostViewHolder.DynamicPostListener,
-        BannerViewHolder.BannerListener,
+        BannerAdapter.BannerItemListener,
+        RecommendationCardAdapter.RecommendationCardListener,
         CardTitleView.CardTitleListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener {
@@ -1136,24 +1139,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFollowKolFromRecommendationClicked(int page, int rowNumber, int id, int
-            position) {
+    public void onFollowKolFromRecommendationClicked(int rowNumber, int id, int position) {
         presenter.followKolFromRecommendation(id, rowNumber, position, this);
     }
 
     @Override
-    public void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int
-            position) {
+    public void onUnfollowKolFromRecommendationClicked(int rowNumber, int id, int position) {
         presenter.unfollowKolFromRecommendation(id, rowNumber, position, this);
-
     }
 
     @Override
-    public void onSuccessFollowKolFromRecommendation(int rowNumber, int position) {
-    }
-
-    @Override
-    public void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position) {
+    public void onSuccessFollowKolFromRecommendation(int rowNumber, int position, boolean isFollow) {
+        if (adapter.getlist().get(rowNumber) instanceof FeedRecommendationViewModel) {
+            FeedRecommendationViewModel model = (FeedRecommendationViewModel) adapter.getlist().get(rowNumber);
+            model.getCards().get(position).getCta().setFollow(isFollow);
+            adapter.notifyItemChanged(rowNumber, position);
+        }
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
@@ -1420,14 +1421,39 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPollOptionClick(int rowNumber, @NotNull String pollId,
+    public void onPollOptionClick(int positionInFeed, @NotNull String pollId,
                                   @NotNull String optionId, boolean isVoted,
                                   @NotNull String redirectLink) {
 
         if (isVoted) {
             onGoToLink(redirectLink);
         } else {
-            onVoteOptionClicked(rowNumber, pollId, optionId);
+            onVoteOptionClicked(positionInFeed, pollId, optionId);
         }
+    }
+
+    @Override
+    public void onFollowUser(int positionInFeed, int adapterPosition, @NotNull String userId) {
+        int userIdInt = 0;
+        try {
+            userIdInt = Integer.valueOf(userId);
+        } catch (NumberFormatException ignored) {
+        }
+        onFollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
+    }
+
+    @Override
+    public void onUnfollowUser(int positionInFeed, int adapterPosition, @NotNull String userId) {
+        int userIdInt = 0;
+        try {
+            userIdInt = Integer.valueOf(userId);
+        } catch (NumberFormatException ignored) {
+        }
+        onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
+    }
+
+    @Override
+    public void onToggleFavoriteShop(int positionInFeed, @NotNull String shopId) {
+        presenter.toggleFavoriteShop(positionInFeed, shopId);
     }
 }

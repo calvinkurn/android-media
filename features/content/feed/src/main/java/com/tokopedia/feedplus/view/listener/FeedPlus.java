@@ -48,13 +48,11 @@ public interface FeedPlus {
 
             void onSuccessLikeDislikeKolPost(int rowNumber);
 
-            void onFollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
+            void onFollowKolFromRecommendationClicked(int rowNumber, int id, int position);
 
-            void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position);
+            void onUnfollowKolFromRecommendationClicked(int rowNumber, int id, int position);
 
-            void onSuccessFollowKolFromRecommendation(int rowNumber, int position);
-
-            void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position);
+            void onSuccessFollowKolFromRecommendation(int rowNumber, int position, boolean isFollow);
 
             void onLikeKolClicked(int rowNumber, int id);
 
@@ -211,5 +209,7 @@ public interface FeedPlus {
 
         void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
+
+        void toggleFavoriteShop(int rowNumber, String shopId);
     }
 }

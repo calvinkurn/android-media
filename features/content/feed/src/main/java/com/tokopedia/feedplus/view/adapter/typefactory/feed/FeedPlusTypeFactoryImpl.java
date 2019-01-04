@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
@@ -82,7 +84,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final FeedPlus.View.Polling pollingViewListener;
     private final KolPostListener.View.ViewHolder kolPostListener;
     private final DynamicPostViewHolder.DynamicPostListener dynamicPostListener;
-    private final BannerViewHolder.BannerListener bannerListener;
+    private final BannerAdapter.BannerItemListener bannerListener;
+    private final RecommendationCardAdapter.RecommendationCardListener recommendationCardListener;
     private final CardTitleView.CardTitleListener cardTitleListener;
     private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
     private final PollAdapter.PollOptionListener pollOptionListener;
@@ -97,6 +100,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.pollingViewListener = context;
         this.dynamicPostListener = context;
         this.bannerListener = context;
+        this.recommendationCardListener = context;
         this.cardTitleListener = context;
         this.youtubePostListener = context;
         this.pollOptionListener = context;
@@ -282,7 +286,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new DynamicPostViewHolder(view, dynamicPostListener, cardTitleListener, youtubePostListener, pollOptionListener);
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new FeedRecommendationViewHolder(view, cardTitleListener);
+            viewHolder = new FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener);
         }
         else if (type == BannerViewHolder.Companion.getLAYOUT()) {
             viewHolder = new BannerViewHolder(view, bannerListener, cardTitleListener);

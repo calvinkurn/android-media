@@ -32,9 +32,6 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               avatarApplink
               avatarBadgeImage
               avatarDescription
-              reportable
-              editable
-              deletable
               followCta {
                 isFollow
                 textTrue
@@ -50,25 +47,6 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               webLink
               thumbnail
               thumbnailLarge
-              items {
-                id
-                text
-                price
-                type
-                appLink
-                webLink
-                thumbnail
-                thumbnailLarge
-                percentage
-                isSelected
-                position
-              }
-              ctaLink {
-                text
-                appLink
-                webLink
-              }
-              totalItems
             }
           }
         }
@@ -129,9 +107,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
             editable
             deletable
             followCta {
-              isFollow
               textTrue
               textFalse
+              isFollow
               authorID
               authorType
             }
@@ -145,9 +123,6 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               thumbnail
               thumbnailLarge
               totalItems
-              isVoted
-              totalVoter
-              totalVoterFmt
               items {
                 id
                 text
@@ -161,6 +136,9 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
                 isSelected
                 position
               }
+              isVoted
+              totalVoter
+              text
             }
             caption {
               text

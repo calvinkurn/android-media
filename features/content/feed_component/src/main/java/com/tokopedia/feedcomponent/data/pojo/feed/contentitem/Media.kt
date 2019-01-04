@@ -29,8 +29,8 @@ data class Media(
         val isVoted: Boolean = false,
         @SerializedName("totalVoter")
         val totalVoter: Int = 0,
-        @SerializedName("totalVoterFmt")
-        val totalVoterFmt: String = "",
+        @SerializedName("text")
+        val text: String = "",
         @SerializedName("items")
         @Expose
         var mediaItems: List<MediaItem> = ArrayList(),

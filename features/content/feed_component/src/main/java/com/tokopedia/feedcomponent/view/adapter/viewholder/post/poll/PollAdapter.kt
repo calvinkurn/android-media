@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.item_poll_option.view.*
 /**
  * @author by milhamj on 12/12/18.
  */
-class PollAdapter(private val rowNumber: Int, private val pollViewModel: PollViewModel,
+class PollAdapter(private val positionInFeed: Int, private val pollViewModel: PollViewModel,
                   private val listener: PollOptionListener)
     : RecyclerView.Adapter<PollAdapter.OptionViewHolder>() {
 
@@ -28,7 +28,7 @@ class PollAdapter(private val rowNumber: Int, private val pollViewModel: PollVie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poll_option, parent, false)
-        return PollAdapter.OptionViewHolder(view, rowNumber, pollViewModel, listener)
+        return PollAdapter.OptionViewHolder(view, positionInFeed, pollViewModel, listener)
     }
 
     override fun getItemCount() = optionList.size
@@ -100,6 +100,6 @@ class PollAdapter(private val rowNumber: Int, private val pollViewModel: PollVie
     }
 
     interface PollOptionListener {
-        fun onPollOptionClick(rowNumber: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String)
+        fun onPollOptionClick(positionInFeed: Int, pollId: String, optionId: String, isVoted: Boolean, redirectLink: String)
     }
 }

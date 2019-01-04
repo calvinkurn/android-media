@@ -16,12 +16,14 @@ import kotlinx.android.synthetic.main.item_recommendation_card.view.*
 /**
  * @author by milhamj on 20/12/18.
  */
-class RecommendationCardAdapter(private val list: MutableList<RecommendationCardViewModel>)
+class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewModel>,
+                                private val positionInFeed: Int,
+                                private val listener: RecommendationCardListener)
     : RecyclerView.Adapter<RecommendationCardAdapter.RecommendationCardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recommendation_card, parent, false)
-        return RecommendationCardViewHolder(view)
+        return RecommendationCardViewHolder(view, positionInFeed, listener)
     }
 
     override fun getItemCount() = list.size
@@ -30,7 +32,10 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
         holder.bind(list[position])
     }
 
-    class RecommendationCardViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class RecommendationCardViewHolder(v: View,
+                                       private val positionInFeed: Int,
+                                       private val listener: RecommendationCardListener)
+        : RecyclerView.ViewHolder(v) {
 
         fun bind(element: RecommendationCardViewModel) {
             initView(element)
@@ -58,7 +63,16 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
 
         private fun initViewListener(element: RecommendationCardViewModel) {
             itemView.btnFollow.setOnClickListener {
-
+                when (element.cta.authorType) {
+                    FollowCta.AUTHOR_USER -> {
+                        if (element.cta.isFollow) {
+                            listener.onUnfollowUser(positionInFeed, adapterPosition, element.cta.authorID)
+                        } else {
+                            listener.onFollowUser(positionInFeed, adapterPosition, element.cta.authorID)
+                        }
+                    }
+                    FollowCta.AUTHOR_SHOP -> listener.onToggleFavoriteShop(positionInFeed, element.cta.authorID)
+                }
             }
         }
 
@@ -93,5 +107,13 @@ class RecommendationCardAdapter(private val list: MutableList<RecommendationCard
                 )
             }
         }
+    }
+
+    interface RecommendationCardListener {
+        fun onFollowUser(positionInFeed: Int, adapterPosition: Int, userId: String)
+
+        fun onUnfollowUser(positionInFeed: Int, adapterPosition: Int, userId: String)
+
+        fun onToggleFavoriteShop(positionInFeed: Int, shopId: String)
     }
 }

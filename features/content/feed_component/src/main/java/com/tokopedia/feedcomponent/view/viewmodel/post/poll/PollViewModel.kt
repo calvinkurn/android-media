@@ -10,5 +10,5 @@ data class PollViewModel (
         val totalVoter: String = "",
         val voted: Boolean = false,
         val optionList: MutableList<PollOptionViewModel>,
-        override var rowNumber: Int = 0
+        override var positionInFeed: Int = 0
 ) : BasePostViewModel

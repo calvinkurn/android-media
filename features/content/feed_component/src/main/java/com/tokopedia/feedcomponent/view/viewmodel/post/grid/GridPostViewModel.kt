@@ -10,5 +10,5 @@ data class GridPostViewModel(
         val actionText: String = "",
         val actionLink: String = "",
         val totalItems: Int = 0,
-        override var rowNumber: Int = 0
+        override var positionInFeed: Int = 0
 ) : BasePostViewModel
