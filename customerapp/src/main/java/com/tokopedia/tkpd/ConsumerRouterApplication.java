@@ -122,6 +122,7 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.nps.NpsRouter;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
+import com.tokopedia.promoautoapplyusecase.PromoCodeAutoApplyUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
@@ -393,6 +394,7 @@ import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -1279,9 +1281,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getBranchAutoApply(Activity activity) {
-        return "";
-        //TODO shift it into a use case
-//        return BranchSdkUtils.getAutoApplyCouponIfAvailable(activity);
+        String promoCode = CacheUtil.getValueFromCache(activity, TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+        PromoCodeAutoApplyUseCase promoCodeAutoApplyUseCase = new PromoCodeAutoApplyUseCase(activity);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putString(CommonConstant.GraphqlVariableKeys.PROMO_CODE, promoCode);
+
+        promoCodeAutoApplyUseCase.createObservable(requestParams);
+        promoCodeAutoApplyUseCase.execute(null);
+
+        return promoCode;
     }
 
     @Override

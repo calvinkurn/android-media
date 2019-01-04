@@ -599,7 +599,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
     @Override
     public void autoApplyCouponIfAvailable(String digitalCategoryId) {
-        String savedCoupon = "";//TODO shift it to commonplace BranchSdkUtils.getAutoApplyCouponIfAvailable(getView().getActivity());
+        String savedCoupon = CacheUtil.getValueFromCache(getView().getActivity(), TkpdCache.CACHE_PROMO_CODE, TkpdCache.Key.KEY_CACHE_PROMO_CODE);
         if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucher(savedCoupon, digitalCategoryId);
         }
