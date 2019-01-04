@@ -13,6 +13,7 @@ public interface CMConstant {
     String USERID_CACHE_KEY = "userid_cache";
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
+    String APP_VERSION_CACHE_KEY = "app_version_cache_key";
 
 
     interface NotificationType {

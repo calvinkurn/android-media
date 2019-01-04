@@ -12,17 +12,9 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.notifications.factory.BaseNotification;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
@@ -90,6 +82,16 @@ public class CMNotificationUtils {
         return true;
     }
 
+    public static boolean mapTokenWithAppVersionRequired(Context context, int appVersion) {
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
+        int oldAppVersion = cacheHandler.getIntValue(context, CMConstant.APP_VERSION_CACHE_KEY);
+
+        CommonUtils.dumper("CMUser-APP_VERSION" + oldAppVersion + "#new-" + appVersion);
+        if (oldAppVersion == appVersion)
+            return false;
+        return true;
+    }
+
     public static String getUniqueAppId(Context context) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
         String appId = cacheHandler.getStringValue(context, CMConstant.UNIQUE_APP_ID_CACHE_KEY);
@@ -113,6 +115,11 @@ public class CMNotificationUtils {
     public static void saveGAdsIdId(Context context, String gAdsId) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
         cacheHandler.saveStringValue(context, CMConstant.GADSID_CACHE_KEY, gAdsId);
+    }
+
+    public static void saveAppVersion(Context context, int version) {
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
+        cacheHandler.saveIntValue(context, CMConstant.APP_VERSION_CACHE_KEY, version);
     }
 
     public static long getCurrentLocalTimeStamp() {

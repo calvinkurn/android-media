@@ -47,9 +47,12 @@ public class CMUserHandler {
         try {
             String userId = getUserId();
             String gAdId = getGoogleAdId();
+            int appVersion = CMNotificationUtils.getCurrentAppVersion(mContext);
+
             if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
                     CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
-                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId)) {
+                    CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, gAdId)||
+                    CMNotificationUtils.mapTokenWithAppVersionRequired(mContext,appVersion)) {
 
                 updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
                 RequestParams requestParams = updateFcmTokenUseCase.createRequestParams(
@@ -57,7 +60,7 @@ public class CMUserHandler {
                         token,
                         CMNotificationUtils.getSdkVersion(),
                         CMNotificationUtils.getUniqueAppId(mContext),
-                        CMNotificationUtils.getCurrentAppVersion(mContext),
+                        appVersion,
                         CMNotificationUtils.getUserStatus(mContext, userId));
 
                 updateFcmTokenUseCase.execute(requestParams, new Subscriber<Map<Type, RestResponse>>() {
@@ -77,6 +80,7 @@ public class CMUserHandler {
                             CMNotificationUtils.saveToken(mContext, token);
                             CMNotificationUtils.saveUserId(mContext, userId);
                             CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
+                            CMNotificationUtils.saveAppVersion(mContext,appVersion );
                         }
                     }
                 });
@@ -88,6 +92,7 @@ public class CMUserHandler {
     private String getGoogleAdId() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(mContext, TkpdCache.ADVERTISINGID);
         String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
+
         if (adsId != null && !TextUtils.isEmpty(adsId.trim())) {
             return adsId;
         } else {
