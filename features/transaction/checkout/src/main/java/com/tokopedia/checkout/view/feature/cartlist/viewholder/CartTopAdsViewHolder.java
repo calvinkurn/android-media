@@ -5,30 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
-
-import java.util.List;
-
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 
 public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements TopAdsItemClickListener {
 
@@ -46,7 +32,6 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
     public void renderTopAds(TopAdsModel adsModel) {
         topAdsCarouselView.setAdsItemClickListener(this);
         topAdsCarouselView.setData(adsModel);
-        topAdsCarouselView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -68,8 +53,5 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     @Override
     public void onAddFavorite(int position, Data data) { }
-
-    @Override
-    public void onAddWishList(int position, Data data) { }
 
 }

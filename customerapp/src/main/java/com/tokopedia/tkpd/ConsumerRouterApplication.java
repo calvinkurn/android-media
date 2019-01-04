@@ -380,6 +380,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
@@ -513,7 +514,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsDashboardRouter,
         NpsRouter,
         DigitalRouter,
-        TrackingPromoCheckoutRouter {
+        TrackingPromoCheckoutRouter,
+        TopAdsRouter {
+
 
     private static final String EXTRA = "extra";
 

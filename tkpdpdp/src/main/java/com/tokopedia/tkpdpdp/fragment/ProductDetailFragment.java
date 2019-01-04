@@ -2663,11 +2663,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onAddWishList(int position, Data data) {
-
-    }
-
-    @Override
     public void onImageFromBuyerClick(int viewType, String reviewId) {
         if(viewType == ImageFromBuyerView.VIEW_TYPE_IMAGE){
             ProductPageTracking.eventClickReviewOnBuyersImage(
