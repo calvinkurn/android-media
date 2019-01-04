@@ -1674,6 +1674,16 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (showDialogDirectly) {
             showOverlayDialogOnScreen();
         }
+        overlayDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+            FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet)
+                        .setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
         analytics.eventViewOverlay(model.getChannelId());
     }
 
@@ -1688,7 +1698,20 @@ public class GroupChatActivity extends BaseSimpleActivity
             ImageHandler.loadImageRounded2(this, (ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl());
             view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
                 startApplink(interuptViewModel.getImageLink());
-                analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle());
+                ArrayList<EEPromotion> list = new ArrayList<>();
+                list.add(new EEPromotion(viewModel.getChannelInfoViewModel().getAdsId(),
+                        EEPromotion.NAME_GROUPCHAT,
+                        GroupChatAnalytics.DEFAULT_EE_POSITION,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        viewModel.getChannelInfoViewModel().getAdsImageUrl(),
+                        getAttributionTracking(GroupChatAnalytics
+                                .ATTRIBUTE_BANNER)
+                ));
+                analytics.eventClickOverlayImage(
+                        model.getChannelId(),GroupChatAnalytics.COMPONENT_BANNER,
+                        viewModel.getChannelInfoViewModel().getAdsName(),
+                        GroupChatAnalytics.ATTRIBUTE_BANNER,
+                        list);
                 closeOverlayDialog();
             });
         } else
@@ -1705,8 +1728,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             ((TextView) view.findViewById(R.id.tvDesc)).setVisibility(View.GONE);
 
         ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
-        ((ButtonCompat) view.findViewById(R.id.btnCta)).setText(MethodChecker.fromHtml(interuptViewModel.getBtnTitle()));
         ((ButtonCompat) view.findViewById(R.id.btnCta)).setOnClickListener(view1 -> {
+            analytics.eventClickOverlayButton(model.getChannelId(), model.getInteruptViewModel().getBtnTitle());
             if (!TextUtils.isEmpty(interuptViewModel.getBtnLink())) {
                 startApplink(interuptViewModel.getBtnLink());
             }

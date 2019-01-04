@@ -332,8 +332,16 @@ public class GroupChatAnalytics {
         );
     }
 
-    public void eventClickOverlayImage(String channelId) {
-
+    public void eventClickOverlayImage(String channelId, String attributeName, String channelUrl,
+                                       String channelName, List<EEPromotion> listPromotion) {
+        analyticTracker.sendEnhancedEcommerce(DataLayer.mapOf(
+                EVENT_NAME, EVENT_NAME_PROMO_CLICK,
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_CLICK_OVERLAY_IMAGE,
+                EVENT_LABEL, channelId,
+                ECOMMERCE, getEEDataLayer(listPromotion, EE_PROMO_CLICK),
+                ATTRIBUTION, generateTrackerAttribution(attributeName, channelUrl, channelName)
+        ));
     }
 
 }
