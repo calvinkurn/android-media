@@ -61,6 +61,8 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.notifications.common.CMNotificationUtils;
+import com.tokopedia.notifications.data.source.CMNotificationUrls;
 import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
@@ -308,6 +310,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.network.constant.TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         KycCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
+        CMNotificationUrls.CAMPAIGN_MANAGEMENT_DOMAIN = ConsumerAppBaseUrl.CAMPAIGN_MANAGEMENT_DOMAIN;
         Config.TOPADS_BASE_URL = ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN;
     }
 
