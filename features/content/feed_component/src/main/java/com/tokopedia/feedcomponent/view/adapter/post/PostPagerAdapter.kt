@@ -20,7 +20,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 /**
  * @author by milhamj on 9/21/18.
  */
-class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImagePostListener,
+                       private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                        private val pollOptionListener: PollAdapter.PollOptionListener,
                        private val gridItemListener: GridPostAdapter.GridItemListener)
     : PagerAdapter() {
@@ -36,7 +37,7 @@ class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.Youtub
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val element: BasePostViewModel = itemList[position]
         val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
-            is ImagePostViewModel -> ImagePostViewHolder() as BasePostViewHolder<BasePostViewModel>
+            is ImagePostViewModel -> ImagePostViewHolder(imagePostListener) as BasePostViewHolder<BasePostViewModel>
             is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
             is PollViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>

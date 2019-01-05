@@ -10,6 +10,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
@@ -88,6 +89,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final BannerAdapter.BannerItemListener bannerListener;
     private final RecommendationCardAdapter.RecommendationCardListener recommendationCardListener;
     private final CardTitleView.CardTitleListener cardTitleListener;
+    private final ImagePostViewHolder.ImagePostListener imagePostListener;
     private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
     private final PollAdapter.PollOptionListener pollOptionListener;
     private final GridPostAdapter.GridItemListener gridItemListener;
@@ -104,6 +106,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.bannerListener = context;
         this.recommendationCardListener = context;
         this.cardTitleListener = context;
+        this.imagePostListener = context;
         this.youtubePostListener = context;
         this.pollOptionListener = context;
         this.gridItemListener = context;
@@ -290,6 +293,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
                     view,
                     dynamicPostListener,
                     cardTitleListener,
+                    imagePostListener,
                     youtubePostListener,
                     pollOptionListener,
                     gridItemListener

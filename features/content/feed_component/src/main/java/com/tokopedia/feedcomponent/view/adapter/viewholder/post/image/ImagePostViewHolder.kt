@@ -11,13 +11,13 @@ import kotlinx.android.synthetic.main.item_post_image.view.*
 /**
  * @author by milhamj on 04/12/18.
  */
-class ImagePostViewHolder : BasePostViewHolder<ImagePostViewModel>() {
+class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostViewHolder<ImagePostViewModel>() {
 
     override var layoutRes = R.layout.item_post_image
 
     override fun bind(element: ImagePostViewModel) {
         itemView.image.setOnClickListener {
-            //TODO milhamj
+            listener.onImageClick(element.redirectLink)
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -36,5 +36,9 @@ class ImagePostViewHolder : BasePostViewHolder<ImagePostViewModel>() {
                 }
         )
         ImageHandler.loadImageRounded2(context, itemView.image, element.image)
+    }
+
+    interface ImagePostListener {
+        fun onImageClick(redirectLink: String)
     }
 }

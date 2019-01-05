@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
@@ -25,11 +26,13 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 /**
  * @author by milhamj on 28/11/18.
  */
-class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
-                            private var cardTitleListener: CardTitleView.CardTitleListener,
-                            private var youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                            private var pollOptionListener: PollAdapter.PollOptionListener,
-                            private var gridItemListener: GridPostAdapter.GridItemListener)
+class DynamicPostViewHolder(v: View,
+                            private val listener: DynamicPostListener,
+                            private val cardTitleListener: CardTitleView.CardTitleListener,
+                            private val imagePostListener: ImagePostViewHolder.ImagePostListener,
+                            private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
+                            private val pollOptionListener: PollAdapter.PollOptionListener,
+                            private val gridItemListener: GridPostAdapter.GridItemListener)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     companion object {
@@ -160,7 +163,7 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            val adapter = PostPagerAdapter(youtubePostListener, pollOptionListener, gridItemListener)
+            val adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count

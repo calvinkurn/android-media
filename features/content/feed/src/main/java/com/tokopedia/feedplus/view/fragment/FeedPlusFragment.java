@@ -35,6 +35,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
@@ -114,6 +115,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         BannerAdapter.BannerItemListener,
         RecommendationCardAdapter.RecommendationCardListener,
         CardTitleView.CardTitleListener,
+        ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener {
@@ -1436,6 +1438,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onTitleCtaClick(@NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
+    }
+
+    @Override
+    public void onImageClick(@NotNull String redirectLink) {
+        onGoToLink(redirectLink);
     }
 
     @Override
