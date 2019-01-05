@@ -4,6 +4,7 @@ import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHolder
@@ -20,7 +21,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
  * @author by milhamj on 9/21/18.
  */
 class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                       private val pollOptionListener: PollAdapter.PollOptionListener)
+                       private val pollOptionListener: PollAdapter.PollOptionListener,
+                       private val gridItemListener: GridPostAdapter.GridItemListener)
     : PagerAdapter() {
 
     private val itemList: MutableList<BasePostViewModel> = ArrayList()
@@ -35,9 +37,9 @@ class PostPagerAdapter(private val youtubePostListener: YoutubeViewHolder.Youtub
         val element: BasePostViewModel = itemList[position]
         val viewHolder: BasePostViewHolder<BasePostViewModel> = when (element) {
             is ImagePostViewModel -> ImagePostViewHolder() as BasePostViewHolder<BasePostViewModel>
-            is GridPostViewModel -> GridPostViewHolder() as BasePostViewHolder<BasePostViewModel>
-            is PollViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is YoutubeViewModel -> YoutubeViewHolder(youtubePostListener) as BasePostViewHolder<BasePostViewModel>
+            is PollViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
+            is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))

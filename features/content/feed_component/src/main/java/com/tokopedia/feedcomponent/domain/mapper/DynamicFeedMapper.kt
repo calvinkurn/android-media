@@ -199,7 +199,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
 
-        //TODO milhamj wait from API
         return GridPostViewModel(
                 itemList,
                 media.text,

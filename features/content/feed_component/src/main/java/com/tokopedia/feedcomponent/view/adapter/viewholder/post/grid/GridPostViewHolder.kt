@@ -10,7 +10,8 @@ import kotlinx.android.synthetic.main.item_post_grid.view.*
 /**
  * @author by milhamj on 07/12/18
  */
-class GridPostViewHolder : BasePostViewHolder<GridPostViewModel>() {
+class GridPostViewHolder(val gridItemListener: GridPostAdapter.GridItemListener)
+    : BasePostViewHolder<GridPostViewModel>() {
 
     companion object {
         private const val SPAN_SIZE_FULL = 6
@@ -38,7 +39,7 @@ class GridPostViewHolder : BasePostViewHolder<GridPostViewModel>() {
         }
         itemView.gridList.layoutManager = layoutManager
 
-        val adapter = GridPostAdapter(element)
+        val adapter = GridPostAdapter(element, gridItemListener)
         itemView.gridList.adapter = adapter
     }
 }

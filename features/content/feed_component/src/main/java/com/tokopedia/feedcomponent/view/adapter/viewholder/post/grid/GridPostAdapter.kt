@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
@@ -17,7 +18,8 @@ import kotlinx.android.synthetic.main.item_grid.view.*
 /**
  * @author by milhamj on 07/12/18.
  */
-class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
+class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
+                      private val listener: GridItemListener)
     : RecyclerView.Adapter<GridPostAdapter.GridItemViewHolder>() {
 
     companion object {
@@ -29,7 +31,7 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_grid, parent, false)
-        return GridItemViewHolder(view)
+        return GridItemViewHolder(view, listener)
     }
 
     override fun getItemCount() : Int {
@@ -48,7 +50,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
             holder.bindOthers(
                     extraProduct,
                     gridPostViewModel.actionText,
-                    gridPostViewModel.actionLink
+                    gridPostViewModel.actionLink,
+                    gridPostViewModel.postId
             )
 
         } else if (gridPostViewModel.itemList.size in LAST_FEED_POSITION_SMALL..LAST_FEED_POSITION
@@ -57,7 +60,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
             holder.bindOthers(
                     extraProduct,
                     gridPostViewModel.actionText,
-                    gridPostViewModel.actionLink
+                    gridPostViewModel.actionLink,
+                    gridPostViewModel.postId
             )
 
         } else {
@@ -65,7 +69,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
         }
     }
 
-    class GridItemViewHolder(val v: View) : RecyclerView.ViewHolder(v) {
+    class GridItemViewHolder(val v: View,
+                             private val listener: GridItemListener) : RecyclerView.ViewHolder(v) {
         fun bindImage(image: String) {
             itemView.productImage.loadImage(image)
         }
@@ -76,10 +81,14 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
 
             itemView.text.setTextColor(MethodChecker.getColor(itemView.context, R.color.orange_red))
             itemView.text.text = item.price
+
+            itemView.setOnClickListener {
+                listener.onGridItemClick(item.redirectLink)
+            }
         }
 
         fun bindOthers(numberOfExtraProduct: Int, actionText: String,
-                       actionLink: String) {
+                       actionLink: String, postId: Int) {
             val extra = String.format("+%d", numberOfExtraProduct)
             itemView.extraProduct.background = ColorDrawable(
                     MethodChecker.getColor(itemView.context, R.color.black_38)
@@ -89,6 +98,19 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel)
 
             itemView.text.setTextColor(MethodChecker.getColor(itemView.context, R.color.black_54))
             itemView.text.text = actionText
+
+            itemView.setOnClickListener {
+                listener.onGridItemClick(
+                        if (actionLink.isNotEmpty()) actionLink
+                        else ApplinkConst.FEED_DETAILS.replace("{extra_detail_id}", postId.toString())
+                )
+            }
         }
+    }
+
+    interface GridItemListener {
+        fun onGridItemClick(redirectLink: String)
+
+        fun onGridOthersClick(redirectLink: String)
     }
 }

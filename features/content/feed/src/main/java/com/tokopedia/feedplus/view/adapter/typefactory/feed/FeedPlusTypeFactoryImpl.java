@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
         .FeedRecommendationViewHolder;
@@ -89,6 +90,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final CardTitleView.CardTitleListener cardTitleListener;
     private final YoutubeViewHolder.YoutubePostListener youtubePostListener;
     private final PollAdapter.PollOptionListener pollOptionListener;
+    private final GridPostAdapter.GridItemListener gridItemListener;
     private final FeedAnalytics analytics;
 
     public FeedPlusTypeFactoryImpl(FeedPlusFragment context, FeedAnalytics analytics) {
@@ -104,6 +106,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.cardTitleListener = context;
         this.youtubePostListener = context;
         this.pollOptionListener = context;
+        this.gridItemListener = context;
         this.analytics = analytics;
     }
 
@@ -283,7 +286,14 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else if (type == WhitelistViewHolder.LAYOUT)
             viewHolder = new WhitelistViewHolder(view, viewListener);
         else if (type == DynamicPostViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new DynamicPostViewHolder(view, dynamicPostListener, cardTitleListener, youtubePostListener, pollOptionListener);
+            viewHolder = new DynamicPostViewHolder(
+                    view,
+                    dynamicPostListener,
+                    cardTitleListener,
+                    youtubePostListener,
+                    pollOptionListener,
+                    gridItemListener
+            );
         }
         else if (type == FeedRecommendationViewHolder.Companion.getLAYOUT()) {
             viewHolder = new FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener);

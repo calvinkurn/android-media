@@ -34,6 +34,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter;
@@ -114,7 +115,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         RecommendationCardAdapter.RecommendationCardListener,
         CardTitleView.CardTitleListener,
         YoutubeViewHolder.YoutubePostListener,
-        PollAdapter.PollOptionListener {
+        PollAdapter.PollOptionListener,
+        GridPostAdapter.GridItemListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -1478,5 +1480,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
         } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
             presenter.toggleFavoriteShop(positionInFeed, id);
         }
+    }
+
+    @Override
+    public void onGridItemClick(@NotNull String redirectLink) {
+        onGoToLink(redirectLink);
+    }
+
+    @Override
+    public void onGridOthersClick(@NotNull String redirectLink) {
+        onGoToLink(redirectLink);
     }
 }

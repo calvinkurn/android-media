@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateHeade
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewitemView.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
@@ -27,7 +28,8 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
                             private var cardTitleListener: CardTitleView.CardTitleListener,
                             private var youtubePostListener: YoutubeViewHolder.YoutubePostListener,
-                            private var pollOptionListener: PollAdapter.PollOptionListener)
+                            private var pollOptionListener: PollAdapter.PollOptionListener,
+                            private var gridItemListener: GridPostAdapter.GridItemListener)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     companion object {
@@ -51,7 +53,7 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
         bindTitle(element.title, element.template.cardpost.title)
         bindHeader(element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body)
-        bindContentList(element.contentList, element.template.cardpost.body)
+        bindContentList(element.id, element.contentList, element.template.cardpost.body)
         bindFooter(element.id, element.footer, element.template.cardpost.footer)
     }
 
@@ -151,11 +153,14 @@ class DynamicPostViewHolder(v: View, private var listener: DynamicPostListener,
         }
     }
 
-    private fun bindContentList(contentList: MutableList<BasePostViewModel>, template: TemplateBody) {
+    private fun bindContentList(postId: Int,
+                                contentList: MutableList<BasePostViewModel>,
+                                template: TemplateBody) {
         itemView.contentLayout.shouldShowWithAction(template.media) {
+            contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            val adapter = PostPagerAdapter(youtubePostListener, pollOptionListener)
+            val adapter = PostPagerAdapter(youtubePostListener, pollOptionListener, gridItemListener)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count
