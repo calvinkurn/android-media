@@ -1,6 +1,8 @@
 package com.tokopedia.topads.dashboard.view.fragment.credit
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.credit_history.CreditHistory
 import com.tokopedia.topads.dashboard.data.model.credit_history.TopAdsCreditHistory
@@ -28,9 +31,9 @@ import javax.inject.Inject
 class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditHistoryTypeFactory>() {
 
     @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: TopAdsCreditHistoryViewModel
-    private var startDate: Date? = null
-    private var endDate: Date? = null
+    lateinit var datePickerViewModel: TopAdsDatePickerViewModel
 
     companion object {
         fun createInstance() = TopAdsCreditHistoryFragment()
@@ -43,6 +46,22 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         super.onStart()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            viewModel = viewModelProvider.get(TopAdsCreditHistoryViewModel::class.java)
+            datePickerViewModel = viewModelProvider.get(TopAdsDatePickerViewModel::class.java)
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        datePickerViewModel.dateRange.observe(this, android.arch.lifecycle.Observer { onDateRangeChanged(it) })
+        viewModel.creditsHistory.observe(this, android.arch.lifecycle.Observer { onSuccessGetCredit(it) })
+        viewModel.errors.observe(this, android.arch.lifecycle.Observer { onErrorGetCredit(it) })
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topads_credit_history, container, false)
     }
@@ -53,11 +72,26 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         selected_date.setOnClickListener { onDateClicked() }
     }
 
+    override fun onDestroyView() {
+        datePickerViewModel.dateRange.removeObservers(this)
+        viewModel.creditsHistory.removeObservers(this)
+        viewModel.errors.removeObservers(this)
+        super.onDestroyView()
+    }
+
+    private fun onDateRangeChanged(dateRange: TopAdsDatePickerViewModel.DateRange?){
+        if (dateRange == null) return
+
+        updateDateLabelView(dateRange.startDate, dateRange.endDate)
+        loadInitialData()
+    }
+
     private fun onDateClicked() {
-        if (startDate == null && endDate == null) return
+        val selectedDateRange = datePickerViewModel.dateRange.value?.copy() ?: return
 
         activity?.let {
-            startActivityForResult(getDateSelectionIntent(it, startDate!!, endDate!!), DatePickerConstant.REQUEST_CODE_DATE)
+            startActivityForResult(getDateSelectionIntent(it, selectedDateRange.startDate, selectedDateRange.endDate),
+                    DatePickerConstant.REQUEST_CODE_DATE)
         }
     }
 
@@ -84,8 +118,8 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
             putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, TopAdsCommonConstant.MAX_DATE_RANGE)
 
             putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, TopAdsDatePeriodUtil.getPeriodRangeList(activity))
-            putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, viewModel.lastSelectionDatePickerIndex)
-            putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, viewModel.lastSelectionDatePickerType)
+            putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, datePickerViewModel.lastSelectionDatePickerIndex)
+            putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, datePickerViewModel.lastSelectionDatePickerType)
 
             putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, getString(R.string.title_date_picker))
         }
@@ -95,12 +129,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.isDateUpdated(startDate, endDate)){
-            startDate = viewModel.startDate
-            endDate = viewModel.endDate
-            updateDateLabelView(startDate!!, endDate!!)
-            loadInitialData()
-        }
+        datePickerViewModel.checkUpdatedDate()
     }
 
     private fun updateDateLabelView(startDate: Date, endDate: Date) {
@@ -123,19 +152,16 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
             val lastSelection = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1)
             val selectionType = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE)
             if (sDate != -1L && eDate != -1L) {
-                startDate = Date(sDate)
-                endDate = Date(eDate)
-                viewModel.saveDate(startDate!!, endDate!!)
-                viewModel.saveSelectionDatePicker(selectionType, lastSelection)
-                updateDateLabelView(startDate!!, endDate!!)
-                loadInitialData()
+                datePickerViewModel.saveSelectionDatePicker(selectionType, lastSelection)
+                datePickerViewModel.saveDate(Date(sDate), Date(eDate))
             }
         }
     }
 
     override fun loadData(page: Int) {
-        viewModel.getCreditHistory(GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history), startDate, endDate,
-                this::onSuccessGetCredit, this::onErrorGetCredit)
+        val selectedDateRange = datePickerViewModel.dateRange.value?.copy()
+        viewModel.getCreditHistory(GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
+                selectedDateRange?.startDate, selectedDateRange?.endDate)
     }
 
     override fun getScreenName(): String? = null
@@ -144,14 +170,16 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
-    fun onSuccessGetCredit(creditHistory: TopAdsCreditHistory){
+    private fun onSuccessGetCredit(creditHistory: TopAdsCreditHistory?){
+        if (creditHistory == null) return
+
         topads_credit_addition.text = creditHistory.totalAdditionFmt
         topads_credit_used.text = creditHistory.totalUsedFmt
         card_credit_summary.visibility = View.VISIBLE
         super.renderList(creditHistory.creditHistory)
     }
 
-    fun onErrorGetCredit(t: Throwable){
+    private fun onErrorGetCredit(t: Throwable?){
         super.showGetListError(t)
         card_credit_summary.visibility = View.GONE
     }

@@ -12,7 +12,8 @@ import dagger.Component
  */
 
 @TopAdsDashboardScope
-@Component(modules = [TopAdsDashboardModule::class, TopAdsDashboardShopModule::class, TopAdsDashboardNetworkModule::class],
+@Component(modules = [TopAdsDashboardModule::class, TopAdsDashboardShopModule::class,
+    TopAdsDashboardNetworkModule::class, ViewModelModule::class],
         dependencies = [BaseAppComponent::class])
 interface TopAdsDashboardComponent {
 
