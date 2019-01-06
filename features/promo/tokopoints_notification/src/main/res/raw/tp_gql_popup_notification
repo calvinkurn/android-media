@@ -1,6 +1,6 @@
-{
+query TokopointsNotification($type: String) {
   tokopoints {
-    popupNotif(type: "main") {
+    popupNotif(type: $type) {
       title
       text
       imageURL
