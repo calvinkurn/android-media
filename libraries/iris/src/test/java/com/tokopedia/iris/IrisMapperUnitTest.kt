@@ -1,16 +1,11 @@
 package com.tokopedia.iris
 
-import android.content.Context
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
-import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Matchers
-import org.mockito.Mock
-import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import org.mockito.runners.MockitoJUnitRunner
 
@@ -34,16 +29,6 @@ class IrisMapperUnitTest {
         return test.toString()
     }
 
-    fun expectedResult() : String {
-        val result = JSONObject()
-        val data = JSONArray()
-        val row = JSONObject()
-        val event = JSONArray()
-
-
-        return ""
-    }
-
     @Test
     fun testAddSessionToEvent() {
         val result : JSONObject? = trackingMapper.addSessionToEvent(dataTest(), "session")
@@ -57,7 +42,7 @@ class IrisMapperUnitTest {
         val result: String? = trackingMapper.transformSingleEvent(dataTest(), "session", "user", "device")
         Assert.assertNotNull(result)
         Assert.assertTrue(result is String)
-        Assert.assertEquals("", result)
+        Assert.assertEquals("{\"data\":[{\"container\":\"gtm\",\"device_id\":\"device\",\"user_id\":\"user\",\"event_data\":[{\"iris_session_id\":\"session\",\"event\":\"data sample\"}],\"event_ga\":\"default_app\"}]}", result)
     }
 
     @Test
