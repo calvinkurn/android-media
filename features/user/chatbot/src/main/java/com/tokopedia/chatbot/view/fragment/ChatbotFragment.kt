@@ -23,8 +23,8 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -104,11 +104,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(view, session, this,
-                (activity as BaseChatToolbarActivity).getToolbar(), adapter)
         super.viewState = ChatbotViewStateImpl(view, session, this, this,
-                this, this, this,
-                this, this, this, this, (activity as BaseChatToolbarActivity).getToolbar())
+                (activity as BaseChatToolbarActivity).getToolbar(), adapter)
         viewState.initView()
         loadInitialData()
     }
