@@ -11,7 +11,7 @@
 
     <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
     <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
-    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan Gold Merchant.</string>
+    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan %1$s.</string>
     <string name="product_manage_item_stock">Stok %1$s</string>
     <string name="product_manage_item_cashback">Cashback %1$d%%</string>
     <string name="product_manage_menu_set_price">Atur Harga</string>

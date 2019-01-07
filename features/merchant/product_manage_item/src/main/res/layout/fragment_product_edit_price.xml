@@ -16,25 +16,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:orientation="horizontal">
 
-        <com.tokopedia.design.text.SpinnerCounterInputView
-            android:id="@+id/spinnerCounterInputViewPrice"
+        <com.tokopedia.design.component.TextViewCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_currency_rp"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            app:fontSize="title"
+            app:textViewTheme="lightPrimary"/>
+
+        <com.tokopedia.design.text.CounterInputView
+            android:id="@+id/counterEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:spinner_counter_max_length="@integer/product_max_counter_length"
-            app:spinner_decimal_show_counter_button="false"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"/>
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
+            app:counter_show_counter_button="false"
+            app:counter_max_length="@integer/product_max_counter_length"
+            app:counter_enabled="true"/>
 
         <ImageView
             android:id="@+id/imageViewEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_edit_product"
-            android:layout_marginRight="@dimen/dp_16"/>
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_gravity="center_vertical"/>
 
     </LinearLayout>
 

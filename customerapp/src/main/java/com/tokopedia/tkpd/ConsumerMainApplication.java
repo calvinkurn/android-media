@@ -21,8 +21,8 @@ import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.analytics.Analytics;
@@ -38,12 +38,13 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.digital.newcart.data.DigitalDealsUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.flight_dbflow.TkpdFlight;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.discovery.newdiscovery.constant.DiscoveryBaseURL;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight_dbflow.TkpdFlight;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -64,10 +65,10 @@ import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
-import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
+import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
@@ -187,7 +188,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void generateConsumerAppBaseUrl() {
         TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
-        InstantLoanUrl.BaseUrl.WEB_DOMAIN= ConsumerAppBaseUrl.BASE_INSTANT_LOAN_URL;
+        InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_INSTANT_LOAN_URL;
         TkpdBaseURL.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
@@ -277,6 +278,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
         AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        AccountHomeUrl.BASE_MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         ChangePhoneNumberUrl.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         PhoneVerificationConst.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         ProductDetailUrl.WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
@@ -293,10 +295,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         LoginRegisterPhoneUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         CheckMsisdnUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
-
+        com.tokopedia.common_digital.common.constant.DigitalUrl.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+        DigitalDealsUrl.BASE_URL = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
         TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         KycUrl.BASE_URL = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         DiscoveryBaseURL.Ace.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
     }
@@ -330,7 +334,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onInAppShown(InAppMessage message) {
-        InAppTracker.getInstance(this).trackInAppClicked(message);
     }
 
     @Override
@@ -401,7 +404,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         System.loadLibrary("native-lib");
     }
 
-    public boolean checkAppSignature(){
+    public boolean checkAppSignature() {
         PackageInfo info = null;
         try {
             info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -419,7 +422,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private String getInfoFromBytes(byte[] bytes) {
-        if(null == bytes) {
+        if (null == bytes) {
             return "null";
         }
 
@@ -479,5 +482,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         }
         return md5StrBuff.toString();
+    }
+
+    @Override
+    public Class<?> getDeeplinkClass() {
+        return DeepLinkActivity.class;
     }
 }

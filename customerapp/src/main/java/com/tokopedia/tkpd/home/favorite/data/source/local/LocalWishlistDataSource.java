@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.ObservableFactory;

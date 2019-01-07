@@ -111,10 +111,10 @@ public class PaymentProcedureWebViewFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(com.tokopedia.core.R.layout.fragment_fragment_general_web_view, container, false);
+        View view = inflater.inflate(com.tokopedia.core2.R.layout.fragment_fragment_general_web_view, container, false);
         String url = getArguments().getString(EXTRA_URL, TkpdBaseURL.MOBILE_DOMAIN);
-        webview = (TkpdWebView) view.findViewById(com.tokopedia.core.R.id.webview);
-        progressBar = (ProgressBar) view.findViewById(com.tokopedia.core.R.id.progressbar);
+        webview = (TkpdWebView) view.findViewById(com.tokopedia.core2.R.id.webview);
+        progressBar = (ProgressBar) view.findViewById(com.tokopedia.core2.R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
         if (!url.contains(SEAMLESS))

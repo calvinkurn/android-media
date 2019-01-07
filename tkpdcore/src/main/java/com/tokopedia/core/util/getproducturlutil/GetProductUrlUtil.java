@@ -11,7 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tkpd.library.ui.view.CustomSearchView;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.router.SellerRouter;

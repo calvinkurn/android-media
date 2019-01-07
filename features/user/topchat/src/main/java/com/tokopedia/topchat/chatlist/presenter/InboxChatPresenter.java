@@ -1,11 +1,13 @@
 package com.tokopedia.topchat.chatlist.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.util.Pair;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
@@ -245,7 +247,7 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         return getView().getAdapter().getListMove().size();
     }
 
-    public void goToDetailMessage(int position, ChatListViewModel listMessage) {
+    public void goToDetailMessage(Context context, int position, ChatListViewModel listMessage) {
 
         if (viewModel == null)
             return;
@@ -404,6 +406,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                     .header("Origin", TopChatUrl.WEB_DOMAIN)
                     .header("Accounts-Authorization",
                             "Bearer " + userSession.getAccessToken())
+                    .header("x-app-version",String.valueOf(GlobalConfig.VERSION_CODE))
+                    .header("x-device", "android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-version","android-" + GlobalConfig.VERSION_NAME)
+                    .header("x-tkpd-app-name", GlobalConfig.getPackageApplicationName())
                     .build();
             ws = client.newWebSocket(request, listener);
             attempt++;

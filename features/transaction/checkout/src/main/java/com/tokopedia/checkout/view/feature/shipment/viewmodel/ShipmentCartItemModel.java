@@ -40,6 +40,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String shopName;
     private boolean isGoldMerchant;
     private boolean isOfficialStore;
+    private String shopBadge;
 
     // Cart item state
     private int shippingId;
@@ -119,6 +120,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         stateLoadingCourierState = in.readByte() != 0;
         stateHasLoadCourierState = in.readByte() != 0;
         stateHasExtraMarginTop = in.readByte() != 0;
+        shopBadge = in.readString();
     }
 
     @Override
@@ -161,6 +163,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
+        dest.writeString(shopBadge);
     }
 
     @Override
@@ -218,6 +221,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
         newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
         newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
+        newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
 
         return newShipmentCartItemModel;
     }
@@ -524,6 +528,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setStateHasExtraMarginTop(boolean stateHasExtraMarginTop) {
         this.stateHasExtraMarginTop = stateHasExtraMarginTop;
+    }
+
+    public String getShopBadge() {
+        return shopBadge;
+    }
+
+    public void setShopBadge(String shopBadge) {
+        this.shopBadge = shopBadge;
     }
 
     @Override

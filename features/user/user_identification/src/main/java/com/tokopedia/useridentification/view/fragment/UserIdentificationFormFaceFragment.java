@@ -2,6 +2,8 @@ package com.tokopedia.useridentification.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -21,7 +23,8 @@ import static com.tokopedia.useridentification.view.fragment.UserIdentificationC
  */
 
 public class UserIdentificationFormFaceFragment extends
-        BaseUserIdentificationStepperFragment<UserIdentificationStepperModel> {
+        BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>
+        implements UserIdentificationFormActivity.Listener {
 
     public static Fragment createInstance() {
         Fragment fragment = new UserIdentificationFormFaceFragment();
@@ -30,6 +33,11 @@ public class UserIdentificationFormFaceFragment extends
         return fragment;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        analytics.eventViewSelfiePage();
+    }
 
     @Override
     protected String getScreenName() {
@@ -44,6 +52,7 @@ public class UserIdentificationFormFaceFragment extends
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickNextSelfiePage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_FACE);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
@@ -55,5 +64,10 @@ public class UserIdentificationFormFaceFragment extends
             ((UserIdentificationFormActivity) getActivity())
                     .updateToolbarTitle(getString(R.string.title_kyc_form_face));
         }
+    }
+
+    @Override
+    public void trackOnBackPressed() {
+        analytics.eventClickBackSelfiePage();
     }
 }

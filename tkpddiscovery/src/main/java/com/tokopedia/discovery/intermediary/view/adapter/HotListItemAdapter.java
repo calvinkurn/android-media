@@ -107,7 +107,7 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         hotListItemRowHolder.itemImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventHotlistIntermediary(categoryId,hotListModel.getTitle());
+                UnifyTracking.eventHotlistIntermediary(view.getContext(), categoryId,hotListModel.getTitle());
                 String url = hotListModel.getUrl();
                 URLParser urlParser = new URLParser(url);
                 switch (urlParser.getType()) {

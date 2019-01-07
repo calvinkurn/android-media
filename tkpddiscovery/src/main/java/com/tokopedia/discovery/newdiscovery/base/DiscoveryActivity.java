@@ -19,11 +19,13 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -58,6 +60,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private static final String FAILURE = "no matching result found";
     private static final String NO_RESPONSE = "no response";
     private static final String SUCCESS = "success match found";
+    private static final String SEARCH_RESULT_TRACE = "search_result_trace";
     private Toolbar toolbar;
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
@@ -71,6 +74,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private boolean fromCamera;
     private String imagePath;
     private UserSessionInterface userSession;
+    private PerformanceMonitoring performanceMonitoring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,38 +221,38 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private void sendSearchProductGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoverySearch(keyword);
+            UnifyTracking.eventDiscoverySearch(this, keyword);
         }
     }
 
     private void sendSearchShopGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoverySearchShop(keyword);
+            UnifyTracking.eventDiscoverySearchShop(this, keyword);
         }
     }
 
     private void sendVoiceSearchGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventDiscoveryVoiceSearch(keyword);
+            UnifyTracking.eventDiscoveryVoiceSearch(this, keyword);
         }
     }
 
     private void sendCameraImageSearchProductGTM() {
-        UnifyTracking.eventDiscoveryCameraImageSearch();
+        UnifyTracking.eventDiscoveryCameraImageSearch(this);
     }
 
     private void sendGalleryImageSearchProductGTM() {
-        UnifyTracking.eventDiscoveryGalleryImageSearch();
+        UnifyTracking.eventDiscoveryGalleryImageSearch(this);
     }
 
     private void sendGalleryImageSearchResultGTM(String label) {
-        UnifyTracking.eventDiscoveryGalleryImageSearchResult(label);
+        UnifyTracking.eventDiscoveryGalleryImageSearchResult(this, label);
     }
 
     private void sendCameraImageSearchResultGTM(String label) {
-        UnifyTracking.eventDiscoveryCameraImageSearchResult(label);
+        UnifyTracking.eventDiscoveryCameraImageSearchResult(this, label);
     }
 
     @Override
@@ -329,6 +333,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                         null
         );
         onSearchingStart(keyword);
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
         getPresenter().requestProduct(parameter, isForceSearch(), isRequestOfficialStoreBanner());
     }
 
@@ -459,7 +464,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             if (!TextUtils.isEmpty(imagePath)) {
                 onImagePickedSuccess(imagePath);
             } else {
-                showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+                showSnackBarView(getString(com.tokopedia.core2.R.string.error_gallery_valid));
             }
             if (searchView != null) {
                 searchView.clearFocus();
@@ -594,5 +599,13 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    @Override
+    public void onHandleResponseSearch(ProductViewModel productViewModel) {
+        super.onHandleResponseSearch(productViewModel);
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
     }
 }
