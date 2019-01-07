@@ -52,8 +52,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
 
             setBadge(element.badgeUrl)
 
-            //TODO milhamj change true
-            if (true) {
+            if (element.template.ctaLink) {
                 itemView.btnFollow.visible()
                 setButtonUi(element.cta)
             } else {
