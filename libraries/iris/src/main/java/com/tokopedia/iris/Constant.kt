@@ -35,3 +35,6 @@ const val MAX_ROW = "MAX_ROW"
 
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT_GA = "default_app"
+
+const val DEFAULT_SERVICE_TIME: Long = 900000
+const val DEFAULT_MAX_ROW = 50
