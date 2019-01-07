@@ -172,11 +172,11 @@ class TopChatViewStateImpl(
     }
 
     fun setTemplate(listTemplate: List<Visitable<Any>>?) {
-        if(listTemplate == null){
-            templateRecyclerView.visibility = View.GONE
+        templateRecyclerView.visibility = View.GONE
+        listTemplate?.let {
+            templateAdapter.list = listTemplate
+            templateRecyclerView.visibility = View.VISIBLE
         }
-        templateAdapter.list = listTemplate
-        templateRecyclerView.visibility = View.VISIBLE
     }
 
     fun addTemplateString(message: String) {
