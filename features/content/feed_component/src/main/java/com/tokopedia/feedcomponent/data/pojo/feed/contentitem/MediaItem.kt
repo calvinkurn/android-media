@@ -23,11 +23,11 @@ data class MediaItem (
     @Expose
     var type:String = "",
 
-    @SerializedName("applink")
+    @SerializedName("appLink")
     @Expose
     var applink:String = "",
 
-    @SerializedName("weblink")
+    @SerializedName("webLink")
     @Expose
     var weblink:String = "",
 

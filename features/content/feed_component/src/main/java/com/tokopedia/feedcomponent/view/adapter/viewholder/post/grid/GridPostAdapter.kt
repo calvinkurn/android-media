@@ -27,6 +27,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
         private const val MAX_FEED_SIZE_SMALL = 3
         private const val LAST_FEED_POSITION = 5
         private const val LAST_FEED_POSITION_SMALL = 2
+
+        private const val EXTRA_DETAIL_ID = "{extra_detail_id}"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridItemViewHolder {
@@ -102,7 +104,7 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
             itemView.setOnClickListener {
                 listener.onGridItemClick(
                         if (actionLink.isNotEmpty()) actionLink
-                        else ApplinkConst.FEED_DETAILS.replace("{extra_detail_id}", postId.toString())
+                        else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
                 )
             }
         }
