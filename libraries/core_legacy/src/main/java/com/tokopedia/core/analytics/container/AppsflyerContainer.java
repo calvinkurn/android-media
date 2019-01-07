@@ -72,16 +72,16 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         AppsFlyerLib.getInstance().startTracking(context, key);
     }
 
-    private void initUninstallTracking(String key){
+    private void initUninstallTracking(String key) {
         AppsFlyerLib.getInstance().enableUninstallTracking(key);
         AppsFlyerLib.getInstance().startTracking(context, key);
-        updateFCMToken();
+        updateFCMToken(FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     @Override
-    public void updateFCMToken(){
-        AppsFlyerLib.getInstance().updateServerUninstallToken(context,
-                FCMCacheManager.getRegistrationId(context.getApplicationContext()));
+    public void updateFCMToken(String fcmToken) {
+        CommonUtils.dumper(TAG + " FCM TOKEN - " + fcmToken);
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, fcmToken);
     }
 
     private void setCurrencyCode(String code) {
@@ -97,7 +97,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
     }
 
-    private HashMap<String, Object> initAdditionalData(){
+    private HashMap<String, Object> initAdditionalData() {
         return new HashMap<>();
     }
 

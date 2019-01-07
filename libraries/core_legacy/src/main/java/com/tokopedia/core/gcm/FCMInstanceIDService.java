@@ -33,7 +33,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     }
 
     private void updateApsFlyerToken(String refreshedToken) {
-        Jordan.init(this.getApplicationContext()).getAFContainer().updateFCMToken();
+        Jordan.init(this.getApplicationContext()).getAFContainer().updateFCMToken(refreshedToken);
     }
 
     @Override

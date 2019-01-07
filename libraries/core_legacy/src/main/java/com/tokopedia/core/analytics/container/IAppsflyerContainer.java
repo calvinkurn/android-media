@@ -36,5 +36,5 @@ public interface IAppsflyerContainer {
 
     void sendDeeplinkData(Activity activity);
 
-    void updateFCMToken();
+    void updateFCMToken(String fcmToken);
 }
