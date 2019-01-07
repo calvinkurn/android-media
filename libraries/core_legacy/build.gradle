@@ -41,7 +41,7 @@ project.ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':trackinterface')
+    implementation project(rootProject.ext.libraries.trackinterface)
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
