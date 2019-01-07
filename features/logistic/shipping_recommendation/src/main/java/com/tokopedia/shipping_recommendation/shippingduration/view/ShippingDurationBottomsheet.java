@@ -10,22 +10,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.R;
-import com.tokopedia.shipping_recommendation.shippingduration.di.DaggerShippingDurationComponent;
-import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationComponent;
-import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingDurationViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.shipping_recommendation.shippingduration.di.DaggerShippingDurationComponent;
+import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationComponent;
+import com.tokopedia.shipping_recommendation.shippingduration.di.ShippingDurationModule;
 
 import java.util.ArrayList;
 import java.util.List;
