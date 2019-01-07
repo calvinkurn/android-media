@@ -2,15 +2,14 @@ package com.tokopedia.topads.dashboard.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.abstraction.common.data.model.request.Fail
+import com.tokopedia.abstraction.common.data.model.request.Result
+import com.tokopedia.abstraction.common.data.model.request.Success
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.AppExecutors
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
 import com.tokopedia.topads.dashboard.data.model.credit_history.TopAdsCreditHistory
 import com.tokopedia.topads.dashboard.data.utils.extention.getRealData
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,11 +24,10 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
     : ViewModel(), CoroutineScope {
     private val job = Job()
 
-    val creditsHistory = MutableLiveData<TopAdsCreditHistory>()
-    val errors = MutableLiveData<Throwable>()
+    val creditsHistory = MutableLiveData<Result<TopAdsCreditHistory>>()
 
     override val coroutineContext: CoroutineContext
-        get() = AppExecutors.uiContext + job
+        get() = Dispatchers.Main + job
 
 
     fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {
@@ -41,17 +39,17 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
                 PARAM_END_DATE to endDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) }
         )
         launchCatchError(block = {
-            val data = withContext(AppExecutors.bgContext){
+            val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_CREDIT_RESPONSE, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getRealData<TopAdsCreditHistory.CreditsResponse>()
 
             if (data.response.errors.isEmpty())
-                creditsHistory.value = data.response.dataHistory
+                creditsHistory.value = Success(data.response.dataHistory)
             else
-                errors.value = ResponseErrorException(data.response.errors)
+                creditsHistory.value = Fail(ResponseErrorException(data.response.errors))
         }){
-            errors.value = it
+            creditsHistory.value = Fail(it)
         }
     }
 

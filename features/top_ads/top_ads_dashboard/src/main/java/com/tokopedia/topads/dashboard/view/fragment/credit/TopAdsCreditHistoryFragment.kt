@@ -10,6 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.common.data.model.request.Fail
+import com.tokopedia.abstraction.common.data.model.request.Result
+import com.tokopedia.abstraction.common.data.model.request.Success
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
@@ -58,8 +61,10 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         datePickerViewModel.dateRange.observe(this, android.arch.lifecycle.Observer { onDateRangeChanged(it) })
-        viewModel.creditsHistory.observe(this, android.arch.lifecycle.Observer { onSuccessGetCredit(it) })
-        viewModel.errors.observe(this, android.arch.lifecycle.Observer { onErrorGetCredit(it) })
+        viewModel.creditsHistory.observe(this, android.arch.lifecycle.Observer { when (it) {
+            is Success -> onSuccessGetCredit(it.data)
+            is Fail -> onErrorGetCredit(it.throwable)
+        } })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,7 +80,6 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     override fun onDestroyView() {
         datePickerViewModel.dateRange.removeObservers(this)
         viewModel.creditsHistory.removeObservers(this)
-        viewModel.errors.removeObservers(this)
         super.onDestroyView()
     }
 
@@ -170,9 +174,7 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
-    private fun onSuccessGetCredit(creditHistory: TopAdsCreditHistory?){
-        if (creditHistory == null) return
-
+    private fun onSuccessGetCredit(creditHistory: TopAdsCreditHistory){
         topads_credit_addition.text = creditHistory.totalAdditionFmt
         topads_credit_used.text = creditHistory.totalUsedFmt
         card_credit_summary.visibility = View.VISIBLE

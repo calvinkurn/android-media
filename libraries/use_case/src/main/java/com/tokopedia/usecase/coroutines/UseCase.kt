@@ -1,16 +1,15 @@
 package com.tokopedia.usecase.coroutines
 
-import com.tokopedia.kotlin.extensions.coroutines.AppExecutors
 import kotlinx.coroutines.experimental.*
 
 abstract class UseCase<out T : Any> {
 
     protected var parentJob = SupervisorJob()
-    private val localScope = CoroutineScope(AppExecutors.uiContext + parentJob)
+    private val localScope = CoroutineScope(Dispatchers.Main + parentJob)
 
     abstract suspend fun executeOnBackground(): T
 
-    private suspend fun executeCatchError(): Result<T> = withContext(AppExecutors.bgContext){
+    private suspend fun executeCatchError(): Result<T> = withContext(Dispatchers.Default){
         try {
             Success(executeOnBackground())
         } catch (throwable: Throwable) {
