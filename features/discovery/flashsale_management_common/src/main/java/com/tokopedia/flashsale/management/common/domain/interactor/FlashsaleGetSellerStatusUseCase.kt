@@ -41,7 +41,7 @@ class FlashsaleGetSellerStatusUseCase(val graphqlUseCase: GraphqlUseCase): UseCa
             if (errors != null && !errors.isEmpty()){
                 Observable.error(MessageErrorException(errors.joinToString(", ")))
             } else {
-                val response = graphqlResponse.getData<SellerStatus.Response>(SellerStatus.Response::class.java).getMojitoSellerStatus.sellerStatus
+                val response = graphqlResponse.getData<SellerStatus.Response>(SellerStatus.Response::class.java).getCampaignSellerStatus.sellerStatus
                 Observable.just(response)
             }
         }.map { it.isVisible }

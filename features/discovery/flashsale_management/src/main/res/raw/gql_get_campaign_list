@@ -5,7 +5,7 @@ query getCampaignList($all: Boolean!,
                       $q: String,
                       $status: String,
                       $shop_id: Int!){
-   mojito_camp_list(params:{
+   getCampaignList(params:{
           all:$all
           offset:$offset
           rows:$rows

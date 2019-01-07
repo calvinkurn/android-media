@@ -7,15 +7,15 @@ import com.google.gson.annotations.SerializedName
  * Created by hendry on 25/10/18.
  */
 data class FlashSaleMutationSubmitResponseGQL(
-        @SerializedName("mojito_submit_product")
+        @SerializedName("campaign_submit_product")
         @Expose val flashSaleDataContainer: FlashSaleDataContainer)
 
 data class FlashSaleMutationReserveResponseGQL(
-        @SerializedName("mojito_reserve_product")
+        @SerializedName("campaign_reserve_product")
         @Expose val flashSaleDataContainer: FlashSaleDataContainer)
 
 data class FlashSaleMutationDeReserveResponseGQL(
-        @SerializedName("mojito_dereserve_product")
+        @SerializedName("campaign_dereserve_product")
         @Expose val flashSaleDataContainer: FlashSaleDataContainer)
 
 class FlashSaleDataContainer(

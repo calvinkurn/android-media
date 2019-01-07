@@ -17,6 +17,6 @@ data class DataCampaignList(
     data class ResponseData(@SerializedName("data")
                             @Expose val data: DataCampaignList = DataCampaignList())
 
-    data class Response(@SerializedName("mojito_camp_list")
+    data class Response(@SerializedName("getCampaignList")
                         @Expose val result: ResponseData = ResponseData())
 }

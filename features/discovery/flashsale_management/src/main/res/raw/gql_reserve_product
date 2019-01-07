@@ -1,6 +1,6 @@
-mutation mojito_reserve_product($campaign_id:Int!, $criteria_id:Int!, $product_id:Int!, $discounted_price:Int!,
+mutation campaign_reserve_product($campaign_id:Int!, $criteria_id:Int!, $product_id:Int!, $discounted_price:Int!,
  $cashback:Int!, $custom_stock:Int!, $shop_id:Int!){
-    mojito_reserve_product(params:{
+    campaign_reserve_product(params:{
     campaign_id:$campaign_id
     shop_id:$shop_id
 	criteria_id:$criteria_id
