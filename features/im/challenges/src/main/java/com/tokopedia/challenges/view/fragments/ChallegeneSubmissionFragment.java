@@ -155,7 +155,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             if (videoPlayer != null)
                 videoPlayer.startPlay(VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
-        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         super.onResume();
     }
 
@@ -250,6 +250,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 }
             });
         }
+        analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_VIEW_CHALLENGES,
+                ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_DETAIL_PAGE,
+                ChallengesGaAnalyticsTracker.EVENT_ACTION_PAGE_VIEW,
+                challengeResult.getTitle());
         return view;
     }
 
@@ -510,6 +514,12 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);
         } else if (v.getId() == R.id.fab_share) {
+            if (!isPastChallenge) {
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                        challengeResult.getTitle());
+            }
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult, false);
         }
     }
