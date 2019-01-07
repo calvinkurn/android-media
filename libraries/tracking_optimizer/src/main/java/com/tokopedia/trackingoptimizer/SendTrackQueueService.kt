@@ -50,7 +50,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
 
     companion object {
         var atomicInteger = AtomicInteger()
-        val doMergeScreenName = false
+        val doMergeScreenName = true
         const val TAG = "TrackQueueService"
         const val TAG_EE = "TrackQueueServiceEE"
         fun start(context: Context) {
