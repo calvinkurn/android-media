@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.view.util
+package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
 import android.util.AttributeSet

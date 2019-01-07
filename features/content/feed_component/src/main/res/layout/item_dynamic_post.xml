@@ -136,7 +136,7 @@
         android:visibility="visible"
         tools:visibility="visible">
 
-        <com.tokopedia.feedcomponent.view.util.WrapContentViewPager
+        <com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
             android:id="@+id/contentViewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
