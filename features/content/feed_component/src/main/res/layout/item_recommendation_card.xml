@@ -65,7 +65,7 @@
             android:layout_marginTop="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_8"
             android:textAllCaps="false"
-            app:buttonCompatSize="medium"
+            app:buttonCompatSize="small"
             app:buttonCompatType="primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
