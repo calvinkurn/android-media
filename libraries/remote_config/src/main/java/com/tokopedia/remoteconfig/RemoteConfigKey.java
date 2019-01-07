@@ -59,4 +59,6 @@ public class RemoteConfigKey {
     public static final String REFERRAL_HELP_LINK_TEXT_WELCOME= "app_apa_itu_tokocash_referral_text_welcome";
     public static final String REFERRAL_HELP_LINK_CONTENT_TITLE= "app_apa_itu_tokocash_referral_content_title";
     public static final String REFERRAL_HELP_LINK_CONTENT_SUBTITLE= "app_apa_itu_tokocash_referral_content_subtitle";
+
+    public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
 }

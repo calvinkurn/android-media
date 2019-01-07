@@ -520,7 +520,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private final static int IRIS_ROW_LIMIT = 50;
     private final static long IRIS_TIME = 900000;
-    private final static boolean IRIS_ENABLE = true;
 
     private static final String EXTRA = "extra";
 
@@ -565,11 +564,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initIris() {
         mIris = Iris.Companion.init(this);
 
-        // init remote config for iris
+        boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
+
         mIris.setService(new Configuration(
                 IRIS_ROW_LIMIT,
                 IRIS_TIME,
-                IRIS_ENABLE
+                irisEnable
         ));
     }
 
@@ -3384,6 +3384,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         BranchSdkUtils.sendIdentityEvent(userId);
         BranchSdkUtils.sendLoginEvent(applicationContext);
         mIris.setUserId(userId);
+        mIris.setDeviceId(getSession().getDeviceId());
     }
 
     @Override
