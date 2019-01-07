@@ -143,6 +143,10 @@ public class Purchase {
         ActionField.put("affiliation", aff);
     }
 
+    public void setTax(Object tax) {
+        ActionField.put("tax", tax);
+    }
+
     public void setRevenue(Object revenue) {
         ActionField.put(REVENUE_KEY, revenue);
     }

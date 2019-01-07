@@ -2,6 +2,7 @@
   payment(payment_id:%s){
     payment_id
     payment_ref_num
+    fee_amount
     orders{
     	order_id
     	phone
