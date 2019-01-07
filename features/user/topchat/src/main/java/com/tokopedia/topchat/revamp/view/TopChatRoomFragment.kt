@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
@@ -374,6 +376,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     }
             ).show()
         }
+    }
+
+    override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
+        Log.d("NIS", "go to Buy")
+    }
+
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+        Log.d("NIS", "go to ATC")
     }
 
     override fun onBackPressedEvent() {

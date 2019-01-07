@@ -56,7 +56,8 @@ import javax.inject.Inject
  * @author by nisie on 23/11/18.
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
-        AttachedInvoiceSelectionListener, QuickReplyListener, ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+        AttachedInvoiceSelectionListener, QuickReplyListener,
+        ChatActionListBubbleListener, ChatRatingListener, TypingListener {
     override fun onBackPressedEvent() {
 
     }

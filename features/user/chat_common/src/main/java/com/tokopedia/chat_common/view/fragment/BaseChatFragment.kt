@@ -233,6 +233,14 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         viewState.onReceiveRead()
     }
 
+    override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
+        //Please override if you use
+    }
+
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+        //Please override if you use
+    }
+
     abstract fun onSendButtonClicked()
 
     abstract fun getUserSession(): UserSessionInterface

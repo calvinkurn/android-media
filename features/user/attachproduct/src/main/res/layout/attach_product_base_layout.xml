@@ -90,7 +90,7 @@
         android:background="@color/grey_300"
         android:visibility="gone"/>
 
-    <TextView
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/tv_buy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -102,7 +102,10 @@
         android:gravity="center"
         android:text="@string/action_buy"
         android:textSize="@dimen/sp_12"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:textAllCaps="false"
+        app:buttonCompatSize="small"
+        app:buttonCompatType="primary"/>
 
     <ImageView
         android:id="@+id/ic_add_to_cart"

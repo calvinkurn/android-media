@@ -34,5 +34,4 @@ public interface TopChatRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-
 }
