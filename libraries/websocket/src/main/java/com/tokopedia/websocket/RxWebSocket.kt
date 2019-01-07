@@ -22,6 +22,8 @@ object RxWebSocket {
     fun send(msg: String,
              tkpdAuthInterceptor: TkpdAuthInterceptor?,
              fingerprintInterceptor: FingerprintInterceptor?) {
+        //TODO MAKE NON NULL INTERCEPTOR
+
         try {
             RxWebSocketUtil.getInstance(tkpdAuthInterceptor, fingerprintInterceptor)?.send(msg)
         }catch(ignore : WebSocketException){
@@ -29,8 +31,10 @@ object RxWebSocket {
         }
     }
 
-    fun send(json: JsonObject, tkpdAuthInterceptor: TkpdAuthInterceptor,
-             fingerprintInterceptor: FingerprintInterceptor) {
+    fun send(json: JsonObject, tkpdAuthInterceptor: TkpdAuthInterceptor?,
+             fingerprintInterceptor: FingerprintInterceptor?) {
+        //TODO MAKE NON NULL INTERCEPTOR
+
         send(json.toString(), tkpdAuthInterceptor, fingerprintInterceptor)
     }
 

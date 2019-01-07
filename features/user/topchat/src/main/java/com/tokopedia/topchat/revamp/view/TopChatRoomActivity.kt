@@ -47,4 +47,11 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             return intent
         }
     }
+
+    override fun onBackPressed() {
+        supportFragmentManager.findFragmentByTag(tagFragment).let {
+            if (it is TopChatRoomFragment) it.onBackPressedEvent()
+            else super.onBackPressed()
+        }
+    }
 }

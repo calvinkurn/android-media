@@ -1,10 +1,13 @@
 package com.tokopedia.chatbot.view.presenter
 
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
@@ -16,6 +19,7 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -30,15 +34,21 @@ import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
+import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -51,14 +61,12 @@ class ChatbotPresenter @Inject constructor(
         private val tkpdAuthInterceptor: TkpdAuthInterceptor,
         private val fingerprintInterceptor: FingerprintInterceptor,
         private val sendChatRatingUseCase: SendChatRatingUseCase,
-        private val sendRatingReasonUseCase: SendRatingReasonUseCase)
+        private val sendRatingReasonUseCase: SendRatingReasonUseCase,
+        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>)
     : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
-    override fun isUploading(): Boolean {
-        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        return false
-    }
 
     private var mSubscription: CompositeSubscription
+    private var isUploading: Boolean = false
 
     init {
         mSubscription = CompositeSubscription()
@@ -238,6 +246,85 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
+    override fun uploadImages(it: ImageUploadViewModel,
+                              messageId: String,
+                              opponentId: String,
+                              onError: (Throwable) -> Unit) {
+        if (validateImageAttachment(it.imageUrl)) {
+            isUploading = true
+            uploadImageUseCase.unsubscribe()
+
+            val reqParam = HashMap<String, RequestBody>()
+            val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
+            reqParam.put("web_service", createRequestBody("1"))
+            reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
+            val params = uploadImageUseCase.createRequestParam(it.imageUrl,
+                    "/upload/attachment",
+                    "fileToUpload\"; filename=\"image.jpg",
+                    reqParam)
+
+            uploadImageUseCase.execute(params,
+                    object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
+                        override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
+                            t.dataResultImageUpload.data?.run {
+                                sendUploadedImageToWebsocket(SendWebsocketParam
+                                        .generateParamSendImage(messageId,
+                                                this.picSrc,
+                                                it.startTime,
+                                                opponentId))
+                            }
+                            isUploading = false
+                        }
+
+                        override fun onCompleted() {
+
+                        }
+
+                        override fun onError(e: Throwable) {
+                            isUploading = false
+                            onError(e)
+                        }
+
+                    })
+        }
+    }
+
+    private fun sendUploadedImageToWebsocket(json: JsonObject) {
+        RxWebSocket.send(json,
+                tkpdAuthInterceptor,
+                fingerprintInterceptor)
+    }
+
+    private fun createRequestBody(content: String): RequestBody {
+        return RequestBody.create(MediaType.parse("text/plain"), content)
+    }
+
+    private fun validateImageAttachment(uri: String?): Boolean {
+        var MAX_FILE_SIZE = 5120
+        val MINIMUM_HEIGHT = 100
+        val MINIMUM_WIDTH = 300
+        val DEFAULT_ONE_MEGABYTE: Long = 1024
+        if (uri == null) return false
+        val file = File(uri)
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(file.absolutePath, options)
+        val imageHeight = options.outHeight
+        val imageWidth = options.outWidth
+
+        val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
+
+        return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
+            view.onUploadUndersizedImage()
+            false
+        } else if (fileSize >= MAX_FILE_SIZE) {
+            view.onUploadOversizedImage()
+            false
+        } else {
+            true
+        }
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
@@ -245,4 +332,5 @@ class ChatbotPresenter @Inject constructor(
         sendRatingReasonUseCase.unsubscribe()
         super.detachView()
     }
+
 }

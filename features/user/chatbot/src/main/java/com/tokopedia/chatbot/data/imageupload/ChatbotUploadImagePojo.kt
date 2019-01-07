@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.revamp.domain.pojo
+package com.tokopedia.chatbot.data.imageupload
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * @author : Steven 14/12/18
  */
 
-data class TopChatImageUploadPojo(
+data class ChatbotUploadImagePojo(
         @SerializedName("data")
         @Expose
         var data: TopChatImageUploadDataPojo? = null,
@@ -36,7 +36,7 @@ data class TopChatImageUploadPojo(
             var serverId: String = "",
             @SerializedName("success")
             @Expose
-            var success: String =""
+            var success: String = ""
 
     )
 }

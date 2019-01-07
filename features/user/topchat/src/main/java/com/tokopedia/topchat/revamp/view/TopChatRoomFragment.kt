@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
+import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
@@ -22,21 +24,21 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
-import com.tokopedia.topchat.common.TopChatRouter
+import com.tokopedia.topchat.common.InboxMessageConstant
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.revamp.di.DaggerChatComponent
 import com.tokopedia.topchat.revamp.di.DaggerTopChatRoomComponent
 import com.tokopedia.topchat.revamp.listener.TopChatContract
 import com.tokopedia.topchat.revamp.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.revamp.view.listener.ImagePickerListener
 import com.tokopedia.topchat.revamp.view.listener.SendButtonListener
-import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -53,8 +55,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
 
-    lateinit var session : UserSessionInterface
+    @Inject
+    lateinit var analytics: TopChatAnalytics
+
+    lateinit var session: UserSessionInterface
     private lateinit var alertDialog: Dialog
+
+    val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 112
 
     private lateinit var actionBox: View
 
@@ -167,7 +174,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     }
 
-
     override fun loadData(page: Int) {
         return
     }
@@ -189,6 +195,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     this,
                     this,
                     this,
+                    onAttachProductClicked(),
                     (activity as BaseChatToolbarActivity).getToolbar()
             )
 
@@ -200,23 +207,29 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
+    private fun onAttachProductClicked(): () -> Unit {
+        return {
+            activity?.run {
+                val intent = TopChatInternalRouter.Companion.getAttachProductIntent(this,
+                        shopId.toString(),
+                        "",
+                        getUserSession().shopId == shopId.toString())
+                startActivityForResult(intent, TOKOPEDIA_ATTACH_INVOICE_REQ_CODE)
+            }
+        }
+    }
+
     override fun clearEditText() {
         getViewState().clearEditText()
     }
 
     override fun initInjector() {
 
-//        DaggerChatComponent.builder()
-//                .topChatRoomComponent(getComponent(TopChatRoomComponent::class.java))
-//                .build()
-//                .inject(this)
-
         if (activity != null && (activity as Activity).application != null) {
             val chatRoomComponent = DaggerTopChatRoomComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
                     .build()
-            val chatComponent
-                    = DaggerChatComponent.builder().topChatRoomComponent(chatRoomComponent).build()
+            val chatComponent = DaggerChatComponent.builder().topChatRoomComponent(chatRoomComponent).build()
             chatComponent.inject(this)
             presenter.attachView(this)
         }
@@ -325,7 +338,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
+        when (requestCode) {
             100 -> {
                 presenter.getTemplate()
             }
@@ -339,7 +352,43 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     presenter.startUploadImages(it)
                 }
             }
+
+            TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onProductAttachmentSelected(resultCode, data)
         }
+    }
+
+    private fun onProductAttachmentSelected(resultCode: Int, data: Intent?) {
+        if (data == null)
+            return
+
+        if (!data.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
+            return
+
+        val resultProducts: ArrayList<ResultProduct> = data.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+        attachProductRetrieved(resultProducts)
+    }
+
+    fun attachProductRetrieved(resultProducts: java.util.ArrayList<ResultProduct>) {
+
+        analytics.trackSendProductAttachment()
+
+        val msgId = arguments!!.getString(InboxMessageConstant.PARAM_MESSAGE_ID)
+        for (result in resultProducts) {
+            val item = generateProductChatViewModel(result)
+            getViewState().onSendProductAttachment(item)
+            presenter.sendProductAttachment(messageId, result, item.startTime, opponentId)
+        }
+    }
+
+    private fun generateProductChatViewModel(product: ResultProduct): ProductAttachmentViewModel {
+        return ProductAttachmentViewModel(
+                getUserSession().userId,
+                product.productId,
+                product.name,
+                product.price,
+                product.productUrl,
+                product.productImageThumbnail,
+                SendableViewModel.generateStartTime())
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
@@ -361,7 +410,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return ImageUploadViewModel(
                 messageId,
                 arguments!!.getString(BaseChatToolbarActivity.Companion.PARAM_SENDER_ID),
-                (System.currentTimeMillis()/1000).toString(),
+                (System.currentTimeMillis() / 1000).toString(),
                 imageUrl,
                 SendableViewModel.generateStartTime()
         )
@@ -383,7 +432,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        Log.d("NIS", "go to ATC")
+        presenter.addProductToCart(element, onError(), onSuccessAddToCart())
+    }
+
+    private fun onSuccessAddToCart(): () -> Unit {
+        return {
+            ToasterNormal.make(view, getString(R.string.add_to_cart), ToasterNormal.LENGTH_SHORT).show()
+        }
     }
 
     override fun onBackPressedEvent() {

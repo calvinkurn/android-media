@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.listener
 
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
@@ -13,7 +14,8 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
  */
 interface ChatbotContract {
     interface View : BaseChatContract.View {
-
+        fun onUploadUndersizedImage()
+        fun onUploadOversizedImage()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -50,6 +52,11 @@ interface ChatbotContract {
                              opponentId: String)
 
         fun sendReadEvent(messageId: String)
+
+        fun uploadImages(it: ImageUploadViewModel,
+                         messageId : String,
+                         opponentId : String,
+                         onError: (Throwable) -> Unit)
 
         fun destroyWebSocket()
 

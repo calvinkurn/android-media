@@ -19,9 +19,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
 //            TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
-//            TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
-//            TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
-//            TYPE_INVOICE_SEND -> convertToInvoiceSent(chatItemPojoByDateByTime)
             else ->
                 super.mapAttachment(chatItemPojoByDateByTime)
         }

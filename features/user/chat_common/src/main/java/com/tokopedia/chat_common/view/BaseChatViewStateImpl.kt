@@ -29,8 +29,7 @@ open class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
         private val typingListener: TypingListener
-        ) :
-        BaseChatViewState {
+        ) : BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var mainLoading: ProgressBar

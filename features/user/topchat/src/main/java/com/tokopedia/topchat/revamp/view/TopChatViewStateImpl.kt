@@ -9,6 +9,7 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -40,6 +41,8 @@ class TopChatViewStateImpl(
         private val sendListener: SendButtonListener,
         private val templateListener: ChatRoomContract.View.TemplateChatListener,
         private val imagePickerListener: ImagePickerListener,
+        private val onAttachProductClicked: () -> Unit,
+
         toolbar: Toolbar
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
 
@@ -85,6 +88,10 @@ class TopChatViewStateImpl(
 
         pickerButton.setOnClickListener {
             imagePickerListener.pickImageToUpload()
+        }
+
+        attachButton.setOnClickListener{
+            onAttachProductClicked()
         }
     }
 
@@ -185,6 +192,11 @@ class TopChatViewStateImpl(
         replyEditText.setText(String.format("%s %s %s", text.substring(0, index), message, text
                 .substring(index)))
         replyEditText.setSelection(message.length + text.substring(0, index).length + 1)
+    }
+
+    fun onSendProductAttachment(item: ProductAttachmentViewModel) {
+        getAdapter().addElement(item)
+        scrollDownWhenInBottom()
     }
 
 }

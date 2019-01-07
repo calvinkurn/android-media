@@ -48,6 +48,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentId = ""
     protected var opponentName = ""
     protected var opponentRole = ""
+    protected var shopId = 0
 
     override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
         return BaseChatTypeFactoryImpl(this,
@@ -249,7 +250,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.opponentId = it.headerModel.senderId
         this.opponentName = it.headerModel.name
         this.opponentRole = it.headerModel.role
+        this.shopId = it.headerModel.shopId
     }
 
-    abstract fun onBackPressedEvent()
 }

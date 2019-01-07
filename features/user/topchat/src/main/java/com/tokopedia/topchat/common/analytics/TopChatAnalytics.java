@@ -96,5 +96,14 @@ public class TopChatAnalytics {
         );
     }
 
+    public void trackSendProductAttachment() {
+        analyticTracker.sendEventTracking(
+                Name.CHAT_DETAIL,
+                TopChatAnalytics.Category.CHAT_DETAIL,
+                TopChatAnalytics.Action.CHAT_DETAIL_ATTACHMENT,
+                ""
+        );
+    }
+
 
 }

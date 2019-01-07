@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
@@ -31,9 +32,9 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
                            private val typingListener: TypingListener,
+                           private val onAttachImageClicked: () -> Unit,
                            override val toolbar: Toolbar,
-                           private val adapter: BaseListAdapter<Visitable<*>,
-                                   BaseAdapterTypeFactory>
+                           private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
@@ -49,6 +50,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.layoutManager = LinearLayoutManager(rvQuickReply.context,
                 LinearLayoutManager.HORIZONTAL, false)
         rvQuickReply.adapter = quickReplyAdapter
+
+        pickerButton.setOnClickListener {
+            onAttachImageClicked
+        }
 
     }
 
@@ -113,6 +118,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         if (::reasonBottomSheet.isInitialized) {
             reasonBottomSheet.dismiss()
         }
+    }
+
+    override fun onImageUpload(it: ImageUploadViewModel) {
+        getAdapter().addElement(it)
     }
 
     private fun isMyMessage(fromUid: String?): Boolean {

@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -49,6 +50,10 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -58,11 +63,9 @@ import javax.inject.Inject
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener {
-    override fun onBackPressedEvent() {
-
-    }
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
+    val REQUEST_CODE_CHAT_IMAGE = 115
 
     @Inject
     lateinit var presenter: ChatbotPresenter
@@ -105,10 +108,30 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(view, session, this, this,
+        super.viewState = ChatbotViewStateImpl(view, session, this,
+                this, onAttachImageClicked(),
                 (activity as BaseChatToolbarActivity).getToolbar(), adapter)
         viewState.initView()
         loadInitialData()
+    }
+
+    private fun onAttachImageClicked(): () -> Unit {
+        return {
+            activity?.let {
+                val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
+                        intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
+                                ImagePickerTabTypeDef.TYPE_CAMERA),
+                        GalleryType.IMAGE_ONLY,
+                        ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                        ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+                        null,
+                        true,
+                        null,
+                        null)
+                val intent = ImagePickerActivity.getIntent(getContext(), builder)
+                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
+            }
+        }
     }
 
     override fun loadInitialData() {
@@ -199,8 +222,45 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onSelectedInvoiceResult(resultCode, data)
+            REQUEST_CODE_CHAT_IMAGE -> onPickedAttachImage(resultCode, data)
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun onPickedAttachImage(resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return
+        }
+
+        processImagePathToUpload(data)?.let {
+            getViewState().onImageUpload(it)
+            presenter.uploadImages(it, messageId, opponentId, onError())
+        }
+    }
+
+    private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
+
+        val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+        if (imagePathList == null || imagePathList.size <= 0) {
+            return null
+        }
+        val imagePath = imagePathList[0]
+
+        if (!TextUtils.isEmpty(imagePath)) {
+            val temp = generateChatViewModelWithImage(imagePath)
+            return temp
+        }
+        return null
+    }
+
+    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
+        return ImageUploadViewModel(
+                messageId,
+                arguments!!.getString(BaseChatToolbarActivity.PARAM_SENDER_ID),
+                (System.currentTimeMillis() / 1000).toString(),
+                imageUrl,
+                SendableViewModel.generateStartTime()
+        )
     }
 
     private fun onSelectedInvoiceResult(resultCode: Int, data: Intent?) {
@@ -212,7 +272,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
         }
     }
-
 
     override fun onSendButtonClicked() {
         val sendMessage = replyEditText.text.toString()
@@ -288,6 +347,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onStopTyping() {
 
+    }
+
+    override fun onUploadUndersizedImage() {
+        ToasterError.make(view, getString(R.string.undersize_image)).show()
+    }
+
+    override fun onUploadOversizedImage() {
+        ToasterError.make(view, getString(R.string.oversize_image)).show()
     }
 
     /**

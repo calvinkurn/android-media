@@ -111,11 +111,4 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
     override fun getTagFragment(): String {
         return TAG_FRAGMENT
     }
-
-    override fun onBackPressed() {
-        supportFragmentManager.findFragmentByTag(tagFragment).let {
-            if (it is BaseChatFragment) it.onBackPressedEvent()
-            else super.onBackPressed()
-        }
-    }
 }

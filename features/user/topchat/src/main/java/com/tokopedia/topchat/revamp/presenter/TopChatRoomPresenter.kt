@@ -6,14 +6,13 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
+import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
@@ -24,12 +23,12 @@ import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
+import com.tokopedia.topchat.revamp.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.revamp.domain.subscriber.GetChatSubscriber
 import com.tokopedia.topchat.revamp.domain.usecase.GetChatUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.revamp.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.revamp.listener.TopChatContract
-import com.tokopedia.topchat.uploadimage.data.pojo.TopChatImageUploadPojo
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketResponse
@@ -200,7 +199,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(it: ImageUploadViewModel) {
-        if(validateImageAttachment(it.imageUrl)) {
+        if (validateImageAttachment(it.imageUrl)) {
             processDummyMessage(it)
             isUploading = true
             uploadImageUseCase.unsubscribe()
@@ -274,6 +273,7 @@ class TopChatRoomPresenter @Inject constructor(
     private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
         return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
     }
+
     private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
         dummyList.isNotEmpty().let {
             for (i in 0 until dummyList.size) {
@@ -320,6 +320,8 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendMessageWebSocket(messageText: String) {
+        //TODO ADD INTERCEPTOR
+
         RxWebSocket.send(
                 msg = messageText,
                 tkpdAuthInterceptor = null,
@@ -334,6 +336,20 @@ class TopChatRoomPresenter @Inject constructor(
             return false
         }
         return true
+    }
+
+    override fun addProductToCart(element: ProductAttachmentViewModel, onError: (Throwable) -> Unit, onSuccess: () -> Unit) {
+
+    }
+
+    override fun sendProductAttachment(messageId: String, item: ResultProduct,
+                                       startTime: String, opponentId: String) {
+        //TODO ADD INTERCEPTOR
+        RxWebSocket.send(
+                SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime, opponentId),
+                tkpdAuthInterceptor = null,
+                fingerprintInterceptor = null
+        )
     }
 
     override fun detachView() {

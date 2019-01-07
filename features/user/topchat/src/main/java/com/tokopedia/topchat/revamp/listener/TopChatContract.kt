@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.revamp.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 
 /**
@@ -31,6 +33,9 @@ interface TopChatContract {
         fun onErrorUploadImage(errorMessage: String)
 
 //        fun onSuccessLoadFirstTime(dummyList: ArrayList<Visitable<*>>)
+
+        fun onBackPressedEvent()
+
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -47,6 +52,15 @@ interface TopChatContract {
         )
 
         fun startUploadImages(it: ImageUploadViewModel)
+
+        fun addProductToCart(element: ProductAttachmentViewModel,
+                             onError: (Throwable) -> Unit,
+                             onSuccess: () -> Unit)
+
+        fun isUploading(): Boolean
+
+        fun sendProductAttachment(messageId: String, item: ResultProduct,
+                                  startTime: String, opponentId : String)
 
     }
 }
