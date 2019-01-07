@@ -44,7 +44,9 @@ class DynamicPostViewHolder(v: View,
         const val PAYLOAD_FOLLOW = 15
 
         const val MAX_CHAR = 140
-        const val CAPTION_END = 100
+        const val CAPTION_END = 90
+
+        const val NEWLINE = "(\r\n|\n)"
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -149,16 +151,22 @@ class DynamicPostViewHolder(v: View,
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.length > MAX_CHAR) {
                 val captionText = caption.text.substring(0, CAPTION_END)
-                        .replace("(\r\n|\n)", "<br />")
+                        .replace(NEWLINE, "<br />")
                         .plus("... ")
                         .plus("<font color='#42b549'><b>")
                         .plus(caption.buttonName)
                         .plus("</b></font>")
 
                 itemView.caption.text = MethodChecker.fromHtml(captionText)
-                itemView.caption.setOnClickListener { listener.onCaptionClick(caption.appLink) }
+                itemView.caption.setOnClickListener {
+                    if (caption.appLink.isNotEmpty()) {
+                        listener.onCaptionClick(caption.appLink)
+                    } else {
+                        itemView.caption.text = caption.text
+                    }
+                }
             } else {
-                itemView.caption.text = caption.text
+                itemView.caption.text = caption.text.replace(NEWLINE, " ")
             }
         }
     }
