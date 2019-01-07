@@ -16,14 +16,20 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
+import com.tokopedia.chat_common.view.listener.TypingListener
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import java.util.concurrent.TimeUnit
 
 /**
  * @author : Steven 29/11/18
  */
-open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar: Toolbar) :
+open class BaseChatViewStateImpl(
+        @NonNull open val view: View,
+        open val toolbar: Toolbar,
+        private val typingListener: TypingListener
+        ) :
         BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
@@ -40,6 +46,7 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
+    var isTyping: Boolean = false
 
     override fun initView() {
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -65,6 +72,19 @@ open class BaseChatViewStateImpl(@NonNull open val view: View, open val toolbar:
 
         replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
 
+
+        replyIsTyping.subscribe(Action1 {
+            if (it && !isTyping) {
+                typingListener.onStartTyping()
+                isTyping = true
+            }
+        })
+
+        replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                .subscribe {
+                    typingListener.onStopTyping()
+                    isTyping = false
+                }
     }
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel) {

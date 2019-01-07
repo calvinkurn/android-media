@@ -1,8 +1,12 @@
 package com.tokopedia.topchat.revamp.domain.mapper
 
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.topchat.revamp.domain.pojo.ImageAnnouncementPojo
 import javax.inject.Inject
 
 /**
@@ -13,6 +17,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
 
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
+            TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
 //            TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
 //            TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
 //            TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
@@ -20,6 +25,27 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             else ->
                 super.mapAttachment(chatItemPojoByDateByTime)
         }
+    }
+
+
+
+    private fun convertToImageAnnouncement(item: Reply): Visitable<*> {
+        val pojoAttribute = GsonBuilder().create().fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
+                ImageAnnouncementPojo::class.java)
+        val imageAnnouncement = ImageAnnouncementViewModel(
+                item.msgId.toString(),
+                item.senderId.toString(),
+                item.senderName,
+                item.role,
+                item.attachment?.id.toString(),
+                item.attachment?.type.toString(),
+                item.replyTime,
+                pojoAttribute.imageUrl,
+                pojoAttribute.url,
+                item.msg,
+                0
+        )
+        return imageAnnouncement
     }
 
     /////////////////// QUICK REPLIES

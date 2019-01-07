@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.revamp.view
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -18,6 +19,7 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
@@ -46,9 +48,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     @Inject
     lateinit var presenter: TopChatRoomPresenter
 
+    @Inject
+    lateinit var topChatRoomDialog: TopChatRoomDialog
+
     lateinit var session : UserSessionInterface
+    private lateinit var alertDialog: Dialog
 
     private lateinit var actionBox: View
+
+    override fun getContext(): Context? {
+        return activity
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,9 +84,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onError(): (Throwable) -> Unit {
         return {
-            if (view != null) {
-                ToasterError.make(view, ErrorHandler.getErrorMessage(view!!.context, it)).show()
-            }
+            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
         }
     }
 
@@ -182,11 +190,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     (activity as BaseChatToolbarActivity).getToolbar()
             )
 
-//            getViewState()?.run {
-//                getViewState().showLoading()
-//                adapter = BaseChatAdapter(adapterTypeFactory, arrayListOf())
-//                getViewState().setAdapter(adapter)
-//            }
+            if (!::alertDialog.isInitialized) {
+                alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            }
 
             hideLoading()
         }
@@ -224,10 +230,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun addDummyMessage(visitable: Visitable<*>) {
         getViewState().addMessage(visitable)
+        getViewState().scrollDownWhenInBottom()
     }
 
     override fun removeDummy(visitable: Visitable<*>) {
         getViewState().removeDummy(visitable)
+    }
+
+    override fun onErrorUploadImage(errorMessage: String) {
+        showSnackbarError(errorMessage)
     }
 
 
@@ -247,7 +258,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun showSnackbarError(stringResource: String) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (view != null) {
+            ToasterError.make(view, stringResource).show()
+        }
     }
 
     private fun setCanLoadMore(chatroomViewModel: ChatroomViewModel) {
@@ -260,6 +273,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onStartTyping() {
         presenter.startTyping()
+        getViewState().minimizeTools()
     }
 
     override fun onStopTyping() {
@@ -326,10 +340,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onSuccessUploadImage(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
-
-    }
-
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
 
         val imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
@@ -337,6 +347,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             return null
         }
         val imagePath = imagePathList[0]
+
         if (!TextUtils.isEmpty(imagePath)) {
             val temp = generateChatViewModelWithImage(imagePath)
             return temp
@@ -346,6 +357,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
         return ImageUploadViewModel(
+                messageId,
                 arguments!!.getString(BaseChatToolbarActivity.Companion.PARAM_SENDER_ID),
                 (System.currentTimeMillis()/1000).toString(),
                 imageUrl,
@@ -353,4 +365,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         )
     }
 
+    fun showDialogConfirmToAbortUpload() {
+        context?.run {
+            topChatRoomDialog.createAbortUploadImage(
+                    this, alertDialog,
+                    View.OnClickListener {
+                        activity?.onBackPressed()
+                    }
+            ).show()
+        }
+    }
+
+    override fun onBackPressedEvent() {
+        if (presenter.isUploading()) {
+            showDialogConfirmToAbortUpload()
+        } else {
+            activity?.finish()
+        }
+    }
 }

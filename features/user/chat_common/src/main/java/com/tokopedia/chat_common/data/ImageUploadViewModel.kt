@@ -84,8 +84,8 @@ class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
      * @param fileLoc      file location
      * @param startTime    start uploading time in START_TIME_FORMAT [SendableViewModel]
      */
-    constructor(fromUid: String, attachmentId: String,
-                fileLoc: String, startTime: String) : super("", fromUid, "", "", attachmentId,
+    constructor(messageId: String, fromUid: String, attachmentId: String,
+                fileLoc: String, startTime: String) : super(messageId, fromUid, "", "", attachmentId,
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD, SendableViewModel.SENDING_TEXT,
             startTime,
             false, true, true, "") {

@@ -1,12 +1,15 @@
 package com.tokopedia.topchat.revamp.presenter
 
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -37,6 +40,7 @@ import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -54,8 +58,10 @@ class TopChatRoomPresenter @Inject constructor(
     private var mSubscription: CompositeSubscription
 
     private lateinit var webSocketUrl: String
+    private var isUploading: Boolean = false
     lateinit var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
+
     init {
         mSubscription = CompositeSubscription()
         dummyList = arrayListOf()
@@ -142,11 +148,11 @@ class TopChatRoomPresenter @Inject constructor(
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
-                if(!pojo.isOpposite){
+                if (!pojo.isOpposite) {
                     getDummyOnList(pojo)?.let {
                         view.removeDummy(it)
                     }
-                }else {
+                } else {
                     readMessage()
                 }
             }
@@ -164,11 +170,11 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     fun getTemplate() {
-        getTemplateChatRoomUseCase.execute(object : Subscriber<GetTemplateViewModel>(){
+        getTemplateChatRoomUseCase.execute(object : Subscriber<GetTemplateViewModel>() {
             override fun onNext(t: GetTemplateViewModel?) {
                 var templateList = arrayListOf<Visitable<Any>>()
                 t?.let {
-                    if(t.isEnabled){
+                    if (t.isEnabled) {
                         t.listTemplate?.let {
                             templateList.addAll(it)
                         }
@@ -194,56 +200,87 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(it: ImageUploadViewModel) {
-
-        uploadImageUseCase.unsubscribe()
-        var reqParam = HashMap<String, RequestBody>()
-        val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
-        reqParam.put("web_service", createRequestBody("1"))
-        reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
-        var params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
-        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>(){
-            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
-                t.dataResultImageUpload.data?.run {
-                    sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
-                            this.picSrc, it.startTime))
+        if(validateImageAttachment(it.imageUrl)) {
+            processDummyMessage(it)
+            isUploading = true
+            uploadImageUseCase.unsubscribe()
+            var reqParam = HashMap<String, RequestBody>()
+            val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
+            reqParam.put("web_service", createRequestBody("1"))
+            reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
+            var params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
+            uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
+                override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
+                    t.dataResultImageUpload.data?.run {
+                        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
+                                this.picSrc, it.startTime))
+                    }
+                    isUploading = false
                 }
 
-            }
 
+                override fun onCompleted() {
 
-            override fun onCompleted() {
+                }
 
-            }
+                override fun onError(e: Throwable?) {
+                    isUploading = false
+                    view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e))
+                }
 
-            override fun onError(e: Throwable?) {
-                e
-            }
+            })
+        }
+    }
 
-        })
+    private fun validateImageAttachment(uri: String?): Boolean {
+        var MAX_FILE_SIZE = 5120
+        val MINIMUM_HEIGHT = 100
+        val MINIMUM_WIDTH = 300
+        val DEFAULT_ONE_MEGABYTE: Long = 1024
+        if (uri == null) return false
+        val file = File(uri)
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(file.absolutePath, options)
+        val imageHeight = options.outHeight
+        val imageWidth = options.outWidth
+
+        val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
+
+        return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
+            view.showSnackbarError(view.getStringResource(R.string.undersize_image))
+            false
+        } else if (fileSize >= MAX_FILE_SIZE) {
+            view.showSnackbarError(view.getStringResource(R.string.oversize_image))
+            false
+        } else {
+            true
+        }
+    }
+
+    override fun isUploading(): Boolean {
+        return isUploading
     }
 
     private fun createRequestBody(content: String): RequestBody {
         return RequestBody.create(MediaType.parse("text/plain"), content)
     }
 
-    private fun processDummyMessage(messageText: String, startTime: String) {
-        var dummyMessage = mapToDummyMessage(thisMessageId, messageText, startTime)
-        view.addDummyMessage(dummyMessage)
-        dummyList.add(dummyMessage)
+    private fun processDummyMessage(it: Visitable<*>) {
+        view.addDummyMessage(it)
+        dummyList.add(it)
     }
-
 
     private fun mapToDummyMessage(messageId: String, messageText: String, startTime: String): Visitable<*> {
         return MessageViewModel(messageId, userSession.userId, userSession.name, startTime, messageText)
     }
-
     private fun getDummyOnList(pojo: ChatSocketPojo): Visitable<*>? {
         dummyList.isNotEmpty().let {
-            for (i in 0 until dummyList.size){
-                var temp = (dummyList[i] as MessageViewModel)
-                 if(temp.startTime == pojo.startTime
-                        && temp.messageId == pojo.msgId.toString()){
-                    return temp
+            for (i in 0 until dummyList.size) {
+                var temp = (dummyList[i] as SendableViewModel)
+                if (temp.startTime == pojo.startTime
+                        && temp.messageId == pojo.msgId.toString()) {
+                    return dummyList[i]
                 }
             }
         }
@@ -272,7 +309,7 @@ class TopChatRoomPresenter @Inject constructor(
         if (isValidReply(sendMessage)) {
             view.clearEditText()
 //            view.disableAction()
-            processDummyMessage(sendMessage, startTime)
+            processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
             sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime))
             sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
         }
@@ -301,6 +338,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
+        uploadImageUseCase.unsubscribe()
         super.detachView()
     }
 

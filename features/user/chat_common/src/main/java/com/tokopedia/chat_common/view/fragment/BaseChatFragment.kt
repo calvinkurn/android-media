@@ -28,6 +28,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
+import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -38,7 +39,7 @@ import kotlin.collections.ArrayList
  */
 abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         , ImageAnnouncementListener, ChatLinkHandlerListener
-        , ImageUploadListener, ProductAttachmentListener
+        , ImageUploadListener, ProductAttachmentListener, TypingListener
         , BaseChatContract.View {
 
     open lateinit var viewState: BaseChatViewState
@@ -63,7 +64,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar())
+        viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar(), this)
         viewState.initView()
 
         setupViewData(arguments, savedInstanceState)
@@ -242,5 +243,5 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.opponentRole = it.headerModel.role
     }
 
-
+    abstract fun onBackPressedEvent()
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.domain.mapper
 
+import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
@@ -7,6 +8,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTA
 import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import javax.inject.Inject
 
@@ -95,6 +97,8 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        val pojoAttribute = GsonBuilder().create().fromJson<FallbackAttachmentViewModel>(chatItemPojoByDateByTime.attachment?.attributes,
+                FallbackAttachmentViewModel::class.java)
         return FallbackAttachmentViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -103,13 +107,13 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.attachment?.id.toString(),
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
-                chatItemPojoByDateByTime.msg
+                pojoAttribute.message
         )
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        //TODO chatItemPojoByDateByTime.attachment imgurl& imgthumbnail
-
+        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>( chatItemPojoByDateByTime.attachment ?.attributes,
+                ImageUploadAttributes::class.java)
         return ImageUploadViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -119,8 +123,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.attachment?.type.toString(),
                 chatItemPojoByDateByTime.replyTime,
                 !chatItemPojoByDateByTime.isOpposite,
-                "" ,
-                "",
+                pojoAttribute.imageUrl ,
+                pojoAttribute.thumbnail,
                 chatItemPojoByDateByTime.isRead,
                 chatItemPojoByDateByTime.msg
         )

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
+import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -29,10 +30,11 @@ import com.tokopedia.user.session.UserSessionInterface
 class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
+                           private val typingListener: TypingListener,
                            override val toolbar: Toolbar,
                            private val adapter: BaseListAdapter<Visitable<*>,
                                    BaseAdapterTypeFactory>
-) : BaseChatViewStateImpl(view, toolbar), ChatbotViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView

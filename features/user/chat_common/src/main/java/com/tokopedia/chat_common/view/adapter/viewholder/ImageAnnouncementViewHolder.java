@@ -32,8 +32,8 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
     public void bind(final ImageAnnouncementViewModel viewModel) {
         super.bind(viewModel);
 
-//        ImageHandler.loadImageWithListener(attachment, viewModel.getImageUrl(), new
-//                DynamicSizeImageRequestListener());
+        ImageHandler.loadImageWithListener(attachment, viewModel.getImageUrl(), new
+                DynamicSizeImageRequestListener());
 
         view.setOnClickListener(view -> listener.onImageAnnouncementClicked(viewModel));
 

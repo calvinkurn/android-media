@@ -59,5 +59,5 @@ abstract class BaseChatPresenter<T : BaseChatContract.View> constructor(
 
     abstract fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String)
 
-
+    abstract fun isUploading(): Boolean
 }
