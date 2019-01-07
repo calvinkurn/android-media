@@ -70,5 +70,12 @@
     <string name="abandon_message_warning">Pesan Anda akan hilang jika keluar halaman ini. Anda yakin?</string>
     <string name="enter_other_reason">Ada hal lain yang bisa diperbaiki?</string>
     <string name="type_other_reason">Tulis Disini(minimum 15 karakter)</string>
+    <string name="bad_reason_1">Tidak paham masalah</string>
+    <string name="bad_reason_2">Solusi tidak berhasil</string>
+    <string name="bad_reason_3">Respons lambat</string>
+    <string name="bad_reason_4">Tidak kooperatif</string>
+    <string name="bad_reason_5">Jawaban terlalu kaku</string>
+    <string name="bad_reason_6">Kurang ramah</string>
+    <string name="other_reason">Lainnya</string>
 
 </resources>

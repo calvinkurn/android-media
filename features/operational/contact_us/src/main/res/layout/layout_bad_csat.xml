@@ -22,121 +22,59 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.tokopedia.design.text.Chips
         android:id="@+id/tv_bad_reason_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/bg_button_select_deselect"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="Tidak paham masalah"
-        android:textColor="@color/black_56"
+        android:text="@string/bad_reason_1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_bottom_sheet_title" />
 
-    <TextView
+    <com.tokopedia.design.text.Chips
         android:id="@+id/tv_bad_reason_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/bg_button_select_deselect"
-        android:ellipsize="marquee"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="Solusi tidak berhasil"
-        android:textColor="@color/black_56"
+        android:text="@string/bad_reason_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_bad_reason_1" />
 
-    <TextView
+    <com.tokopedia.design.text.Chips
         android:id="@+id/tv_bad_reason_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/bg_button_select_deselect"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="Respons lambat"
-        android:textColor="@color/black_56"
+        android:text="@string/bad_reason_3"
         app:layout_constraintLeft_toRightOf="@+id/tv_bad_reason_2"
         app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_1" />
 
-    <TextView
+    <com.tokopedia.design.text.Chips
         android:id="@+id/tv_bad_reason_4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/bg_button_select_deselect"
-        android:ellipsize="marquee"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="Tidak kooperatif"
-        android:textColor="@color/black_56"
+        android:text="@string/bad_reason_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_3" />
 
-    <TextView
+    <com.tokopedia.design.text.Chips
         android:id="@+id/tv_bad_reason_5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/bg_button_select_deselect"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="Jawaban terlalu kaku"
-        android:textColor="@color/black_56"
+        android:text="@string/bad_reason_5"
         app:layout_constraintLeft_toRightOf="@+id/tv_bad_reason_4"
         app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_3" />
 
-    <TextView
+    <com.tokopedia.design.text.Chips
         android:id="@+id/tv_bad_reason_6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/bg_button_select_deselect"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="Kurang ramah"
-        android:textColor="@color/black_56"
+        android:text="@string/bad_reason_6"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_5" />
 
-    <TextView
+    <com.tokopedia.design.text.Chips
         android:id="@+id/tv_custom_reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:background="@drawable/bg_button_select_deselect"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="Lainnya"
-        android:textColor="@color/black_56"
+        android:text="@string/other_reason"
         app:layout_constraintLeft_toRightOf="@+id/tv_bad_reason_6"
         app:layout_constraintTop_toBottomOf="@+id/tv_bad_reason_5" />
 
