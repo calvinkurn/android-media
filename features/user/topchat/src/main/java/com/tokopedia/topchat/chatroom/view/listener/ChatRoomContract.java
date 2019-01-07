@@ -18,6 +18,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
@@ -183,6 +184,11 @@ public class ChatRoomContract {
         void toggleFollowSuccess();
 
         void finishActivity();
+
+        void onClickBuyFromProductAttachment(ProductAttachmentViewModel element);
+
+        void onClickATCFromProductAttachment(ProductAttachmentViewModel element);
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {

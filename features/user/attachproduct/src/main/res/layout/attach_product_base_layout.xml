@@ -37,9 +37,9 @@
         android:layout_marginRight="12dp"
         android:layout_marginStart="14dp"
         android:layout_toEndOf="@id/attach_product_chat_image_layout"
+        android:layout_toLeftOf="@+id/delete_button"
         android:layout_toRightOf="@id/attach_product_chat_image_layout"
         android:maxWidth="172dp"
-        android:layout_toLeftOf="@+id/delete_button"
         >
 
         <TextView
@@ -69,15 +69,50 @@
             tools:text="Rp 2.099.000"
             />
     </RelativeLayout>
+
     <ImageView
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_action_x"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:padding="@dimen/dp_8"
-        tools:visibility="visible"
         android:visibility="gone"
+        app:srcCompat="@drawable/ic_action_x"
+        tools:visibility="visible"
         />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_below="@id/attach_product_chat_image_layout"
+        android:background="@color/grey_300"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_buy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/separator"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:gravity="center"
+        android:text="@string/action_buy"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/ic_add_to_cart"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_below="@id/separator"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_toLeftOf="@+id/tv_buy"
+        android:gravity="center"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"/>
+
 </RelativeLayout>

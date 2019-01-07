@@ -14,8 +14,6 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BaseChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BaseChatViewHolder;
-import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 
 /**
  * @author by nisie on 5/14/18.
@@ -34,6 +32,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private TextView label;
     private TextView dot;
     private ImageView thumbnailsImage;
+    private TextView tvBuy;
+    private ImageView ivATC;
 
     private Context context;
     private ChatRoomContract.View viewListener;
@@ -47,6 +47,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         dot = itemView.findViewById(R.id.dot);
         progressBarSendImage = itemView.findViewById(R.id.progress_bar);
         chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
+        tvBuy = chatBalloon.findViewById(R.id.tv_buy);
+        ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
         this.viewListener = viewListener;
     }
 
@@ -122,7 +124,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void setChatReadStatus(ProductAttachmentViewModel element) {
         int imageResource;
-        if(element.isShowTime()) {
+        if (element.isShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
             if (element.isRead()) {
                 imageResource = R.drawable.ic_chat_read;
@@ -152,6 +154,29 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 .getProductImage());
         setUIValue(productContainer, R.id.attach_product_chat_name, element.getProductName());
         setUIValue(productContainer, R.id.attach_product_chat_price, element.getProductPrice());
+        setFooter(productContainer, element);
+    }
+
+    private void setFooter(View productContainer, ProductAttachmentViewModel element) {
+        View separator = productContainer.findViewById(R.id.separator);
+        if (element.getFromRole() != null
+                && !TextUtils.isEmpty(element.getFromRole())
+                && element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())) {
+            separator.setVisibility(View.VISIBLE);
+            tvBuy.setVisibility(View.VISIBLE);
+            ivATC.setVisibility(View.VISIBLE);
+            tvBuy.setOnClickListener(v -> {
+//                viewListener.onClickBuyFromProductAttachment(element);
+            });
+
+            ivATC.setOnClickListener(v -> {
+//                viewListener.onClickATCFromProductAttachment(element);
+            });
+        } else {
+            separator.setVisibility(View.GONE);
+            tvBuy.setVisibility(View.GONE);
+            ivATC.setVisibility(View.GONE);
+        }
     }
 
     private void setUIValue(View productContainer, int id, String value) {
@@ -162,7 +187,6 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             ImageHandler.loadImageRounded2(destination.getContext(), (ImageView) destination,
                     value);
             this.thumbnailsImage = (ImageView) destination;
-
         }
     }
 

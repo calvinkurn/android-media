@@ -8,6 +8,6 @@ import com.tokopedia.chat_common.BaseChatAdapter
  */
 class TopChatRoomAdapter (adapterTypeFactory: TopChatTypeFactoryImpl,
                           listChat: ArrayList<Visitable<*>>)
-    : BaseChatAdapter(adapterTypeFactory, listChat) {
+    : BaseChatAdapter(adapterTypeFactory) {
 
 }
