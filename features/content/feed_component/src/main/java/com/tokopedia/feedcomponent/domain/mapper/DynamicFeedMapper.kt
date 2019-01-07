@@ -107,6 +107,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     card.header.avatarBadgeImage,
                     card.header.avatarTitle,
                     card.header.avatarDescription,
+                    card.header.avatarApplink,
                     card.header.followCta,
                     template.cardrecom.item
             ))

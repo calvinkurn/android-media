@@ -61,6 +61,10 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
         }
 
         private fun initViewListener(element: RecommendationCardViewModel) {
+            itemView.setOnClickListener {
+                listener.onRecommendationAvatarClick(element.redirectUrl)
+            }
+
             itemView.btnFollow.setOnClickListener {
                 listener.onRecommendationActionClick(
                         positionInFeed,
@@ -106,6 +110,8 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
     }
 
     interface RecommendationCardListener {
+        fun onRecommendationAvatarClick(redirectLink: String)
+
         fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean)
     }
 }

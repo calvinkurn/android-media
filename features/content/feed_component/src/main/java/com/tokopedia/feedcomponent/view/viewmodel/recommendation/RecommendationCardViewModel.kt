@@ -14,6 +14,7 @@ data class RecommendationCardViewModel(
         val badgeUrl: String = "",
         val profileName: String = "",
         val description: String = "",
+        val redirectUrl: String = "",
         val cta: FollowCta = FollowCta(),
         val template: TemplateItem = TemplateItem()
 )
