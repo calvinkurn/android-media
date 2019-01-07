@@ -587,10 +587,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null);
                 if(!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData(),
-                            requestData.getCheckoutRequestData());
+                    shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData());
                 }
-                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData);
+                shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;
             }
         }
