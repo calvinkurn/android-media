@@ -657,6 +657,7 @@ public class InboxDetailPresenterImpl
                 RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
                 if (ratingResponse.getIsSuccess() > 0) {
                     mView.hideBottomFragment();
+                    mView.showMessage(mView.getActivity().getString(R.string.thanks_input));
                     if (mTicketDetail.getStatus().equals(getUtils().OPEN) || mTicketDetail.getStatus().equals(getUtils().SOLVED)) {
                         mView.toggleTextToolbar(View.VISIBLE);
                     } else {

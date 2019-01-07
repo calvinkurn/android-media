@@ -20,6 +20,7 @@ import com.tokopedia.contactus.inboxticket2.di.InboxModule;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 
 import javax.inject.Inject;
 
@@ -56,6 +57,8 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     @Override
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Snackbar snackbar = ToasterNormal.make(getRootView(), message, BaseToaster.LENGTH_SHORT);
+        snackbar.show();
     }
 
     @Override
