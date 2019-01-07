@@ -36,7 +36,7 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
         return GridItemViewHolder(view, listener)
     }
 
-    override fun getItemCount() : Int {
+    override fun getItemCount(): Int {
         return when {
             gridPostViewModel.itemList.size >= MAX_FEED_SIZE -> MAX_FEED_SIZE
             gridPostViewModel.itemList.size >= MAX_FEED_SIZE_SMALL -> MAX_FEED_SIZE_SMALL
@@ -44,9 +44,9 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
         }
     }
 
+    @Suppress("ConvertTwoComparisonsToRangeCheck")
     override fun onBindViewHolder(holder: GridItemViewHolder, position: Int) {
         holder.bindImage(gridPostViewModel.itemList[position].thumbnail)
-
         if (gridPostViewModel.itemList.size > MAX_FEED_SIZE && position == LAST_FEED_POSITION) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION
             holder.bindOthers(
@@ -56,7 +56,8 @@ class GridPostAdapter(private val gridPostViewModel: GridPostViewModel,
                     gridPostViewModel.postId
             )
 
-        } else if (gridPostViewModel.itemList.size in LAST_FEED_POSITION_SMALL..LAST_FEED_POSITION
+        } else if (gridPostViewModel.itemList.size < MAX_FEED_SIZE
+                && gridPostViewModel.itemList.size > MAX_FEED_SIZE_SMALL
                 && position == LAST_FEED_POSITION_SMALL) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION_SMALL
             holder.bindOthers(
