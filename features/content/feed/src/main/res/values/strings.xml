@@ -72,4 +72,6 @@
     <string name="string_btn_whitelist">Buat Post</string>
 
     <string name="feed_content_reported">Konten sudah dilaporkan</string>
+    <string name="feed_see_profile">Lihat Profil</string>
+    <string name="feed_create_content">Buat Konten</string>
 </resources>
