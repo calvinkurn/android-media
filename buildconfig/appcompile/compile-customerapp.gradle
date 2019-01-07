@@ -30,6 +30,7 @@ include "features:discovery:wishlist_common"
 include "features:discovery:home"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"
+//include "features:discovery:recentview_no_op"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:reksa_dana"
