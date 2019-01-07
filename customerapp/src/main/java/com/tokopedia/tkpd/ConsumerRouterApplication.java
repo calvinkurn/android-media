@@ -1678,7 +1678,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showServerError(Response response) {
-        ServerErrorHandler.showServerErrorSnackbar();
         ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
     }
 

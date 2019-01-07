@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
     android:background="@color/white"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_10"
     android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_10">
+    android:paddingTop="@dimen/dp_16">
 
     <android.support.v7.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
@@ -14,41 +15,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_15"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_15"
         android:text="@string/train_passenger_title" />
-
-    <RelativeLayout
-        android:id="@+id/container_same_as_contact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            style="@style/TextView.Micro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_centerVertical="true"
-            android:text="@string/train_passenger_same_with_buyer" />
-
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/checkbox"
-            android:layout_width="@dimen/dp_36"
-            android:layout_height="@dimen/dp_36"
-            android:layout_marginRight="@dimen/dp_10"
-            android:theme="@style/checkBoxStyle"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_15"
-        android:background="@color/grey_300" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_passengers"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
