@@ -27,12 +27,12 @@ public class Chips extends AppCompatTextView {
     }
 
     private void init() {
-        ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        ViewGroup.MarginLayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         int margin_default = (int) (getContext().getResources().getDimension(R.dimen.dp_16));
         int padding_top_bottom = (int) (getContext().getResources().getDimension(R.dimen.dp_8));
         params.height = (int) (getContext().getResources().getDimension(R.dimen.dp_40));
         params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        ((LinearLayout.LayoutParams) params).setMargins(margin_default, margin_default, 0, margin_default);
+        params.setMargins(margin_default, margin_default, 0, margin_default);
         setBackgroundResource(R.drawable.bg_button_select_deselect);
         setPadding(margin_default, padding_top_bottom, margin_default, padding_top_bottom);
         setEllipsize(TextUtils.TruncateAt.MARQUEE);
