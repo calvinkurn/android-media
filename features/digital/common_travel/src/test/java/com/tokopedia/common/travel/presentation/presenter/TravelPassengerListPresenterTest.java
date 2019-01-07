@@ -132,16 +132,42 @@ public class TravelPassengerListPresenterTest {
     }
 
     @Test
-    public void onSelectPassenger_PaxPassengerNotSameAndDataValid_ShowSnackbarError() {
+    public void onSelectPassenger_PaxPassengerAdultNotSameAndDataValid_ShowSnackbarError() {
         //given
         setPassengerList();
         travelPassengerList.get(0).setPaxType(TravelBookingPassenger.ADULT);
-        travelPassengerList.get(1).setPaxType(TravelBookingPassenger.CHILD);
+        travelPassengerList.get(1).setPaxType(TravelBookingPassenger.INFANT);
         //when
         presenter.selectPassenger(travelPassengerList.get(0), travelPassengerList.get(1));
         //then
         Assert.assertNotEquals(travelPassengerList.get(0).getPaxType(), travelPassengerList.get(1).getPaxType());
-        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_choose_passenger);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_choose_passenger_adult);
+    }
+
+    @Test
+    public void onSelectPassenger_PaxPassengerInfantNotSameAndDataValid_ShowSnackbarError() {
+        //given
+        setPassengerList();
+        travelPassengerList.get(0).setPaxType(TravelBookingPassenger.INFANT);
+        travelPassengerList.get(1).setPaxType(TravelBookingPassenger.ADULT);
+        //when
+        presenter.selectPassenger(travelPassengerList.get(0), travelPassengerList.get(1));
+        //then
+        Assert.assertNotEquals(travelPassengerList.get(0).getPaxType(), travelPassengerList.get(1).getPaxType());
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_choose_passenger_infant);
+    }
+
+    @Test
+    public void onSelectPassenger_PaxPassengerAnythingNotSameAndDataValid_ShowSnackbarError() {
+        //given
+        setPassengerList();
+        travelPassengerList.get(0).setPaxType(4);
+        travelPassengerList.get(1).setPaxType(TravelBookingPassenger.ADULT);
+        //when
+        presenter.selectPassenger(travelPassengerList.get(0), travelPassengerList.get(1));
+        //then
+        Assert.assertNotEquals(4, travelPassengerList.get(1).getPaxType());
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_choose_passenger);
     }
 
     @Test
@@ -170,7 +196,7 @@ public class TravelPassengerListPresenterTest {
         Assert.assertEquals(travelPassengerList.get(0).getPaxType(), travelPassengerList.get(1).getPaxType());
         Assert.assertEquals(travelPassengerList.get(1).getIdNumber(), "");
 
-        Mockito.verify(view).showActionErrorInSnackBar(travelPassengerList.get(1), R.string.error_msg_pick_passenger_data_not_valid);
+        Mockito.verify(view).showActionErrorInSnackBar(travelPassengerList.get(1), R.string.travel_error_msg_pick_passenger_data_not_valid);
     }
 
     @Test

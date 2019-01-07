@@ -10,7 +10,6 @@ import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.common.travel.utils.TravelPassengerValidator;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
-import com.tokopedia.usecase.RequestParams;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -233,7 +232,7 @@ public class TravelPassengerUpdatePresenterTest {
         //given
         Mockito.when(view.getSalutationTitle()).thenReturn("");
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_error_salutation);
     }
@@ -245,7 +244,7 @@ public class TravelPassengerUpdatePresenterTest {
         String nameNotValid = "";
         Mockito.when(view.getFirstName()).thenReturn(nameNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Assert.assertEquals(nameNotValid.length(), 0);
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_error_first_name);
@@ -258,7 +257,7 @@ public class TravelPassengerUpdatePresenterTest {
         String nameNotValid = "sdakndadnajkdnakjdnakjsndajksndkjasndkjsandkjasndaksjndakjsnda";
         Mockito.when(view.getFirstName()).thenReturn(nameNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Assert.assertEquals(nameNotValid.length(), 62);
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_max);
@@ -271,7 +270,7 @@ public class TravelPassengerUpdatePresenterTest {
         String nameNotValid = "1234jsndajksndkjasndkjsandkjasndaksjndakjsnda";
         Mockito.when(view.getFirstName()).thenReturn(nameNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
     }
@@ -284,7 +283,7 @@ public class TravelPassengerUpdatePresenterTest {
         String nameNotValid = "";
         Mockito.when(view.getLastName()).thenReturn(nameNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_error_last_name);
     }
@@ -297,7 +296,7 @@ public class TravelPassengerUpdatePresenterTest {
         String nameNotValid = "sdakndadnajkdnakjdnakjsndajksndkjasndkjsandkjasndaksjndakjsnda";
         Mockito.when(view.getLastName()).thenReturn(nameNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_max);
     }
@@ -310,7 +309,7 @@ public class TravelPassengerUpdatePresenterTest {
         String nameNotValid = "12345dnakjsndajksndkjasndkjsandkjasndaksjndakjsnda";
         Mockito.when(view.getLastName()).thenReturn(nameNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123455");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
     }
@@ -323,7 +322,7 @@ public class TravelPassengerUpdatePresenterTest {
         String nameNotValid = "Buyer Seller";
         Mockito.when(view.getLastName()).thenReturn(nameNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_contact_last_name_word);
     }
@@ -338,7 +337,7 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.INFANT);
 
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_birthdate_empty);
     }
@@ -349,10 +348,11 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         String idNumberNotValid = "";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Assert.assertEquals(idNumberNotValid.length(), 0);
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number);
@@ -364,10 +364,11 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         String idNumberNotValid = "1234";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Assert.assertEquals(idNumberNotValid.length(), 4);
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_min);
@@ -379,10 +380,11 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         String idNumberNotValid = "12345678910234567890123";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Assert.assertEquals(idNumberNotValid.length(), 23);
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_max);
@@ -394,10 +396,11 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getSalutationTitle()).thenReturn("Tuan");
         Mockito.when(view.getFirstName()).thenReturn("Toped");
         Mockito.when(view.getLastName()).thenReturn("Buyer");
+        Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
         String idNumberNotValid = "12345678910BD?-&3";
         Mockito.when(view.getIdentityNumber()).thenReturn(idNumberNotValid);
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_alphanumeric);
     }
@@ -498,11 +501,10 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getLastName()).thenReturn("Buyer");
         Mockito.when(view.getIdentityNumber()).thenReturn("12345678910");
         Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.ADULT);
-        setTravelPassenger();
         Mockito.when(editTravelPassengerUseCase.createObservable(Mockito.any()))
-                .thenReturn(Observable.just(travelPassenger));
+                .thenReturn(Observable.just(true));
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).navigateToPassengerList();
     }
@@ -516,11 +518,10 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(view.getBirthdate()).thenReturn("24 Juli 1994");
         Mockito.when(view.getIdentityNumber()).thenReturn("24071994");
         Mockito.when(view.getPaxType()).thenReturn(TravelBookingPassenger.INFANT);
-        setTravelPassenger();
         Mockito.when(editTravelPassengerUseCase.createObservable(Mockito.any()))
-                .thenReturn(Observable.just(travelPassenger));
+                .thenReturn(Observable.just(true));
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).navigateToPassengerList();
     }
@@ -539,7 +540,7 @@ public class TravelPassengerUpdatePresenterTest {
         Mockito.when(editTravelPassengerUseCase.createObservable(Mockito.any()))
                 .thenReturn(Observable.error(exception));
         //when
-        presenter.submitEditPassengerData();
+        presenter.submitEditPassengerData("123456");
         //then
         Mockito.verify(view).showMessageErrorInSnackBar(exception);
     }
@@ -558,7 +559,7 @@ public class TravelPassengerUpdatePresenterTest {
         //when
         presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
         //then
-        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_pick_infant_passenger);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_pick_infant_passenger);
     }
 
     @Test
@@ -592,7 +593,7 @@ public class TravelPassengerUpdatePresenterTest {
         //when
         presenter.onChangeBirthdate(yearSelected, monthSelected, dateSelected);
         //then
-        Mockito.verify(view).showMessageErrorInSnackBar(R.string.error_message_pick_adult_passenger);
+        Mockito.verify(view).showMessageErrorInSnackBar(R.string.travel_error_msg_pick_adult_passenger);
     }
 
     @Test

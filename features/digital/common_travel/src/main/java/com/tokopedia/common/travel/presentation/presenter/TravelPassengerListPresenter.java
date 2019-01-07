@@ -87,7 +87,7 @@ public class TravelPassengerListPresenter extends BaseDaggerPresenter<TravelPass
                 getView().onClickSelectPassenger(travelPassenger);
             } else {
                 getView().showActionErrorInSnackBar(travelPassenger,
-                        R.string.error_msg_pick_passenger_data_not_valid);
+                        R.string.travel_error_msg_pick_passenger_data_not_valid);
             }
         } else {
             getView().showMessageErrorInSnackBar(
@@ -97,13 +97,13 @@ public class TravelPassengerListPresenter extends BaseDaggerPresenter<TravelPass
 
     private int getErrorMessageCantPickPassenger(int paxType) {
         if (paxType == TravelBookingPassenger.ADULT) {
-            return R.string.error_message_choose_passenger_adult;
+            return R.string.travel_error_msg_choose_passenger_adult;
         } else if (paxType == TravelBookingPassenger.CHILD) {
-            return R.string.error_message_choose_passenger_child;
+            return R.string.travel_error_msg_choose_passenger_child;
         } else if (paxType == TravelBookingPassenger.INFANT) {
-            return R.string.error_message_choose_passenger_infant;
+            return R.string.travel_error_msg_choose_passenger_infant;
         }
-        return R.string.error_message_choose_passenger;
+        return R.string.travel_error_msg_choose_passenger;
     }
 
     private boolean isPassengerDataValid(TravelPassenger travelPassenger) {
@@ -133,8 +133,9 @@ public class TravelPassengerListPresenter extends BaseDaggerPresenter<TravelPass
 
                             @Override
                             public void onError(Throwable e) {
-                                if (isViewAttached())
+                                if (isViewAttached()) {
                                     getView().failedUpdatePassengerDb();
+                                }
                             }
 
                             @Override

@@ -157,7 +157,7 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
 
     @Override
     public void successDeletePassenger() {
-        showSuccessSnackbar(getString(R.string.snackbar_message_success_delete));
+        showSuccessSnackbar(getString(R.string.travel_snackbar_msg_success_delete));
         presenter.getPassengerList();
     }
 
@@ -168,10 +168,10 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
 
     private void showDeleteDialog(String idPassenger, String id, int travelId) {
         dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.dialog_delete_passenger_title));
-        dialog.setDesc(getString(R.string.dialog_delete_passenger_question));
-        dialog.setBtnOk(getString(R.string.dialog_delete_passenger_btn_delete));
-        dialog.setBtnCancel(getString(R.string.dialog_delete_passenger_btn_cancel));
+        dialog.setTitle(getString(R.string.travel_dialog_delete_passenger_title));
+        dialog.setDesc(getString(R.string.travel_dialog_delete_passenger_question));
+        dialog.setBtnOk(getString(R.string.travel_dialog_delete_passenger_btn_delete));
+        dialog.setBtnCancel(getString(R.string.travel_dialog_delete_passenger_btn_cancel));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,7 +193,7 @@ public class TravelPassengerEditFragment extends BaseDaggerFragment implements T
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == EDIT_PASSENGER_REQUEST_CODE) {
-                NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(R.string.success_edit_passenger_msg));
+                NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(R.string.travel_success_edit_passenger_msg));
             }
             presenter.getPassengerList();
         }

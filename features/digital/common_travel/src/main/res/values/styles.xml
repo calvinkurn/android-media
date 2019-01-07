@@ -19,7 +19,7 @@
         <item name="android:background">@drawable/bg_travel_round_button</item>
     </style>
 
-    <style name="WidgetSelectPassengerView">
+    <style name="TravelWidgetSelectPassengerView">
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">@dimen/dp_10</item>
         <item name="android:paddingRight">@dimen/dp_10</item>
@@ -27,12 +27,12 @@
         <item name="android:paddingBottom">@dimen/dp_10</item>
     </style>
 
-    <style name="WidgetSelectPassengerViewIcon">
+    <style name="TravelWidgetSelectPassengerViewIcon">
         <item name="android:layout_width">36dp</item>
         <item name="android:layout_height">36dp</item>
     </style>
 
-    <style name="InputLabel">
+    <style name="TravelInputLabel">
         <item name="android:textColor">@color/font_black_secondary_54</item>
         <item name="android:textSize">12dp</item>
         <item name="android:paddingLeft">4dp</item>

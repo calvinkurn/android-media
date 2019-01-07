@@ -53,8 +53,10 @@ public class TravelPassengerEditPresenter extends BaseDaggerPresenter<TravelPass
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().hideProgressBar();
-                        getView().showMessageErrorInSnackBar(e);
+                        if (isViewAttached()) {
+                            getView().hideProgressBar();
+                            getView().showMessageErrorInSnackBar(e);
+                        }
                     }
 
                     @Override

@@ -37,16 +37,27 @@ public class TravelPassengerListActivity extends BaseSimpleActivity implements T
 
     @Override
     protected Fragment getNewFragment() {
-        travelTrip = (TravelTrip) getIntent().getParcelableExtra(TRAVEL_TRIP);
         boolean resetPassengerList = getIntent().getBooleanExtra(RESET_PASSENGER_LIST_SELECTED, false);
-        return TravelPassengerListFragment.newInstance(travelTrip, resetPassengerList);
+        return TravelPassengerListFragment.newInstance((TravelTrip) getIntent().getParcelableExtra(TRAVEL_TRIP), resetPassengerList);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(TRAVEL_TRIP, travelTrip);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        updateTitle(getString(R.string.title_list_passenger_page));
+        if (savedInstanceState != null) {
+            travelTrip = savedInstanceState.getParcelable(TRAVEL_TRIP);
+        } else {
+            travelTrip = (TravelTrip) getIntent().getParcelableExtra(TRAVEL_TRIP);
+        }
+
+        updateTitle(getString(R.string.travel_title_list_passenger_page));
     }
 
     @Override

@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
 
 /**
