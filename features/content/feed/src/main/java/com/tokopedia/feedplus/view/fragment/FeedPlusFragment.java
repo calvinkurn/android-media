@@ -1365,6 +1365,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onAvatarClick(@NotNull String redirectUrl) {
+        onGoToLink(redirectUrl);
+    }
+
+    @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
                                     boolean isFollow) {
 

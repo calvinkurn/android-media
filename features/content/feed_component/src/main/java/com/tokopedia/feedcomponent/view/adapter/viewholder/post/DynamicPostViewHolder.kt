@@ -89,15 +89,18 @@ class DynamicPostViewHolder(v: View,
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 itemView.authorImage.loadImageCircle(header.avatar)
+                itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink) }
             }
 
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
                 itemView.authorTitle.text = header.avatarTitle
+                itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink) }
             }
 
             itemView.authorSubtitile.shouldShowWithAction(template.avatarDate) {
                 header.avatarDate = TimeConverter.generateTime(itemView.context, header.avatarDate)
                 itemView.authorSubtitile.text = header.avatarDate
+                itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink) }
             }
 
             itemView.headerAction.shouldShowWithAction(template.followCta) {
@@ -110,6 +113,10 @@ class DynamicPostViewHolder(v: View,
                 }
             }
         }
+    }
+
+    private fun onAvatarClick(redirectUrl: String) {
+        listener.onAvatarClick(redirectUrl)
     }
 
     private fun bindFollow(followCta: FollowCta) {
@@ -255,6 +262,8 @@ class DynamicPostViewHolder(v: View,
     }
 
     interface DynamicPostListener {
+        fun onAvatarClick(redirectUrl: String)
+
         fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
 
         fun onMenuClick()
