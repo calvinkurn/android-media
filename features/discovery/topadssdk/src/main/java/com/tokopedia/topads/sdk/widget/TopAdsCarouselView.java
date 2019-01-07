@@ -2,8 +2,10 @@ package com.tokopedia.topads.sdk.widget;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -12,11 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
+import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
+import com.tokopedia.topads.sdk.di.TopAdsComponent;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -26,7 +32,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
-import com.tokopedia.topads.sdk.utils.GridSpaceItemDecoration;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
@@ -36,6 +41,8 @@ import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by errysuprayogi on 7/20/18.
  */
@@ -43,7 +50,6 @@ import java.util.List;
 public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAdsClickListener, View.OnClickListener {
 
     private static final String TAG = TopAdsCarouselView.class.getSimpleName();
-    private TopAdsPresenter presenter;
     private RecyclerView recyclerView;
     private AdsItemAdapter adapter;
     private TopAdsListener adsListener;
@@ -55,21 +61,27 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     private TextView title;
     private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
 
+    @Inject
+    TopAdsPresenter presenter;
+
     public TopAdsCarouselView(Context context) {
         super(context);
         inflateView(context, null, 0);
+        initInjector();
         initPresenter();
     }
 
     public TopAdsCarouselView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         inflateView(context, attrs, 0);
+        initInjector();
         initPresenter();
     }
 
     public TopAdsCarouselView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflateView(context, attrs, defStyleAttr);
+        initInjector();
         initPresenter();
     }
 
@@ -78,6 +90,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         inflate(context, R.layout.layout_ads_carousel, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setEnableWishlist(true);
         layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
                 false);
         btnCta = findViewById(R.id.info_cta);
@@ -121,13 +134,21 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     @Override
+    public void initInjector() {
+        BaseMainApplication application = ((BaseMainApplication) getContext().getApplicationContext());
+        TopAdsComponent component = DaggerTopAdsComponent.builder()
+                .baseAppComponent(application.getBaseAppComponent())
+                .build();
+        component.inject(this);
+        component.inject(presenter);
+    }
+
+    @Override
     public void initPresenter() {
-        presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
         presenter.setEndpoinParam("1");
     }
 
-    @Override
     public void setMaxItems(int items) {
         presenter.setMaxItems(items);
     }
@@ -137,7 +158,6 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         presenter.setDisplayMode(displayMode);
     }
 
-    @Override
     public void loadTopAds() {
         presenter.loadTopAds();
     }
@@ -148,8 +168,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
         if (adsListener != null && list.size() > 0) {
             adsListener.onTopAdsLoaded(list);
         }
-        if (list.isEmpty())
+        if (list.isEmpty()) {
             setVisibility(GONE);
+        } else {
+            setVisibility(VISIBLE);
+        }
     }
 
     public void setData(TopAdsModel data) {
@@ -162,8 +185,11 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
                 }
             }
             adapter.setList(visitables);
-            if (visitables.isEmpty())
+            if (visitables.isEmpty()) {
                 setVisibility(GONE);
+            } else {
+                setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -191,16 +217,16 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     }
 
     @Override
-    public void onAddFavorite(int position, Data dataShop) {
-        if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(position, dataShop);
-        }
+    public void onAddFavorite(int position, Data data) {
+
     }
 
     @Override
     public void onAddWishLish(int position, Data data) {
-        if (adsItemClickListener != null) {
-            adsItemClickListener.onAddWishList(position, data);
+        if(data.getProduct().isWishlist()){
+            presenter.removeWishlist(data);
+        } else {
+            presenter.addWishlist(data);
         }
     }
 
@@ -220,5 +246,45 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
 
     public void setAdsItemImpressionListener(TopAdsItemImpressionListener adsItemImpressionListener) {
         this.adapter.setAdsItemImpressionListener(adsItemImpressionListener);
+    }
+
+    @Override
+    public String getString(int resId) {
+        return getContext().getString(resId);
+    }
+
+    @Override
+    public void doLogin() {
+        Intent intent = ((TopAdsRouter) getContext().getApplicationContext()).getLoginIntent(getContext());
+        getContext().startActivity(intent);
+    }
+
+    @Override
+    public void notifyAdapter() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showSuccessAddWishlist() {
+        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorAddWishlist() {
+        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_add_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showSuccessRemoveWishlist() {
+        SnackbarManager.makeGreen(getRootView().findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showErrorRemoveWishlist() {
+        SnackbarManager.makeRed(getRootView().findViewById(android.R.id.content), getString(R.string.msg_error_remove_wishlist),
+                Snackbar.LENGTH_LONG).show();
     }
 }

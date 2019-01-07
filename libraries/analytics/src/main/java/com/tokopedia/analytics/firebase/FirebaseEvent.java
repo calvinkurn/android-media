@@ -50,4 +50,8 @@ public class FirebaseEvent {
         String HAMBURGER_TOKOCARD = "hamburger_tokocard";
 
     }
+
+    public interface SellerHome {
+        String HOMEPAGE_AKUN_PENJUAL_CLICK = "homepage_akun_penjual_widget_click";
+    }
 }

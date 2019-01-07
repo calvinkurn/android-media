@@ -32,7 +32,7 @@ public class OpenTopAdsUseCase extends UseCase<String, AdsView> {
         execute(requestParams, null);
     }
 
-        @Override
+    @Override
     public void execute(String requestParams, AdsView view) {
         task = new AsyncTask<String, Void, String>(){
 

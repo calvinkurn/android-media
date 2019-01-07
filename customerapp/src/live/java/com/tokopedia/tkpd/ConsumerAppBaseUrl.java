@@ -61,4 +61,6 @@ public class ConsumerAppBaseUrl {
     public static final String LOGISTIC_BASE_DOMAIN = "https://gw.tokopedia.com/";
     public static final String CART_BASE_DOMAIN = "https://api.tokopedia.com/";
     public static final String TRANSACTION_BASE_DOMAIN = "https://ws.tokopedia.com/";
+    public static final String CAMPAIGN_MANAGEMENT_DOMAIN = "https://imt.tokopedia.com/";
+
 }

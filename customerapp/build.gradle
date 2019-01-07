@@ -338,6 +338,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.browse)
     implementation project(rootProject.ext.features.notifCenter)
@@ -383,6 +384,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
@@ -510,6 +512,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.challenges)
+    implementation project(rootProject.ext.libraries.cmnotification)
+
 }
 
 
