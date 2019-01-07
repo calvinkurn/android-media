@@ -92,6 +92,8 @@
             cod {
                 is_cod_available
                 cod_price
+                cod_text
+                formatted_price
             }
         }
     }
