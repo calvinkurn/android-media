@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.presenter;
 
 import android.support.annotation.RestrictTo;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -11,6 +12,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
+import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
+import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
@@ -20,6 +24,7 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSub
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
@@ -29,6 +34,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -52,6 +58,7 @@ public class FeedPlusPresenter
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
     private final GetWhitelistUseCase getWhitelistUseCase;
+    private final GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase;
     private final GetDynamicFeedUseCase getDynamicFeedUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
@@ -67,6 +74,7 @@ public class FeedPlusPresenter
                       FollowKolPostGqlUseCase followKolPostGqlUseCase,
                       SendVoteUseCase sendVoteUseCase,
                       GetWhitelistUseCase whitelistUseCase,
+                      GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase,
                       GetDynamicFeedUseCase getDynamicFeedUseCase,
                       FeedAnalytics analytics) {
         this.userSession = userSession;
@@ -79,6 +87,7 @@ public class FeedPlusPresenter
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
         this.getWhitelistUseCase = whitelistUseCase;
+        this.getDynamicFeedFirstPageUseCase = getDynamicFeedFirstPageUseCase;
         this.getDynamicFeedUseCase = getDynamicFeedUseCase;
         this.analytics = analytics;
     }
@@ -274,60 +283,83 @@ public class FeedPlusPresenter
         viewListener.showRefresh();
         currentCursor = "";
 
-        if (userSession != null && userSession.isLoggedIn()) {
+
+        if (userSession == null || !userSession.isLoggedIn()) {
+            viewListener.onUserNotLogin();
+            return;
+        }
+
 //            getFirstPageFeedsCloudUseCase.execute(
 //                    getFirstPageFeedsCloudUseCase.getRefreshParam(userSession),
-//                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
+//                    new GetFirstPageFeedsSubscriber(viewListener, pagingHandler.getPage(),
+// analytics));
 
-            getDynamicFeedUseCase.execute(
-                    GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId()),
-                    new Subscriber<DynamicFeedDomainModel>() {
-                        @Override
-                        public void onCompleted() {
+        getDynamicFeedFirstPageUseCase.execute(
+                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId()),
+                new Subscriber<DynamicFeedFirstPageDomainModel>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
                         }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            if (GlobalConfig.isAllowDebuggingTools()) {
-                                e.printStackTrace();
-                            }
+                        if (!isViewAttached()) {
+                            return;
+                        }
 
-                            if (!isViewAttached()) {
-                                return;
-                            }
+                        getView().finishLoading();
+                        getView().onErrorGetFeedFirstPage(
+                                ErrorHandler.getErrorMessage(getView().getContext(), e)
+                        );
+                    }
 
-                            getView().finishLoading();
-                            getView().onErrorGetFeedFirstPage(
-                                    ErrorHandler.getErrorMessage(getView().getContext(), e)
+                    @Override
+                    public void onNext(DynamicFeedFirstPageDomainModel firstPageDomainModel) {
+                        getView().finishLoading();
+
+                        DynamicFeedDomainModel model = firstPageDomainModel
+                                .getDynamicFeedDomainModel();
+
+                        if (firstPageDomainModel.getWhitelistDomain() != null
+                                && firstPageDomainModel.getWhitelistDomain().isWhitelist()) {
+
+                            addWhitelistData(
+                                    model.getPostList(),
+                                    firstPageDomainModel.getWhitelistDomain()
                             );
                         }
 
-                        @Override
-                        public void onNext(DynamicFeedDomainModel model) {
-                            getView().finishLoading();
+                        if (hasFeed(model)) {
+                            getView().updateCursor(model.getCursor());
 
-                            if (hasFeed(model)) {
-                                getView().updateCursor(model.getCursor());
-
-                                if (model.getHasNext()) {
-                                    getView().onSuccessGetFeedFirstPage(
-                                            new ArrayList<>(model.getPostList())
-                                    );
-                                } else {
-                                    getView().onSuccessGetFeedFirstPageWithAddFeed(
-                                            new ArrayList<>(model.getPostList())
-                                    );
-                                }
+                            if (model.getHasNext()) {
+                                getView().onSuccessGetFeedFirstPage(
+                                        new ArrayList<>(model.getPostList())
+                                );
                             } else {
-                                getView().onShowEmpty();
+                                getView().onSuccessGetFeedFirstPageWithAddFeed(
+                                        new ArrayList<>(model.getPostList())
+                                );
                             }
+                        } else {
+                            getView().onShowEmpty();
+                        }
+
+                        if (firstPageDomainModel.isInterestWhitelist()) {
+                            viewListener.showInterestPick();
                         }
                     }
-            );
-        } else {
-            viewListener.onUserNotLogin();
-        }
+                }
+        );
+    }
+
+    private void addWhitelistData(List<Visitable<?>> postList, WhitelistDomain whitelistDomain) {
+        postList.add(0, new WhitelistViewModel(whitelistDomain));
     }
 
     private boolean hasFeed(DynamicFeedDomainModel model) {
