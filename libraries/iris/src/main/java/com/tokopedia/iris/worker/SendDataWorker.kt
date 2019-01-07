@@ -17,7 +17,6 @@ import kotlinx.coroutines.experimental.runBlocking
 class SendDataWorker(private val context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        Log.d("Oka Worker", "doWork()")
         val maxRow = inputData.getInt(MAX_ROW, 0)
 
         val trackingRepository = TrackingRepository(applicationContext)
@@ -37,7 +36,7 @@ class SendDataWorker(private val context: Context, workerParams: WorkerParameter
                 response.await()
             }
             if (response.isSuccessful) {
-                //trackingRepository.delete(trackings)
+                trackingRepository.delete(trackings)
                 return Result.SUCCESS
             }
         }
