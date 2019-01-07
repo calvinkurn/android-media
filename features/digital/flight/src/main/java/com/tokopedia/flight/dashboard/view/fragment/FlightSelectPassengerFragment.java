@@ -18,7 +18,7 @@ import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerPresenterImpl;
 import com.tokopedia.flight.dashboard.view.presenter.FlightSelectPassengerView;
-import com.tokopedia.flight.dashboard.view.widget.SelectPassengerView;
+import com.tokopedia.common.travel.widget.SelectPassengerView;
 
 import javax.inject.Inject;
 
