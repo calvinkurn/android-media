@@ -22,11 +22,12 @@ const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"
 
 const val SHARED_PREFERENCES = "com.tokopedia.iris.SHARED_PREFERENCES"
-const val DOMAIN_HASH = "Android-Tokopedia"
+const val DOMAIN_HASH = "www.tokopedia.com"
 const val KEY_DOMAIN_HASH = "domain_hash"
 const val KEY_USER_ID = "user_id"
 const val KEY_DEVICE_ID = "device_id"
 const val KEY_SESSION_ID = "session_id"
+const val KEY_TIMESTAMP_PREVIOUS = "timestamp_previous"
 const val KEY_UUID = "uuid"
 const val KEY_INITIAL_VISIT = "initial_visit"
 

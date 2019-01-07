@@ -21,38 +21,59 @@ class IrisSession(val context: Context) : Session {
     }
 
     override fun getSessionId(): String {
-        val beginningCurrent = Calendar.getInstance().timeInMillis.toString()
-        val beginningPrevious = sharedPreferences.getString(KEY_SESSION_ID, beginningCurrent)
 
-        var uuid = sharedPreferences.getString(KEY_UUID, uuid())
-        var initialVisit = sharedPreferences.getString(KEY_INITIAL_VISIT, beginningCurrent)
-        val domainHash = sharedPreferences.getString(KEY_DOMAIN_HASH, domainHash())
+        val beginningCurrent = Calendar.getInstance().timeInMillis
+        val beginningPrevious = sharedPreferences.getString(KEY_TIMESTAMP_PREVIOUS, beginningCurrent.toString())
+
+        var sessionId = sharedPreferences.getString(KEY_SESSION_ID, "")
+        if (sessionId.isBlank() || shouldGenerateSession(beginningPrevious.toLong(), beginningCurrent)) {
+            sessionId = generateSessionId(beginningCurrent)
+            setSessionId(sessionId)
+        }
+
+        return sessionId
+    }
+
+    private fun generateSessionId(bc: Long) : String {
+
+        val uuid = sharedPreferences.getString(KEY_UUID, generateUuid())
+        val initialVisit = sharedPreferences.getString(KEY_INITIAL_VISIT, bc.toString())
+        val domainHash = sharedPreferences.getString(KEY_DOMAIN_HASH, generateDomainHash())
 
         setDomainHash(domainHash)
-        setSessionId(beginningCurrent)
-
-        if (isExpired(beginningPrevious, beginningCurrent)) {
-            uuid = uuid()
-            initialVisit = Calendar.getInstance().timeInMillis.toString()
-            setUuid(uuid)
-            setInitialVisit(initialVisit)
-        }
+        setTimestampPrevious(bc.toString())
+        setInitialVisit(initialVisit)
+        setUuid(uuid)
 
         return "$domainHash:$uuid:$initialVisit"
     }
 
-    private fun uuid() : String {
-        return UUID.randomUUID().toString().replace("-", "").toUpperCase()
+    private fun shouldGenerateSession(bp: Long, bc: Long) : Boolean {
+        return isExpired(bp, bc) || isDayChanged(bp, bc)
     }
 
-    private fun isExpired(bp: String, bc: String) : Boolean {
+    private fun isExpired(bp: Long, bc: Long) : Boolean {
         val thirtyMinutes = 1800
-        val beginningPrevious : Int? = bp.toIntOrNull()
-        val beginningCurrent : Int? = bc.toIntOrNull()
-        if (beginningPrevious != null && beginningCurrent != null) {
-            return (beginningPrevious+thirtyMinutes) < beginningCurrent
-        }
-        return false
+        return (bp+thirtyMinutes) < bc
+    }
+
+    private fun isDayChanged(bp: Long, bc: Long) : Boolean {
+        val cal = Calendar.getInstance()
+        cal.time = Date(bp)
+        val dayBp = cal.get(Calendar.DAY_OF_YEAR)
+
+        cal.time = Date(bc)
+        val dayBc = cal.get(Calendar.DAY_OF_YEAR)
+        return dayBp != dayBc
+    }
+
+    private fun generateDomainHash() : String {
+        val data: ByteArray = DOMAIN_HASH.toByteArray(Charset.defaultCharset())
+        return Base64.encodeToString(data, Base64.NO_WRAP).trim()
+    }
+
+    private fun generateUuid() : String {
+        return UUID.randomUUID().toString().replace("-", "").toUpperCase()
     }
 
     override fun setUserId(id: String) {
@@ -65,14 +86,14 @@ class IrisSession(val context: Context) : Session {
         editor.commit()
     }
 
-    override fun setSessionId(id: String) {
-        editor.putString(KEY_SESSION_ID, id)
+    fun setTimestampPrevious(timestamp: String) {
+        editor.putString(KEY_TIMESTAMP_PREVIOUS, timestamp)
         editor.commit()
     }
 
-    private fun domainHash() : String {
-        val data: ByteArray = DOMAIN_HASH.toByteArray(Charset.defaultCharset())
-        return Base64.encodeToString(data, Base64.NO_WRAP).trim()
+    override fun setSessionId(id: String) {
+        editor.putString(KEY_SESSION_ID, id)
+        editor.commit()
     }
 
     private fun setDomainHash(domainHash: String) {
