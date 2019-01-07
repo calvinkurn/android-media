@@ -300,11 +300,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         });
     }
 
-    private void initChannelInfoDialog() {
-
-    }
-
-
     private void goToLogin() {
         startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
                 .getLoginIntent(getActivity()), REQUEST_LOGIN);
