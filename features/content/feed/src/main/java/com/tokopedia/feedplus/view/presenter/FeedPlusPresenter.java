@@ -4,6 +4,8 @@ import android.support.annotation.RestrictTo;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel;
@@ -112,45 +114,12 @@ public class FeedPlusPresenter
 
     @Override
     public void fetchFirstPage() {
-        getFirstPageFeeds();
+        getFirstPageFeed();
     }
 
     @Override
     public void fetchNextPage() {
-        pagingHandler.nextPage();
-
-        if (currentCursor == null) {
-            return;
-        }
-
-//        getFeedsUseCase.execute(
-//                getFeedsUseCase.getFeedPlusParam(
-//                        pagingHandler.getPage(),
-//                        userSession,
-//                        currentCursor),
-//                new GetFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
-
-        getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor),
-                new Subscriber<DynamicFeedDomainModel>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().finishLoading();
-                    }
-
-                    @Override
-                    public void onNext(DynamicFeedDomainModel model) {
-                        getView().updateCursor(model.getCursor());
-                        getView().onSuccessGetFeed(new ArrayList<>(model.getPostList()));
-                        getView().finishLoading();
-                    }
-                }
-        );
+        getNextPageFeed();
     }
 
     public void favoriteShop(final Data promotedShopViewModel, final int adapterPosition) {
@@ -214,7 +183,7 @@ public class FeedPlusPresenter
 
     @Override
     public void refreshPage() {
-        getFirstPageFeeds();
+        getFirstPageFeed();
     }
 
     @Override
@@ -300,7 +269,7 @@ public class FeedPlusPresenter
         return userSession.getUserId();
     }
 
-    private void getFirstPageFeeds() {
+    private void getFirstPageFeed() {
         pagingHandler.resetPage();
         viewListener.showRefresh();
         currentCursor = "";
@@ -320,19 +289,106 @@ public class FeedPlusPresenter
 
                         @Override
                         public void onError(Throwable e) {
+                            if (GlobalConfig.isAllowDebuggingTools()) {
+                                e.printStackTrace();
+                            }
+
+                            if (!isViewAttached()) {
+                                return;
+                            }
+
                             getView().finishLoading();
+                            getView().onErrorGetFeedFirstPage(
+                                    ErrorHandler.getErrorMessage(getView().getContext(), e)
+                            );
                         }
 
                         @Override
                         public void onNext(DynamicFeedDomainModel model) {
-                            getView().updateCursor(model.getCursor());
-                            getView().onSuccessGetFeedFirstPage(new ArrayList<>(model.getPostList()));
                             getView().finishLoading();
+
+                            if (hasFeed(model)) {
+                                getView().updateCursor(model.getCursor());
+
+                                if (model.getHasNext()) {
+                                    getView().onSuccessGetFeedFirstPage(
+                                            new ArrayList<>(model.getPostList())
+                                    );
+                                } else {
+                                    getView().onSuccessGetFeedFirstPageWithAddFeed(
+                                            new ArrayList<>(model.getPostList())
+                                    );
+                                }
+                            } else {
+                                getView().onShowEmpty();
+                            }
                         }
                     }
             );
         } else {
             viewListener.onUserNotLogin();
         }
+    }
+
+    private boolean hasFeed(DynamicFeedDomainModel model) {
+        return model != null && !model.getPostList().isEmpty();
+    }
+
+    private void getNextPageFeed() {
+        pagingHandler.nextPage();
+
+        if (currentCursor == null) {
+            return;
+        }
+
+//        getFeedsUseCase.execute(
+//                getFeedsUseCase.getFeedPlusParam(
+//                        pagingHandler.getPage(),
+//                        userSession,
+//                        currentCursor),
+//                new GetFeedsSubscriber(viewListener, pagingHandler.getPage(), analytics));
+
+        getDynamicFeedUseCase.execute(
+                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor),
+                new Subscriber<DynamicFeedDomainModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
+
+                        if (!isViewAttached()) {
+                            return;
+                        }
+
+                        getView().unsetEndlessScroll();
+                        getView().onShowRetryGetFeed();
+                        getView().hideAdapterLoading();
+                    }
+
+                    @Override
+                    public void onNext(DynamicFeedDomainModel model) {
+
+                        getView().hideAdapterLoading();
+
+                        if (model.getPostList().size() == 0) {
+                            getView().unsetEndlessScroll();
+                        } else {
+                            getView().onSuccessGetFeed(new ArrayList<>(model.getPostList()));
+
+                            if (model.getHasNext()) {
+                                getView().updateCursor(model.getCursor());
+                            } else {
+                                getView().unsetEndlessScroll();
+                            }
+                        }
+                    }
+                }
+        );
     }
 }

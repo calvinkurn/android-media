@@ -592,17 +592,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowAddFeedMore() {
-
-    }
-
-    @Override
-    public void shouldLoadTopAds(boolean loadTopAds) {
-        adapter.unsetEndlessScrollListener();
-    }
-
-    @Override
-    public void hideTopAdsAdapterLoading() {
+    public void hideAdapterLoading() {
         adapter.removeLoading();
     }
 

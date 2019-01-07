@@ -131,11 +131,7 @@ public interface FeedPlus {
 
         void onShowRetryGetFeed();
 
-        void onShowAddFeedMore();
-
-        void shouldLoadTopAds(boolean loadTopAds);
-
-        void hideTopAdsAdapterLoading();
+        void hideAdapterLoading();
 
         String getString(int msg_network_error);
 

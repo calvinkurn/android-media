@@ -45,6 +45,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val feedQuery = t?.getData<FeedQuery?>(FeedQuery::class.java)
         val posts: MutableList<Visitable<*>> = ArrayList()
         var lastCursor = ""
+        var hasNext = false
         feedQuery?.let {
             for (feed in it.feedv2.data) {
                 val templateData: TemplateData = it.feedv2.included.template.firstOrNull { templateData ->
@@ -59,10 +60,12 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             }
 
             lastCursor = it.feedv2.meta.lastCursor
+            hasNext = it.feedv2.meta.hasNextPage && lastCursor.isNotEmpty()
         }
         return DynamicFeedDomainModel(
                 posts,
-                lastCursor
+                lastCursor,
+                hasNext
         )
     }
 

@@ -7,5 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 data class DynamicFeedDomainModel (
         val postList: MutableList<Visitable<*>> = ArrayList(),
-        val cursor: String = ""
+        val cursor: String = "",
+        val hasNext: Boolean = false
 )
