@@ -83,6 +83,9 @@
             android:label="@string/title_booking_code_detail"
             android:theme="@style/Theme.White" />
 
+        <activity android:name=".orders.orderlist.common.SaveDateBottomSheetActivity"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
+
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />

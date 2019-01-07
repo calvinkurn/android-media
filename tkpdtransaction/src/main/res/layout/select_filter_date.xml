@@ -23,10 +23,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
+        android:text="20/12/2018"
+        android:textColor="@color/black_70"
         android:textSize="@dimen/dp_14"
         app:layout_constraintLeft_toLeftOf="@+id/startDate"
-        app:layout_constraintTop_toBottomOf="@+id/startDate"
-        android:text="20/12/2018" />
+        app:layout_constraintTop_toBottomOf="@+id/startDate" />
 
     <View
         android:id="@+id/divider1"
@@ -56,10 +57,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
+        android:text="25/12/2018"
+        android:textColor="@color/black_70"
         android:textSize="@dimen/dp_14"
         app:layout_constraintLeft_toLeftOf="@+id/endDate"
-        app:layout_constraintTop_toBottomOf="@+id/endDate"
-        android:text="25/12/2018" />
+        app:layout_constraintTop_toBottomOf="@+id/endDate" />
 
 
     <View
