@@ -56,7 +56,6 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         Snackbar snackbar = ToasterNormal.make(getRootView(), message, BaseToaster.LENGTH_SHORT);
         snackbar.show();
     }
